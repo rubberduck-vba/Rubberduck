@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Settings
         private ListCollectionView _inspectionSettings;
         public ListCollectionView InspectionSettings
         {
-            get { return _inspectionSettings; }
+            get => _inspectionSettings;
             set
             {
                 if (_inspectionSettings != value)
@@ -56,7 +56,7 @@ namespace Rubberduck.UI.Settings
         private bool _runInspectionsOnSuccessfulParse;
         public bool RunInspectionsOnSuccessfulParse
         {
-            get { return _runInspectionsOnSuccessfulParse; }
+            get => _runInspectionsOnSuccessfulParse;
             set
             {
                 if (_runInspectionsOnSuccessfulParse != value)
@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Settings
         private ObservableCollection<WhitelistedIdentifierSetting> _whitelistedNameSettings;
         public ObservableCollection<WhitelistedIdentifierSetting> WhitelistedIdentifierSettings
         {
-            get { return _whitelistedNameSettings; }
+            get => _whitelistedNameSettings;
             set
             {
                 if (_whitelistedNameSettings != value)
@@ -129,7 +129,7 @@ namespace Rubberduck.UI.Settings
         {
             InspectionSettings = new ListCollectionView(toLoad.CodeInspections.ToList());
             
-            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
+            InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
             
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>();
             RunInspectionsOnSuccessfulParse = true;

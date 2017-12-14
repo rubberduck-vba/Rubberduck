@@ -21,10 +21,7 @@ namespace Rubberduck.UI.Command.Refactorings
             _messageBox = messageBox;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.RefactorRename; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorRename;
 
         protected override bool EvaluateCanExecute(object parameter)
         {

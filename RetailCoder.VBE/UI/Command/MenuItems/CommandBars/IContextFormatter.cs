@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var codePaneSelectionText = selection.Selection.ToString();
             var contextSelectionText = FormatDeclaration(declaration);
 
-            return string.Format("{0} | {1}", codePaneSelectionText, contextSelectionText);
+            return $"{codePaneSelectionText} | {contextSelectionText}";
         }
 
         public string Format(Declaration declaration, bool multipleControls)

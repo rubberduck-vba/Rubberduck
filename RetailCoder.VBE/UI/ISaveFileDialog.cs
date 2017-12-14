@@ -58,32 +58,29 @@ namespace Rubberduck.UI
 
         public bool AddExtension
         {
-            get { return _saveFileDialog.AddExtension; }
-            set { _saveFileDialog.AddExtension = value; }
+            get => _saveFileDialog.AddExtension;
+            set => _saveFileDialog.AddExtension = value;
         }
 
         public bool AutoUpgradeEnabled
         {
-            get { return _saveFileDialog.AutoUpgradeEnabled; }
-            set { _saveFileDialog.AutoUpgradeEnabled = value; }
+            get => _saveFileDialog.AutoUpgradeEnabled;
+            set => _saveFileDialog.AutoUpgradeEnabled = value;
         }
 
         public bool CheckFileExists
         {
-            get { return _saveFileDialog.CheckFileExists; }
-            set { _saveFileDialog.CheckFileExists = value; }
+            get => _saveFileDialog.CheckFileExists;
+            set => _saveFileDialog.CheckFileExists = value;
         }
 
         public bool CheckPathExists
         {
-            get { return _saveFileDialog.CheckPathExists; }
-            set { _saveFileDialog.CheckPathExists = value; }
+            get => _saveFileDialog.CheckPathExists;
+            set => _saveFileDialog.CheckPathExists = value;
         }
 
-        public IContainer Container
-        {
-            get { return _saveFileDialog.Container; }
-        }
+        public IContainer Container => _saveFileDialog.Container;
 
         public ObjRef CreateObjRef(Type requestedType)
         {
@@ -92,25 +89,22 @@ namespace Rubberduck.UI
 
         public bool CreatePrompt
         {
-            get { return _saveFileDialog.CreatePrompt; }
-            set { _saveFileDialog.CreatePrompt = value; }
+            get => _saveFileDialog.CreatePrompt;
+            set => _saveFileDialog.CreatePrompt = value;
         }
 
-        public FileDialogCustomPlacesCollection CustomPlaces
-        {
-            get { return _saveFileDialog.CustomPlaces; }
-        }
+        public FileDialogCustomPlacesCollection CustomPlaces => _saveFileDialog.CustomPlaces;
 
         public string DefaultExt
         {
-            get { return _saveFileDialog.DefaultExt; }
-            set { _saveFileDialog.DefaultExt = value; }
+            get => _saveFileDialog.DefaultExt;
+            set => _saveFileDialog.DefaultExt = value;
         }
 
         public bool DereferenceLinks
         {
-            get { return _saveFileDialog.DereferenceLinks; }
-            set { _saveFileDialog.DereferenceLinks = value; }
+            get => _saveFileDialog.DereferenceLinks;
+            set => _saveFileDialog.DereferenceLinks = value;
         }
 
         public void Dispose()
@@ -121,11 +115,7 @@ namespace Rubberduck.UI
         public event EventHandler Disposed;
         private void SaveFileDialog_Disposed(object sender, EventArgs e)
         {
-            var handler = Disposed;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            Disposed?.Invoke(sender, e);
         }
 
         public override bool Equals(object obj)
@@ -135,35 +125,28 @@ namespace Rubberduck.UI
 
         public string FileName
         {
-            get { return _saveFileDialog.FileName; }
-            set { _saveFileDialog.FileName = value; }
+            get => _saveFileDialog.FileName;
+            set => _saveFileDialog.FileName = value;
         }
 
-        public string[] FileNames
-        {
-            get { return _saveFileDialog.FileNames; }
-        }
+        public string[] FileNames => _saveFileDialog.FileNames;
 
         public event EventHandler FileOk;
         private void SaveFileDialog_FileOk(object sender, EventArgs e)
         {
-            var handler = FileOk;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            FileOk?.Invoke(sender, e);
         }
 
         public string Filter
         {
-            get { return _saveFileDialog.Filter; }
-            set { _saveFileDialog.Filter = value; }
+            get => _saveFileDialog.Filter;
+            set => _saveFileDialog.Filter = value;
         }
 
         public int FilterIndex
         {
-            get { return _saveFileDialog.FilterIndex; }
-            set { _saveFileDialog.FilterIndex = value; }
+            get => _saveFileDialog.FilterIndex;
+            set => _saveFileDialog.FilterIndex = value;
         }
 
         public override int GetHashCode()
@@ -179,17 +162,13 @@ namespace Rubberduck.UI
         public event EventHandler HelpRequest;
         private void SaveFileDialog_HelpRequest(object sender, EventArgs e)
         {
-            var handler = HelpRequest;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            HelpRequest?.Invoke(sender, e);
         }
 
         public string InitialDirectory
         {
-            get { return _saveFileDialog.InitialDirectory; }
-            set { _saveFileDialog.InitialDirectory = value; }
+            get => _saveFileDialog.InitialDirectory;
+            set => _saveFileDialog.InitialDirectory = value;
         }
 
         public object InitializeLifetimeService()
@@ -204,8 +183,8 @@ namespace Rubberduck.UI
 
         public bool OverwritePrompt
         {
-            get { return _saveFileDialog.OverwritePrompt; }
-            set { _saveFileDialog.OverwritePrompt = value; }
+            get => _saveFileDialog.OverwritePrompt;
+            set => _saveFileDialog.OverwritePrompt = value;
         }
 
         public void Reset()
@@ -215,8 +194,8 @@ namespace Rubberduck.UI
 
         public bool RestoreDirectory
         {
-            get { return _saveFileDialog.RestoreDirectory; }
-            set { _saveFileDialog.RestoreDirectory = value; }
+            get => _saveFileDialog.RestoreDirectory;
+            set => _saveFileDialog.RestoreDirectory = value;
         }
 
         public DialogResult ShowDialog()
@@ -226,32 +205,32 @@ namespace Rubberduck.UI
 
         public bool ShowHelp
         {
-            get { return _saveFileDialog.ShowHelp; }
-            set { _saveFileDialog.ShowHelp = value; }
+            get => _saveFileDialog.ShowHelp;
+            set => _saveFileDialog.ShowHelp = value;
         }
 
         public ISite Site
         {
-            get { return _saveFileDialog.Site; }
-            set { _saveFileDialog.Site = value; }
+            get => _saveFileDialog.Site;
+            set => _saveFileDialog.Site = value;
         }
 
         public bool SupportMultiDottedExtensions
         {
-            get { return _saveFileDialog.SupportMultiDottedExtensions; }
-            set { _saveFileDialog.SupportMultiDottedExtensions = value; }
+            get => _saveFileDialog.SupportMultiDottedExtensions;
+            set => _saveFileDialog.SupportMultiDottedExtensions = value;
         }
 
         public object Tag
         {
-            get { return _saveFileDialog.Tag; }
-            set { _saveFileDialog.Tag = value; }
+            get => _saveFileDialog.Tag;
+            set => _saveFileDialog.Tag = value;
         }
 
         public string Title
         {
-            get { return _saveFileDialog.Title; }
-            set { _saveFileDialog.Title = value; }
+            get => _saveFileDialog.Title;
+            set => _saveFileDialog.Title = value;
         }
 
         public override string ToString()
@@ -261,8 +240,8 @@ namespace Rubberduck.UI
 
         public bool ValidateNames
         {
-            get { return _saveFileDialog.ValidateNames; }
-            set { _saveFileDialog.ValidateNames = value; }
+            get => _saveFileDialog.ValidateNames;
+            set => _saveFileDialog.ValidateNames = value;
         }
     }
 }

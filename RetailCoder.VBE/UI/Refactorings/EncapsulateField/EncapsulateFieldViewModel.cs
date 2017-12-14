@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private Declaration _targetDeclaration;
         public Declaration TargetDeclaration
         {
-            get { return _targetDeclaration; }
+            get => _targetDeclaration;
             set
             {
                 _targetDeclaration = value;
@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private bool _expansionState = true;
         public bool ExpansionState
         {
-            get { return _expansionState; }
+            get => _expansionState;
             set
             {
                 _expansionState = value;
@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private bool _canHaveLet;
         public bool CanHaveLet
         {
-            get { return _canHaveLet; }
+            get => _canHaveLet;
             set
             {
                 _canHaveLet = value;
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private bool _canHaveSet;
         public bool CanHaveSet
         {
-            get { return _canHaveSet; }
+            get => _canHaveSet;
             set
             {
                 _canHaveSet = value;
@@ -76,7 +76,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private bool _isLetSelected;
         public bool IsLetSelected
         {
-            get { return _isLetSelected; }
+            get => _isLetSelected;
             set
             {
                 _isLetSelected = value;
@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private bool _isSetSelected;
         public bool IsSetSelected
         {
-            get { return _isSetSelected; }
+            get => _isSetSelected;
             set
             {
                 _isSetSelected = value;
@@ -100,7 +100,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private string _propertyName;
         public string PropertyName
         {
-            get { return _propertyName; }
+            get => _propertyName;
             set
             {
                 _propertyName = value;
@@ -114,7 +114,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private string _parameterName = "value";
         public string ParameterName
         {
-            get { return _parameterName; }
+            get => _parameterName;
             set
             {
                 _parameterName = value;

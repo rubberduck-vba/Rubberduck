@@ -21,12 +21,10 @@ namespace Rubberduck.UI
                 SortedAscending = false;
                 return items.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x));
             }
-            else
-            {
-                ColumnName = columnName;
-                SortedAscending = true;
-                return items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
-            }
+            
+            ColumnName = columnName;
+            SortedAscending = true;
+            return items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x));
         }
 
         public IEnumerable<T> Sort(IEnumerable<T> items, string columnName, bool sortAscending)

@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Settings
         private ObservableCollection<ToDoMarker> _todoSettings;
         public ObservableCollection<ToDoMarker> TodoSettings
         {
-            get { return _todoSettings; }
+            get => _todoSettings;
             set
             {
                 if (_todoSettings != value)

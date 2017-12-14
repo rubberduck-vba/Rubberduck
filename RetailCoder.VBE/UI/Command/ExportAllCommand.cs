@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Command
     public class ExportAllCommand : CommandBase 
     {
         private readonly IVBE _vbe;
-        private IFolderBrowserFactory _factory;
+        private readonly IFolderBrowserFactory _factory;
 
         public ExportAllCommand(IVBE vbe, IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
         {
@@ -20,10 +20,7 @@ namespace Rubberduck.UI.Command
             _factory = folderBrowserFactory;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.ExportActiveProject; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.ExportActiveProject;
 
         protected override bool EvaluateCanExecute(object parameter)
         {
@@ -51,7 +48,7 @@ namespace Rubberduck.UI.Command
 
             var vbproject = parameter as IVBProject;
 
-            IVBProject project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
+            var project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
             
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 

@@ -10,9 +10,9 @@ namespace Rubberduck.UI.Command.MenuItems
         {
         }
 
-        public override bool BeginGroup { get { return true; } }
-        public override string Key { get { return "ContextMenu_FindAllReferences"; } }
-        public override int DisplayOrder { get { return (int)NavigationMenuItemDisplayOrder.FindAllReferences; } }
+        public override bool BeginGroup => true;
+        public override string Key => "ContextMenu_FindAllReferences";
+        public override int DisplayOrder => (int)NavigationMenuItemDisplayOrder.FindAllReferences;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {            

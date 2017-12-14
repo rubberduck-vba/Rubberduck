@@ -242,7 +242,7 @@ namespace Rubberduck.UI.SourceControl
         private ISourceControlProvider _provider;
         public ISourceControlProvider Provider
         {
-            get { return _provider; } // smell: getter can be private
+            get => _provider; // smell: getter can be private
             set
             {
                 Logger.Trace($"{nameof(Provider)} is being assigned.");
@@ -356,7 +356,7 @@ namespace Rubberduck.UI.SourceControl
         private ObservableCollection<IControlView> _tabItems;
         public ObservableCollection<IControlView> TabItems
         {
-            get { return _tabItems; }
+            get => _tabItems;
             set
             {
                 if (_tabItems != value)
@@ -370,7 +370,7 @@ namespace Rubberduck.UI.SourceControl
         private IControlView _selectedItem;
         public IControlView SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 if (_selectedItem != value)
@@ -384,7 +384,7 @@ namespace Rubberduck.UI.SourceControl
         private string _status;
         public string Status
         {
-            get { return _status; }
+            get => _status;
             set
             {
                 if (_status != value)
@@ -398,7 +398,7 @@ namespace Rubberduck.UI.SourceControl
         private bool _displayCloneRepoGrid;
         public bool DisplayCloneRepoGrid
         {
-            get { return _displayCloneRepoGrid; }
+            get => _displayCloneRepoGrid;
             set
             {
                 if (DisplayPublishRepoGrid)
@@ -419,7 +419,7 @@ namespace Rubberduck.UI.SourceControl
         private bool _displayPublishRepoGrid;
         public bool DisplayPublishRepoGrid
         {
-            get { return _displayPublishRepoGrid; }
+            get => _displayPublishRepoGrid;
             set
             {
                 if (DisplayCloneRepoGrid)
@@ -441,7 +441,7 @@ namespace Rubberduck.UI.SourceControl
         private string _cloneRemotePath;
         public string CloneRemotePath
         {
-            get { return _cloneRemotePath; }
+            get => _cloneRemotePath;
             set
             {
                 if (_cloneRemotePath != value)
@@ -458,7 +458,7 @@ namespace Rubberduck.UI.SourceControl
         private string _publishRemotePath;
         public string PublishRemotePath
         {
-            get { return _publishRemotePath; }
+            get => _publishRemotePath;
             set
             {
                 if (_publishRemotePath != value)
@@ -476,7 +476,7 @@ namespace Rubberduck.UI.SourceControl
         private string _localDirectory;
         public string LocalDirectory
         {
-            get { return _localDirectory; }
+            get => _localDirectory;
             set
             {
                 if (_localDirectory != value)
@@ -490,7 +490,7 @@ namespace Rubberduck.UI.SourceControl
         private bool _displayErrorMessageGrid;
         public bool DisplayErrorMessageGrid
         {
-            get { return _displayErrorMessageGrid; }
+            get => _displayErrorMessageGrid;
             set
             {
                 if (_displayErrorMessageGrid != value)
@@ -504,7 +504,7 @@ namespace Rubberduck.UI.SourceControl
         private string _errorTitle;
         public string ErrorTitle
         {
-            get { return _errorTitle; }
+            get => _errorTitle;
             set
             {
                 if (_errorTitle != value)
@@ -518,7 +518,7 @@ namespace Rubberduck.UI.SourceControl
         private string _errorMessage;
         public string ErrorMessage
         {
-            get { return _errorMessage; }
+            get => _errorMessage;
             set
             {
                 if (_errorMessage != value)
@@ -532,7 +532,7 @@ namespace Rubberduck.UI.SourceControl
         private BitmapImage _errorIcon;
         public BitmapImage ErrorIcon
         {
-            get { return _errorIcon; }
+            get => _errorIcon;
             set
             {
                 if (!Equals(_errorIcon, value))
@@ -548,14 +548,13 @@ namespace Rubberduck.UI.SourceControl
 
         private static bool IsValidUri(string path) // note: could it be worth extending Uri for this?
         {
-            Uri uri;
-            return Uri.TryCreate(path, UriKind.Absolute, out uri);
+            return Uri.TryCreate(path, UriKind.Absolute, out var uri);
         }
 
         private bool _displayLoginGrid;
         public bool DisplayLoginGrid
         {
-            get { return _displayLoginGrid; }
+            get => _displayLoginGrid;
             set
             {
                 if (_displayLoginGrid != value)
@@ -755,10 +754,9 @@ namespace Rubberduck.UI.SourceControl
             _listening = false;
 
             Logger.Trace("Cloning repo");
-            ISourceControlProvider oldProvider;
             try
             {
-                oldProvider = _provider;
+                var oldProvider = _provider;
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
                 _providerFactory.Release(oldProvider);
                 var repo = _provider.Clone(CloneRemotePath, LocalDirectory, credentials);

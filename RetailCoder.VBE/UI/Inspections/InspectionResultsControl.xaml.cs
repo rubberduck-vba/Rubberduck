@@ -5,7 +5,7 @@
     /// </summary>
     public partial class InspectionResultsControl
     {
-        private InspectionResultsViewModel ViewModel { get { return DataContext as InspectionResultsViewModel; } }
+        private InspectionResultsViewModel ViewModel => DataContext as InspectionResultsViewModel;
 
         public InspectionResultsControl()
         {

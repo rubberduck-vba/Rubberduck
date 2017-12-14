@@ -15,6 +15,6 @@
             DataContext = vm;
         }
 
-        public IControlViewModel ViewModel { get { return (IControlViewModel)DataContext; } }
+        public IControlViewModel ViewModel => (IControlViewModel)DataContext;
     }
 }

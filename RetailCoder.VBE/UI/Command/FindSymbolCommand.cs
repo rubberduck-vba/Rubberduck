@@ -27,10 +27,7 @@ namespace Rubberduck.UI.Command
             _iconCache = iconCache;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.FindSymbol; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.FindSymbol;
 
         protected override void OnExecute(object parameter)
         {

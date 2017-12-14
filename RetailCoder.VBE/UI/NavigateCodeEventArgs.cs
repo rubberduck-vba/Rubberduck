@@ -26,14 +26,14 @@ namespace Rubberduck.UI
     {
         public NavigateCodeEventArgs(QualifiedModuleName qualifiedName, ParserRuleContext context)
         {
-            _qualifiedName = qualifiedName;
-            _selection = context.GetSelection();
+            QualifiedName = qualifiedName;
+            Selection = context.GetSelection();
         }
 
         public NavigateCodeEventArgs(QualifiedModuleName qualifiedModuleName, Selection selection)
         {
-            _qualifiedName = qualifiedModuleName;
-            _selection = selection;
+            QualifiedName = qualifiedModuleName;
+            Selection = selection;
         }
 
         public NavigateCodeEventArgs(Declaration declaration)
@@ -43,9 +43,9 @@ namespace Rubberduck.UI
                 return;
             }
 
-            _declaration = declaration;
-            _qualifiedName = declaration.QualifiedName.QualifiedModuleName;
-            _selection = declaration.Selection;
+            Declaration = declaration;
+            QualifiedName = declaration.QualifiedName.QualifiedModuleName;
+            Selection = declaration.Selection;
         }
 
         public NavigateCodeEventArgs(IdentifierReference reference)
@@ -55,9 +55,9 @@ namespace Rubberduck.UI
                 return;
             }
 
-            _reference = reference;
-            _qualifiedName = reference.QualifiedModuleName;
-            _selection = reference.Selection;
+            Reference = reference;
+            QualifiedName = reference.QualifiedModuleName;
+            Selection = reference.Selection;
         }
 
         public NavigateCodeEventArgs(QualifiedSelection qualifiedSelection)
@@ -65,16 +65,12 @@ namespace Rubberduck.UI
         {
         }
 
-        private readonly IdentifierReference _reference;
-        public IdentifierReference Reference { get { return _reference; } }
+        public IdentifierReference Reference { get; }
 
-        private readonly Declaration _declaration;
-        public Declaration Declaration { get { return _declaration; } }
+        public Declaration Declaration { get; }
 
-        private readonly QualifiedModuleName _qualifiedName;
-        public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
+        public QualifiedModuleName QualifiedName { get; }
 
-        private readonly Selection _selection;
-        public Selection Selection { get { return _selection; } }
+        public Selection Selection { get; }
     }
 }
