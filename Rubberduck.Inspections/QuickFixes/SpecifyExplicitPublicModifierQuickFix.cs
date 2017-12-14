@@ -22,10 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(result.Context.Start.TokenIndex, "Public ");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.SpecifyExplicitPublicModifierQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.SpecifyExplicitPublicModifierQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

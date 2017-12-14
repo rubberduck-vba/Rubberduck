@@ -24,10 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(ParserRuleContextHelper.GetDescendent<VBAParser.VisibilityContext>(result.Context.Parent.Parent), Tokens.Public);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ObsoleteGlobalInspectionQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.ObsoleteGlobalInspectionQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

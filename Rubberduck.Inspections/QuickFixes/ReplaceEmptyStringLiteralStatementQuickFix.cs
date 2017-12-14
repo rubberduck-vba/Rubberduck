@@ -22,10 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(result.Context, "vbNullString");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.EmptyStringLiteralInspectionQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.EmptyStringLiteralInspectionQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

@@ -57,18 +57,11 @@ namespace Rubberduck.Inspections.QuickFixes
                         break;
                     case DeclarationType.UserDefinedTypeMember:
                         var userDefinedTypeMemberContext = (VBAParser.UdtMemberContext)result.Context;
-                        if (userDefinedTypeMemberContext.reservedNameMemberDeclaration() != null)
-                        {
-                            rewriter.Replace(
-                                userDefinedTypeMemberContext.reservedNameMemberDeclaration().asTypeClause().type(),
-                                Tokens.Long);
-                        }
-                        else
-                        {
-                            rewriter.Replace(
-                                userDefinedTypeMemberContext.untypedNameMemberDeclaration().optionalArrayClause().asTypeClause().type(),
-                                Tokens.Long);
-                        }
+                        rewriter.Replace(
+                            userDefinedTypeMemberContext.reservedNameMemberDeclaration() == null
+                                ? userDefinedTypeMemberContext.untypedNameMemberDeclaration().optionalArrayClause().asTypeClause().type()
+                                : userDefinedTypeMemberContext.reservedNameMemberDeclaration().asTypeClause().type(),
+                            Tokens.Long);
                         break;
                 }
             }
@@ -174,10 +167,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.IntegerDataTypeQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.IntegerDataTypeQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

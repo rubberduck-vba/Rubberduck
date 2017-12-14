@@ -33,10 +33,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
 
         private void UpdateSignature(Declaration target, ParameterDeclaration arg)
         {
@@ -59,7 +56,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 rewriter.InsertBefore(argContext.unrestrictedIdentifier().Start.TokenIndex, Tokens.ByVal);
             }
 
-            var returnStmt = "    " + subStmt.subroutineName().GetText() + " = " + argContext.unrestrictedIdentifier().GetText() + Environment.NewLine;
+            var returnStmt = $"    {subStmt.subroutineName().GetText()} = {argContext.unrestrictedIdentifier().GetText()}{Environment.NewLine}";
             rewriter.InsertBefore(subStmt.END_SUB().Symbol.TokenIndex, returnStmt);
         }
 

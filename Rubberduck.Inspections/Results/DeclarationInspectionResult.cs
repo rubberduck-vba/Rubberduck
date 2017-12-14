@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    class DeclarationInspectionResult : InspectionResultBase
+    internal class DeclarationInspectionResult : InspectionResultBase
     {
         public DeclarationInspectionResult(IInspection inspection, string description, Declaration target, QualifiedContext context = null, Dictionary<string, string> properties = null) :
             base(inspection,
@@ -28,12 +28,9 @@ namespace Rubberduck.Inspections.Results
                 return null;
             }
 
-            if (target.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                return target.QualifiedName;
-            }
-
-            return GetQualifiedMemberName(target.ParentDeclaration);
+            return target.DeclarationType.HasFlag(DeclarationType.Member)
+                ? target.QualifiedName
+                : GetQualifiedMemberName(target.ParentDeclaration);
         }
     }
 }

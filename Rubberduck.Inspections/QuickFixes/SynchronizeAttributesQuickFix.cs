@@ -220,7 +220,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private string GetAttributeInstruction(VBAParser.AnnotationContext context, string attributeName, AnnotationType annotationType)
         {
-            string attributeInstruction = string.Empty;
+            var attributeInstruction = string.Empty;
 
             if (annotationType.HasFlag(AnnotationType.ModuleAnnotation))
             {
@@ -258,10 +258,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return attributeInstruction;
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.SynchronizeAttributesQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.SynchronizeAttributesQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;
