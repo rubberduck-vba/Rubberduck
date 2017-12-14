@@ -107,12 +107,15 @@ namespace Rubberduck.UI.Inspections
         }
 
         private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
-        public ObservableCollection<IInspectionResult> Results
+        public IEnumerable<IInspectionResult> Results
         {
-            get { return _results; }
+            get
+            {
+                return _results.OrderBy(result => result.Description);
+            }
             private set
             {
-                _results = value;
+                _results = (ObservableCollection<IInspectionResult>)value;
                 OnPropertyChanged();
             }
         }
