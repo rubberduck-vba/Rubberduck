@@ -14,13 +14,13 @@ namespace Rubberduck.SmartIndenter
 
         private readonly List<string> _strings = new List<string>();
         private readonly List<string> _brackets = new List<string>();
-        private readonly string _unescaped;
-        private readonly string _escaped;
 
-        public string EscapedString { get { return _escaped; } }
-        public string OriginalString { get { return _unescaped; } } 
-        public IEnumerable<string> EscapedStrings { get { return _strings; } }
-        public IEnumerable<string> EscapedBrackets { get { return _brackets; } }
+        public string EscapedString { get; }
+
+        public string OriginalString { get; }
+
+        public IEnumerable<string> EscapedStrings => _strings;
+        public IEnumerable<string> EscapedBrackets => _brackets;
 
         public string UnescapeIndented(string indented)
         {
@@ -38,9 +38,9 @@ namespace Rubberduck.SmartIndenter
 
         public StringLiteralAndBracketEscaper(string code)
         {
-            _unescaped = code;
+            OriginalString = code;
 
-            var chars = _unescaped.ToCharArray();
+            var chars = OriginalString.ToCharArray();
             var quoted = false;
             var bracketed = false;
             var ins = 0;
@@ -88,7 +88,7 @@ namespace Rubberduck.SmartIndenter
                     }
                 }
             }
-            _escaped = new string(chars);
+            EscapedString = new string(chars);
         }
     }
 }
