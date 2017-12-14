@@ -4,10 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -16,6 +14,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    [Obsolete("Damages user code, and will be moot with custom code panes anyway.")]
     public sealed class SynchronizeAttributesQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
@@ -23,7 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IDictionary<string, string> _attributeNames;
 
         public SynchronizeAttributesQuickFix(RubberduckParserState state)
-            : base(/*typeof(MissingAnnotationArgumentInspection), typeof(MissingAttributeInspection)*/)
+            //: base(typeof(MissingAnnotationArgumentInspection), typeof(MissingAttributeInspection))
         {
             _state = state;
             _attributeNames = typeof(AnnotationType).GetFields()
