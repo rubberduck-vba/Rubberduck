@@ -7,6 +7,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -22,7 +23,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IDictionary<string, string> _attributeNames;
 
         public SynchronizeAttributesQuickFix(RubberduckParserState state)
-            : base(typeof(MissingAnnotationArgumentInspection), typeof(MissingAttributeInspection))
+            : base(/*typeof(MissingAnnotationArgumentInspection), typeof(MissingAttributeInspection)*/)
         {
             _state = state;
             _attributeNames = typeof(AnnotationType).GetFields()
