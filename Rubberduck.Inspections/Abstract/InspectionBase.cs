@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
         /// </summary>
-        public virtual string Description => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
+        public virtual string Description => InspectionsUI.ResourceManager.GetString($"{Name}Name", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.
@@ -56,13 +56,13 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Meta-information about why an inspection exists.
         /// </summary>
-        public virtual string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
+        public virtual string Meta => InspectionsUI.ResourceManager.GetString($"{Name}Meta", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a localized string representing the type of inspection.
         /// <see cref="InspectionType"/>
         /// </summary>
-        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType.ToString(), CultureInfo.CurrentUICulture);
+        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString($"CodeInspectionSettings_{InspectionType.ToString()}", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a string representing the text that must be present in an 
@@ -112,9 +112,9 @@ namespace Rubberduck.Inspections.Abstract
                     return true;
                 }
 
-                if (ignoreModuleAnnotation != null &&
-                    (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName) ||
-                     !ignoreModuleAnnotation.InspectionNames.Any()))
+                if (ignoreModuleAnnotation != null
+                    && (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName)
+                    || !ignoreModuleAnnotation.InspectionNames.Any()))
                 {
                     return true;
                 }

@@ -52,25 +52,23 @@ namespace Rubberduck.RegexAssistant
             }
             
             Kind = QuantifierKind.Expression;
-            Match m = Matcher.Match(expression);
+            var m = Matcher.Match(expression);
             if (!m.Success)
             {
-                throw new ArgumentException(string.Format("Cannot extract a Quantifier from the expression {1}", expression));
+                throw new ArgumentException($"Cannot extract a Quantifier from the expression {expression}");
             }
-            int minimum;
             // shouldn't ever happen
-            if (!int.TryParse(m.Groups["min"].Value, out minimum))
+            if (!int.TryParse(m.Groups["min"].Value, out var minimum))
             {
                 throw new ArgumentException("Cannot Parse Quantifier Expression into Range");
             }
             MinimumMatches = minimum;
 
-            string maximumString = m.Groups["max"].Value; // drop the comma
+            var maximumString = m.Groups["max"].Value; // drop the comma
             if (maximumString.Length > 1)
             {
-                int maximum;
                 // shouldn't ever happen
-                if (!int.TryParse(maximumString.Substring(1), out maximum))
+                if (!int.TryParse(maximumString.Substring(1), out var maximum))
                 {
                     throw new ArgumentException("Cannot Parse Quantifier Expression into Range");
                 }
@@ -88,8 +86,7 @@ namespace Rubberduck.RegexAssistant
 
         public override bool Equals(object obj)
         {
-            var other = obj as Quantifier;
-            return other != null 
+            return obj is Quantifier other 
                 && other.Kind == Kind 
                 && other.MinimumMatches == MinimumMatches 
                 && other.MaximumMatches == MaximumMatches;
@@ -102,7 +99,7 @@ namespace Rubberduck.RegexAssistant
 
         public override string ToString()
         {
-            return string.Format("Quantifier[{0}: {1} to {2}", Kind, MinimumMatches, MaximumMatches);
+            return $"Quantifier[{Kind}: {MinimumMatches} to {MaximumMatches}";
         }
     }
 

@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Settings
         private bool _codeExplorerVisibleOnStartup;
         public bool CodeExplorerVisibleOnStartup
         {
-            get { return _codeExplorerVisibleOnStartup; }
+            get => _codeExplorerVisibleOnStartup;
             set
             {
                 if (_codeExplorerVisibleOnStartup != value)
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Settings
         private bool _codeInspectionsVisibleOnStartup;
         public bool CodeInspectionsVisibleOnStartup
         {
-            get { return _codeInspectionsVisibleOnStartup; }
+            get => _codeInspectionsVisibleOnStartup;
             set
             {
                 if (_codeInspectionsVisibleOnStartup != value)
@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Settings
         private bool _sourceControlVisibleOnStartup;
         public bool SourceControlVisibleOnStartup
         {
-            get { return _sourceControlVisibleOnStartup; }
+            get => _sourceControlVisibleOnStartup;
             set
             {
                 if (_sourceControlVisibleOnStartup != value)
@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Settings
         private bool _testExplorerVisibleOnStartup;
         public bool TestExplorerVisibleOnStartup
         {
-            get { return _testExplorerVisibleOnStartup; }
+            get => _testExplorerVisibleOnStartup;
             set
             {
                 if (_testExplorerVisibleOnStartup != value)
@@ -80,7 +80,7 @@ namespace Rubberduck.UI.Settings
         private bool _todoExplorerVisibleOnStartup;
         public bool TodoExplorerVisibleOnStartup
         {
-            get { return _todoExplorerVisibleOnStartup; }
+            get => _todoExplorerVisibleOnStartup;
             set
             {
                 if (_todoExplorerVisibleOnStartup != value)

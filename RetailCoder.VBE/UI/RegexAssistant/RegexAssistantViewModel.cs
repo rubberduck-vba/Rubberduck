@@ -14,35 +14,29 @@ namespace Rubberduck.UI.RegexAssistant
             RecalculateDescription();
         }
 
-        public bool GlobalFlag {
-            get
-            {
-                return _globalFlag;
-            }
+        public bool GlobalFlag
+        {
+            get => _globalFlag;
             set
             {
                 _globalFlag = value;
                 RecalculateDescription();
             }
         }
+
         public bool IgnoreCaseFlag
         {
-            get
-            {
-                return _ignoreCaseFlag;
-            }
+            get => _ignoreCaseFlag;
             set
             {
                 _ignoreCaseFlag = value;
                 RecalculateDescription();
             }
         }
+
         public string Pattern
         {
-            get
-            {
-                return _pattern;
-            }
+            get => _pattern;
             set
             {
                 _pattern = value;
@@ -50,7 +44,6 @@ namespace Rubberduck.UI.RegexAssistant
             }
         }
 
-        private string _description;
         private bool _globalFlag;
         private bool _ignoreCaseFlag;
         private string _pattern;
@@ -58,10 +51,7 @@ namespace Rubberduck.UI.RegexAssistant
         private List<TreeViewItem> _resultItems;
         public List<TreeViewItem> ResultItems
         {
-            get
-            {
-                return _resultItems;
-            }
+            get => _resultItems;
             set
             {
                 _resultItems = value;
@@ -73,10 +63,14 @@ namespace Rubberduck.UI.RegexAssistant
         {
             if (_pattern.Equals(string.Empty))
             {
-                _description = RubberduckUI.RegexAssistant_NoPatternError;
+                DescriptionResults = RubberduckUI.RegexAssistant_NoPatternError;
                 var results = new List<TreeViewItem>();
-                var rootTreeItem = new TreeViewItem();
-                rootTreeItem.Header = _description;
+
+                var rootTreeItem = new TreeViewItem
+                {
+                    Header = DescriptionResults
+                };
+
                 results.Add(rootTreeItem);
                 ResultItems = results;
                 return;
@@ -105,18 +99,15 @@ namespace Rubberduck.UI.RegexAssistant
 
         private TreeViewItem TreeViewItemFromHeader(string header)
         {
-            var result = new TreeViewItem();
-            result.Header = header;
+            var result = new TreeViewItem
+            {
+                Header = header
+            };
+
             return result;
         }
 
-        public string DescriptionResults
-        {
-            get
-            {
-                return _description;
-            }
-        }
+        public string DescriptionResults { get; private set; }
 
         private static TreeViewItem AsTreeViewItem(IRegularExpression expression)
         {
@@ -125,15 +116,21 @@ namespace Rubberduck.UI.RegexAssistant
 
         private static TreeViewItem AsTreeViewItem(ErrorExpression expression)
         {
-            var result = new TreeViewItem();
-            result.Header = expression.Description;
+            var result = new TreeViewItem
+            {
+                Header = expression.Description
+            };
+
             return result;
         }
 
         private static TreeViewItem AsTreeViewItem(ConcatenatedExpression expression)
         {
-            var result = new TreeViewItem();
-            result.Header = expression.Description;
+            var result = new TreeViewItem
+            {
+                Header = expression.Description
+            };
+
             foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
             {
                 result.Items.Add(subtree);
@@ -143,8 +140,11 @@ namespace Rubberduck.UI.RegexAssistant
 
         private static TreeViewItem AsTreeViewItem(AlternativesExpression expression)
         {
-            var result = new TreeViewItem();
-            result.Header = expression.Description;
+            var result = new TreeViewItem
+            {
+                Header = expression.Description
+            };
+
             foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
             {
                 result.Items.Add(subtree);
@@ -154,8 +154,11 @@ namespace Rubberduck.UI.RegexAssistant
 
         private static TreeViewItem AsTreeViewItem(SingleAtomExpression expression)
         {
-            var result = new TreeViewItem();
-            result.Header = expression.Description;
+            var result = new TreeViewItem
+            {
+                Header = expression.Description
+            };
+
             // no other Atom has Subexpressions we care about
             if (expression.Atom.GetType() == typeof(Group))
             {

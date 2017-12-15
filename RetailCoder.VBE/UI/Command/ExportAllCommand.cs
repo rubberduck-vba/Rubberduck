@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command
     public class ExportAllCommand : CommandBase 
     {
         private readonly IVBE _vbe;
-        private IFolderBrowserFactory _factory;
+        private readonly IFolderBrowserFactory _factory;
 
         public ExportAllCommand(IVBE vbe, IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
         {
@@ -45,7 +45,7 @@ namespace Rubberduck.UI.Command
 
             var vbproject = parameter as IVBProject;
 
-            IVBProject project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
+            var project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
             
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 

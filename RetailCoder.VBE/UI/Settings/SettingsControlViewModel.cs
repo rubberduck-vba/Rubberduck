@@ -32,18 +32,15 @@ namespace Rubberduck.UI.Settings
 
             SelectedSettingsView = SettingsViews.First(v => v.View == activeView);
 
-            _okButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SaveAndCloseWindow());
-            _cancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindow());
-            _resetButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ResetSettings());
+            OKButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SaveAndCloseWindow());
+            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindow());
+            ResetButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ResetSettings());
         }
 
         private ObservableCollection<SettingsView> _settingsViews;
         public ObservableCollection<SettingsView> SettingsViews
         {
-            get
-            {
-                return _settingsViews;
-            }
+            get => _settingsViews;
             set
             {
                 if (_settingsViews != value)
@@ -57,7 +54,7 @@ namespace Rubberduck.UI.Settings
         private SettingsView _seletedSettingsView;
         public SettingsView SelectedSettingsView
         {
-            get { return _seletedSettingsView; }
+            get => _seletedSettingsView;
             set
             {
                 if (_seletedSettingsView != value)
@@ -70,8 +67,6 @@ namespace Rubberduck.UI.Settings
 
         private void SaveConfig()
         {
-            var oldLangCode = _config.UserSettings.GeneralSettings.Language.Code;
-
             foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
             {
                 vm.UpdateConfig(_config);
@@ -82,11 +77,7 @@ namespace Rubberduck.UI.Settings
 
         private void CloseWindow()
         {
-            var handler = OnWindowClosed;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            OnWindowClosed?.Invoke(this, EventArgs.Empty);
         }
 
         private void SaveAndCloseWindow()
@@ -106,25 +97,10 @@ namespace Rubberduck.UI.Settings
 
         public event EventHandler OnWindowClosed;
 
-        private readonly CommandBase _okButtonCommand;
-        public CommandBase OKButtonCommand
-        {
-            get
-            {
-                return _okButtonCommand;
-            }
-        }
+        public CommandBase OKButtonCommand { get; }
 
-        private readonly CommandBase _cancelButtonCommand;
-        public CommandBase CancelButtonCommand
-        {
-            get { return _cancelButtonCommand; }
-        }
+        public CommandBase CancelButtonCommand { get; }
 
-        private readonly CommandBase _resetButtonCommand;
-        public CommandBase ResetButtonCommand
-        {
-            get { return _resetButtonCommand; }
-        }
+        public CommandBase ResetButtonCommand { get; }
     }
 }

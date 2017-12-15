@@ -41,8 +41,10 @@ namespace Rubberduck.Inspections
 
             return _quickFixes[result.Inspection.GetType()].Where(fix =>
             {
-                string value;
-                if (!result.Properties.TryGetValue("DisableFixes", out value)) { return true; }
+                if (!result.Properties.TryGetValue("DisableFixes", out var value))
+                {
+                    return true;
+                }
 
                 return !value.Split(',').Contains(fix.GetType().Name);
             })

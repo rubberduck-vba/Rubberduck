@@ -66,10 +66,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveTypeHintsQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveTypeHintsQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

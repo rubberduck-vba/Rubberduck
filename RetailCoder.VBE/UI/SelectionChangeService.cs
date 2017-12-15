@@ -79,11 +79,7 @@ namespace Rubberduck.UI
 
         private void DispatchSelectionChanged(DeclarationChangedEventArgs eventArgs)
         {
-            if (SelectionChanged == null)
-            {
-                return;
-            }
-            SelectionChanged.Invoke(null, eventArgs);
+            SelectionChanged?.Invoke(null, eventArgs);
         }
        
         private void DispatchSelectedDeclaration(DeclarationChangedEventArgs eventArgs)
@@ -96,15 +92,13 @@ namespace Rubberduck.UI
             }
 
             _lastSelectedDeclaration = eventArgs.Declaration;
-            if (SelectedDeclarationChanged != null)
-            {
-                SelectedDeclarationChanged.Invoke(null, eventArgs);             
-            }
+
+            SelectedDeclarationChanged?.Invoke(null, eventArgs);
         }
 
         private void DispatchSelectedDesignerDeclaration(IVBComponent component)
         {           
-            if (component == null || string.IsNullOrEmpty(component.Name))
+            if (string.IsNullOrEmpty(component?.Name))
             {
                 return;
             }

@@ -33,8 +33,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
         {
-            var implementation = e.SelectedItem as ImplementationListItem;
-            if (implementation != null)
+            if (e.SelectedItem is ImplementationListItem implementation)
             {
                 OnNavigateImplementation(implementation.GetDeclaration());
             }

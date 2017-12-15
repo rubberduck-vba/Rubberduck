@@ -16,17 +16,17 @@ namespace Rubberduck.UI.SourceControl
 
         public ChangesPanelViewModel()
         {
-            _commitCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
+            CommitCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Commit(), _ => !string.IsNullOrEmpty(CommitMessage) && IncludedChanges != null && IncludedChanges.Any());
 
-            _includeChangesToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), fileStatusEntry => IncludeChanges((IFileStatusEntry)fileStatusEntry));
-            _excludeChangesToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), fileStatusEntry => ExcludeChanges((IFileStatusEntry)fileStatusEntry));
-            _undoChangesToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), fileStatusEntry => UndoChanges((IFileStatusEntry) fileStatusEntry));
+            IncludeChangesToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), fileStatusEntry => IncludeChanges((IFileStatusEntry)fileStatusEntry));
+            ExcludeChangesToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), fileStatusEntry => ExcludeChanges((IFileStatusEntry)fileStatusEntry));
+            UndoChangesToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), fileStatusEntry => UndoChanges((IFileStatusEntry) fileStatusEntry));
         }
 
         private string _commitMessage;
         public string CommitMessage
         {
-            get { return _commitMessage; }
+            get => _commitMessage;
             set
             {
                 if (_commitMessage != value)
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.SourceControl
         private ISourceControlProvider _provider;
         public ISourceControlProvider Provider
         {
-            get { return _provider; }
+            get => _provider;
             set
             {
                 _provider = value;
@@ -88,24 +88,21 @@ namespace Rubberduck.UI.SourceControl
             UntrackedFiles = new ObservableCollection<IFileStatusEntry>();
         }
 
-        public SourceControlTab Tab { get { return SourceControlTab.Changes; } }
+        public SourceControlTab Tab => SourceControlTab.Changes;
 
         private void Provider_BranchChanged(object sender, EventArgs e)
         {
             OnPropertyChanged("CurrentBranch");
         }
 
-        public string CurrentBranch
-        {
-            get { return Provider == null ? string.Empty : Provider.CurrentBranch.Name; }
-        }
+        public string CurrentBranch => Provider == null ? string.Empty : Provider.CurrentBranch.Name;
 
         public CommitAction CommitAction { get; set; }
 
         private ObservableCollection<IFileStatusEntry> _includedChanges;
         public ObservableCollection<IFileStatusEntry> IncludedChanges
         {
-            get { return _includedChanges; }
+            get => _includedChanges;
             set
             {
                 if (_includedChanges != value)
@@ -119,7 +116,7 @@ namespace Rubberduck.UI.SourceControl
         private ObservableCollection<IFileStatusEntry> _excludedChanges = new ObservableCollection<IFileStatusEntry>();
         public ObservableCollection<IFileStatusEntry> ExcludedChanges
         {
-            get { return _excludedChanges; }
+            get => _excludedChanges;
             set 
             {
                 if (_excludedChanges != value)
@@ -133,7 +130,7 @@ namespace Rubberduck.UI.SourceControl
         private ObservableCollection<IFileStatusEntry> _untrackedFiles;
         public ObservableCollection<IFileStatusEntry> UntrackedFiles
         {
-            get { return _untrackedFiles; }
+            get => _untrackedFiles;
             set 
             {
                 if (_untrackedFiles != value)
@@ -247,48 +244,24 @@ namespace Rubberduck.UI.SourceControl
 
             RefreshView();
         }
-        
-        private readonly CommandBase _commitCommand;
-        public CommandBase CommitCommand
-        {
-            get { return _commitCommand; }
-        }
 
-        private readonly CommandBase _undoChangesToolbarButtonCommand;
-        public CommandBase UndoChangesToolbarButtonCommand
-        {
-            get { return _undoChangesToolbarButtonCommand; }
-        }
+        public CommandBase CommitCommand { get; }
 
-        private readonly CommandBase _excludeChangesToolbarButtonCommand;
-        public CommandBase ExcludeChangesToolbarButtonCommand
-        {
-            get { return _excludeChangesToolbarButtonCommand; }
-        }
+        public CommandBase UndoChangesToolbarButtonCommand { get; }
 
-        private readonly CommandBase _includeChangesToolbarButtonCommand;
-        public CommandBase IncludeChangesToolbarButtonCommand
-        {
-            get { return _includeChangesToolbarButtonCommand; }
-        }
+        public CommandBase ExcludeChangesToolbarButtonCommand { get; }
+
+        public CommandBase IncludeChangesToolbarButtonCommand { get; }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
         private void RaiseErrorEvent(string message, Exception innerException, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(message, innerException, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(message, innerException, notificationType));
         }
 
         private void RaiseErrorEvent(string title, string message, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(title, message, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(title, message, notificationType));
         }
     }
 }

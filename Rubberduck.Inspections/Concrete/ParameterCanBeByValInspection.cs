@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
@@ -135,7 +134,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 foreach (var declaration in calledProcedureArgs)
                 {
-                    if (((VBAParser.ArgContext)declaration.Context).BYVAL() != null)
+                    if (((VBAParser.ArgContext) declaration.Context).BYVAL() != null)
                     {
                         continue;
                     }

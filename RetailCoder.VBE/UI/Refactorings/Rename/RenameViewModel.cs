@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         private Declaration _target;
         public Declaration Target
         {
-            get { return _target; }
+            get => _target;
             set
             {
                 _target = value;
@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         private string _newName;
         public string NewName
         {
-            get { return _newName; }
+            get => _newName;
             set
             {
                 _newName = value;

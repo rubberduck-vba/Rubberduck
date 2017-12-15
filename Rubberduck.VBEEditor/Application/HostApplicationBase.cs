@@ -10,15 +10,14 @@ namespace Rubberduck.VBEditor.Application
     public abstract class HostApplicationBase<TApplication> : IHostApplication
         where TApplication : class
     {
-        private readonly string _applicationName;
         protected readonly TApplication Application;
         protected HostApplicationBase(string applicationName)
         {
-            _applicationName = applicationName;
+            ApplicationName = applicationName;
 
             try
             {
-                Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
+                Application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
             }
             catch (COMException)
             {
@@ -28,7 +27,7 @@ namespace Rubberduck.VBEditor.Application
 
         protected HostApplicationBase(IVBE vbe, string applicationName)
         {
-            _applicationName = applicationName;
+            ApplicationName = applicationName;
 
             try
             {
@@ -45,7 +44,7 @@ namespace Rubberduck.VBEditor.Application
                 }
                 else
                 {
-                    Application = (TApplication)Marshal.GetActiveObject(applicationName + ".Application");
+                    Application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
                 }
                     
             }
@@ -60,10 +59,7 @@ namespace Rubberduck.VBEditor.Application
 			Dispose(false);
         }
 
-        public string ApplicationName
-        {
-            get { return _applicationName; }
-        }
+        public string ApplicationName { get; }
 
         public abstract void Run(dynamic declaration);
 

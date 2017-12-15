@@ -14,13 +14,10 @@ namespace Rubberduck.RegexAssistant
     internal class CharacterClass : IAtom
     {
         public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";
-        private static readonly Regex Matcher = new Regex("^" + Pattern + "$", RegexOptions.Compiled);
+        private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
         
-        public bool InverseMatching { get; private set; }
-        public IList<string> CharacterSpecifiers { get; private set; }
-
-        private readonly string _specifier;
-        private readonly Quantifier _quantifier;
+        public bool InverseMatching { get; }
+        public IList<string> CharacterSpecifiers { get; }
 
         public CharacterClass(string specifier, Quantifier quantifier)
         {
@@ -29,38 +26,26 @@ namespace Rubberduck.RegexAssistant
                 throw new ArgumentNullException();
             }
 
-            _quantifier = quantifier;
-            Match m = Matcher.Match(specifier);
+            Quantifier = quantifier;
+            var m = Matcher.Match(specifier);
             if (!m.Success)
             {
                 throw new ArgumentException("The given specifier does not denote a character class");
             }
-            this._specifier = specifier;
-            string actualSpecifier = m.Groups["expression"].Value;
+            Specifier = specifier;
+            var actualSpecifier = m.Groups["expression"].Value;
             InverseMatching = actualSpecifier.StartsWith("^");
             CharacterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier);
         }
 
-        public string Specifier
-        {
-            get
-            {
-                return _specifier;
-            }
-        }
+        public string Specifier { get; }
 
-        public Quantifier Quantifier
-        {
-            get
-            {
-                return _quantifier;
-            }
-        }
+        public Quantifier Quantifier { get; }
 
         private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)", RegexOptions.Compiled);
         private IList<string> ExtractCharacterSpecifiers(string characterClass)
         {
-            MatchCollection specifiers = CharacterRanges.Matches(characterClass);
+            var specifiers = CharacterRanges.Matches(characterClass);
             var result = new List<string>();
             
             foreach (Match specifier in specifiers)
@@ -71,7 +56,8 @@ namespace Rubberduck.RegexAssistant
                     {
                         throw new ArgumentException("Character Ranges that have incorrectly escaped characters as target are not allowed");
                     }
-                    else if (specifier.Value.Length == 1)
+
+                    if (specifier.Value.Length == 1)
                     {
                         // Something's bork with the Pattern. For now we skip this it shouldn't affect anyone
                         continue;
@@ -82,16 +68,10 @@ namespace Rubberduck.RegexAssistant
             return result;
         }
 
-        public string Description
-        {
-            get
-            {
-                return string.Format(InverseMatching 
-                    ? AssistantResources.AtomDescription_CharacterClass_Inverted 
-                    : AssistantResources.AtomDescription_CharacterClass
-                    , HumanReadableClass());
-            }
-        }
+        public string Description => string.Format(InverseMatching 
+                ? AssistantResources.AtomDescription_CharacterClass_Inverted 
+                : AssistantResources.AtomDescription_CharacterClass
+            , HumanReadableClass());
 
         private string HumanReadableClass()
         {
@@ -100,26 +80,21 @@ namespace Rubberduck.RegexAssistant
 
         public override bool Equals(object obj)
         {
-            var other = obj as CharacterClass;
-            return other != null 
+            return obj is CharacterClass other 
                 && other.Quantifier.Equals(Quantifier)
-                && other._specifier.Equals(_specifier);
+                && other.Specifier.Equals(Specifier);
         }
 
         public override int GetHashCode()
         {
-            return _specifier.GetHashCode();
+            return Specifier.GetHashCode();
         }
     }
 
     public class Group : IAtom
     {
         public static readonly string Pattern = @"(?<!\\)\((?<expression>.*(?<!\\))\)";
-        private static readonly Regex Matcher = new Regex("^" + Pattern + "$", RegexOptions.Compiled);
-
-        private readonly IRegularExpression _subexpression;
-        private readonly string _specifier;
-        private readonly Quantifier _quantifier;
+        private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
 
         public Group(string specifier, Quantifier quantifier) {
             if (specifier == null || quantifier == null)
@@ -127,66 +102,45 @@ namespace Rubberduck.RegexAssistant
                 throw new ArgumentNullException();
             }
 
-            _quantifier = quantifier;
-            Match m = Matcher.Match(specifier);
+            Quantifier = quantifier;
+            var m = Matcher.Match(specifier);
             if (!m.Success)
             {
                 throw new ArgumentException("The given specifier does not denote a Group");
             }
-            _subexpression = RegularExpression.Parse(m.Groups["expression"].Value);
-            _specifier = specifier;
+            Subexpression = RegularExpression.Parse(m.Groups["expression"].Value);
+            Specifier = specifier;
         }
 
-        public IRegularExpression Subexpression { get { return _subexpression; } }
-        
-        public Quantifier Quantifier
-        {
-            get
-            {
-                return _quantifier;
-            }
-        }
+        public IRegularExpression Subexpression { get; }
 
-        public string Specifier
-        {
-            get
-            {
-                return _specifier;
-            }
-        }
+        public Quantifier Quantifier { get; }
 
-        public string Description
-        {
-            get
-            {
-                return string.Format(AssistantResources.AtomDescription_Group, _specifier);
-            }
-        }
+        public string Specifier { get; }
+
+        public string Description => string.Format(AssistantResources.AtomDescription_Group, Specifier);
 
         public override bool Equals(object obj)
         {
-            var other = obj as Group;
-            return other != null
+            return obj is Group other
                 && other.Quantifier.Equals(Quantifier)
-                && other._specifier.Equals(_specifier);
+                && other.Specifier.Equals(Specifier);
         }
 
         public override int GetHashCode()
         {
-            return _specifier.GetHashCode();
+            return Specifier.GetHashCode();
         }
     }
 
     internal class Literal : IAtom
     {
         public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?^$])";
-        private static readonly Regex Matcher = new Regex("^" + Pattern + "$", RegexOptions.Compiled);
+        private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
-        private readonly string _specifier;
-        private readonly Quantifier _quantifier;
 
         static Literal() {
-            foreach (char escape in new char[]{ '.', '+', '*', '?', '(', ')', '{', '}', '[', ']', '|', '\\' })
+            foreach (var escape in new[]{ '.', '+', '*', '?', '(', ')', '{', '}', '[', ']', '|', '\\' })
             {
                 EscapeLiterals.Add(escape);
             }
@@ -212,30 +166,18 @@ namespace Rubberduck.RegexAssistant
                 throw new ArgumentNullException();
             }
 
-            _quantifier = quantifier;
-            Match m = Matcher.Match(specifier);
+            Quantifier = quantifier;
+            var m = Matcher.Match(specifier);
             if (!m.Success)
             {
                 throw new ArgumentException("The given specifier does not denote a Literal");
             }
-            _specifier = specifier;
+            Specifier = specifier;
         }
 
-        public string Specifier
-        {
-            get
-            {
-                return _specifier;
-            }
-        }
+        public string Specifier { get; }
 
-        public Quantifier Quantifier
-        {
-            get
-            {
-                return _quantifier;
-            }
-        }
+        public Quantifier Quantifier { get; }
 
         private static readonly Dictionary<char, string> _escapeDescriptions = new Dictionary<char, string>();
         public string Description
@@ -248,9 +190,9 @@ namespace Rubberduck.RegexAssistant
                 // - escape sequences (each having a different description)
                 // - codepoint escapes (belongs into above category but kept separate)
                 // - and actually boring literal matches
-                if (_specifier.Length > 1)
+                if (Specifier.Length > 1)
                 {
-                    string relevant = _specifier.Substring(1); // skip the damn Backslash at the start
+                    var relevant = Specifier.Substring(1); // skip the damn Backslash at the start
                     if (relevant.Length > 1) // longer sequences
                     {
                         if (relevant.StartsWith("u"))
@@ -279,26 +221,23 @@ namespace Rubberduck.RegexAssistant
                         return _escapeDescriptions[relevant[0]];
                     }
                 }
-                if (_specifier.Equals("."))
-                {
-                    return AssistantResources.AtomDescription_Dot;
-                }
-                return string.Format(AssistantResources.AtomDescription_Literal_ActualLiteral, _specifier);
 
+                return Specifier.Equals(".") 
+                    ? AssistantResources.AtomDescription_Dot 
+                    : string.Format(AssistantResources.AtomDescription_Literal_ActualLiteral, Specifier);
             }
         }
 
         public override bool Equals(object obj)
         {
-            var other = obj as Literal;
-            return other != null
+            return obj is Literal other
                 && other.Quantifier.Equals(Quantifier)
-                && other._specifier.Equals(_specifier);
+                && other.Specifier.Equals(Specifier);
         }
 
         public override int GetHashCode()
         {
-            return _specifier.GetHashCode();
+            return Specifier.GetHashCode();
         }
     }
 }

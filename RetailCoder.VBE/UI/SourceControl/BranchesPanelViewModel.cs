@@ -15,27 +15,27 @@ namespace Rubberduck.UI.SourceControl
 
         public BranchesPanelViewModel()
         {
-            _newBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranch(), _ => Provider != null);
-            _mergeBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranch(), _ => Provider != null);
+            NewBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranch(), _ => Provider != null);
+            MergeBranchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranch(), _ => Provider != null);
 
-            _createBranchOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranchOk(), _ => !IsNotValidBranchName);
-            _createBranchCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranchCancel());
+            CreateBranchOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranchOk(), _ => !IsNotValidBranchName);
+            CreateBranchCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CreateBranchCancel());
 
-            _mergeBranchesOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
-            _mergeBranchesCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranchCancel());
+            MergeBranchesOkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranchOk(), _ => SourceBranch != DestinationBranch);
+            MergeBranchesCancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => MergeBranchCancel());
 
-            _deleteBranchToolbarButtonCommand =
+            DeleteBranchToolbarButtonCommand =
                 new DelegateCommand(LogManager.GetCurrentClassLogger(), isBranchPublished => DeleteBranch(bool.Parse((string) isBranchPublished)),
                     isBranchPublished => CanDeleteBranch(bool.Parse((string)isBranchPublished)));
 
-            _publishBranchToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PublishBranch(), _ => !string.IsNullOrEmpty(CurrentUnpublishedBranch));
-            _unpublishBranchToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UnpublishBranch(), _ => !string.IsNullOrEmpty(CurrentPublishedBranch));
+            PublishBranchToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PublishBranch(), _ => !string.IsNullOrEmpty(CurrentUnpublishedBranch));
+            UnpublishBranchToolbarButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UnpublishBranch(), _ => !string.IsNullOrEmpty(CurrentPublishedBranch));
         }
 
         private ISourceControlProvider _provider;
         public ISourceControlProvider Provider
         {
-            get { return _provider; }
+            get => _provider;
             set
             {
                 Logger.Trace("Provider changed");
@@ -76,15 +76,13 @@ namespace Rubberduck.UI.SourceControl
             OnPropertyChanged("CurrentBranch");
         }
 
-        public SourceControlTab Tab { get { return SourceControlTab.Branches; } }
+        public SourceControlTab Tab => SourceControlTab.Branches;
 
         public IEnumerable<string> Branches
         {
             get
             {
-                return Provider == null
-                  ? Enumerable.Empty<string>()
-                  : Provider.Branches.Select(b => b.Name);
+                return Provider?.Branches.Select(b => b.Name) ?? Enumerable.Empty<string>();
             }
         }
 
@@ -92,9 +90,8 @@ namespace Rubberduck.UI.SourceControl
         {
             get
             {
-                return Provider == null
-                    ? Enumerable.Empty<string>()
-                    : Provider.Branches.Where(b => !b.IsRemote).Select(b => b.Name);
+                return Provider?.Branches.Where(b => !b.IsRemote).Select(b => b.Name) 
+                    ?? Enumerable.Empty<string>();
             }
         }
 
@@ -102,9 +99,8 @@ namespace Rubberduck.UI.SourceControl
         {
             get
             {
-                return Provider == null
-                    ? Enumerable.Empty<string>()
-                    : Provider.Branches.Where(b => !b.IsRemote && !string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
+                return Provider?.Branches.Where(b => !b.IsRemote && !string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name) 
+                    ?? Enumerable.Empty<string>();
             }
         }
 
@@ -112,16 +108,15 @@ namespace Rubberduck.UI.SourceControl
         {
             get
             {
-                return Provider == null
-                    ? Enumerable.Empty<string>()
-                    : Provider.Branches.Where(b => !b.IsRemote && string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name);
+                return Provider?.Branches.Where(b => !b.IsRemote && string.IsNullOrEmpty(b.TrackingName)).Select(b => b.Name)
+                    ?? Enumerable.Empty<string>();
             }
         }
 
         private string _currentBranch;
         public string CurrentBranch
         {
-            get { return _currentBranch; }
+            get => _currentBranch;
             set
             {
                 if (_currentBranch != value)
@@ -158,7 +153,7 @@ namespace Rubberduck.UI.SourceControl
         private string _currentPublishedBranch;
         public string CurrentPublishedBranch
         {
-            get { return _currentPublishedBranch; }
+            get => _currentPublishedBranch;
             set
             {
                 _currentPublishedBranch = value;
@@ -169,7 +164,7 @@ namespace Rubberduck.UI.SourceControl
         private string _currentUnpublishedBranch;
         public string CurrentUnpublishedBranch
         {
-            get { return _currentUnpublishedBranch; }
+            get => _currentUnpublishedBranch;
             set
             {
                 _currentUnpublishedBranch = value;
@@ -180,7 +175,7 @@ namespace Rubberduck.UI.SourceControl
         private bool _displayCreateBranchGrid;
         public bool DisplayCreateBranchGrid
         {
-            get { return _displayCreateBranchGrid; }
+            get => _displayCreateBranchGrid;
             set
             {
                 if (_displayCreateBranchGrid != value)
@@ -194,7 +189,7 @@ namespace Rubberduck.UI.SourceControl
         private string _createBranchSource;
         public string CreateBranchSource
         {
-            get { return _createBranchSource; }
+            get => _createBranchSource;
             set
             {
                 if (_createBranchSource != value)
@@ -208,7 +203,7 @@ namespace Rubberduck.UI.SourceControl
         private string _newBranchName;
         public string NewBranchName
         {
-            get { return _newBranchName; }
+            get => _newBranchName;
             set
             {
                 if (_newBranchName != value)
@@ -223,15 +218,12 @@ namespace Rubberduck.UI.SourceControl
         // Courtesy of http://stackoverflow.com/a/12093994/4088852 - Assumes --allow-onelevel is set TODO: Verify provider honor that. 
         private static readonly Regex ValidBranchNameRegex = new Regex(@"^(?!@$|build-|/|.*([/.]\.|//|@\{|\\))[^\u0000-\u0037\u0177 ~^:?*[]+/?[^\u0000-\u0037\u0177 ~^:?*[]+(?<!\.lock|[/.])$");
 
-        public bool IsNotValidBranchName
-        {
-            get { return string.IsNullOrEmpty(NewBranchName) || !ValidBranchNameRegex.IsMatch(NewBranchName); }
-        }
+        public bool IsNotValidBranchName => string.IsNullOrEmpty(NewBranchName) || !ValidBranchNameRegex.IsMatch(NewBranchName);
 
         private bool _displayMergeBranchesGrid;
         public bool DisplayMergeBranchesGrid
         {
-            get { return _displayMergeBranchesGrid; }
+            get => _displayMergeBranchesGrid;
             set
             {
                 if (_displayMergeBranchesGrid != value)
@@ -245,7 +237,7 @@ namespace Rubberduck.UI.SourceControl
         private string _sourceBranch;
         public string SourceBranch
         {
-            get { return _sourceBranch; }
+            get => _sourceBranch;
             set
             {
                 if (_sourceBranch != value)
@@ -259,7 +251,7 @@ namespace Rubberduck.UI.SourceControl
         private string _destinationBranch;
         public string DestinationBranch
         {
-            get { return _destinationBranch; }
+            get => _destinationBranch;
             set
             {
                 if (_destinationBranch != value)
@@ -287,7 +279,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void CreateBranchOk()
         {
-            Logger.Trace("Creating branch {0}", NewBranchName);
+            Logger.Trace($"Creating branch {NewBranchName}");
             try
             {
                 Provider.CreateBranch(CreateBranchSource, NewBranchName);
@@ -317,7 +309,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void MergeBranchOk()
         {
-            Logger.Trace("Merging branch {0} into branch {1}", SourceBranch, DestinationBranch);
+            Logger.Trace($"Merging branch {SourceBranch} into branch {DestinationBranch}");
 
             Provider.NotifyExternalFileChanges = false;
             Provider.HandleVbeSinkEvents = false;
@@ -356,7 +348,8 @@ namespace Rubberduck.UI.SourceControl
 
         private void DeleteBranch(bool isBranchPublished)
         {
-            Logger.Trace("Deleting {0}published branch {1}", isBranchPublished ? "" : "un",
+            Logger.Trace("Deleting {0}published branch {1}",
+                isBranchPublished ? "" : "un",
                 isBranchPublished ? CurrentPublishedBranch : CurrentUnpublishedBranch);
             try
             {
@@ -385,7 +378,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void PublishBranch()
         {
-            Logger.Trace("Publishing branch {0}", CurrentUnpublishedBranch);
+            Logger.Trace($"Publishing branch {CurrentUnpublishedBranch}");
             try
             {
                 Provider.Publish(CurrentUnpublishedBranch);
@@ -406,7 +399,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void UnpublishBranch()
         {
-            Logger.Trace("Unpublishing branch {0}", CurrentPublishedBranch);
+            Logger.Trace($"Unpublishing branch {CurrentPublishedBranch}");
             try
             {
                 Provider.Unpublish(Provider.Branches.First(b => b.Name == CurrentPublishedBranch).TrackingName);
@@ -425,98 +418,33 @@ namespace Rubberduck.UI.SourceControl
             RefreshView();
         }
 
-        private readonly CommandBase _newBranchCommand;
-        public CommandBase NewBranchCommand
-        {
-            get
-            {
-                return _newBranchCommand;
-            }
-        }
+        public CommandBase NewBranchCommand { get; }
 
-        private readonly CommandBase _mergeBranchCommand;
-        public CommandBase MergeBranchCommand
-        {
-            get
-            {
-                return _mergeBranchCommand;
-            }
-        }
+        public CommandBase MergeBranchCommand { get; }
 
-        private readonly CommandBase _createBranchOkButtonCommand;
-        public CommandBase CreateBranchOkButtonCommand
-        {
-            get
-            {
-                return _createBranchOkButtonCommand;
-            }
-        }
+        public CommandBase CreateBranchOkButtonCommand { get; }
 
-        private readonly CommandBase _createBranchCancelButtonCommand;
-        public CommandBase CreateBranchCancelButtonCommand
-        {
-            get
-            {
-                return _createBranchCancelButtonCommand;
-            }
-        }
+        public CommandBase CreateBranchCancelButtonCommand { get; }
 
-        private readonly CommandBase _mergeBranchesOkButtonCommand;
-        public CommandBase MergeBranchesOkButtonCommand
-        {
-            get
-            {
-                return _mergeBranchesOkButtonCommand;
-            }
-        }
+        public CommandBase MergeBranchesOkButtonCommand { get; }
 
-        private readonly CommandBase _mergeBranchesCancelButtonCommand;
-        public CommandBase MergeBranchesCancelButtonCommand
-        {
-            get
-            {
-                return _mergeBranchesCancelButtonCommand;
-            }
-        }
+        public CommandBase MergeBranchesCancelButtonCommand { get; }
 
-        private readonly CommandBase _deleteBranchToolbarButtonCommand;
-        public CommandBase DeleteBranchToolbarButtonCommand
-        {
-            get
-            {
-                return _deleteBranchToolbarButtonCommand;
-            }
-        }
+        public CommandBase DeleteBranchToolbarButtonCommand { get; }
 
-        private readonly CommandBase _publishBranchToolbarButtonCommand;
-        public CommandBase PublishBranchToolbarButtonCommand
-        {
-            get { return _publishBranchToolbarButtonCommand; }
-        }
+        public CommandBase PublishBranchToolbarButtonCommand { get; }
 
-        private readonly CommandBase _unpublishBranchToolbarButtonCommand;
-        public CommandBase UnpublishBranchToolbarButtonCommand
-        {
-            get { return _unpublishBranchToolbarButtonCommand; }
-        }
+        public CommandBase UnpublishBranchToolbarButtonCommand { get; }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
         private void RaiseErrorEvent(string message, Exception innerException, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(message, innerException, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(message, innerException, notificationType));
         }
 
         private void RaiseErrorEvent(string title, string message, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(title, message, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(title, message, notificationType));
         }
     }
 }

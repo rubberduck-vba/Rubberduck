@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    class IdentifierReferenceInspectionResult : InspectionResultBase
+    internal class IdentifierReferenceInspectionResult : InspectionResultBase
     {
         public IdentifierReferenceInspectionResult(IInspection inspection, string description, RubberduckParserState state, IdentifierReference reference, Dictionary<string, string> properties = null) :
             base(inspection,

@@ -33,34 +33,34 @@ namespace Rubberduck.VBEditor
 
         public QualifiedModuleName(IVBProject project)
         {
-            _component = null;
+            Component = null;
             _componentName = null;
-            _componentType = ComponentType.Undefined;
+            ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
-            _projectPath = string.Empty;
-            _projectId = GetProjectId(project);           
-            _contentHashCode = 0;
+            ProjectPath = string.Empty;
+            ProjectId = GetProjectId(project);           
+            ContentHashCode = 0;
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
-            _componentType = component.Type;
-            _component = component;
+            ComponentType = component.Type;
+            Component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            _contentHashCode = 0;
+            ContentHashCode = 0;
             if (!component.IsWrappingNullReference)
             {
-                var module = _component.CodeModule;
-                _contentHashCode = module.CountOfLines > 0
+                var module = Component.CodeModule;
+                ContentHashCode = module.CountOfLines > 0
                     ? module.GetLines(1, module.CountOfLines).GetHashCode()
                     : 0;
             }
 
             var project = component.Collection.Parent;
             _projectName = project == null ? string.Empty : project.Name;
-            _projectPath = string.Empty;
-            _projectId = GetProjectId(project);
+            ProjectPath = string.Empty;
+            ProjectId = GetProjectId(project);
         }
 
         /// <summary>
@@ -70,12 +70,12 @@ namespace Rubberduck.VBEditor
         public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
             _projectName = projectName;
-            _projectPath = projectPath;
-            _projectId = string.Format("{0};{1}", _projectName, _projectPath).GetHashCode().ToString(CultureInfo.InvariantCulture);
+            ProjectPath = projectPath;
+            ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
-            _component = null;
-            _componentType = ComponentType.ComComponent;
-            _contentHashCode = 0;
+            Component = null;
+            ComponentType = ComponentType.ComComponent;
+            ContentHashCode = 0;
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -83,40 +83,35 @@ namespace Rubberduck.VBEditor
             return new QualifiedMemberName(this, member);
         }
 
-        private readonly IVBComponent _component;
-        public IVBComponent Component { get { return _component; } }
+        public IVBComponent Component { get; }
 
-        private readonly ComponentType _componentType;
-        public ComponentType ComponentType { get { return _componentType; } }
+        public ComponentType ComponentType { get; }
 
-        private readonly int _contentHashCode;
-        public int ContentHashCode { get { return _contentHashCode; } }
+        public int ContentHashCode { get; }
 
-        private readonly string _projectId;
-        public string ProjectId { get { return _projectId; } }
+        public string ProjectId { get; }
 
         private readonly string _componentName;
-        public string ComponentName { get { return _componentName ?? string.Empty; } }
+        public string ComponentName => _componentName ?? string.Empty;
 
-        public string Name { get { return ToString(); } }
+        public string Name => ToString();
 
         private readonly string _projectName;
-        public string ProjectName { get { return _projectName ?? string.Empty; } }
+        public string ProjectName => _projectName ?? string.Empty;
 
-        private readonly string _projectPath;
-        public string ProjectPath { get { return _projectPath; } }
+        public string ProjectPath { get; }
 
         public override string ToString()
         {
             return string.IsNullOrEmpty(_componentName) && string.IsNullOrEmpty(_projectName)
                 ? string.Empty
-                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
-                     + _projectName + "." + _componentName;
+                : (string.IsNullOrEmpty(ProjectPath) ? string.Empty : System.IO.Path.GetFileName(ProjectPath) + ";")
+                     + $"{_projectName}.{_componentName}";
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(_projectId ?? string.Empty, _componentName ?? string.Empty);
+            return HashCode.Compute(ProjectId ?? string.Empty, _componentName ?? string.Empty);
         }
 
         public override bool Equals(object obj)

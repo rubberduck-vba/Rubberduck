@@ -22,10 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(result.Context.Start.TokenIndex, "Set ");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.SetObjectVariableQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.SetObjectVariableQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

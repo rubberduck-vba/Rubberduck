@@ -15,7 +15,7 @@ namespace Rubberduck.VBEditor
 
         public override string ToString()
         {
-            return QualifiedModuleName + "." + MemberName;
+            return $"{QualifiedModuleName}.{MemberName}";
         }
 
         public override int GetHashCode()

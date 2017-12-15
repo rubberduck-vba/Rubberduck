@@ -109,7 +109,7 @@ namespace Rubberduck.UI.Inspections
         private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
         public ObservableCollection<IInspectionResult> Results
         {
-            get { return _results; }
+            get => _results;
             private set
             {
                 _results = value;
@@ -122,7 +122,7 @@ namespace Rubberduck.UI.Inspections
         private INavigateSource _selectedItem;
         public INavigateSource SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 _selectedItem = value; 
@@ -135,8 +135,7 @@ namespace Rubberduck.UI.Inspections
                 CanExecuteQuickFixInModule = false;
                 CanExecuteQuickFixInProject = false;
 
-                var inspectionResult = _selectedItem as IInspectionResult;
-                if (inspectionResult != null)
+                if (_selectedItem is IInspectionResult inspectionResult)
                 {
                     SelectedInspection = inspectionResult.Inspection;
                     CanQuickFix = _quickFixProvider.HasQuickFixes(inspectionResult);
@@ -154,7 +153,7 @@ namespace Rubberduck.UI.Inspections
         private IInspection _selectedInspection;
         public IInspection SelectedInspection
         {
-            get { return _selectedInspection; }
+            get => _selectedInspection;
             set
             {
                 _selectedInspection = value;
@@ -179,7 +178,7 @@ namespace Rubberduck.UI.Inspections
         private bool _groupByInspectionType = true;
         public bool GroupByInspectionType
         {
-            get { return _groupByInspectionType; }
+            get => _groupByInspectionType;
             set
             {
                 if (_groupByInspectionType == value) { return; }
@@ -203,7 +202,7 @@ namespace Rubberduck.UI.Inspections
         private bool _groupByLocation;
         public bool GroupByLocation
         {
-            get { return _groupByLocation; }
+            get => _groupByLocation;
             set
             {
                 if (_groupByLocation == value) { return; }
@@ -248,7 +247,7 @@ namespace Rubberduck.UI.Inspections
 
         public bool CanQuickFix
         {
-            get { return _canQuickFix; }
+            get => _canQuickFix;
             set
             {
                 _canQuickFix = value;
@@ -257,7 +256,16 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _isBusy;
-        public bool IsBusy { get { return _isBusy; } set { _isBusy = value; OnPropertyChanged(); OnPropertyChanged("EmptyUIRefreshMessageVisibility"); } }
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value;
+                OnPropertyChanged();
+                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
+            } 
+        }
 
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, EventArgs e)
@@ -339,8 +347,12 @@ namespace Rubberduck.UI.Inspections
         private bool _canExecuteQuickFixInProcedure;
         public bool CanExecuteQuickFixInProcedure
         {
-            get { return _canExecuteQuickFixInProcedure; }
-            set { _canExecuteQuickFixInProcedure = value; OnPropertyChanged(); }
+            get => _canExecuteQuickFixInProcedure;
+            set
+            {
+                _canExecuteQuickFixInProcedure = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ExecuteQuickFixInProcedureCommand(object parameter)
@@ -363,8 +375,12 @@ namespace Rubberduck.UI.Inspections
         private bool _canExecuteQuickFixInModule;
         public bool CanExecuteQuickFixInModule
         {
-            get { return _canExecuteQuickFixInModule; }
-            set { _canExecuteQuickFixInModule = value; OnPropertyChanged(); }
+            get => _canExecuteQuickFixInModule;
+            set
+            {
+                _canExecuteQuickFixInModule = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ExecuteQuickFixInModuleCommand(object parameter)
@@ -387,8 +403,12 @@ namespace Rubberduck.UI.Inspections
         private bool _canExecuteQuickFixInProject;
         public bool CanExecuteQuickFixInProject
         {
-            get { return _canExecuteQuickFixInProject; }
-            set { _canExecuteQuickFixInProject = value; OnPropertyChanged(); }
+            get => _canExecuteQuickFixInProject;
+            set
+            {
+                _canExecuteQuickFixInProject = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ExecuteDisableInspectionCommand(object parameter)
@@ -410,8 +430,12 @@ namespace Rubberduck.UI.Inspections
 
         public bool CanDisableInspection
         {
-            get { return _canDisableInspection; }
-            set { _canDisableInspection = value; OnPropertyChanged(); }
+            get => _canDisableInspection;
+            set
+            {
+                _canDisableInspection = value;
+                OnPropertyChanged();
+            }
         }
 
         private void ExecuteQuickFixInProjectCommand(object parameter)
@@ -486,21 +510,9 @@ namespace Rubberduck.UI.Inspections
             return !IsBusy && _results != null && _results.Any();
         }
 
-        public Visibility EmptyUIRefreshVisibility
-        {
-            get
-            {
-                return _state.Projects.Count > 0 ? Visibility.Hidden : Visibility.Visible;
-            }
-        }
+        public Visibility EmptyUIRefreshVisibility => _state.Projects.Count > 0 ? Visibility.Hidden : Visibility.Visible;
 
-        public Visibility EmptyUIRefreshMessageVisibility
-        {
-            get
-            {
-                return _isBusy ? Visibility.Hidden : Visibility.Visible;
-            }
-        }
+        public Visibility EmptyUIRefreshMessageVisibility => IsBusy ? Visibility.Hidden : Visibility.Visible;
 
         public void Dispose()
         {

@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Command
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IVBE _vbe;
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private new static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
             RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
@@ -166,8 +166,7 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindTarget(object parameter)
         {
-            var declaration = parameter as Declaration;
-            if (declaration != null)
+            if (parameter is Declaration declaration)
             {
                 return declaration;
             }
@@ -178,10 +177,9 @@ namespace Rubberduck.UI.Command
         private IEnumerable<Declaration> FindImplementations(Declaration target)
         {
             var items = _state.AllDeclarations;
-            string name;
             var implementations = (target.DeclarationType == DeclarationType.ClassModule
-                ? FindAllImplementationsOfClass(target, items, out name)
-                : FindAllImplementationsOfMember(target, items, out name)) ?? new List<Declaration>();
+                ? FindAllImplementationsOfClass(target, items, out _)
+                : FindAllImplementationsOfMember(target, items, out _)) ?? new List<Declaration>();
 
             return implementations;
         }
