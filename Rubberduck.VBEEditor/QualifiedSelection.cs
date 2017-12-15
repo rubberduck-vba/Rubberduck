@@ -6,39 +6,34 @@ namespace Rubberduck.VBEditor
     {
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {
-            _qualifiedName = qualifiedName;
-            _selection = selection;
+            QualifiedName = qualifiedName;
+            Selection = selection;
         }
 
-        private readonly QualifiedModuleName _qualifiedName;
-        public QualifiedModuleName QualifiedName { get { return _qualifiedName; } }
+        public QualifiedModuleName QualifiedName { get; }
 
-        private readonly Selection _selection;
-        public Selection Selection { get { return _selection; } }
+        public Selection Selection { get; }
 
         public int CompareTo(QualifiedSelection other)
         {
-            if (other.QualifiedName != QualifiedName)
-            {
-                return string.Compare(QualifiedName.ToString(), other.QualifiedName.ToString(), StringComparison.Ordinal);
-            }
-
-            return Selection.CompareTo(other.Selection);
+            return other.QualifiedName == QualifiedName
+                ? Selection.CompareTo(other.Selection)
+                : string.Compare(QualifiedName.ToString(), other.QualifiedName.ToString(), StringComparison.Ordinal);
         }
 
         public bool Equals(QualifiedSelection other)
         {
-            return other.Selection.Equals(_selection) && other.QualifiedName.Equals(_qualifiedName);
+            return other.Selection.Equals(Selection) && other.QualifiedName.Equals(QualifiedName);
         }
 
         public override string ToString()
         {
-            return string.Concat(QualifiedName, " ", Selection);
+            return $"{QualifiedName} {Selection}";
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(_qualifiedName.GetHashCode(), _selection.GetHashCode());
+            return HashCode.Compute(QualifiedName.GetHashCode(), Selection.GetHashCode());
         }
 
         public static bool operator ==(QualifiedSelection selection1, QualifiedSelection selection2)
@@ -53,9 +48,9 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
-            if (obj is QualifiedSelection)
+            if (obj is QualifiedSelection qualifiedSelection)
             {
-                return Equals((QualifiedSelection) obj);
+                return Equals(qualifiedSelection);
             }
             return false;
         }

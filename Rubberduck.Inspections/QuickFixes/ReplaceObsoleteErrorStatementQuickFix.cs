@@ -25,10 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(context.ERROR(), "Err.Raise");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ReplaceObsoleteErrorStatementQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.ReplaceObsoleteErrorStatementQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

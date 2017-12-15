@@ -36,12 +36,12 @@ namespace Rubberduck.UI.SourceControl
             DefaultRepositoryLocation = _config.DefaultRepositoryLocation;
             CommandPromptLocation = _config.CommandPromptLocation;
 
-            _showDefaultRepoFolderPickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowDefaultRepoFolderPicker());
-            _showCommandPromptExePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCommandPromptExePicker());
-            _cancelSettingsChangesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CancelSettingsChanges());
-            _updateSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdateSettings());
-            _showGitIgnoreCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowGitIgnore(), _ => Provider != null);
-            _showGitAttributesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowGitAttributes(), _ => Provider != null);
+            ShowDefaultRepoFolderPickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowDefaultRepoFolderPicker());
+            ShowCommandPromptExePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCommandPromptExePicker());
+            CancelSettingsChangesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CancelSettingsChanges());
+            UpdateSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdateSettings());
+            ShowGitIgnoreCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowGitIgnore(), _ => Provider != null);
+            ShowGitAttributesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowGitAttributes(), _ => Provider != null);
         }
 
         public ISourceControlProvider Provider { get; set; }
@@ -52,12 +52,12 @@ namespace Rubberduck.UI.SourceControl
             Provider = null;
         }
 
-        public SourceControlTab Tab { get { return SourceControlTab.Settings; } }
+        public SourceControlTab Tab => SourceControlTab.Settings;
 
         private string _userName;
         public string UserName
         {
-            get { return _userName; }
+            get => _userName;
             set
             {
                 if (_userName != value)
@@ -71,7 +71,7 @@ namespace Rubberduck.UI.SourceControl
         private string _emailAddress;
         public string EmailAddress
         {
-            get { return _emailAddress; }
+            get => _emailAddress;
             set
             {
                 if (_emailAddress != value)
@@ -85,7 +85,7 @@ namespace Rubberduck.UI.SourceControl
         private string _defaultRepositoryLocation;
         public string DefaultRepositoryLocation
         {
-            get { return _defaultRepositoryLocation; }
+            get => _defaultRepositoryLocation;
             set
             {
                 if (_defaultRepositoryLocation != value)
@@ -99,7 +99,7 @@ namespace Rubberduck.UI.SourceControl
         private string _commandPromptExeLocation;
         public string CommandPromptLocation
         {
-            get { return _commandPromptExeLocation; }
+            get => _commandPromptExeLocation;
             set
             {
                 if (_commandPromptExeLocation != value)
@@ -187,85 +187,33 @@ namespace Rubberduck.UI.SourceControl
             Process.Start(filePath);
         }
 
-        private readonly CommandBase _showDefaultRepoFolderPickerCommand;
-        public CommandBase ShowDefaultRepoFolderPickerCommand
-        {
-            get
-            {
-                return _showDefaultRepoFolderPickerCommand;
-            }
-        }
+        public CommandBase ShowDefaultRepoFolderPickerCommand { get; }
 
-        private readonly CommandBase _showCommandPromptExePickerCommand;
-        public CommandBase ShowCommandPromptExePickerCommand
-        {
-            get
-            {
-                return _showCommandPromptExePickerCommand;
-            }
-        }
+        public CommandBase ShowCommandPromptExePickerCommand { get; }
 
-        private readonly CommandBase _cancelSettingsChangesCommand;
-        public CommandBase CancelSettingsChangesCommand
-        {
-            get
-            {
-                return _cancelSettingsChangesCommand;
-            }
-        }
+        public CommandBase CancelSettingsChangesCommand { get; }
 
-        private readonly CommandBase _updateSettingsCommand;
-        public CommandBase UpdateSettingsCommand
-        {
-            get
-            {
-                return _updateSettingsCommand;
-            }
-        }
+        public CommandBase UpdateSettingsCommand { get; }
 
-        private readonly CommandBase _showGitIgnoreCommand;
-        public CommandBase ShowGitIgnoreCommand
-        {
-            get
-            {
-                return _showGitIgnoreCommand;
-            }
-        }
+        public CommandBase ShowGitIgnoreCommand { get; }
 
-        private readonly CommandBase _showGitAttributesCommand;
-        public CommandBase ShowGitAttributesCommand
-        {
-            get
-            {
-                return _showGitAttributesCommand;
-            }
-        }
+        public CommandBase ShowGitAttributesCommand { get; }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
+
         private void RaiseErrorEvent(string message, Exception innerException, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(message, innerException, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(message, innerException, notificationType));
         }
 
         private void RaiseErrorEvent(string title, string message, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(title, message, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(title, message, notificationType));
         }
 
         public void Dispose()
         {
-            if (_openFileDialog != null)
-            {
-                _openFileDialog.Dispose();
-            }
+            _openFileDialog?.Dispose();
         }
     }
 }

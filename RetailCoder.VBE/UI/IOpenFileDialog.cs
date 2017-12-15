@@ -63,53 +63,47 @@ namespace Rubberduck.UI
 
         public bool AddExtension
         {
-            get { return _openFileDialog.AddExtension; }
-            set { _openFileDialog.AddExtension = value; }
+            get => _openFileDialog.AddExtension;
+            set => _openFileDialog.AddExtension = value;
         }
 
         public bool AutoUpgradeEnabled
         {
-            get { return _openFileDialog.AutoUpgradeEnabled; }
-            set { _openFileDialog.AutoUpgradeEnabled = value; }
+            get => _openFileDialog.AutoUpgradeEnabled;
+            set => _openFileDialog.AutoUpgradeEnabled = value;
         }
 
         public bool CheckFileExists
         {
-            get { return _openFileDialog.CheckFileExists; }
-            set { _openFileDialog.CheckFileExists = value; }
+            get => _openFileDialog.CheckFileExists;
+            set => _openFileDialog.CheckFileExists = value;
         }
 
         public bool CheckPathExists
         {
-            get { return _openFileDialog.CheckPathExists; }
-            set { _openFileDialog.CheckPathExists = value; }
+            get => _openFileDialog.CheckPathExists;
+            set => _openFileDialog.CheckPathExists = value;
         }
 
-        public IContainer Container
-        {
-            get { return _openFileDialog.Container; }
-        }
+        public IContainer Container => _openFileDialog.Container;
 
         public ObjRef CreateObjRef(Type requestedType)
         {
             return _openFileDialog.CreateObjRef(requestedType);
         }
 
-        public FileDialogCustomPlacesCollection CustomPlaces
-        {
-            get { return _openFileDialog.CustomPlaces; }
-        }
+        public FileDialogCustomPlacesCollection CustomPlaces => _openFileDialog.CustomPlaces;
 
         public string DefaultExt
         {
-            get { return _openFileDialog.DefaultExt; }
-            set { _openFileDialog.DefaultExt = value; }
+            get => _openFileDialog.DefaultExt;
+            set => _openFileDialog.DefaultExt = value;
         }
 
         public bool DereferenceLinks
         {
-            get { return _openFileDialog.DereferenceLinks; }
-            set { _openFileDialog.DereferenceLinks = value; }
+            get => _openFileDialog.DereferenceLinks;
+            set => _openFileDialog.DereferenceLinks = value;
         }
 
         public void Dispose()
@@ -120,11 +114,7 @@ namespace Rubberduck.UI
         public event EventHandler Disposed;
         private void OpenFileDialog_Disposed(object sender, EventArgs e)
         {
-            var handler = Disposed;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            Disposed?.Invoke(sender, e);
         }
 
         public override bool Equals(object obj)
@@ -134,35 +124,28 @@ namespace Rubberduck.UI
 
         public string FileName
         {
-            get { return _openFileDialog.FileName; }
-            set { _openFileDialog.FileName = value; }
+            get => _openFileDialog.FileName;
+            set => _openFileDialog.FileName = value;
         }
 
-        public string[] FileNames
-        {
-            get { return _openFileDialog.FileNames; }
-        }
+        public string[] FileNames => _openFileDialog.FileNames;
 
         public event EventHandler FileOk;
         private void OpenFileDialog_FileOk(object sender, EventArgs e)
         {
-            var handler = FileOk;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            FileOk?.Invoke(sender, e);
         }
 
         public string Filter
         {
-            get { return _openFileDialog.Filter; }
-            set { _openFileDialog.Filter = value; }
+            get => _openFileDialog.Filter;
+            set => _openFileDialog.Filter = value;
         }
 
         public int FilterIndex
         {
-            get { return _openFileDialog.FilterIndex; }
-            set { _openFileDialog.FilterIndex = value; }
+            get => _openFileDialog.FilterIndex;
+            set => _openFileDialog.FilterIndex = value;
         }
 
         public override int GetHashCode()
@@ -178,17 +161,13 @@ namespace Rubberduck.UI
         public event EventHandler HelpRequest;
         private void OpenFileDialog_HelpRequest(object sender, EventArgs e)
         {
-            var handler = HelpRequest;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            HelpRequest?.Invoke(sender, e);
         }
 
         public string InitialDirectory
         {
-            get { return _openFileDialog.InitialDirectory; }
-            set { _openFileDialog.InitialDirectory = value; }
+            get => _openFileDialog.InitialDirectory;
+            set => _openFileDialog.InitialDirectory = value;
         }
 
         public object InitializeLifetimeService()
@@ -198,8 +177,8 @@ namespace Rubberduck.UI
 
         public bool Multiselect
         {
-            get { return _openFileDialog.Multiselect; }
-            set { _openFileDialog.Multiselect = value; }
+            get => _openFileDialog.Multiselect;
+            set => _openFileDialog.Multiselect = value;
         }
 
         public Stream OpenFile()
@@ -209,8 +188,8 @@ namespace Rubberduck.UI
 
         public bool ReadOnlyChecked
         {
-            get { return _openFileDialog.ReadOnlyChecked; }
-            set { _openFileDialog.ReadOnlyChecked = value; }
+            get => _openFileDialog.ReadOnlyChecked;
+            set => _openFileDialog.ReadOnlyChecked = value;
         }
 
         public void Reset()
@@ -220,19 +199,13 @@ namespace Rubberduck.UI
 
         public bool RestoreDirectory
         {
-            get { return _openFileDialog.RestoreDirectory; }
-            set { _openFileDialog.RestoreDirectory = value; }
+            get => _openFileDialog.RestoreDirectory;
+            set => _openFileDialog.RestoreDirectory = value;
         }
 
-        public string SafeFileName
-        {
-            get { return _openFileDialog.SafeFileName; }
-        }
+        public string SafeFileName => _openFileDialog.SafeFileName;
 
-        public string[] SafeFileNames
-        {
-            get { return _openFileDialog.SafeFileNames; }
-        }
+        public string[] SafeFileNames => _openFileDialog.SafeFileNames;
 
         public DialogResult ShowDialog()
         {
@@ -241,38 +214,38 @@ namespace Rubberduck.UI
 
         public bool ShowHelp
         {
-            get { return _openFileDialog.ShowHelp; }
-            set { _openFileDialog.ShowHelp = value; }
+            get => _openFileDialog.ShowHelp;
+            set => _openFileDialog.ShowHelp = value;
         }
 
         public bool ShowReadOnly
         {
-            get { return _openFileDialog.ShowReadOnly; }
-            set { _openFileDialog.ShowReadOnly = value; }
+            get => _openFileDialog.ShowReadOnly;
+            set => _openFileDialog.ShowReadOnly = value;
         }
 
         public ISite Site
         {
-            get { return _openFileDialog.Site; }
-            set { _openFileDialog.Site = value; }
+            get => _openFileDialog.Site;
+            set => _openFileDialog.Site = value;
         }
 
         public bool SupportMultiDottedExtensions
         {
-            get { return _openFileDialog.SupportMultiDottedExtensions; }
-            set { _openFileDialog.SupportMultiDottedExtensions = value; }
+            get => _openFileDialog.SupportMultiDottedExtensions;
+            set => _openFileDialog.SupportMultiDottedExtensions = value;
         }
 
         public object Tag
         {
-            get { return _openFileDialog.Tag; }
-            set { _openFileDialog.Tag = value; }
+            get => _openFileDialog.Tag;
+            set => _openFileDialog.Tag = value;
         }
 
         public string Title
         {
-            get { return _openFileDialog.Title; }
-            set { _openFileDialog.Title = value; }
+            get => _openFileDialog.Title;
+            set => _openFileDialog.Title = value;
         }
 
         public override string ToString()
@@ -282,8 +255,8 @@ namespace Rubberduck.UI
 
         public bool ValidateNames
         {
-            get { return _openFileDialog.ValidateNames; }
-            set { _openFileDialog.ValidateNames = value; }
+            get => _openFileDialog.ValidateNames;
+            set => _openFileDialog.ValidateNames = value;
         }
     }
 }

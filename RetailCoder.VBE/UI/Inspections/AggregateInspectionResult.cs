@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Inspections
 
         public ParserRuleContext Context => _result.Context;
 
-        public IDictionary<string, string> Properties { get { throw new NotImplementedException(); } }
+        public IDictionary<string, string> Properties => throw new NotImplementedException();
 
         public int CompareTo(IInspectionResult other)
         {

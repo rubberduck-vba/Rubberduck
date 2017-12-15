@@ -15,6 +15,7 @@ namespace Rubberduck.UI
     public class FolderBrowser : IFolderBrowser
     {
         private readonly FolderBrowserDialog _dialog;
+        // ReSharper disable once NotAccessedField.Local
         private readonly IEnvironmentProvider _environment;
 
         public FolderBrowser(IEnvironmentProvider environment, string description, bool showNewFolderButton, string rootFolder)
@@ -38,26 +39,26 @@ namespace Rubberduck.UI
 
         public string Description
         {
-            get { return _dialog.Description; }
-            set { _dialog.Description = value; }
+            get => _dialog.Description;
+            set => _dialog.Description = value;
         }
 
         public bool ShowNewFolderButton
         {
-            get { return _dialog.ShowNewFolderButton; }
-            set { _dialog.ShowNewFolderButton = value; }
+            get => _dialog.ShowNewFolderButton;
+            set => _dialog.ShowNewFolderButton = value;
         }
 
         public string RootFolder
         {
-            get { return _dialog.SelectedPath; }
-            set { _dialog.SelectedPath = value; }
+            get => _dialog.SelectedPath;
+            set => _dialog.SelectedPath = value;
         }
 
         public string SelectedPath
         {
-            get { return _dialog.SelectedPath; }
-            set { _dialog.SelectedPath = value; }
+            get => _dialog.SelectedPath;
+            set => _dialog.SelectedPath = value;
         }
 
         public DialogResult ShowDialog()
@@ -67,10 +68,7 @@ namespace Rubberduck.UI
 
         public void Dispose()
         {
-            if (_dialog != null)
-            {
-                _dialog.Dispose();
-            }
+            _dialog?.Dispose();
         }
     }
 }

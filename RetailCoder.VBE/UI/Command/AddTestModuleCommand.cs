@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command
             _configLoader = configLoader;
         }
 
-        private string TestModuleEmptyTemplate = new StringBuilder()
+        private readonly string _testModuleEmptyTemplate = new StringBuilder()
             .AppendLine("'@TestModule")
             .AppendLine("'@Folder(\"Tests\")")
             .AppendLine()
@@ -81,10 +81,10 @@ namespace Rubberduck.UI.Command
             var assertType = string.Format("Rubberduck.{0}AssertClass", settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
             var assertDeclaredAs = DeclarationFormatFor(AssertFieldDeclarationFormat, assertType, settings);
 
-            var fakesType = "Rubberduck.FakesProvider";
+            const string fakesType = "Rubberduck.FakesProvider";
             var fakesDeclaredAs = DeclarationFormatFor(FakesFieldDeclarationFormat, fakesType, settings); 
 
-            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, assertDeclaredAs, fakesDeclaredAs);
+            var formattedModuleTemplate = string.Format(_testModuleEmptyTemplate, assertDeclaredAs, fakesDeclaredAs);
 
             if (settings.ModuleInit)
             {

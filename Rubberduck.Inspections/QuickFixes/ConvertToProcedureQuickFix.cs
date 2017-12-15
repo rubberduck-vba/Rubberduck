@@ -84,10 +84,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ConvertFunctionToProcedureQuickFix;
-        }
+        public override string Description(IInspectionResult result) =>InspectionsUI.ConvertFunctionToProcedureQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

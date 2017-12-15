@@ -7,7 +7,10 @@
         public override void Run(dynamic declaration)
         {
             var methodCall = GenerateMethodCall(declaration.QualifiedName);
-            if (methodCall == null) { return; }
+            if (methodCall == null)
+            {
+                return;
+            }
 
             //PowerPoint requires a paramarray, so we pass it an empty array:
             object[] paramArray = { };
@@ -25,11 +28,11 @@
                 // if project isn't saved yet, we can't qualify the method call: this only works with the active project.
                 return qualifiedMemberName.QualifiedModuleName.Component.VBE.ActiveVBProject.IsWrappingNullReference
                     ? null // if there's no active project, we can't generate the call
-                    : qualifiedMemberName.QualifiedModuleName.ComponentName + "." + qualifiedMemberName.MemberName;
+                    : $"{qualifiedMemberName.QualifiedModuleName.ComponentName}.{qualifiedMemberName.MemberName}";
             }
 
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
-            return string.Concat(path, "!", moduleName, ".", qualifiedMemberName.MemberName);
+            return $"{path}!{moduleName}.{qualifiedMemberName.MemberName}";
         }
     }
 }

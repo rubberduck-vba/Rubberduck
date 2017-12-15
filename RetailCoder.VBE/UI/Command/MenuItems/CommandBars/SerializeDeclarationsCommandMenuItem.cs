@@ -47,7 +47,10 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             {
                 System.Diagnostics.Debug.Assert(path != null, "project path isn't supposed to be null");
 
-                var filename = string.Format("{0}.{1}.{2}", tree.Node.QualifiedMemberName.QualifiedModuleName.ProjectName, tree.MajorVersion, tree.MinorVersion) + ".xml";
+                var filename = string.Format("{0}.{1}.{2}.xml",
+                    tree.Node.QualifiedMemberName.QualifiedModuleName.ProjectName,
+                    tree.MajorVersion,
+                    tree.MinorVersion);
                 _service.Persist(Path.Combine(path, filename), tree);
             }
         }

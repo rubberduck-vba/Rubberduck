@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Settings
             DataContext = vm;
         }
 
-        public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
+        public ISettingsViewModel ViewModel => DataContext as ISettingsViewModel;
 
         private void TodoMarkerGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {

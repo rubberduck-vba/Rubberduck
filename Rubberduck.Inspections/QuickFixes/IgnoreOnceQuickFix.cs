@@ -83,10 +83,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.IgnoreOnce;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.IgnoreOnce;
 
         private class AnnotationListener : VBAParserBaseListener
         {

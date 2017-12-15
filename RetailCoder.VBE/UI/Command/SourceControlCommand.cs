@@ -22,9 +22,6 @@ namespace Rubberduck.UI.Command
             _presenter.Show();
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.SourceControl; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.SourceControl;
     }
 }

@@ -10,11 +10,10 @@ namespace Rubberduck.UI.Command.MenuItems
     {
         protected CommandMenuItemBase(CommandBase command)
         {
-            _command = command;
+            Command = command;
         }
 
-        private readonly CommandBase _command;
-        public CommandBase Command => _command;
+        public CommandBase Command { get; }
 
         public abstract string Key { get; }
 
@@ -47,7 +46,7 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <remarks>Returns <c>true</c> if not overridden.</remarks>
         public virtual bool EvaluateCanExecute(RubberduckParserState state)
         {
-            return state != null && (_command?.CanExecute(state) ?? false);
+            return state != null && (Command?.CanExecute(state) ?? false);
         }
 
         public virtual ButtonStyle ButtonStyle => ButtonStyle.IconAndCaption;

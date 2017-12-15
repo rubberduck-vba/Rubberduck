@@ -32,37 +32,37 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var matchingInterfaceMemberContext = interfaceMembers.Select(member => member.Context).FirstOrDefault(c => c == context.Parent.Parent);
 
-            if (matchingInterfaceMemberContext != null)
+            if (matchingInterfaceMemberContext == null)
             {
-                var interfaceParameterIndex = GetParameterIndex(context);
+                return;
+            }
+            
+            var interfaceParameterIndex = GetParameterIndex(context);
 
-                var implementationMembers =
-                    _state.AllUserDeclarations.FindInterfaceImplementationMembers(interfaceMembers.First(
-                        member => member.Context == matchingInterfaceMemberContext)).ToHashSet();
+            var implementationMembers =
+                _state.AllUserDeclarations.FindInterfaceImplementationMembers(interfaceMembers.First(
+                    member => member.Context == matchingInterfaceMemberContext)).ToHashSet();
 
-                var parameters =
-                    _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
-                        .Where(p => implementationMembers.Contains(p.ParentDeclaration))
-                        .Cast<ParameterDeclaration>()
-                        .ToArray();
+            var parameters =
+                _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    .Where(p => implementationMembers.Contains(p.ParentDeclaration))
+                    .Cast<ParameterDeclaration>()
+                    .ToArray();
 
-                foreach (var parameter in parameters)
+            foreach (var parameter in parameters)
+            {
+                var parameterContext = (VBAParser.ArgContext)parameter.Context;
+                var parameterIndex = GetParameterIndex(parameterContext);
+
+                if (parameterIndex == interfaceParameterIndex)
                 {
-                    var parameterContext = (VBAParser.ArgContext)parameter.Context;
-                    var parameterIndex = GetParameterIndex(parameterContext);
-
-                    if (parameterIndex == interfaceParameterIndex)
-                    {
-                        AddByRefIdentifier(_state.GetRewriter(parameter), parameterContext);
-                    }
+                    AddByRefIdentifier(_state.GetRewriter(parameter), parameterContext);
                 }
             }
+            
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ImplicitByRefModifierQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.ImplicitByRefModifierQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

@@ -4,30 +4,17 @@ namespace Rubberduck.SmartIndenter
 {
     public class IndenterProgressEventArgs : EventArgs
     {
-        private readonly int _progress;
-        private readonly int _max;
-        private readonly string _componentName;
-
         public IndenterProgressEventArgs(string componentName, int progress, int max)
         {
-            _progress = progress;
-            _max = max;
-            _componentName = componentName;
+            Progress = progress;
+            Max = max;
+            ComponentName = componentName;
         }
 
-        public int Progress
-        {
-            get { return _progress; }
-        }
+        public int Progress { get; }
 
-        public string ComponentName
-        {
-            get { return _componentName; }
-        }
+        public string ComponentName { get; }
 
-        public int Max
-        {
-            get { return _max; }
-        }
+        public int Max { get; }
     }
 }

@@ -31,8 +31,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
         {
-            var reference = e.SelectedItem as IdentifierReferenceListItem;
-            if (reference != null)
+            if (e.SelectedItem is IdentifierReferenceListItem reference)
             {
                 OnNavigateIdentifierReference(reference.GetReferenceItem());
             }

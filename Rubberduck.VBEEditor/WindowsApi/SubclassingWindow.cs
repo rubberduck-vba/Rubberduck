@@ -7,7 +7,6 @@ namespace Rubberduck.VBEditor.WindowsApi
     public abstract class SubclassingWindow : IDisposable
     {
         private readonly IntPtr _subclassId;
-        private readonly IntPtr _hwnd;
         private readonly SubClassCallback _wndProc;
         private bool _listening;
         private GCHandle _thisHandle;
@@ -29,17 +28,17 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("ComCtl32.dll", CharSet = CharSet.Auto)]
         private static extern int DefSubclassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam);
 
-        public IntPtr Hwnd { get { return _hwnd; } }
+        public IntPtr Hwnd { get; }
 
         protected SubclassingWindow(IntPtr subclassId, IntPtr hWnd)
         {
             _subclassId = subclassId;
-            _hwnd = hWnd;
+            Hwnd = hWnd;
             _wndProc = SubClassProc;
             AssignHandle();
         }
 
-        private bool _disposed = false;
+        private bool _disposed;
         public void Dispose()
         {
             if (_disposed)
@@ -57,7 +56,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         {
             lock (_subclassLock)
             {
-                var result = SetWindowSubclass(_hwnd, _wndProc, _subclassId, IntPtr.Zero);
+                var result = SetWindowSubclass(Hwnd, _wndProc, _subclassId, IntPtr.Zero);
                 if (result != 1)
                 {
                     throw new Exception("SetWindowSubClass Failed");
@@ -81,7 +80,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                     return;
                 }
                 Debug.WriteLine("SubclassingWindow.ReleaseHandle called for hWnd " + Hwnd);
-                var result = RemoveWindowSubclass(_hwnd, _wndProc, _subclassId);
+                var result = RemoveWindowSubclass(Hwnd, _wndProc, _subclassId);
                 if (result != 1)
                 {
                     throw new Exception("RemoveWindowSubclass Failed");

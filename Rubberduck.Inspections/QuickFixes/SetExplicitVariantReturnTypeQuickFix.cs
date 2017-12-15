@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var rewriter = _state.GetRewriter(result.Target);
             
-            var asTypeClause = " As Variant";
+            const string asTypeClause = " As Variant";
             switch (result.Target.DeclarationType)
             {
                 case DeclarationType.Variable:
@@ -48,10 +48,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.SetExplicitVariantReturnTypeQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.SetExplicitVariantReturnTypeQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

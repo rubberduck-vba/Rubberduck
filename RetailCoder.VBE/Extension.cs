@@ -52,19 +52,17 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is Microsoft.Vbe.Interop.VBE)
+                if (Application is Microsoft.Vbe.Interop.VBE vbe1)
                 {
-                    var vbe = (VBE) Application;                  
-                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe);
+                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe1);
                     VBENativeServices.HookEvents(_ide);
                     
                     var addin = (AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
                 }
-                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE)
+                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE vbe2)
                 {
-                    var vbe = Application as Microsoft.VB6.Interop.VBIDE.VBE;
-                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe);
+                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe2);
 
                     var addin = (Microsoft.VB6.Interop.VBIDE.AddIn) AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VB6.AddIn(addin);
@@ -87,7 +85,7 @@ namespace Rubberduck
             }
         }
 
-        Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
+        private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
         {
             var folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
             var assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
@@ -193,8 +191,13 @@ namespace Rubberduck
             catch (Exception exception)
             {
                 _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(exception.ToString(), RubberduckUI.RubberduckLoadFailure,
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(
+#if DEBUG
+                    exception.ToString(),
+#else
+                    exception.Message.ToString(),
+#endif
+                    RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -216,13 +219,14 @@ namespace Rubberduck
                 _app.Startup();
 
                 _isInitialized = true;
-
             }
             catch (Exception e)
             {
                 _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
 #if DEBUG
-                throw; // <<~ uncomment to crash the process
+                throw;
+#else
+                throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary");
 #endif
             }
         }
