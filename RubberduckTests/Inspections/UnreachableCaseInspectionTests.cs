@@ -840,9 +840,9 @@ End Sub";
 
 Select Case x
   Case 214.0
-    'OK
-  Case -214#
     'OK - ish
+  Case -214#
+    'OK
   Case Is < -5000
     'OK
   Case 98
