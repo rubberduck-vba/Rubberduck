@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -111,16 +112,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
             get
             {
-                if (_parameters == null || !_parameters.Any())
+                if (_parameters != null && _parameters.Any())
                 {
-                    _parameters = new ObservableCollection<ExtractMethodParameter>();
-                    foreach (var declaration in SourceVariables)
-                    {
-                        _parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
-                            ExtractMethodParameterType.ByRefParameter,
-                            declaration.IdentifierName, declaration.IsArray,
-                            declaration));
-                    }
+                    return _parameters;
+                }
+
+                _parameters = new ObservableCollection<ExtractMethodParameter>();
+                foreach (var declaration in SourceVariables)
+                {
+                    _parameters.Add(new ExtractMethodParameter(declaration.AsTypeNameWithoutArrayDesignator,
+                        ExtractMethodParameterType.ByRefParameter,
+                        declaration.IdentifierName, declaration.IsArray,
+                        declaration));
                 }
                 return _parameters;
             }
@@ -174,20 +177,24 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     returnType = string.Concat(Tokens.As, " ",
                         ReturnParameter.ToString(ExtractMethodParameterFormat.ReturnDeclaration) ?? Tokens.Variant);
                 }
+                /*
                 if (_fieldsToExtract.Any())
                 {
                     strings.AddRange(_fieldsToExtract);
                     strings.Add(string.Empty);
                 }
+                */
                 strings.Add(
                     $@"{Tokens.Private} {(isFunction ? Tokens.Function : Tokens.Sub)} {
                             NewMethodName ?? RubberduckUI.ExtractMethod_DefaultNewMethodName
                         }({string.Join(", ", _parametersToExtract)}) {returnType}");
+                /*
                 strings.AddRange(_variablesToExtract);
                 if (_variablesToExtract.Any())
                 {
                     strings.Add(string.Empty);
                 }
+                */
                 strings.AddRange(SelectedCode.Split(new[] {Environment.NewLine}, StringSplitOptions.None));
                 if (isFunction)
                 {
@@ -199,7 +206,23 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
                 var parser = new VBACodeStringParser("ExtractMethodCodePreview", code);
                 var rewriter = parser.Rewriter;
-                
+
+                var removes = Parameters.Where(p =>
+                    p.ParameterType != ExtractMethodParameterType.PrivateLocalVariable &&
+                    Selection.Selection.Contains(p.Declaration.Selection) && p.Declaration.Scope == "Dim");
+                foreach (var remove in removes)
+                {
+                    var codeToRemove = remove.Declaration.Context.GetText();
+                    foreach (var token in rewriter.TokenStream)
+                    {
+                        
+                    }
+                }
+                if (_fieldsToExtract.Any())
+                {
+                        
+                }
+
                 return string.Join(Environment.NewLine, Indenter.Indent(rewriter.GetText()
                     .Split(new[] {Environment.NewLine}, StringSplitOptions.None)));
             }
