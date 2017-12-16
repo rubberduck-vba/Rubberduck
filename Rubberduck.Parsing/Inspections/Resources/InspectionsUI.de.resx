@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -130,7 +130,7 @@
     <value>Konstante wird nicht verwendet</value>
   </data>
   <data name="DefaultProjectNameInspectionMeta" xml:space="preserve">
-    <value>Erwäge dem VBA-Projekt einen Namen zu geben.</value>
+    <value>Erwäge Sie dem VBA-Projekt einen Namen zu geben.</value>
   </data>
   <data name="DefaultProjectNameInspectionName" xml:space="preserve">
     <value>Das Projekt hat den Standard-Projektnamen.</value>
@@ -139,46 +139,46 @@
     <value>Man sollte bevorzugt 'vbNullString' gegenüber einem leeren String verwenden.</value>
   </data>
   <data name="EmptyStringLiteralInspectionMeta" xml:space="preserve">
-    <value>Die eingbaute Konstante 'vbNullString' ist ein Null String Zeiger, der 0 bytes Arbeitsspeicher benötigt. Dies ist das beabsichtigete Verhalten eines leeren Strings.</value>
+    <value>Die eingebaute Konstante 'vbNullString' ist ein Null-String Zeiger, der 0 bytes Arbeitsspeicher benötigt. Dies ist das beabsichtigte Verhalten eines leeren Strings.</value>
   </data>
   <data name="EmptyStringLiteralInspectionName" xml:space="preserve">
     <value>Leeres 'String Literal'</value>
   </data>
   <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
-    <value>Ersetze leeren String durch die Konstante 'vbNullString'</value>
+    <value>Leeren String durch die Konstante 'vbNullString' ersetzen</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionResultFormat" xml:space="preserve">
     <value>Das öffentliche Feld '{0}' bricht die Kapselung</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
-    <value>Besser nutze eine öffentlich sichtbare Eigenschaft</value>
+    <value>Erwägen Sie stattdessen, eine Eigenschaft verfügbar zu machen.</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
-    <value>Öffentliche Feld bricht die Kapselung</value>
+    <value>Öffentliches Feld bricht die Kapselung</value>
   </data>
   <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
-    <value>Kapsele das Feld '{0}' mit einere 'Property'</value>
+    <value>Das Feld '{0}' mit einer Eigenschaft kapselen</value>
   </data>
   <data name="IgnoreOnce" xml:space="preserve">
     <value>Einmal ignorieren</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionMeta" xml:space="preserve">
-    <value>Implizierte Referenzen zum aktuellen Tabellenblatt macht den Code anfällig und schwieriger zu Debuggen. Erwäge die Referenz explizit anzugeben oder vorzugsweise mit Objektreferenzen zu arbeiten. Ignoriere wenn der Methodenaufruf sich auf einen Typ bezieht, den Rubberduck nicht auflösen kann.</value>
+    <value>Implizite Referenzen zum aktuellen Tabellenblatt macht den Code anfällig und schwieriger zu debuggen. Erwäge die Referenz explizit anzugeben oder vorzugsweise mit Objektreferenzen zu arbeiten. Ignoriere wenn der Methodenaufruf sich auf einen Typ bezieht, den Rubberduck nicht auflösen kann.</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionName" xml:space="preserve">
-    <value>Implizierte Referenz zum 'ActiveSheet'</value>
+    <value>Implizite Referenz zum 'ActiveSheet'</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionMeta" xml:space="preserve">
-    <value>Implizierte Referenzen zur aktuellen Arbeitsmappe macht den Code anfällig und schwieriger zu Debuggen. Erwäge die Referenz explizit anzugeben oder vorzugsweise mit Objektreferenzen zu arbeiten. Ignoriere wenn der Methodenaufruf sich auf einen Typ bezieht, den Rubberduck nicht auflösen kann.</value>
+    <value>Implizite Referenzen zur aktuellen Arbeitsmappe macht den Code anfällig und schwieriger zu debuggen. Erwäge die Referenz explizit anzugeben oder vorzugsweise mit Objektreferenzen zu arbeiten. Ignoriere wenn der Methodenaufruf sich auf einen Typ bezieht, den Rubberduck nicht auflösen kann.</value>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
-    <value>Impliziete Referenz zum ' ActiveWorkbook'</value>
+    <value>Implizite Referenz zum 'ActiveWorkbook'</value>
   </data>
   <data name="ImplicitPublicMemberInspectionMeta" xml:space="preserve">
     <value>Die Methoden eines Moduls sind standardmäßig öffentlich, was irreführend sein kann. Besser ist es, den Gültigkeitsbereich der Methoden explizit zu definieren.</value>
   </data>
   <data name="ImplicitPublicMemberInspectionName" xml:space="preserve">
-    <value>Implizierte öffentliche Methode</value>
+    <value>Implizite öffentliche Methode</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionMeta" xml:space="preserve">
     <value>Methoden mit einem Rückgabewert geben, wenn nicht anders angegeben, implizit 'Variant' zurück. Überlege, ob es nicht besser ist, den Rückgabewert explizit als 'Variant' zu definieren, wenn der Typ des Rückgabewertes nicht bekannt ist.</value>
@@ -190,16 +190,16 @@
     <value>Eine Variable, die im Modulkopf deklariert wurde aber nur in einer Prozedur verwendet wird, sollte in der Prozedur deklariert werden.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionName" xml:space="preserve">
-    <value>Die Größe der Variable ist größer als benötigt.</value>
+    <value>Der Geltungsbereich der Variable ist größer als notwendig.</value>
   </data>
   <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
-    <value>Veringere die Größe der Modulvariable '{0}'.</value>
+    <value>Veringere die den Geltungsbereich der Modulvariable '{0}'.</value>
   </data>
   <data name="MultilineParameterInspectionMeta" xml:space="preserve">
     <value>Überlege lange Parameterdeklarationen zusammenzuhalten. Das Aufteilen einer Parameterdeklaration über mehrere Zeilen sollte zugunsten der besseren Lesbarkeit vermieden werden.</value>
   </data>
   <data name="MultilineParameterInspectionName" xml:space="preserve">
-    <value>Die Parameterdefinition ist über mehrere Zeilen verteilt.</value>
+    <value>Die Parameterdeklaration ist über mehrere Zeilen verteilt.</value>
   </data>
   <data name="MultipleDeclarationsInspectionMeta" xml:space="preserve">
     <value>Die Deklaration von mehren Variablen in der gleichen Codezeile ist erlaubt, sollte aber sparsam eingesetzt werden. Erwäge die Variablendeklartion in der Nähe der Nutzung als separate Anweisung pro Deklaration.</value>
@@ -208,25 +208,25 @@
     <value>Anweisung enthält Mehrfachdeklarationen</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionResultFormat" xml:space="preserve">
-    <value>'{0}' hat mehr als eine '@Folder' Notierung.</value>
+    <value>'{0}' hat mehr als eine '@Folder'-Annotation</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionMeta" xml:space="preserve">
-    <value>Rubberduck nutzt nur die erste '@Folder' Annotation innerhalb eines Code-Moduls. Entferne die überzähligen.</value>
+    <value>Rubberduck nutzt nur die erste '@Folder'-Annotation innerhalb eines Code-Moduls. Entferne die Überzähligen.</value>
   </data>
   <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
     <value>Das Modul hat mehr als eine Ordner Annotation.</value>
   </data>
   <data name="NonReturningFunctionInspectionMeta" xml:space="preserve">
-    <value>Hier könnte ein Fahler vorliegen. Der Rückgabewert einer Funktion oder Eigenschaft wird nicht zugewiesen. Dies kann zu unvorhersehbaren Verhalten des Codes führen. Sollte die Funktion keinen sinnvollen Rückgabewert haben, sollte sie in eine 'Sub'-Routine um geschrieben werden.</value>
+    <value>Hier könnte ein Fehler vorliegen. Der Rückgabewert einer Funktion oder Eigenschaft wird nicht zugewiesen. Dies kann zu unvorhersehbaren Verhalten des Codes führen. Wenn die Funktion keinen sinnvollen Rückgabewert hat, sollte sie in eine 'Sub'-Routine umgeschrieben werden.</value>
   </data>
   <data name="NonReturningFunctionInspectionName" xml:space="preserve">
-    <value>Ein Funktion oder Eigenschaftt ohne Rückgabewert</value>
+    <value>Funktion oder Eigenschaft ohne Rückgabewert</value>
   </data>
   <data name="ObsoleteCallStatementInspectionMeta" xml:space="preserve">
-    <value>Die 'Call' Anweisung ist nicht mehr zum Aufruf einer Anweisung notwendig. Sie existiert aus Gründen der abwärtskompatibilität. Sie kann problemlos durch einen impliziten Anweisungsaufruf ersetzt werden.</value>
+    <value>Die 'Call'-Anweisung ist nicht mehr zum Aufruf einer Anweisung notwendig. Sie existiert aus Gründen der Abwärtskompatibilität. Sie kann problemlos durch einen impliziten Anweisungsaufruf ersetzt werden.</value>
   </data>
   <data name="ObsoleteCallStatementInspectionName" xml:space="preserve">
-    <value>Nutzung des 'Call' Aufrufes</value>
+    <value>Nutzung des 'Call'-Aufrufes</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionMeta" xml:space="preserve">
     <value>Die 'REM'-Anweisung existiert aus Gründen der Abwärtskompatibilität. Sie kann gefahrlos durch ein einfaches Anführungszeichen ersetzt werden.</value>
@@ -235,19 +235,19 @@
     <value>Nutzung der 'REM'-Anweisung</value>
   </data>
   <data name="ObsoleteGlobalInspectionMeta" xml:space="preserve">
-    <value>Das Schlüsselwort 'Global' existiert aus Gründen der Abwärtskompatibilität. Es kann gefahrlos mit 'Public' ersetzt werden.</value>
+    <value>Das Schlüsselwort 'Global' existiert aus Gründen der Abwärtskompatibilität. Es kann gefahrlos durch 'Public' ersetzt werden.</value>
   </data>
   <data name="ObsoleteGlobalInspectionName" xml:space="preserve">
-    <value>Nutzung des 'Global'Ausdrucks</value>
+    <value>Nutzung der 'Global'-Zugriffsdeklaration</value>
   </data>
   <data name="ObsoleteLetStatementInspectionMeta" xml:space="preserve">
-    <value>Die 'Let'-Anweisung  existiert aus Gründen der Abwärtskompatibilität. Sie kann gefahrlos entfernt werden, das moderne VBA dieses Schlüsselwort nicht mehr benötigt.</value>
+    <value>Die 'Let'-Anweisung  existiert aus Gründen der Abwärtskompatibilität. Sie kann gefahrlos entfernt werden, da das moderne VBA dieses Schlüsselwort nicht mehr zur Werte-Zuweisung benötigt.</value>
   </data>
   <data name="ObsoleteLetStatementInspectionName" xml:space="preserve">
-    <value>Nutzung des 'Let' Ausdrucks</value>
+    <value>Nutzung des 'Let'-Ausdrucks</value>
   </data>
   <data name="ObsoleteTypeHintInspectionMeta" xml:space="preserve">
-    <value>Die Verwendung der Typ-Buchstaben (z.B. $)  existiert aus Gründen der Abwärtskompatibilität. Sie kann gefahrlos in der Deklaration durch 'as' ersetzt werden.</value>
+    <value>Die Verwendung der Typ-Buchstaben (z.B. $)  existiert aus Gründen der Abwärtskompatibilität. Sie kann gefahrlos durch eine 'As'-Typdeklaration ersetzt werden.</value>
   </data>
   <data name="ObsoleteTypeHintInspectionName" xml:space="preserve">
     <value>Verwendungshinweis für Typ</value>
@@ -259,7 +259,7 @@
     <value>'Option Base 1' ist angegeben.</value>
   </data>
   <data name="OptionExplicitInspectionMeta" xml:space="preserve">
-    <value>Nutze am besten 'Option Explicit' um fehleranfällige Programme zu erstellen.</value>
+    <value>VBA kompiliert ohne ohne 'Option Explicit` auch Tippfehlern erfolgreich: Verwenden Sie 'Option Explicit', um zu verhindern, dass ein fehlerhaftes Programm erfolgreich kompiliert wird.</value>
   </data>
   <data name="OptionExplicitInspectionName" xml:space="preserve">
     <value>'Option Explicit' ist nicht angegeben.</value>
@@ -277,7 +277,7 @@
     <value>Der Parameter wird nicht genutzt.</value>
   </data>
   <data name="ProcedureNotUsedInspectionMeta" xml:space="preserve">
-    <value>Rubberduck kann keine Aufruf für die Prozedur finden. Falls diese über eine Markro-Schaltfläche, als benutzer definierte Funktion oder als Programm Event Handler genutzt werde, kann dieser Rubberduck Hinweis ignoriert werden. Ansonsten sollte sie entfernt werden.</value>
+    <value>Rubberduck kann keinen Aufruf für die Prozedur finden. Falls diese über eine Markro-Schaltfläche, als benutzerdefinierte Funktion oder als Event-Handler genutzt wird, den Rubberduck nicht kennt, kann dieser Hinweis ignoriert werden. Ansonsten sollte sie entfernt werden.</value>
   </data>
   <data name="ProcedureNotUsedInspectionName" xml:space="preserve">
     <value>Die Prozedur wird nicht genutzt.</value>
@@ -293,29 +293,29 @@
 Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' an die Funktion zu übergeben, die einen String erwartet würde zu einem "Type Mismatch"-Laufzeitfehler führen.</value>
   </data>
   <data name="UntypedFunctionUsageInspectionName" xml:space="preserve">
-    <value>Nutzung einer Funktion, die einen 'String Variant' zurückgibt.</value>
+    <value>Verwendung einer 'Variant' zurückgebenden String-Funktion</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspectionResultFormat" xml:space="preserve">
-    <value>Prozedur '{0}' kann als Funktion geschrieben  werden.</value>
+    <value>Prozedur '{0}' kann als Funktion geschrieben werden.</value>
     <comment>{0} Procedure name</comment>
   </data>
   <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
-    <value>Implementiere als Funktion und passe die Aufrufe an</value>
+    <value>Als Funktion implementieren und Aufrufe anpassen.</value>
   </data>
   <data name="IdentifierNameInspectionResultFormat" xml:space="preserve">
     <value>Übelege die Umbenennung {0} '{1}'</value>
   </data>
   <data name="UseMeaningfulNameInspectionMeta" xml:space="preserve">
-    <value>Die Bezeicher sollte lesbar sein und ihren Verwendungszweck wiederspiegeln. Bezeichner ohne Vokale, mit nummerischem Suffix und 1-2 Buchstaben sollten vermieden werden.</value>
+    <value>Bezeicher sollten lesbar sein und ihren Verwendungszweck widerspiegeln. Bezeichner ohne Vokale, mit nummerischem Suffix oder nur 1-2 Buchstaben sollten vermieden werden.</value>
   </data>
   <data name="UseMeaningfulNameInspectionName" xml:space="preserve">
-    <value>Nutze aussagekräftige Namen.</value>
+    <value>Aussagekräftige Namen nutzen</value>
   </data>
   <data name="VariableNotAssignedInspectionMeta" xml:space="preserve">
-    <value>Einer Variable wird kein Wert zugewiesen. Falls Rubberduck recht hat, kann diese wahrscheinlich gefahrlos gelöscht werden.</value>
+    <value>Einer Variable wird kein Wert zugewiesen. Falls das nicht beabsichtigt ist, kann das zu einem Fehler führen. Ignorieren Sie diese Warnung, falls die Variable in einer anderen Prozedur durch einen 'ByRef'-Parameter zugewiesen wird.</value>
   </data>
   <data name="VariableNotAssignedInspectionName" xml:space="preserve">
-    <value>Variable wird nicht beschrieben.</value>
+    <value>Der Variable wird kein Wert zugewiesen.</value>
   </data>
   <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
     <value>Variable wird nicht gelesen</value>
@@ -333,7 +333,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine Eigenschaft, die eine Änderungsfunktion, aber keine Zugriffsfunktion bereitstellt, führt zu einer unklaren API. Enweder erstelle einen öffentlichen getter oder ändere die Änderungsfunktion in eine Methode ab.</value>
   </data>
   <data name="WriteOnlyPropertyInspectionName" xml:space="preserve">
-    <value>Nur-Lese Eigenschaft</value>
+    <value>Nur-Schreib Eigenschaft</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspectionMeta" xml:space="preserve">
     <value>Eine Prozedur, die nur einen Parameter als Referenz übergibt, der vor dem Verlassen der Prozedur einen neuen Wert oder Referenz erhält, sollte als Funktion umgeschrieben werden.</value>
@@ -358,7 +358,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Der Rückgabewert der Funktion wird nicht genutzt.</value>
   </data>
   <data name="FunctionReturnValueNotUsedInspectionResultFormat" xml:space="preserve">
-    <value>Der Rückgabewert der Funnktio '{0}' wird nicht verwendet.</value>
+    <value>Der Rückgabewert der Funktion '{0}' wird nicht verwendet.</value>
   </data>
   <data name="AssignedByValParameterInspectionResultFormat" xml:space="preserve">
     <value>Der Parameter '{0}' wird als byVal übergeben und bekommt ienen Wert zugesiesen.</value>
@@ -370,7 +370,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Methode '{0}' ist implizit 'Public'</value>
   </data>
   <data name="ImplicitVariantDeclarationInspectionResultFormat" xml:space="preserve">
-    <value>{0} '{1}' ist impliziert 'Variant'</value>
+    <value>{0} '{1}' ist implizit 'Variant'</value>
   </data>
   <data name="ImplicitVariantReturnTypeInspectionResultFormat" xml:space="preserve">
     <value>Der Rückgabewert der Methode '{0}' ist implizit 'Variant'.</value>
@@ -379,7 +379,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Der Parameter '{0}' wird über mehrere Zeilen angegeben</value>
   </data>
   <data name="NonReturningFunctionInspectionResultFormat" xml:space="preserve">
-    <value>Der Rückgabewert der Methode '{0}' wird nicht zugwiesen</value>
+    <value>Der Rückgabewert der Methode '{0}' wird nicht zugewiesen</value>
   </data>
   <data name="ObsoleteGlobalInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' verwendet die veraltete 'Global' Zugriffsdeklaration</value>
@@ -394,37 +394,37 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Die Prozedur '{0}' kann als Funktion geschrieben werden.</value>
   </data>
   <data name="UnassignedVariableUsageInspectionResultFormat" xml:space="preserve">
-    <value>Die Variable '{0}' wird werdendet ohne ihr einen Wert zuzuweisen</value>
+    <value>Die Variable '{0}' wird verwendet ohne ihr einen Wert zuzuweisen</value>
   </data>
   <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
-    <value>Konvertiere Funktion zu Prozedur</value>
+    <value>Funktion zu Prozedur konvertieren</value>
   </data>
   <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
-    <value>Deklariere als explizit 'Variant'</value>
+    <value>Als explizit 'Variant' deklarieren</value>
   </data>
   <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
     <value>TODO</value>
   </data>
   <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
-    <value>Schreibe Variable in einer Zeile</value>
+    <value>Variable in einer Zeile schreiben </value>
   </data>
   <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
-    <value>Ersetze 'Global' durch 'Public'</value>
+    <value>'Global' durch 'Public' ersetzen</value>
   </data>
   <data name="OptionExplicitInspectionResultFormat" xml:space="preserve">
     <value>'Option Explicit' ist für '{0}' nicht angegeben.</value>
   </data>
   <data name="OptionExplicitQuickFix" xml:space="preserve">
-    <value>Setze 'Option Explicit'</value>
+    <value>'Option Explicit' setzen</value>
   </data>
   <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
-    <value>Übergebe Parameter als Referenz.</value>
+    <value>Parameter als Referenz übergeben</value>
   </data>
   <data name="PassParameterByValueQuickFix" xml:space="preserve">
-    <value>Übergebe Parameter als Wert</value>
+    <value>Parameter als Wert übergeben</value>
   </data>
   <data name="QuickFixUseTypedFunction_" xml:space="preserve">
-    <value>Ändere '{0}' zu '{1}'</value>
+    <value>'{0}' zu '{1}' ändern</value>
   </data>
   <data name="QuickFix_ThisModule" xml:space="preserve">
     <value>Alle Vorkommnisse im Modul beheben</value>
@@ -433,37 +433,37 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Alle Vorkommnisse im Projekt beheben</value>
   </data>
   <data name="RemoveCommentQuickFix" xml:space="preserve">
-    <value>Entferne Kommentar</value>
+    <value>Kommentar entfernen</value>
   </data>
   <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
-    <value>Entferne überflüssige Anweisungen</value>
+    <value>Überflüssige Anweisungen entfernen</value>
   </data>
   <data name="RemoveTypeHintsQuickFix" xml:space="preserve">
-    <value>Entferne Typ-Hinweise</value>
+    <value>Typ-Hinweise entfernen</value>
   </data>
   <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
-    <value>Entferne nicht verwendete Variablen</value>
+    <value>Nicht verwendete Variablen entfernen</value>
   </data>
   <data name="RemoveUnassignedVariableUsageQuickFix" xml:space="preserve">
-    <value>Enferne die Nutzung (bricht den Code)</value>
+    <value>Nutzung enfernen (unterbricht den Code)</value>
   </data>
   <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
-    <value>Entferne unbenutze Deklarationen</value>
+    <value>Unbenutze Deklaration enfernen</value>
   </data>
   <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
-    <value>Entferne nicht genutzte Parameter</value>
+    <value>Nicht genutzte Parameter entfernen</value>
   </data>
   <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
-    <value>Ersetze 'REM' durch einfaches Anführungszeichen als Kommentarzeichen</value>
+    <value>'REM' durch einfaches Anführungszeichen als Kommentarzeichen ersetzen</value>
   </data>
   <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
-    <value>Rückgabewert ist explizit 'Variant'</value>
+    <value>Explizit 'Variant' zurückgeben</value>
   </data>
   <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
-    <value>Definiere den Gültigkeitsbereich 'Public' explizit</value>
+    <value>Gültigkeitsbereich 'Public' explizit definieren</value>
   </data>
   <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
-    <value>Ersetze  Mehrfach-Deklarationen in einer Zeile durch Deklaration in getrennten zeilen</value>
+    <value>Mehrfach-Deklarationen in einer Zeile durch Deklaration in getrennten Zeilen ersetzen</value>
   </data>
   <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
     <value>Der Variable '{0}' wird kein Wert zugewiesen.</value>
@@ -481,13 +481,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>{0}: {1} - {2} {3}.{4}, Zeile {5}</value>
   </data>
   <data name="SetObjectVariableQuickFix" xml:space="preserve">
-    <value>Benutze das Schlüsselwort 'Set'</value>
+    <value>Das Schlüsselwort 'Set' benutzen</value>
   </data>
   <data name="ObjectVariableNotSetInspectionResultFormat" xml:space="preserve">
-    <value>Objektvariable '{0}' wird ohne das 'Set' Schlüsselwort zugewiesen</value>
+    <value>Objektvariable '{0}' wird ohne das 'Set'-Schlüsselwort zugewiesen</value>
   </data>
   <data name="ObjectVariableNotSetInspectionMeta" xml:space="preserve">
-    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set' Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objekt oder With Block Variable wurden nicht gesetzt'.</value>
+    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set'-Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler '91': Objektvariable oder With-Blockvariable nicht festgelegt</value>
   </data>
   <data name="ObjectVariableNotSetInspectionName" xml:space="preserve">
     <value>Zuweisung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
@@ -502,16 +502,16 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>{0} '{1}' ist implizit 'Variant'</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionResultFormat" xml:space="preserve">
-    <value>Kommentar verwendet die obsolete 'REM' - Markierung</value>
+    <value>Kommentar verwendet die obsolete 'REM'-Markierung</value>
   </data>
   <data name="DefaultProjectNameInspectionResultFormat" xml:space="preserve">
     <value>Projekt '{0}' hat den Standardnamen</value>
   </data>
   <data name="ObsoleteCallStatementInspectionResultFormat" xml:space="preserve">
-    <value>Zuweisung verwendet obsolete 'Call' Anweisung</value>
+    <value>Zuweisung verwendet obsolete 'Call'-Anweisung</value>
   </data>
   <data name="ObsoleteLetStatementInspectionResultFormat" xml:space="preserve">
-    <value>Zuweisung verwendet obsoleten 'Let' Anweisung</value>
+    <value>Zuweisung verwendet obsolete 'Let'-Anweisung</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspectionResultFormat" xml:space="preserve">
     <value>Member '{0}' referenziert implizit auf 'ActiveSheet'</value>
@@ -520,7 +520,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Member '{0}' referenziert implizit auf 'ActiveWorkbook'</value>
   </data>
   <data name="UntypedFunctionUsageInspectionResultFormat" xml:space="preserve">
-    <value>Ersetze Funktion {0} mit der existierenden typed function</value>
+    <value>Ersetze Funktion {0} mit der existierenden typisierten Funktion</value>
   </data>
   <data name="OptionBaseInspectionResultFormat" xml:space="preserve">
     <value>Komponente '{0}' verwendet 'Option Base 1'</value>
@@ -532,13 +532,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Instruktion enthält Mehrfachdeklaration</value>
   </data>
   <data name="MissingAnnotationArgumentInspectionName" xml:space="preserve">
-    <value>Unlesbare Annotation</value>
+    <value>Fehlender Annotationsparameter</value>
   </data>
   <data name="MissingAnnotationArgumentInspectionResultFormat" xml:space="preserve">
-    <value>Annotation '{0}' ist nicht lesbar</value>
+    <value>Ausdruck '{0}' sollte einen Parameter enthalten, es wurde aber keiner angegeben.</value>
   </data>
   <data name="MissingAnnotationArgumentInspectionMeta" xml:space="preserve">
-    <value>Eine Annotation in einem Kommentar konnte nicht gelesen werden.</value>
+    <value>Eine Annotation in einem Kommentar konnte nicht gelesen werden. Die korrekte Syntax ist: '@Annotation([parameter])'\nBeispiel: '@Folder("Parent.Child")'</value>
   </data>
   <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
     <value>Lokale Variable einführen</value>
@@ -547,7 +547,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Code, der undeklarierte Variablen verwendet, kompiliert nicht wenn 'Option Explicit' spezifiziert wird. Undeklarierte Variablen sind immer vom Typ 'Variant', was unnötige Zusatzkosten in Ausführungszeit und Speicherverbauch verursacht.</value>
   </data>
   <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
-    <value>Addieren 'Property Get'</value>
+    <value>'Property Get' Zugriff hinzufügen</value>
   </data>
   <data name="ModuleScopeDimKeywordInspectionMeta" xml:space="preserve">
     <value>Das Schlüsselwort 'Public' kann nur auf Modulebene verwendet werden; Sein Konterpart 'Private' kann auch nur auf Modulebene verwendet werden. 'Dim' jedoch kann verwendet werden, um sowohl modulweite als auch prozedurweite Variablen zu deklarieren. Um der Konsistenz Willen ist es besser, 'Dim' nur für lokale Variablen zu verwenden, also 'Private' statt 'Dim' auf Modulebene zu verwenden.</value>
@@ -586,19 +586,19 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Implizite Zuweisung an Standard-Member</value>
   </data>
   <data name="HostSpecificExpressionInspectionName">
-    <value>Host-Spezifischer geklammerter ausdruck wird nur zur Laufzeit ausgewertet</value>
+    <value>Hostspezifischer geklammerter Ausdruck wird nur zur Laufzeit ausgewertet</value>
   </data>
   <data name="ImplicitDefaultMemberAssignmentInspectionResultFormat">
     <value>Zuweisung zu '{0}' weist implizit den Standard-Member von Klasse  '{1}' zu</value>
   </data>
   <data name="HungarianNotationInspectionName">
-    <value>Variable verwendet "Hungarian notation".</value>
+    <value>Variable verwendet 'Ungarische Notation'</value>
   </data>
   <data name="MemberNotOnInterfaceInspectionMeta">
-    <value>Es wird ein Memberzugriff verwendet, der vom Interface des Objektes nicht deklariert wird. Dies ist höchstwahrscheinlich ein Fehler. Falls der Memberzugriff das erweiterbare Interface des Objektes verwendet, erwägen Sie ein nicht-erweiterbares Äquivalent zu verwenden um Prüfungen zur Kompilierzeit zu ermöglichen und das Auftreten von Laufzeitfehler 418 zu verhindern.</value>
+    <value>Es wird ein Memberzugriff verwendet, der vom Interface des Objektes nicht deklariert wird. Dies ist höchstwahrscheinlich ein Fehler. Falls der Memberzugriff das erweiterbare Interface des Objektes verwendet, erwägen Sie ein nicht erweiterbares Äquivalent zu verwenden um Prüfungen zur Kompilierzeit zu ermöglichen und das Auftreten von Laufzeitfehler 438 zu verhindern.</value>
   </data>
   <data name="HungarianNotationInspectionMeta">
-    <value>"Hungarian notation" macht code weniger lesbar und ist redundant, sobald stark typisierte Variablen und aussagekräftige Namen verwendet werden.</value>
+    <value>'Ungarische Notation' macht Code weniger lesbar und ist redundant, sobald stark typisierte Variablen und aussagekräftige Namen verwendet werden.</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspectionMeta">
     <value>Das Excel Application-Objekt implementiert das WorksheetFunction interface direkt. Alle Aufrufe an WorksheetFunction-Member werden als laufzeitgebunden behandelt und Fehler im aufgerufenen Member werden in ein Variant des Typs VbVarType.Error gekapselt. Dadurch können Fehler nicht mit Fehleranweisungen behandelt werden und gegenüber skriptzeitgebundenen Aufrufen sinkt die Performanz. Ziehen Sie in Erwägung Application.WorksheetFunction explizit aufzurufen. Bedenken Sie: Falls dieser Aufruf in der Vergangenheit Fehler erzeugt hat, wurden diese ignoriert. Es sollte eine Fehlerbehandlung vorhanden sein, bevor Sie die schnelle Korrektur anwenden.</value>
@@ -616,7 +616,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Member '{0}' ist auf dem Interface für '{1}' nicht deklariert.</value>
   </data>
   <data name="ImplicitDefaultMemberAssignmentInspectionMeta">
-    <value>Solche Zuweisungen sehen aus als wiesen sie eine Objektvariable an einen Werttyp zu, aber tatsächlich wird der Standardmember des Objekts implizit zugewiesen. Um die Lesbarkeit zu verbessern, erwägen Sie explizit auf den Standardmember zuzugreifen.</value>
+    <value>Solche Zuweisungen sehen aus als wiesen sie einer Objektvariable an einen Werttyp zu, aber tatsächlich wird der Standardmember des Objekts implizit zugewiesen. Um die Lesbarkeit zu verbessern, erwägen Sie explizit auf den Standardmember zuzugreifen.</value>
   </data>
   <data name="HostSpecificExpressionInspectionMeta">
     <value>Geklammerte Ausdrücke werden von der Hostanwendung zur Laufzeit ausgewertet, was bedeutet, dass VBA den Ausdruck nicht zur Kompilierzeit validieren kann. Erwägen sie, das hostspezifische Objektmodell zu verwenden.</value>
@@ -652,22 +652,22 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Zeilenbezeichnung wird nicht referenziert</value>
   </data>
   <data name="EmptyIfBlockInspectionName">
-    <value>Leerer If-Block</value>
+    <value>Leerer 'If'-Block</value>
   </data>
   <data name="MissingAnnotationInspectionMeta">
-    <value>Modul- und Elementattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute explizit. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
+    <value>Modul- und Elementattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute deutlicher. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
   </data>
   <data name="IllegalAnnotationInspectionMeta">
-    <value>Eine Annotation für die Modulebene kann nicht verwendet werden, um Elemente zu Annotieren; Eine Annotation für Elemente kann auf Modulebene nicht verwendet werden; Modul- und Elementannotationen sollten nur einmal spezifiziert werden.</value>
+    <value>Eine Annotation für die Modulebene kann nicht verwendet werden, um Elemente zu annotieren; Eine Annotation für Elemente kann auf Modulebene nicht verwendet werden; Modul- und Elementannotationen sollten nur einmal spezifiziert werden.</value>
   </data>
   <data name="CodeInspectionSettings_Performance">
     <value>Performanz</value>
   </data>
   <data name="RedundantByRefModifierQuickFix">
-    <value>Redundante ByRef-Markierung entfernen</value>
+    <value>Redundante 'ByRef'-Markierung entfernen</value>
   </data>
   <data name="RedundantByRefModifierInspectionName">
-    <value>Redundante ByRef-Markierung</value>
+    <value>Redundante 'ByRef'-Markierung</value>
   </data>
   <data name="CodeInspectionSeverity_DoNotShow">
     <value>Nicht Anzeigen</value>
@@ -691,37 +691,37 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Warnung</value>
   </data>
   <data name="RedundantByRefModifierInspectionResultFormat">
-    <value>Der Parameter '{0}' hat eine redundanten ByRef-Markierung</value>
+    <value>Der Parameter '{0}' hat eine redundante 'ByRef'-Markierung</value>
   </data>
   <data name="MissingAnnotationInspectionName">
     <value>Fehlende Annotation</value>
   </data>
   <data name="RedundantByRefModifierInspectionMeta">
-    <value>Alle Parameter werden, falls nicht anders spezifiziert als Referenz übergeben. Es ist also nicht nötig, die ByRef-Markierung zu verwenden.</value>
+    <value>Alle Parameter werden, falls nicht anders spezifiziert als Referenz übergeben. Es ist also nicht nötig, die 'ByRef'-Markierung zu verwenden.</value>
   </data>
   <data name="IllegalAnnotationInspectionName">
     <value>Illegale Annotation</value>
   </data>
   <data name="RemoveEmptyIfBlockQuickFix">
-    <value>Leeren If-Block entfernen</value>
+    <value>Leeren 'If'-Block entfernen</value>
   </data>
   <data name="ImplicitByRefModifierInspectionMeta">
-    <value>Parameter werden, falls nicht anders spezifiziert, als Referenz übergeben. Dies kann verwirrend sein und Bugs hervorrufen. Bevorzugen Sie die Übergabe von Parametern als Werten und spezifizieren Sie eine Referenzübergabe explizit als ByRef.</value>
+    <value>Parameter werden, falls nicht anders spezifiziert, als Referenz übergeben. Dies kann verwirrend sein und Bugs hervorrufen. Bevorzugen Sie die Übergabe von Parametern als Werte und spezifizieren Sie eine Referenzübergabe explizit als ByRef.</value>
   </data>
   <data name="ImplicitByRefModifierQuickFix">
     <value>Parameter explizit als Referenz übergeben.</value>
   </data>
   <data name="MissingAttributeInspectionMeta">
-    <value>Eine Rubberduck-Annotation wurde für ein Modul oder Element festgelegt, aber das zugehörige Attribut fehlt. Das Modul sollte synchronisiert werden.</value>
+    <value>Eine Rubberduck-Annotation wurde für ein Modul oder Element festgelegt, aber das zugehörige Attribut fehlt. Die Modul-Attribute und Annotationen sollten synchronisiert werden.</value>
   </data>
   <data name="CodeInspectionSeverity_Hint">
     <value>Tipp</value>
   </data>
   <data name="EmptyIfBlockInspectionMeta">
-    <value>Ein If-Block sollte ausführbare Anweisungen haben</value>
+    <value>Ein leerer 'If'-Block ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="EmptyIfBlockInspectionResultFormat">
-    <value>If-Block hat keine ausführbaren Anweisungen</value>
+    <value>'If'-Block enthält keine ausführbaren Anweisungen</value>
   </data>
   <data name="CodeInspectionSettings_LanguageOpportunities">
     <value>Optimalere Ausnutzung der Sprache</value>
@@ -757,76 +757,76 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Modul oder Element '{0}' hat eine '{1}' Annotation, aber das zugehörige Attribut fehlt.</value>
   </data>
   <data name="EmptyCaseBlockInspectionResultFormat">
-    <value>'Case' Block enthält keine ausführbaren Anweisungen</value>
+    <value>'Case'-Block enthält keine ausführbaren Anweisungen</value>
   </data>
   <data name="IntegerDataTypeInspectionName">
     <value>Verwendung von 16-bit Ganzzahl</value>
   </data>
   <data name="EmptyForLoopBlockInspectionMeta">
-    <value>A Loop block should have executable statements</value>
+    <value>Eine leere 'For…Next'-Schleife ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="EmptyCaseBlockInspectionName">
-    <value>Leerer 'Case' Block</value>
+    <value>Leerer 'Case'-Block</value>
   </data>
   <data name="ShadowedDeclarationInspectionMeta">
     <value>Zwei Deklarationen sind aktiv und haben denselben Namen. Dies bedeutet, dass nur eine von ihnen zur Verwendung verfügbar ist.</value>
   </data>
   <data name="StopKeywordInspectionMeta">
-    <value>The 'stop' keyword halts execution and brings up the debugger. Avoid its usage.</value>
+    <value>Das Schlüsselwort 'Stop' unterbricht die Ausführung und ruft den Debugger auf. Vermeiden Sie die Verwendung in verteiltem Code.</value>
   </data>
   <data name="EmptyForLoopBlockInspectionName">
-    <value>Empty For Loop</value>
+    <value>Leere 'For…Next'-Schleife</value>
   </data>
   <data name="ReplaceObsoleteErrorStatementQuickFix">
     <value>'Error' durch 'Err.Raise' ersetzen</value>
   </data>
   <data name="EmptyCaseBlockInspectionMeta">
-    <value>Ein leerer 'Case' Block ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
+    <value>Ein leerer 'Case'-Block ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="StopKeywordInspectionResultFormat">
-    <value>Stop keyword detected</value>
+    <value>Das Schlüsselwort 'Stop' unterbricht die Ausführung</value>
   </data>
   <data name="EmptyForEachBlockInspectionMeta">
-    <value>A Loop block should have executable statements</value>
+    <value>Eine leere 'For Each…Next'-Schleife ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="EmptyElseBlockInspectionMeta">
-    <value>An Else block should have executable statements</value>
+    <value>Ein leerer 'Else'-Block ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="RemoveEmptyElseBlockQuickFix">
-    <value>Remove empty Else block</value>
+    <value>Leeren 'Else'-Block entfernen</value>
   </data>
   <data name="ShadowedDeclarationInspectionResultFormat">
     <value>{0} '{1}' überschattet {2} '{3}'</value>
   </data>
   <data name="RemoveStopKeywordQuickFix">
-    <value>Remove usage of the 'stop' keyword</value>
+    <value>'Stop'-Schlüsselwort entfernen</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspectionResultFormat">
     <value>Ein Laufzeitfehler wird mit der veralteten 'Error'-Anweisung ausgelöst</value>
   </data>
   <data name="EmptyForEachBlockInspectionResultFormat">
-    <value>For-Each Loop has no executable statements</value>
+    <value>'For Each…Next'-Schleife enthält keine ausführbaren Anweisungen</value>
   </data>
   <data name="EmptyElseBlockInspectionResultFormat">
-    <value>Else block has no executable statements</value>
+    <value>'Else'-Block enthält keine ausführbaren Anweisungen</value>
   </data>
   <data name="IntegerDataTypeQuickFix">
-    <value>Change declaration type to Long</value>
+    <value>Typ zu 'Long' änderen</value>
   </data>
   <data name="EmptyForEachBlockInspectionName">
-    <value>Empty For-Each Loop</value>
+    <value>Leere 'For Each…Next'-Schleife</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionName">
-    <value>Empty Do-While Loop</value>
+    <value>Leere 'Do…While'-Schleife</value>
   </data>
   <data name="EmptyElseBlockInspectionName">
-    <value>Empty Else block</value>
+    <value>Leerer 'Else'-Block</value>
   </data>
   <data name="EmptyForLoopBlockInspectionResultFormat">
-    <value>For Loop has no executable statements</value>
+    <value>'For…Next'-Schleife enthält keine ausführbaren Anweisungen.</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionMeta">
-    <value>A Loop block should have executable statements</value>
+    <value>Eine leere 'While…Wend'-Schleife ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspectionMeta">
     <value>Die 'Error'-Anweisung existiert in der Sprache nur um Legacy-Programme zu unterstützen, die sie benötigten; Bevorzugen Sie stattdessen 'Err.Raise'.</value>
@@ -838,22 +838,22 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>{0} '{1}' ist als Integer deklariert</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionResultFormat">
-    <value>While-Wend block has no executable statements</value>
+    <value>'While…Wend'-Schleife enthält keine ausführbaren Anweisungen</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionResultFormat">
-    <value>Do-While Loop has no executable statements</value>
+    <value>'Do…While'-Schleife enthält keine ausführbaren Anweisungen</value>
   </data>
   <data name="EmptyWhileWendBlockInspectionName">
-    <value>Empty While-Wend block</value>
+    <value>Leere 'While…Wend'-Schleife</value>
   </data>
   <data name="ShadowedDeclarationInspectionName">
     <value>Überschattete Deklaration</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionMeta">
-    <value>A Loop block should have executable statements</value>
+    <value>Eine leere 'Do…While'-Schleife ohne ausführbare Anweisungen lässt andere Entwickler über die Absicht des Codes im unklaren. Vermeiden Sie das Schreiben von unnötigem Code.</value>
   </data>
   <data name="StopKeywordInspectionName">
-    <value>Stop keyword</value>
+    <value>'Stop'-Schlüsselwort</value>
   </data>
   <data name="BooleanAssignedInIfElseInspectionMeta">
     <value>Ein Mitglied wird in verschiedenen Zweigen einer if-Anweisung mit True / False zugewiesen, wobei keine anderen Anweisungen in der Bedingung enthalten sind. Verwenden Sie die Bedingung stattdessen direkt für das Mitglied.</value>
@@ -862,7 +862,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Boolsche Zeichenkette wird in Bedingung zugewiesen</value>
   </data>
   <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
-    <value>Ersetze If/Else mit einer einfachen Zuordnung </value>
+    <value>'If/Else' mit einer einfachen Zuordnung ersetzen</value>
   </data>
   <data name="BooleanAssignedInIfElseInspectionResultFormat" xml:space="preserve">
     <value>Boolean Ausdruck '{0}' wurde in einer trivialen If/Else-Verzweigung zugewiesen</value>
