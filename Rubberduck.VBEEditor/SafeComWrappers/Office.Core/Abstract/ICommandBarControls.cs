@@ -4,7 +4,7 @@ using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract
 {
-    public interface ICommandBarControls : ISafeComWrapper, IComCollection<ICommandBarControl>, IEquatable<ICommandBarControls>
+    public interface ICommandBarControls : ISafeComWrapper, IComCollection<ICommandBarControl>, IEquatable<ICommandBarControls>, IReleasableCOMObject
     {
         ICommandBar Parent { get; }
         ICommandBarControl Add(ControlType type);
