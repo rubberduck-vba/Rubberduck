@@ -121,7 +121,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-{0} Mathieu Guindon &amp; Christopher McClellan.
+        ///   Looks up a localized string similar to © Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
         public static string AboutWindow_Copyright {
             get {
@@ -3276,7 +3276,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable To Detect Selected Rename Target.
+        ///   Looks up a localized string similar to Unable to detect selected rename target.
         /// </summary>
         public static string RefactorRename_TargetNotDefinedError {
             get {

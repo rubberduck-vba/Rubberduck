@@ -212,11 +212,13 @@ namespace Rubberduck.Refactorings.ExtractMethod
                     Selection.Selection.Contains(p.Declaration.Selection) && p.Declaration.Scope == "Dim");
                 foreach (var remove in removes)
                 {
+                    /*
                     var codeToRemove = remove.Declaration.Context.GetText();
                     foreach (var token in rewriter.TokenStream)
                     {
                         
                     }
+                    */
                 }
                 if (_fieldsToExtract.Any())
                 {

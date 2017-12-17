@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1882,16 +1882,16 @@ End Sub</value>
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>
   </data>
   <data name="Assert_NeitherParameterIsArray">
-    <value />
+    <value>Ni [attendu] ni [réel] n'est un tableau.</value>
   </data>
   <data name="Assert_UnexpectedArrayFormat">
-    <value />
+    <value>[attendu] et [réel] sont des tableaux. Considérez utiliser {0}.</value>
   </data>
   <data name="Assert_ReferenceValueMismatch">
-    <value />
+    <value>[attendu] est une référence, mais [réel] est une valeur.</value>
   </data>
   <data name="Assert_GenericException">
-    <value />
+    <value>Une exception s'est produite lors de l'exécution des tests.</value>
   </data>
   <data name="EmptyUIRefreshMessage">
     <value>pour analyser et traiter
@@ -1901,13 +1901,13 @@ les projets dans le VBE.</value>
     <value>Exporter le projet...</value>
   </data>
   <data name="Assert_UBoundMismatchFormat">
-    <value />
+    <value>Dimension {0}: valeur UBound attendue {1}; valeur UBound réelle {2}. {3}</value>
   </data>
   <data name="Assert_FailedMessageFormat">
-    <value />
+    <value>Échec de l'assertion {0}. {1}</value>
   </data>
   <data name="Assert_UnexpectedNullArraysFormat">
-    <value />
+    <value>[attendu] et [réel] sont 'Nothing'. Considérez utiliser {0}.</value>
   </data>
   <data name="ToolsMenu_ExportProject">
     <value>Exporter le projet actif...</value>
@@ -1919,7 +1919,7 @@ les projets dans le VBE.</value>
     <value>Activer le contrôle des source. Prendra effet au prochain démarrage.</value>
   </data>
   <data name="Assert_UnexpectedValueComparisonFormat">
-    <value />
+    <value>[attendu] et [réel] sont des valeurs. Considérez utiliser {0}.</value>
   </data>
   <data name="Assert_ComException">
     <value>Une erreur COM inattendue s'est produite lors de l'exécution des tests.</value>
@@ -1934,7 +1934,7 @@ les projets dans le VBE.</value>
     <value>Tests inconclusifs</value>
   </data>
   <data name="Assert_UnexpectedReferenceComparisonFormat">
-    <value />
+    <value>[attendu] et [réel] sont des références. Considérez utiliser {0}.</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler">
     <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
@@ -1952,25 +1952,25 @@ les projets dans le VBE.</value>
     <value>L'identifiant {0} ne peut être renommé.</value>
   </data>
   <data name="Assert_EasterEggIVerifyPassed">
-    <value />
+    <value>Ouais, moi aussi je vérifie mes entrées =)</value>
   </data>
   <data name="CodeExplorer_AddModule">
     <value>Ajouter un module</value>
   </data>
   <data name="RefactorRename_TargetNotDefinedError">
-    <value />
+    <value>Impossible de détecter la cible à renommer</value>
   </data>
   <data name="Assert_InvalidFakePassThrough">
-    <value />
+    <value>Configuration invalide de IFake {0}. La propriété PassThrough doit être à False.</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByName">
     <value>Par nom</value>
   </data>
   <data name="Assert_EasterEggAssertClassPassed">
-    <value />
+    <value>On essaie de faire quoi au juste?</value>
   </data>
   <data name="Assert_DimensionMismatchFormat">
-    <value />
+    <value>{0} dimensions attendues; {1} dimensions réelles. {2}</value>
   </data>
   <data name="ImportCommand_OpenDialog_Title">
     <value>Importer fichiers source</value>
@@ -1979,7 +1979,7 @@ les projets dans le VBE.</value>
     <value>Ouvrir un repository local</value>
   </data>
   <data name="Assert_VerifyParameterNonNumeric">
-    <value />
+    <value>Le paramètre {0} n'avait pas une valeur numérique lors de l'invocation {1}. {2}</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title">
     <value>Rubberduck ne voit rien pour l'instant.</value>
@@ -1988,10 +1988,10 @@ les projets dans le VBE.</value>
     <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
   </data>
   <data name="Assert_VerifyNoInvocationFormat">
-    <value />
+    <value>Aucune invocation correspondante pour le paramètre {0}; seulement {1} invocations. {2}</value>
   </data>
   <data name="Assert_VerifyInternalErrorMessage">
-    <value />
+    <value>Rubberduck n'a pas pu traiter les résultats de l'invocation.</value>
   </data>
   <data name="HotkeyDescription_ExportActiveProject">
     <value>Exporter le projet actif</value>
@@ -2006,34 +2006,34 @@ les projets dans le VBE.</value>
     <value>Veuillez sélectionner un dossier où exporter les fichier source de {0}:</value>
   </data>
   <data name="CodeExplorer_AddFormText">
-    <value />
+    <value>Formulaire (.frm)</value>
   </data>
   <data name="Assert_VerifyParameterNotPassed">
-    <value />
+    <value>Le paramètre {0} n'a pas été passé lors de l'invocation {1}. {2}</value>
   </data>
   <data name="Assert_ParameterIsNotArrayFormat">
-    <value />
+    <value>{0} n'est pas un tableau.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeatures">
     <value>Fonctionnalités expérimentales:</value>
   </data>
   <data name="Assert_MismatchedTypes">
-    <value />
+    <value>[attendu] et [réel] sont de types différents.</value>
   </data>
   <data name="Assert_LBoundMismatchFormat">
-    <value />
+    <value>Dimension {0}: valeur LBound attendue {1}; valeur LBound réelle {2}. {3}</value>
   </data>
   <data name="Assert_NotImplemented">
-    <value />
+    <value>Pas implémenté.</value>
   </data>
   <data name="Assert_ValueReferenceMismatch">
-    <value />
+    <value>[attendu] est une valeur, mais [réel] est une référence.</value>
   </data>
   <data name="CodeExplorer_AddTestModuleWithStubsText">
     <value>Module de tests avec modèles</value>
   </data>
   <data name="Assert_ParameterResultFormat">
-    <value />
+    <value>Attendu: {0}; Réel: {1}. {2}</value>
   </data>
   <data name="SourceControl_OpenRepositoryDescription">
     <value>Ouvrir un repository local; le projet actif recevra le code source.</value>
@@ -2045,7 +2045,7 @@ les projets dans le VBE.</value>
     <value>Tel que dans le module</value>
   </data>
   <data name="Assert_EasterEggIFakePassed">
-    <value />
+    <value>Attendu: Stack overflow?; Réel: Clause de garde. Oui oui!</value>
   </data>
   <data name="RubberduckMenu_Refresh">
     <value>Actualiser</value>
@@ -2066,5 +2066,29 @@ les projets dans le VBE.</value>
   <data name="ToDoExplorer_NumberOfIssuesFound_Singular">
     <value>Rubberduck marqueurs TODO - {0}
 {1} marqueurs trouvés.</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>P</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Complexité Cyclomatique</value>
+  </data>
+  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
+    <value>Les informations ont été copiées dans le presse-papier.</value>
+  </data>
+  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
+    <value>Cliquer ici pour copier les informations dans le presse-papier.</value>
+  </data>
+  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
+    <value>Copie complétée.</value>
+  </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Lignes</value>
   </data>
 </root>
