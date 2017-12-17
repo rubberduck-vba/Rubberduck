@@ -145,6 +145,15 @@ namespace Rubberduck.UI
             if (m.Msg == (int) WM.DESTROY)
             {
                 Debug.WriteLine("DockableWindowHost received WM.DESTROY.");
+                try
+                {
+                    _subClassingWindow.CallBackEvent -= OnCallBackEvent;
+                }
+                catch(Exception)
+                {
+                    //We cannot really do anything here. This is only a safeguard to guarantee that the event gets unsubscribed. If it does not work, it might be gone already.
+                }
+
                 _thisHandle.Free();
             }
             base.DefWndProc(ref m);
@@ -200,6 +209,7 @@ namespace Rubberduck.UI
                     case (uint)WM.KILLFOCUS:
                         if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
                         break;
+                    case (uint)WM.DESTROY:
                     case (uint)WM.RUBBERDUCK_SINKING:
                         OnCallBackEvent(new SubClassingWindowEventArgs(lParam) { Closing = true });
                         _closing = true;
