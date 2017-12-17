@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Symbols;
@@ -17,7 +19,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         private ObservableCollection<Parameter> _parameters;
         public ObservableCollection<Parameter> Parameters
         {
-            get { return _parameters; }
+            get => _parameters;
             set
             {
                 _parameters = value;
@@ -54,7 +56,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                                                                      item.DeclarationType == DeclarationType.PropertySet);
 
                     var signature = string.Empty;
-                    if (getter != null) { signature += GetSignature((PropertyGetDeclaration)getter); }
+                    if (getter != null)
+                    {
+                        signature += GetSignature((PropertyGetDeclaration)getter);
+                    }
                     if (letter != null)
                     {
                         if (!string.IsNullOrEmpty(signature)) { signature += Environment.NewLine; }
@@ -75,58 +80,70 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private string GetSignature(SubroutineDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Sub " + member.IdentifierName + "(";
+            var signature = new StringBuilder();
+            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
+            signature.Append($" Sub {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            signature.Append($", {selectedParams})");
+            return signature.ToString();
         }
 
         private string GetSignature(FunctionDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Function " + member.IdentifierName + "(";
+            var signature = new StringBuilder();
+            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
+            signature.Append($" Function {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ") As " + member.AsTypeName;
+            signature.Append($", {selectedParams}) As {member.AsTypeName}");
+            return signature.ToString();
         }
 
         private string GetSignature(EventDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Event " + member.IdentifierName + "(";
+            var signature = new StringBuilder();
+            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
+            signature.Append($" Event {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            signature.Append($", {selectedParams})");
+            return signature.ToString();
         }
 
         private string GetSignature(PropertyGetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Get " + member.IdentifierName + "(";
+            var signature = new StringBuilder();
+            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
+            signature.Append($" Property Get {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ") As " + member.AsTypeName;
+            signature.Append($", {selectedParams}) As {member.AsTypeName}");
+            return signature.ToString();
         }
 
         private string GetSignature(PropertyLetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Let " + member.IdentifierName + "(";
+            var signature = new StringBuilder();
+            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
+            signature.Append($" Property Let {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter((ParameterDeclaration)member.Parameters.Last(), -1).Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            signature.Append($", {selectedParams})");
+            return signature.ToString();
         }
 
         private string GetSignature(PropertySetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Set " + member.IdentifierName + "(";
+            var signature = new StringBuilder();
+            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
+            signature.Append($" Property Set {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter((ParameterDeclaration)member.Parameters.Last(), -1).Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            signature.Append($", {selectedParams})");
+            return signature.ToString();
         }
 
         public ReorderParametersViewModel(RubberduckParserState state)

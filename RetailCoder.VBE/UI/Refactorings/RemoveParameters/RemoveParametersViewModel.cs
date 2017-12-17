@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         private List<Parameter> _parameters;
         public List<Parameter> Parameters
         {
-            get { return _parameters; }
+            get => _parameters;
             set
             {
                 _parameters = value;

@@ -76,31 +76,61 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool IsBuiltInFace
         {
             get => !IsWrappingNullReference && Button.BuiltInFace;
-            set { if (!IsWrappingNullReference) Button.BuiltInFace = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Button.BuiltInFace = value;
+                }
+            }
         }
 
         public int FaceId 
         {
             get => IsWrappingNullReference ? 0 : Button.FaceId;
-            set { if (!IsWrappingNullReference) Button.FaceId = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Button.FaceId = value;
+                }
+            }
         }
 
         public string ShortcutText
         {
             get => IsWrappingNullReference ? string.Empty : Button.ShortcutText;
-            set { if (!IsWrappingNullReference) Button.ShortcutText = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Button.ShortcutText = value;
+                }
+            }
         }
 
         public ButtonState State
         {
             get => IsWrappingNullReference ? 0 : (ButtonState)Button.State;
-            set { if (!IsWrappingNullReference) Button.State = (Microsoft.Office.Core.MsoButtonState)value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Button.State = (Microsoft.Office.Core.MsoButtonState)value;
+                }
+            }
         }
 
         public ButtonStyle Style
         {
             get => IsWrappingNullReference ? 0 : (ButtonStyle)Button.Style;
-            set { if (!IsWrappingNullReference) Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value;
+                }
+            }
         }
 
         public Image Picture { get; set; }
@@ -108,8 +138,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public void ApplyIcon()
         {
-            if (IsWrappingNullReference) return;
-            
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Button.FaceId = 0;
             if (Picture == null || Mask == null)
             {

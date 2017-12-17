@@ -38,8 +38,7 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindTarget(object parameter)
         {
-            var declaration = parameter as Declaration;
-            if (declaration != null)
+            if (parameter is Declaration declaration)
             {
                 return declaration;
             }

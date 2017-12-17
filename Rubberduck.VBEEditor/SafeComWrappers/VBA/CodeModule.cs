@@ -153,9 +153,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string GetProcOfLine(int line)
         {
-            if (IsWrappingNullReference) return string.Empty;
-            vbext_ProcKind procKind;
-            return Target.get_ProcOfLine(line, out procKind);
+            return IsWrappingNullReference ? string.Empty : Target.get_ProcOfLine(line, out _);
         }
 
         public ProcKind GetProcKindOfLine(int line)

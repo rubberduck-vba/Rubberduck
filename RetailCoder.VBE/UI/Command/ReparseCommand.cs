@@ -17,10 +17,7 @@ namespace Rubberduck.UI.Command
             _state = state;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.ParseAll; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.ParseAll;
 
         protected override bool EvaluateCanExecute(object parameter)
         {

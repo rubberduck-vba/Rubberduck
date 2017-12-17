@@ -43,14 +43,11 @@ namespace Rubberduck.Inspections.QuickFixes
             InsertLocalVariableDeclarationAndAssignment(rewriter, result.Target, localIdentifier);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix;
 
-        public override bool CanFixInProcedure { get; } = false;
-        public override bool CanFixInModule { get; } = false;
-        public override bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
 
         private string PromptForLocalVariableName(Declaration target, List<string> forbiddenNames)
         {
@@ -76,7 +73,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private string GetDefaultLocalIdentifier(Declaration target, List<string> forbiddenNames)
         {
-            var newName = "local" + target.IdentifierName.CapitalizeFirstLetter();
+            var newName = $"local{target.IdentifierName.CapitalizeFirstLetter()}";
             if (IsValidVariableName(newName, forbiddenNames))
             {
                 return newName;
@@ -114,7 +111,9 @@ namespace Rubberduck.Inspections.QuickFixes
             var requiresAssignmentUsingSet =
                 target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState));
 
-            var localVariableAssignment = requiresAssignmentUsingSet ? $"Set {localIdentifier} = {target.IdentifierName}" : $"{localIdentifier} = {target.IdentifierName}";
+            var localVariableAssignment = string.Format("{0}{1}",
+                                                        requiresAssignmentUsingSet ? "Set " : string.Empty,
+                                                        $"{localIdentifier} = {target.IdentifierName}");
 
             rewriter.InsertBefore(((ParserRuleContext)target.Context.Parent).Stop.TokenIndex + 1, localVariableDeclaration + localVariableAssignment);
         }

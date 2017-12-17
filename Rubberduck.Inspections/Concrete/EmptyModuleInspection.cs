@@ -7,7 +7,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
@@ -15,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
 
     public sealed class EmptyModuleInspection : InspectionBase
     {
-        private EmptyModuleVisitor _emptyModuleVisitor;
+        private readonly EmptyModuleVisitor _emptyModuleVisitor;
 
         public EmptyModuleInspection(RubberduckParserState state,
             CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Hint)

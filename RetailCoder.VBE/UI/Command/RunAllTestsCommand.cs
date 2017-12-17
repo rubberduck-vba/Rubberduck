@@ -105,7 +105,7 @@ namespace Rubberduck.UI.Command
     
     public class TestRunEventArgs : EventArgs
     {
-        public long Duration { get; private set; }
+        public long Duration { get; }
 
         public TestRunEventArgs(long duration)
         {

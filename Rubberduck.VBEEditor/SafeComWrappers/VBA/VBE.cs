@@ -28,13 +28,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public ICodePane ActiveCodePane
         {
             get => new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane);
-            set { if (!IsWrappingNullReference) Target.ActiveCodePane = (VB.CodePane)value.Target; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.ActiveCodePane = (VB.CodePane)value.Target;
+                }
+            }
         }
 
         public IVBProject ActiveVBProject
         {
             get => new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject);
-            set { if (!IsWrappingNullReference) Target.ActiveVBProject = (VB.VBProject)value.Target; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.ActiveVBProject = (VB.VBProject)value.Target;
+                }
+            }
         }
 
         public IWindow ActiveWindow => new Window(IsWrappingNullReference ? null : Target.ActiveWindow);
@@ -260,13 +272,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             const string mdiClientClass = "MDIClient";
             const int maxCaptionLength = 512;
 
-            IntPtr mainWindow = (IntPtr)MainWindow.HWnd;
+            var mainWindow = (IntPtr)MainWindow.HWnd;
 
-            IntPtr mdiClient = NativeMethods.FindWindowEx(mainWindow, IntPtr.Zero, mdiClientClass, string.Empty);
+            var mdiClient = NativeMethods.FindWindowEx(mainWindow, IntPtr.Zero, mdiClientClass, string.Empty);
 
-            IntPtr mdiChild = NativeMethods.GetTopWindow(mdiClient);
-            StringBuilder mdiChildCaption = new StringBuilder();
-            int captionLength = NativeMethods.GetWindowText(mdiChild, mdiChildCaption, maxCaptionLength);
+            var mdiChild = NativeMethods.GetTopWindow(mdiClient);
+            var mdiChildCaption = new StringBuilder();
+            var captionLength = NativeMethods.GetWindowText(mdiChild, mdiChildCaption, maxCaptionLength);
 
             if (captionLength > 0)
             {

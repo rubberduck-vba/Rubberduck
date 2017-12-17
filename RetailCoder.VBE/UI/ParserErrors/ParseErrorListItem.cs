@@ -11,14 +11,14 @@ namespace Rubberduck.UI.ParserErrors
             _error = error;
         }
 
-        public string ProjectName { get { return _error.ProjectName; } }
-        public string ComponentName { get { return _error.ComponentName; } }
-        public int ErrorLine { get { return _error.Exception.LineNumber; } }
-        public int ErrorColumn { get { return _error.Exception.Position; } }
-        public string ErrorToken { get { return _error.Exception.OffendingSymbol.Text; } }
-        public string Message { get { return _error.Exception.Message; } }
+        public string ProjectName => _error.ProjectName;
+        public string ComponentName => _error.ComponentName;
+        public int ErrorLine => _error.Exception.LineNumber;
+        public int ErrorColumn => _error.Exception.Position;
+        public string ErrorToken => _error.Exception.OffendingSymbol.Text;
+        public string Message => _error.Exception.Message;
 
-        public string Value { get { return ToString(); } }
+        public string Value => ToString();
 
         public void Navigate()
         {
