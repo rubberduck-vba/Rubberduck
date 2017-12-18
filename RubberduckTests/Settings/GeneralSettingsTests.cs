@@ -142,7 +142,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
 
-            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.SourceControlEnabled, viewModel.SourceControlEnabled);
+            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.EnableExperimentalFeatures, viewModel.SourceControlEnabled);
         }
 
         //[TestCategory("Settings")]

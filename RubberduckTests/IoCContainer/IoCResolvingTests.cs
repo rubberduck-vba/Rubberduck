@@ -20,7 +20,7 @@ namespace RubberduckTests.IoCContainer
             var vbeBuilder = new MockVbeBuilder();
             var ide = vbeBuilder.Build().Object;
             var addin = new Mock<IAddIn>().Object;
-            var initialSettings = new GeneralSettings {SourceControlEnabled = true};
+            var initialSettings = new GeneralSettings {EnableExperimentalFeatures = true};
 
             IWindsorContainer container = null;
             try
@@ -50,7 +50,7 @@ namespace RubberduckTests.IoCContainer
             var vbeBuilder = new MockVbeBuilder();
             var ide = vbeBuilder.Build().Object;
             var addin = new Mock<IAddIn>().Object;
-            var initialSettings = new GeneralSettings { SourceControlEnabled = true };
+            var initialSettings = new GeneralSettings { EnableExperimentalFeatures = true };
 
             IWindsorContainer container = null;
             try

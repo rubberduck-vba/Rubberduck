@@ -124,6 +124,7 @@
     <Compile Include="Binding\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="Common\ExperimentalAttribute.cs" />
     <Compile Include="ComReflection\ComAlias.cs" />
     <Compile Include="ComReflection\ComBase.cs" />
     <Compile Include="ComReflection\ComCoClass.cs" />

@@ -196,7 +196,7 @@ namespace Rubberduck.UI.Settings
                 AutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
                 MinimumLogLevel = SelectedLogLevel.Ordinal,
-                SourceControlEnabled = SourceControlEnabled
+                EnableExperimentalFeatures = SourceControlEnabled
             };
         }
 
@@ -210,7 +210,7 @@ namespace Rubberduck.UI.Settings
             AutoSaveEnabled = general.AutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
-            SourceControlEnabled = general.SourceControlEnabled;
+            SourceControlEnabled = general.EnableExperimentalFeatures;
         }
 
         private void ImportSettings()

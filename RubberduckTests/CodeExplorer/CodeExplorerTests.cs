@@ -2123,7 +2123,7 @@ End Sub";
 
             var generalSettings = new GeneralSettings
             {
-                SourceControlEnabled = true
+                EnableExperimentalFeatures = true
             };
 
             var userSettings = new UserSettings(generalSettings, null, null, null, unitTestSettings, null, null);

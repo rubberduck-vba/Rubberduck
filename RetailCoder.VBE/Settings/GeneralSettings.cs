@@ -14,7 +14,7 @@ namespace Rubberduck.Settings
         bool AutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
         int MinimumLogLevel { get; set; }
-        bool SourceControlEnabled { get; set; }
+        bool EnableExperimentalFeatures { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
@@ -48,7 +48,7 @@ namespace Rubberduck.Settings
             }
         }
 
-        public bool SourceControlEnabled { get; set; }
+        public bool EnableExperimentalFeatures { get; set; }
 
         public GeneralSettings()
         {
@@ -59,7 +59,7 @@ namespace Rubberduck.Settings
             AutoSaveEnabled = false;
             AutoSavePeriod = 10;
             MinimumLogLevel = LogLevel.Off.Ordinal;
-            SourceControlEnabled = false;
+            EnableExperimentalFeatures = false;
         }
 
         public bool Equals(GeneralSettings other)
@@ -72,7 +72,7 @@ namespace Rubberduck.Settings
                    AutoSaveEnabled == other.AutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
                    MinimumLogLevel == other.MinimumLogLevel &&
-                   SourceControlEnabled == other.SourceControlEnabled;
+                   EnableExperimentalFeatures == other.EnableExperimentalFeatures;
         }
     }
 }

@@ -574,7 +574,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public bool IsSourceControlEnabled
         {
-            get { return _generalSettings.SourceControlEnabled; }
+            get { return _generalSettings.EnableExperimentalFeatures; }
         }
 
         public Visibility TreeViewVisibility
