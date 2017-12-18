@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestClass]
     public class EmptyForEachInspectionTests
     {
         [TestMethod]
@@ -44,7 +44,7 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void EmptyForLoopBlock_FiresOnEmptyLoopBlocks()
         {

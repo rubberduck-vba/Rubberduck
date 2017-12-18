@@ -8,7 +8,7 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass, Ignore]
+    [TestClass]
     public class RemoveEmptyIfBlockQuickFixTests
     {
         [TestMethod]

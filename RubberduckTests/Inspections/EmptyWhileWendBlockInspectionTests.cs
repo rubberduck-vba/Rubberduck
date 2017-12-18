@@ -7,7 +7,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestClass]
     public class EmptyWhileWendBlockInspectionTests
     {
         [TestMethod]

@@ -7,7 +7,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestClass]
     public class EmptyIfBlockInspectionTests
     {
         [TestMethod]
