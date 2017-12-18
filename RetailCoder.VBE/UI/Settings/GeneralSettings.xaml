@@ -214,7 +214,7 @@
                             <AccessText TextWrapping="Wrap" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ExperimentalFeaturesWarning}"/>
                         </Label.Content>
                     </Label>
-                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_EnableSourceControl}"
+                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_EnableExperimentalFeatures}"
                            IsChecked="{Binding SourceControlEnabled}" />
 
                 </StackPanel>

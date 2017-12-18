@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1872,198 +1872,195 @@ End Sub</value>
   <data name="SettingsCaption_WindowSettings" xml:space="preserve">
     <value>Paramètres des fenêtres</value>
   </data>
-  <data name="CodeExplorer_OpenDesigner">
+  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
     <value>Ouvrir le designer</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryTitle">
+  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
     <value>Créer un nouveau repository local</value>
   </data>
-  <data name="RenameDialog_InterfaceRenameError">
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>
   </data>
-  <data name="Assert_NeitherParameterIsArray">
+  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
     <value>Ni [attendu] ni [réel] n'est un tableau.</value>
   </data>
-  <data name="Assert_UnexpectedArrayFormat">
+  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont des tableaux. Considérez utiliser {0}.</value>
   </data>
-  <data name="Assert_ReferenceValueMismatch">
+  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
     <value>[attendu] est une référence, mais [réel] est une valeur.</value>
   </data>
-  <data name="Assert_GenericException">
+  <data name="Assert_GenericException" xml:space="preserve">
     <value>Une exception s'est produite lors de l'exécution des tests.</value>
   </data>
-  <data name="EmptyUIRefreshMessage">
+  <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>pour analyser et traiter
 les projets dans le VBE.</value>
   </data>
-  <data name="CodeExplorer_ExportAll">
+  <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Exporter le projet...</value>
   </data>
-  <data name="Assert_UBoundMismatchFormat">
+  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: valeur UBound attendue {1}; valeur UBound réelle {2}. {3}</value>
   </data>
-  <data name="Assert_FailedMessageFormat">
+  <data name="Assert_FailedMessageFormat" xml:space="preserve">
     <value>Échec de l'assertion {0}. {1}</value>
   </data>
-  <data name="Assert_UnexpectedNullArraysFormat">
+  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont 'Nothing'. Considérez utiliser {0}.</value>
   </data>
-  <data name="ToolsMenu_ExportProject">
+  <data name="ToolsMenu_ExportProject" xml:space="preserve">
     <value>Exporter le projet actif...</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles">
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>Fichiers VB</value>
   </data>
-  <data name="GeneralSettings_EnableSourceControl">
-    <value>Activer le contrôle des source. Prendra effet au prochain démarrage.</value>
-  </data>
-  <data name="Assert_UnexpectedValueComparisonFormat">
+  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont des valeurs. Considérez utiliser {0}.</value>
   </data>
-  <data name="Assert_ComException">
+  <data name="Assert_ComException" xml:space="preserve">
     <value>Une erreur COM inattendue s'est produite lors de l'exécution des tests.</value>
   </data>
-  <data name="RenameDialog_BuiltInNameError">
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0}{1} ne peut être renommé.</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryDescription">
+  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
     <value>Crée un nouveau repository à partir du projet actif.</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests">
+  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
     <value>Tests inconclusifs</value>
   </data>
-  <data name="Assert_UnexpectedReferenceComparisonFormat">
+  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont des références. Considérez utiliser {0}.</value>
   </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler">
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles">
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Tous les fichiers</value>
   </data>
-  <data name="SourceControl_CloneRepositoryDescription">
+  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
     <value>Cloner sur le disque local un repository situé à l'URL spécifiée. Le repository sera ensuite chargé dans le projet actif.</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByType">
+  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
     <value>Regrouper par type</value>
   </data>
-  <data name="RefactorRename_TargetNotUserDefinedError">
+  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>L'identifiant {0} ne peut être renommé.</value>
   </data>
-  <data name="Assert_EasterEggIVerifyPassed">
+  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
     <value>Ouais, moi aussi je vérifie mes entrées =)</value>
   </data>
-  <data name="CodeExplorer_AddModule">
+  <data name="CodeExplorer_AddModule" xml:space="preserve">
     <value>Ajouter un module</value>
   </data>
-  <data name="RefactorRename_TargetNotDefinedError">
+  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
     <value>Impossible de détecter la cible à renommer</value>
   </data>
-  <data name="Assert_InvalidFakePassThrough">
+  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
     <value>Configuration invalide de IFake {0}. La propriété PassThrough doit être à False.</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByName">
+  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
     <value>Par nom</value>
   </data>
-  <data name="Assert_EasterEggAssertClassPassed">
+  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
     <value>On essaie de faire quoi au juste?</value>
   </data>
-  <data name="Assert_DimensionMismatchFormat">
+  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
     <value>{0} dimensions attendues; {1} dimensions réelles. {2}</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Title">
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Importer fichiers source</value>
   </data>
-  <data name="SourceControl_OpenRepositoryTitle">
+  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
     <value>Ouvrir un repository local</value>
   </data>
-  <data name="Assert_VerifyParameterNonNumeric">
+  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
     <value>Le paramètre {0} n'avait pas une valeur numérique lors de l'invocation {1}. {2}</value>
   </data>
-  <data name="EmptyUIRefreshMessage_Title">
+  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck ne voit rien pour l'instant.</value>
   </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning">
+  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
   </data>
-  <data name="Assert_VerifyNoInvocationFormat">
+  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
     <value>Aucune invocation correspondante pour le paramètre {0}; seulement {1} invocations. {2}</value>
   </data>
-  <data name="Assert_VerifyInternalErrorMessage">
+  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
     <value>Rubberduck n'a pas pu traiter les résultats de l'invocation.</value>
   </data>
-  <data name="HotkeyDescription_ExportActiveProject">
+  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
     <value>Exporter le projet actif</value>
   </data>
-  <data name="CodeExplorer_Open">
+  <data name="CodeExplorer_Open" xml:space="preserve">
     <value>Ouvrir</value>
   </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation">
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>La méthode '{0}' répond à l'événement '{1}.{2}'. Renommer l'événement '{2}'?</value>
   </data>
-  <data name="ExportAllCommand_SaveAsDialog_Title">
+  <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Veuillez sélectionner un dossier où exporter les fichier source de {0}:</value>
   </data>
-  <data name="CodeExplorer_AddFormText">
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
     <value>Formulaire (.frm)</value>
   </data>
-  <data name="Assert_VerifyParameterNotPassed">
+  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
     <value>Le paramètre {0} n'a pas été passé lors de l'invocation {1}. {2}</value>
   </data>
-  <data name="Assert_ParameterIsNotArrayFormat">
+  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
     <value>{0} n'est pas un tableau.</value>
   </data>
-  <data name="GeneralSettings_ExperimentalFeatures">
+  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Fonctionnalités expérimentales:</value>
   </data>
-  <data name="Assert_MismatchedTypes">
+  <data name="Assert_MismatchedTypes" xml:space="preserve">
     <value>[attendu] et [réel] sont de types différents.</value>
   </data>
-  <data name="Assert_LBoundMismatchFormat">
+  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: valeur LBound attendue {1}; valeur LBound réelle {2}. {3}</value>
   </data>
-  <data name="Assert_NotImplemented">
+  <data name="Assert_NotImplemented" xml:space="preserve">
     <value>Pas implémenté.</value>
   </data>
-  <data name="Assert_ValueReferenceMismatch">
+  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
     <value>[attendu] est une valeur, mais [réel] est une référence.</value>
   </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText">
+  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
     <value>Module de tests avec modèles</value>
   </data>
-  <data name="Assert_ParameterResultFormat">
+  <data name="Assert_ParameterResultFormat" xml:space="preserve">
     <value>Attendu: {0}; Réel: {1}. {2}</value>
   </data>
-  <data name="SourceControl_OpenRepositoryDescription">
+  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
     <value>Ouvrir un repository local; le projet actif recevra le code source.</value>
   </data>
-  <data name="RenameDialog_DefaultRenameError">
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Impossible de renommer {0}.</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder">
+  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>Tel que dans le module</value>
   </data>
-  <data name="Assert_EasterEggIFakePassed">
+  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
     <value>Attendu: Stack overflow?; Réel: Clause de garde. Oui oui!</value>
   </data>
-  <data name="RubberduckMenu_Refresh">
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
     <value>Actualiser</value>
   </data>
-  <data name="Preview">
+  <data name="Preview" xml:space="preserve">
     <value>Aperçu</value>
   </data>
-  <data name="ToDoExplorer_CopyToolTip">
+  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copier dans le presse-papier</value>
   </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural">
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck - {0}
 {1} marqueurs TODO trouvés.</value>
   </data>
-  <data name="ToDoExplorerToDoItemFormat">
+  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
     <value>{0}: {1} - {2}.{3} ligne {4}.</value>
   </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular">
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck marqueurs TODO - {0}
 {1} marqueurs trouvés.</value>
   </data>

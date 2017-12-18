@@ -1889,11 +1889,11 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Source Control. Requires a restart to take effect..
+        ///   Looks up a localized string similar to Enable experimental features. Requires a restart to take effect..
         /// </summary>
-        public static string GeneralSettings_EnableSourceControl {
+        public static string GeneralSettings_EnableExperimentalFeatures {
             get {
-                return ResourceManager.GetString("GeneralSettings_EnableSourceControl", resourceCulture);
+                return ResourceManager.GetString("GeneralSettings_EnableExperimentalFeatures", resourceCulture);
             }
         }
         
