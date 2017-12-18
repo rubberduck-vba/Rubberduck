@@ -156,10 +156,10 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyClasses = assembly.GetTypes()
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                var assemblyTypes = assembly.DefinedTypes
+                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
 
-                container.Register(Classes.From(assemblyClasses)
+                container.Register(Classes.From(assemblyTypes)
                     .InSameNamespaceAs<Configuration>()
                     .WithService.AllInterfaces()
                     .LifestyleSingleton());
@@ -189,10 +189,12 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyClasses = assembly.GetTypes()
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                var assemblyTypes = assembly.DefinedTypes
+                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+
+                assemblyTypes.Any(t => t.Name == nameof(IMessageBox));
                 
-                container.Register(Classes.From(assemblyClasses)
+                container.Register(Classes.From(assemblyTypes)
                     .Where(type => type.Namespace != null
                                    && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
                                    && !type.Name.Equals("SelectionChangeService")
@@ -209,10 +211,10 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyClasses = assembly.GetTypes()
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                var assemblyTypes = assembly.DefinedTypes
+                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
 
-                container.Register(Classes.From(assemblyClasses)
+                container.Register(Types.From(assemblyTypes)
                     .Where(type => type.IsInterface && type.Name.EndsWith("Factory"))
                     .Configure(c => c.AsFactory())
                     .LifestyleSingleton());
@@ -233,10 +235,10 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyClasses = assembly.GetTypes()
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                var assemblyTypes = assembly.DefinedTypes
+                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
 
-                container.Register(Classes.From(assemblyClasses)
+                container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IQuickFix>()
                     .WithService.Base()
                     .WithService.Self()
@@ -248,10 +250,10 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyClasses = assembly.GetTypes()
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                var assemblyTypes = assembly.DefinedTypes
+                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
 
-                container.Register(Classes.From(assemblyClasses)
+                container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IInspection>()
                     .WithService.Base()
                     .LifestyleTransient());
@@ -262,10 +264,10 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyClasses = assembly.GetTypes()
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                var assemblyTypes = assembly.DefinedTypes
+                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
                 
-                container.Register(Classes.From(assemblyClasses)
+                container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IParseTreeInspection>()
                     .WithService.Base()
                     .WithService.Select(new[]{typeof(IInspection)})

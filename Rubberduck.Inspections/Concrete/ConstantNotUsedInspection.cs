@@ -5,7 +5,6 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -13,7 +12,6 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    [Experimental]
     public sealed class ConstantNotUsedInspection : InspectionBase
     {
         public ConstantNotUsedInspection(RubberduckParserState state)
