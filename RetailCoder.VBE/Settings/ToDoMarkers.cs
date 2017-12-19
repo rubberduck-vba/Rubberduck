@@ -46,7 +46,10 @@ namespace Rubberduck.Settings
         {
             var other = obj as ToDoMarker;
 
-            if (other == null) { return false; }
+            if (other == null)
+            {
+                return false;
+            }
 
             return Text == other.Text;
         }

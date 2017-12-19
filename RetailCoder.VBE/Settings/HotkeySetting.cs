@@ -22,10 +22,7 @@ namespace Rubberduck.Settings
         public bool HasCtrlModifier { get; set; }
 
         [XmlIgnore]
-        public string Prompt
-        {
-            get { return RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, CultureInfo.CurrentUICulture); } 
-        }
+        public string Prompt => RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, CultureInfo.CurrentUICulture);
 
         public override string ToString()
         {
@@ -38,9 +35,7 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            var hotkey = obj as HotkeySetting;
-
-            return hotkey != null &&
+            return obj is HotkeySetting hotkey &&
                    hotkey.Name == Name &&
                    hotkey.Key1 == Key1 &&
                    hotkey.Key2 == Key2 &&

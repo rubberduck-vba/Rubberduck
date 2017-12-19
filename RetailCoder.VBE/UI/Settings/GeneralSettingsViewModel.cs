@@ -190,10 +190,10 @@ namespace Rubberduck.UI.Settings
             return new Rubberduck.Settings.GeneralSettings
             {
                 Language = SelectedLanguage,
-                ShowSplash = ShowSplashAtStartup,
-                CheckVersion = CheckVersionAtStartup,
-                SmartIndenterPrompted = _indenterPrompted,
-                AutoSaveEnabled = AutoSaveEnabled,
+                CanShowSplash = ShowSplashAtStartup,
+                CanCheckVersion = CheckVersionAtStartup,
+                IsSmartIndenterPrompted = _indenterPrompted,
+                IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
                 MinimumLogLevel = SelectedLogLevel.Ordinal,
                 EnableExperimentalFeatures = SourceControlEnabled
@@ -204,10 +204,10 @@ namespace Rubberduck.UI.Settings
         {
             SelectedLanguage = Languages.First(l => l.Code == general.Language.Code);
             Hotkeys = new ObservableCollection<HotkeySetting>(hottkey.Settings);
-            ShowSplashAtStartup = general.ShowSplash;
-            CheckVersionAtStartup = general.CheckVersion;
-            _indenterPrompted = general.SmartIndenterPrompted;
-            AutoSaveEnabled = general.AutoSaveEnabled;
+            ShowSplashAtStartup = general.CanShowSplash;
+            CheckVersionAtStartup = general.CanCheckVersion;
+            _indenterPrompted = general.IsSmartIndenterPrompted;
+            AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
             SourceControlEnabled = general.EnableExperimentalFeatures;
@@ -228,7 +228,7 @@ namespace Rubberduck.UI.Settings
                 var hkService = new XmlPersistanceService<HotkeySettings> { FilePath = dialog.FileName };
                 var hotkey = hkService.Load(new HotkeySettings());
                 //Always assume Smart Indenter registry import has been prompted if importing.
-                general.SmartIndenterPrompted = true;
+                general.IsSmartIndenterPrompted = true;
                 TransferSettingsToView(general, hotkey);
             }
         }

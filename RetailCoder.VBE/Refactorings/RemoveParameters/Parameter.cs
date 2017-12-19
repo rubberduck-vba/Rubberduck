@@ -16,7 +16,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private bool _isRemoved;
         public bool IsRemoved
         {
-            get { return _isRemoved; }
+            get => _isRemoved;
             set
             {
                 _isRemoved = value;

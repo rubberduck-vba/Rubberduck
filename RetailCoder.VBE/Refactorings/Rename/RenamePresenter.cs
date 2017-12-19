@@ -15,39 +15,40 @@ namespace Rubberduck.Refactorings.Rename
     public class RenamePresenter : IRenamePresenter
     {
         private readonly IRefactoringDialog<RenameViewModel> _view;
-        private readonly RenameModel _model;
 
         public RenamePresenter(IRefactoringDialog<RenameViewModel> view, RenameModel model)
         {
             _view = view;
 
-            _model = model;
+            Model = model;
         }
 
-        public RenameModel Model => _model;
+        public RenameModel Model { get; }
 
         public RenameModel Show()
         {
-            if (_model.Target == null) { return null; }
-
-            return Show(_model.Target);
+            return Model.Target == null ? null : Show(Model.Target);
         }
 
         public RenameModel Show(Declaration target)
         {
-            if(null == target) { return null; }
+            if (null == target)
+            {
+                return null;
+            }
 
-            _model.Target = target;
+            Model.Target = target;
             _view.ViewModel.Target = target;
 
             _view.ShowDialog();
+
             if (_view.DialogResult != DialogResult.OK)
             {
                 return null;
             }
 
-            _model.NewName = _view.ViewModel.NewName;
-            return _model;
+            Model.NewName = _view.ViewModel.NewName;
+            return Model;
         }
     }
 }

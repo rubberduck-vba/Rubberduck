@@ -10,7 +10,6 @@ namespace Rubberduck.Common
         private readonly User32.TimerProc _timerProc;
 
         private IntPtr _timerId;
-        private bool _isAttached;
 
         public TimerHook(IntPtr mainWindowHandle)
         {
@@ -18,12 +17,13 @@ namespace Rubberduck.Common
             _timerProc = TimerCallback;
         }
 
-        public bool IsAttached { get { return _isAttached; } }
+        public bool IsAttached { get; private set; }
+
         public event EventHandler<HookEventArgs> MessageReceived;
 
         public void Attach()
         {
-            if (_isAttached)
+            if (IsAttached)
             {
                 return;
             }
@@ -32,7 +32,7 @@ namespace Rubberduck.Common
             {
                 var timerId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
                 User32.SetTimer(_mainWindowHandle, timerId, 500, _timerProc);
-                _isAttached = true;
+                IsAttached = true;
             }
             catch (Exception exception)
             {
@@ -42,7 +42,7 @@ namespace Rubberduck.Common
 
         public void Detach()
         {
-            if (!_isAttached)
+            if (!IsAttached)
             {
                 Debug.Assert(_timerId == IntPtr.Zero);
                 return;
@@ -54,7 +54,7 @@ namespace Rubberduck.Common
                 Kernel32.GlobalDeleteAtom(_timerId);
 
                 _timerId = IntPtr.Zero;
-                _isAttached = false;
+                IsAttached = false;
             }
             catch (Exception exception)
             {
@@ -64,11 +64,7 @@ namespace Rubberduck.Common
 
         private void OnTick()
         {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler.Invoke(this, HookEventArgs.Empty);
-            }
+            MessageReceived?.Invoke(this, HookEventArgs.Empty);
         }
 
         private void TimerCallback(IntPtr hWnd, WindowLongFlags msg, IntPtr timerId, uint time)
@@ -78,7 +74,7 @@ namespace Rubberduck.Common
 
         public void Dispose()
         {
-            if (_isAttached)
+            if (IsAttached)
             {
                 Detach();
             }

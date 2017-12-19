@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.Common.WinAPI;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using NLog;
@@ -42,8 +41,7 @@ namespace Rubberduck.Common
 
             foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
             {
-                RubberduckHotkey assigned;
-                if (Enum.TryParse(hotkey.Name, out assigned))
+                if (Enum.TryParse(hotkey.Name, out RubberduckHotkey assigned))
                 {
                     var command = Command(assigned);
                     Debug.Assert(command != null);
@@ -54,7 +52,7 @@ namespace Rubberduck.Common
             Attach();
         }
 
-        public IEnumerable<IAttachable> Hooks { get { return _hooks; } }
+        public IEnumerable<IAttachable> Hooks => _hooks;
 
         public void AddHook(IAttachable hook)
         {
@@ -65,11 +63,7 @@ namespace Rubberduck.Common
 
         private void OnMessageReceived(object sender, HookEventArgs args)
         {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler.Invoke(sender, args);
-            }
+            MessageReceived?.Invoke(sender, args);
         }
 
         public bool IsAttached { get; private set; }
@@ -121,8 +115,8 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            var hotkey = sender as IHotkey;
-            if (hotkey != null && hotkey.Command.CanExecute(null))
+            if (sender is IHotkey hotkey 
+                && hotkey.Command.CanExecute(null))
             {
                 hotkey.Command.Execute(null);
                 return;
