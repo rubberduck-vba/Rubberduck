@@ -91,7 +91,6 @@
     <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
-    <Compile Include="Concrete\MissingAnnotationInspection.cs" />
     <Compile Include="Concrete\MissingAttributeInspection.cs" />
     <Compile Include="Abstract\InspectionResultBase.cs" />
     <Compile Include="Concrete\RedundantByRefModifierInspection.cs" />
