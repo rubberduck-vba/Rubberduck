@@ -180,7 +180,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             _rewriters.Add(rewriter);
         }
 
-        private void UpdateCallsToOtherModule(List<IdentifierReference> references)
+        private void UpdateCallsToOtherModule(IEnumerable<IdentifierReference> references)
         {
             foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {

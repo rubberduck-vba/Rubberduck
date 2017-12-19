@@ -8,8 +8,8 @@ namespace Rubberduck.Common
 {
     public static class VariableNameValidator
     {
-        private static readonly string Vowels = "aeiouyàâäéèêëïîöôùûü";
-        private static readonly int MinVariableNameLength = 3;
+        private const string Vowels = "aeiouyàâäéèêëïîöôùûü";
+        private const int MinVariableNameLength = 3;
 
         private static bool HasVowel(string name)
         {
