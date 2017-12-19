@@ -1,40 +1,61 @@
+using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using NLog;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();     
+
         protected SafeComWrapper(T target)
         {
             Target = target;
         }
 
-        //private bool _isReleased;
-        //public virtual void Release(bool final = false)
-        //{
-        //    if (IsWrappingNullReference || _isReleased || !Marshal.IsComObject(Target))
-        //    {
-        //        _isReleased = true;
-        //        return;
-        //    }
+        private int? _rcwReferenceCount;
+        public virtual void Release(bool final = false)
+        {
+            if (HasBeenReleased)
+            {
+                _logger.Warn($"Tried to release already released COM wrapper of type {this.GetType()}.");
+                return;
+            }
+            if (IsWrappingNullReference)
+            {
+                _rcwReferenceCount = 0;
+                _logger.Warn($"Tried to release a COM wrapper of type {this.GetType()} wrapping a null reference.");
+                return;
+            }
 
-        //    try
-        //    {
-        //        if (final)
-        //        {
-        //            Marshal.FinalReleaseComObject(Target);
-        //        }
-        //        else
-        //        {
-        //            Marshal.ReleaseComObject(Target);
-        //        }
-        //    }
-        //    finally
-        //    {
-        //        _isReleased = true;
-        //    }
-        //}
+            if (!Marshal.IsComObject(Target))
+            {
+                _rcwReferenceCount = 0;
+                _logger.Warn($"Tried to release a COM wrapper of type {this.GetType()} whose target is not a COM object.");
+                return;
+            }
+
+            try
+            {
+                if (final)
+                {
+                    _rcwReferenceCount = Marshal.FinalReleaseComObject(Target);
+                    _logger.Trace($"Final released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+                }
+                else
+                {
+                    _rcwReferenceCount = Marshal.ReleaseComObject(Target);
+                    _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+                }
+            }
+            catch(COMException exception)
+            {
+                _logger.Warn(exception,$"Failed to release COM wrapper of type {this.GetType()}.");
+            }
+        }
+
+        public bool HasBeenReleased => _rcwReferenceCount == 0;
 
         public bool IsWrappingNullReference => Target == null;
         object INullObjectWrapper.Target => Target;

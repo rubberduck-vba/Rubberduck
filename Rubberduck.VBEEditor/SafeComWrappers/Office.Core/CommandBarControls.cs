@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -70,34 +69,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
-        }
-
-
-        //This does not release the children because they usually require their own cleanup, which should make the decision whather to release or not.
-        private bool _isReleased;
-        public virtual void Release(bool final = false)
-        {
-            if (IsWrappingNullReference || _isReleased || !Marshal.IsComObject(Target))
-            {
-                _isReleased = true;
-                return;
-            }
-
-            try
-            {
-                if (final)
-                {
-                    Marshal.FinalReleaseComObject(Target);
-                }
-                else
-                {
-                    Marshal.ReleaseComObject(Target);
-                }
-            }
-            finally
-            {
-                _isReleased = true;
-            }
         }
     }
 }

@@ -4,7 +4,7 @@ using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract
 {
-    public interface ICommandBarControl : ISafeComWrapper, IEquatable<ICommandBarControl>, IReleasableCOMObject
+    public interface ICommandBarControl : ISafeComWrapper, IEquatable<ICommandBarControl>
     {
         string Caption { get; set; }
         string DescriptionText { get; set; }

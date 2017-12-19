@@ -165,31 +165,5 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             return IsWrappingNullReference ? 0 : HashCode.Compute(Type, Id, Index, IsBuiltIn, Target.Parent);
         }
-
-        private bool _isReleased;
-        public virtual void Release(bool final = false)
-        {
-            if (IsWrappingNullReference || _isReleased || !Marshal.IsComObject(Target))
-            {
-                _isReleased = true;
-                return;
-            }
-
-            try
-            {
-                if (final)
-                {
-                    Marshal.FinalReleaseComObject(Target);
-                }
-                else
-                {
-                    Marshal.ReleaseComObject(Target);
-                }
-            }
-            finally
-            {
-                _isReleased = true;
-            }
-        }
     }
 }
