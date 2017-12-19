@@ -151,6 +151,7 @@ namespace Rubberduck.UI
                 }
                 catch(Exception)
                 {
+                    Debug.WriteLine("Failed to unsubscribe event handler from the parent subclassing window of a DockableWindowHost on WM_DESTROY. It might have been unsubscribed already.");
                     //We cannot really do anything here. This is only a safeguard to guarantee that the event gets unsubscribed. If it does not work, it might be gone already.
                 }
 
