@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
@@ -93,6 +92,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Logger.Debug($"Removing menu {_key}.");
             RemoveChildren();
             Item?.Delete();
+            Item?.Release();
             Item = null;
         }
 
@@ -106,6 +106,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 child.Click -= child_Click;
                 child.Delete();
+                child.Release();
             }
         }
 
