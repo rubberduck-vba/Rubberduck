@@ -10,9 +10,6 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
     {
-        private readonly string _fullPath;
-        private readonly string _name;
-        private readonly string _folderAttribute;
         private static readonly DeclarationType[] ComponentTypes =
         {
             DeclarationType.ClassModule, 
@@ -24,12 +21,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerCustomFolderViewModel(CodeExplorerItemViewModel parent, string name, string fullPath)
         {
             _parent = parent;
-            _fullPath = fullPath;
-            _name = name.Replace("\"", string.Empty);
-            _folderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
+            FullPath = fullPath;
+            Name = name.Replace("\"", string.Empty);
+            FolderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
 
-            _collapsedIcon = GetImageSource(resx.folder_horizontal);
-            _expandedIcon = GetImageSource(resx.folder_horizontal_open);
+            CollapsedIcon = GetImageSource(resx.folder_horizontal);
+            ExpandedIcon = GetImageSource(resx.folder_horizontal_open);
         }
 
         public void AddNodes(List<Declaration> declarations)
@@ -54,20 +51,19 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public string FolderAttribute { get { return _folderAttribute; } }
+        public string FolderAttribute { get; }
 
-        public string FullPath { get { return _fullPath; } }
+        public string FullPath { get; }
 
-        public override string Name { get { return _name; } }
-        public override string NameWithSignature { get { return Name; } }
+        public override string Name { get; }
 
-        public override QualifiedSelection? QualifiedSelection { get { return null; } }
+        public override string NameWithSignature => Name; // Is this actually doing anything? Should this member be replaced with 'Name'?
 
-        private readonly BitmapImage _collapsedIcon;
-        public override BitmapImage CollapsedIcon { get { return _collapsedIcon; } }
+        public override QualifiedSelection? QualifiedSelection => null;
 
-        private readonly BitmapImage _expandedIcon;
-        public override BitmapImage ExpandedIcon { get { return _expandedIcon; } }
+        public override BitmapImage CollapsedIcon { get; }
+
+        public override BitmapImage ExpandedIcon { get; }
 
         // I have to set the parent from a different location than
         // the node is created because of the folder helper
@@ -77,6 +73,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private CodeExplorerItemViewModel _parent;
-        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
+        public override CodeExplorerItemViewModel Parent => _parent;
     }
 }

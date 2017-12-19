@@ -32,20 +32,18 @@ namespace Rubberduck.API.VBA
     [EditorBrowsable(EditorBrowsableState.Always)]
     public class Declaration : IDeclaration
     {
-        private readonly RubberduckDeclaration _declaration;
-
         internal Declaration(RubberduckDeclaration declaration)
         {
-            _declaration = declaration;
+            Instance = declaration;
         }
 
-        protected RubberduckDeclaration Instance { get { return _declaration; } }
+        protected RubberduckDeclaration Instance { get; }
 
-        public bool IsArray { get { return _declaration.IsArray; } }
-        public string Name { get { return _declaration.IdentifierName; } }
-        public Accessibility Accessibility { get { return (Accessibility)_declaration.Accessibility; } }
-        public DeclarationType DeclarationType {get { return TypeMappings[_declaration.DeclarationType]; }}
-        public string TypeName { get { return _declaration.AsTypeName; } }
+        public bool IsArray => Instance.IsArray;
+        public string Name => Instance.IdentifierName;
+        public Accessibility Accessibility => (Accessibility)Instance.Accessibility;
+        public DeclarationType DeclarationType => TypeMappings[Instance.DeclarationType];
+        public string TypeName => Instance.AsTypeName;
 
         private static readonly IDictionary<Parsing.Symbols.DeclarationType,DeclarationType> TypeMappings =
             new Dictionary<Parsing.Symbols.DeclarationType, DeclarationType>
@@ -75,20 +73,14 @@ namespace Rubberduck.API.VBA
             };
 
         private Declaration _parentDeclaration;
-        public Declaration ParentDeclaration
-        {
-            get
-            {
-                return _parentDeclaration ?? (_parentDeclaration = new Declaration(Instance.ParentDeclaration));
-            }
-        }
+        public Declaration ParentDeclaration => _parentDeclaration ?? (_parentDeclaration = new Declaration(Instance.ParentDeclaration));
 
         private IdentifierReference[] _references;
         public IdentifierReference[] References
         {
             get
             {
-                return _references ?? (_references = _declaration.References.Select(item => new IdentifierReference(item)).ToArray());
+                return _references ?? (_references = Instance.References.Select(item => new IdentifierReference(item)).ToArray());
             }
         }
     }

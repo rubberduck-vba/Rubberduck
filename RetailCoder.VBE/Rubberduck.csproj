@@ -464,6 +464,11 @@
       <DependentUpon>ReorderParametersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="UnitTesting\Fakes\CurDir.cs" />
     <Compile Include="UnitTesting\Fakes\DoEvents.cs" />
@@ -712,11 +717,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\Converters\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
@@ -1017,6 +1017,11 @@
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -1039,11 +1044,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControl.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -1100,6 +1100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="API\Plugin\" />
+    <Folder Include="NewFolder1\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>

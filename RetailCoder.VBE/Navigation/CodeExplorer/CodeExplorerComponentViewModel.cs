@@ -13,11 +13,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
-        private readonly Declaration _declaration;
-        public Declaration Declaration { get { return _declaration; } }
+        public Declaration Declaration { get; }
 
-        private readonly CodeExplorerItemViewModel _parent;
-        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
+        public override CodeExplorerItemViewModel Parent { get; }
 
         private static readonly DeclarationType[] MemberTypes =
         {
@@ -37,8 +35,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
         {
-            _parent = parent;
-            _declaration = declaration;
+            Parent = parent;
+            Declaration = declaration;
             _icon = Icons[DeclarationType];
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
@@ -48,7 +46,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
                                 .ToList<CodeExplorerItemViewModel>();
 
-            _name = _declaration.IdentifierName;
+            _name = Declaration.IdentifierName;
 
             var component = declaration.QualifiedName.QualifiedModuleName.Component;
             try
@@ -81,7 +79,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool ContainsBuiltinDocumentPropertiesProperty()
         {
-            var properties = _declaration.QualifiedName.QualifiedModuleName.Component.Properties;
+            var properties = Declaration.QualifiedName.QualifiedModuleName.Component.Properties;
             {
                 return properties.Any(item => item.Name == "BuiltinDocumentProperties");
             }
@@ -90,7 +88,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private bool _isErrorState;
         public bool IsErrorState
         {
-            get { return _isErrorState; }
+            get => _isErrorState;
             set
             {
                 _isErrorState = value;
@@ -112,18 +110,18 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                return _declaration.DeclarationType == DeclarationType.ProceduralModule
-                       && _declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
+                return Declaration.DeclarationType == DeclarationType.ProceduralModule
+                       && Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
             }
         }
 
         private readonly string _name;
-        public override string Name { get { return _name; } }
-        public override string NameWithSignature { get { return _name; } }
+        public override string Name => _name;
+        public override string NameWithSignature => _name;
 
-        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
+        public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
 
-        private ComponentType ComponentType { get { return _declaration.QualifiedName.QualifiedModuleName.ComponentType; } }
+        private ComponentType ComponentType => Declaration.QualifiedName.QualifiedModuleName.ComponentType;
 
         private static readonly IDictionary<ComponentType, DeclarationType> DeclarationTypes = new Dictionary<ComponentType, DeclarationType>
         {
@@ -159,7 +157,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         };
 
         private BitmapImage _icon;
-        public override BitmapImage CollapsedIcon { get { return _icon; } }
-        public override BitmapImage ExpandedIcon { get { return _icon; } }
+        public override BitmapImage CollapsedIcon => _icon;
+        public override BitmapImage ExpandedIcon => _icon;
     }
 }

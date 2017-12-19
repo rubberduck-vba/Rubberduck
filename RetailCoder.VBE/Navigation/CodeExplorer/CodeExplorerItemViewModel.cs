@@ -18,12 +18,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             var nodeComparison = new CompareByNodeType().Compare(x, y);
-            if (nodeComparison != 0)
-            {
-                return nodeComparison;
-            }
 
-            return string.CompareOrdinal(x.NameWithSignature, y.NameWithSignature);
+            return nodeComparison != 0
+                ? nodeComparison
+                : string.CompareOrdinal(x.NameWithSignature, y.NameWithSignature);
         }
     }
 
@@ -67,10 +65,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             // keep separate types separate
             if (xNode.Declaration.DeclarationType != yNode.Declaration.DeclarationType)
             {
-                int xValue, yValue;
-
-                if (SortOrder.TryGetValue(xNode.Declaration.DeclarationType, out xValue) &&
-                    SortOrder.TryGetValue(yNode.Declaration.DeclarationType, out yValue))
+                if (SortOrder.TryGetValue(xNode.Declaration.DeclarationType, out var xValue) &&
+                    SortOrder.TryGetValue(yNode.Declaration.DeclarationType, out var yValue))
                 {
                     if (xValue != yValue)
                     { return xValue < yValue ? -1 : 1; }
@@ -169,7 +165,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private List<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
         public List<CodeExplorerItemViewModel> Items
         {
-            get { return _items; }
+            get => _items;
             protected set
             {
                 _items = value;
@@ -180,7 +176,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private bool _isExpanded;
         public bool IsExpanded
         {
-            get { return _isExpanded; }
+            get => _isExpanded;
             set
             {
                 _isExpanded = value;
@@ -193,7 +189,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private bool _isVisisble = true;
         public bool IsVisible
         {
-            get { return _isVisisble; }
+            get => _isVisisble;
             set
             {
                 _isVisisble = value;
@@ -229,8 +225,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public Declaration GetSelectedDeclaration()
         {
-            return this is ICodeExplorerDeclarationViewModel
-                ? ((ICodeExplorerDeclarationViewModel)this).Declaration
+            return this is ICodeExplorerDeclarationViewModel viewModel
+                ? viewModel.Declaration
                 : null;
         }
 
