@@ -42,10 +42,36 @@ namespace Rubberduck.UI.Settings
             InspectionSettings.CommitEdit();
         }
 
+        private string _inspectionSettingsFilter;
+        public string InspectionSettingsFilter
+        {
+            get => _inspectionSettingsFilter;
+            set
+            {
+                if (_inspectionSettingsFilter != value)
+                {
+                    _inspectionSettingsFilter = value;
+                    OnPropertyChanged(nameof(InspectionSettings));
+                }
+            }
+        }
+
         private ListCollectionView _inspectionSettings;
         public ListCollectionView InspectionSettings
         {
-            get => _inspectionSettings;
+            get
+            {
+                if (string.IsNullOrEmpty(_inspectionSettingsFilter))
+                {
+                    _inspectionSettings.Filter = null;
+                }
+                else
+                {
+                    _inspectionSettings.Filter = filter => FilterInspectionSettings(filter);
+                }
+                return _inspectionSettings;
+            }
+
             set
             {
                 if (_inspectionSettings != value)
@@ -54,6 +80,12 @@ namespace Rubberduck.UI.Settings
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private bool FilterInspectionSettings(object filter)
+        {
+            var cis = filter as CodeInspectionSetting;
+            return cis.Description.ToUpper().Contains(_inspectionSettingsFilter.ToUpper());
         }
 
         private bool _runInspectionsOnSuccessfulParse;
