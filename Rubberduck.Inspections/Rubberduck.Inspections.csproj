@@ -157,7 +157,6 @@
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFix.cs" />
     <Compile Include="QuickFixes\SplitMultipleDeclarationsQuickFix.cs" />
-    <Compile Include="QuickFixes\SynchronizeAttributesQuickFix.cs" />
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFix.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFix.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFix.cs" />
