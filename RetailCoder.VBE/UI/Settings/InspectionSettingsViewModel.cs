@@ -15,7 +15,10 @@ namespace Rubberduck.UI.Settings
         public InspectionSettingsViewModel(Configuration config)
         {
             InspectionSettings = new ListCollectionView(
-                    config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+                        config.UserSettings.CodeInspectionSettings.CodeInspections
+                                        .OrderBy(inspection => inspection.TypeLabel)
+                                        .ThenBy(inspection => inspection.Description)
+                                        .ToList());
 
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>(
                 config.UserSettings.CodeInspectionSettings.WhitelistedIdentifiers.OrderBy(o => o.Identifier).Distinct());
