@@ -117,8 +117,6 @@
     <Compile Include="Inspections\EmptyWhileWendBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
     <Compile Include="Inspections\IntegerDataTypeInspectionTests.cs" />
-    <Compile Include="Inspections\MissingAnnotationInspectionTests.cs" />
-    <Compile Include="Inspections\MissingAttributeInspectionTests.cs" />
     <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
@@ -138,7 +136,6 @@
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
-    <Compile Include="QuickFixes\SynchronizeAttributesQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
     <Compile Include="Inspections\LineLabelNotUsedInspectionTests.cs" />

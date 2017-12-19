@@ -45,7 +45,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return;
             }
 
-            InterfaceName = "I" + TargetDeclaration.IdentifierName;
+            InterfaceName = $"I{TargetDeclaration.IdentifierName}";
 
             Members = declarations.Where(item => item.ProjectId == TargetDeclaration.ProjectId
                                                  && item.ComponentName == TargetDeclaration.ComponentName

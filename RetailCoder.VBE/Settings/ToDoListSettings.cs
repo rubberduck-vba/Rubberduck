@@ -19,7 +19,7 @@ namespace Rubberduck.Settings
         [XmlArrayItem("ToDoMarker", IsNullable = false)]
         public ToDoMarker[] ToDoMarkers
         {
-            get { return _markers.ToArray(); }
+            get => _markers.ToArray();
             set
             {
                 //Only take the first marker if there are duplicates.

@@ -11,9 +11,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool GenerateLetter { get; set; }
         public bool GenerateSetter { get; set; }
 
-        public string AllPropertyCode => GetterCode +
-                                         (GenerateLetter ? LetterCode : string.Empty) +
-                                         (GenerateSetter ? SetterCode : string.Empty);
+        public string AllPropertyCode =>
+            $"{GetterCode}{(GenerateLetter ? LetterCode : string.Empty)}{(GenerateSetter ? SetterCode : string.Empty)}";
 
         public string GetterCode
         {

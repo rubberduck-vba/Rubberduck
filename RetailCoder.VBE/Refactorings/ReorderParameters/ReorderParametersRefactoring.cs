@@ -106,12 +106,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             var indexOfParamArray = _model.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray >= 0 && indexOfParamArray != _model.Parameters.Count - 1)
+            if (indexOfParamArray < 0 || indexOfParamArray == _model.Parameters.Count - 1)
             {
-                _messageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return false;
+                return true;
             }
-            return true;
+
+            _messageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
