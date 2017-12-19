@@ -41,7 +41,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 if (final)
                 {
                     _rcwReferenceCount = Marshal.FinalReleaseComObject(Target);
-                    _logger.Trace($"Final released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+                    if (HasBeenReleased)
+                    {
+                        _logger.Trace($"Final released COM wrapper of type {this.GetType()}.");
+                    }
+                    else
+                    {
+                        _logger.Warn($"Final released COM wrapper of type {this.GetType()} did not release the wrapper: remaining reference count is {_rcwReferenceCount}.");
+                    }
                 }
                 else
                 {
@@ -51,7 +58,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
             catch(COMException exception)
             {
-                _logger.Warn(exception,$"Failed to release COM wrapper of type {this.GetType()}.");
+                var logMessage = $"Failed to release COM wrapper of type {this.GetType()}.";
+                if (_rcwReferenceCount.HasValue)
+                {
+                    logMessage = logMessage + $"The previous reference count has been {_rcwReferenceCount}.";
+                }
+                else
+                {
+                    logMessage = logMessage + "There has not yet been an attempt to release the COM wrapper.";
+                }
+
+                _logger.Warn(exception, logMessage);
             }
         }
 
