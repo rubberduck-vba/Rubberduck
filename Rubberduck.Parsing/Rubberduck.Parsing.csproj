@@ -138,6 +138,7 @@
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\PartialExtensions\IIdentifierContext.cs" />
     <Compile Include="Grammar\PartialExtensions\IAnnotatedContext.cs" />
+    <Compile Include="Grammar\RecoveryStrategy.cs" />
     <Compile Include="Grammar\Tokens.cs" />
     <Compile Include="Grammar\VBALexer.cs" />
     <Compile Include="Grammar\PartialExtensions\VBAParserPartialExtensions.cs" />

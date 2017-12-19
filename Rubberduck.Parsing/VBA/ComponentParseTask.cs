@@ -175,9 +175,8 @@ namespace Rubberduck.Parsing.VBA
 
         private (IParseTree tree, ITokenStream tokenStream) ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners)
         {
-            //var errorNotifier = new SyntaxErrorNotificationListener();
-            //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, tokenStream, listeners, new MainParseExceptionErrorListener(moduleName, ParsePass.CodePanePass));
+            var errorNotifier = new SyntaxErrorNotificationListener();
+            return _parser.Parse(moduleName, tokenStream, listeners, errorNotifier);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

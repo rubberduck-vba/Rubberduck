@@ -18,7 +18,8 @@ namespace Rubberduck.Parsing.VBA
             moduleTokens.Reset();
             var parser = new VBAParser(moduleTokens);
             parser.AddErrorListener(errorListener);
-            ParserRuleContext tree;
+            parser.ErrorHandler = new RecoveryStrategy();
+            ParserRuleContext tree = parser.startRule();
             try
             {
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
@@ -34,7 +35,6 @@ namespace Rubberduck.Parsing.VBA
                 moduleTokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                tree = parser.startRule();
             }
             catch (Exception exception)
             {
@@ -43,7 +43,6 @@ namespace Rubberduck.Parsing.VBA
                 moduleTokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                tree = parser.startRule();
             }
             foreach (var listener in listeners)
             {

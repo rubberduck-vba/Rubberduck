@@ -21,12 +21,12 @@ namespace Rubberduck.Parsing.VBA
             var lexer = new VBALexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAParser(tokens);
+            parser.ErrorHandler = new RecoveryStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
-            ParserRuleContext tree;
+            ParserRuleContext tree = parser.expression();
             try
             {
                 parser.Interpreter.PredictionMode = PredictionMode.Sll;
-                tree = parser.expression();
             }
             catch (Exception ex)
             {
@@ -34,7 +34,6 @@ namespace Rubberduck.Parsing.VBA
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                tree = parser.expression();
             }
             return tree;
         }
