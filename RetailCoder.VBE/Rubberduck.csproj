@@ -1100,6 +1100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="API\Plugin\" />
+    <Folder Include="NewFolder1\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
