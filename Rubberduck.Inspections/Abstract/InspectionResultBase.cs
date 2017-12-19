@@ -57,11 +57,15 @@ namespace Rubberduck.Inspections.Abstract
         public string ToClipboardString()
         {           
             var module = QualifiedSelection.QualifiedName;
-            var documentName = Target != null ? Target.ProjectDisplayName : string.Empty;
+            var documentName = Target != null 
+                ? Target.ProjectDisplayName 
+                : string.Empty;
             if (string.IsNullOrEmpty(documentName))
             {
                 var component = module.Component;
-                documentName = component != null ? component.ParentProject.ProjectDisplayName : string.Empty;
+                documentName = component != null 
+                    ? component.ParentProject.ProjectDisplayName 
+                    : string.Empty;
             }
             if (string.IsNullOrEmpty(documentName))
             {
@@ -72,7 +76,7 @@ namespace Rubberduck.Inspections.Abstract
                 InspectionsUI.QualifiedSelectionInspection,
                 Inspection.Severity,
                 Description,
-                "(" + documentName + ")",
+                $"({documentName})",
                 module.ProjectName,
                 module.ComponentName,
                 QualifiedSelection.Selection.StartLine);
@@ -81,7 +85,10 @@ namespace Rubberduck.Inspections.Abstract
         private NavigateCodeEventArgs _navigationArgs;
         public NavigateCodeEventArgs GetNavigationArgs()
         {
-            if (_navigationArgs != null) { return _navigationArgs; }
+            if (_navigationArgs != null)
+            {
+                return _navigationArgs;
+            }
 
             _navigationArgs = new NavigateCodeEventArgs(QualifiedSelection);
             return _navigationArgs;

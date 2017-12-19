@@ -201,8 +201,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public string GetProcOfLine(int line)
         {
-            vbext_ProcKind procKind;
-            return Target.get_ProcOfLine(line, out procKind);
+            return Target.get_ProcOfLine(line, out _);
         }
 
         public ProcKind GetProcKindOfLine(int line)

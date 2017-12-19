@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Refactorings
         private List<InterfaceMember> _members;
         public List<InterfaceMember> Members
         {
-            get { return _members; }
+            get => _members;
             set
             {
                 _members = value;
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Refactorings
         private string _interfaceName;
         public string InterfaceName
         {
-            get { return _interfaceName; }
+            get => _interfaceName;
             set
             {
                 _interfaceName = value;

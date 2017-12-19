@@ -33,6 +33,7 @@ namespace Rubberduck.UI
 
         private readonly System.Windows.Forms.OpenFileDialog _dialog;
         private readonly object _newDialog;
+        // ReSharper disable once NotAccessedField.Local
         private readonly IEnvironmentProvider _environment;
 
         // ReSharper disable once UnusedParameter.Local - new folder button suppression isn't supported in this dialog.
@@ -65,8 +66,8 @@ namespace Rubberduck.UI
 
         public string Description
         {
-            get { return _dialog.Title; }
-            set { _dialog.Title = value; }
+            get => _dialog.Title;
+            set => _dialog.Title = value;
         }
 
         //Does nothing - new folder button suppression isn't supported in this dialog.
@@ -80,7 +81,7 @@ namespace Rubberduck.UI
         private string _root;
         public string RootFolder
         {
-            get { return _root; }
+            get => _root;
             set
             {
                 _root = value;
@@ -90,8 +91,8 @@ namespace Rubberduck.UI
 
         public string SelectedPath
         {
-            get { return _dialog.FileName; }
-            set { _dialog.FileName = value; }
+            get => _dialog.FileName;
+            set => _dialog.FileName = value;
         }
 
         public DialogResult ShowDialog()

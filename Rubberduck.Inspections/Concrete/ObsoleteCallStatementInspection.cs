@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -36,8 +35,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
 
-                int commentIndex;
-                if (stringStrippedLines.HasComment(out commentIndex))
+                if (stringStrippedLines.HasComment(out var commentIndex))
                 {
                     stringStrippedLines = stringStrippedLines.Remove(commentIndex);
                 }

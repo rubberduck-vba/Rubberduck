@@ -20,10 +20,7 @@ namespace Rubberduck.UI.Command.Refactorings
             _msgbox = msgbox;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.RefactorMoveCloserToUsage; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorMoveCloserToUsage;
 
         protected override bool EvaluateCanExecute(object parameter)
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using NLog;
@@ -18,7 +17,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Windows;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
@@ -31,9 +29,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
         private IConfigProvider<GeneralSettings> _generalSettingsProvider;
-        private IConfigProvider<WindowSettings> _windowSettingsProvider;
-        private GeneralSettings _generalSettings;
-        private WindowSettings _windowSettings;
+        private readonly IConfigProvider<WindowSettings> _windowSettingsProvider;
+        private readonly GeneralSettings _generalSettings;
+        private readonly WindowSettings _windowSettings;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -479,16 +477,20 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteCollapseNodes(object parameter)
         {
-            var node = parameter as CodeExplorerItemViewModel;
-            if (node == null) { return; }
+            if (!(parameter is CodeExplorerItemViewModel node))
+            {
+                return;
+            }
 
             SwitchNodeState(node, false);
         }
 
         private void ExecuteExpandNodes(object parameter)
         {
-            var node = parameter as CodeExplorerItemViewModel;
-            if (node == null) { return; }
+            if (!(parameter is CodeExplorerItemViewModel node))
+            {
+                return;
+            }
 
             SwitchNodeState(node, true);
         }
@@ -552,46 +554,15 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool CanExecuteExportAllCommand => ExportAllCommand.CanExecute(SelectedItem);
 
-        public Visibility ExportVisibility
-        {
-            get
-            {
-                if (CanExecuteExportAllCommand == false)
-                { return Visibility.Visible; }
-                else { return Visibility.Collapsed; }
-            }
-        }
+        public Visibility ExportVisibility => CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 
-        public Visibility ExportAllVisibility
-        {
-            get
-            {
-                if (CanExecuteExportAllCommand == true)
-                { return Visibility.Visible; }
-                else { return Visibility.Collapsed; }
-            }
-        }
+        public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
 
-        public bool IsSourceControlEnabled
-        {
-            get { return _generalSettings.SourceControlEnabled; }
-        }
+        public bool IsSourceControlEnabled => _generalSettings.IsSourceControlEnabled;
 
-        public Visibility TreeViewVisibility
-        {
-            get
-            {
-                return Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
+        public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
-        public Visibility EmptyUIRefreshMessageVisibility
-        {
-            get
-            {
-                return _isBusy ? Visibility.Hidden : Visibility.Visible;
-            }
-        }
+        public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;
 
         public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
         {

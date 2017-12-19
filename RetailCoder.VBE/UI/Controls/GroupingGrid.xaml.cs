@@ -21,12 +21,9 @@ namespace Rubberduck.UI.Controls
 
         private void GroupingGridItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (!(DataContext is INavigateSelection context))
-            {
-                return;
-            }
+            var context = DataContext as INavigateSelection;
+            var selection = context?.SelectedItem;
 
-            var selection = context.SelectedItem;
             if (selection != null)
             {
                 context.NavigateCommand.Execute(selection.GetNavigationArgs());

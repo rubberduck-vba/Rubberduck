@@ -18,10 +18,7 @@ namespace Rubberduck.UI.Command
             _presenter = presenter;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.CodeExplorer; }
-        }
+        public override RubberduckHotkey Hotkey => RubberduckHotkey.CodeExplorer;
 
         protected override void OnExecute(object parameter)
         {

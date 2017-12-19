@@ -33,7 +33,7 @@ namespace Rubberduck.UI.About
         private void CopyVersionInfoToClipboard()
         {
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"Rubberduck version: {this.Version.Text}");
+            sb.AppendLine($"Rubberduck version: {Version.Text}");
             sb.AppendLine($"Operating System: {Environment.OSVersion.VersionString}, {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}");
             sb.AppendLine($"Host Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}");
             sb.AppendLine($"Host Version: {Application.ProductVersion}");

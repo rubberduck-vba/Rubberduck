@@ -17,6 +17,6 @@ namespace Rubberduck.UI
             return Environment.GetFolderPath(folder);
         }
 
-        public OperatingSystem OSVersion { get { return Environment.OSVersion; } }
+        public OperatingSystem OSVersion => Environment.OSVersion;
     }
 }

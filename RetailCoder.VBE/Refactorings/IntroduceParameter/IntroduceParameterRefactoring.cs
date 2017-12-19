@@ -178,7 +178,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 .Where(item => item.ProjectId == interfaceImplementation.ProjectId
                                &&
                                item.IdentifierName ==
-                               interfaceImplementation.ComponentName + "_" + interfaceImplementation.IdentifierName
+                               $"{interfaceImplementation.ComponentName}_{interfaceImplementation.IdentifierName}"
                                && !item.Equals(functionDeclaration));
 
             foreach (var implementation in interfaceImplementations)
@@ -200,7 +200,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             _rewriters.Add(rewriter);
 
             var argList = paramList.arg();
-            var newParameter = Tokens.ByVal + " " + targetVariable.IdentifierName + " "+ Tokens.As + " " + targetVariable.AsTypeName;
+            var newParameter = $"{Tokens.ByVal} {targetVariable.IdentifierName} {Tokens.As} {targetVariable.AsTypeName}";
 
             if (!argList.Any())
             {

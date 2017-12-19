@@ -9,7 +9,7 @@ namespace Rubberduck.RegexAssistant.Tests
         [TestMethod]
         public void AsteriskQuantifier()
         {
-            Quantifier cut = new Quantifier("*");
+            var cut = new Quantifier("*");
             Assert.AreEqual(int.MaxValue, cut.MaximumMatches);
             Assert.AreEqual(0, cut.MinimumMatches);
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
@@ -19,7 +19,7 @@ namespace Rubberduck.RegexAssistant.Tests
         [TestMethod]
         public void QuestionMarkQuantifier()
         {
-            Quantifier cut = new Quantifier("?");
+            var cut = new Quantifier("?");
             Assert.AreEqual(1, cut.MaximumMatches);
             Assert.AreEqual(0, cut.MinimumMatches);
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
@@ -29,7 +29,7 @@ namespace Rubberduck.RegexAssistant.Tests
         [TestMethod]
         public void PlusQuantifier()
         {
-            Quantifier cut = new Quantifier("+");
+            var cut = new Quantifier("+");
             Assert.AreEqual(int.MaxValue, cut.MaximumMatches);
             Assert.AreEqual(1, cut.MinimumMatches);
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
@@ -39,7 +39,7 @@ namespace Rubberduck.RegexAssistant.Tests
         [TestMethod]
         public void ExactQuantifier()
         {
-            Quantifier cut = new Quantifier("{5}");
+            var cut = new Quantifier("{5}");
             Assert.AreEqual(5, cut.MaximumMatches);
             Assert.AreEqual(5, cut.MinimumMatches);
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
@@ -49,7 +49,7 @@ namespace Rubberduck.RegexAssistant.Tests
         [TestMethod]
         public void FullRangeQuantifier()
         {
-            Quantifier cut = new Quantifier("{2,5}");
+            var cut = new Quantifier("{2,5}");
             Assert.AreEqual(2, cut.MinimumMatches);
             Assert.AreEqual(5, cut.MaximumMatches);
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
@@ -59,11 +59,10 @@ namespace Rubberduck.RegexAssistant.Tests
         [TestMethod]
         public void OpenRangeQuantifier()
         {
-            Quantifier cut = new Quantifier("{3,}");
+            var cut = new Quantifier("{3,}");
             Assert.AreEqual(3, cut.MinimumMatches);
             Assert.AreEqual(int.MaxValue, cut.MaximumMatches);
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
-
         }
     }
 }

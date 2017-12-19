@@ -12,8 +12,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
     {
-        private readonly Declaration _declaration;
-        public Declaration Declaration { get { return _declaration; } }
+        public Declaration Declaration { get; }
 
         private static readonly DeclarationType[] SubMemberTypes =
         {
@@ -61,9 +60,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerMemberViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
         {
-            _parent = parent;
+            Parent = parent;
 
-            _declaration = declaration;
+            Declaration = declaration;
             if (declarations != null)
             {
                 Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
@@ -77,7 +76,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 : declaration.Accessibility;
             var key = Tuple.Create(declaration.DeclarationType, modifier);
 
-            _name = DetermineMemberName(declaration);
+            Name = DetermineMemberName(declaration);
             _icon = Mappings[key];
         }
 
@@ -100,11 +99,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             return newStr.ToString();
         }
 
-        private readonly string _name;
-        public override string Name { get { return _name; } }
+        public override string Name { get; }
 
-        private readonly CodeExplorerItemViewModel _parent;
-        public override CodeExplorerItemViewModel Parent { get { return _parent; } }
+        public override CodeExplorerItemViewModel Parent { get; }
 
         private string _signature = null;
         public override string NameWithSignature
@@ -117,15 +114,15 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 var context =
-                    _declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
+                    Declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
 
                 if (context == null)
                 {
                     _signature = Name;
                 }
-                else if (_declaration.DeclarationType == DeclarationType.PropertyGet 
-                      || _declaration.DeclarationType == DeclarationType.PropertyLet 
-                      || _declaration.DeclarationType == DeclarationType.PropertySet)
+                else if (Declaration.DeclarationType == DeclarationType.PropertyGet 
+                      || Declaration.DeclarationType == DeclarationType.PropertyLet 
+                      || Declaration.DeclarationType == DeclarationType.PropertySet)
                 {
                     // 6 being the three-letter "get/let/set" + parens + space
                     _signature = Name.Insert(Name.Length - 6, RemoveExtraWhiteSpace(context.GetText())); 
@@ -138,7 +135,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public override QualifiedSelection? QualifiedSelection { get { return _declaration.QualifiedSelection; } }
+        public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
 
         private static string DetermineMemberName(Declaration declaration)
         {
@@ -174,7 +171,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         private BitmapImage _icon;
-        public override BitmapImage CollapsedIcon { get { return _icon; } }
-        public override BitmapImage ExpandedIcon { get { return _icon; } }
+        public override BitmapImage CollapsedIcon => _icon;
+        public override BitmapImage ExpandedIcon => _icon;
     }
 }

@@ -5,20 +5,17 @@ namespace Rubberduck.UI.FindSymbol
 {
     public class SearchResult
     {
-        private readonly Declaration _declaration;
-        private readonly BitmapImage _icon;
-
         public SearchResult(Declaration declaration, BitmapImage icon)
         {
-            _declaration = declaration;
-            _icon = icon;
+            Declaration = declaration;
+            Icon = icon;
         }
 
-        public Declaration Declaration { get { return _declaration; } }
-        public string IdentifierName { get { return _declaration.IdentifierName; } }
-        public string Location { get { return _declaration.Scope; } }
+        public Declaration Declaration { get; }
 
-        public BitmapImage Icon { get { return _icon; } }
+        public string IdentifierName => Declaration.IdentifierName;
+        public string Location => Declaration.Scope;
 
+        public BitmapImage Icon { get; }
     }
 }

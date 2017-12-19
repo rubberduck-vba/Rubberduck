@@ -16,7 +16,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool BeginsGroup
         {
             get => !IsWrappingNullReference && Target.BeginGroup;
-            set { if (!IsWrappingNullReference) Target.BeginGroup = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.BeginGroup = value;
+                }
+            }
         }
 
         public bool IsBuiltIn => !IsWrappingNullReference && Target.BuiltIn;
@@ -24,25 +30,49 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string Caption
         {
             get => IsWrappingNullReference ? string.Empty : Target.Caption;
-            set { if (!IsWrappingNullReference) Target.Caption = CommandBarControlCaptionGuard.ApplyGuard(value); }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Caption = CommandBarControlCaptionGuard.ApplyGuard(value);
+                }
+            }
         }
 
         public string DescriptionText
         {
             get => IsWrappingNullReference ? string.Empty : Target.DescriptionText;
-            set { if (!IsWrappingNullReference) Target.DescriptionText = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.DescriptionText = value;
+                }
+            }
         }
 
         public bool IsEnabled
         {
             get => !IsWrappingNullReference && Target.Enabled;
-            set { if (!IsWrappingNullReference) Target.Enabled = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Enabled = value;
+                }
+            }
         }
 
         public int Height
         {
             get => Target.Height;
-            set { if (!IsWrappingNullReference) Target.Height = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Height = value;
+                }
+            }
         }
 
         public int Id => IsWrappingNullReference ? 0 : Target.Id;
@@ -54,7 +84,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string OnAction
         {
             get => IsWrappingNullReference ? string.Empty : Target.OnAction;
-            set { if (!IsWrappingNullReference) Target.OnAction = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.OnAction = value;
+                }
+            }
         }
 
         public ICommandBar Parent => new CommandBar(IsWrappingNullReference ? null : Target.Parent);
@@ -62,25 +98,49 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public string Parameter
         {
             get => IsWrappingNullReference ? string.Empty : Target.Parameter;
-            set { if (!IsWrappingNullReference) Target.Parameter = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Parameter = value;
+                }
+            }
         }
 
         public int Priority
         {
             get => IsWrappingNullReference ? 0 : Target.Priority;
-            set { if (!IsWrappingNullReference) Target.Priority = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Priority = value;
+                }
+            }
         }
 
         public string Tag 
         {
             get => Target.Tag;
-            set { if (!IsWrappingNullReference) Target.Tag = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Tag = value;
+                }
+            }
         }
 
         public string TooltipText
         {
             get => IsWrappingNullReference ? string.Empty : Target.TooltipText;
-            set { if (!IsWrappingNullReference) Target.TooltipText = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.TooltipText = value;
+                }
+            }
         }
 
         public int Top => IsWrappingNullReference ? 0 : Target.Top;
@@ -90,25 +150,43 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool IsVisible
         {
             get => !IsWrappingNullReference && Target.Visible;
-            set { if (!IsWrappingNullReference) Target.Visible = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Visible = value;
+                }
+            }
         }
 
         public int Width
         {
             get => IsWrappingNullReference ? 0 : Target.Width;
-            set { if (!IsWrappingNullReference) Target.Width = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Width = value;
+                }
+            }
         }
 
         public bool IsPriorityDropped => (!IsWrappingNullReference) && Target.IsPriorityDropped;
 
         public void Delete()
         {
-            if (!IsWrappingNullReference) Target.Delete(AddCommandBarControlsTemporarily);
+            if (!IsWrappingNullReference)
+            {
+                Target.Delete(AddCommandBarControlsTemporarily);
+            }
         }
 
         public void Execute()
         {
-            if (!IsWrappingNullReference) Target.Execute();
+            if (!IsWrappingNullReference)
+            {
+                Target.Execute();
+            }
         }
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBarControl> other)

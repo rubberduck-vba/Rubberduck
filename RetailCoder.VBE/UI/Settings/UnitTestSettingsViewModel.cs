@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Settings
         private BindingMode _bindingMode;
         public BindingMode BindingMode
         {
-            get { return _bindingMode; }
+            get => _bindingMode;
             set
             {
                 if (_bindingMode != value)
@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Settings
         private AssertMode _assertMode;
         public AssertMode AssertMode
         {
-            get { return _assertMode; }
+            get => _assertMode;
             set
             {
                 if (_assertMode != value)
@@ -51,7 +51,7 @@ namespace Rubberduck.UI.Settings
         private bool _moduleInit;
         public bool ModuleInit
         {
-            get { return _moduleInit; }
+            get => _moduleInit;
             set
             {
                 if (_moduleInit != value)
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.Settings
         private bool _methodInit;
         public bool MethodInit
         {
-            get { return _methodInit; }
+            get => _methodInit;
             set
             {
                 if (_methodInit != value)
@@ -79,7 +79,7 @@ namespace Rubberduck.UI.Settings
         private bool _defaultTestStubInNewModule;
         public bool DefaultTestStubInNewModule
         {
-            get { return _defaultTestStubInNewModule; }
+            get => _defaultTestStubInNewModule;
             set
             {
                 if (_defaultTestStubInNewModule != value)

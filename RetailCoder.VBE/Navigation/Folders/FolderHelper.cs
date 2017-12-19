@@ -17,10 +17,7 @@ namespace Rubberduck.Navigation.Folders
             DeclarationType.UserForm, 
         };
 
-        public FolderHelper(RubberduckParserState state)
-        {
-            _state = state;
-        }
+        public FolderHelper(RubberduckParserState state) => _state = state;
 
         public CodeExplorerCustomFolderViewModel GetFolderTree(Declaration declaration = null)
         {
@@ -60,9 +57,6 @@ namespace Rubberduck.Navigation.Folders
             return root;
         }
 
-        private char GetDelimiter()
-        {
-            return '.';
-        }
+        private char GetDelimiter() => '.';
     }
 }
