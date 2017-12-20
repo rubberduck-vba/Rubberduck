@@ -241,7 +241,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 var declaration = SelectedItem.GetSelectedDeclaration();
                 
-                var nameWithDeclarationType = $"{declaration.IdentifierName} - ({RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, CultureInfo.CurrentUICulture)})";
+                var nameWithDeclarationType = declaration.IdentifierName +
+                                              $" - ({RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, CultureInfo.CurrentUICulture)})";
 
                 if (string.IsNullOrEmpty(declaration.AsTypeName))
                 {
@@ -252,7 +253,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     ? SymbolList.TypeHintToTypeName[declaration.TypeHint]
                     : declaration.AsTypeName;
 
-                return $"{nameWithDeclarationType }: {typeName}";
+                return nameWithDeclarationType + ": " + typeName;
             }
         }
 
