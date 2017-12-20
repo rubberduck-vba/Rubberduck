@@ -265,6 +265,18 @@ namespace Rubberduck
                     _container = null;
                 }
 
+                if (_addin != null)
+                {
+                    _addin.Release();
+                    _addin = null;
+                }
+
+                if (_ide != null)
+                {
+                    _ide.Release();
+                    _ide = null;
+                }
+
                 _isInitialized = false;
                 _logger.Log(LogLevel.Info, "No exceptions were thrown.");
             }
