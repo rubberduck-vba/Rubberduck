@@ -1,8 +1,8 @@
 version: '2.1.2.{build}'
 
 # add nuget api to hosts file, making sure we can actually nuget restore for the build
-hosts:
-  api.nuget.org: 93.184.221.200
+# hosts:
+#  api.nuget.org: 93.184.221.200
 
 # enforce crlf fixing
 init:
