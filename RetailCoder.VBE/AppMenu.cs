@@ -86,7 +86,7 @@ namespace Rubberduck
                 //We do this here and not in the menu items because we only want to release the parents of the top level parent menus.
                 //The parents further down get released as part of the remove chain.
                 _logger.Trace($"Removing parent menu of top-level menu {menu.GetType()}.");
-                menu.Parent.Release(); 
+                menu.Parent.Release(true);  //todo: Find a way around this!!!
                 menu.Parent = null;
             }
         }
