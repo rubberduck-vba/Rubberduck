@@ -433,6 +433,9 @@
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Grammar\VBALexer.g4">
       <Generator>MSBuild:Compile</Generator>
