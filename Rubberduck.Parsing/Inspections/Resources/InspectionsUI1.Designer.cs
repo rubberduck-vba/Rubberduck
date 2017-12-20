@@ -367,7 +367,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An empty &apos;Case&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
+        ///   Looks up a localized string similar to An empty &apos;Do...While&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyDoWhileBlockInspectionMeta {
             get {
@@ -385,7 +385,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An empty &apos;Do...While&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
+        ///   Looks up a localized string similar to &apos;Do...While&apos; loop contains no executable statements.
         /// </summary>
         public static string EmptyDoWhileBlockInspectionResultFormat {
             get {
@@ -421,7 +421,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An empty &apos;Loop&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
+        ///   Looks up a localized string similar to An empty &apos;For Each...Next&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyForEachBlockInspectionMeta {
             get {
@@ -1416,6 +1416,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string ObsoleteErrorSyntaxInspectionMeta {
             get {
                 return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of &apos;Error&apos; statement.
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionName {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionName", resourceCulture);
             }
         }
         
