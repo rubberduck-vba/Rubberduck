@@ -351,6 +351,7 @@
     <Compile Include="Navigation\CodeMetrics\CodeMetricsViewModel.cs" />
     <Compile Include="Navigation\CodeMetrics\ICodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="ProjectReferences\AddRemoveReferencesModel.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
@@ -1100,7 +1101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="API\Plugin\" />
-    <Folder Include="NewFolder1\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
