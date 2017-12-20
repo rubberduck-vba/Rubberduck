@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Reflection;
+using System.Resources;
 
 namespace RubberduckTests.Inspections
 {
@@ -12,15 +14,15 @@ namespace RubberduckTests.Inspections
         public void InspectionNamesFoundInResourceFiles()
         {
             var inspectionAssembly = Assembly.GetAssembly(typeof(Rubberduck.Inspections.Concrete.ApplicationWorksheetFunctionInspection)); //TODO: Elegantly fix
-
             var iInspectionTypes = inspectionAssembly.GetTypes().Where(type => type.GetInterface("IInspection") != null);
 
-            var resourceManager = new System.Resources.ResourceManager("InspectionsUI", Assembly.GetAssembly(typeof(Rubberduck.Parsing.Inspections.Resources.InspectionsUI)));
+            var missingStrings = (from inspection in iInspectionTypes
+                                  let unusedDescription = Rubberduck.Parsing.Inspections.Resources.InspectionsUI.ResourceManager.GetString($"{inspection.Name}Name")
+                                  where unusedDescription == null
+                                  select inspection.Name)
+                            .ToList();
 
-            foreach (var inspection in iInspectionTypes)
-            {
-                Assert.AreEqual(resourceManager.GetString(inspection.Name + "Name"), inspection.Name);
-            }
+            Assert.IsFalse(missingStrings.Any(), $"Missing values: {string.Join(", ", missingStrings)}");
         }
     }
 }
