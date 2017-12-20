@@ -24,16 +24,30 @@ namespace RubberduckTests.Inspections
             RubberduckUI.Culture = Thread.CurrentThread.CurrentUICulture;
         }
 
+        private static List<Type> GetAllBaseTypes(Type type)
+        {
+            var baseTypes = new List<Type>();
+
+            var baseType = type.BaseType;
+            while (baseType != null)
+            {
+                baseTypes.Add(baseType);
+                baseType = baseType.BaseType;
+            }
+
+            return baseTypes;
+        }
+
         [TestMethod]
         [TestCategory("Inspections")]
         public void InspectionNameStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => type.BaseType == typeof(InspectionBase) && !type.IsAbstract)
-                          .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "Name")))
+                          .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
+                          .Where(i => string.IsNullOrWhiteSpace(InspectionsUI.ResourceManager.GetString(i.Name + "Name")))
                           .Select(i => i.Name)
                           .ToList();
-            
+
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
@@ -42,7 +56,7 @@ namespace RubberduckTests.Inspections
         public void InspectionMetaStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => type.BaseType == typeof(InspectionBase) && !type.IsAbstract)
+                          .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
                           .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "Meta")))
                           .Select(i => i.Name)
                           .ToList();
@@ -67,7 +81,7 @@ namespace RubberduckTests.Inspections
             };
 
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => type.BaseType == typeof(InspectionBase) && !type.IsAbstract)
+                          .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
                           .Where(i => !inspectionsWithSharedResultFormat.Contains(i.Name) &&
                                       string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "ResultFormat")))
                           .Select(i => i.Name)
@@ -81,7 +95,7 @@ namespace RubberduckTests.Inspections
         public void InspectionNameStrings_AreNotFormatted()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => type.BaseType == typeof(InspectionBase))
+                          .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)))
                           .Where(i =>
                           {
                               var value = InspectionsUI.ResourceManager.GetString(i.Name + "Name");

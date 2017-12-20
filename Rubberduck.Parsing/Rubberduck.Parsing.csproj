@@ -155,6 +155,11 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
+    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
     <Compile Include="Symbols\ParsingExceptions\MainParseExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprocessorExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\ParsePassExceptionErrorListener.cs" />
@@ -176,11 +181,6 @@
       <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Inspections\Resources\InspectionsUI1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
     <Compile Include="Rewriter\MemberAttributesRewriter.cs" />
     <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
@@ -471,7 +471,7 @@
     <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ParsingText.de.resx" />
     <EmbeddedResource Include="ParsingText.fr.resx" />
