@@ -761,6 +761,8 @@ namespace Rubberduck.Parsing.VBA
                 {
                     keys.Add(key);
                 }
+
+                _errors.RemoveAll(w => w.ModuleName == key);
             }
 
             var success = RemoveKeysFromCollections(keys);
