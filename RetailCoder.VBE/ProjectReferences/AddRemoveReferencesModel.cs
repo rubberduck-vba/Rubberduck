@@ -12,7 +12,7 @@ namespace Rubberduck.ProjectReferences
 {
     public class AddRemoveReferencesModel : ViewModelBase
     {
-        public AddRemoveReferencesModel(IReadOnlyList<ReferenceViewModel> references)
+        public AddRemoveReferencesModel(IReadOnlyList<ReferenceModel> references)
         {
             AvailableComLibraries = references.Where(r => r.Type == ReferenceKind.TypeLibrary).ToList();
             AvailableVbaProjects = references.Where(r => r.Type == ReferenceKind.Project).ToList();
@@ -26,9 +26,9 @@ namespace Rubberduck.ProjectReferences
         public HashSet<object> PinnedLibraries { get; private set; }
     }
 
-    public class ReferenceViewModel : ViewModelBase
+    public class ReferenceModel
     {
-        public ReferenceViewModel(IVBProject project)
+        public ReferenceModel(IVBProject project)
         {
             Name = project.Name;
             Guid = string.Empty;
@@ -39,7 +39,11 @@ namespace Rubberduck.ProjectReferences
             Type = ReferenceKind.Project;
         }
 
-        public ReferenceViewModel(dynamic info) // todo figure out what type that should be
+        /// <summary>
+        /// Creates a 
+        /// </summary>
+        /// <param name="info"></param>
+        public ReferenceModel(dynamic info) // todo figure out what type that should be 
         {
             Name = info.Name;
             Guid = info.Guid;
@@ -50,7 +54,7 @@ namespace Rubberduck.ProjectReferences
             Type = ReferenceKind.TypeLibrary;
         }
 
-        public ReferenceViewModel(IReference reference)
+        public ReferenceModel(IReference reference)
         {
             IsSelected = true;
             Name = reference.Name;

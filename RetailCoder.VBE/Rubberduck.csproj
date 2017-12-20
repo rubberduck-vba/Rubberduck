@@ -438,6 +438,15 @@
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
+    <Compile Include="UI\ProjectReferences\AddRemoveReferencesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ProjectReferences\AddRemoveReferencesDialog.Designer.cs">
+      <DependentUpon>AddRemoveReferencesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ProjectReferences\AddRemoveReferencesWindow.xaml.cs">
+      <DependentUpon>AddRemoveReferencesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml.cs">
       <DependentUpon>EncapsulateFieldView.xaml</DependentUpon>
     </Compile>
@@ -1001,6 +1010,9 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\ProjectReferences\AddRemoveReferencesDialog.resx">
+      <DependentUpon>AddRemoveReferencesDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.resx">
       <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1420,6 +1432,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Controls\ToolBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ProjectReferences\AddRemoveReferencesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
