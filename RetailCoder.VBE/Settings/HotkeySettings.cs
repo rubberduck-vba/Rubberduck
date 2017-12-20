@@ -86,17 +86,7 @@ namespace Rubberduck.Settings
 
         private static bool IsValid(HotkeySetting candidate)
         {
-            //This feels a bit sleazy...
-            try
-            {
-                // ReSharper disable once UnusedVariable
-                var test = new Hotkey(new IntPtr(), candidate.ToString(), null);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return candidate.IsValid;
         }
     }
 }

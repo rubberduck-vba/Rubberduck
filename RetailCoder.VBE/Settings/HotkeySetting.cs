@@ -21,8 +21,17 @@ namespace Rubberduck.Settings
         public bool HasAltModifier { get; set; }
         public bool HasCtrlModifier { get; set; }
 
+        public bool IsValid
+        {
+            get
+            {
+                return !HasShiftModifier || HasAltModifier || HasCtrlModifier
+                        && HasShiftModifier || HasAltModifier || HasCtrlModifier;
+            }
+        }
+
         [XmlIgnore]
-        public string Prompt => RubberduckUI.ResourceManager.GetString("HotkeyDescription_" + Name, CultureInfo.CurrentUICulture);
+        public string Prompt => RubberduckUI.ResourceManager.GetString($"HotkeyDescription_{Name}", CultureInfo.CurrentUICulture);
 
         public override string ToString()
         {
