@@ -271,6 +271,13 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private List<SyntaxErrorEventArgs> _errors = new List<SyntaxErrorEventArgs>();
+        internal void AddParserError(SyntaxErrorEventArgs e)
+        {
+            _errors.Add(e);
+            SetStatusAndFireStateChanged(this, ParserState.Error);
+        }
+
         //Overload using the vbe instance injected via the constructor.
         private void RefreshProjects()
         {
@@ -305,18 +312,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                var exceptions = new List<Tuple<QualifiedModuleName, SyntaxErrorException>>();
-                foreach (var kvp in _moduleStates)
-                {
-                    if (kvp.Value.ModuleException == null)
-                    {
-                        continue;
-                    }
-
-                    exceptions.Add(Tuple.Create(kvp.Key, kvp.Value.ModuleException));
-                }
-
-                return exceptions;
+                return _errors.Select(s => Tuple.Create(s.ModuleName, new SyntaxErrorException(s.Info))).ToList();
             }
         }
 

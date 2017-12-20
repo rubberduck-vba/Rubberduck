@@ -1,36 +1,45 @@
 ﻿using System;
 using Antlr4.Runtime;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols.ParsingExceptions
 {
     public class SyntaxErrorNotificationListener : BaseErrorListener
     {
+        private readonly QualifiedModuleName moduleName;
+
+        public SyntaxErrorNotificationListener(QualifiedModuleName moduleName)
+        {
+            this.moduleName = moduleName;
+        }
+
         public event EventHandler<SyntaxErrorEventArgs> OnSyntaxError;
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
             var info = new SyntaxErrorInfo(msg, e, offendingSymbol, line, charPositionInLine);
-            NotifySyntaxError(info);
+            NotifySyntaxError(info, moduleName);
         }
 
-        private void NotifySyntaxError(SyntaxErrorInfo info)
+        private void NotifySyntaxError(SyntaxErrorInfo info, QualifiedModuleName moduleName)
         {
             var handler = OnSyntaxError;
             if (handler != null)
             {
-                handler.Invoke(this, new SyntaxErrorEventArgs(info));
+                handler.Invoke(this, new SyntaxErrorEventArgs(info, moduleName));
             }
         }
     }
 
     public class SyntaxErrorEventArgs : EventArgs
     {
-        private readonly SyntaxErrorInfo _info;
-
-        public SyntaxErrorEventArgs(SyntaxErrorInfo info)
+        public SyntaxErrorEventArgs(SyntaxErrorInfo info, QualifiedModuleName moduleName)
         {
-            _info = info;
+            Info = info;
+            ModuleName = moduleName;
         }
 
-        public SyntaxErrorInfo Info { get { return _info; } }
+        public SyntaxErrorInfo Info { get; }
+
+        public QualifiedModuleName ModuleName { get; }
     }
 }

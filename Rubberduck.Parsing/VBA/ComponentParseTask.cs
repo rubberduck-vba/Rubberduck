@@ -25,6 +25,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
         private readonly IModuleExporter _exporter;
+        private readonly RubberduckParserState _state;
         private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
 
@@ -34,12 +35,13 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, RubberduckParserState state, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _attributeParser = attributeParser;
             _exporter = exporter;
+            _state = state;
             _preprocessor = preprocessor;
             _module = module;
             _rewriter = rewriter;
@@ -175,7 +177,12 @@ namespace Rubberduck.Parsing.VBA
 
         private (IParseTree tree, ITokenStream tokenStream) ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners)
         {
-            var errorNotifier = new SyntaxErrorNotificationListener();
+            var errorNotifier = new SyntaxErrorNotificationListener(_module);
+            errorNotifier.OnSyntaxError += (sender, e) =>
+            {
+                _state.AddParserError(e);
+            };
+
             return _parser.Parse(moduleName, tokenStream, listeners, errorNotifier);
         }
 
