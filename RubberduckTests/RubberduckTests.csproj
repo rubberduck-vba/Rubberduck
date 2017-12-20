@@ -116,7 +116,6 @@
     <Compile Include="Inspections\EmptyIfBlockInspectionTests.cs" />
     <Compile Include="Inspections\EmptyWhileWendBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
-    <Compile Include="Inspections\InspectionTypeExistsInResourceFileInspection.cs" />
     <Compile Include="Inspections\IntegerDataTypeInspectionTests.cs" />
     <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
