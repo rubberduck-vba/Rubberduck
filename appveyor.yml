@@ -46,8 +46,9 @@ before_build:
 build:
   verbosity: minimal
 
-before_package:
-- copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
+#before_package:
+# post-build events are in charge
+# - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 
 for:
   - branches:
