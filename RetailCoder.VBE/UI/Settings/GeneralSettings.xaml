@@ -137,7 +137,11 @@
                             Command="{Binding ShowLogFolderCommand}"/>
                     </StackPanel>
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
+                    <DockPanel>
+                        <Label DockPanel.Dock="Left" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
+                        <Label DockPanel.Dock="Right" Content="{Resx ResxName=Rubberduck.Ui.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionLabel}"/>
+                    </DockPanel>
+                    
                     <DataGrid ItemsSource="{Binding Hotkeys}"
                       HorizontalAlignment="Stretch"
                       AutoGenerateColumns="False"
