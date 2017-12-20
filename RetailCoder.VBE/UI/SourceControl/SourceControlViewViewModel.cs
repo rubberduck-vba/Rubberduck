@@ -663,7 +663,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)
         {
-            if (Provider.CurrentBranch == null)
+            if (Provider?.CurrentBranch == null)
             {
                 HandleViewModelError(null,
                     new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage, NotificationType.Error));

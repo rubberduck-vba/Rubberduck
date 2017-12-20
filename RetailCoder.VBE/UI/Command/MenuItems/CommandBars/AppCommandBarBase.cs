@@ -173,12 +173,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 Logger.Debug("Removing commandbar.");
                 RemoveChildren();
                 Item?.Delete();
+                Item?.Release();
                 Item = null;
                 Parent = null;
             }
             catch (COMException exception)
             {
-                Logger.Error(exception, "COM exception while trying to delee the commandbar");
+                Logger.Error(exception, "COM exception while trying to delete the commandbar");
             }
         }
 
@@ -198,6 +199,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                         button.Click -= child_Click;
                     }
                     button.Delete();
+                    button.Release();
                 }
             }
             catch (COMException exception)
