@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
@@ -6,7 +7,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBar : SafeComWrapper<Microsoft.Office.Core.CommandBar>, ICommandBar
     {
-        public CommandBar(Microsoft.Office.Core.CommandBar target) 
+        public CommandBar(Microsoft.Office.Core.CommandBar target)
             : base(target)
         {
         }
@@ -69,12 +70,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public CommandBarPosition Position
         {
-            get => IsWrappingNullReference ? 0 : (CommandBarPosition)Target.Position;
+            get => IsWrappingNullReference ? 0 : (CommandBarPosition) Target.Position;
             set
             {
                 if (!IsWrappingNullReference)
                 {
-                    Target.Position = (Microsoft.Office.Core.MsoBarPosition)value;
+                    Target.Position = (Microsoft.Office.Core.MsoBarPosition) value;
                 }
             }
         }
@@ -91,7 +92,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             }
         }
 
-        public CommandBarType Type => IsWrappingNullReference ? 0 : (CommandBarType)Target.Type;
+        public CommandBarType Type => IsWrappingNullReference ? 0 : (CommandBarType) Target.Type;
 
         public bool IsVisible
         {
@@ -126,7 +127,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(type, id));
         }
-        
+
         public void Delete()
         {
             if (!IsWrappingNullReference)
@@ -146,13 +147,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBar> other)
         {
-            return IsEqualIfNull(other) || 
-                (other != null
-                && (int)other.Target.Type == (int)Type 
-                && other.Target.Id == Id 
-                && other.Target.Index == Index
-                && other.Target.BuiltIn == IsBuiltIn 
-                && ReferenceEquals(other.Target.Parent, Target.Parent));
+            return IsEqualIfNull(other) ||
+                   (other != null
+                    && (int) other.Target.Type == (int) Type
+                    && other.Target.Id == Id
+                    && other.Target.Index == Index
+                    && other.Target.BuiltIn == IsBuiltIn
+                    && ReferenceEquals(other.Target.Parent, Target.Parent));
         }
 
         public bool Equals(ICommandBar other)

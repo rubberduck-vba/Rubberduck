@@ -108,7 +108,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var optionPresent = interfaceModule.CountOfLines > 1;
             if (!optionPresent)
             {
-                interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+                interfaceModule.InsertLines(1, $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}");
             }
             interfaceModule.InsertLines(3, GetInterfaceModuleBody());
         }

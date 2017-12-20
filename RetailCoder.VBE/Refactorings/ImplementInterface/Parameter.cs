@@ -8,7 +8,7 @@
 
         public override string ToString()
         {
-            return Accessibility + " " + Name + " As " + AsTypeName;
+            return $"{Accessibility} {Name} As {AsTypeName}";
         }
     }
 }

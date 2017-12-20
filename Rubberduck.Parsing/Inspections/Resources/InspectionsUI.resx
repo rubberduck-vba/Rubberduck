@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -813,10 +813,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'Case' block contains no executable statements</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionResultFormat" xml:space="preserve">
-    <value>An empty 'Do...While' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
+    <value>'Do...While' loop contains no executable statements</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionMeta" xml:space="preserve">
-    <value>An empty 'Case' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
+    <value>An empty 'Do...While' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionName" xml:space="preserve">
     <value>Empty 'Do...While' Loop</value>
@@ -825,7 +825,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'For-Each loop contains no executable statements</value>
   </data>
   <data name="EmptyForEachBlockInspectionMeta" xml:space="preserve">
-    <value>An empty 'Loop' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
+    <value>An empty 'For Each...Next' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyForEachBlockInspectionName" xml:space="preserve">
     <value>Empty 'For Each...Next' Loop</value>
@@ -886,5 +886,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="EmptyModuleInspectionResultFormat" xml:space="preserve">
     <value>Module/class {0} is empty.</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionName" xml:space="preserve">
+    <value>Use of 'Error' statement</value>
   </data>
 </root>
