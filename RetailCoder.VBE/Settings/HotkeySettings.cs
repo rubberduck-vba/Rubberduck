@@ -55,14 +55,14 @@ namespace Rubberduck.Settings
                 foreach (var setting in incoming.GroupBy(s => s.Name).Select(hotkey => hotkey.First()))
                 {
                     //Only allow one hotkey to be enabled with the same key combination.
-                    setting.IsEnabled &= !IsDuplicate(setting) && setting.IsValid;
+                    setting.IsEnabled &= !IsDuplicate(setting);
                     _settings.Add(setting);
                 }
 
                 //Merge any hotkeys that weren't found in the input.
                 foreach (var setting in Defaults.Where(setting => _settings.FirstOrDefault(s => s.Name.Equals(setting.Name)) == null))
                 {
-                    setting.IsEnabled &= !IsDuplicate(setting) && setting.IsValid;
+                    setting.IsEnabled &= !IsDuplicate(setting);
                     _settings.Add(setting);
                 }
             }
