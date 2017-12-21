@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Antlr4.Runtime.Atn;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
@@ -183,7 +184,14 @@ namespace Rubberduck.Parsing.VBA
                 _state.AddParserError(e);
             };
 
-            return _parser.Parse(moduleName, tokenStream, listeners, errorNotifier);
+            var value = _parser.Parse(moduleName, PredictionMode.Sll, tokenStream, listeners, errorNotifier);
+            if (_state.ModuleExceptions.Any(r => r.Item1 == _module))
+            {
+                _state.ClearExceptions(_module);
+                value = _parser.Parse(moduleName, PredictionMode.Ll, tokenStream, listeners, errorNotifier);
+            }
+
+            return value;
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

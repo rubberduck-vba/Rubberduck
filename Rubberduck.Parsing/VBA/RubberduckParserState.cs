@@ -271,11 +271,11 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private List<SyntaxErrorEventArgs> _errors = new List<SyntaxErrorEventArgs>();
-        internal void AddParserError(SyntaxErrorEventArgs e)
+        private readonly List<SyntaxErrorEventArgs> _errors = new List<SyntaxErrorEventArgs>();
+        public void AddParserError(SyntaxErrorEventArgs e)
         {
             _errors.Add(e);
-            SetStatusAndFireStateChanged(this, ParserState.Error);
+            SetModuleState(e.ModuleName, ParserState.Error, CancellationToken.None, new SyntaxErrorException(e.Info));
         }
 
         //Overload using the vbe instance injected via the constructor.
@@ -1007,6 +1007,12 @@ namespace Rubberduck.Parsing.VBA
             _projects.Clear();
 
             _isDisposed = true;
+        }
+
+        public void ClearExceptions(QualifiedModuleName moduleName)
+        {
+            _errors.RemoveAll(r => r.ModuleName == moduleName);
+            SetModuleState(moduleName, ParserState.Parsing, CancellationToken.None);
         }
     }
 }

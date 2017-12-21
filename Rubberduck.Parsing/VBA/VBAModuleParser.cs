@@ -3,9 +3,6 @@ using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Grammar;
-using System;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -13,41 +10,14 @@ namespace Rubberduck.Parsing.VBA
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public (IParseTree tree, ITokenStream tokenStream) Parse(string moduleName, CommonTokenStream moduleTokens, IParseTreeListener[] listeners, BaseErrorListener errorListener)
+        public (IParseTree tree, ITokenStream tokenStream) Parse(string moduleName, PredictionMode predictionMode, CommonTokenStream moduleTokens, IParseTreeListener[] listeners, BaseErrorListener errorListener)
         {
             moduleTokens.Reset();
             var parser = new VBAParser(moduleTokens);
-            ParserRuleContext tree;
-            try
-            {
-                parser.Interpreter.PredictionMode = PredictionMode.Sll;
-                tree = parser.startRule();
-            }
-            catch (ParsePassSyntaxErrorException syntaxErrorException)
-            {
-                var parsePassText = syntaxErrorException.ParsePass == ParsePass.CodePanePass
-                    ? "code pane"
-                    : "exported";
-                Logger.Warn($"SLL mode failed while parsing the {parsePassText} version of module {moduleName} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.");
-                Logger.Debug(syntaxErrorException, "SLL mode exception");
-                moduleTokens.Reset();
-                parser.Reset();
-                parser.AddErrorListener(errorListener);
-                parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                parser.ErrorHandler = new RecoveryStrategy();
-                tree = parser.startRule();
-            }
-            catch (Exception exception)
-            {
-                Logger.Warn($"SLL mode failed while parsing module {moduleName}. Retrying using LL.");
-                Logger.Debug(exception, "SLL mode exception");
-                moduleTokens.Reset();
-                parser.Reset();
-                parser.AddErrorListener(errorListener);
-                parser.Interpreter.PredictionMode = PredictionMode.Ll;
-                parser.ErrorHandler = new RecoveryStrategy();
-                tree = parser.startRule();
-            }
+            parser.AddErrorListener(errorListener);
+            parser.ErrorHandler = new RecoveryStrategy();
+            parser.Interpreter.PredictionMode = predictionMode;
+            ParserRuleContext tree = parser.startRule();
             foreach (var listener in listeners)
             {
                 ParseTreeWalker.Default.Walk(listener, tree);

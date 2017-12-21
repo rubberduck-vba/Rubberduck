@@ -4,8 +4,10 @@ using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using Antlr4.Runtime.Atn;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor;
@@ -16,11 +18,13 @@ namespace Rubberduck.Parsing.VBA
     public class AttributeParser : IAttributeParser
     {
         private readonly IModuleExporter _exporter;
+        private readonly RubberduckParserState _state;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
 
-        public AttributeParser(IModuleExporter exporter, Func<IVBAPreprocessor> preprocessorFactory)
+        public AttributeParser(IModuleExporter exporter, RubberduckParserState state, Func<IVBAPreprocessor> preprocessorFactory)
         {
             _exporter = exporter;
+            _state = state;
             _preprocessorFactory = preprocessorFactory;
         }
 
@@ -72,9 +76,19 @@ namespace Rubberduck.Parsing.VBA
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
+            
+            var mainParseErrorListener = new SyntaxErrorNotificationListener(module);
+            mainParseErrorListener.OnSyntaxError += (sender, e) =>
+            {
+                _state.AddParserError(e);
+            };
 
-            var mainParseErrorListener = new MainParseExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
-            var parseResults = new VBAModuleParser().Parse(module.ComponentName, tokens, new IParseTreeListener[] { listener }, mainParseErrorListener);
+            var parseResults = new VBAModuleParser().Parse(module.ComponentName, PredictionMode.Sll, tokens, new IParseTreeListener[] { listener }, mainParseErrorListener);
+            if (_state.ModuleExceptions.Any(r => r.Item1 == module))
+            {
+                _state.ClearExceptions(module);
+                parseResults = new VBAModuleParser().Parse(module.ComponentName, PredictionMode.Ll, tokens, new IParseTreeListener[] { listener }, mainParseErrorListener);
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             return (parseResults.tree, parseResults.tokenStream, listener.Attributes);
