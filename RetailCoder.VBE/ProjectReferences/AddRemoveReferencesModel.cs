@@ -16,14 +16,14 @@ namespace Rubberduck.ProjectReferences
         {
             AvailableComLibraries = references.Where(r => r.Type == ReferenceKind.TypeLibrary).ToList();
             AvailableVbaProjects = references.Where(r => r.Type == ReferenceKind.Project).ToList();
-            PinnedLibraries = new HashSet<object>(references.Where(r => r.IsPinned));
+            PinnedLibraries = new HashSet<ReferenceModel>(references.Where(r => r.IsPinned));
         }
 
-        public IEnumerable<object> AvailableComLibraries { get; private set; }
+        public IEnumerable<ReferenceModel> AvailableComLibraries { get; private set; }
 
-        public IEnumerable<object> AvailableVbaProjects { get; private set; }
+        public IEnumerable<ReferenceModel> AvailableVbaProjects { get; private set; }
 
-        public HashSet<object> PinnedLibraries { get; private set; }
+        public HashSet<ReferenceModel> PinnedLibraries { get; private set; }
     }
 
     public class ReferenceModel
