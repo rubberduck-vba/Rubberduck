@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Atn;
 using NLog;
 using System;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
@@ -16,14 +17,17 @@ namespace Rubberduck.Parsing.VBA
         /// Parses the given date.
         /// </summary>
         /// <param name="date">The date in string format including "hash tags" (e.g. #01-01-1900#)</param>
+        /// <param name="errorNotifier"></param>
         /// <returns>The root of the parse tree.</returns>
-        public VBADateParser.DateLiteralContext Parse(string date)
+        public VBADateParser.DateLiteralContext Parse(string date, BaseErrorListener errorNotifier)
         {
             var stream = new AntlrInputStream(date);
             var lexer = new VBADateLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBADateParser(tokens);
-            parser.AddErrorListener(new ExceptionErrorListener()); // notify?
+            parser.AddErrorListener(errorNotifier);
+            parser.ErrorHandler = new RecoveryStrategy();
+
             VBADateParser.CompilationUnitContext tree;
             try
             {

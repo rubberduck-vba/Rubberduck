@@ -1,23 +1,35 @@
 ﻿using System;
 using System.Globalization;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class DateLiteralExpression : Expression
     {
+        private readonly RubberduckParserState _state;
+        private readonly QualifiedModuleName _module;
         private readonly IExpression _tokenText;
 
-        public DateLiteralExpression(IExpression tokenText)
+        public DateLiteralExpression(RubberduckParserState state, QualifiedModuleName module, IExpression tokenText)
         {
+            _state = state;
+            _module = module;
             _tokenText = tokenText;
         }
 
         public override IValue Evaluate()
         {
+            var errorNotifier = new SyntaxErrorNotificationListener(_module);
+            errorNotifier.OnSyntaxError += (sender, e) =>
+            {
+                _state.AddParserError(e);
+            };
+
             string literal = _tokenText.Evaluate().AsString;
             var parser = new VBADateLiteralParser();
-            var dateLiteral = parser.Parse(literal);
+            var dateLiteral = parser.Parse(literal, errorNotifier);
             var dateOrTime = dateLiteral.dateOrTime();
             int year;
             int month;

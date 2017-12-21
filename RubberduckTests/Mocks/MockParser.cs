@@ -47,7 +47,7 @@ namespace RubberduckTests.Mocks
 
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state);
+            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(state, double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state);
             var exporter = new Mock<IModuleExporter>().Object;
             return Create(vbe, state, attributeParser, exporter, serializedDeclarationsPath);
         }
@@ -56,7 +56,7 @@ namespace RubberduckTests.Mocks
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
-            IVBAPreprocessor PreprocessorFactory() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
+            IVBAPreprocessor PreprocessorFactory() => new VBAPreprocessor(state, double.Parse(vbe.Version, CultureInfo.InvariantCulture));
             var projectManager = new SynchronousProjectManager(state, vbe);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 

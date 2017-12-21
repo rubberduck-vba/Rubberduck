@@ -70,8 +70,14 @@ namespace Rubberduck.Parsing.VBA
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
-            var preprocessorErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass); 
-            preprocessor.PreprocessTokenStream(module.ComponentName, tokens, preprocessorErrorListener, cancellationToken);
+
+            var errorNotifier = new SyntaxErrorNotificationListener(module);
+            errorNotifier.OnSyntaxError += (sender, e) =>
+            {
+                _state.AddParserError(e);
+            };
+            
+            preprocessor.PreprocessTokenStream(module, module.ComponentName, tokens, errorNotifier, cancellationToken);
             var listener = new AttributeListener(Tuple.Create(module.ComponentName, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes

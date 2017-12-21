@@ -172,7 +172,13 @@ namespace Rubberduck.Parsing.VBA
             var code = _rewriter?.GetText() ?? string.Join(Environment.NewLine, GetCode(_module.Component.CodeModule));
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            _preprocessor.PreprocessTokenStream(_module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
+            var errorNotifier = new SyntaxErrorNotificationListener(_module);
+            errorNotifier.OnSyntaxError += (sender, e) =>
+            {
+                _state.AddParserError(e);
+            };
+
+            _preprocessor.PreprocessTokenStream(_module, _module.Name, tokens, errorNotifier, cancellationToken);
             return tokens;
         }
 

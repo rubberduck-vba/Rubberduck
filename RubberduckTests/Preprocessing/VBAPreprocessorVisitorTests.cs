@@ -7,6 +7,9 @@ using System.Globalization;
 using System.Text;
 using System.Collections.Generic;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.PreProcessing
 {
@@ -1364,14 +1367,19 @@ End Sub
             var tokens = new CommonTokenStream(lexer);
             var parser = new VBAConditionalCompilationParser(tokens);
             parser.ErrorHandler = new BailErrorStrategy();
-            //parser.AddErrorListener(new ExceptionErrorListener());
             var tree = parser.compilationUnit();
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream, tokens);
-            var expr = evaluator.Visit(tree);
-            var resultValue = expr.Evaluate();
 
-            Debug.Assert(parser.NumberOfSyntaxErrors == 0);
-            return Tuple.Create(symbolTable, resultValue);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var evaluator = new VBAPreprocessorVisitor(state, new QualifiedModuleName(), symbolTable,
+                    new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream, tokens);
+                var expr = evaluator.Visit(tree);
+                var resultValue = expr.Evaluate();
+
+                Debug.Assert(parser.NumberOfSyntaxErrors == 0);
+                return Tuple.Create(symbolTable, resultValue);
+            }
         }
 
         private string TokenText(IEnumerable<IToken> tokens)

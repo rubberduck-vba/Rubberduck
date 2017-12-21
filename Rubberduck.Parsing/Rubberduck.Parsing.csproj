@@ -154,9 +154,6 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
-    <Compile Include="Symbols\ParsingExceptions\MainParseExceptionErrorListener.cs" />
-    <Compile Include="Symbols\ParsingExceptions\PreprocessorExceptionErrorListener.cs" />
-    <Compile Include="Symbols\ParsingExceptions\ParsePassExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorException.cs" />
     <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorInfo.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseSyntaxErrorException.cs" />
@@ -323,7 +320,6 @@
     <Compile Include="Symbols\CommentExtensions.cs" />
     <Compile Include="Symbols\DeclarationEventArgs.cs" />
     <Compile Include="Symbols\DeclarationFinder.cs" />
-    <Compile Include="Symbols\ParsingExceptions\ExceptionErrorListener.cs" />
     <Compile Include="Symbols\ICanBeDefaultMember.cs" />
     <Compile Include="Symbols\IParameterizedDeclaration.cs" />
     <Compile Include="Symbols\PropertyLetDeclaration.cs" />
