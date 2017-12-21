@@ -267,13 +267,15 @@ namespace Rubberduck
 
                 if (_addin != null)
                 {
-                    _addin.Release();
+                    _logger.Log(LogLevel.Trace, "Disposing AddIn wrapper...");
+                    _addin.Dispose();
                     _addin = null;
                 }
 
                 if (_ide != null)
                 {
-                    _ide.Release();
+                    _logger.Log(LogLevel.Trace, "Disposing VBE wrapper...");
+                    _ide.Dispose();
                     _ide = null;
                 }
 

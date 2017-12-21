@@ -83,9 +83,10 @@ namespace Rubberduck
             {
                 _logger.Debug($"Starting removal of top-level menu {menu.GetType()}.");
                 menu.RemoveMenu();
-                //We do this here and not in the menu items because we only want to release the parents of the top level parent menus.
-                //The parents further down get released as part of the remove chain.
+                //We do this here and not in the menu items because we only want to dispose of/release the parents of the top level parent menus.
+                //The parents further down get disposed of/released as part of the remove chain.
                 _logger.Trace($"Removing parent menu of top-level menu {menu.GetType()}.");
+                menu.Parent.Dispose();
                 menu.Parent.Release(true);  //todo: Find a way around this!!!
                 menu.Parent = null;
             }

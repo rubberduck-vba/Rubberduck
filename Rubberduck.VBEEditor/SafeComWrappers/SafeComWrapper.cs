@@ -15,7 +15,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         }
 
         private int? _rcwReferenceCount;
-        public virtual void Release(bool final = false)
+        public void Release(bool final = false)
         {
             if (HasBeenReleased)
             {
@@ -103,5 +103,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             return !(a == b);
         }
-   }
+
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            if (!HasBeenReleased)
+            {
+                Release();
+            }
+
+            _isDisposed = true;
+        }
+    }
 }

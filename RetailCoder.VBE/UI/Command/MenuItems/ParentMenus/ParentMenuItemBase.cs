@@ -92,7 +92,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Logger.Debug($"Removing menu {_key}.");
             RemoveChildren();
             Item?.Delete();
-            Item?.Release();
+            Item?.Dispose();
             Item = null;
         }
 
@@ -106,7 +106,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 child.Click -= child_Click;
                 child.Delete();
-                child.Release();
+                child.Dispose();
             }
         }
 
