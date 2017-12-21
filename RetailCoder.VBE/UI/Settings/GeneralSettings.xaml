@@ -6,6 +6,7 @@
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:boolConverter="clr-namespace:Rubberduck.UI.Converters"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignWidth="300"
@@ -14,6 +15,7 @@
         <converters:DelimiterValueToTextConverter x:Key="DelimiterValueToText" />
         <converters:DelimiterToTextConverter x:Key="DelimiterToText" />
         <converters:HotkeyDisplayConverter x:Key="HotkeyDisplay" />
+        <boolConverter:BoolToHiddenVisibilityConverter x:Key="BoolToVisibility" />
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -139,7 +141,8 @@
 
                     <DockPanel>
                         <Label DockPanel.Dock="Left" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
-                        <Label DockPanel.Dock="Right" Content="{Resx ResxName=Rubberduck.Ui.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionLabel}"/>
+                        <Label DockPanel.Dock="Right" Content="{Resx ResxName=Rubberduck.Ui.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionLabel}"
+                               Visibility="{Binding ShouldDisplayHotkeyModificationLabel, Converter={StaticResource BoolToVisibility}}"/>
                     </DockPanel>
                     
                     <DataGrid ItemsSource="{Binding Hotkeys}"
