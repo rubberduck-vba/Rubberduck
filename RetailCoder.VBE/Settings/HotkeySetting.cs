@@ -25,8 +25,7 @@ namespace Rubberduck.Settings
         {
             get
             {
-                return (!HasShiftModifier || HasAltModifier || HasCtrlModifier)
-                        && (HasShiftModifier || HasAltModifier || HasCtrlModifier);
+                return HasAltModifier || HasCtrlModifier;
             }
         }
 
