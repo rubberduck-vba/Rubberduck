@@ -49,7 +49,7 @@ namespace Rubberduck.Settings
                 _settings = new HashSet<HotkeySetting>();
                 var incoming = value.ToList();
                 //Make sure settings are valid to keep trash out of the config file.
-                incoming.RemoveAll(h => !Enum.TryParse(h.Name, out RubberduckHotkey _) || !IsValid(h));
+                incoming.RemoveAll(h => !Enum.TryParse(h.Name, out RubberduckHotkey _) || !h.IsValid);
 
                 //Only take the first setting if multiple definitions are found.
                 foreach (var setting in incoming.GroupBy(s => s.Name).Select(hotkey => hotkey.First()))
