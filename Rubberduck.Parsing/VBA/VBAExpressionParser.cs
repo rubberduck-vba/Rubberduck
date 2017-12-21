@@ -34,6 +34,7 @@ namespace Rubberduck.Parsing.VBA
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
+                parser.ErrorHandler = new RecoveryStrategy();
                 tree = parser.expression();
             }
             return tree;

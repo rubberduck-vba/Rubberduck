@@ -3,16 +3,22 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class VBAPreprocessorVisitor : VBAConditionalCompilationParserBaseVisitor<IExpression>
     {
         private readonly SymbolTable<string, IValue> _symbolTable;
+        private readonly RubberduckParserState _state;
+        private readonly QualifiedModuleName _module;
         private readonly ICharStream _stream;
         private readonly CommonTokenStream _tokenStream;
 
         public VBAPreprocessorVisitor(
+            RubberduckParserState state,
+            QualifiedModuleName module,
             SymbolTable<string, IValue> symbolTable, 
             VBAPredefinedCompilationConstants predefinedConstants,
             ICharStream stream,
@@ -35,6 +41,8 @@ namespace Rubberduck.Parsing.PreProcessing
                 throw new ArgumentNullException(nameof(predefinedConstants));
             }
 
+            _state = state;
+            _module = module;
             _stream = stream;
             _tokenStream = tokenStream;
             _symbolTable = symbolTable;
@@ -453,7 +461,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         private IExpression VisitDateLiteral(VBAConditionalCompilationParser.LiteralContext context)
         {
-            return new DateLiteralExpression(new ConstantExpression(new StringValue(context.DATELITERAL().GetText())));
+            return new DateLiteralExpression(_state, _module, new ConstantExpression(new StringValue(context.DATELITERAL().GetText())));
         }
 
         private IExpression VisitOctLiteral(VBAConditionalCompilationParser.LiteralContext context)

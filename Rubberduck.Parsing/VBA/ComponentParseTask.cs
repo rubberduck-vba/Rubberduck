@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Antlr4.Runtime.Atn;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
@@ -25,6 +26,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
         private readonly IModuleExporter _exporter;
+        private readonly RubberduckParserState _state;
         private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
 
@@ -34,12 +36,13 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, RubberduckParserState state, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _attributeParser = attributeParser;
             _exporter = exporter;
+            _state = state;
             _preprocessor = preprocessor;
             _module = module;
             _rewriter = rewriter;
@@ -169,15 +172,32 @@ namespace Rubberduck.Parsing.VBA
             var code = _rewriter?.GetText() ?? string.Join(Environment.NewLine, GetCode(_module.Component.CodeModule));
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            _preprocessor.PreprocessTokenStream(_module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
+            var errorNotifier = new SyntaxErrorNotificationListener(_module);
+            errorNotifier.OnSyntaxError += (sender, e) =>
+            {
+                _state.AddParserError(e);
+            };
+
+            _preprocessor.PreprocessTokenStream(_module, _module.Name, tokens, errorNotifier, cancellationToken);
             return tokens;
         }
 
         private (IParseTree tree, ITokenStream tokenStream) ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners)
         {
-            //var errorNotifier = new SyntaxErrorNotificationListener();
-            //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, tokenStream, listeners, new MainParseExceptionErrorListener(moduleName, ParsePass.CodePanePass));
+            var errorNotifier = new SyntaxErrorNotificationListener(_module);
+            errorNotifier.OnSyntaxError += (sender, e) =>
+            {
+                _state.AddParserError(e);
+            };
+
+            var value = _parser.Parse(moduleName, PredictionMode.Sll, tokenStream, listeners, errorNotifier);
+            if (_state.ModuleExceptions.Any(r => r.Item1 == _module))
+            {
+                _state.ClearExceptions(_module);
+                value = _parser.Parse(moduleName, PredictionMode.Ll, tokenStream, listeners, errorNotifier);
+            }
+
+            return value;
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

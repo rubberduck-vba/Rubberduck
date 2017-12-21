@@ -271,6 +271,13 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        private readonly List<SyntaxErrorEventArgs> _errors = new List<SyntaxErrorEventArgs>();
+        public void AddParserError(SyntaxErrorEventArgs e)
+        {
+            _errors.Add(e);
+            SetModuleState(e.ModuleName, ParserState.Error, CancellationToken.None, new SyntaxErrorException(e.Info));
+        }
+
         //Overload using the vbe instance injected via the constructor.
         private void RefreshProjects()
         {
@@ -305,18 +312,7 @@ namespace Rubberduck.Parsing.VBA
         {
             get
             {
-                var exceptions = new List<Tuple<QualifiedModuleName, SyntaxErrorException>>();
-                foreach (var kvp in _moduleStates)
-                {
-                    if (kvp.Value.ModuleException == null)
-                    {
-                        continue;
-                    }
-
-                    exceptions.Add(Tuple.Create(kvp.Key, kvp.Value.ModuleException));
-                }
-
-                return exceptions;
+                return _errors.Select(s => Tuple.Create(s.ModuleName, new SyntaxErrorException(s.Info))).ToList();
             }
         }
 
@@ -765,6 +761,8 @@ namespace Rubberduck.Parsing.VBA
                 {
                     keys.Add(key);
                 }
+
+                _errors.RemoveAll(w => w.ModuleName == key);
             }
 
             var success = RemoveKeysFromCollections(keys);
@@ -1009,6 +1007,12 @@ namespace Rubberduck.Parsing.VBA
             _projects.Clear();
 
             _isDisposed = true;
+        }
+
+        public void ClearExceptions(QualifiedModuleName moduleName)
+        {
+            _errors.RemoveAll(r => r.ModuleName == moduleName);
+            SetModuleState(moduleName, ParserState.Parsing, CancellationToken.None);
         }
     }
 }

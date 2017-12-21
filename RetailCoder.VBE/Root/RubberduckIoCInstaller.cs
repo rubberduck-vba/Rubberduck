@@ -779,7 +779,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
 
             container.Register(Component.For<Func<IVBAPreprocessor>>()
-                .Instance(() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture))));
+                .Instance(() => new VBAPreprocessor(container.Resolve<RubberduckParserState>(), double.Parse(_vbe.Version, CultureInfo.InvariantCulture))));
         }
 
         private void RegisterCustomDeclarationLoadersToParser(IWindsorContainer container)
