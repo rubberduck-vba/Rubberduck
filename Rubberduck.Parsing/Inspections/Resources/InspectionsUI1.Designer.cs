@@ -1366,7 +1366,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Call&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Call&apos; statement.
         /// </summary>
         public static string ObsoleteCallStatementInspectionName {
             get {
@@ -1393,7 +1393,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Rem&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Rem&apos; statement.
         /// </summary>
         public static string ObsoleteCommentSyntaxInspectionName {
             get {
@@ -1447,7 +1447,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Global&apos; access modifier.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Global&apos; access modifier.
         /// </summary>
         public static string ObsoleteGlobalInspectionName {
             get {
@@ -1483,7 +1483,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of explicit &apos;Let&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete explicit &apos;Let&apos; statement.
         /// </summary>
         public static string ObsoleteLetStatementInspectionName {
             get {
@@ -1510,7 +1510,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type hint usage.
+        ///   Looks up a localized string similar to Obsolete Type hint usage.
         /// </summary>
         public static string ObsoleteTypeHintInspectionName {
             get {
