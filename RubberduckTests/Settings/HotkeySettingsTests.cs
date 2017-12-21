@@ -7,57 +7,71 @@ namespace RubberduckTests.Settings
     [TestClass]
     public class HotkeySettingsTests
     {
-        [Ignore]
         [TestCategory("Settings")]
         [TestMethod]
         public void DefaultsSetInCtor()
         {
-            var expected  = new HotkeySetting[0];
+            var expected = new []
+            {
+                new HotkeySetting {CommandTypeName = "FooCommand", Key1 = "F"},
+                new HotkeySetting {CommandTypeName = "BarCommand", Key1 = "B"}
+            };
 
-            // TODO: Use costructor with parameter
-            var settings = new HotkeySettings();
+            var settings = new HotkeySettings(new []
+            {
+                new HotkeySetting {CommandTypeName = "FooCommand", Key1 = "F"},
+                new HotkeySetting {CommandTypeName = "BarCommand", Key1 = "B"}
+            });
+
             var actual = settings.Settings;
 
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [Ignore]
         [TestCategory("Settings")]
         [TestMethod]
         public void InvalidSettingNameWontAdd()
         {
-            var settings = new HotkeySettings();
+            var settings = new HotkeySettings(new[]
+            {
+                new HotkeySetting {CommandTypeName = "FooCommand", Key1 = "F"}
+            });
+
             var expected = settings.Settings;
 
-            settings.Settings = new[] { new HotkeySetting { CommandTypeName = "Foobar", IsEnabled = false, Key1 = "CTRL-C" } };
+            settings.Settings = new[]
+                {new HotkeySetting {CommandTypeName = "BarCommand", IsEnabled = false, Key1 = "CTRL-C"}};
 
             var actual = settings.Settings;
 
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [Ignore]
         [TestCategory("Settings")]
         [TestMethod]
         public void InvalidSettingKeyWontAdd()
         {
-            var settings = new HotkeySettings();
+            var settings = new HotkeySettings(new[]
+            {
+                new HotkeySetting {CommandTypeName = "FooCommand", Key1 = "F"}
+            });
+
             var expected = settings.Settings;
 
-            settings.Settings = new[] { new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = false, Key1 = "Foobar" } };
+            settings.Settings = new[]
+                {new HotkeySetting {CommandTypeName = "FooCommand", IsEnabled = false, Key1 = "Foobar"}};
 
             var actual = settings.Settings;
 
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [Ignore]
         [TestCategory("Settings")]
         [TestMethod]
         public void DuplicateKeysAreDeactivated()
         {
-            var duplicate1 = new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = true, Key1 = "X" };
-            var duplicate2 = new HotkeySetting { CommandTypeName = "FindSymbol", IsEnabled = true, Key1 = "X" };
+            var duplicate1 = new HotkeySetting {CommandTypeName = "FooCommand", IsEnabled = true, Key1 = "X"};
+            var duplicate2 = new HotkeySetting {CommandTypeName = "BarCommand", IsEnabled = true, Key1 = "X"};
 
             // ReSharper disable once UnusedVariable
             var settings = new HotkeySettings
@@ -68,13 +82,12 @@ namespace RubberduckTests.Settings
             Assert.IsFalse(duplicate1.IsEnabled == duplicate2.IsEnabled);
         }
 
-        [Ignore]
         [TestCategory("Settings")]
         [TestMethod]
         public void DuplicateNamesAreIgnored()
         {
-            var expected = new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = true, Key1 = "X" };
-            var duplicate = new HotkeySetting { CommandTypeName = "ParseAll", IsEnabled = true, Key1 = "Y" };
+            var expected = new HotkeySetting {CommandTypeName = "FooCommand", IsEnabled = true, Key1 = "X"};
+            var duplicate = new HotkeySetting {CommandTypeName = "FooCommand", IsEnabled = true, Key1 = "Y"};
 
             var settings = new HotkeySettings
             {

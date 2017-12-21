@@ -32,7 +32,7 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.HotkeySettings;
 
-            foreach (var hotkeySetting in settings.Settings.Where(hotkey => hotkey.IsEnabled))
+            foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))
             {
                 var hotkey = _hotkeyFactory.Create(hotkeySetting, Hwnd);
                 if (hotkey != null)

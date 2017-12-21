@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Settings
 {
@@ -13,7 +14,7 @@ namespace Rubberduck.Settings
     public class HotkeySettings : IHotkeySettings, IEquatable<HotkeySettings>
     {
         private readonly IEnumerable<HotkeySetting> _defaultSettings;
-        private HashSet<HotkeySetting> _settings;
+        private HashSet<HotkeySetting> _settings = new HashSet<HotkeySetting>();
 
         public HotkeySetting[] Settings
         {
@@ -23,7 +24,11 @@ namespace Rubberduck.Settings
                 // Enable loading user settings during deserialization
                 if (_defaultSettings == null)
                 {
-                    _settings = value == null ? new HashSet<HotkeySetting>() : new HashSet<HotkeySetting>(value);
+                    if (value != null)
+                    {
+                        AddUnique(value);
+                    }
+
                     return;
                 }
 
@@ -34,19 +39,15 @@ namespace Rubberduck.Settings
                     _settings = new HashSet<HotkeySetting>(defaults);
                     return;
                 }
+
                 _settings = new HashSet<HotkeySetting>();
+
                 var incoming = value.ToList();
                 //Make sure settings are valid to keep trash out of the config file.
                 var hotkeyCommandTypeNames = defaults.Select(h => h.CommandTypeName);
                 incoming.RemoveAll(h => !hotkeyCommandTypeNames.Contains(h.CommandTypeName) || !IsValid(h));
 
-                //Only take the first setting if multiple definitions are found.
-                foreach (var setting in incoming.GroupBy(s => s.CommandTypeName).Select(hotkey => hotkey.First()))
-                {
-                    //Only allow one hotkey to be enabled with the same key combination.
-                    setting.IsEnabled &= !IsDuplicate(setting);
-                    _settings.Add(setting);
-                }
+                AddUnique(incoming);
 
                 //Merge any hotkeys that weren't found in the input.
                 foreach (var setting in defaults.Where(setting => _settings.FirstOrDefault(s => s.CommandTypeName.Equals(setting.CommandTypeName)) == null))
@@ -67,17 +68,7 @@ namespace Rubberduck.Settings
         public HotkeySettings(IEnumerable<HotkeySetting> defaultSettings)
         {
             _defaultSettings = defaultSettings;
-        }
-
-        private bool IsDuplicate(HotkeySetting candidate)
-        {
-            return _settings.FirstOrDefault(
-                s =>
-                    s.Key1 == candidate.Key1 &&
-                    s.Key2 == candidate.Key2 &&
-                    s.HasAltModifier == candidate.HasAltModifier &&
-                    s.HasCtrlModifier == candidate.HasCtrlModifier &&
-                    s.HasShiftModifier == candidate.HasShiftModifier) != null;
+            _settings = defaultSettings.ToHashSet();
         }
 
         public bool Equals(HotkeySettings other)
@@ -98,6 +89,28 @@ namespace Rubberduck.Settings
             {
                 return false;
             }
+        }
+
+        private void AddUnique(IEnumerable<HotkeySetting> settings)
+        {
+            //Only take the first setting if multiple definitions are found.
+            foreach (var setting in settings.GroupBy(s => s.CommandTypeName).Select(hotkey => hotkey.First()))
+            {
+                //Only allow one hotkey to be enabled with the same key combination.
+                setting.IsEnabled &= !IsDuplicate(setting);
+                _settings.Add(setting);
+            }
+        }
+
+        private bool IsDuplicate(HotkeySetting candidate)
+        {
+            return _settings.FirstOrDefault(
+                       s =>
+                           s.Key1 == candidate.Key1 &&
+                           s.Key2 == candidate.Key2 &&
+                           s.HasAltModifier == candidate.HasAltModifier &&
+                           s.HasCtrlModifier == candidate.HasCtrlModifier &&
+                           s.HasShiftModifier == candidate.HasShiftModifier) != null;
         }
     }
 }
