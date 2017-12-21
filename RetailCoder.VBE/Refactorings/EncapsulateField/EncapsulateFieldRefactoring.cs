@@ -77,7 +77,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
             {
-                var newField = "Private " + _model.TargetDeclaration.IdentifierName + " As " + _model.TargetDeclaration.AsTypeName;
+                var newField = $"Private {_model.TargetDeclaration.IdentifierName} As {_model.TargetDeclaration.AsTypeName}";
                 if (fields.Count > 1)
                 {
                     newField = Environment.NewLine + newField;

@@ -340,7 +340,7 @@ namespace Rubberduck.Root
             var menuBar = commandBars[MsForms];
             var controls = menuBar.Controls;
             var beforeControl = controls.FirstOrDefault(control => control.Id == viewCodeMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+            var beforeIndex = beforeControl?.Index ?? 1;
             var menuItemTypes = FormDesignerContextMenuItems();
             RegisterMenu<FormDesignerContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -361,7 +361,7 @@ namespace Rubberduck.Root
             var menuBar = commandBars[MsFormsControl];
             var controls = menuBar.Controls;
             var beforeControl = controls.FirstOrDefault(control => control.Id == viewCodeMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+            var beforeIndex = beforeControl?.Index ?? 1;
             var menuItemTypes = FormDesignerContextMenuItems();
             RegisterMenu<FormDesignerControlContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -373,14 +373,14 @@ namespace Rubberduck.Root
             var menuBar = commandBars[ProjectWindow];
             var controls = menuBar.Controls;
             var beforeControl = controls.FirstOrDefault(control => control.Id == projectPropertiesMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+            var beforeIndex = beforeControl?.Index ?? 1;
             var menuItemTypes = ProjectWindowContextMenuItems();
             RegisterMenu<ProjectWindowContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
 
         private static Type[] ProjectWindowContextMenuItems()
         {
-            return new Type[]
+            return new[]
             {
                 typeof(ProjectExplorerRefactorRenameCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
@@ -399,7 +399,7 @@ namespace Rubberduck.Root
 
         private static Type[] RubberduckCommandBarItems()
         {
-            return new Type[]
+            return new[]
             {
                 typeof(ReparseCommandMenuItem),
                 typeof(ShowParserErrorsCommandMenuItem),
@@ -431,7 +431,7 @@ namespace Rubberduck.Root
 
         private static Type[] UnitTestingMenuItems()
         {
-            return new Type[]
+            return new[]
             {
                 typeof(RunAllTestsCommandMenuItem),
                 typeof(TestExplorerCommandMenuItem),
@@ -443,7 +443,7 @@ namespace Rubberduck.Root
 
         private static Type[] RefactoringsMenuItems()
         {
-            return new Type[]
+            return new[]
             {
                 typeof(CodePaneRefactorRenameCommandMenuItem),
 #if DEBUG
@@ -462,7 +462,7 @@ namespace Rubberduck.Root
 
         private static Type[] NavigateMenuItems()
         {
-            return new Type[]
+            return new[]
             {
                 typeof(CodeExplorerCommandMenuItem),
 #if DEBUG
@@ -477,7 +477,7 @@ namespace Rubberduck.Root
 
         private static Type[] SmartIndenterMenuItems()
         {
-            return new Type[]
+            return new[]
             {
                 typeof(IndentCurrentProcedureCommandMenuItem),
                 typeof(IndentCurrentModuleCommandMenuItem),
@@ -496,7 +496,7 @@ namespace Rubberduck.Root
                 typeof(ExportAllCommandMenuItem)
             };
 
-            if (_initialSettings.SourceControlEnabled)
+            if (_initialSettings.IsSourceControlEnabled)
             {
                 items.Add(typeof(SourceControlCommandMenuItem));
             }
@@ -563,7 +563,7 @@ namespace Rubberduck.Root
 
         private void RegisterCommandsWithPresenters(IWindsorContainer container)
         {
-            if (_initialSettings.SourceControlEnabled)
+            if (_initialSettings.IsSourceControlEnabled)
             {
                 container.Register(Component.For<CommandBase>()
                     .ImplementedBy<SourceControlCommand>()

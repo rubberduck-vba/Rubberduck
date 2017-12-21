@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -232,31 +232,31 @@
     <value>The 'Call' statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call.</value>
   </data>
   <data name="ObsoleteCallStatementInspectionName" xml:space="preserve">
-    <value>Use of 'Call' statement</value>
+    <value>Use of obsolete 'Call' statement</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionMeta" xml:space="preserve">
     <value>The 'Rem' statement only exists in the language to support legacy code that required it; it can be safely replaced with an apostrophe / single-quote comment.</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspectionName" xml:space="preserve">
-    <value>Use of 'Rem' statement</value>
+    <value>Use of obsolete 'Rem' statement</value>
   </data>
   <data name="ObsoleteGlobalInspectionMeta" xml:space="preserve">
     <value>The 'Global' keyword only exists in the language to support legacy code that required it; it can be safely replaced with the 'Public' modifier.</value>
   </data>
   <data name="ObsoleteGlobalInspectionName" xml:space="preserve">
-    <value>Use of 'Global' access modifier</value>
+    <value>Use of obsolete 'Global' access modifier</value>
   </data>
   <data name="ObsoleteLetStatementInspectionMeta" xml:space="preserve">
     <value>The 'Let' statement only exists in the language to support legacy code that required it; it can be safely removed, since modern VBA does not require that keyword for value assignments.</value>
   </data>
   <data name="ObsoleteLetStatementInspectionName" xml:space="preserve">
-    <value>Use of explicit 'Let' statement</value>
+    <value>Use of obsolete explicit 'Let' statement</value>
   </data>
   <data name="ObsoleteTypeHintInspectionMeta" xml:space="preserve">
     <value>Type hint characters only exist in the language to support legacy code that required it; they can be safely replaced in declarations with an "As" type clause that specifies the type explicitly, and they can be omitted in other identifier references.</value>
   </data>
   <data name="ObsoleteTypeHintInspectionName" xml:space="preserve">
-    <value>Type hint usage</value>
+    <value>Obsolete Type hint usage</value>
   </data>
   <data name="OptionBaseInspectionMeta" xml:space="preserve">
     <value>Arrays are typically zero-based. This option changes the default lower boundary for implicitly-sized arrays, which can introduce off-by-one errors if one isn't cautious.</value>
@@ -813,10 +813,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'Case' block contains no executable statements</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionResultFormat" xml:space="preserve">
-    <value>An empty 'Do...While' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
+    <value>'Do...While' loop contains no executable statements</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionMeta" xml:space="preserve">
-    <value>An empty 'Case' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
+    <value>An empty 'Do...While' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyDoWhileBlockInspectionName" xml:space="preserve">
     <value>Empty 'Do...While' Loop</value>
@@ -825,7 +825,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'For-Each loop contains no executable statements</value>
   </data>
   <data name="EmptyForEachBlockInspectionMeta" xml:space="preserve">
-    <value>An empty 'Loop' block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
+    <value>An empty 'For Each...Next' loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn't need to be written.</value>
   </data>
   <data name="EmptyForEachBlockInspectionName" xml:space="preserve">
     <value>Empty 'For Each...Next' Loop</value>
@@ -886,5 +886,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="EmptyModuleInspectionResultFormat" xml:space="preserve">
     <value>Module/class {0} is empty.</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionName" xml:space="preserve">
+    <value>Use of 'Error' statement</value>
   </data>
 </root>

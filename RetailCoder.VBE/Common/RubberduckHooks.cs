@@ -55,8 +55,7 @@ namespace Rubberduck.Common
 
         private void OnMessageReceived(object sender, HookEventArgs args)
         {
-            var handler = MessageReceived;
-            handler?.Invoke(sender, args);
+            MessageReceived?.Invoke(sender, args);
         }
 
         public bool IsAttached { get; private set; }
@@ -108,7 +107,8 @@ namespace Rubberduck.Common
 
         private void hook_MessageReceived(object sender, HookEventArgs e)
         {
-            if (sender is IHotkey hotkey && hotkey.Command.CanExecute(null))
+            if (sender is IHotkey hotkey 
+                && hotkey.Command.CanExecute(null))
             {
                 hotkey.Command.Execute(null);
                 return;

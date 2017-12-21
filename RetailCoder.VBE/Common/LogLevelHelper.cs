@@ -12,21 +12,18 @@ namespace Rubberduck.Common
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static string LogHeader;
-        private static bool LogHeaderWritten;
+        private static bool IsLogHeaderWritten;
 
-        public static IEnumerable<LogLevel> LogLevels
-        {
-            get
-            {
-                return _logLevels.Value;
-            }
-        }
+        public static IEnumerable<LogLevel> LogLevels => _logLevels.Value;
 
         private static IEnumerable<LogLevel> GetLogLevels()
         {
-            var logLevels = new List<LogLevel>();
-            logLevels.Add(LogLevel.Off);
-            for (int logLevelOrdinal = 0; logLevelOrdinal <= 5; logLevelOrdinal++)
+            var logLevels = new List<LogLevel>
+            {
+                LogLevel.Off
+            };
+
+            for (var logLevelOrdinal = 0; logLevelOrdinal <= 5; logLevelOrdinal++)
             {
                 logLevels.Add(LogLevel.FromOrdinal(logLevelOrdinal));
             }
@@ -43,19 +40,19 @@ namespace Rubberduck.Common
             return GetLogLevels().Max(lvl => lvl.Ordinal);
         }
 
-        public static void SetDebugInfo(String value)
+        public static void SetDebugInfo(string value)
         {
             LogHeader = value;
-            LogHeaderWritten = false;
+            IsLogHeaderWritten = false;
         }
 
         public static void SetMinimumLogLevel(LogLevel minimumLogLevel)
         {
-            if (LogManager.GlobalThreshold == minimumLogLevel && LogHeaderWritten == true)
+            if (LogManager.GlobalThreshold == minimumLogLevel && IsLogHeaderWritten == true)
             {
                 return;
             }
-            if (LogHeaderWritten == true)
+            if (IsLogHeaderWritten == true)
             {
                 Logger.Log(LogLevel.Info, "Minimum log level changing from " + 
                     LogManager.GlobalThreshold.Name +
@@ -86,10 +83,11 @@ namespace Rubberduck.Common
             }
             LogManager.GlobalThreshold = minimumLogLevel;
             LogManager.ReconfigExistingLoggers();
-            if (LogHeaderWritten == false)
+
+            if (!IsLogHeaderWritten)
             {
                 Logger.Log(minimumLogLevel, LogHeader);
-                LogHeaderWritten = true;
+                IsLogHeaderWritten = true;
             }
         }
 
