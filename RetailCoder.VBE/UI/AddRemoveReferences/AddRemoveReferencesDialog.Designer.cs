@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.UI.ProjectReferences
+﻿namespace Rubberduck.UI.AddRemoveReferences
 {
     partial class AddRemoveReferencesDialog
     {

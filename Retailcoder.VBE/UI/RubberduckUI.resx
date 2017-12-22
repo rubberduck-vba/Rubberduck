@@ -2146,4 +2146,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Maximum Nesting</value>
   </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Apply</value>
+  </data>
 </root>

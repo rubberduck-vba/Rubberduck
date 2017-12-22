@@ -351,7 +351,7 @@
     <Compile Include="Navigation\CodeMetrics\CodeMetricsViewModel.cs" />
     <Compile Include="Navigation\CodeMetrics\ICodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
-    <Compile Include="ProjectReferences\AddRemoveReferencesModel.cs" />
+    <Compile Include="AddRemoveReferences\AddRemoveReferencesModel.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
@@ -388,6 +388,7 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesViewModel.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
@@ -438,13 +439,13 @@
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
-    <Compile Include="UI\ProjectReferences\AddRemoveReferencesDialog.cs">
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\ProjectReferences\AddRemoveReferencesDialog.Designer.cs">
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesDialog.Designer.cs">
       <DependentUpon>AddRemoveReferencesDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ProjectReferences\AddRemoveReferencesWindow.xaml.cs">
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesWindow.xaml.cs">
       <DependentUpon>AddRemoveReferencesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml.cs">
@@ -1010,7 +1011,7 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ProjectReferences\AddRemoveReferencesDialog.resx">
+    <EmbeddedResource Include="UI\AddRemoveReferences\AddRemoveReferencesDialog.resx">
       <DependentUpon>AddRemoveReferencesDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.resx">
@@ -1312,7 +1313,8 @@
     <Resource Include="Resources\folder.png" />
     <None Include="Resources\RD-300x250-base.png" />
     <Resource Include="Resources\magnifier-medium.png" />
-    <Content Include="Resources\pin.png" />
+    <Resource Include="Resources\lock.png" />
+    <Resource Include="Resources\pin.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
@@ -1436,7 +1438,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\ProjectReferences\AddRemoveReferencesWindow.xaml">
+    <Page Include="UI\AddRemoveReferences\AddRemoveReferencesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

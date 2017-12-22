@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.UI;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.ProjectReferences
+namespace Rubberduck.AddRemoveReferences
 {
     public class AddRemoveReferencesModel : ViewModelBase
     {
-        public AddRemoveReferencesModel(IReadOnlyList<ReferenceModel> references)
+        public AddRemoveReferencesModel(IReadOnlyList<ReferenceModel> model)
         {
-            AvailableComLibraries = references.Where(r => r.Type == ReferenceKind.TypeLibrary).ToList();
-            AvailableVbaProjects = references.Where(r => r.Type == ReferenceKind.Project).ToList();
-            PinnedLibraries = new HashSet<ReferenceModel>(references.Where(r => r.IsPinned));
+            AvailableReferences = model;
         }
 
-        public IEnumerable<ReferenceModel> AvailableComLibraries { get; private set; }
-
-        public IEnumerable<ReferenceModel> AvailableVbaProjects { get; private set; }
-
-        public HashSet<ReferenceModel> PinnedLibraries { get; private set; }
+        public IEnumerable<ReferenceModel> AvailableReferences { get; }
     }
 
     public class ReferenceModel
