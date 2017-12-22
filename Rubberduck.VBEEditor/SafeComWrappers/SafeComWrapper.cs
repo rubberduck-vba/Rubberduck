@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using NLog;
@@ -105,15 +106,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         }
 
 
-        private bool _isDisposed;
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
         {
             if (_isDisposed)
             {
                 return;
             }
 
-            if (!HasBeenReleased)
+            if (disposing && !HasBeenReleased)
             {
                 Release();
             }
