@@ -170,12 +170,16 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
             try
             {
-                Logger.Debug("Removing commandbar.");
-                RemoveChildren();
-                Item?.Delete();
-                Item?.Release();
-                Item = null;
-                Parent = null;
+                if (Item != null)
+                {
+                    Logger.Debug("Removing commandbar.");
+                    RemoveChildren();
+                    Item.Delete();
+                    Item.Dispose();
+                    Item = null;
+                    Parent?.Dispose();
+                    Parent = null;
+                }
             }
             catch (COMException exception)
             {
@@ -199,7 +203,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                         button.Click -= child_Click;
                     }
                     button.Delete();
-                    button.Release();
+                    button.Dispose();
                 }
             }
             catch (COMException exception)

@@ -265,6 +265,20 @@ namespace Rubberduck
                     _container = null;
                 }
 
+                if (_addin != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing AddIn wrapper...");
+                    _addin.Dispose();
+                    _addin = null;
+                }
+
+                if (_ide != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing VBE wrapper...");
+                    _ide.Dispose();
+                    _ide = null;
+                }
+
                 _isInitialized = false;
                 _logger.Log(LogLevel.Info, "No exceptions were thrown.");
             }

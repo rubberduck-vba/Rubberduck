@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using NLog;
@@ -15,7 +16,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         }
 
         private int? _rcwReferenceCount;
-        public virtual void Release(bool final = false)
+        public void Release(bool final = false)
         {
             if (HasBeenReleased)
             {
@@ -103,5 +104,28 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             return !(a == b);
         }
-   }
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            if (disposing && !HasBeenReleased)
+            {
+                Release();
+            }
+
+            _isDisposed = true;
+        }
+    }
 }

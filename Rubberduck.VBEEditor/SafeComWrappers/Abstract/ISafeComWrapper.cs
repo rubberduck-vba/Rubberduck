@@ -1,6 +1,8 @@
+using System;
+
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
-    public interface ISafeComWrapper : INullObjectWrapper
+    public interface ISafeComWrapper : INullObjectWrapper, IDisposable
     {
         void Release(bool final = false);
         bool HasBeenReleased { get; }
