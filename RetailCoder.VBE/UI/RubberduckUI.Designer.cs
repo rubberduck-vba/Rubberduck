@@ -1997,7 +1997,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hotkeys must include either Ctrl or Alt. Shift only or no modifier keys are invalid. Invalid combinations are disabled..
+        ///   Looks up a localized string similar to Hotkeys must include either Ctrl or Alt. Shift only or no modifier keys are invalid..
         /// </summary>
         public static string GeneralSettings_HotkeyRestrictionLabel {
             get {
