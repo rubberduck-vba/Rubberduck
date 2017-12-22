@@ -57,7 +57,7 @@ namespace RubberduckTests.Inspections
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
-                          .Where(i => string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "Meta")))
+                          .Where(i => string.IsNullOrWhiteSpace(InspectionsUI.ResourceManager.GetString(i.Name + "Meta")))
                           .Select(i => i.Name)
                           .ToList();
             
@@ -83,7 +83,7 @@ namespace RubberduckTests.Inspections
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
                           .Where(i => !inspectionsWithSharedResultFormat.Contains(i.Name) &&
-                                      string.IsNullOrEmpty(InspectionsUI.ResourceManager.GetString(i.Name + "ResultFormat")))
+                                      string.IsNullOrWhiteSpace(InspectionsUI.ResourceManager.GetString(i.Name + "ResultFormat")))
                           .Select(i => i.Name)
                           .ToList();
 
@@ -99,7 +99,7 @@ namespace RubberduckTests.Inspections
                           .Where(i =>
                           {
                               var value = InspectionsUI.ResourceManager.GetString(i.Name + "Name");
-                              return !string.IsNullOrEmpty(value) && value.Contains("{0}");
+                              return !string.IsNullOrWhiteSpace(value) && value.Contains("{0}");
                           })
                           .Select(i => i.Name)
                           .ToList();
