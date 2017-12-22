@@ -20,7 +20,7 @@ namespace Rubberduck.UI
         UserControl UserControl { get; }
     }
 
-    public abstract class DockableToolwindowPresenter : IDockablePresenter
+    public abstract class DockableToolwindowPresenter : IDockablePresenter, IDisposable
     {
         private readonly IAddIn _addin;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -99,6 +99,23 @@ namespace Rubberduck.UI
 
         public virtual void Show() => _window.IsVisible = true;
         public virtual void Hide() => _window.IsVisible = false;
+
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            Logger.Trace($"Disposing DockableWindowPresenter of type {this.GetType()}.");
+
+            _window.Dispose();
+
+            _isDisposed = true;
+        }
+
 
         ~DockableToolwindowPresenter()
         {
