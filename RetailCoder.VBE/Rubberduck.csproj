@@ -367,6 +367,7 @@
     <Compile Include="RubberduckGuid.cs" />
     <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
+    <Compile Include="Settings\ExperimentalFeatures.cs" />
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
     <Compile Include="Settings\HotkeyConfigProvider.cs" />

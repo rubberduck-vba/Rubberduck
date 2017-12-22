@@ -44,7 +44,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.UI.CodeMetrics;
-using Rubberduck.Navigation.CodeMetrics;
 using Rubberduck.Parsing.Common;
 
 namespace Rubberduck.Root
@@ -157,7 +156,14 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 var assemblyTypes = assembly.DefinedTypes
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                    .Where(w =>
+                    {
+                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
+                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string) attribute.ConstructorArguments.First().Value : string.Empty;
+
+                        return attribute == null ||
+                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
+                    });
 
                 container.Register(Classes.From(assemblyTypes)
                     .InSameNamespaceAs<Configuration>()
@@ -190,7 +196,14 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 var assemblyTypes = assembly.DefinedTypes
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                    .Where(w =>
+                    {
+                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
+                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
+
+                        return attribute == null ||
+                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
+                    });
 
                 assemblyTypes.Any(t => t.Name == nameof(IMessageBox));
                 
@@ -212,7 +225,14 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 var assemblyTypes = assembly.DefinedTypes
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                    .Where(w =>
+                    {
+                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
+                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
+
+                        return attribute == null ||
+                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
+                    });
 
                 container.Register(Types.From(assemblyTypes)
                     .Where(type => type.IsInterface && type.Name.EndsWith("Factory"))
@@ -236,7 +256,14 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 var assemblyTypes = assembly.DefinedTypes
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                    .Where(w =>
+                    {
+                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
+                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
+
+                        return attribute == null ||
+                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
+                    });
 
                 container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IQuickFix>()
@@ -251,7 +278,14 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 var assemblyTypes = assembly.DefinedTypes
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
+                    .Where(w =>
+                    {
+                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
+                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
+
+                        return attribute == null ||
+                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled && a.IsEnabled);
+                    });
 
                 container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IInspection>()
@@ -265,8 +299,15 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 var assemblyTypes = assembly.DefinedTypes
-                    .Where(w => _initialSettings.EnableExperimentalFeatures || !Attribute.IsDefined(w, typeof(ExperimentalAttribute)));
-                
+                    .Where(w =>
+                    {
+                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
+                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
+
+                        return attribute == null ||
+                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
+                    });
+
                 container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IParseTreeInspection>()
                     .WithService.Base()
@@ -514,7 +555,7 @@ namespace Rubberduck.Root
                 typeof(ExportAllCommandMenuItem)
             };
 
-            if (_initialSettings.EnableExperimentalFeatures)
+            if (_initialSettings.EnableExperimentalFeatures.Any(a => a.Key == nameof(RubberduckUI.GeneralSettings_EnableSourceControl) && a.IsEnabled))
             {
                 items.Add(typeof(SourceControlCommandMenuItem));
             }
@@ -581,7 +622,7 @@ namespace Rubberduck.Root
 
         private void RegisterCommandsWithPresenters(IWindsorContainer container)
         {
-            if (_initialSettings.EnableExperimentalFeatures)
+            if (_initialSettings.EnableExperimentalFeatures.Any(a => a.Key == nameof(RubberduckUI.GeneralSettings_EnableSourceControl) && a.IsEnabled))
             {
                 container.Register(Component.For<CommandBase>()
                     .ImplementedBy<SourceControlCommand>()
@@ -811,7 +852,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
         }
 
-        private IEnumerable<Assembly> AssembliesToRegister()
+        public static IEnumerable<Assembly> AssembliesToRegister()
         {
             var assemblies = new[]
                 {
@@ -824,7 +865,7 @@ namespace Rubberduck.Root
             return assemblies;
         }
 
-        private IEnumerable<Assembly> FindPlugins()
+        private static IEnumerable<Assembly> FindPlugins()
         {
             var assemblies = new List<Assembly>();
             var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
