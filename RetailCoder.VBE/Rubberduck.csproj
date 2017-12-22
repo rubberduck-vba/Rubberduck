@@ -470,7 +470,6 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="UI\SelectionChangeService.cs" />
-    <Compile Include="UI\Settings\Converters\BooleanToInvalidConfigurationIconConverter.cs" />
     <Compile Include="UnitTesting\Fakes\CurDir.cs" />
     <Compile Include="UnitTesting\Fakes\DoEvents.cs" />
     <Compile Include="UnitTesting\Fakes\Environ.cs" />
