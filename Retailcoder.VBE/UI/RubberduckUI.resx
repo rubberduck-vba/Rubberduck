@@ -2147,6 +2147,6 @@ Would you like to import them to Rubberduck?</value>
     <value>Maximum Nesting</value>
   </data>
   <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
-    <value>Hotkeys must include either Ctrl or Alt. Shift only or no modifier keys are invalid. Invalid combinations are disabled.</value>
+    <value>Hotkeys must include either Ctrl or Alt. Shift only or no modifier keys are invalid.</value>
   </data>
 </root>
