@@ -31,7 +31,7 @@ namespace Rubberduck.Settings
 
         [XmlIgnore]
         public string Prompt => RubberduckUI.ResourceManager.GetString($"HotkeyDescription_{Name}", CultureInfo.CurrentUICulture);
-
+                                    
         public override string ToString()
         {
             return string.Format("{0}{1}{2}{3}",
