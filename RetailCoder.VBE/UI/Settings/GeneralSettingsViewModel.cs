@@ -159,20 +159,6 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool _sourceControlEnabled;
-        public bool SourceControlEnabled
-        {
-            get => _sourceControlEnabled;
-            set
-            {
-                if (_sourceControlEnabled != value)
-                {
-                    _sourceControlEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public CommandBase ShowLogFolderCommand { get; }
 
         private void ShowLogFolder()

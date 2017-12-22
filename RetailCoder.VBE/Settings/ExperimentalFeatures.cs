@@ -35,5 +35,20 @@ namespace Rubberduck.Settings
         {
             return Key;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ExperimentalFeatures value &&
+                   value.IsEnabled == IsEnabled &&
+                   value.Key == Key;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (IsEnabled.GetHashCode() * 397) ^ (Key != null ? Key.GetHashCode() : 0);
+            }
+        }
     }
 }
