@@ -475,7 +475,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Result" xml:space="preserve">
     <value>Result</value>
   </data>
-  <data name="Outcome" xml:space="preserve">
+  <data name="TestExplorer_Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
@@ -634,7 +634,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Passed Tests</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Selected Tests</value>
+    <value>Selected Test</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Line</value>
