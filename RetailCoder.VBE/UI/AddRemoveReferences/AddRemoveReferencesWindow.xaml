@@ -78,9 +78,9 @@
                                                 <ColumnDefinition Width="20" />
                                             </Grid.ColumnDefinitions>
                                             <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" Margin="2,0" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="2,0" />
                                             <TextBlock Grid.Column="2" Text="{Binding Version}" Margin="2,0" />
-                                            <TextBlock Grid.Column="3" Text="{Binding FullPath}" Margin="2,0" />
+                                            <TextBlock Grid.Column="3" Text="{Binding Description}" Margin="2,0" />
                                             <Image Grid.Column="4" Source="/Rubberduck;component/Resources/tick.png" />
                                         </Grid>
                                     </DataTemplate>
@@ -96,7 +96,7 @@
                                         BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
                                         Background="{x:Static SystemColors.ControlLightBrush}"
                                         Padding="2">
-                                    <TextBlock Foreground="{x:Static SystemColors.GrayTextBrush}">C:\System32\foobar.dll</TextBlock>
+                                    <TextBlock Foreground="{x:Static SystemColors.GrayTextBrush}" Text="{Binding SelectedItem.FullPath}" />
                                 </Border>
                             </Border>
                         </Grid>
@@ -111,21 +111,28 @@
                     </TabItem.Header>
                     <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}" Margin="5">
                         <DockPanel>
-                            <Border DockPanel.Dock="Top" 
+                            <Border DockPanel.Dock="Top"
                                     Background="{x:Static SystemColors.ControlBrush}"
-                                    BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" BorderThickness="1" Margin="10,10,10,0" Padding="2">
+                                    BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
+                                    BorderThickness="1" 
+                                    Margin="10,10,10,0" 
+                                    Padding="2">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="20" />
                                         <ColumnDefinition Width="20" />
                                     </Grid.ColumnDefinitions>
                                     <TextBox Grid.Column="0" />
                                     <Border Grid.Column="1" Margin="2">
                                         <Image Source="/Rubberduck;component/Resources/magnifier-medium.png" />
                                     </Border>
+                                    <Button Grid.Column="2">
+                                        <Image Margin="2,0" Source="/Rubberduck;component/Resources/folder-horizontal-open.png" />
+                                    </Button>
                                 </Grid>
                             </Border>
-                            <ListView Margin="10,10,10,5"
+                            <ListView Margin="10"
                                       ItemsSource="{Binding ComLibraries}"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemTemplate>
@@ -159,7 +166,7 @@
                     </TabItem.Header>
                     <Border Margin="5" BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}">
                         <DockPanel>
-                            <ListView Margin="10,10,10,5"
+                            <ListView Margin="10"
                                       ItemsSource="{Binding ComLibraries}"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemTemplate>
@@ -167,13 +174,13 @@
                                         <Grid Margin="2,0,2,0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="50" />
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="20" />
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="2,0" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" />
-                                            <TextBlock Grid.Column="2" Text="{Binding FullPath}" Margin="2,0" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Version}" Margin="2,0" />
+                                            <TextBlock Grid.Column="2" Text="{Binding Description}" Margin="2,0" />
                                             <Button Grid.Column="3">
                                                 <Image Source="/Rubberduck;component/Resources/arrow-090.png" />
                                             </Button>
