@@ -19,9 +19,10 @@ namespace Rubberduck.AddRemoveReferences
 
     public class ReferenceModel
     {
-        public ReferenceModel(IVBProject project)
+        public ReferenceModel(IVBProject project, int priority)
         {
             Name = project.Name;
+            Priority = priority;
             Guid = string.Empty;
             Description = project.Description;
             Version = default(Version);
@@ -30,10 +31,6 @@ namespace Rubberduck.AddRemoveReferences
             Type = ReferenceKind.Project;
         }
 
-        /// <summary>
-        /// Creates a 
-        /// </summary>
-        /// <param name="info"></param>
         public ReferenceModel(dynamic info) // todo figure out what type that should be 
         {
             Name = info.Name;
@@ -45,9 +42,10 @@ namespace Rubberduck.AddRemoveReferences
             Type = ReferenceKind.TypeLibrary;
         }
 
-        public ReferenceModel(IReference reference)
+        public ReferenceModel(IReference reference, int priority)
         {
             IsSelected = true;
+            Priority = priority;
             Name = reference.Name;
             Guid = reference.Guid;
             Description = reference.Description;
@@ -61,6 +59,7 @@ namespace Rubberduck.AddRemoveReferences
         public bool IsSelected { get; set; }
         public bool IsRemoved { get; set; }
         public bool IsPinned { get; set; }
+        public int Priority { get; set; }
 
         public string Name { get; }
         public string Guid { get; }

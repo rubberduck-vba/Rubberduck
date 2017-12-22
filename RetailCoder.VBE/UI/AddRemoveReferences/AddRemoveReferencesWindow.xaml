@@ -9,6 +9,15 @@
              d:DesignHeight="380" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:AddRemoveReferencesViewModel}">
     <UserControl.Resources>
+        <BitmapImage x:Key="SearchIcon" UriSource="../../Resources/magnifier-medium.png" />
+        <BitmapImage x:Key="BrowseIcon" UriSource="../../Resources/folder-open.png" />
+        <BitmapImage x:Key="TickIcon" UriSource="../../Resources/tick.png" />
+        <BitmapImage x:Key="LockIcon" UriSource="../../Resources/lock.png" />
+        <BitmapImage x:Key="LibraryIcon" UriSource="../../Resources/Custom/PNG/ObjectLibrary.png" />
+        <BitmapImage x:Key="VbaProjectIcon" UriSource="../../Resources/Custom/PNG/ObjectClass.png" />
+        <BitmapImage x:Key="PriorityIcon" UriSource="../../Resources/edit-list-order.png" />
+        <BitmapImage x:Key="MoveUpIcon" UriSource="../../Resources/arrow-090.png" />
+
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <Style x:Key="DialogButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="5,0" />
@@ -32,7 +41,7 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Image Margin="2,0" Source="/Rubberduck;component/Resources/Custom/PNG/ObjectLibrary.png" />
+                            <Image Margin="2,0" Source="{StaticResource LibraryIcon}" />
                             <TextBlock Margin="2,0">COM</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
@@ -57,15 +66,16 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBox Grid.Column="0" />
                                     <Border Grid.Column="1" Margin="2">
-                                        <Image Source="/Rubberduck;component/Resources/magnifier-medium.png" />
+                                        <Image Source="{StaticResource SearchIcon}" />
                                     </Border>
                                     <Button Grid.Column="2">
-                                        <Image Margin="2,0" Source="/Rubberduck;component/Resources/folder-horizontal-open.png" />
+                                        <Image Margin="2,0" Source="{StaticResource BrowseIcon}" />
                                     </Button>
                                 </Grid>
                             </Border>
                             <ListView Grid.Row="1" Margin="10,10,10,5"
                                       ItemsSource="{Binding ComLibraries}"
+                                      SelectedItem="{Binding SelectedLibrary}"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="refs:AddRemoveReferencesModel">
@@ -96,7 +106,7 @@
                                         BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
                                         Background="{x:Static SystemColors.ControlLightBrush}"
                                         Padding="2">
-                                    <TextBlock Foreground="{x:Static SystemColors.GrayTextBrush}" Text="{Binding SelectedItem.FullPath}" />
+                                    <TextBlock Foreground="{x:Static SystemColors.GrayTextBrush}" Text="{Binding SelectedLibrary.FullPath}" />
                                 </Border>
                             </Border>
                         </Grid>
@@ -105,7 +115,7 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Image Margin="2,0" Source="/Rubberduck;component/Resources/Custom/PNG/ObjectClass.png" />
+                            <Image Margin="2,0" Source="{StaticResource VbaProjectIcon}" />
                             <TextBlock Margin="2,0">VBA</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
@@ -125,15 +135,16 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBox Grid.Column="0" />
                                     <Border Grid.Column="1" Margin="2">
-                                        <Image Source="/Rubberduck;component/Resources/magnifier-medium.png" />
+                                        <Image Source="{StaticResource SearchIcon}" />
                                     </Border>
-                                    <Button Grid.Column="2">
-                                        <Image Margin="2,0" Source="/Rubberduck;component/Resources/folder-horizontal-open.png" />
+                                    <Button Grid.Column="2" Command="{Binding BrowseCommand}">
+                                        <Image Margin="2,0" Source="{StaticResource BrowseIcon}" />
                                     </Button>
                                 </Grid>
                             </Border>
                             <ListView Margin="10"
                                       ItemsSource="{Binding ComLibraries}"
+                                      SelectedItem="{Binding SelectedProject}"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="refs:AddRemoveReferencesModel">
@@ -149,7 +160,7 @@
                                             <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="2,0" />
                                             <TextBlock Grid.Column="2" Text="{Binding Description}" Margin="2,0" />
                                             <TextBlock Grid.Column="3" Text="{Binding FullPath}" Margin="2,0" />
-                                            <Image Grid.Column="4" Source="/Rubberduck;component/Resources/tick.png" />
+                                            <Image Grid.Column="4" Source="{StaticResource TickIcon}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -160,7 +171,7 @@
                 <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Image Margin="2,0" Source="/Rubberduck;component/Resources/edit-list-order.png" />
+                            <Image Margin="2,0" Source="{StaticResource PriorityIcon}" />
                             <TextBlock Margin="2,0">Priority</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
@@ -181,8 +192,8 @@
                                             <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="2,0" />
                                             <TextBlock Grid.Column="1" Text="{Binding Version}" Margin="2,0" />
                                             <TextBlock Grid.Column="2" Text="{Binding Description}" Margin="2,0" />
-                                            <Button Grid.Column="3">
-                                                <Image Source="/Rubberduck;component/Resources/arrow-090.png" />
+                                            <Button Grid.Column="3" Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                                <Image Source="{StaticResource MoveUpIcon}" />
                                             </Button>
                                         </Grid>
                                     </DataTemplate>
@@ -197,9 +208,9 @@
         <Border Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="DialogButtons" />
-                    <ColumnDefinition SharedSizeGroup="DialogButtons" />
-                    <ColumnDefinition SharedSizeGroup="DialogButtons" />
+                    <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
+                    <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
+                    <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}" />
                 <Button Grid.Column="1" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}" />
