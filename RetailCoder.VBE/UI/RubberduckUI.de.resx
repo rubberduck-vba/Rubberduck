@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2087,5 +2087,8 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Maximale Einrückung</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Bewerben</value>
   </data>
 </root>

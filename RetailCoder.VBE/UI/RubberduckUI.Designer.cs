@@ -222,6 +222,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string ApplyButtonText {
+            get {
+                return ResourceManager.GetString("ApplyButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected COM exception while running tests..
         /// </summary>
         public static string Assert_ComException {

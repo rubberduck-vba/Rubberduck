@@ -2091,4 +2091,7 @@ les projets dans le VBE.</value>
   <data name="CodeMetrics_Lines" xml:space="preserve">
     <value>Lignes</value>
   </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Appliquer</value>
+  </data>
 </root>
