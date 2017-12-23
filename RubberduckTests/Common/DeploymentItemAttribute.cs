@@ -6,7 +6,7 @@ using NUnit.Framework.Interfaces;
 
 namespace RubberduckTests.Common
 {
-    // "borrowed" from https://stackoverflow.com/a/29610171
+    // "borrowed" from https://stackoverflow.com/a/11569203
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Struct,
         AllowMultiple = false,
         Inherited = false)]
