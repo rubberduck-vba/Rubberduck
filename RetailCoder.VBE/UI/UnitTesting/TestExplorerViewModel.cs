@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using NLog;
@@ -355,8 +354,7 @@ namespace Rubberduck.UI.UnitTesting
 
             var aResults = Model.Tests.Select(test => test.ToArray()).ToArray();
 
-            const string resource = "Rubberduck Test Results - {0}";
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+            var title = string.Format($"Rubberduck Test Results - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
 
             //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(aResults, title, ColumnInfos);
