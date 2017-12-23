@@ -1,16 +1,16 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveUnusedDeclarationQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ConstantNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -38,8 +38,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void LabelNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -64,8 +64,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void LabelNotUsed_QuickFixWorks_MultipleLabels()
         {
             const string inputCode =
@@ -96,8 +96,8 @@ End Sub"; ;
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -120,8 +120,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_QuickFixWorks()
         {
             const string inputCode =
@@ -146,8 +146,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithFollowingEmptyLine_DoesNotRemoveEmptyLine()
         {
             const string inputCode =
@@ -173,8 +173,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithCommentOnSameLine_DoesNotRemoveComment()
         {
             const string inputCode =
@@ -199,8 +199,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithCommentOnSameLineAndFollowingStuff_DoesNotRemoveComment()
         {
             const string inputCode =
@@ -233,8 +233,8 @@ End Function";
 
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithFollowingCommentLine_DoesNotRemoveCommentLine()
         {
             const string inputCode =
@@ -260,8 +260,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_InMultideclaration_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
         {
             const string inputCode =
@@ -292,8 +292,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_InMultideclarationByStmtSeparators_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
         {
             const string inputCode =

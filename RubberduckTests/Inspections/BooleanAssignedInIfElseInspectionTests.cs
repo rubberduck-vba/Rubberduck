@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class BooleanAssignedInIfElseInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void Simple()
         {
             const string inputcode =
@@ -34,8 +34,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void QualifiedName()
         {
             const string inputcode =
@@ -58,8 +58,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MultipleResults()
         {
             const string inputcode =
@@ -89,8 +89,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void AssignsInteger()
         {
             const string inputcode =
@@ -114,8 +114,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void AssignsTheSameValue()       // worthy of an inspection in its own right
         {
             const string inputcode =
@@ -139,8 +139,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void AssignsToDifferentVariables()
         {
             const string inputcode =
@@ -164,8 +164,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ConditionalContainsElseIfBlock()
         {
             const string inputcode =
@@ -191,8 +191,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ConditionalDoesNotContainElseBlock()
         {
             const string inputcode =
@@ -214,8 +214,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IsIgnored()
         {
             const string inputcode =
@@ -240,8 +240,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void BlockContainsPrefixComment()
         {
             const string inputcode =
@@ -266,8 +266,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void BlockContainsPostfixComment()
         {
             const string inputcode =
@@ -292,8 +292,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void BlockContainsEOLComment()
         {
             const string inputcode =

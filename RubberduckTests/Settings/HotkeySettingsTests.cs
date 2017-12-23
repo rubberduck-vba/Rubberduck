@@ -1,14 +1,14 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Settings;
 
 namespace RubberduckTests.Settings
 {
-    [TestClass]
+    [TestFixture]
     public class HotkeySettingsTests
     {
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void DefaultsSetInCtor()
         {
             var expected = new[] 
@@ -34,8 +34,8 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void InvalidSettingNameWontAdd()
         {
             var settings = new HotkeySettings();
@@ -48,8 +48,8 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void InvalidSettingKeyWontAdd()
         {
             var settings = new HotkeySettings();
@@ -62,8 +62,8 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void DuplicateKeysAreDeactivated()
         {
             var duplicate1 = new HotkeySetting {Name = "ParseAll", IsEnabled = true, Key1 = "X"};
@@ -78,8 +78,8 @@ namespace RubberduckTests.Settings
             Assert.IsFalse(duplicate1.IsEnabled == duplicate2.IsEnabled);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void DuplicateNamesAreIgnored()
         {
             var expected = new HotkeySetting { Name = "ParseAll", IsEnabled = true, Key1 = "X" };

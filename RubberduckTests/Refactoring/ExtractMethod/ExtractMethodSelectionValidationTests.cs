@@ -1,22 +1,22 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodSelectionValidationTests
     {
-        [TestClass]
+        [TestFixture]
         public class SpansSingleMethod : ExtractMethodSelectionValidationTests
         {
-            [TestClass]
+            [TestFixture]
             public class WhenSelectionSpansMoreThanASingleMethod : SpansSingleMethod
             {
 
-                [TestMethod]
-                [TestCategory("ExtractMethodSelectionValidationTests")]
+                [Test]
+                [Category("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
                     var inputCode = @"
@@ -55,11 +55,11 @@ End Sub";
                     }
                 }
             }
-            [TestClass]
+            [TestFixture]
             public class WhenSeletionSpansWithinMethod : SpansSingleMethod
             {
-                [TestMethod]
-                [TestCategory("ExtractMethodSelectionValidationTests")]
+                [Test]
+                [Category("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnTrue()
                 {
                     var inputCode = @"
@@ -99,8 +99,8 @@ End Sub";
                     }
                 }
 
-                [TestMethod]
-                [TestCategory("ExtractMethodSelectionValidationTests")]
+                [Test]
+                [Category("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
                     var inputCode = @"

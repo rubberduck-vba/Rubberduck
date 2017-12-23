@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Navigation.Folders;
@@ -20,7 +20,7 @@ using Rubberduck.SettingsProvider;
 
 namespace RubberduckTests.CodeExplorer
 {
-    [TestClass]
+    [TestFixture]
     public class CodeExplorerTests
     {
         private GeneralSettings _generalSettings;
@@ -29,7 +29,7 @@ namespace RubberduckTests.CodeExplorer
         private Mock<IConfigProvider<GeneralSettings>> _generalSettingsProvider;
         private Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             _generalSettings = new GeneralSettings();
@@ -42,8 +42,8 @@ namespace RubberduckTests.CodeExplorer
             _windowSettingsProvider.Setup(s => s.Create()).Returns(_windowSettings);
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddStdModule()
         {
             var builder = new MockVbeBuilder();
@@ -71,8 +71,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddClassModule()
         {
             var builder = new MockVbeBuilder();
@@ -100,8 +100,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddUserForm()
         {
             var builder = new MockVbeBuilder();
@@ -129,8 +129,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddTestModule()
         {
             var builder = new MockVbeBuilder();
@@ -166,8 +166,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddTestModuleWithStubs()
         {
             var builder = new MockVbeBuilder();
@@ -202,8 +202,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddTestModuleWithStubs_DisabledWhenParameterIsProject()
         {
             var builder = new MockVbeBuilder();
@@ -235,8 +235,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddTestModuleWithStubs_DisabledWhenParameterIsFolder()
         {
             var builder = new MockVbeBuilder();
@@ -268,8 +268,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void AddTestModuleWithStubs_DisabledWhenParameterIsModuleMember()
         {
             var builder = new MockVbeBuilder();
@@ -301,8 +301,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void ImportModule()
         {
             var builder = new MockVbeBuilder();
@@ -344,8 +344,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void ImportMultipleModules()
         {
             var builder = new MockVbeBuilder();
@@ -388,8 +388,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void ImportModule_Cancel()
         {
             var builder = new MockVbeBuilder();
@@ -431,8 +431,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void ExportModule_ExpectExecution()
         {
             var builder = new MockVbeBuilder();
@@ -469,8 +469,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void ExportModule_CancelPressed_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
@@ -506,8 +506,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportProject_TestCanExecute_ExpectTrue()
         {
             var builder = new MockVbeBuilder();
@@ -545,8 +545,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportProject_TestExecute_OKPressed_ExpectExecution()
         {
             string path = @"C:\Users\Rubberduck\Desktop\ExportAll";
@@ -599,8 +599,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportProject_TestExecute_CancelPressed_ExpectExecution()
         {
             string path = @"C:\Users\Rubberduck\Desktop\ExportAll";
@@ -653,8 +653,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void OpenDesigner()
         {
             var builder = new MockVbeBuilder();
@@ -686,8 +686,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void RemoveCommand_RemovesModuleWhenPromptOk()
         {
             var builder = new MockVbeBuilder();
@@ -732,8 +732,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void RemoveCommand_CancelsWhenFilePromptCancels()
         {
             var builder = new MockVbeBuilder();
@@ -776,8 +776,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void RemoveCommand_GivenMsgBoxNO_RemovesModuleNoExport()
         {
             var builder = new MockVbeBuilder();
@@ -819,8 +819,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void RemoveModule_Cancel()
         {
             var builder = new MockVbeBuilder();
@@ -861,8 +861,8 @@ namespace RubberduckTests.CodeExplorer
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentModule()
         {
             var inputCode =
@@ -901,8 +901,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentModule_DisabledWithNoIndentAnnotation()
         {
             var inputCode =
@@ -935,8 +935,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentProject()
         {
             var inputCode =
@@ -986,8 +986,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentProject_IndentsModulesWithoutNoIndentAnnotation()
         {
             var inputCode1 =
@@ -1045,8 +1045,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentProject_DisabledWhenAllModulesHaveNoIndentAnnotation()
         {
             var inputCode =
@@ -1085,8 +1085,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentFolder()
         {
             var inputCode =
@@ -1140,8 +1140,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentFolder_IndentsModulesWithoutNoIndentAnnotation()
         {
             var inputCode1 =
@@ -1204,8 +1204,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void IndentFolder_DisabledWhenAllModulesHaveNoIndentAnnotation()
         {
             var inputCode =
@@ -1243,8 +1243,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void ExpandAllNodes()
         {
             var inputCode =
@@ -1272,8 +1272,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void ExpandAllNodes_StartingWithSubnode()
         {
             var builder = new MockVbeBuilder();
@@ -1301,8 +1301,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CollapseAllNodes()
         {
             var inputCode =
@@ -1330,8 +1330,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CollapseAllNodes_StartingWithSubnode()
         {
             var builder = new MockVbeBuilder();
@@ -1359,8 +1359,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByName_NotAlreadySelectedInMenu_ExpectTrue()
         {
             var builder = new MockVbeBuilder();
@@ -1397,8 +1397,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByName_AlreadySelectedInMenu_ExpectTrue()
         {
             var builder = new MockVbeBuilder();
@@ -1435,8 +1435,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByName_BothSortOptionsFalse_ExpectTrueOnlyForSortByName()
         {
             var builder = new MockVbeBuilder();
@@ -1473,8 +1473,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByName_BothSortOptionsTrue_ExpectTrueOnlyForSortByName()
         {
             var builder = new MockVbeBuilder();
@@ -1511,8 +1511,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByCodeOrder_NotAlreadySelectedInMenu_ExpectTrue()
         {
             var builder = new MockVbeBuilder();
@@ -1549,8 +1549,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByCodeOrder_AlreadySelectedInMenu_ExpectTrue()
         {
             var builder = new MockVbeBuilder();
@@ -1587,8 +1587,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByCodeOrder_BothSortOptionsFalse_ExpectCorrectSortPair()
         {
             var builder = new MockVbeBuilder();
@@ -1625,8 +1625,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void SetSortByCodeOrder_BothSortOptionsTrue_ExpectCorrectSortPair()
         {
             var builder = new MockVbeBuilder();
@@ -1663,16 +1663,16 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
             var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name");
             Assert.AreEqual(0, new CompareByName().Compare(folderNode, folderNode));
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
@@ -1682,8 +1682,8 @@ End Sub";
             Assert.AreEqual(0, new CompareByName().Compare(folderNode1, folderNode2));
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByName_ReturnsCorrectOrdering()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
@@ -1693,16 +1693,16 @@ End Sub";
             Assert.IsTrue(new CompareByName().Compare(folderNode1, folderNode2) < 0);
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
             var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2");
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsEventAboveConst()
         {
             var inputCode =
@@ -1726,8 +1726,8 @@ Public Const Bar = 0";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsConstAboveField()
         {
             var inputCode =
@@ -1751,8 +1751,8 @@ Public Bar As Boolean";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsFieldAbovePropertyGet()
         {
             var inputCode =
@@ -1779,8 +1779,8 @@ End Property
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsPropertyGetEqualToPropertyLet()
         {
             var inputCode =
@@ -1808,8 +1808,8 @@ End Property
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsPropertyGetEqualToPropertySet()
         {
             var inputCode =
@@ -1837,8 +1837,8 @@ End Property
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsPropertyLetEqualToPropertyGet()
         {
             var inputCode =
@@ -1866,8 +1866,8 @@ End Property
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsPropertyLetEqualToPropertySet()
         {
             var inputCode =
@@ -1895,8 +1895,8 @@ End Property
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsPropertySetAboveFunction()
         {
             var inputCode =
@@ -1924,8 +1924,8 @@ End Function
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsSubsAndFunctionsEqual()
         {
             var inputCode =
@@ -1953,8 +1953,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsPublicMethodsAbovePrivateMethods()
         {
             var inputCode =
@@ -1982,8 +1982,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByType_ReturnsClassModuleBelowDocument()
         {
             var builder = new MockVbeBuilder();
@@ -2012,8 +2012,8 @@ End Sub
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareBySelection_ReturnsZeroForIdenticalNodes()
         {
             var inputCode =
@@ -2041,8 +2041,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByNodeType_ReturnsCorrectMemberFirst_MemberPassedFirst()
         {
             var inputCode =
@@ -2070,8 +2070,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByNodeType_ReturnsZeroForIdenticalNodes()
         {
             var inputCode =
@@ -2099,8 +2099,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Code Explorer")]
-        [TestMethod]
+        [Category("Code Explorer")]
+        [Test]
         public void CompareByNodeType_FoldersAreSortedByName()
         {
             var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty);

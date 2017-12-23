@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using System.Linq;
 using System.Threading;
@@ -11,11 +11,11 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.TodoExplorer
 {
-    [TestClass]
+    [TestFixture]
     public class TodoExplorerTests
     {
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void PicksUpComments()
         {
             var content =
@@ -46,8 +46,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void PicksUpComments_StrangeCasing()
         {
             var content =
@@ -79,8 +79,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void RemoveRemovesComment()
         {
             var input =
