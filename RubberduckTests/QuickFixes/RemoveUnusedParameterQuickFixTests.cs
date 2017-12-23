@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -8,12 +9,13 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveUnusedParameterQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
+        [Apartment(ApartmentState.STA)]
         public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
         {
             const string inputCode = @"
@@ -35,6 +37,5 @@ End Sub";
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
-
     }
 }

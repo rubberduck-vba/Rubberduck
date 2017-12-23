@@ -3,10 +3,10 @@ namespace RubberduckTests
     // Tests disabled because they aren't meant to be unit tests.
     // These hit the file system and are for ease of debugging.
     //[Ignore]
-    //[TestClass]
+    //[TestFixture]
     //public class SourceControlConfig
     //{
-    //    [TestMethod]
+    //    [Test]
     //    public void Save()
     //    {
     //        var repo = new Repository
@@ -27,7 +27,7 @@ namespace RubberduckTests
     //        service.SaveConfiguration(config);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void Load()
     //    {
     //        var service = new SourceControlConfigurationService();

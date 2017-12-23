@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestFixture, Ignore("Broken feature")]
     public class EmptyIfBlockInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock()
         {
             const string inputCode =
@@ -31,8 +31,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyElseIfBlock()
         {
             const string inputCode =
@@ -54,8 +54,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_ElseBlock()
         {
             const string inputCode =
@@ -77,8 +77,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptySingleLineIfStmt()
         {
             const string inputCode =
@@ -101,8 +101,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasNonEmptyElseBlock()
         {
             const string inputCode =
@@ -126,8 +126,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasQuoteComment()
         {
             const string inputCode =
@@ -149,8 +149,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasRemComment()
         {
             const string inputCode =
@@ -172,8 +172,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasVariableDeclaration()
         {
             const string inputCode =
@@ -195,8 +195,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasConstDeclaration()
         {
             const string inputCode =
@@ -218,8 +218,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_FiresOnEmptyIfBlock_HasWhitespace()
         {
             const string inputCode =
@@ -242,8 +242,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_IfBlockHasExecutableStatement()
         {
             const string inputCode =
@@ -266,8 +266,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_SingleLineIfBlockHasExecutableStatement()
         {
             const string inputCode =
@@ -290,8 +290,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyIfBlock_IfAndElseIfBlockHaveExecutableStatement()
         {
             const string inputCode =
@@ -317,16 +317,16 @@ End Sub";
             }
         }
 
-        [TestMethod, Ignore]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new EmptyIfBlockInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = nameof(EmptyIfBlockInspection);

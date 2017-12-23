@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -12,7 +12,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Grammar
 {
-    [TestClass]
+    [TestFixture]
     public class ResolverTests
     {
         private RubberduckParserState Resolve(string code, bool loadStdLib = false, ComponentType moduleType = ComponentType.StandardModule)
@@ -92,9 +92,9 @@ namespace RubberduckTests.Grammar
             return state;
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void FunctionReturnValueAssignment_IsReferenceToFunctionDeclaration()
         {
             var code = @"
@@ -112,8 +112,8 @@ End Function
             }
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void JaggedArrayReference_DoesNotBlowUp()
         {
             // see https://github.com/rubberduck-vba/Rubberduck/issues/3098
@@ -138,8 +138,8 @@ End Sub
             }
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void OptionalParameterDefaultConstValue_IsReferenceToDeclaredConst()
         {
             var code = @"
@@ -157,9 +157,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void TypeOfIsExpression_BooleanExpressionIsReferenceToLocalVariable()
         {
             var code_class1 = @"
@@ -181,9 +181,9 @@ End Function
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void TypeOfIsExpression_TypeExpressionIsReferenceToClass()
         {
             var code_class1 = @"
@@ -205,9 +205,9 @@ End Function
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void FunctionCall_IsReferenceToFunctionDeclaration()
         {
             var code = @"
@@ -231,9 +231,9 @@ End Function
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void FunctionCallWithParensOnNextContinuedLine_IsReferenceToFunctionDeclaration()
         {
             var code = @"
@@ -262,9 +262,9 @@ End Function
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LocalVariableCall_IsReferenceToVariableDeclaration()
         {
             var code = @"
@@ -285,9 +285,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LocalVariableForeignNameCall_IsReferenceToVariableDeclaration()
         {
             var code = @"
@@ -308,9 +308,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LocalVariableAssignment_IsReferenceToVariableDeclaration()
         {
             var code = @"
@@ -331,9 +331,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelHasColon()
         {
             var code = @"
@@ -354,9 +354,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_NumberLabelNoColon()
         {
             var code = @"
@@ -381,9 +381,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void SingleLineIfStatementLabel_IsReferenceToLabel_IdentifierLabel()
         {
             var code = @"
@@ -404,9 +404,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ProjectUdtSameNameFirstProjectThenUdt_FirstReferenceIsToProject()
         {
             var code = string.Format(@"
@@ -430,9 +430,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ProjectUdtSameNameUdtOnly_IsReferenceToUdt()
         {
             var code = string.Format(@"
@@ -456,9 +456,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void EncapsulatedVariableAssignment_DoesNotResolve()
         {
             var code_class1 = @"
@@ -483,9 +483,9 @@ Public foo As Integer
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void PublicVariableCall_IsReferenceToVariableDeclaration()
         {
             var code_class1 = @"
@@ -510,9 +510,9 @@ Public foo As Integer
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void PublicVariableAssignment_IsReferenceToVariableDeclaration()
         {
             var code_class1 = @"
@@ -539,9 +539,9 @@ Public foo As Integer
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void UserDefinedTypeVariableAsTypeClause_IsReferenceToUserDefinedTypeDeclaration()
         {
             var code = @"
@@ -560,9 +560,9 @@ Private this As TFoo
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ObjectVariableAsTypeClause_IsReferenceToClassModuleDeclaration()
         {
             var code_class1 = @"
@@ -584,9 +584,9 @@ Option Explicit
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ParameterCall_IsReferenceToParameterDeclaration()
         {
             var code = @"
@@ -604,9 +604,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ParameterAssignment_IsAssignmentReferenceToParameterDeclaration()
         {
             var code = @"
@@ -624,9 +624,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void NamedParameterCall_IsReferenceToParameterDeclaration()
         {
             var code = @"
@@ -648,9 +648,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void UserDefinedTypeMemberCall_IsReferenceToUserDefinedTypeMemberDeclaration()
         {
             var code = @"
@@ -675,9 +675,9 @@ End Property
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void UserDefinedTypeVariableCall_IsReferenceToVariableDeclaration()
         {
             var code = @"
@@ -702,9 +702,9 @@ End Property
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void WithVariableMemberCall_IsReferenceToMemberDeclaration()
         {
             var code_class1 = @"
@@ -731,9 +731,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void NestedWithVariableMemberCall_IsReferenceToMemberDeclaration()
         {
             var code_class1 = @"
@@ -768,9 +768,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ResolvesLocalVariableToSmallestScopeIdentifier()
         {
             var code = @"
@@ -800,9 +800,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void Implements_IsReferenceToClassDeclaration()
         {
             var code_class1 = @"
@@ -826,9 +826,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void NestedMemberCall_IsReferenceToMember()
         {
             var code_class1 = @"
@@ -858,9 +858,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void MemberCallParent_IsReferenceToParent()
         {
             var code_class1 = @"
@@ -885,9 +885,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ForLoop_IsAssignmentReferenceToIteratorDeclaration()
         {
             var code = @"
@@ -910,9 +910,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ForLoop_AddsReferenceEvenIfAssignmentResolutionFailure()
         {
             var code = @"
@@ -935,9 +935,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ForEachLoop_IsReferenceToIteratorDeclaration()
         {
             var code = @"
@@ -960,9 +960,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ForEachLoop_InClauseIsReferenceToIteratedDeclaration()
         {
             var code = @"
@@ -985,9 +985,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ArraySubscriptAccess_IsReferenceToArrayDeclaration()
         {
             var code = @"
@@ -1013,9 +1013,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void SubscriptWrite_IsNotAssignmentReferenceToObjectDeclaration()
         {
             var code = @"
@@ -1039,9 +1039,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ArraySubscriptWrite_IsAssignmentReferenceToArrayDeclaration()
         {
             var code = @"
@@ -1067,9 +1067,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void PropertyGetCall_IsReferenceToPropertyGetDeclaration()
         {
             var code_class1 = @"
@@ -1104,9 +1104,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void PropertySetCall_IsReferenceToPropertySetDeclaration()
         {
             var code_class1 = @"
@@ -1141,9 +1141,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void PropertyLetCall_IsReferenceToPropertyLetDeclaration()
         {
             var code_class1 = @"
@@ -1178,9 +1178,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void EnumMemberCall_IsReferenceToEnumMemberDeclaration()
         {
             var code = @"
@@ -1212,9 +1212,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void QualifiedEnumMemberCall_IsReferenceToEnumMemberDeclaration()
         {
             var code = @"
@@ -1245,9 +1245,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void EnumParameterAsTypeName_ResolvesToEnumTypeDeclaration()
         {
             var code = @"
@@ -1276,9 +1276,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void FunctionWithSameNameAsEnumReturnAssignment_DoesntResolveToEnum()
         {
             var code = @"
@@ -1304,9 +1304,9 @@ End Function
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void UserDefinedTypeParameterAsTypeName_ResolvesToUserDefinedTypeDeclaration()
         {
             var code = @"
@@ -1332,9 +1332,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LocalArrayOrFunctionCall_ResolvesToSmallestScopedDeclaration()
         {
             var code = @"
@@ -1360,9 +1360,9 @@ End Function";
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AnnotatedReference_LineAbove_HasAnnotations()
         {
             var code = @"
@@ -1388,9 +1388,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AnnotatedReference_LinesAbove_HaveAnnotations()
         {
             var code = @"
@@ -1421,9 +1421,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AnnotatedDeclaration_LinesAbove_HaveAnnotations()
         {
             var code =
@@ -1443,9 +1443,9 @@ End Sub";
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AnnotatedReference_SameLine_HasNoAnnotations()
         {
             var code = @"
@@ -1466,9 +1466,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenUDT_NamedAfterProject_LocalResolvesToUDT()
         {
             var code = @"
@@ -1500,9 +1500,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenUDT_NamedAfterProject_FieldResolvesToUDT_EvenIfHiddenByLocal()
         {
             var code = @"
@@ -1536,9 +1536,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenLocalVariable_NamedAfterUDTMember_ResolvesToLocalVariable()
         {
             var code = @"
@@ -1569,9 +1569,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenLocalVariable_NamedAfterUDTMember_MemberCallResolvesToUDTMember()
         {
             var code = @"
@@ -1600,9 +1600,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenUDTMember_OfUDTType_ResolvesToDeclaredUDT()
         {
             var code = @"
@@ -1637,9 +1637,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenUDT_NamedAfterModule_LocalAsTypeResolvesToUDT()
         {
             var code = @"
@@ -1672,9 +1672,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenUDTMember_NamedAfterUDTType_NamedAfterModule_LocalAsTypeResolvesToUDT()
         {
             var code = @"
@@ -1707,9 +1707,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenField_NamedUnambiguously_FieldAssignmentCallResolvesToFieldDeclaration()
         {
             var code = @"
@@ -1737,9 +1737,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenField_NamedUnambiguously_InStatementFieldCallResolvesToFieldDeclaration()
         {
             var code = @"
@@ -1767,9 +1767,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenField_NamedAmbiguously_FieldAssignmentCallResolvesToFieldDeclaration()
         {
             var code = @"
@@ -1797,9 +1797,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenUDTField_NamedAmbiguously_MemberAssignmentCallResolvesToUDTMember()
         {
             var code = @"
@@ -1827,9 +1827,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenFullyReferencedUDTFieldMemberCall_ProjectParentMember_ResolvesToProject()
         {
             var code = @"
@@ -1857,9 +1857,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenFullyQualifiedUDTFieldMemberCall_ModuleParentMember_ResolvesToModule()
         {
             var code = @"
@@ -1887,9 +1887,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenFullyQualifiedUDTFieldMemberCall_FieldParentMember_ResolvesToVariable()
         {
             var code = @"
@@ -1917,9 +1917,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenGlobalVariable_QualifiedUsageInOtherModule_AssignmentCallResolvesToVariable()
         {
             var code_module1 = @"
@@ -1953,9 +1953,9 @@ End Sub";
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenGlobalVariable_QualifiedUsageInOtherModule_CallResolvesToVariable()
         {
             var code_module1 = @"
@@ -1990,9 +1990,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void RedimStmt_RedimVariableDeclarationIsReferenceToLocalVariable()
         {
             var code = @"
@@ -2011,9 +2011,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void OpenStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2032,9 +2032,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void CloseStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2053,9 +2053,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void SeekStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2074,9 +2074,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LockStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2095,9 +2095,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void UnlockStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2116,9 +2116,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LineInputStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2137,9 +2137,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LineInputStmt_ReferenceIsAssignment()
         {
             var code = @"
@@ -2158,9 +2158,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void WidthStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2179,9 +2179,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void PrintStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2200,9 +2200,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void WriteStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2221,9 +2221,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void InputStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2242,9 +2242,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void InputStmt_ReferenceIsAssignment()
         {
             var code = @"
@@ -2276,9 +2276,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void PutStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2297,9 +2297,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GetStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2318,9 +2318,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GetStmt_ReferenceIsAssignment()
         {
             var code = @"
@@ -2339,9 +2339,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void LineSpecialForm_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2360,9 +2360,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void CircleSpecialForm_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2381,9 +2381,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ScaleSpecialForm_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2402,9 +2402,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void FieldLengthStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -2423,9 +2423,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenControlDeclaration_ResolvesUsageInCodeBehind()
         {
             var code = @"
@@ -2462,9 +2462,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesFirstPartToProject()
         {
             var code_class1 = @"
@@ -2498,9 +2498,9 @@ End Property
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesSecondPartToClassModule()
         {
             var code_class1 = @"
@@ -2533,9 +2533,9 @@ End Property
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void GivenLocalDeclarationAsQualifiedClassName_ResolvesThirdPartToUDT()
         {
             var code_class1 = @"
@@ -2568,9 +2568,9 @@ End Property
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void QualifiedSetStatement_FirstSectionDoesNotHaveAssignmentFlag()
         {
             var variableDeclarationClass = @"
@@ -2597,9 +2597,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void QualifiedSetStatement_MiddleSectionDoesNotHaveAssignmentFlag()
         {
             var variableDeclarationClass = @"
@@ -2626,9 +2626,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void QualifiedSetStatement_LastSectionHasAssignmentFlag()
         {
             var variableDeclarationClass = @"
@@ -2655,9 +2655,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void SetStatement_HasAssignmentFlag()
         {
             var variableDeclarationClass = @"
@@ -2677,9 +2677,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitLetStatement_HasAssignmentFlag()
         {
             var variableDeclarationClass = @"
@@ -2699,9 +2699,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ExplicitLetStatement_HasAssignmentFlag()
         {
             var variableDeclarationClass = @"
@@ -2721,10 +2721,10 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
+        [Category("Grammar")]
+        [Category("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2478
-        [TestMethod]
+        [Test]
         public void VariableNamedBfResolvesAsAVariable()
         {
             var code = @"
@@ -2743,10 +2743,10 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
+        [Category("Grammar")]
+        [Category("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2478
-        [TestMethod]
+        [Test]
         public void ProcedureNamedBfResolvesAsAProcedure()
         {
             var code = @"
@@ -2764,10 +2764,10 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
+        [Category("Grammar")]
+        [Category("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2478
-        [TestMethod]
+        [Test]
         public void TypeNamedBfResolvesAsAType()
         {
             var code = @"
@@ -2786,10 +2786,10 @@ End Type
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
+        [Category("Grammar")]
+        [Category("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2523
-        [TestMethod]
+        [Test]
         public void AnnotationFollowedByCommentAnnotatesDeclaration()
         {
             var code = @"
@@ -2811,10 +2811,10 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
+        [Category("Grammar")]
+        [Category("Resolver")]
         //https://github.com/rubberduck-vba/Rubberduck/issues/2523
-        [TestMethod]
+        [Test]
         public void AnnotationListFollowedByCommentAnnotatesDeclaration()
         {
             var code = @"
@@ -2837,9 +2837,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void MemberReferenceIsAssignmentTarget_NotTheParentObject()
         {
             var class1 = @"
@@ -2873,9 +2873,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AttributeFollowingSubGetsAssignedToSub()
         {
             var code = @"
@@ -2895,9 +2895,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AttributeFollowingFunctionGetsAssignedToFunction()
         {
             var code = @"
@@ -2917,9 +2917,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AttributeFollowingPropertyGetGetsAssignedToPropertyGet()
         {
             var code = @"
@@ -2939,9 +2939,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AttributeFollowingPropertyLetGetsAssignedToPropertyLet()
         {
             var code = @"
@@ -2961,9 +2961,9 @@ End Sub
             }
         }
 
-        [TestCategory("Grammar")]
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void AttributeFollowingPropertySetGetsAssignedToPropertySet()
         {
             var code = @"

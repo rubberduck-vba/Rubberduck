@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -6,11 +6,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class PropertyGetDeclarationTests
     {
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void PropertyGetsHaveDeclarationTypePropertyGet()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -30,8 +30,8 @@ namespace RubberduckTests.Symbols
                 }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultPropertyGetsDoNotHaveParameters()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -40,8 +40,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -59,8 +59,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultPropertyGetsAreNotDefaultMembers()
         {
             var propertyGet = GetTestPropertyGet("test", null);
@@ -69,8 +69,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void PropertyGetsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

@@ -1,84 +1,84 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.RegexAssistant.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class RegularExpressionTests
     {
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseSingleLiteralGroupAsAtomWorks()
         {
             var pattern = "(g){2,4}";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Group("(g)", new Quantifier("{2,4}")), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseCharacterClassAsAtomWorks()
         {
             var pattern = "[abcd]*";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new CharacterClass("[abcd]", new Quantifier("*")), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseLiteralAsAtomWorks()
         {
             var pattern = "a";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("a", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseUnicodeEscapeAsAtomWorks()
         {
             var pattern = "\\u1234+";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\u1234", new Quantifier("+")), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseHexEscapeSequenceAsAtomWorks()
         {
             var pattern = "\\x12?";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\x12", new Quantifier("?")), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseOctalEscapeSequenceAsAtomWorks()
         {
             var pattern = "\\712{2}";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\712", new Quantifier("{2}")), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseEscapedLiteralAsAtomWorks()
         {
             var pattern = "\\)";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseUnescapedSpecialCharAsAtomFails()
         {
             foreach (var paren in "()[]{}*?+".ToCharArray().Select(c => "" + c))
@@ -89,8 +89,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseSimpleLiteralConcatenationAsConcatenatedExpression()
         {
             var expected = new List<IRegularExpression>
@@ -100,7 +100,7 @@ namespace Rubberduck.RegexAssistant.Tests
             };
 
             var expression = RegularExpression.Parse("ab");
-            Assert.IsInstanceOfType(expression, typeof(ConcatenatedExpression));
+            Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
             var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
             for (var i = 0; i < expected.Count; i++)
@@ -109,8 +109,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseSimplisticGroupConcatenationAsConcatenatedExpression()
         {
             var expected = new List<IRegularExpression>
@@ -121,7 +121,7 @@ namespace Rubberduck.RegexAssistant.Tests
             };
 
             var expression = RegularExpression.Parse("a(abc){1,4}b");
-            Assert.IsInstanceOfType(expression, typeof(ConcatenatedExpression));
+            Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
             var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
             for (var i = 0; i < expected.Count; i++)
@@ -130,8 +130,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseSimplisticCharacterClassConcatenationAsConcatenatedExpression()
         {
             var expected = new List<IRegularExpression>
@@ -142,7 +142,7 @@ namespace Rubberduck.RegexAssistant.Tests
             };
 
             var expression = RegularExpression.Parse("a[abc]*b");
-            Assert.IsInstanceOfType(expression, typeof(ConcatenatedExpression));
+            Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
             var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
             for (var i = 0; i < expected.Count; i++)
@@ -151,8 +151,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ParseSimplisticAlternativesExpression()
         {
             var expected = new List<IRegularExpression>
@@ -162,7 +162,7 @@ namespace Rubberduck.RegexAssistant.Tests
             };
 
             var expression = RegularExpression.Parse("a|b");
-            Assert.IsInstanceOfType(expression, typeof(AlternativesExpression));
+            Assert.IsInstanceOf(typeof(AlternativesExpression), expression);
             var subexpressions = (expression as AlternativesExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
             for (var i = 0; i < expected.Count; i++)
@@ -171,21 +171,21 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void CharacterClassIsNotAnAlternativesExpression()
         {
             var expression = RegularExpression.Parse("[a|b]");
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new CharacterClass("[a|b]", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void GroupIsNotAnAlternativesExpression()
         {
             var expression = RegularExpression.Parse("(a|b)");
-            Assert.IsInstanceOfType(expression, typeof(SingleAtomExpression));
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Group("(a|b)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
     }

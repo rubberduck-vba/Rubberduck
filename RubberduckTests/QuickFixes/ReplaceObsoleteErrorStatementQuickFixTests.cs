@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
@@ -8,11 +8,11 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ReplaceObsoleteErrorStatementQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks()
         {
             const string inputCode =
@@ -37,8 +37,8 @@ End Sub";
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_ProcNamedError()
         {
             const string inputCode =
@@ -70,8 +70,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateCommentHasContinuation()
         {
             const string inputCode =
@@ -100,8 +100,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment_LineHasCode()
         {
             const string inputCode =

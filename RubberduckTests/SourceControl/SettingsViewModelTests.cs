@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
@@ -9,7 +9,7 @@ using Rubberduck.UI.SourceControl;
 
 namespace RubberduckTests.SourceControl
 {
-    [TestClass]
+    [TestFixture]
     public class SettingsViewModelTests
     {
         private const string Name = "Chris McClellan";
@@ -30,7 +30,7 @@ namespace RubberduckTests.SourceControl
 
         private Mock<IOpenFileDialog> _openFileDialog;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             _config = new SourceControlSettings(Name, Email, RepoLocation, new List<Repository>(), CommandPromptLocation);
@@ -46,8 +46,8 @@ namespace RubberduckTests.SourceControl
             _openFileDialog = new Mock<IOpenFileDialog>();
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ViewIsPopulatedOnRefresh()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
@@ -60,8 +60,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(CommandPromptLocation, vm.CommandPromptLocation, "Command Prompt Location");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ConfigIsPopulatedFromViewOnSave()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
@@ -81,8 +81,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(OtherCommandPromptLocation, _config.CommandPromptLocation, "Command Prompt Location");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ConfigIsSavedOnSave()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
@@ -93,8 +93,8 @@ namespace RubberduckTests.SourceControl
             _configService.Verify(s => s.Save(_config));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ChangesToViewAreRevertedOnCancel()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object);
@@ -114,8 +114,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(CommandPromptLocation, vm.CommandPromptLocation, "Command Prompt Location");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnBrowseDefaultRepoLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
@@ -130,8 +130,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_folderBrowser.Object.SelectedPath, vm.DefaultRepositoryLocation);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnBrowseDefaultRepoLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
@@ -146,8 +146,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(RepoLocation, vm.DefaultRepositoryLocation);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnBrowseCommandPromptLocation_WhenUserConfirms_ViewMatchesSelectedPath()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
@@ -162,8 +162,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_openFileDialog.Object.FileName, vm.CommandPromptLocation);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnBrowseCommandPromptLocation_WhenUserCancels_ViewRemainsUnchanged()
         {
             var vm = new SettingsPanelViewModel(_configService.Object, _folderBrowserFactory.Object, _openFileDialog.Object)
