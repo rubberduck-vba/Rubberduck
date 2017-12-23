@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 
 namespace RubberduckTests.Settings
 {
-    [TestClass]
+    [TestFixture]
     public class InspectionSettingsTests
     {
         private Configuration GetDefaultConfig()
@@ -50,8 +50,8 @@ namespace RubberduckTests.Settings
             return new Configuration(userSettings);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
@@ -64,8 +64,8 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void SetDefaultsWorks()
         {
             var viewModel = new InspectionSettingsViewModel(GetNondefaultConfig());
@@ -77,8 +77,8 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void InspectionsAreSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
@@ -88,8 +88,8 @@ namespace RubberduckTests.Settings
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void InspectionSeveritiesAreUpdated()
         {
             var defaultConfig = GetDefaultConfig();

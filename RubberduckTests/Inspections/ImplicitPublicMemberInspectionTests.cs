@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ImplicitPublicMemberInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_Sub()
         {
             const string inputCode = @"
@@ -28,8 +28,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_Function()
         {
             const string inputCode =
@@ -47,8 +47,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -68,8 +68,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitPublicMember_DoesNotReturnResult()
         {
             const string inputCode =
@@ -86,8 +86,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitPublicMember_Ignored_DoesNotReturnResult_Sub()
         {
             const string inputCode = @"
@@ -106,8 +106,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
         {
             const string inputCode =
@@ -127,16 +127,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new ImplicitPublicMemberInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitPublicMemberInspection";

@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.QuickFixes;
@@ -11,11 +11,11 @@ using Rubberduck.Inspections.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class AssignedByValParameterMakeLocalCopyQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment()
         {
             var inputCode =
@@ -33,8 +33,8 @@ End Sub";
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
         {
             var inputCode =
@@ -68,8 +68,8 @@ End Sub
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComputedNameAvoidsCollision()
         {
             var inputCode =
@@ -95,8 +95,8 @@ End Sub"
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherSub()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -127,8 +127,8 @@ End Sub"
             Assert.AreEqual(expectedCode, evaluatedResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherProperty()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -165,8 +165,8 @@ End Function
         }
 
         //Replicates issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
         {
             var inputCode =
@@ -188,8 +188,8 @@ End Sub"
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NoAsTypeClause()
         {
             var inputCode =
@@ -211,8 +211,8 @@ End Sub"
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_EnumType()
         {
             var inputCode =

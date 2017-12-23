@@ -1,15 +1,16 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class MemberNotOnInterfaceInspectionTests
     {
         private static RubberduckParserState ArrangeParserAndParse(string inputCode, string library = "Scripting")
@@ -39,9 +40,9 @@ namespace RubberduckTests.Inspections
             return parser.State;
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredMember()
         {
             const string inputCode =
@@ -60,9 +61,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredInterfaceMember()
         {
             const string inputCode =
@@ -81,9 +82,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_ApplicationObject()
         {
             const string inputCode =
@@ -100,9 +101,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredMemberOnParameter()
         {
             const string inputCode =
@@ -119,9 +120,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_DeclaredMember()
         {
             const string inputCode =
@@ -140,9 +141,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_NonExtensible()
         {
             const string inputCode =
@@ -160,9 +161,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_WithBlock()
         {
             const string inputCode =
@@ -182,9 +183,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_BangNotation()
         {
             const string inputCode =
@@ -203,9 +204,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_WithBlockBangNotation()
         {
             const string inputCode =
@@ -225,9 +226,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_ProjectReference()
         {
             const string inputCode =
@@ -244,9 +245,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -266,9 +267,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_CatchesInvalidUseOfMember()
         {
             const string userForm1Code = @"

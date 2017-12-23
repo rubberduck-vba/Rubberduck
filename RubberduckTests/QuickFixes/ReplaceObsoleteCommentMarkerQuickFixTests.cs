@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
@@ -8,11 +8,11 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ReplaceObsoleteCommentMarkerQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment()
         {
             const string inputCode =
@@ -34,8 +34,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateCommentHasContinuation()
         {
             const string inputCode =
@@ -60,8 +60,8 @@ a comment";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment_LineHasCode()
         {
             const string inputCode =
@@ -83,8 +83,8 @@ a comment";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment_LineHasCodeAndContinuation()
         {
             const string inputCode =

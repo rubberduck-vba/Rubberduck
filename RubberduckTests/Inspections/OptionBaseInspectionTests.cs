@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -8,11 +8,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class OptionBaseInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void OptionBaseOneSpecified_ReturnsResult()
         {
             const string inputCode = @"Option Base 1";
@@ -29,8 +29,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void OptionBaseNotSpecified_DoesNotReturnResult()
         {
             const string inputCode = @"";
@@ -47,8 +47,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void OptionBaseZeroSpecified_DoesNotReturnResult()
         {
             const string inputCode = @"Option Base 0";
@@ -65,8 +65,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void OptionBaseOneSpecified_ReturnsMultipleResults()
         {
             const string inputCode = @"Option Base 1";
@@ -89,8 +89,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void OptionBaseOnePartiallySpecified_ReturnsResults()
         {
             const string inputCode1 = @"";
@@ -114,8 +114,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void OptionBaseOneSpecified_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -134,16 +134,16 @@ Option Base 1";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new OptionBaseInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "OptionBaseInspection";

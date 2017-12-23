@@ -1,16 +1,16 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class SetExplicitVariantReturnTypeQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -33,8 +33,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
         {
             const string inputCode =
@@ -58,8 +58,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_LibraryFunction()
         {
             const string inputCode =
@@ -101,8 +101,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_Function_HasComment()
         {
             const string inputCode =

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
@@ -132,7 +132,7 @@ namespace RubberduckTests.Mocks
         public static void AddTestLibrary(this RubberduckParserState state, string serialized)
         {
             var reader = new XmlPersistableDeclarations();
-            var deserialized = reader.Load(Path.Combine("Resolver", serialized));
+            var deserialized = reader.Load(Path.Combine("Testfiles//Resolver", serialized));
             AddTestLibrary(state, deserialized);
         }
 

@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
@@ -8,11 +8,11 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveOptionBaseStatementQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement()
         {
             var inputCode = "Option Base 0";
@@ -31,8 +31,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_MultipleLines()
         {
             var inputCode =
@@ -55,8 +55,8 @@ Base _
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparator()
         {
             var inputCode = "Option Explicit: Option Base 0: Option Base 1";
@@ -76,8 +76,8 @@ Base _
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparatorAndMultipleLines()
         {
             var inputCode =

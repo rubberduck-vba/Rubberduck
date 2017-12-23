@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Navigation.CodeMetrics;
 using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
@@ -8,19 +8,19 @@ using System.Text;
 
 namespace RubberduckTests.Stats
 {
-    [TestClass]
+    [TestFixture]
     public class CodeMetricsAnalystTests
     {
         private CodeMetricsAnalyst cut;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             cut = new CodeMetricsAnalyst(IndenterSettingsTests.GetMockIndenterSettings());
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void EmptyModule_HasMetricsZeroed()
         {
             var code = @"";
@@ -29,8 +29,8 @@ namespace RubberduckTests.Stats
             Assert.AreEqual(new CodeMetricsResult(), metrics.Result);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void EmptySub_HasCyclomaticComplexity_One()
         {
             var code = @"
@@ -42,8 +42,8 @@ End Sub
             Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void EmptyFunction_HasCyclomaticComplexit_One()
         {
             var code = @"
@@ -56,8 +56,8 @@ End Function
             Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void ModuleHas_AsManyLines_AsPhysicalLines()
         {
             foreach (var lineCount in new int[]{ 0, 10, 15, 200, 1020 })
@@ -75,8 +75,8 @@ End Function
             }
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void SingleIfStatement_HasCyclomaticComplexity_2()
         {
             var code = @"
@@ -90,8 +90,8 @@ End Sub
             Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void SingleIfElseStatement_HasCyclomaticComplexity_2()
         {
             var code = @"
@@ -106,8 +106,8 @@ End Sub
             Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void IfElseIfStatement_HasCyclomaticComplexity_3()
         {
             var code = @"
@@ -122,8 +122,8 @@ End Sub
             Assert.AreEqual(3, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void IfElseIfElseStatement_HasCyclomaticComplexity_3()
         {
             var code = @"
@@ -139,8 +139,8 @@ End Sub
             Assert.AreEqual(3, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void NestedIfStatement_HasCyclomaticComplexity_3()
         {
             var code = @"
@@ -156,8 +156,8 @@ End Sub
             Assert.AreEqual(3, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void ForeachLoop_HasCyclomaticComplexity_2()
         {
             var code = @"
@@ -172,8 +172,8 @@ End Sub
             Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void ForToNextLoop_HasCyclomaticComplexity_2()
         {
             var code = @"
@@ -189,8 +189,8 @@ End Sub
             Assert.AreEqual(2, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void CaseOnlyElse_HasCyclomaticComplexity_1()
         {
             var code = @"
@@ -205,8 +205,8 @@ End Sub
             Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void CaseBlock_HasCyclomaticComplexity_CorrespondingToCaseLabels()
         {
             foreach (var blockCount in new int[] { 1, 2, 5, 25, 40 })
@@ -229,8 +229,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void PropertyGet_HasCyclomaticComplexity_One()
         {
             var code = @"
@@ -243,8 +243,8 @@ End Property
             Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void PropertyLet_HasCyclomaticComplexity_One()
         {
             var code = @"
@@ -261,8 +261,8 @@ End Property
             Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void PropertySet_HasCyclomaticComplexity_One()
         {
             var code = @"
@@ -279,8 +279,8 @@ End Property
             Assert.AreEqual(1, metrics.Result.CyclomaticComplexity);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void SimpleSub_HasNestingLevel_One()
         {
             var code = @"
@@ -297,8 +297,8 @@ End Sub
             Assert.AreEqual(1, metrics.Result.MaximumNesting);
         }
 
-        [TestMethod]
-        [TestCategory("Code Metrics")]
+        [Test]
+        [Category("Code Metrics")]
         public void WeirdSub_HasNestingLevel_One()
         {
             var code = @"

@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestFixture, Ignore("Broken feature")]
     public class EmptyForLoopBlockInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForLoopBlock_InspectionType()
         {
             var inspection = new EmptyForLoopBlockInspection(null);
@@ -20,8 +20,8 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForLoopBlock_InspectionName()
         {
             const string expectedName = nameof(EmptyForLoopBlockInspection);
@@ -30,8 +30,8 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForLoopBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
             const string inputCode =
@@ -44,8 +44,8 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForLoopBlock_FiresOnEmptyLoopBlocks()
         {
             const string inputCode =
