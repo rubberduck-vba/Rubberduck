@@ -114,7 +114,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return null;
             }
 
-            var child = CommandBarButtonFactory.Create(Item.Controls);
+            ICommandBarButton child;
+            using (var controls = Item.Controls)
+            {
+                child = CommandBarButtonFactory.Create(controls);
+            }
             child.Style = item.ButtonStyle;
             child.Picture = item.Image;
             child.Mask = item.Mask;
