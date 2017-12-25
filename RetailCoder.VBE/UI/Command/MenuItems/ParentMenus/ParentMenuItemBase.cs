@@ -101,6 +101,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
             {
                 child.RemoveMenu();
+                child.Parent.Dispose();
             }
             foreach (var child in _items.Values.Select(item => item as ICommandBarButton).Where(child => child != null))
             {
@@ -155,7 +156,11 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return null;
             }
 
-            var child = CommandBarButtonFactory.Create(Item.Controls);
+            ICommandBarButton child;
+            using (var controls = Item.Controls)
+            {
+                child = CommandBarButtonFactory.Create(controls);
+            }
             child.Picture = item.Image;
             child.Mask = item.Mask;
             child.ApplyIcon();

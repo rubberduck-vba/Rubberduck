@@ -54,6 +54,8 @@ namespace Rubberduck.UI.Controls
             {
                 _view.ViewModel.LastTabClosed -= viewModel_LastTabClosed;
             }
+            _presenter?.Dispose();
+
             _disposed = true;
         }
     }
