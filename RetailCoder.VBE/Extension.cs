@@ -16,6 +16,7 @@ using NLog;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
@@ -246,7 +247,10 @@ namespace Rubberduck
                 VBENativeServices.UnhookEvents();
 
                 _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
-                User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
+                using (var mainWindow = _ide.MainWindow)
+                {
+                    UiDispatcher.Invoke(() => User32.EnumChildWindows(mainWindow.Handle(), EnumCallback, new IntPtr(0)));
+                }
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
                 Windows.ReleaseDockableHosts();
