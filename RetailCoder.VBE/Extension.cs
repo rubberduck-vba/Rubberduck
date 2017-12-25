@@ -249,7 +249,8 @@ namespace Rubberduck
                 _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
                 using (var mainWindow = _ide.MainWindow)
                 {
-                    UiDispatcher.Invoke(() => User32.EnumChildWindows(mainWindow.Handle(), EnumCallback, new IntPtr(0)));
+                    var mainWindosHndl = mainWindow.Handle();
+                    UiDispatcher.Invoke(() => User32.EnumChildWindows(mainWindosHndl, EnumCallback, new IntPtr(0)));
                 }
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
