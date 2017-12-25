@@ -50,9 +50,12 @@ namespace Rubberduck.UI
             IWindow toolWindow;
             try
             {
-                var info = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId);
-                _userControlObject = info.UserControl;
-                toolWindow = info.ToolWindow;
+                using (var windows = _vbe.Windows)
+                {
+                    var info = windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId);
+                    _userControlObject = info.UserControl;
+                    toolWindow = info.ToolWindow;
+                }
             }
             catch (COMException exception)
             {
