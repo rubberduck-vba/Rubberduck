@@ -123,7 +123,7 @@ namespace Rubberduck.UI
         ~DockableToolwindowPresenter()
         {
             // destructor for tracking purposes only - do not suppress unless 
-            Debug.WriteLine("DockableToolwindowPresenter finalized.");
+            Debug.WriteLine($"DockableToolwindowPresenter of type {this.GetType()} finalized.");
         }
     }
 }
