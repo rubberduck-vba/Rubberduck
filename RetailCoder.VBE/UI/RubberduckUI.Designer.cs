@@ -2847,15 +2847,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Outcome.
-        /// </summary>
-        public static string Outcome {
-            get {
-                return ResourceManager.GetString("Outcome", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Parameter.
         /// </summary>
         public static string Parameter {
@@ -5231,6 +5222,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Outcome.
+        /// </summary>
+        public static string TestExplorer_Outcome {
+            get {
+                return ResourceManager.GetString("TestExplorer_Outcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module.
         /// </summary>
         public static string TestExplorer_QualifiedModuleName {
@@ -5303,7 +5303,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selected Tests.
+        ///   Looks up a localized string similar to Selected Test.
         /// </summary>
         public static string TestExplorer_RunSelectedTests {
             get {
