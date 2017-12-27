@@ -299,11 +299,5 @@ namespace Rubberduck
                 _isInitialized = false;
             }
         }
-
-        private static int EnumCallback(IntPtr hwnd, IntPtr lparam)
-        {
-            User32.SendMessage(hwnd, WM.RUBBERDUCK_SINKING, IntPtr.Zero, IntPtr.Zero);
-            return 1;
-        }
     }
 }

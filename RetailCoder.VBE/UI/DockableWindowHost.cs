@@ -220,7 +220,6 @@ namespace Rubberduck.UI
                         if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
                         break;
                     case (uint)WM.DESTROY:
-                    case (uint)WM.RUBBERDUCK_SINKING:
                         OnCallBackEvent(new SubClassingWindowEventArgs(lParam) { Closing = true });
                         _closing = true;
                         break;

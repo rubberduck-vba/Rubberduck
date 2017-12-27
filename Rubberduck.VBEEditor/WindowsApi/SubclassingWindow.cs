@@ -92,7 +92,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                 return DefSubclassProc(hWnd, msg, wParam, lParam);
             }
 
-            if ((uint) msg == (uint) WM.RUBBERDUCK_SINKING || (uint) msg == (uint) WM.DESTROY)
+            if ((uint) msg == (uint) WM.DESTROY)
             {
                 ReleaseHandle();
             }
