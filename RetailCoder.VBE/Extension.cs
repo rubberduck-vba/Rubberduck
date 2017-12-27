@@ -246,13 +246,6 @@ namespace Rubberduck
                 _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
                 VBENativeServices.UnhookEvents();
 
-                _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
-                using (var mainWindow = _ide.MainWindow)
-                {
-                    var mainWindosHndl = mainWindow.Handle();
-                    UiDispatcher.Invoke(() => User32.EnumChildWindows(mainWindosHndl, EnumCallback, new IntPtr(0)));
-                }
-
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
                 Windows.ReleaseDockableHosts();
 

@@ -398,7 +398,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var item in _projects)
                 {
-                    if (item.Value.HelpFile == projectId)
+                    if (item.Value.ProjectId == projectId)
                     {
                         if (project != null)
                         {
