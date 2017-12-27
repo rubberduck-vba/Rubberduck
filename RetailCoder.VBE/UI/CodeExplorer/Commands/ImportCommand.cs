@@ -31,39 +31,70 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return parameter != null || _vbe.VBProjects.Count == 1 || _vbe.ActiveVBProject != null;
+            return parameter != null || _vbe.ProjectsCount == 1 || ThereIsAValidActiveProject();
+        }
+
+        private bool ThereIsAValidActiveProject()
+        {
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                return activeProject != null;
+            }
         }
 
         protected override void OnExecute(object parameter)
         {
-            var project = GetNodeProject(parameter as CodeExplorerItemViewModel) ?? _vbe.ActiveVBProject;
+            var usingFreshProjectWrapper = false;
+
+            var project = GetNodeProject(parameter as CodeExplorerItemViewModel);
 
             if (project == null)
             {
-                if (_vbe.VBProjects.Count == 1)
+                if (_vbe.ProjectsCount == 1)
                 {
-                    project = _vbe.VBProjects[1];
+                    usingFreshProjectWrapper = true;
+                    using (var projects = _vbe.VBProjects)
+                    {
+                        project = projects[1];
+                    }
                 }
-                else if (_vbe.ActiveVBProject != null)
+                else if (ThereIsAValidActiveProject())
                 {
+                    usingFreshProjectWrapper = true;
                     project = _vbe.ActiveVBProject;
                 }
             }
 
             if (project == null || _openFileDialog.ShowDialog() != DialogResult.OK)
             {
+                if (usingFreshProjectWrapper)
+                {
+                    project?.Dispose();
+                }
                 return;
             }
 
             var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
             if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
             {
+                if (usingFreshProjectWrapper)
+                {
+                    project.Dispose();
+                }
                 return;
             }
 
             foreach (var filename in _openFileDialog.FileNames)
             {
-                project.VBComponents.Import(filename);
+                using (var components = project.VBComponents)
+                {
+                    components.Import(filename);
+                }
+            }
+
+            if (usingFreshProjectWrapper)
+            {
+                project.Dispose();
             }
         }
 

@@ -167,16 +167,27 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private List<RegexSearchResult> SearchOpenProjects(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
-            var projects = _vbe.VBProjects;
+            using (var projects = _vbe.VBProjects)
             {
-                var modules = projects
-                    .Where(project => project.Protection == ProjectProtection.Unprotected)
-                    .SelectMany(project => project.VBComponents)
-                    .Select(component => component.CodeModule);
-
-                foreach (var module in modules)
+                foreach (var project in projects)
                 {
-                    results.AddRange(GetResultsFromModule(module, searchPattern));
+                    if (project.Protection == ProjectProtection.Locked)
+                    {
+                        project.Dispose();
+                        continue;
+                    }
+                    using (var components = project.VBComponents)
+                    {
+                        foreach (var component in components)
+                        {
+                            using (var codeModule = component.CodeModule)
+                            {
+                                results.AddRange(GetResultsFromModule(codeModule, searchPattern));
+                            }
+                            component.Dispose();
+                        }
+                    }
+                    project.Dispose();
                 }
 
                 return results;

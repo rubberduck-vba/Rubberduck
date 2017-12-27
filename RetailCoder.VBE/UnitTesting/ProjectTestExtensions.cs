@@ -16,19 +16,48 @@ namespace Rubberduck.UnitTesting
             var name = assembly.GetName().Name.Replace('.', '_');
             var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
 
-            var references = project.References;
+            using (var references = project.References)
             {
-                var reference = references.SingleOrDefault(r => r.Name == name);
+                var reference = FindReferenceByName(references, name);
                 if (reference != null)
                 {
                     references.Remove(reference);
+                    reference.Dispose();
                 }
 
-                if (references.All(r => r.FullPath != referencePath))
+                if (!ReferenceWithPathExists(references, referencePath))
                 {
                     references.AddFromFile(referencePath);
                 }
             }
+        }
+
+        private static IReference FindReferenceByName(IReferences refernences, string name)
+        {
+            foreach(var reference in refernences)
+            {
+                if (reference.Name == name)
+                {
+                    return reference;
+                }
+                reference.Dispose();
+            }
+
+            return null;
+        }
+
+        private static bool ReferenceWithPathExists(IReferences refereneces, string path)
+        {
+            foreach (var reference in refereneces)
+            {
+                var referencePath = reference.FullPath;
+                reference.Dispose();
+                if (referencePath == path)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Office.Interop.MSProject;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
@@ -115,7 +116,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private bool IsProjectIdUnique()
         {
-            return VBE.VBProjects.Count(project => project.HelpFile == HelpFile) == 1;
+            using (var vbe = VBE)
+            {
+                using (var projects = vbe.VBProjects)
+                {
+                    var helpFile = HelpFile;
+                    int matchCount = 0;
+                    foreach (var project in projects)
+                    {
+                        if (project.HelpFile == helpFile)
+                        {
+                            matchCount++;
+                        }
+                        project.Dispose();
+                    }
+                    return matchCount == 1;
+                }
+            }
         }
 
 
