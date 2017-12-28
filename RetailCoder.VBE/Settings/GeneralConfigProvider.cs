@@ -42,7 +42,7 @@ namespace Rubberduck.Settings
                 OnLanguageChanged(EventArgs.Empty);
             }
             if (_current == null || 
-                other.AutoSaveEnabled != _current.AutoSaveEnabled || 
+                other.IsAutoSaveEnabled != _current.IsAutoSaveEnabled || 
                 other.AutoSavePeriod != _current.AutoSavePeriod)
             {
                 OnAutoSaveSettingsChanged(EventArgs.Empty);
@@ -52,21 +52,18 @@ namespace Rubberduck.Settings
         public event EventHandler LanguageChanged;
         protected virtual void OnLanguageChanged(EventArgs e)
         {
-            var handler = LanguageChanged;
             LanguageChanged?.Invoke(this, e);
         }
 
         public event EventHandler AutoSaveSettingsChanged;
         protected virtual void OnAutoSaveSettingsChanged(EventArgs e)
         {
-            var handler = AutoSaveSettingsChanged;
             AutoSaveSettingsChanged?.Invoke(this, e);
         }
 
         public event EventHandler SourceControlEnabledChanged;
         protected virtual void OnSourceControlEnabledChanged(EventArgs e)
         {
-            var handler = SourceControlEnabledChanged;
             SourceControlEnabledChanged?.Invoke(this, e);
         }
     }

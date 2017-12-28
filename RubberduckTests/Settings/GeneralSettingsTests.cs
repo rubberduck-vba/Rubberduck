@@ -21,19 +21,16 @@ namespace RubberduckTests.Settings
             var generalSettings = new GeneralSettings
             {
                 Language = new DisplayLanguageSetting("en-US"),
-                AutoSaveEnabled = false,
+                IsAutoSaveEnabled = false,
                 AutoSavePeriod = 10,
                 //Delimiter = '.'
             };
 
-            var hotkeySettings = new HotkeySettings()
+            var hotkeySettings = new HotkeySettings(new[]
             {
-                Settings = new[]
-                {
-                    new HotkeySetting {Name = "IndentProcedure", IsEnabled = true, Key1 = "CTRL-P"},
-                    new HotkeySetting {Name = "IndentModule", IsEnabled = true, Key1 = "CTRL-M"}
-                }
-            };
+                new HotkeySetting {CommandTypeName = "FooCommand", IsEnabled = true, Key1 = "A"},
+                new HotkeySetting {CommandTypeName = "BarCommand", IsEnabled = true, Key1 = "B"}
+            });
 
             var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null, null);
             return new Configuration(userSettings);
@@ -44,17 +41,17 @@ namespace RubberduckTests.Settings
             var generalSettings = new GeneralSettings
             {
                 Language = new DisplayLanguageSetting("fr-CA"),
-                AutoSaveEnabled = true,
+                IsAutoSaveEnabled = true,
                 AutoSavePeriod = 5,
                 //Delimiter = '/'
             };
 
-            var hotkeySettings = new HotkeySettings()
+            var hotkeySettings = new HotkeySettings
             {
                 Settings = new[]
                 {
-                    new HotkeySetting{Name="IndentProcedure", IsEnabled=false, Key1="CTRL-C"},
-                    new HotkeySetting{Name="IndentModule", IsEnabled=false, Key1="CTRL-X"}
+                    new HotkeySetting{CommandTypeName="FooCommand", IsEnabled=false, Key1="C"},
+                    new HotkeySetting{CommandTypeName="BarCommand", IsEnabled=false, Key1="D"}
                 }
             };
 
@@ -75,7 +72,7 @@ namespace RubberduckTests.Settings
             MultiAssert.Aggregate(
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
                 () => Assert.IsTrue(config.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys)),
-                () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
+                () => Assert.AreEqual(config.UserSettings.GeneralSettings.IsAutoSaveEnabled, viewModel.AutoSaveEnabled),
                 () => Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod));
         }
 
@@ -91,7 +88,7 @@ namespace RubberduckTests.Settings
             MultiAssert.Aggregate(
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage),
                 () => Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys)),
-                () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled),
+                () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.IsAutoSaveEnabled, viewModel.AutoSaveEnabled),
                 () => Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod));
         }
 
@@ -122,7 +119,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
 
-            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSaveEnabled, viewModel.AutoSaveEnabled);
+            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.IsAutoSaveEnabled, viewModel.AutoSaveEnabled);
         }
 
         [TestCategory("Settings")]
@@ -142,7 +139,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
 
-            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.SourceControlEnabled, viewModel.SourceControlEnabled);
+            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.IsSourceControlEnabled, viewModel.SourceControlEnabled);
         }
 
         //[TestCategory("Settings")]

@@ -114,7 +114,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return null;
             }
 
-            var child = CommandBarButtonFactory.Create(Item.Controls);
+            ICommandBarButton child;
+            using (var controls = Item.Controls)
+            {
+                child = CommandBarButtonFactory.Create(controls);
+            }
             child.Style = item.ButtonStyle;
             child.Picture = item.Image;
             child.Mask = item.Mask;
@@ -170,15 +174,20 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
             try
             {
-                Logger.Debug("Removing commandbar.");
-                RemoveChildren();
-                Item?.Delete();
-                Item = null;
-                Parent = null;
+                if (Item != null)
+                {
+                    Logger.Debug("Removing commandbar.");
+                    RemoveChildren();
+                    Item.Delete();
+                    Item.Dispose();
+                    Item = null;
+                    Parent?.Dispose();
+                    Parent = null;
+                }
             }
             catch (COMException exception)
             {
-                Logger.Error(exception, "COM exception while trying to delee the commandbar");
+                Logger.Error(exception, "COM exception while trying to delete the commandbar");
             }
         }
 
@@ -198,6 +207,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                         button.Click -= child_Click;
                     }
                     button.Delete();
+                    button.Dispose();
                 }
             }
             catch (COMException exception)

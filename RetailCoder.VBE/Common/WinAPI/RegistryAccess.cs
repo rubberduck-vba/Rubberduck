@@ -2,9 +2,9 @@
 
 namespace Rubberduck.Common.WinAPI
 {
-    static internal class RegistryAccess
+    internal static class RegistryAccess
     {
-        static internal RegistryKey GetDeviceKey(string device)
+        internal static RegistryKey GetDeviceKey(string device)
         {
             var split = device.Substring(4).Split('#');
 
@@ -12,10 +12,11 @@ namespace Rubberduck.Common.WinAPI
             var subClassCode = split[1];    // PNP0303 (SubClass code)
             var protocolCode = split[2];    // 3&13c0b0c5&0 (Protocol code)
 
-            return Registry.LocalMachine.OpenSubKey(string.Format(@"System\CurrentControlSet\Enum\{0}\{1}\{2}", classCode, subClassCode, protocolCode));
+            return Registry.LocalMachine.OpenSubKey(
+                $@"System\CurrentControlSet\Enum\{classCode}\{subClassCode}\{protocolCode}");
         }
 
-        static internal string GetClassType(string classGuid)
+        internal static string GetClassType(string classGuid)
         {
             var classGuidKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Class\" + classGuid);
 

@@ -6,10 +6,10 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 {
     public class RegexSearchResult
     {
-        public Match Match { get; private set; }
-        public ICodeModule Module { get; private set; }
-        public Selection Selection { get; private set; }
-        public string DisplayString { get { return Match.Value; } }
+        public Match Match { get; }
+        public ICodeModule Module { get; }
+        public Selection Selection { get; }
+        public string DisplayString => Match.Value;
 
         public RegexSearchResult(Match match, ICodeModule module, int line)
         {

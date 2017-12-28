@@ -120,7 +120,7 @@ namespace Rubberduck
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
 
-            if (_config.UserSettings.GeneralSettings.CheckVersion)
+            if (_config.UserSettings.GeneralSettings.CanCheckVersion)
             {
                 _checkVersionCommand.Execute(null);
             }
@@ -165,7 +165,7 @@ namespace Rubberduck
             try
             {
                 Logger.Trace("Checking for legacy Smart Indenter settings.");
-                if (_config.UserSettings.GeneralSettings.SmartIndenterPrompted ||
+                if (_config.UserSettings.GeneralSettings.IsSmartIndenterPrompted ||
                     !_config.UserSettings.IndenterSettings.LegacySettingsExist())
                 {
                     return;
@@ -177,7 +177,7 @@ namespace Rubberduck
                     Logger.Trace("Attempting to load legacy Smart Indenter settings.");
                     _config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
-                _config.UserSettings.GeneralSettings.SmartIndenterPrompted = true;
+                _config.UserSettings.GeneralSettings.IsSmartIndenterPrompted = true;
                 _configService.SaveConfiguration(_config);
             }
             catch 

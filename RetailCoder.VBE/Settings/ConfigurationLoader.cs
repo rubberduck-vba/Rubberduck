@@ -7,9 +7,9 @@ namespace Rubberduck.Settings
 {
     public class ConfigurationChangedEventArgs : EventArgs
     {
-        public bool LanguageChanged { get; private set; }
-        public bool InspectionSettingsChanged { get; private set; }
-        public bool RunInspectionsOnReparse { get; private set; }
+        public bool LanguageChanged { get; }
+        public bool InspectionSettingsChanged { get; }
+        public bool RunInspectionsOnReparse { get; }
 
         public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged)
         {
@@ -105,11 +105,7 @@ namespace Rubberduck.Settings
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
         protected virtual void OnSettingsChanged(ConfigurationChangedEventArgs e)
         {
-            var handler = SettingsChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            SettingsChanged?.Invoke(this, e);
         }
     }
 }

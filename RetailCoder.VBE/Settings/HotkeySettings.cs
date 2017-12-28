@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Settings
 {
@@ -12,56 +13,44 @@ namespace Rubberduck.Settings
 
     public class HotkeySettings : IHotkeySettings, IEquatable<HotkeySettings>
     {
-        private static readonly HotkeySetting[] Defaults =
-        {
-            new HotkeySetting{Name=RubberduckHotkey.ParseAll.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="`" },
-            new HotkeySetting{Name=RubberduckHotkey.IndentProcedure.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="P" },
-            new HotkeySetting{Name=RubberduckHotkey.IndentModule.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="M" },
-            new HotkeySetting{Name=RubberduckHotkey.CodeExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="R" },
-            new HotkeySetting{Name=RubberduckHotkey.FindSymbol.ToString(), IsEnabled=true, HasCtrlModifier = true, Key1="T" },
-            new HotkeySetting{Name=RubberduckHotkey.InspectionResults.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="I" },
-            new HotkeySetting{Name=RubberduckHotkey.TestExplorer.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="T" },
-            new HotkeySetting{Name=RubberduckHotkey.RefactorMoveCloserToUsage.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="C" },
-            new HotkeySetting{Name=RubberduckHotkey.RefactorRename.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="R" },
-            new HotkeySetting{Name=RubberduckHotkey.RefactorExtractMethod.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="M" },
-            new HotkeySetting{Name=RubberduckHotkey.SourceControl.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="D6" },
-            new HotkeySetting{Name=RubberduckHotkey.RefactorEncapsulateField.ToString(), IsEnabled=true, HasCtrlModifier = true, HasShiftModifier = true, Key1="F" },
-            new HotkeySetting{Name=RubberduckHotkey.ExportActiveProject.ToString(), IsEnabled = true, HasCtrlModifier = true, HasShiftModifier = true, Key1="E" }
-        };
-
-        private HashSet<HotkeySetting> _settings;
-
-        public HotkeySettings()
-        {
-            Settings = Defaults.ToArray();
-        }
+        private readonly IEnumerable<HotkeySetting> _defaultSettings;
+        private HashSet<HotkeySetting> _settings = new HashSet<HotkeySetting>();
 
         public HotkeySetting[] Settings
         {
-            get { return _settings.ToArray(); }
+            get => _settings?.ToArray();
             set
             {
-                if (value == null || value.Length == 0)
+                // Enable loading user settings during deserialization
+                if (_defaultSettings == null)
                 {
-                    _settings = new HashSet<HotkeySetting>(Defaults);
+                    if (value != null)
+                    {
+                        AddUnique(value);
+                    }
+
                     return;
                 }
-                _settings = new HashSet<HotkeySetting>();
-                var incoming = value.ToList();
-                //Make sure settings are valid to keep trash out of the config file.
-                RubberduckHotkey assigned;
-                incoming.RemoveAll(h => !Enum.TryParse(h.Name, out assigned) || !IsValid(h));
 
-                //Only take the first setting if multiple definitions are found.
-                foreach (var setting in incoming.GroupBy(s => s.Name).Select(hotkey => hotkey.First()))
+                var defaults = _defaultSettings.ToArray();
+
+                if (value == null || value.Length == 0)
                 {
-                    //Only allow one hotkey to be enabled with the same key combination.
-                    setting.IsEnabled &= !IsDuplicate(setting);
-                    _settings.Add(setting);
+                    _settings = new HashSet<HotkeySetting>(defaults);
+                    return;
                 }
 
+                _settings = new HashSet<HotkeySetting>();
+
+                var incoming = value.ToList();
+                //Make sure settings are valid to keep trash out of the config file.
+                var hotkeyCommandTypeNames = defaults.Select(h => h.CommandTypeName);
+                incoming.RemoveAll(h => !hotkeyCommandTypeNames.Contains(h.CommandTypeName) || !IsValid(h));
+
+                AddUnique(incoming);
+
                 //Merge any hotkeys that weren't found in the input.
-                foreach (var setting in Defaults.Where(setting => _settings.FirstOrDefault(s => s.Name.Equals(setting.Name)) == null))
+                foreach (var setting in defaults.Where(setting => _settings.FirstOrDefault(s => s.CommandTypeName.Equals(setting.CommandTypeName)) == null))
                 {
                     setting.IsEnabled &= !IsDuplicate(setting);
                     _settings.Add(setting);
@@ -69,15 +58,17 @@ namespace Rubberduck.Settings
             }
         }
 
-        private bool IsDuplicate(HotkeySetting candidate)
+        /// <Summary>
+        /// Default constructor required for XML serialization.
+        /// </Summary>
+        public HotkeySettings()
         {
-            return _settings.FirstOrDefault(
-                s =>
-                    s.Key1 == candidate.Key1 &&
-                    s.Key2 == candidate.Key2 &&
-                    s.HasAltModifier == candidate.HasAltModifier &&
-                    s.HasCtrlModifier == candidate.HasCtrlModifier &&
-                    s.HasShiftModifier == candidate.HasShiftModifier) != null;
+        }
+
+        public HotkeySettings(IEnumerable<HotkeySetting> defaultSettings)
+        {
+            _defaultSettings = defaultSettings;
+            _settings = defaultSettings.ToHashSet();
         }
 
         public bool Equals(HotkeySettings other)
@@ -98,6 +89,28 @@ namespace Rubberduck.Settings
             {
                 return false;
             }
+        }
+
+        private void AddUnique(IEnumerable<HotkeySetting> settings)
+        {
+            //Only take the first setting if multiple definitions are found.
+            foreach (var setting in settings.GroupBy(s => s.CommandTypeName).Select(hotkey => hotkey.First()))
+            {
+                //Only allow one hotkey to be enabled with the same key combination.
+                setting.IsEnabled &= !IsDuplicate(setting);
+                _settings.Add(setting);
+            }
+        }
+
+        private bool IsDuplicate(HotkeySetting candidate)
+        {
+            return _settings.FirstOrDefault(
+                       s =>
+                           s.Key1 == candidate.Key1 &&
+                           s.Key2 == candidate.Key2 &&
+                           s.HasAltModifier == candidate.HasAltModifier &&
+                           s.HasCtrlModifier == candidate.HasCtrlModifier &&
+                           s.HasShiftModifier == candidate.HasShiftModifier) != null;
         }
     }
 }

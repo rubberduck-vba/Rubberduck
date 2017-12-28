@@ -17,7 +17,7 @@ namespace RubberduckTests.IoCContainer
             var vbeBuilder = new MockVbeBuilder();
             var ide = vbeBuilder.Build().Object;
             var addin = new Mock<IAddIn>().Object;
-            var initialSettings = new GeneralSettings {SourceControlEnabled = true};
+            var initialSettings = new GeneralSettings {IsSourceControlEnabled = true};
 
             using (var container =
                 new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings)))
@@ -33,7 +33,7 @@ namespace RubberduckTests.IoCContainer
             var vbeBuilder = new MockVbeBuilder();
             var ide = vbeBuilder.Build().Object;
             var addin = new Mock<IAddIn>().Object;
-            var initialSettings = new GeneralSettings {SourceControlEnabled = false};
+            var initialSettings = new GeneralSettings {IsSourceControlEnabled = false};
 
             using (var container =
                 new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings)))

@@ -4,7 +4,6 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -21,8 +20,6 @@ namespace Rubberduck.UI.Command.Refactorings
             _state = state;
             _indenter = indenter;
         }
-
-        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorExtractMethod;
 
         protected override bool EvaluateCanExecute(object parameter)
         {

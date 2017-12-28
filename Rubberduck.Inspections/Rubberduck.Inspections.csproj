@@ -41,8 +41,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -93,7 +92,6 @@
     <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
-    <Compile Include="Concrete\MissingAnnotationInspection.cs" />
     <Compile Include="Concrete\MissingAttributeInspection.cs" />
     <Compile Include="Abstract\InspectionResultBase.cs" />
     <Compile Include="Concrete\RedundantByRefModifierInspection.cs" />
@@ -160,7 +158,6 @@
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFix.cs" />
     <Compile Include="QuickFixes\SplitMultipleDeclarationsQuickFix.cs" />
-    <Compile Include="QuickFixes\SynchronizeAttributesQuickFix.cs" />
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFix.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFix.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFix.cs" />
@@ -208,12 +205,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Debug" /Y</PostBuildEvent>
+    <PostBuildEvent>if "$(Configuration)" == "Debug" (
+   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Debug" /Y
+)
+if "$(Configuration)" == "Release" (
+   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Release" /Y
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
