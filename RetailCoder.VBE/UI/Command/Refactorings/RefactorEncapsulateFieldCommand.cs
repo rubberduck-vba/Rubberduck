@@ -3,7 +3,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
-using Rubberduck.Settings;
 using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -53,7 +52,5 @@ namespace Rubberduck.UI.Command.Refactorings
                 refactoring.Refactor();
             }
         }
-
-        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorEncapsulateField;
     }
 }
