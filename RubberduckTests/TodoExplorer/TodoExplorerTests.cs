@@ -32,7 +32,8 @@ namespace RubberduckTests.TodoExplorer
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var vm = new ToDoExplorerViewModel(state, GetConfigService(), GetOperatingSystemMock().Object);
+                var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
+                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -42,7 +43,7 @@ namespace RubberduckTests.TodoExplorer
 
                 var comments = vm.Items.Select(s => s.Type);
 
-                Assert.IsTrue(comments.SequenceEqual(new[] { "TODO ", "NOTE ", "BUG " }));
+                Assert.IsTrue(comments.SequenceEqual(new[] { "TODO", "NOTE", "BUG" }));
             }
         }
 
@@ -65,7 +66,8 @@ namespace RubberduckTests.TodoExplorer
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var vm = new ToDoExplorerViewModel(state, GetConfigService(), GetOperatingSystemMock().Object);
+                var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
+                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -75,7 +77,7 @@ namespace RubberduckTests.TodoExplorer
 
                 var comments = vm.Items.Select(s => s.Type);
 
-                Assert.IsTrue(comments.SequenceEqual(new[] { "TODO ", "NOTE ", "BUG ", "BUG " }));
+                Assert.IsTrue(comments.SequenceEqual(new[] { "TODO", "NOTE", "BUG", "BUG" }));
             }
         }
 
@@ -98,7 +100,8 @@ namespace RubberduckTests.TodoExplorer
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var vm = new ToDoExplorerViewModel(state, GetConfigService(), GetOperatingSystemMock().Object);
+                var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
+                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -115,24 +118,19 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        private IGeneralConfigService GetConfigService()
+        private IGeneralConfigService GetConfigService(string[] markers)
         {
             var configService = new Mock<IGeneralConfigService>();
-            configService.Setup(c => c.LoadConfiguration()).Returns(GetTodoConfig);
+            configService.Setup(c => c.LoadConfiguration()).Returns(GetTodoConfig(markers));
 
             return configService.Object;
         }
 
-        private Configuration GetTodoConfig()
+        private Configuration GetTodoConfig(string[] markers)
         {
             var todoSettings = new ToDoListSettings
             {
-                ToDoMarkers = new[]
-                {
-                    new ToDoMarker("NOTE "),
-                    new ToDoMarker("TODO "),
-                    new ToDoMarker("BUG ")
-                }
+                ToDoMarkers = markers.Select(m => new ToDoMarker(m)).ToArray()
             };
 
             var userSettings = new UserSettings(null, null, todoSettings, null, null, null, null);
