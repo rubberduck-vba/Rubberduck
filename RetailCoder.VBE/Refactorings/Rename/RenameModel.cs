@@ -17,8 +17,8 @@ namespace Rubberduck.Refactorings.Rename
         private Declaration _target;
         public Declaration Target
         {
-            get { return _target; }
-            set { _target = value; }
+            get => _target;
+            set => _target = value;
         }
 
         public QualifiedSelection Selection { get; }

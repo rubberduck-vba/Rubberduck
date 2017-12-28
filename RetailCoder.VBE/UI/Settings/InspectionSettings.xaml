@@ -293,8 +293,12 @@
                                                          Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
                             </Grid>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>
-                        </DockPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                            <Label Content="Description Filter"/>
+                            <TextBox MinWidth="75"
+                                     Text="{Binding InspectionSettingsFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </DockPanel>
                     </Label>  
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"

@@ -142,9 +142,19 @@ namespace Rubberduck.UI
         protected override void DefWndProc(ref Message m)
         {
             //See the comment in the ctor for why we have to listen for this.
-            if (m.Msg == (int) WM.DESTROY)
+            if (m.Msg == (int) WM.DESTROY && !_released)
             {
                 Debug.WriteLine("DockableWindowHost received WM.DESTROY.");
+                try
+                {
+                    _subClassingWindow.CallBackEvent -= OnCallBackEvent;
+                }
+                catch(Exception)
+                {
+                    Debug.WriteLine("Failed to unsubscribe event handler from the parent subclassing window of a DockableWindowHost on WM_DESTROY. It might have been unsubscribed already.");
+                    //We cannot really do anything here. This is only a safeguard to guarantee that the event gets unsubscribed. If it does not work, it might be gone already.
+                }
+
                 _thisHandle.Free();
             }
             base.DefWndProc(ref m);
@@ -152,10 +162,19 @@ namespace Rubberduck.UI
 
         //override 
 
+        private bool _released; 
         public void Release()
         {
+            if (_released)
+            {
+                return;
+            }
+
             Debug.WriteLine("DockableWindowHost release called.");
             _subClassingWindow.Dispose();
+            _thisHandle.Free();
+
+            _released = true;
         }
 
         protected override void DestroyHandle()
@@ -200,12 +219,27 @@ namespace Rubberduck.UI
                     case (uint)WM.KILLFOCUS:
                         if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
                         break;
+                    case (uint)WM.DESTROY:
                     case (uint)WM.RUBBERDUCK_SINKING:
                         OnCallBackEvent(new SubClassingWindowEventArgs(lParam) { Closing = true });
                         _closing = true;
                         break;
                 }
                 return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
+            }
+
+            private bool _disposed;
+            protected override void Dispose(bool disposing)
+            {
+                if (!_disposed && disposing && !_closing)
+                {
+                    OnCallBackEvent(new SubClassingWindowEventArgs(IntPtr.Zero) { Closing = true });
+                    _closing = true;
+                }
+
+                _disposed = true;
+
+                base.Dispose(disposing);
             }
         }
     }

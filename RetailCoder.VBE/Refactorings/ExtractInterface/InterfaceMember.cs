@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public override string ToString()
         {
-            return ParamAccessibility + " " + ParamName + " As " + ParamType;
+            return $"{ParamAccessibility} {ParamName} As {ParamType}";
         }
     }
 
@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private bool _isSelected;
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 _isSelected = value;
@@ -44,10 +44,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             get
             {
-                var signature = MemberType + " " + Member.IdentifierName + "(" +
-                    string.Join(", ", MemberParams) + ")";
+                var signature = $"{MemberType} {Member.IdentifierName}({string.Join(", ", MemberParams)})";
 
-                return Type == null ? signature : signature + " As " + Type;
+                return Type == null ? signature : $"{signature} As {Type}";
             }
         }
 
@@ -59,8 +58,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             
             GetMethodType();
 
-            var memberWithParams = member as IParameterizedDeclaration;
-            if (memberWithParams != null)
+            if (member is IParameterizedDeclaration memberWithParams)
             {
                 MemberParams = memberWithParams.Parameters
                     .OrderBy(o => o.Selection.StartLine)
@@ -91,38 +89,32 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             var context = Member.Context;
 
-            var subStmtContext = context as VBAParser.SubStmtContext;
-            if (subStmtContext != null)
+            if (context is VBAParser.SubStmtContext)
             {
                 MemberType = Tokens.Sub;
             }
 
-            var functionStmtContext = context as VBAParser.FunctionStmtContext;
-            if (functionStmtContext != null)
+            if (context is VBAParser.FunctionStmtContext)
             {
                 MemberType = Tokens.Function;
             }
 
-            var propertyGetStmtContext = context as VBAParser.PropertyGetStmtContext;
-            if (propertyGetStmtContext != null)
+            if (context is VBAParser.PropertyGetStmtContext)
             {
-                MemberType = Tokens.Property + " " + Tokens.Get;
+                MemberType = $"{Tokens.Property} {Tokens.Get}";
             }
 
-            var propertyLetStmtContext = context as VBAParser.PropertyLetStmtContext;
-            if (propertyLetStmtContext != null)
+            if (context is VBAParser.PropertyLetStmtContext)
             {
-                MemberType = Tokens.Property + " " + Tokens.Let;
+                MemberType = $"{Tokens.Property} {Tokens.Let}";
             }
 
-            var propertySetStmtContext = context as VBAParser.PropertySetStmtContext;
-            if (propertySetStmtContext != null)
+            if (context is VBAParser.PropertySetStmtContext)
             {
-                MemberType = Tokens.Property + " " + Tokens.Set;
+                MemberType = $"{Tokens.Property} {Tokens.Set}";
             }
         }
 
-        public string Body => "Public " + FullMemberSignature + Environment.NewLine +
-                              "End " + MemberType.Split(' ').First() + Environment.NewLine;
+        public string Body => string.Format("Public {0}{1}End {2}{1}", FullMemberSignature, Environment.NewLine, MemberType.Split(' ').First());
     }
 }

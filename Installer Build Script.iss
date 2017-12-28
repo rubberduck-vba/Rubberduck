@@ -1,8 +1,8 @@
-#define BuildDir SourcePath + "RetailCoder.VBE\bin\release"
+#define BuildDir SourcePath + "RetailCoder.VBE\bin\Release"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
 #define InspectionsDLL "Rubberduck.Inspections.dll"
-#define AppVersion GetFileVersion(SourcePath + "RetailCoder.VBE\bin\release\Rubberduck.dll")
+#define AppVersion GetFileVersion(SourcePath + "RetailCoder.VBE\bin\Release\Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
 #define License SourcePath + "\License.rtf"
@@ -37,9 +37,9 @@ ArchitecturesInstallIn64BitMode=x64
 Name: "English"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-; Install the correct bitness binaries.
-Source: "libs\NativeBinaries\amd64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
-Source: "libs\NativeBinaries\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
+; Install the correct bitness binaries.         
+Source: "{#BuildDir}\lib\win32\x64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
+Source: "{#BuildDir}\lib\win32\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
 
 Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "{#AddinDLL},\NativeBinaries"
 Source: "{#BuildDir}\{#InspectionsDLL}"; DestDir: "{app}"; Flags: ignoreversion

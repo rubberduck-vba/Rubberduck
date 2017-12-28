@@ -367,7 +367,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An empty &apos;Case&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
+        ///   Looks up a localized string similar to An empty &apos;Do...While&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyDoWhileBlockInspectionMeta {
             get {
@@ -385,7 +385,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An empty &apos;Do...While&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
+        ///   Looks up a localized string similar to &apos;Do...While&apos; loop contains no executable statements.
         /// </summary>
         public static string EmptyDoWhileBlockInspectionResultFormat {
             get {
@@ -421,7 +421,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An empty &apos;Loop&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
+        ///   Looks up a localized string similar to An empty &apos;For Each...Next&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyForEachBlockInspectionMeta {
             get {
@@ -1366,7 +1366,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Call&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Call&apos; statement.
         /// </summary>
         public static string ObsoleteCallStatementInspectionName {
             get {
@@ -1393,7 +1393,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Rem&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Rem&apos; statement.
         /// </summary>
         public static string ObsoleteCommentSyntaxInspectionName {
             get {
@@ -1420,6 +1420,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of &apos;Error&apos; statement.
+        /// </summary>
+        public static string ObsoleteErrorSyntaxInspectionName {
+            get {
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A run-time error is raised using the obsolete &apos;Error&apos; statement.
         /// </summary>
         public static string ObsoleteErrorSyntaxInspectionResultFormat {
@@ -1438,7 +1447,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Global&apos; access modifier.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Global&apos; access modifier.
         /// </summary>
         public static string ObsoleteGlobalInspectionName {
             get {
@@ -1474,7 +1483,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of explicit &apos;Let&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete explicit &apos;Let&apos; statement.
         /// </summary>
         public static string ObsoleteLetStatementInspectionName {
             get {
@@ -1501,7 +1510,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type hint usage.
+        ///   Looks up a localized string similar to Obsolete Type hint usage.
         /// </summary>
         public static string ObsoleteTypeHintInspectionName {
             get {
