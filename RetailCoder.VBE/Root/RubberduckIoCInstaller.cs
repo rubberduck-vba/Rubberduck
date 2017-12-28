@@ -11,6 +11,7 @@ using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Rubberduck.Common;
+using Rubberduck.Common.Hotkeys;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.ComReflection;
@@ -135,6 +136,8 @@ namespace Rubberduck.Root
             RegisterProjectExplorerContextMenu(container);
 
             RegisterWindowsHooks(container);
+
+            RegisterHotkeyFactory(container);
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
 
@@ -852,6 +855,11 @@ namespace Rubberduck.Root
             container.Register(Component.For<IVBE>().Instance(_vbe));
             container.Register(Component.For<IAddIn>().Instance(_addin));
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars)); //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
+        }
+
+        private static void RegisterHotkeyFactory(IWindsorContainer container)
+        {
+            container.Register(Component.For<HotkeyFactory>().LifestyleSingleton());
         }
     }
 }
