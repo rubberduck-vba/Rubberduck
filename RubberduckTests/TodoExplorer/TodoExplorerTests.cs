@@ -90,7 +90,8 @@ namespace RubberduckTests.TodoExplorer
             const string inputCode =
                 @"' To-do - this is a todo comment
 ' N@TE this is a note comment
-' bug: this should work with a colon separator
+' bug this should work with a trailing space
+' bug: this should not be seen due to the colon
 ";
 
             var builder = new MockVbeBuilder();
@@ -102,7 +103,7 @@ namespace RubberduckTests.TodoExplorer
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var cs = GetConfigService(new[] { "TO-DO", "N@TE", "BUG" });
+                var cs = GetConfigService(new[] { "TO-DO", "N@TE", "BUG " });
                 var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
 
                 parser.Parse(new CancellationTokenSource());
@@ -113,7 +114,7 @@ namespace RubberduckTests.TodoExplorer
 
                 var comments = vm.Items.Select(s => s.Type);
 
-                Assert.IsTrue(comments.SequenceEqual(new[] { "TO-DO", "N@TE", "BUG" }));
+                Assert.IsTrue(comments.SequenceEqual(new[] { "TO-DO", "N@TE", "BUG " }));
             }
         }
 
