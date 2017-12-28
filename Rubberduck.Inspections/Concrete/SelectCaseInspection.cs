@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections.Concrete
             { ClauseEvaluationResult.CaseElse, CaseInspectionMessages.CaseElse }
         };
 
-        internal static class CompareSymbols
+        internal static class CompareTokens
         {
             public static readonly string EQ = "=";
             public static readonly string NEQ = "<>";
@@ -48,85 +48,83 @@ namespace Rubberduck.Inspections.Concrete
             public static readonly string GTE = ">=";
         }
 
-        private static Dictionary<string, Func<VBEValue, VBEValue, VBEValue>> ValueOperations = new Dictionary<string, Func<VBEValue, VBEValue, VBEValue>>()
+        private static Dictionary<string, Func<VBAValue, VBAValue, VBAValue>> MathOperations = new Dictionary<string, Func<VBAValue, VBAValue, VBAValue>>()
         {
-            { "*", delegate(VBEValue LHS, VBEValue RHS){ return LHS * RHS; } },
-            { "/", delegate(VBEValue LHS, VBEValue RHS){ return LHS / RHS; } },
-            { "+", delegate(VBEValue LHS, VBEValue RHS){ return LHS + RHS; } },
-            { "-", delegate(VBEValue LHS, VBEValue RHS){ return LHS - RHS; } },
-            { "^", delegate(VBEValue LHS, VBEValue RHS){ return LHS ^ RHS; } }
+            { "*", delegate(VBAValue LHS, VBAValue RHS){ return LHS * RHS; } },
+            { "/", delegate(VBAValue LHS, VBAValue RHS){ return LHS / RHS; } },
+            { "+", delegate(VBAValue LHS, VBAValue RHS){ return LHS + RHS; } },
+            { "-", delegate(VBAValue LHS, VBAValue RHS){ return LHS - RHS; } },
+            { "^", delegate(VBAValue LHS, VBAValue RHS){ return LHS ^ RHS; } },
+            { "Mod", delegate(VBAValue LHS, VBAValue RHS){ return LHS % RHS; } }
         };
 
-        private static Dictionary<string, Func<VBEValue, VBEValue, VBEValue>> CompareOperations = new Dictionary<string, Func<VBEValue, VBEValue, VBEValue>>()
+        private static Dictionary<string, Func<VBAValue, VBAValue, VBAValue>> CompareOperations = new Dictionary<string, Func<VBAValue, VBAValue, VBAValue>>()
         {
-            { CompareSymbols.EQ, delegate(VBEValue LHS, VBEValue RHS){ return new VBEValue(LHS == RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareSymbols.NEQ, delegate(VBEValue LHS, VBEValue RHS){ return new VBEValue(LHS != RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareSymbols.LT, delegate(VBEValue LHS, VBEValue RHS){ return new VBEValue(LHS < RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareSymbols.LTE, delegate(VBEValue LHS, VBEValue RHS){ return new VBEValue(LHS <= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareSymbols.GT, delegate(VBEValue LHS, VBEValue RHS){ return new VBEValue(LHS > RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareSymbols.GTE, delegate(VBEValue LHS, VBEValue RHS){ return new VBEValue(LHS >= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } }
+            { CompareTokens.EQ, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue(LHS == RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.NEQ, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue(LHS != RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.LT, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue(LHS < RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.LTE, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue(LHS <= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.GT, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue(LHS > RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.GTE, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue(LHS >= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } }
         };
 
         internal struct SummaryCaseCoverage
         {
-            public VBEValue IsLTMax;
-            public VBEValue IsGTMin;
-            public List<VBEValue> SingleValues;
-            public List<Tuple<VBEValue, VBEValue>> Ranges;
-            public List<string> Indeterminants;
+            public VBAValue IsLTMax;
+            public VBAValue IsGTMin;
+            public List<VBAValue> SingleValues;
+            public List<Tuple<VBAValue, VBAValue>> Ranges;
+            public bool UnreachableCaseElse;
             public List<string> RangeClausesAsText;
-            public Dictionary<string, List<Tuple<long, bool>>> Discretes;
+            public List<VBAValue> EnumDiscretes;
         }
 
         internal struct ExpressionEval
         {
             public ParserRuleContext ParentCtxt;
-            public bool SingleValueOnly;
-            public ExpressionContext LHS;
-            public Object LHSEval;
-            public VBEValue LHSValue;
-            public ExpressionContext RHS;
-            public Object RHSEval;
-            public VBEValue RHSValue;
+            public bool IsUnaryOperation;
+            public VBAValue LHSValue;
+            public VBAValue RHSValue;
             public string Operator;
-            public VBEValue Result;
+            public string SelectCaseRefName;
+            public string TypeNameTarget;
+            public VBAValue Result;
             public bool CanBeInspected;
+            public bool EvaluateAsIsClause;
         }
 
         internal struct SelectStmtDataObject
         {
-            public QualifiedContext<ParserRuleContext> QualifiedCtxt;
+            public SelectCaseStmtContext SelectStmtContext;
+            public SelectExpressionContext SelectExpressionContext;
             public string BaseTypeName;
             public string AsTypeName;
-            public IdentifierReference IdReference;
+            public string IdReferenceName;
             public List<CaseClauseDataObject> CaseClauseDOs;
             public CaseElseClauseContext CaseElseContext;
-            public SummaryCaseCoverage SummaryClauses;
-            public bool HasUnreachableCaseElse;
+            public SummaryCaseCoverage SummaryCaseClauses;
             public bool CanBeInspected;
-            public Dictionary<string, long> EnumerationValues;
+            //public Dictionary<string, long> EnumerationValues;
 
             public SelectStmtDataObject(QualifiedContext<ParserRuleContext> selectStmtCtxt)
             {
-                QualifiedCtxt = selectStmtCtxt;
-                BaseTypeName = string.Empty;
-                AsTypeName = string.Empty;
-                IdReference = null;
+                SelectStmtContext = (SelectCaseStmtContext)selectStmtCtxt.Context;
+                IdReferenceName = string.Empty;
+                BaseTypeName = Tokens.Variant;
+                AsTypeName = Tokens.Variant;
                 CaseClauseDOs = new List<CaseClauseDataObject>();
-                CaseElseContext = ParserRuleContextHelper.GetChild<VBAParser.CaseElseClauseContext>(QualifiedCtxt.Context);
-                HasUnreachableCaseElse = false;
-                CanBeInspected = true;
-                EnumerationValues = null;
-                SummaryClauses = new SummaryCaseCoverage
+                CaseElseContext = ParserRuleContextHelper.GetChild<VBAParser.CaseElseClauseContext>(SelectStmtContext);
+                //EnumerationValues = null;
+                SummaryCaseClauses = new SummaryCaseCoverage
                 {
                     IsGTMin = null,
                     IsLTMax = null,
-                    SingleValues = new List<VBEValue>(),
-                    Ranges = new List<Tuple<VBEValue, VBEValue>>(),
-                    Indeterminants = new List<string>(),
+                    SingleValues = new List<VBAValue>(),
+                    Ranges = new List<Tuple<VBAValue, VBAValue>>(),
                     RangeClausesAsText = new List<string>(),
-                    Discretes = new Dictionary<string, List<Tuple<long, bool>>>()
+                    EnumDiscretes = new List<VBAValue>()
                 };
+                CanBeInspected = TryGetChildContext(SelectStmtContext, out SelectExpressionContext);
             }
         }
 
@@ -135,14 +133,12 @@ namespace Rubberduck.Inspections.Concrete
             public ParserRuleContext CaseContext;
             public List<RangeClauseDataObject> RangeClauseDOs;
             public ClauseEvaluationResult ResultType;
-            public bool MakesRemainingClausesUnreachable;
 
             public CaseClauseDataObject(ParserRuleContext caseClause)
             {
                 CaseContext = caseClause;
                 RangeClauseDOs = new List<RangeClauseDataObject>();
                 ResultType = ClauseEvaluationResult.NoResult;
-                MakesRemainingClausesUnreachable = false;
             }
         }
 
@@ -156,16 +152,16 @@ namespace Rubberduck.Inspections.Concrete
             public bool CompareByTextOnly;
             public string IdReferenceName;
             public string AsText;
-            public string TypeNameNative;
+            public string TypeNameDerived;
             public string TypeNameTarget;
             public string CompareSymbol;
-            public VBEValue SingleValue;
-            public VBEValue MinValue;
-            public VBEValue MaxValue;
+            public VBAValue SingleValue;
+            public VBAValue MinValue;
+            public VBAValue MaxValue;
             public ClauseEvaluationResult ResultType;
             public bool CanBeInspected;
 
-            public RangeClauseDataObject(RangeClauseContext ctxt)
+            public RangeClauseDataObject(RangeClauseContext ctxt, string targetTypeName)
             {
                 Context = ctxt;
                 UsesIsClause = false;
@@ -175,9 +171,9 @@ namespace Rubberduck.Inspections.Concrete
                 CompareByTextOnly = false;
                 IdReferenceName = string.Empty;
                 AsText = ctxt.GetText();
-                TypeNameNative = string.Empty;
-                TypeNameTarget = string.Empty;
-                CompareSymbol = CompareSymbols.EQ;
+                TypeNameDerived = string.Empty;
+                TypeNameTarget = targetTypeName;
+                CompareSymbol = CompareTokens.EQ;
                 SingleValue = null;
                 MinValue = null;
                 MaxValue = null;
@@ -196,12 +192,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private static Dictionary<string, string> CompareInversions = new Dictionary<string, string>()
         {
-            { CompareSymbols.EQ, CompareSymbols.EQ },
-            { CompareSymbols.NEQ, CompareSymbols.NEQ },
-            { CompareSymbols.LT, CompareSymbols.GT },
-            { CompareSymbols.LTE, CompareSymbols.GTE },
-            { CompareSymbols.GT, CompareSymbols.LT },
-            { CompareSymbols.GTE, CompareSymbols.LTE }
+            { CompareTokens.EQ, CompareTokens.EQ },
+            { CompareTokens.NEQ, CompareTokens.NEQ },
+            { CompareTokens.LT, CompareTokens.GT },
+            { CompareTokens.LTE, CompareTokens.GTE },
+            { CompareTokens.GT, CompareTokens.LT },
+            { CompareTokens.GTE, CompareTokens.LTE }
         };
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -214,33 +210,17 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var selectStmt in selectCaseContexts)
             {
                 var selectStmtDO = InitializeSelectStatementDataObject(new SelectStmtDataObject(selectStmt));
-                if (!selectStmtDO.BaseTypeName.Equals(string.Empty) && selectStmtDO.CanBeInspected)
+
+                if ( !selectStmtDO.CanBeInspected) { continue; }
+
+                selectStmtDO = InspectSelectStmtCaseClauses(selectStmtDO);
+
+                inspResults.AddRange(selectStmtDO.CaseClauseDOs.Where(cc => cc.ResultType != ClauseEvaluationResult.NoResult)
+                    .Select(cc => CreateInspectionResult(selectStmt, cc.CaseContext, _resultMessages[cc.ResultType])));
+
+                if (selectStmtDO.SummaryCaseClauses.UnreachableCaseElse && selectStmtDO.CaseElseContext != null)
                 {
-                    for (var idx = 0; idx < selectStmtDO.CaseClauseDOs.Count; idx++)
-                    {
-                        var caseClauseDO = selectStmtDO.CaseClauseDOs[idx];
-                        if(caseClauseDO.ResultType != ClauseEvaluationResult.Unreachable)
-                        {
-                            for (var rgIdx = 0; rgIdx < caseClauseDO.RangeClauseDOs.Count; rgIdx++)
-                            {
-                                var rgClause = caseClauseDO.RangeClauseDOs[rgIdx];
-                                rgClause = InitializeRangeClauseDataObject(rgClause, selectStmtDO.BaseTypeName, selectStmtDO.IdReference);
-                                caseClauseDO.RangeClauseDOs[rgIdx] = rgClause;
-                            }
-                        }
-                        caseClauseDO.ResultType = caseClauseDO.RangeClauseDOs.All(rg => rg.ResultType == ClauseEvaluationResult.MismatchType)
-                            ? ClauseEvaluationResult.MismatchType : ClauseEvaluationResult.NoResult;
-                        selectStmtDO.CaseClauseDOs[idx] = caseClauseDO;
-                    }
-                    selectStmtDO = InspectSelectStmtCaseClauses(selectStmtDO);
-
-                    inspResults.AddRange(selectStmtDO.CaseClauseDOs.Where(cc => cc.ResultType != ClauseEvaluationResult.NoResult)
-                        .Select(cc => CreateInspectionResult(selectStmt, cc.CaseContext, _resultMessages[cc.ResultType])));
-
-                    if (selectStmtDO.HasUnreachableCaseElse && selectStmtDO.CaseElseContext != null)
-                    {
-                        inspResults.Add(CreateInspectionResult(selectStmt, selectStmtDO.CaseElseContext, _resultMessages[ClauseEvaluationResult.CaseElse]));
-                    }
+                    inspResults.Add(CreateInspectionResult(selectStmt, selectStmtDO.CaseElseContext, _resultMessages[ClauseEvaluationResult.CaseElse]));
                 }
             }
             return inspResults;
@@ -248,437 +228,415 @@ namespace Rubberduck.Inspections.Concrete
 
         private SelectStmtDataObject InitializeSelectStatementDataObject(SelectStmtDataObject selectStmtDO)
         {
-            if (TryGetChildContext(selectStmtDO.QualifiedCtxt.Context, out SelectExpressionContext selectExprCtxt))
-            {
-                selectStmtDO = ResolveContextType(selectStmtDO, selectExprCtxt);
-            }
-            else
-            {
-                selectStmtDO.CanBeInspected = false;
-                return selectStmtDO;
-            }
+            selectStmtDO = ResolveSelectStmtType(selectStmtDO);
 
             if (selectStmtDO.BaseTypeName.Equals(Tokens.Variant))
             {
-                if (TryInferVariantTypeName(selectStmtDO, out string typeName))
+                if (TryInferAnalysisTypeForVariant( selectStmtDO, out string typeName))
                 {
-                    selectStmtDO.BaseTypeName = typeName;
-                    selectStmtDO.AsTypeName = typeName;
+                    selectStmtDO = SetAsAndBaseType(selectStmtDO, typeName);
                 }
                 else
                 {
                     selectStmtDO.CanBeInspected = false;
+                    return selectStmtDO;
                 }
             }
 
-            if (!selectStmtDO.BaseTypeName.Equals(string.Empty) && selectStmtDO.CanBeInspected)
+            if (selectStmtDO.CanBeInspected)
             {
-                var caseClauseCtxts = ParserRuleContextHelper.GetChildren<CaseClauseContext>(selectStmtDO.QualifiedCtxt.Context);
-                selectStmtDO.CaseClauseDOs = caseClauseCtxts.Select(cc => CreateCaseClauseDataObject(cc)).ToList();
+                selectStmtDO.CaseClauseDOs = ParserRuleContextHelper.GetChildren<CaseClauseContext>(selectStmtDO.SelectStmtContext)
+                    .Select(cc => CreateCaseClauseDataObject(cc, selectStmtDO.BaseTypeName)).ToList();
             }
             return selectStmtDO;
         }
 
-        private bool TryInferVariantTypeName(SelectStmtDataObject selectStmtDO, out string typeName)
+        private bool TryInferAnalysisTypeForVariant(SelectStmtDataObject selectStmtDO, out string typeName)
         {
             typeName = selectStmtDO.BaseTypeName;
             if (selectStmtDO.BaseTypeName.Equals(Tokens.Variant))
             {
-                var caseClauseCtxts = ParserRuleContextHelper.GetChildren<CaseClauseContext>(selectStmtDO.QualifiedCtxt.Context);
-                var rangeCtxts = caseClauseCtxts.Select(cc => ParserRuleContextHelper.GetChildren<RangeClauseContext>(cc)).SelectMany(rg => rg);
-                var typeNames = new List<string>();
-                foreach (var rg in rangeCtxts)
-                {
-                    typeNames.AddRange(ParserRuleContextHelper.GetDescendents<LiteralExprContext>(rg).Select(de => EvaluateRangeClauseTypeName(GetText(de), Tokens.Variant)));
-                }
+                var rangeCtxts = ParserRuleContextHelper.GetChildren<CaseClauseContext>(selectStmtDO.SelectStmtContext)
+                    .Select(cc => ParserRuleContextHelper.GetChildren<RangeClauseContext>(cc))
+                    .SelectMany(rg => rg);
+
+                var typeNames = rangeCtxts.SelectMany(rg => ParserRuleContextHelper.GetDescendents(rg))
+                    .Where(desc => desc is LiteralExprContext || desc is LExprContext)
+                        .Select(exprCtxt => EvaluateContextTypeName((ExpressionContext)exprCtxt, selectStmtDO.SelectStmtContext))
+                        .Where(tp => tp != string.Empty);
+
                 if (typeNames.All(tn => typeNames.First().Equals(tn)))
                 {
                     typeName = typeNames.First();
                     return true;
                 }
-                if (typeNames.Contains(Tokens.String))
-                {
-                    //typeName = Tokens.String;
-                    return false;
-                }
-                if (typeNames.Contains(Tokens.Double))
-                {
-                    typeName = Tokens.Double;
-                    return true;
-                }
-                if (typeNames.Contains(Tokens.Long))
+
+                if (typeNames.All(tn => tn.Equals(Tokens.Long)
+                        || tn.Equals(Tokens.LongLong)
+                        || tn.Equals(Tokens.Integer)
+                        || tn.Equals(Tokens.Byte)))
                 {
                     typeName = Tokens.Long;
+                    return true;
+                }
+
+                if (typeNames.All(tn => !(tn.Equals(Tokens.Currency) || tn.Equals(Tokens.String))))
+                {
+                    typeName = Tokens.Double;
                     return true;
                 }
             }
             return false;
         }
 
-        private CaseClauseDataObject CreateCaseClauseDataObject(CaseClauseContext ctxt)
+        private CaseClauseDataObject CreateCaseClauseDataObject(CaseClauseContext ctxt, string targetTypeName)
         {
             var caseClauseDO = new CaseClauseDataObject(ctxt);
             var rangeClauseContexts = ParserRuleContextHelper.GetChildren<RangeClauseContext>(ctxt);
             foreach (var rangeClauseCtxt in rangeClauseContexts)
             {
-                caseClauseDO.RangeClauseDOs.Add(new RangeClauseDataObject(rangeClauseCtxt));
+                var rgC = new RangeClauseDataObject(rangeClauseCtxt, targetTypeName);
+                caseClauseDO.RangeClauseDOs.Add(rgC);
             }
             return caseClauseDO;
         }
 
-        private RangeClauseDataObject InitializeRangeClauseDataObject(RangeClauseDataObject rangeClauseDO, string targetTypeName, IdentifierReference idRef)
+        private RangeClauseDataObject InitializeRangeClauseDataObject(RangeClauseDataObject rangeClauseDO, string targetTypeName, string refName )
         {
             rangeClauseDO.TypeNameTarget = targetTypeName;
-            rangeClauseDO.TypeNameNative = targetTypeName;
-            rangeClauseDO.IdReferenceName = idRef != null ? idRef.IdentifierName : string.Empty;
+            rangeClauseDO.TypeNameDerived = targetTypeName;
+            rangeClauseDO.IdReferenceName = refName;
             rangeClauseDO.UsesIsClause = HasChildToken(rangeClauseDO.Context, Tokens.Is);
             rangeClauseDO.IsValueRange = HasChildToken(rangeClauseDO.Context, Tokens.To);
             rangeClauseDO = SetTheCompareOperator(rangeClauseDO);
 
             if (rangeClauseDO.IsValueRange)
             {
+                //rangeClauseDO =  InitializeValueRangeClauseDataObject(rangeClauseDO, targetTypeName, refName);
                 var startContext = ParserRuleContextHelper.GetChild<SelectStartValueContext>(rangeClauseDO.Context);
                 var endContext = ParserRuleContextHelper.GetChild<SelectEndValueContext>(rangeClauseDO.Context);
-                var startValue = ResolveContextValue(ref rangeClauseDO, startContext);
-                var endValue = ResolveContextValue(ref rangeClauseDO, endContext);
+                var startEnd = new Tuple<VBAValue, VBAValue>(ResolveRangeClauseValue(ref rangeClauseDO, startContext), ResolveRangeClauseValue(ref rangeClauseDO, endContext));
 
-                var startTypeName = EvaluateRangeClauseTypeName(startContext.GetText(), rangeClauseDO.TypeNameTarget);
-                var endTypeName = EvaluateRangeClauseTypeName(endContext.GetText(), rangeClauseDO.TypeNameTarget);
+                var startTypeName = startEnd.Item1.HasValue ? startEnd.Item1.UseageTypeName : Tokens.String;
+                var endTypeName = startEnd.Item2.HasValue ? startEnd.Item2.UseageTypeName : Tokens.String;
 
                 if (!startTypeName.Equals(endTypeName))
                 {
+                    var typePrecedence = new string[] { Tokens.Double, Tokens.Long, Tokens.Integer, Tokens.Byte };
                     //Find common ground for comparisons if possible
                     if (startTypeName.Equals(Tokens.String) || endTypeName.Equals(Tokens.String))
                     {
                         //Forcing comparisons as strings is not reliable for numbers
-                        rangeClauseDO.TypeNameNative = string.Empty;
-                        if (!(startValue.IsParseable && endValue.IsParseable))
+                        rangeClauseDO.TypeNameDerived = string.Empty;
+                        if (!(startEnd.Item1.HasValue && startEnd.Item2.HasValue))
                         {
                             rangeClauseDO.ResultType = ClauseEvaluationResult.MismatchType;
                             return rangeClauseDO;
                         }
                     }
-                    else if (startTypeName.Equals(Tokens.Double) || endTypeName.Equals(Tokens.Double))
+                    else if (typePrecedence.Contains(startTypeName) || typePrecedence.Contains(endTypeName))
                     {
-                        startValue = new VBEValue(startValue.AsString(), Tokens.Double);
-                        endValue = new VBEValue(endValue.AsString(), Tokens.Double);
-                    }
-                    else if (startTypeName.Equals(Tokens.Long) || endTypeName.Equals(Tokens.Long))
-                    {
-                        startValue = new VBEValue(startValue.AsString(), Tokens.Long);
-                        endValue = new VBEValue(endValue.AsString(), Tokens.Long);
+                        for (var idx = 0; idx < typePrecedence.Count(); idx++)
+                        {
+                            if (typePrecedence[idx].Equals(startTypeName) || typePrecedence[idx].Equals(endTypeName))
+                            {
+                                var newStart = new VBAValue(startEnd.Item1.AsString(), typePrecedence[idx]);
+                                var newEnd = new VBAValue(startEnd.Item2.AsString(), typePrecedence[idx]);
+                                startEnd = new Tuple<VBAValue, VBAValue>(newStart, newEnd);
+                                rangeClauseDO.TypeNameDerived = typePrecedence[idx];
+                                idx = typePrecedence.Count();
+                            }
+                        }
                     }
                     else
                     {
-                        rangeClauseDO.TypeNameNative = string.Empty;
-                        if (!(startValue.IsParseable && endValue.IsParseable))
+                        rangeClauseDO.TypeNameDerived = string.Empty;
+                        if (!(startEnd.Item1.HasValue && startEnd.Item2.HasValue))
                         {
                             rangeClauseDO.ResultType = ClauseEvaluationResult.MismatchType;
                             return rangeClauseDO;
                         }
                     }
                 }
-                rangeClauseDO.MinValue = startValue <= endValue ? startValue : endValue;
-                rangeClauseDO.MaxValue = startValue <= endValue ? endValue : startValue;
+                rangeClauseDO.MinValue = startEnd.Item1 <= startEnd.Item2 ? startEnd.Item1 : startEnd.Item2;
+                rangeClauseDO.MaxValue = startEnd.Item1 <= startEnd.Item2 ? startEnd.Item2 : startEnd.Item1;
                 rangeClauseDO.SingleValue = rangeClauseDO.MinValue;
-                rangeClauseDO.IsParseable = rangeClauseDO.MinValue.IsParseable && rangeClauseDO.MaxValue.IsParseable;
+                rangeClauseDO.IsParseable = rangeClauseDO.MinValue.HasValue && rangeClauseDO.MaxValue.HasValue;
             }
             else
             {
-                rangeClauseDO.TypeNameNative = EvaluateRangeClauseTypeName(rangeClauseDO.Context.GetText(), rangeClauseDO.TypeNameTarget);
-                rangeClauseDO.SingleValue = ResolveContextValue(ref rangeClauseDO, rangeClauseDO.Context);
+                rangeClauseDO.TypeNameDerived = VBAValue.DeriveTypeName(rangeClauseDO.Context.GetText(), rangeClauseDO.TypeNameTarget);
+                if(IsIntegerNumberType(rangeClauseDO.TypeNameDerived) && IsIntegerNumberType(rangeClauseDO.TypeNameTarget))
+                {
+                    rangeClauseDO.TypeNameDerived = rangeClauseDO.TypeNameTarget;
+                }
+                rangeClauseDO.SingleValue = ResolveRangeClauseValue(ref rangeClauseDO, rangeClauseDO.Context);
                 rangeClauseDO.MaxValue = rangeClauseDO.MinValue;
                 rangeClauseDO.MinValue = rangeClauseDO.SingleValue;
-                rangeClauseDO.IsParseable = rangeClauseDO.SingleValue == null ? false : rangeClauseDO.SingleValue.IsParseable;
+                rangeClauseDO.IsParseable = rangeClauseDO.SingleValue == null ? false : rangeClauseDO.SingleValue.HasValue;
             }
 
-            rangeClauseDO.CompareByTextOnly = !rangeClauseDO.IsParseable && rangeClauseDO.TypeNameNative.Equals(rangeClauseDO.TypeNameTarget);
-            rangeClauseDO.ResultType = !rangeClauseDO.TypeNameTarget.Equals(rangeClauseDO.TypeNameNative) && !rangeClauseDO.IsParseable ?
+            rangeClauseDO.CompareByTextOnly = !rangeClauseDO.IsParseable && rangeClauseDO.TypeNameDerived.Equals(rangeClauseDO.TypeNameTarget);
+            rangeClauseDO.ResultType = !rangeClauseDO.TypeNameTarget.Equals(rangeClauseDO.TypeNameDerived) && !rangeClauseDO.IsParseable ?
                     ClauseEvaluationResult.MismatchType : ClauseEvaluationResult.NoResult;
 
             return rangeClauseDO;
         }
 
-        private static bool HasChildToken<T>(T ctxt, string token) where T : ParserRuleContext
+        private RangeClauseDataObject InitializeValueRangeClauseDataObject(RangeClauseDataObject rangeClauseDO, string targetTypeName, string refName)
         {
-            var result = false;
-            for (int idx = 0; idx < ctxt.ChildCount && !result; idx++)
+            var startContext = ParserRuleContextHelper.GetChild<SelectStartValueContext>(rangeClauseDO.Context);
+            var endContext = ParserRuleContextHelper.GetChild<SelectEndValueContext>(rangeClauseDO.Context);
+            var startEnd = new Tuple<VBAValue, VBAValue>(ResolveRangeClauseValue(ref rangeClauseDO, startContext), ResolveRangeClauseValue(ref rangeClauseDO, endContext));
+
+            var startTypeName = startEnd.Item1.HasValue ? startEnd.Item1.UseageTypeName : Tokens.String;
+            var endTypeName = startEnd.Item2.HasValue ? startEnd.Item2.UseageTypeName : Tokens.String;
+
+            if (!startTypeName.Equals(endTypeName))
             {
-                if (ctxt.children[idx].GetText().Equals(token))
+                var typePrecedence = new string[] { Tokens.Double, Tokens.Long, Tokens.Integer, Tokens.Byte };
+                //Find common ground for comparisons if possible
+                if (startTypeName.Equals(Tokens.String) || endTypeName.Equals(Tokens.String))
                 {
-                    result = true;
-                }
-            }
-            return result;
-        }
-
-        private RangeClauseDataObject SetTheCompareOperator(RangeClauseDataObject rangeClauseDO)
-        {
-            rangeClauseDO.UsesIsClause = TryGetChildContext(rangeClauseDO.Context, out ComparisonOperatorContext opCtxt);
-            rangeClauseDO.CompareSymbol = rangeClauseDO.UsesIsClause ? opCtxt.GetText() : CompareSymbols.EQ;
-            return rangeClauseDO;
-        }
-
-        private static bool TryGetChildContext<T, U>(T ctxt, out U opCtxt) where T : ParserRuleContext where U : ParserRuleContext
-        {
-            opCtxt = null;
-            opCtxt = ParserRuleContextHelper.GetChild<U>(ctxt);
-            return opCtxt != null;
-        }
-
-        private bool IsStringLiteral(string text) => text.StartsWith("\"") && text.EndsWith("\"");
-
-        private string EvaluateRangeClauseTypeName(string textValue, string targetTypeName)
-        {
-            //TODO use TypeHintToTypeName - and add tests for each kind
-            if (SymbolList.TypeHintToTypeName.TryGetValue(textValue.Last().ToString(), out string typeName))
-            {
-                return typeName;
-            }
-
-            if (IsStringLiteral(textValue))
-            {
-                return Tokens.String;
-            }
-            else if (textValue.Contains("."))
-            {
-                if (double.TryParse(textValue, out _))
-                {
-                    return Tokens.Double;
-                }
-
-                if (decimal.TryParse(textValue, out _))
-                {
-                    return Tokens.Currency;
-                }
-                return targetTypeName;
-            }
-            else if (textValue.Equals(Tokens.True) || textValue.Equals(Tokens.False))
-            {
-                return Tokens.Boolean;
-            }
-            else if(long.TryParse(textValue, out _))
-            {
-                return Tokens.Long;
-            }
-            else
-            {
-                return targetTypeName;
-            }
-        }
-        
-        private static string GetText(ParserRuleContext ctxt) => ctxt.GetText().Replace("\"", "");
-
-        private VBEValue ResolveContextValue(ref RangeClauseDataObject rangeClauseDO, ParserRuleContext context)
-        {
-            var eval = ResolveContextValue(ref rangeClauseDO, new Dictionary<ParserRuleContext, ExpressionEval>(), context);
-            rangeClauseDO.CompareSymbol = eval[context].Operator;
-            return eval[context].Result;
-        }
-
-        private Dictionary<ParserRuleContext,ExpressionEval> ResolveContextValue(ref RangeClauseDataObject rangeClauseDO, Dictionary<ParserRuleContext, ExpressionEval> contextEvals, ParserRuleContext parentContext)
-        {
-            if(parentContext is RangeClauseContext 
-                || parentContext is SelectStartValueContext 
-                || parentContext is SelectEndValueContext )
-            {
-                var parentEval = new ExpressionEval { SingleValueOnly = true };
-                contextEvals = AddEvalData(contextEvals, parentContext, parentEval);
-            }
-
-            foreach(var child in parentContext.children)
-            {
-                if (!rangeClauseDO.CanBeInspected || child is WhiteSpaceContext) { continue; }
-
-                if ( child is RelationalOpContext
-                    || child is MultOpContext
-                    || child is AddOpContext
-                    || child is ParenthesizedExprContext
-                    || child is PowOpContext
-                    || child is LogicalXorOpContext
-                    || child is LogicalAndOpContext
-                    || child is LogicalOrOpContext
-                    || child is LogicalEqvOpContext
-                    || child is LogicalNotOpContext
-                    )
-                {
-                    var childData = GetEvalData((ParserRuleContext)child, contextEvals);
-                    childData.ParentCtxt = parentContext;
-                    childData.SingleValueOnly = child is ParenthesizedExprContext;
-
-                    var lExprCtxts = ParserRuleContextHelper.GetChildren<LExprContext>((RuleContext)child);
-                    var refName = rangeClauseDO.IdReferenceName;
-                   
-                    if (lExprCtxts.Any(lex => lex.GetText().Equals(refName)))
+                    //Forcing comparisons as strings is not reliable for numbers
+                    rangeClauseDO.TypeNameDerived = string.Empty;
+                    if (!(startEnd.Item1.HasValue && startEnd.Item2.HasValue))
                     {
-                        //TODO: implement the necessary algebra to support these use cases
-                        if (child is MultOpContext
-                            || child is AddOpContext
-                            || child is PowOpContext
-                            )
+                        rangeClauseDO.ResultType = ClauseEvaluationResult.MismatchType;
+                        return rangeClauseDO;
+                    }
+                }
+                else if (typePrecedence.Contains(startTypeName) || typePrecedence.Contains(endTypeName))
+                {
+                    for (var idx = 0; idx < typePrecedence.Count(); idx++)
+                    {
+                        if (typePrecedence[idx].Equals(startTypeName) || typePrecedence[idx].Equals(endTypeName))
                         {
-                            rangeClauseDO.CanBeInspected = false;
-                            childData.CanBeInspected = false;
+                            var newStart = new VBAValue(startEnd.Item1.AsString(), typePrecedence[idx]);
+                            var newEnd = new VBAValue(startEnd.Item2.AsString(), typePrecedence[idx]);
+                            startEnd = new Tuple<VBAValue, VBAValue>(newStart, newEnd);
+                            rangeClauseDO.TypeNameDerived = typePrecedence[idx];
+                            idx = typePrecedence.Count();
                         }
                     }
-
-                    rangeClauseDO.UsesIsClause = child is RelationalOpContext
-                        || child is LogicalXorOpContext
-                        || child is LogicalAndOpContext
-                        || child is LogicalOrOpContext
-                        || child is LogicalEqvOpContext
-                        || child is LogicalNotOpContext;
-
-                    contextEvals = AddEvalData(contextEvals, (ParserRuleContext)child, childData);
-                    if (rangeClauseDO.CanBeInspected)
-                    {
-                        contextEvals = ResolveContextValue(ref rangeClauseDO, contextEvals, (ParserRuleContext)child);
-                    }
-                    contextEvals = UpdateParentEvaluation(ref rangeClauseDO, (ParserRuleContext)child, contextEvals);
                 }
-                else if (child is LiteralExprContext 
-                    || child is LExprContext 
-                    || child is UnaryMinusOpContext)
+                else
                 {
-                    var childData = GetEvalData((ParserRuleContext)child, contextEvals);
+                    rangeClauseDO.TypeNameDerived = string.Empty;
+                    if (!(startEnd.Item1.HasValue && startEnd.Item2.HasValue))
+                    {
+                        rangeClauseDO.ResultType = ClauseEvaluationResult.MismatchType;
+                        return rangeClauseDO;
+                    }
+                }
+            }
+            rangeClauseDO.MinValue = startEnd.Item1 <= startEnd.Item2 ? startEnd.Item1 : startEnd.Item2;
+            rangeClauseDO.MaxValue = startEnd.Item1 <= startEnd.Item2 ? startEnd.Item2 : startEnd.Item1;
+            rangeClauseDO.SingleValue = rangeClauseDO.MinValue;
+            rangeClauseDO.IsParseable = rangeClauseDO.MinValue.HasValue && rangeClauseDO.MaxValue.HasValue;
+
+            return rangeClauseDO;
+        }
+        private VBAValue ResolveRangeClauseValue(ref RangeClauseDataObject rangeClauseDO, ParserRuleContext context)
+        {
+            if (!(context is RangeClauseContext || context is SelectStartValueContext || context is SelectEndValueContext))
+            {
+                return null;
+            }
+
+            var parentEval = new ExpressionEval
+            {
+                IsUnaryOperation = true,
+                Operator = rangeClauseDO.CompareSymbol,
+                CanBeInspected = rangeClauseDO.CanBeInspected,
+                TypeNameTarget = rangeClauseDO.TypeNameTarget,
+                SelectCaseRefName = rangeClauseDO.IdReferenceName
+            };
+
+            var contextEvals = AddEvaluationData(new Dictionary<ParserRuleContext, ExpressionEval>(), context, parentEval);
+
+            contextEvals = ResolveContextValue(contextEvals, context);
+            rangeClauseDO.CompareSymbol = contextEvals[context].Operator;
+            rangeClauseDO.UsesIsClause = rangeClauseDO.UsesIsClause ? rangeClauseDO.UsesIsClause : contextEvals[context].EvaluateAsIsClause;
+            return contextEvals[context].Result;
+        }
+
+        private Dictionary<ParserRuleContext,ExpressionEval> ResolveContextValue( Dictionary<ParserRuleContext, ExpressionEval> contextEvals, ParserRuleContext parentContext)
+        {
+            foreach (var child in parentContext.children)
+            {
+                if (child is WhiteSpaceContext) { continue; }
+
+                var parentData = GetEvaluationData(parentContext, contextEvals);
+
+                if (MathOperations.Keys.Contains(child.GetText()) || CompareOperations.Keys.Contains(child.GetText()))
+                {
+                    if (!parentData.EvaluateAsIsClause)
+                    {
+                        parentData.EvaluateAsIsClause = CompareOperations.Keys.Contains(child.GetText());
+                    }
+                    parentData.Operator = child.GetText();
+                    contextEvals = AddEvaluationData(contextEvals, parentContext, parentData);
+                    continue;
+                }
+
+                if (IsBinaryOperatorContext(child) || IsUnaryOperandContext( child) )
+                {
+                    var childData = GetEvaluationData((ParserRuleContext)child, contextEvals);
                     childData.ParentCtxt = parentContext;
-                    childData.SingleValueOnly = true;
-                    childData.LHS = (ExpressionContext)child;
-                    childData.LHSValue = EvaluateContextValue(childData.LHS, rangeClauseDO.TypeNameTarget);
+                    childData.IsUnaryOperation = IsUnaryOperandContext(child);
+                    childData.TypeNameTarget = parentData.TypeNameTarget;
+                    childData.SelectCaseRefName = parentData.SelectCaseRefName;
+
+                    if (!childData.EvaluateAsIsClause)
+                    {
+                        childData.EvaluateAsIsClause = IsBinaryLogicalOperation(child) || IsUnaryLogicalOperator(child);
+                    }
+
+                    contextEvals = AddEvaluationData(contextEvals, (ParserRuleContext)child, childData);
+                    contextEvals = ResolveContextValue(contextEvals, (ParserRuleContext)child);
+                    contextEvals = UpdateParentEvaluation((ParserRuleContext)child, contextEvals);
+                }
+                else if (child is LiteralExprContext || child is LExprContext )
+                {
+                    var childData = GetEvaluationData((ParserRuleContext)child, contextEvals);
+                    childData.ParentCtxt = parentContext;
+                    childData.IsUnaryOperation = true;
+                    childData.TypeNameTarget = parentData.TypeNameTarget;
+                    childData.SelectCaseRefName = parentData.SelectCaseRefName;
+                    childData.LHSValue = EvaluateContextValue((ExpressionContext)child, childData.TypeNameTarget); // rangeClauseDO.TypeNameTarget);
                     childData.Result = childData.LHSValue;
 
-                    contextEvals = AddEvalData(contextEvals, (ParserRuleContext)child, childData);
-                    contextEvals = UpdateParentEvaluation(ref rangeClauseDO, (ParserRuleContext)child, contextEvals);
-                }
-                else if (ValueOperations.Keys.Contains(child.GetText()) || CompareOperations.Keys.Contains(child.GetText()))
-                {
-                    var parentData = GetEvalData(parentContext, contextEvals);
-                    parentData.Operator = child.GetText();
-                    contextEvals = AddEvalData(contextEvals, parentContext, parentData);
+                    contextEvals = AddEvaluationData(contextEvals, (ParserRuleContext)child, childData);
+                    contextEvals = UpdateParentEvaluation((ParserRuleContext)child, contextEvals);
                 }
             }
             return contextEvals;
         }
 
-        private Dictionary<ParserRuleContext, ExpressionEval> UpdateParentEvaluation(ref RangeClauseDataObject rgClauseDO, ParserRuleContext child, Dictionary<ParserRuleContext, ExpressionEval> ctxtEvalResults)
+        private Dictionary<ParserRuleContext, ExpressionEval> UpdateParentEvaluation(ParserRuleContext child, Dictionary<ParserRuleContext, ExpressionEval> ctxtEvalResults)
         {
             var childData = ctxtEvalResults[child];
-            var parentContext = (ParserRuleContext)child.Parent;
+            var parentData = GetEvaluationData(childData.ParentCtxt, ctxtEvalResults);
+
             if (!childData.CanBeInspected)
             {
-                var parentData = GetEvalData(parentContext, ctxtEvalResults);
                 parentData.CanBeInspected = false;
-                ctxtEvalResults = AddEvalData(ctxtEvalResults, parentContext, parentData);
+                ctxtEvalResults = AddEvaluationData(ctxtEvalResults, childData.ParentCtxt, parentData);
                 return ctxtEvalResults;
             }
-            if (childData.Result != null)
+
+            if (!parentData.EvaluateAsIsClause)
             {
-                var parentData = GetEvalData(parentContext, ctxtEvalResults);
-
-                if(childData.Operator != null && CompareOperations.ContainsKey(childData.Operator))
-                {
-                    parentData.Operator = childData.Operator;
-                }
-
-                if (parentData.SingleValueOnly)
-                {
-                    if (parentData.LHS == null)
-                    {
-                        parentData.LHS = (ExpressionContext)child;
-                        parentData.LHSValue = childData.Result;
-                        parentData.Result = parentData.LHSValue;
-                    }
-                }
-                else
-                {
-                    if (parentData.LHS == null)
-                    {
-                        parentData.LHS = (ExpressionContext)child;
-                        parentData.LHSValue = childData.Result;
-                    }
-                    else
-                    {
-                        parentData.RHS = (ExpressionContext)child;
-                        parentData.RHSValue = childData.Result;
-                    }
-
-                    if (parentData.LHSValue != null && parentData.RHSValue != null)
-                    {
-                        if(parentData.Operator == string.Empty || parentData.Operator == null)
-                        {
-                            parentData.Result = null;
-                        }
-                        else
-                        {
-                            var LHS = parentData.LHSValue;
-                            var RHS = parentData.RHSValue;
-                            if (RHS.AsString().Equals(rgClauseDO.IdReferenceName))
-                            {
-                                LHS = RHS;
-                                RHS = parentData.LHSValue;
-                                parentData.Operator = CompareInversions[parentData.Operator];
-                            }
-                            var result = GetOpExpressionResult(LHS, RHS, parentData.Operator);
-                            parentData.Result = new VBEValue(result, rgClauseDO.TypeNameTarget);
-                        }
-                    }
-                }
-                ctxtEvalResults = AddEvalData(ctxtEvalResults, parentContext, parentData);
+                parentData.EvaluateAsIsClause  = childData.EvaluateAsIsClause;
             }
-            return ctxtEvalResults;
-        }
 
-        private ExpressionEval GetEvalData(ParserRuleContext ctxt, Dictionary<ParserRuleContext, ExpressionEval> contextIndices)
-        {
-            return contextIndices.ContainsKey(ctxt) ? contextIndices[ctxt] : new ExpressionEval { Operator = string.Empty, CanBeInspected = true };
-        }
-
-        private Dictionary<ParserRuleContext, ExpressionEval> AddEvalData(Dictionary<ParserRuleContext, ExpressionEval> contextIndices, ParserRuleContext ctxt, ExpressionEval idx)
-        {
-            if (contextIndices.ContainsKey(ctxt))
+            if (childData.Result == null)
             {
-                contextIndices[ctxt] = idx;
+                return ctxtEvalResults;
+            }
+
+            if(childData.Operator != null && CompareOperations.ContainsKey(childData.Operator))
+            {
+                parentData.Operator = childData.Operator;
+            }
+
+            if (parentData.IsUnaryOperation)
+            {
+                parentData.LHSValue = childData.Result;
+                if (childData.ParentCtxt is UnaryMinusOpContext )
+                {
+                    var inverseOperand = new VBAValue(-1, parentData.LHSValue.UseageTypeName);
+                    parentData.LHSValue = parentData.LHSValue * inverseOperand;
+                }
+                parentData.Result = parentData.LHSValue;
             }
             else
             {
-                contextIndices.Add(ctxt, idx);
+                if (parentData.LHSValue == null)
+                {
+                    parentData.LHSValue = childData.Result;
+                }
+                else if(parentData.Operator != string.Empty || parentData.Operator != null)
+                {
+                    parentData.RHSValue = childData.Result;
+
+                    //For cases like '45 > x', flip around (invert) the operation to
+                    //'x < 45' so it conforms to 'Is' statement format ( 'Is < 45' ) and can be treated as such
+                    var invertOperation = parentData.RHSValue.AsString().Equals(childData.SelectCaseRefName);
+
+                    parentData.Operator = invertOperation ? CompareInversions[parentData.Operator] : parentData.Operator;
+                    var exprResult = invertOperation ?
+                            GetOpExpressionResult(parentData.RHSValue, parentData.LHSValue, parentData.Operator)
+                            : GetOpExpressionResult(parentData.LHSValue, parentData.RHSValue, parentData.Operator);
+
+                    parentData.Result = new VBAValue(exprResult, childData.TypeNameTarget);
+                }
+            }
+            return AddEvaluationData(ctxtEvalResults, childData.ParentCtxt, parentData);
+        }
+
+        private ExpressionEval GetEvaluationData(ParserRuleContext ctxt, Dictionary<ParserRuleContext, ExpressionEval> ctxtEvalResults)
+        {
+            return ctxtEvalResults.ContainsKey(ctxt) ? ctxtEvalResults[ctxt] : new ExpressionEval { Operator = string.Empty, CanBeInspected = true };
+        }
+
+        private Dictionary<ParserRuleContext, ExpressionEval> AddEvaluationData(Dictionary<ParserRuleContext, ExpressionEval> contextIndices, ParserRuleContext ctxt, ExpressionEval exprEvaluation)
+        {
+            if (contextIndices.ContainsKey(ctxt))
+            {
+                contextIndices[ctxt] = exprEvaluation;
+            }
+            else
+            {
+                contextIndices.Add(ctxt, exprEvaluation);
             }
             return contextIndices;
         }
 
-        private VBEValue EvaluateContextValue(ExpressionContext ctxt, string typeName)
+        private string EvaluateContextTypeName(ExpressionContext ctxt, SelectCaseStmtContext selectStmtContext)
+        {
+            if (ctxt is LiteralExprContext)
+            {
+                return VBAValue.DeriveTypeName(GetText(ctxt));
+            }
+            else if (ctxt is LExprContext)
+            {
+                return ResolveContextType(selectStmtContext, ctxt as LExprContext);
+            }
+            return string.Empty;
+        }
+
+        private VBAValue EvaluateContextValue(ExpressionContext ctxt, string typeName)
         {
             if (ctxt is LExprContext)
             {
                 if(TryGetTheExpressionValue((LExprContext)ctxt, out string lexpr))
                 {
-                    return new VBEValue(lexpr, typeName);
+                    return new VBAValue(lexpr, typeName);
                 }
-                return new VBEValue(ctxt.GetText(), typeName);
+                //TODO: Should this return null? - this is what executes when it is a non-constant reference
+                return new VBAValue(ctxt.GetText(), typeName);
             }
             else if (ctxt is LiteralExprContext)
             {
-                return new VBEValue(GetText((LiteralExprContext)ctxt), typeName);
-            }
-            else if (ctxt is UnaryMinusOpContext)
-            {
-                return new VBEValue(GetText((UnaryMinusOpContext)ctxt), typeName);
+                return new VBAValue(GetText((LiteralExprContext)ctxt), typeName);
             }
             return null;
         }
 
-        private string GetOpExpressionResult(VBEValue LHS, VBEValue RHS, string operation)
+        private string GetOpExpressionResult(VBAValue LHS, VBAValue RHS, string operation)
         {
-            if (ValueOperations.ContainsKey(operation))
+            if (MathOperations.ContainsKey(operation))
             {
-                return ValueOperations[operation](LHS, RHS).AsString();
+                return MathOperations[operation](LHS, RHS).AsString();
             }
             else if (CompareOperations.ContainsKey(operation))
             {
-                //The parseable check is needed to support cases like 'x < 4' - where 'x' 
+                //Supports cases like 'x < 4' - where 'x' 
                 //is the SelectCase variable
                 //TODO: a better way?
-                return LHS.IsParseable ? CompareOperations[operation](LHS, RHS).AsString() : RHS.AsString();
+                return LHS.HasValue ? CompareOperations[operation](LHS, RHS).AsString() : RHS.AsString();
             }
             return string.Empty;
         }
@@ -689,11 +647,8 @@ namespace Rubberduck.Inspections.Concrete
             var member = ParserRuleContextHelper.GetChild<MemberAccessExprContext>(ctxt);
             if (member != null)
             {
-                var smplNameMemberLHS = ParserRuleContextHelper.GetChild<SimpleNameExprContext>(member);
                 var smplNameMemberRHS = ParserRuleContextHelper.GetChild<UnrestrictedIdentifierContext>(member);
-                var theLHSName = smplNameMemberLHS.GetText();
-                var theRHSName = smplNameMemberRHS.GetText();
-                var memberDeclarations = State.DeclarationFinder.AllUserDeclarations.Where(dec => dec.IdentifierName.Equals(theRHSName));
+                var memberDeclarations = State.DeclarationFinder.AllUserDeclarations.Where(dec => dec.IdentifierName.Equals(smplNameMemberRHS.GetText()));
 
                 foreach (var dec in memberDeclarations)
                 {
@@ -702,9 +657,7 @@ namespace Rubberduck.Inspections.Concrete
                         var theCtxt = dec.Context;
                         if (theCtxt is EnumerationStmt_ConstantContext)
                         {
-//////                            var contextEvals = ResolveContextValue(ref rangeClauseDO, new Dictionary<ParserRuleContext, ExpressionEval>(), theCtxt);
-                            var valuedDeclaration = ParserRuleContextHelper.GetChild<LiteralExprContext>(theCtxt);
-                            expressionValue = valuedDeclaration.GetText();
+                            expressionValue = GetConstantDeclarationValue(dec);
                             return true;
                         }
                     }
@@ -715,13 +668,17 @@ namespace Rubberduck.Inspections.Concrete
             var smplName = ParserRuleContextHelper.GetChild<SimpleNameExprContext>(ctxt);
             if (smplName != null)
             {
-                var rangeClauseIdentifierReference = GetTheRangeClauseReference(smplName, smplName.GetText());
+                var identifierReferences = (State.DeclarationFinder.MatchName(smplName.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
+                var rangeClauseReferences = identifierReferences.Where(rf => ParserRuleContextHelper.HasParent(rf.Context, smplName)
+                                        && (ParserRuleContextHelper.HasParent(rf.Context, smplName.Parent)));
+
+                var rangeClauseIdentifierReference = rangeClauseReferences.Any() ? rangeClauseReferences.First() : null;
                 if (rangeClauseIdentifierReference != null)
                 {
-                    if (rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Constant))
+                    if (rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Constant)
+                        || rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
                     {
-                        var valuedDeclaration = (ConstantDeclaration)rangeClauseIdentifierReference.Declaration;
-                        expressionValue = valuedDeclaration.Expression;
+                        expressionValue = GetConstantDeclarationValue(rangeClauseIdentifierReference.Declaration);
                         return true;
                     }
                 }
@@ -729,148 +686,168 @@ namespace Rubberduck.Inspections.Concrete
             return false;
         }
 
-        private IdentifierReference GetTheRangeClauseReference(SimpleNameExprContext smplNameCtxt, string theName)
+        private string GetConstantDeclarationValue(Declaration valueDeclaration)
         {
-            var identifierReferences = (State.DeclarationFinder.MatchName(theName).Select(dec => dec.References)).SelectMany(rf => rf);
-
-            if (!identifierReferences.Any())
+            var contextsOfInterest = GetRHSContexts(valueDeclaration.Context.children.ToList());
+            foreach (var child in contextsOfInterest)
             {
-                return null;
-            }
+                if (IsMathOperation(child))
+                {
+                    var parentData = new Dictionary<ParserRuleContext, ExpressionEval>();
+                    var exprEval = new ExpressionEval
+                    {
+                        IsUnaryOperation = IsUnaryMathOperation(child),
+                        Operator = "=",
+                        CanBeInspected = true,
+                        TypeNameTarget = valueDeclaration.AsTypeName,
+                        SelectCaseRefName = valueDeclaration.IdentifierName
+                    };
 
-            if (identifierReferences.Count() == 1)
-            {
-                return identifierReferences.First();
+                    parentData = AddEvaluationData(parentData, child, exprEval);
+                    return ResolveContextValue(parentData, child).First().Value.Result.AsString();
+                }
+                if (child is LiteralExprContext)
+                {
+                    if(child.Parent is EnumerationStmt_ConstantContext)
+                    {
+                        return child.GetText();
+                    }
+                    else if (valueDeclaration is ConstantDeclaration)
+                    {
+                        return ((ConstantDeclaration)valueDeclaration).Expression;
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                }
             }
-            else
-            {
-                var rangeClauseReference = identifierReferences.Where(rf => ParserRuleContextHelper.HasParent(rf.Context, smplNameCtxt)
-                                        && (ParserRuleContextHelper.HasParent(rf.Context, smplNameCtxt.Parent)));
-
-                Debug.Assert(rangeClauseReference.Count() == 1);
-                return rangeClauseReference.First();
-            }
+            return string.Empty;
         }
 
-        private SelectStmtDataObject ResolveContextType(SelectStmtDataObject selectStmtDO, ParserRuleContext parentCtxt)
+        private List<ParserRuleContext> GetRHSContexts(List<IParseTree> contexts)
         {
-            if (TryGetChildContext(parentCtxt, out RelationalOpContext _)
-                || TryGetChildContext(parentCtxt, out LogicalXorOpContext _)
-                || TryGetChildContext(parentCtxt, out LogicalAndOpContext _)
-                || TryGetChildContext(parentCtxt, out LogicalOrOpContext _)
-                || TryGetChildContext(parentCtxt, out LogicalEqvOpContext _)
-                || TryGetChildContext(parentCtxt, out LogicalNotOpContext _)
-                )
+            var contextsOfInterest = new List<ParserRuleContext>();
+            var foundEqualSign = false;
+            for (int idx = 0; idx < contexts.Count(); idx++)
             {
-                selectStmtDO.AsTypeName = Tokens.Boolean;
-                selectStmtDO.BaseTypeName = Tokens.Boolean;
-            }
-            else if (TryGetChildContext(parentCtxt, out MultOpContext mCtxt))
-            {
-                return ResolveContextType(selectStmtDO, mCtxt);
-            }
-            else if (TryGetChildContext(parentCtxt, out AddOpContext aCtxt))
-            {
-                return ResolveContextType(selectStmtDO, aCtxt);
-            }
-            else if (TryGetChildContext(parentCtxt, out PowOpContext pCtxt))
-            {
-                return ResolveContextType(selectStmtDO, pCtxt);
-            }
-            else if (TryGetChildContext(parentCtxt, out ParenthesizedExprContext parenCtxt))
-            {
-                return ResolveContextType(selectStmtDO, parenCtxt);
-            }
-            else if (TryGetChildContext(parentCtxt, out UnaryMinusOpContext unaryCtxt))
-            {
-                return ResolveContextType(selectStmtDO, unaryCtxt);
-            }
-            else if (TryGetChildContext(parentCtxt, out LExprContext lexpr))
-            {
-                var idCs = ParserRuleContextHelper.GetDescendents<IdentifierContext>(lexpr);
-                var idRefs = idCs.Select(idc => GetTheSelectCaseReference(parentCtxt.Parent, idCs.First().GetText()));
-                if (idRefs.Any())
+                var childCtxt = contexts[idx];
+                if (childCtxt.GetText().Equals("="))
                 {
-                    selectStmtDO.IdReference = idRefs.First();
-                    selectStmtDO.AsTypeName = selectStmtDO.IdReference.Declaration.AsTypeName;
-                    var isConsistentType = idRefs.All(idr => idr.Declaration.AsTypeName == selectStmtDO.AsTypeName);
-                    if (selectStmtDO.IdReference.Declaration.AsTypeIsBaseType)
+                    foundEqualSign = true;
+                    continue;
+                }
+                if (foundEqualSign && childCtxt is ParserRuleContext && !(childCtxt is WhiteSpaceContext))
+                {
+                    contextsOfInterest.Add((ParserRuleContext)childCtxt);
+                }
+            }
+            return contextsOfInterest;
+        }
+
+        private SelectStmtDataObject ResolveSelectStmtType(SelectStmtDataObject selectStmtDO )//, ParserRuleContext ctxt)
+        {
+            var parentCtxt = selectStmtDO.SelectExpressionContext;
+
+            if (parentCtxt.ChildCount == 1 && IsBinaryLogicalOperation(parentCtxt.children[0]))
+            {
+                return SetAsAndBaseType(selectStmtDO, Tokens.Boolean);
+            }
+
+            var idRefs = ParserRuleContextHelper.GetDescendents(parentCtxt)
+                .Where(desc => desc is LExprContext)
+                    .Select(lexpr => GetTheSelectCaseReference(parentCtxt.Parent, lexpr.GetText()))
+                    .Where(idr => idr != null);
+
+            if (idRefs.Any())
+            {
+                //All typeNames of all ExpressionContexts are the same
+                if(idRefs.All(idr => idRefs.First().Declaration.AsTypeName.Equals( idr.Declaration.AsTypeName)))
+                {
+                    selectStmtDO.IdReferenceName = idRefs.First().IdentifierName;
+                    selectStmtDO =  SetAsAndBaseType(selectStmtDO, idRefs.First().Declaration.AsTypeName);
+                    if (!idRefs.First().Declaration.AsTypeIsBaseType && idRefs.First().Declaration.AsTypeDeclaration.AsTypeIsBaseType)
                     {
-                        selectStmtDO.BaseTypeName = selectStmtDO.AsTypeName;
+                        var selectStmtTypeDecs = State.DeclarationFinder.MatchName(selectStmtDO.AsTypeName);
+                        if(selectStmtTypeDecs.First().Context is EnumerationStmtContext)
+                        {
+                            var members = ParserRuleContextHelper.GetChildren<EnumerationStmt_ConstantContext>(selectStmtTypeDecs.First().Context);
+                            foreach( var member in members)
+                            {
+                                var idCtxt = ParserRuleContextHelper.GetChild<IdentifierContext>(member);
+                                var declarations = State.DeclarationFinder.MatchName(idCtxt.GetText());
+
+                                var parentEval = new ExpressionEval
+                                {
+                                    IsUnaryOperation = true,
+                                    Operator = "=",
+                                    CanBeInspected = true,
+                                    TypeNameTarget = Tokens.Long,
+                                    SelectCaseRefName = idCtxt.GetText()
+                                };
+
+                                var contextEvals = AddEvaluationData(new Dictionary<ParserRuleContext, ExpressionEval>(), declarations.First().Context, parentEval);
+
+                                var vbaValue = ResolveContextValue(contextEvals, declarations.First().Context).First().Value.Result;
+                                selectStmtDO.SummaryCaseClauses.EnumDiscretes.Add(vbaValue);
+                            }
+                        }
+                        selectStmtDO.BaseTypeName = idRefs.First().Declaration.AsTypeDeclaration.AsTypeName;
                     }
-                    else if (selectStmtDO.IdReference.Declaration.AsTypeDeclaration.AsTypeIsBaseType)
+
+                    return selectStmtDO;
+                }
+                else
+                {
+                    //A mix of types in the Select Case statement
+                    var variousTypes = idRefs.Select(idr => idr.Declaration.AsTypeName);
+                    if (variousTypes.Contains(Tokens.String))
                     {
-                        selectStmtDO.BaseTypeName = selectStmtDO.IdReference.Declaration.AsTypeDeclaration.AsTypeName;
+                        selectStmtDO.CanBeInspected = false;
+                        return selectStmtDO;
+                    }
+
+                    if (variousTypes.Contains(Tokens.Currency))
+                    {
+                        return SetAsAndBaseType(selectStmtDO, Tokens.Currency);
+                    }
+
+                    if (variousTypes.Contains(Tokens.Double) || variousTypes.Contains(Tokens.Single))
+                    {
+                        return SetAsAndBaseType(selectStmtDO, Tokens.Double);
+                    }
+
+                    if (variousTypes.Contains(Tokens.Long)
+                        || variousTypes.Contains(Tokens.LongLong)
+                        || variousTypes.Contains(Tokens.Integer)
+                        || variousTypes.Contains(Tokens.Byte))
+                    {
+                        return SetAsAndBaseType(selectStmtDO, Tokens.Long);
                     }
                 }
             }
             return selectStmtDO;
         }
 
-        #region EnumerationDeadCode
-        //else
-        //{
-        //    var smplNames = ParserRuleContextHelper.GetDescendents<SimpleNameExprContext>(selectExprCtxt);
-        //    if (smplNames.Any())
-        //    {
-        //        foreach (var smplName in smplNames)
-        //        {
-        //            selectStmtDO.IdReference = GetTheSelectCaseReference(selectStmtDO.QualifiedCtxt.Context, smplName.GetText());
-        //            if (selectStmtDO.IdReference != null)
-        //            {
-        //                selectStmtDO.AsTypeName = selectStmtDO.IdReference.Declaration.AsTypeName;
-        //                if (selectStmtDO.IdReference.Declaration.AsTypeIsBaseType)
-        //                {
-        //                    selectStmtDO.BaseTypeName = selectStmtDO.IdReference.Declaration.AsTypeName;
-        //                }
-        //                else if (selectStmtDO.IdReference.Declaration.AsTypeDeclaration.AsTypeIsBaseType)
-        //                {
-        //                    selectStmtDO.BaseTypeName = selectStmtDO.IdReference.Declaration.AsTypeDeclaration.AsTypeName;
-        //                    //TODO: how to ensure the declaration is the right one?
-        //                    var decID = State.DeclarationFinder.AllUserDeclarations.Where(dec => dec.IdentifierName.Equals(selectStmtDO.AsTypeName));
-        //                    var theDec = decID.Any() ? decID.First() : null;  //hack
-        //                    if (theDec != null)
-        //                    {
-        //                        if (theDec.DeclarationType.HasFlag(DeclarationType.Enumeration))
-        //                        {
-        //                            selectStmtDO.EnumerationValues = new Dictionary<string, long>();
-        //                            var enumMembers = ParserRuleContextHelper.GetChildren<EnumerationStmt_ConstantContext>(theDec.Context);
-        //                            foreach (var enumMember in enumMembers)
-        //                            {
-        //                                var theIDCtxt = ParserRuleContextHelper.GetChild<IdentifierContext>(enumMember);
-        //                                var theValueCtxt = ParserRuleContextHelper.GetChild<LiteralExprContext>(enumMember);
-        //                                if (theValueCtxt != null)
-        //                                {
-        //                                    var expressionValue = theValueCtxt.GetText();
-        //                                    var enumID = theIDCtxt.GetText();
-        //                                    //TODO: the long.Parse may fail if the declaration is something like B = A * 2
-        //                                    if (selectStmtDO.EnumerationValues != null)
-        //                                    {
-        //                                        selectStmtDO.EnumerationValues.Add(enumID, long.Parse(expressionValue));
-        //                                    }
-        //                                }
-        //                                else
-        //                                {
-        //                                    selectStmtDO.EnumerationValues = null;
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //                return selectStmtDO;
-        //            }
-        //        }
-        //    }
-        //}
-        //return selectStmtDO;
-#endregion
+        private SelectStmtDataObject SetAsAndBaseType(SelectStmtDataObject selectStmtDO, string typeName)
+        {
+            selectStmtDO.AsTypeName = typeName;
+            selectStmtDO.BaseTypeName = typeName;
+            return selectStmtDO;
+        }
+
+        private string ResolveContextType(SelectCaseStmtContext selectExpr, LExprContext ctxt)
+        {
+            var idRef = GetTheSelectCaseReference(selectExpr, ctxt.GetText());
+            return idRef != null ? idRef.Declaration.AsTypeName : string.Empty;
+        }
 
         private IdentifierReference GetTheSelectCaseReference(RuleContext selectCaseStmtCtxt, string theName)
         {
             var identifierReferences = (State.DeclarationFinder.MatchName(theName).Select(dec => dec.References)).SelectMany(rf => rf);
 
-            //TODO: Is there a scenario that results in two or more results?
-            return identifierReferences.Any() ? identifierReferences.First() : null;
+            //TODO: Is there a scenario that results in two or more different references (same name within SelectStmtContext)?
+            return identifierReferences.Any() ? identifierReferences.Where(idr => ParserRuleContextHelper.HasParent<SelectCaseStmtContext>(selectCaseStmtCtxt)).First() : null;
         }
 
         private IInspectionResult CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)
@@ -882,157 +859,177 @@ namespace Rubberduck.Inspections.Concrete
 
         private SelectStmtDataObject InspectSelectStmtCaseClauses(SelectStmtDataObject selectStmtDO)
         {
+            for (var idx = 0; idx < selectStmtDO.CaseClauseDOs.Count; idx++)
+            {
+                var caseClauseDO = selectStmtDO.CaseClauseDOs[idx];
+                if (caseClauseDO.ResultType != ClauseEvaluationResult.Unreachable)
+                {
+                    for (var rgIdx = 0; rgIdx < caseClauseDO.RangeClauseDOs.Count; rgIdx++)
+                    {
+                        var rgClause = caseClauseDO.RangeClauseDOs[rgIdx];
+                        rgClause.CanBeInspected = RangeClauseCanBeInspected(rgClause.Context, selectStmtDO.IdReferenceName);
+                        if (rgClause.CanBeInspected)
+                        {
+                            rgClause = InitializeRangeClauseDataObject(rgClause, selectStmtDO.BaseTypeName, selectStmtDO.IdReferenceName);
+                        }
+                        else
+                        {
+                            rgClause.ResultType = ClauseEvaluationResult.NoResult;
+                        }
+                        caseClauseDO.RangeClauseDOs[rgIdx] = rgClause;
+                    }
+                }
+                caseClauseDO.ResultType = caseClauseDO.RangeClauseDOs.All(rg => rg.ResultType == ClauseEvaluationResult.MismatchType)
+                    ? ClauseEvaluationResult.MismatchType : ClauseEvaluationResult.NoResult;
+                selectStmtDO.CaseClauseDOs[idx] = caseClauseDO;
+            }
+
             for (var idx = 0; idx < selectStmtDO.CaseClauseDOs.Count(); idx++)
             {
                 var caseClause = selectStmtDO.CaseClauseDOs[idx];
-                if (selectStmtDO.HasUnreachableCaseElse)
+                if (selectStmtDO.SummaryCaseClauses.UnreachableCaseElse)
                 {
-                    //If the CaseElse is previously determined to be unreachable, 
-                    //then all of the yet-to-be-evaluated CaseClauses unreachable as well.
                     caseClause.ResultType = ClauseEvaluationResult.Unreachable;
                 }
                 else
                 {
                     selectStmtDO = InspectCaseClause(ref caseClause, selectStmtDO);
-                    selectStmtDO.HasUnreachableCaseElse = caseClause.MakesRemainingClausesUnreachable;
+
+                    //Final inspection to look for copy/paste duplicate Cases that resist other analyses
                     if(caseClause.ResultType == ClauseEvaluationResult.NoResult)
                     {
-                        if (caseClause.RangeClauseDOs.All(rg => selectStmtDO.SummaryClauses.RangeClausesAsText.Contains(rg.AsText)))
+                        if (caseClause.RangeClauseDOs.All(rg => selectStmtDO.SummaryCaseClauses.RangeClausesAsText.Contains(rg.AsText)))
                         {
                             caseClause.ResultType = ClauseEvaluationResult.Unreachable;
                         }
                     }
-                    selectStmtDO.SummaryClauses.RangeClausesAsText.AddRange(caseClause.RangeClauseDOs.Select(rg => rg.AsText));
+                    selectStmtDO.SummaryCaseClauses.RangeClausesAsText.AddRange(caseClause.RangeClauseDOs.Select(rg => rg.AsText));
                 }
                 selectStmtDO.CaseClauseDOs[idx] = caseClause;
-            }
-
-            return selectStmtDO;
-        }
-
-        private static bool ExceedsMinMax(RangeClauseDataObject rangeClauseDO)
-        {
-            if (rangeClauseDO.IsValueRange)
-            {
-                return rangeClauseDO.MinValue.ExceedsMaxMin() && rangeClauseDO.MaxValue.ExceedsMaxMin();
-            }
-            return rangeClauseDO.SingleValue.ExceedsMaxMin();
-        }
-
-        private SelectStmtDataObject InspectRangeClause(SelectStmtDataObject selectStmtDO, ref RangeClauseDataObject rangeClauseDO)
-        {
-            if(rangeClauseDO.ResultType != ClauseEvaluationResult.NoResult)
-            {
-                return selectStmtDO;
-            }
-
-            if (ExceedsMinMax(rangeClauseDO))
-            {
-                rangeClauseDO.ResultType = ClauseEvaluationResult.Unreachable;
-                return selectStmtDO;
-            }
-
-            if (!rangeClauseDO.IsValueRange)
-            {
-                if (rangeClauseDO.UsesIsClause)
-                {
-                    if (new string[] { CompareSymbols.LT, CompareSymbols.LTE, CompareSymbols.GT, CompareSymbols.GTE }.Contains(rangeClauseDO.CompareSymbol))
-                    {
-                        selectStmtDO.SummaryClauses = UpdateSummaryIsClauseLimits(rangeClauseDO.SingleValue, rangeClauseDO.CompareSymbol, selectStmtDO.SummaryClauses);
-                    }
-                    else if (CompareSymbols.EQ.Equals(rangeClauseDO.CompareSymbol))
-                    {
-                        selectStmtDO.SummaryClauses = HandleSimpleSingleValueCompare(ref rangeClauseDO, rangeClauseDO.SingleValue, selectStmtDO.SummaryClauses);
-                    }
-                    else if (CompareSymbols.NEQ.Equals(rangeClauseDO.CompareSymbol))
-                    {
-                        if (selectStmtDO.SummaryClauses.SingleValues.Contains(rangeClauseDO.SingleValue))
-                        {
-                            rangeClauseDO.ResultType = ClauseEvaluationResult.CaseElse;
-                        }
-
-                        selectStmtDO.SummaryClauses = UpdateSummaryIsClauseLimits(rangeClauseDO.SingleValue, CompareSymbols.LT, selectStmtDO.SummaryClauses);
-                        selectStmtDO.SummaryClauses = UpdateSummaryIsClauseLimits(rangeClauseDO.SingleValue, CompareSymbols.GT, selectStmtDO.SummaryClauses);
-                    }
-                }
-                else
-                {
-                    selectStmtDO.SummaryClauses = HandleSimpleSingleValueCompare(ref rangeClauseDO, rangeClauseDO.SingleValue, selectStmtDO.SummaryClauses);
-                }
-            }
-            else  //It is a range of values like "Case 45 To 150"
-            {
-                selectStmtDO.SummaryClauses = AggregateRanges(selectStmtDO.SummaryClauses);
-                var minValue = rangeClauseDO.MinValue;
-                var maxValue = rangeClauseDO.MaxValue;
-                rangeClauseDO.ResultType = selectStmtDO.SummaryClauses.Ranges.Where(rg => minValue.IsWithin(rg.Item1, rg.Item2)
-                        && maxValue.IsWithin(rg.Item1, rg.Item2)).Any()
-                        || selectStmtDO.SummaryClauses.IsLTMax != null && selectStmtDO.SummaryClauses.IsLTMax > rangeClauseDO.MaxValue
-                        || selectStmtDO.SummaryClauses.IsGTMin != null && selectStmtDO.SummaryClauses.IsGTMin < rangeClauseDO.MinValue
-                        ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
-
-                if (rangeClauseDO.ResultType == ClauseEvaluationResult.NoResult)
-                {
-                    var overlapsMin = selectStmtDO.SummaryClauses.Ranges.Where(rg => minValue.IsWithin(rg.Item1, rg.Item2));
-                    var overlapsMax = selectStmtDO.SummaryClauses.Ranges.Where(rg => maxValue.IsWithin(rg.Item1, rg.Item2));
-                    var updated = new List<Tuple<VBEValue, VBEValue>>();
-                    foreach (var rg in selectStmtDO.SummaryClauses.Ranges)
-                    {
-                        if (overlapsMin.Contains(rg))
-                        {
-                            updated.Add(new Tuple<VBEValue, VBEValue>(rg.Item1, rangeClauseDO.MaxValue));
-                        }
-                        else if (overlapsMax.Contains(rg))
-                        {
-                            updated.Add(new Tuple<VBEValue, VBEValue>(rangeClauseDO.MinValue, rg.Item2));
-                        }
-                        else
-                        {
-                            updated.Add(rg);
-                        }
-                    }
-
-                    if (!overlapsMin.Any() && !overlapsMax.Any())
-                    {
-                        updated.Add(new Tuple<VBEValue, VBEValue>(rangeClauseDO.MinValue, rangeClauseDO.MaxValue));
-                    }
-                    selectStmtDO.SummaryClauses.Ranges = updated;
-                }
-
-                if (selectStmtDO.BaseTypeName.Equals(Tokens.Boolean))
-                {
-                    rangeClauseDO.ResultType = rangeClauseDO.MinValue != rangeClauseDO.MaxValue
-                        ? ClauseEvaluationResult.CaseElse : ClauseEvaluationResult.NoResult;
-                }
             }
             return selectStmtDO;
         }
 
         private SelectStmtDataObject InspectCaseClause(ref CaseClauseDataObject caseClause, SelectStmtDataObject selectStmtDO)
         {
-            if(caseClause.ResultType != ClauseEvaluationResult.NoResult)
+            if (caseClause.ResultType != ClauseEvaluationResult.NoResult)
             {
                 return selectStmtDO;
             }
 
             for (var idx = 0; idx < caseClause.RangeClauseDOs.Count(); idx++)
             {
-                var range = caseClause.RangeClauseDOs[idx];
-                if (range.CanBeInspected)
+                var rangeClauseDO = caseClause.RangeClauseDOs[idx];
+                if (rangeClauseDO.ResultType != ClauseEvaluationResult.NoResult && rangeClauseDO.CanBeInspected)
                 {
-                    selectStmtDO = InspectRangeClause(selectStmtDO, ref range);
+                    continue;
                 }
-                caseClause.RangeClauseDOs[idx] = range;
-            }
 
-            caseClause.MakesRemainingClausesUnreachable =
-                    caseClause.RangeClauseDOs.Where(rg => rg.ResultType == ClauseEvaluationResult.CaseElse).Any()
-                    || IsClausesCoverAllValues(selectStmtDO.SummaryClauses);
+                if (rangeClauseDO.IsValueRange)
+                {
+                    rangeClauseDO = InspectValueRangeClause(selectStmtDO, rangeClauseDO);
+                    selectStmtDO.SummaryCaseClauses = UpdateSummaryDataRanges(selectStmtDO.SummaryCaseClauses, rangeClauseDO);
+                }
+                else
+                {
+                    rangeClauseDO = InspectSingleValueRangeClause(selectStmtDO, rangeClauseDO);
+                    selectStmtDO.SummaryCaseClauses = UpdateSummaryDataSingleValues(selectStmtDO.SummaryCaseClauses, rangeClauseDO);
+                }
+                caseClause.RangeClauseDOs[idx] = rangeClauseDO;
+            }
 
             caseClause.ResultType = caseClause.RangeClauseDOs.All(rg => rg.ResultType == ClauseEvaluationResult.Unreachable)
                 ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
 
             return selectStmtDO;
+        }
+
+        private RangeClauseDataObject InspectValueRangeClause(SelectStmtDataObject selectStmtDO, RangeClauseDataObject rangeClauseDO)
+        {
+            if (rangeClauseDO.MinValue == null || rangeClauseDO.MaxValue == null)
+            {
+                return rangeClauseDO;
+            }
+
+            if (rangeClauseDO.MinValue.ExceedsMaxMin() && rangeClauseDO.MaxValue.ExceedsMaxMin())
+            {
+                rangeClauseDO.ResultType = ClauseEvaluationResult.Unreachable;
+                return rangeClauseDO;
+            }
+
+            var minValue = rangeClauseDO.MinValue;
+            var maxValue = rangeClauseDO.MaxValue;
+            if (selectStmtDO.SummaryCaseClauses.EnumDiscretes.Any())
+            {
+                var rangeContainsAnEnumValue = selectStmtDO.SummaryCaseClauses.EnumDiscretes.Any(env => env.IsWithin(minValue, maxValue));
+
+                rangeClauseDO.ResultType = !rangeContainsAnEnumValue
+                        ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
+                if (rangeClauseDO.ResultType == ClauseEvaluationResult.NoResult)
+                {
+                    rangeClauseDO.ResultType = selectStmtDO.SummaryCaseClauses.Ranges.Where(rg => minValue.IsWithin(rg.Item1, rg.Item2)
+                           && maxValue.IsWithin(rg.Item1, rg.Item2)).Any()
+                           || selectStmtDO.SummaryCaseClauses.IsLTMax != null && selectStmtDO.SummaryCaseClauses.IsLTMax > rangeClauseDO.MaxValue
+                           || selectStmtDO.SummaryCaseClauses.IsGTMin != null && selectStmtDO.SummaryCaseClauses.IsGTMin < rangeClauseDO.MinValue
+                           ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
+                }
+            }
+            else
+            {
+                rangeClauseDO.ResultType = selectStmtDO.SummaryCaseClauses.Ranges.Where(rg => minValue.IsWithin(rg.Item1, rg.Item2)
+                        && maxValue.IsWithin(rg.Item1, rg.Item2)).Any()
+                        || selectStmtDO.SummaryCaseClauses.IsLTMax != null && selectStmtDO.SummaryCaseClauses.IsLTMax > rangeClauseDO.MaxValue
+                        || selectStmtDO.SummaryCaseClauses.IsGTMin != null && selectStmtDO.SummaryCaseClauses.IsGTMin < rangeClauseDO.MinValue
+                        ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
+            }
+
+            return rangeClauseDO;
+        }
+
+        private RangeClauseDataObject InspectSingleValueRangeClause(SelectStmtDataObject selectStmtDO, RangeClauseDataObject rangeClauseDO)
+        {
+            if (rangeClauseDO.SingleValue == null)
+            {
+                return rangeClauseDO;
+            }
+
+            if (rangeClauseDO.SingleValue.ExceedsMaxMin())
+            {
+                rangeClauseDO.ResultType = ClauseEvaluationResult.Unreachable;
+                return rangeClauseDO;
+            }
+
+            if (rangeClauseDO.UsesIsClause)
+            {
+                if (rangeClauseDO.CompareSymbol.Equals(CompareTokens.LT)
+                    || rangeClauseDO.CompareSymbol.Equals(CompareTokens.LTE))
+                {
+                    rangeClauseDO.ResultType = selectStmtDO.SummaryCaseClauses.IsLTMax != null && selectStmtDO.SummaryCaseClauses.IsLTMax >= rangeClauseDO.SingleValue
+                            ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
+                }
+                else if (rangeClauseDO.CompareSymbol.Equals(CompareTokens.GT)
+                        || rangeClauseDO.CompareSymbol.Equals(CompareTokens.GTE))
+                {
+                    rangeClauseDO.ResultType = selectStmtDO.SummaryCaseClauses.IsGTMin != null && selectStmtDO.SummaryCaseClauses.IsGTMin <= rangeClauseDO.SingleValue
+                            ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
+                }
+                else if (CompareTokens.EQ.Equals(rangeClauseDO.CompareSymbol))
+                {
+                    rangeClauseDO.ResultType = HandleSimpleSingleValueCompare(rangeClauseDO.SingleValue, selectStmtDO);
+                }
+                else if (CompareTokens.NEQ.Equals(rangeClauseDO.CompareSymbol))
+                {
+                    if (selectStmtDO.SummaryCaseClauses.SingleValues.Contains(rangeClauseDO.SingleValue))
+                    {
+                        rangeClauseDO.ResultType = ClauseEvaluationResult.CaseElse;
+                    }
+                }
+            }
+            else
+            {
+                rangeClauseDO.ResultType = HandleSimpleSingleValueCompare(rangeClauseDO.SingleValue, selectStmtDO);
+            }
+            return rangeClauseDO;
         }
 
         //TODO: change this to evaluate the SummaryClauses for any and all types of full coverage
@@ -1047,22 +1044,30 @@ namespace Rubberduck.Inspections.Concrete
             return false;
         }
 
-        private bool SingleValueIsHandledPreviously(VBEValue theValue, SummaryCaseCoverage priorHandlers)
+        private bool SingleValueIsHandledPreviously(VBAValue theValue, SummaryCaseCoverage priorHandlers)
         {
-            return priorHandlers.IsLTMax != null && theValue < priorHandlers.IsLTMax
-                || priorHandlers.IsGTMin != null && theValue > priorHandlers.IsGTMin
-                || priorHandlers.SingleValues.Contains(theValue)
-                || priorHandlers.Ranges.Where(rg => theValue.IsWithin(rg.Item1, rg.Item2)).Any();
+            if (theValue.OriginTypeName.Equals(Tokens.Boolean))
+            {
+                //TODO: do we need to do more?
+                return priorHandlers.SingleValues.Any(val => val.AsBoolean() == theValue.AsBoolean());
+            }
+            else
+            {
+                return priorHandlers.IsLTMax != null && theValue < priorHandlers.IsLTMax
+                    || priorHandlers.IsGTMin != null && theValue > priorHandlers.IsGTMin
+                    || priorHandlers.SingleValues.Contains(theValue)
+                    || priorHandlers.Ranges.Where(rg => theValue.IsWithin(rg.Item1, rg.Item2)).Any();
+            }
         }
 
-        private SummaryCaseCoverage UpdateSummaryIsClauseLimits(VBEValue theValue, string compareSymbol, SummaryCaseCoverage priorHandlers)
+        private SummaryCaseCoverage UpdateSummaryIsClauseLimits(VBAValue theValue, string compareSymbol, SummaryCaseCoverage priorHandlers)
         {
-            if (compareSymbol.Equals(CompareSymbols.LT) || compareSymbol.Equals(CompareSymbols.LTE) ) // new string[] { CompareSymbols.LT, CompareSymbols.LTE }.Contains(compareSymbol))
+            if (compareSymbol.Equals(CompareTokens.LT) || compareSymbol.Equals(CompareTokens.LTE) ) // new string[] { CompareSymbols.LT, CompareSymbols.LTE }.Contains(compareSymbol))
             {
                 priorHandlers.IsLTMax = priorHandlers.IsLTMax == null ? theValue
                     : priorHandlers.IsLTMax < theValue ? theValue : priorHandlers.IsLTMax;
             }
-            else if (compareSymbol.Equals(CompareSymbols.GT) || compareSymbol.Equals(CompareSymbols.GTE))
+            else if (compareSymbol.Equals(CompareTokens.GT) || compareSymbol.Equals(CompareTokens.GTE))
             {
                 priorHandlers.IsGTMin = priorHandlers.IsGTMin == null ? theValue
                     : priorHandlers.IsGTMin > theValue ? theValue : priorHandlers.IsGTMin;
@@ -1072,7 +1077,7 @@ namespace Rubberduck.Inspections.Concrete
                 return priorHandlers;
             }
 
-            if (CompareSymbols.LTE == compareSymbol || CompareSymbols.GTE == compareSymbol)
+            if (CompareTokens.LTE == compareSymbol || CompareTokens.GTE == compareSymbol)
             {
                 if (!priorHandlers.SingleValues.Contains(theValue))
                 {
@@ -1082,26 +1087,147 @@ namespace Rubberduck.Inspections.Concrete
             return priorHandlers;
         }
 
-        private SummaryCaseCoverage HandleSimpleSingleValueCompare(ref RangeClauseDataObject range, VBEValue theValue, SummaryCaseCoverage priorHandlers)
+        private SelectStmtDataObject HandleSimpleSingleValueCompare(ref RangeClauseDataObject range, VBAValue theValue, SelectStmtDataObject selectStmtDO)
         {
-            range.ResultType = SingleValueIsHandledPreviously(theValue, priorHandlers)
+            range.ResultType = SingleValueIsHandledPreviously(theValue, selectStmtDO.SummaryCaseClauses)
                 ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
 
-            if (theValue.TargetTypeName.Equals(Tokens.Boolean))
+            if (theValue.OriginTypeName.Equals(Tokens.Boolean))
             {
-                range.ResultType = priorHandlers.SingleValues.Any()
-                    && !priorHandlers.SingleValues.Contains(theValue)
+                range.ResultType = selectStmtDO.SummaryCaseClauses.SingleValues.Any() && selectStmtDO.SummaryCaseClauses.SingleValues.Any(val => val.AsBoolean() != theValue.AsBoolean())
                     ? ClauseEvaluationResult.CaseElse : range.ResultType;
             }
-
-            if (range.ResultType != ClauseEvaluationResult.Unreachable)
-            {
-                priorHandlers.SingleValues.Add(theValue);
-            }
-            return priorHandlers;
+            return selectStmtDO;
         }
 
-        private SummaryCaseCoverage AggregateRanges(SummaryCaseCoverage currentSummaryCaseCoverage)
+        private ClauseEvaluationResult HandleSimpleSingleValueCompare(VBAValue theValue, SelectStmtDataObject selectStmtDO)
+        {
+            var result = SingleValueIsHandledPreviously(theValue, selectStmtDO.SummaryCaseClauses)
+                ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
+
+            if(result == ClauseEvaluationResult.NoResult)
+            {
+                if (selectStmtDO.SummaryCaseClauses.EnumDiscretes.Any())
+                {
+                    result = !selectStmtDO.SummaryCaseClauses.EnumDiscretes.Contains(theValue) ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
+                }
+
+                if (theValue.OriginTypeName.Equals(Tokens.Boolean))
+                {
+                    result = selectStmtDO.SummaryCaseClauses.SingleValues.Any() && selectStmtDO.SummaryCaseClauses.SingleValues.Any(val => val.AsBoolean() != theValue.AsBoolean())
+                        ? ClauseEvaluationResult.CaseElse : result;
+                }
+            }
+            return result;
+        }
+
+        private SummaryCaseCoverage UpdateSummaryData(SummaryCaseCoverage summaryClauses, RangeClauseDataObject rangeClauseDO)
+        {
+            if(!rangeClauseDO.CanBeInspected) { return summaryClauses; }
+
+            if (rangeClauseDO.IsValueRange)
+            {
+                return summaryClauses = UpdateSummaryDataRanges(summaryClauses, rangeClauseDO);
+            }
+            else
+            {
+                return summaryClauses = UpdateSummaryDataSingleValues(summaryClauses, rangeClauseDO);
+            }
+        }
+
+        private SummaryCaseCoverage UpdateSummaryDataSingleValues(SummaryCaseCoverage summaryClauses, RangeClauseDataObject rangeClauseDO)
+        {
+            if (!rangeClauseDO.CanBeInspected || rangeClauseDO.SingleValue == null) { return summaryClauses; }
+
+            //if (rangeClauseDO.ResultType != ClauseEvaluationResult.NoResult)
+            //{
+            //    return summaryClauses;
+            //}
+
+            if (rangeClauseDO.UsesIsClause)
+            {
+                if (rangeClauseDO.CompareSymbol.Equals(CompareTokens.LT)
+                    || rangeClauseDO.CompareSymbol.Equals(CompareTokens.LTE)
+                    || rangeClauseDO.CompareSymbol.Equals(CompareTokens.GT)
+                    || rangeClauseDO.CompareSymbol.Equals(CompareTokens.GTE)
+                    )
+                {
+                    summaryClauses = UpdateSummaryIsClauseLimits(rangeClauseDO.SingleValue, rangeClauseDO.CompareSymbol, summaryClauses);
+                }
+                else if (CompareTokens.EQ.Equals(rangeClauseDO.CompareSymbol))
+                {
+                    summaryClauses.SingleValues.Add(rangeClauseDO.SingleValue);
+                }
+                else if (CompareTokens.NEQ.Equals(rangeClauseDO.CompareSymbol))
+                {
+                    summaryClauses = UpdateSummaryIsClauseLimits(rangeClauseDO.SingleValue, CompareTokens.LT, summaryClauses);
+                    summaryClauses = UpdateSummaryIsClauseLimits(rangeClauseDO.SingleValue, CompareTokens.GT, summaryClauses);
+                }
+            }
+            else
+            {
+                summaryClauses.SingleValues.Add(rangeClauseDO.SingleValue);
+            }
+
+            if (!summaryClauses.UnreachableCaseElse)
+            {
+                summaryClauses.UnreachableCaseElse = IsClausesCoverAllValues(summaryClauses)
+                    || (rangeClauseDO.TypeNameTarget.Equals(Tokens.Boolean)
+                    && summaryClauses.SingleValues.Any(sv => sv.AsLong().Value != 0) && summaryClauses.SingleValues.Any(sv => sv.AsLong().Value == 0));
+            }
+            return summaryClauses;
+        }
+
+        private SummaryCaseCoverage UpdateSummaryDataRanges(SummaryCaseCoverage summaryCoverage, RangeClauseDataObject rangeClauseDO)
+        {
+            if (!rangeClauseDO.CanBeInspected || !rangeClauseDO.IsValueRange) { return summaryCoverage; }
+
+            if (rangeClauseDO.TypeNameTarget.Equals(Tokens.Boolean))
+            {
+                for( var theVal = rangeClauseDO.MinValue.AsLong().Value; theVal <= rangeClauseDO.MaxValue.AsLong().Value; theVal++)
+                {
+                    summaryCoverage.SingleValues.Add(new VBAValue(theVal, Tokens.Long));
+                }
+            }
+            else if (summaryCoverage.EnumDiscretes.Any())
+            {
+                var used = summaryCoverage.EnumDiscretes.Where(ed => ed.IsWithin(rangeClauseDO.MinValue, rangeClauseDO.MaxValue));
+                summaryCoverage.SingleValues.AddRange(used);
+            }
+
+
+            var updatedRanges = new List<Tuple<VBAValue, VBAValue>>();
+            var overlapsMin = summaryCoverage.Ranges.Where(rg => rangeClauseDO.MinValue.IsWithin(rg.Item1, rg.Item2));
+            var overlapsMax = summaryCoverage.Ranges.Where(rg => rangeClauseDO.MaxValue.IsWithin(rg.Item1, rg.Item2));
+            foreach (var rg in summaryCoverage.Ranges)
+            {
+                if (overlapsMin.Contains(rg))
+                {
+                    updatedRanges.Add(new Tuple<VBAValue, VBAValue>(rg.Item1, rangeClauseDO.MaxValue));
+                }
+                else if (overlapsMax.Contains(rg))
+                {
+                    updatedRanges.Add(new Tuple<VBAValue, VBAValue>(rangeClauseDO.MinValue, rg.Item2));
+                }
+                else
+                {
+                    updatedRanges.Add(rg);
+                }
+            }
+
+            if (!overlapsMin.Any() && !overlapsMax.Any())
+            {
+                updatedRanges.Add(new Tuple<VBAValue, VBAValue>(rangeClauseDO.MinValue, rangeClauseDO.MaxValue));
+            }
+
+            summaryCoverage.Ranges = updatedRanges;
+
+            summaryCoverage = AggregateSummaryRanges(summaryCoverage);
+
+            return summaryCoverage;
+        }
+
+        private SummaryCaseCoverage AggregateSummaryRanges(SummaryCaseCoverage currentSummaryCaseCoverage)
         {
             var startingRangeCount = currentSummaryCaseCoverage.Ranges.Count;
             if (startingRangeCount > 1)
@@ -1115,19 +1241,14 @@ namespace Rubberduck.Inspections.Concrete
             return currentSummaryCaseCoverage;
         }
 
-        private List<Tuple<VBEValue, VBEValue>> AppendRanges(List<Tuple<VBEValue, VBEValue>> ranges)
+        private List<Tuple<VBAValue, VBAValue>> AppendRanges(List<Tuple<VBAValue, VBAValue>> ranges)
         {
-            if (ranges.Count() <= 1)
+            if (ranges.Count() <= 1 || !IsIntegerNumberType(ranges.First().Item1.UseageTypeName))
             {
                 return ranges;
             }
 
-            if (!ranges.First().Item1.IsIntegerNumber)
-            {
-                return ranges;
-            }
-
-            var updatedHandlers = new List<Tuple<VBEValue, VBEValue>>();
+            var updatedRanges = new List<Tuple<VBAValue, VBAValue>>();
             var combinedLastRange = false;
 
             for (var idx = 0; idx < ranges.Count(); idx++)
@@ -1136,7 +1257,7 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (!combinedLastRange)
                     {
-                        updatedHandlers.Add(ranges[idx]);
+                        updatedRanges.Add(ranges[idx]);
                     }
                     continue;
                 }
@@ -1147,20 +1268,106 @@ namespace Rubberduck.Inspections.Concrete
                 var theNextMax = ranges[idx + 1].Item2;
                 if (theMax.AsLong() == theNextMin.AsLong() - 1)
                 {
-                    updatedHandlers.Add(new Tuple<VBEValue, VBEValue>(theMin, theNextMax));
+                    updatedRanges.Add(new Tuple<VBAValue, VBAValue>(theMin, theNextMax));
                     combinedLastRange = true;
                 }
                 else if (theMin.AsLong() == theNextMax.AsLong() + 1)
                 {
-                    updatedHandlers.Add(new Tuple<VBEValue, VBEValue>(theNextMin, theMax));
+                    updatedRanges.Add(new Tuple<VBAValue, VBAValue>(theNextMin, theMax));
                     combinedLastRange = true;
                 }
                 else
                 {
-                    updatedHandlers.Add(ranges[idx]);
+                    updatedRanges.Add(ranges[idx]);
                 }
             }
-            return updatedHandlers;
+            return updatedRanges;
+        }
+
+        private static bool IsIntegerNumberType(string typeName) => new string[] { Tokens.Long, Tokens.LongLong, Tokens.Integer, Tokens.Byte }.Contains(typeName);
+
+        private static bool HasChildToken<T>(T ctxt, string token) where T : ParserRuleContext
+        {
+            return ctxt.children.Any(ch => ch.GetText().Equals(token));
+        }
+
+        private RangeClauseDataObject SetTheCompareOperator(RangeClauseDataObject rangeClauseDO)
+        {
+            rangeClauseDO.UsesIsClause = TryGetChildContext(rangeClauseDO.Context, out ComparisonOperatorContext opCtxt);
+            rangeClauseDO.CompareSymbol = rangeClauseDO.UsesIsClause ? opCtxt.GetText() : CompareTokens.EQ;
+            return rangeClauseDO;
+        }
+
+        private static bool TryGetChildContext<T, U>(T ctxt, out U opCtxt) where T : ParserRuleContext where U : ParserRuleContext
+        {
+            opCtxt = ParserRuleContextHelper.GetChild<U>(ctxt);
+            return opCtxt != null;
+        }
+
+        private static string GetText(ParserRuleContext ctxt) => ctxt.GetText().Replace("\"", "");
+
+        private bool IsBinaryOperatorContext<T>(T child)
+        {
+            return IsBinaryMathOperation(child)
+                || IsBinaryLogicalOperation(child);
+        }
+
+        private bool IsMathOperation<T>(T child)
+        {
+            return IsBinaryMathOperation(child)
+                || IsUnaryMathOperation(child);
+        }
+
+        private bool IsBinaryMathOperation<T>(T child)
+        {
+            return child is MultOpContext
+                || child is AddOpContext
+                || child is PowOpContext
+                || child is ModOpContext;
+        }
+
+        private bool IsBinaryLogicalOperation<T>(T child)
+        {
+            return child is RelationalOpContext
+                || child is LogicalXorOpContext
+                || child is LogicalAndOpContext
+                || child is LogicalOrOpContext
+                || child is LogicalEqvOpContext
+                || child is LogicalNotOpContext;
+        }
+
+        private bool IsUnaryLogicalOperator<T>(T child)
+        {
+            return child is LogicalNotOpContext;
+        }
+
+        private bool IsUnaryMathOperation<T>(T child)
+        {
+            return child is UnaryMinusOpContext;
+        }
+
+        private bool IsUnaryOperandContext<T>(T child)
+        {
+            return IsUnaryLogicalOperator(child)
+                   || IsUnaryMathOperation(child)
+                   || child is ParenthesizedExprContext;
+        }
+
+        private bool RangeClauseCanBeInspected(RangeClauseContext context, string refName)
+        {
+            var canBeInspected = true;
+            var ipts = ParserRuleContextHelper.GetDescendents(context);
+            var ops = ipts.Where(ipt => (ipt is ParserRuleContext) && (IsBinaryMathOperation(ipt) || IsUnaryMathOperation(ipt)));
+            foreach (var op in ops)
+            {
+                var lExprCtxts = ParserRuleContextHelper.GetChildren<LExprContext>((RuleContext)op);
+                if (lExprCtxts.Any(lex => lex.GetText().Equals(refName)))
+                {
+                    //TODO: (Future)implement the necessary algebra to support these use cases
+                    canBeInspected = false;
+                }
+            }
+            return canBeInspected;
         }
 
         #region Listener
