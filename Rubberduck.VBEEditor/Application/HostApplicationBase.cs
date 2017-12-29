@@ -9,18 +9,18 @@ namespace Rubberduck.VBEditor.Application
         where TApplication : class
     {
         protected HostApplicationBase(string applicationName)
-        :base(ApplicationFomComReflection(applicationName))
+        :base(ApplicationFromComReflection(applicationName))
         {
             ApplicationName = applicationName;
         }
 
         protected HostApplicationBase(IVBE vbe, string applicationName)
-        :base(ApplicationFomVbe(vbe, applicationName))
+        :base(ApplicationFromVbe(vbe, applicationName))
         {
             ApplicationName = applicationName;
         }
 
-        private static TApplication ApplicationFomComReflection(string applicationName)
+        private static TApplication ApplicationFromComReflection(string applicationName)
         {
             TApplication application;
             try
@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.Application
             return application;
         }
 
-        private static TApplication ApplicationFomVbe(IVBE vbe, string applicationName)
+        private static TApplication ApplicationFromVbe(IVBE vbe, string applicationName)
         {
             TApplication application;
             try
