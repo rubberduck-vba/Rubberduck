@@ -20,7 +20,7 @@ namespace Rubberduck.UI
         UserControl UserControl { get; }
     }
 
-    public abstract class DockableToolwindowPresenter : IDockablePresenter
+    public abstract class DockableToolwindowPresenter : IDockablePresenter, IDisposable
     {
         private readonly IAddIn _addin;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -50,9 +50,12 @@ namespace Rubberduck.UI
             IWindow toolWindow;
             try
             {
-                var info = _vbe.Windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId);
-                _userControlObject = info.UserControl;
-                toolWindow = info.ToolWindow;
+                using (var windows = _vbe.Windows)
+                {
+                    var info = windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId);
+                    _userControlObject = info.UserControl;
+                    toolWindow = info.ToolWindow;
+                }
             }
             catch (COMException exception)
             {
@@ -100,10 +103,27 @@ namespace Rubberduck.UI
         public virtual void Show() => _window.IsVisible = true;
         public virtual void Hide() => _window.IsVisible = false;
 
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            Logger.Trace($"Disposing DockableWindowPresenter of type {this.GetType()}.");
+
+            _window.Dispose();
+
+            _isDisposed = true;
+        }
+
+
         ~DockableToolwindowPresenter()
         {
             // destructor for tracking purposes only - do not suppress unless 
-            Debug.WriteLine("DockableToolwindowPresenter finalized.");
+            Debug.WriteLine($"DockableToolwindowPresenter of type {this.GetType()} finalized.");
         }
     }
 }

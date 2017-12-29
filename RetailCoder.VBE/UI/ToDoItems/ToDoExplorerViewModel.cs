@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Text.RegularExpressions;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -245,7 +246,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             var markers = _configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
-                                         && comment.CommentText.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
+                                         && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));
         }
 

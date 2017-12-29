@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Outlook;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -40,6 +43,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 dynamic host = item.Value;
                 host.Release();
             }
+            _dockableHosts.Clear();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

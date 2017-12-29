@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using NLog;
@@ -15,7 +16,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         }
 
         private int? _rcwReferenceCount;
-        public virtual void Release(bool final = false)
+        public void Release(bool final = false)
         {
             if (HasBeenReleased)
             {
@@ -53,8 +54,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 else
                 {
                     _rcwReferenceCount = Marshal.ReleaseComObject(Target);
-                    _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+                    if (_rcwReferenceCount >= 0)
+                    {
+                        _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+                    }
+                    else
+                    {
+                        _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper.");
+                    }
                 }
+
+                
             }
             catch(COMException exception)
             {
@@ -72,7 +82,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
         }
 
-        public bool HasBeenReleased => _rcwReferenceCount == 0;
+        public bool HasBeenReleased => _rcwReferenceCount <= 0;
 
         public bool IsWrappingNullReference => Target == null;
         object INullObjectWrapper.Target => Target;
@@ -103,5 +113,28 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             return !(a == b);
         }
-   }
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            if (disposing && !HasBeenReleased)
+            {
+                Release();
+            }
+
+            _isDisposed = true;
+        }
+    }
 }
