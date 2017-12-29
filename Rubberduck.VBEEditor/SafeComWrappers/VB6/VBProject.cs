@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Office.Interop.MSProject;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.VB6.Interop.VBIDE;
 

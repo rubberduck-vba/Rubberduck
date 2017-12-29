@@ -1,54 +1,60 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
-using NLog;
+﻿using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Application
 {
     [ComVisible(false)]
-    public abstract class HostApplicationBase<TApplication> : IHostApplication
+    public abstract class HostApplicationBase<TApplication> : SafeComWrapper<TApplication>, IHostApplication
         where TApplication : class
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
-        protected readonly TApplication Application;
         protected HostApplicationBase(string applicationName)
+        :base(ApplicationFomComReflection(applicationName))
         {
             ApplicationName = applicationName;
-
-            try
-            {
-                Application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
-            }
-            catch (COMException)
-            {
-                Application = null; // unit tests don't need it anyway.
-            }
         }
 
         protected HostApplicationBase(IVBE vbe, string applicationName)
+        :base(ApplicationFomVbe(vbe, applicationName))
         {
             ApplicationName = applicationName;
+        }
 
+        private static TApplication ApplicationFomComReflection(string applicationName)
+        {
+            TApplication application;
+            try
+            {
+                application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
+            }
+            catch (COMException)
+            {
+                application = null; // unit tests don't need it anyway.
+            }
+            return application;
+        }
+
+        private static TApplication ApplicationFomVbe(IVBE vbe, string applicationName)
+        {
+            TApplication application;
             try
             {
                 var appProperty = ApplicationPropertyFromDocumentModule(vbe);
                 if (appProperty != null)
                 {
-                    Application = (TApplication)appProperty.Object;
+                    application = (TApplication)appProperty.Object;
                 }
                 else
                 {
-                    Application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
+                    application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
                 }
-                    
+
             }
             catch (COMException)
             {
-                Application = null; // unit tests don't need it anyway.
+                application = null; // unit tests don't need it anyway.
             }
+            return application;
         }
 
         private static IProperty ApplicationPropertyFromDocumentModule(IVBE vbe)
@@ -105,10 +111,7 @@ namespace Rubberduck.VBEditor.Application
             }
         }
 
-        ~HostApplicationBase()
-        {
-			Dispose(false);
-        }
+        protected TApplication Application => Target;
 
         public string ApplicationName { get; }
 
@@ -119,99 +122,19 @@ namespace Rubberduck.VBEditor.Application
             return null;
         }
 
-        private int? _rcwReferenceCount;
-        public void Release(bool final = false)
+        public override bool Equals(ISafeComWrapper<TApplication> other)
         {
-            if (HasBeenReleased)
-            {
-                _logger.Warn($"Tried to release an application object type {this.GetType()} that had already been released.");
-                return;
-            }
-            if (Application == null)
-            {
-                _rcwReferenceCount = 0;
-                _logger.Warn($"Tried to release an application object that was null.");
-                return;
-            }
-
-            if (!Marshal.IsComObject(Application))
-            {
-                _rcwReferenceCount = 0;
-                _logger.Warn($"Tried to release an application objects of type {this.GetType()} that is not a COM object.");
-                return;
-            }
-
-            try
-            {
-                if (final)
-                {
-                    _rcwReferenceCount = Marshal.FinalReleaseComObject(Application);
-                    if (HasBeenReleased)
-                    {
-                        _logger.Trace($"Final released application object of type {this.GetType()}.");
-                    }
-                    else
-                    {
-                        _logger.Warn($"Final released application object of type {this.GetType()} did not release the object: remaining reference count is {_rcwReferenceCount}.");
-                    }
-                }
-                else
-                {
-                    _rcwReferenceCount = Marshal.ReleaseComObject(Application);
-                    if (_rcwReferenceCount >= 0)
-                    {
-                        _logger.Trace($"Released application object of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
-                    }
-                    else
-                    {
-                        _logger.Warn($"Released application object of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper.");
-                    }
-                }
-            }
-            catch (COMException exception)
-            {
-                var logMessage = $"Failed to release application object of type {this.GetType()}.";
-                if (_rcwReferenceCount.HasValue)
-                {
-                    logMessage = logMessage + $"The previous reference count has been {_rcwReferenceCount}.";
-                }
-                else
-                {
-                    logMessage = logMessage + "There has not yet been an attempt to release the application object.";
-                }
-
-                _logger.Warn(exception, logMessage);
-            }
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-        public bool HasBeenReleased => _rcwReferenceCount <= 0;
-
-        public void Dispose()
+        public override int GetHashCode()
         {
-            Dispose(true);
-			GC.SuppressFinalize(this);
+            return IsWrappingNullReference ? 0 : HashCode.Compute(Target);
         }
 
-		private bool _disposed;
-        protected virtual void Dispose(bool disposing)
+        ~HostApplicationBase()
         {
-            if (_disposed)
-            {
-                return;
-            }
-			
-			// clean up managed resources
-			if (Application != null && !HasBeenReleased)
-            {
-                Release();
-            }
-		
-            if (disposing) 
-			{ 
-				// we don't have any managed resources to clean up right now.
-			}
-
-			_disposed = true;
+            Dispose(false);
         }
     }
 }
