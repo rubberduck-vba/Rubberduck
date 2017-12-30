@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common.Hotkeys;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Settings
@@ -79,6 +78,28 @@ namespace Rubberduck.Settings
         private static bool IsValid(HotkeySetting candidate)
         {
             return candidate.IsValid;
+        }
+
+        private void AddUnique(IEnumerable<HotkeySetting> settings)
+        {
+            //Only take the first setting if multiple definitions are found.
+            foreach (var setting in settings.GroupBy(s => s.CommandTypeName).Select(hotkey => hotkey.First()))
+            {
+                //Only allow one hotkey to be enabled with the same key combination.
+                setting.IsEnabled &= !IsDuplicate(setting);
+                _settings.Add(setting);
+            }
+        }
+
+        private bool IsDuplicate(HotkeySetting candidate)
+        {
+            return _settings.FirstOrDefault(
+                       s =>
+                           s.Key1 == candidate.Key1 &&
+                           s.Key2 == candidate.Key2 &&
+                           s.HasAltModifier == candidate.HasAltModifier &&
+                           s.HasCtrlModifier == candidate.HasCtrlModifier &&
+                           s.HasShiftModifier == candidate.HasShiftModifier) != null;
         }
     }
 }

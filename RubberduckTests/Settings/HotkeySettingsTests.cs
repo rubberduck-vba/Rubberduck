@@ -101,7 +101,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_None_IsNotValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", Key1 = "I" };
 
             Assert.IsFalse(setting.IsValid);
         }
@@ -110,7 +110,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_Shift_IsNotValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", HasShiftModifier = true, Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, Key1 = "I" };
 
             Assert.IsFalse(setting.IsValid);
         }
@@ -119,7 +119,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_ShiftAlt_IsValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", HasShiftModifier = true, HasAltModifier = true, Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, HasAltModifier = true, Key1 = "I" };
 
             Assert.IsTrue(setting.IsValid);
         }
@@ -128,7 +128,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_ShiftCtrl_IsValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", HasShiftModifier = true, HasCtrlModifier = true, Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, HasCtrlModifier = true, Key1 = "I" };
 
             Assert.IsTrue(setting.IsValid);
         }
@@ -137,7 +137,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_ShiftAltCtrl_IsValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", HasShiftModifier = true, HasAltModifier = true, HasCtrlModifier = true, Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, HasAltModifier = true, HasCtrlModifier = true, Key1 = "I" };
 
             Assert.IsTrue(setting.IsValid);
         }
@@ -146,7 +146,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_Alt_IsValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", HasAltModifier = true, Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasAltModifier = true, Key1 = "I" };
 
             Assert.IsTrue(setting.IsValid);
         }
@@ -155,7 +155,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_Ctrl_IsValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", HasCtrlModifier = true, Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasCtrlModifier = true, Key1 = "I" };
 
             Assert.IsTrue(setting.IsValid);
         }
@@ -164,7 +164,7 @@ namespace RubberduckTests.Settings
         [TestCategory("Settings)")]
         public void HotkeyModifier_AltCtrl_IsValid()
         {
-            var setting = new HotkeySetting { Name = "Foo", HasAltModifier = true, HasCtrlModifier = true, Key1 = "I" };
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasAltModifier = true, HasCtrlModifier = true, Key1 = "I" };
 
             Assert.IsTrue(setting.IsValid);
         }
