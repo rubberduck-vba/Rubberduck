@@ -2114,11 +2114,20 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hotkeys must include either Ctrl or Alt. Shift only or no modifier keys are invalid. Invalid combinations are disabled..
+        ///   Looks up a localized string similar to Hotkeys should include either Alt and/or Ctrl..
         /// </summary>
         public static string GeneralSettings_HotkeyRestrictionLabel {
             get {
                 return ResourceManager.GetString("GeneralSettings_HotkeyRestrictionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This hotkey configuration may cause undesirable side affects..
+        /// </summary>
+        public static string GeneralSettings_HotkeyRestrictionToolTip {
+            get {
+                return ResourceManager.GetString("GeneralSettings_HotkeyRestrictionToolTip", resourceCulture);
             }
         }
         
