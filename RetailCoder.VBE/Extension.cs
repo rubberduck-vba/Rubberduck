@@ -16,6 +16,7 @@ using NLog;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
@@ -246,7 +247,11 @@ namespace Rubberduck
                 VBENativeServices.UnhookEvents();
 
                 _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
-                User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
+                using (var mainWindow = _ide.MainWindow)
+                {
+                    var mainWindosHndl = mainWindow.Handle();
+                    UiDispatcher.Invoke(() => User32.EnumChildWindows(mainWindosHndl, EnumCallback, new IntPtr(0)));
+                }
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
                 Windows.ReleaseDockableHosts();
@@ -263,6 +268,20 @@ namespace Rubberduck
                     _logger.Log(LogLevel.Trace, "Disposing IoC container...");
                     _container.Dispose();
                     _container = null;
+                }
+
+                if (_addin != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing AddIn wrapper...");
+                    _addin.Dispose();
+                    _addin = null;
+                }
+
+                if (_ide != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing VBE wrapper...");
+                    _ide.Dispose();
+                    _ide = null;
                 }
 
                 _isInitialized = false;

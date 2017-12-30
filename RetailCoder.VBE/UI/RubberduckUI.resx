@@ -382,13 +382,13 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG </value>
+    <value>BUG</value>
   </data>
   <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE </value>
+    <value>NOTE</value>
   </data>
   <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO </value>
+    <value>TODO</value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementations of '{0}'</value>
@@ -475,7 +475,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Result" xml:space="preserve">
     <value>Result</value>
   </data>
-  <data name="Outcome" xml:space="preserve">
+  <data name="TestExplorer_Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
@@ -634,7 +634,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Passed Tests</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Selected Tests</value>
+    <value>Selected Test</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Line</value>
@@ -1194,10 +1194,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Special Options</value>
   </data>
-  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indent Module</value>
   </data>
-  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Indent Procedure</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
@@ -1406,19 +1406,19 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Shift</value>
   </data>
-  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
     <value>Code Inspections</value>
   </data>
-  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
     <value>Refactor / Extract Method</value>
   </data>
-  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
     <value>Refactor / Rename</value>
   </data>
-  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
@@ -1454,16 +1454,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) not registered.</value>
   </data>
-  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
     <value>Find symbol</value>
   </data>
-  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
     <value>Refactor / Move declaration closer to usage</value>
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rege&amp;x Search/Replace</value>
   </data>
-  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
     <value>Refresh parser state</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
@@ -1703,7 +1703,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Indent</value>
   </data>
-  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
+  <data name="CommandDescription_SourceControlCommand" xml:space="preserve">
     <value>Source Control</value>
   </data>
   <data name="RegexAssistant_Caption" xml:space="preserve">
@@ -1742,7 +1742,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>These identifiers will be ignored by the 'Use meaningful names' inspection</value>
   </data>
-  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactor / Encapsulate Field</value>
   </data>
   <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
@@ -2071,7 +2071,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Export Project...</value>
   </data>
-  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Export Active Project</value>
   </data>
   <data name="CodeExplorer_Open" xml:space="preserve">

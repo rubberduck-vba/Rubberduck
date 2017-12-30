@@ -142,7 +142,7 @@ namespace Rubberduck.UI
         protected override void DefWndProc(ref Message m)
         {
             //See the comment in the ctor for why we have to listen for this.
-            if (m.Msg == (int) WM.DESTROY)
+            if (m.Msg == (int) WM.DESTROY && !_released)
             {
                 Debug.WriteLine("DockableWindowHost received WM.DESTROY.");
                 try
@@ -162,10 +162,19 @@ namespace Rubberduck.UI
 
         //override 
 
+        private bool _released; 
         public void Release()
         {
+            if (_released)
+            {
+                return;
+            }
+
             Debug.WriteLine("DockableWindowHost release called.");
             _subClassingWindow.Dispose();
+            _thisHandle.Free();
+
+            _released = true;
         }
 
         protected override void DestroyHandle()
@@ -217,6 +226,20 @@ namespace Rubberduck.UI
                         break;
                 }
                 return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
+            }
+
+            private bool _disposed;
+            protected override void Dispose(bool disposing)
+            {
+                if (!_disposed && disposing && !_closing)
+                {
+                    OnCallBackEvent(new SubClassingWindowEventArgs(IntPtr.Zero) { Closing = true });
+                    _closing = true;
+                }
+
+                _disposed = true;
+
+                base.Dispose(disposing);
             }
         }
     }

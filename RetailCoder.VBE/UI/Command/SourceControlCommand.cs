@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -21,7 +20,5 @@ namespace Rubberduck.UI.Command
         {
             _presenter.Show();
         }
-
-        public override RubberduckHotkey Hotkey => RubberduckHotkey.SourceControl;
     }
 }
