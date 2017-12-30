@@ -110,7 +110,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public bool IsInDesignMode
         {
-            get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
+            get
+            {
+                var allInDesignMode = true;
+                using (var projects = VBProjects)
+                {
+                    foreach (var project in projects)
+                    {
+                        allInDesignMode = allInDesignMode && project.Mode == EnvironmentMode.Design;
+                        project.Dispose();
+                        if (!allInDesignMode)
+                        {
+                            break;
+                        }
+                    }
+                }
+                return allInDesignMode;
+            }
+        }
+
+        public int ProjectsCount
+        {
+            get
+            {
+                using (var projects = VBProjects)
+                {
+                    return projects.Count;
+                }
+            }
         }
 
         public static void SetSelection(IVBProject vbProject, Selection selection, string name)
