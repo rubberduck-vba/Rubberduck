@@ -65,10 +65,10 @@ namespace Rubberduck.UI.SourceControl
             _messageBox = messageBox;
             _environment = environment;
 
-            InitRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
-            OpenRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
-            CloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
-            PublishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
+            InitRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.ProjectsCount != 0);
+            OpenRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.ProjectsCount != 0);
+            CloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.ProjectsCount != 0);
+            PublishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.ProjectsCount != 0 && Provider != null);
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Refresh());
             DismissErrorMessageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DismissErrorMessage());
             ShowFilePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowFilePicker());
@@ -943,14 +943,29 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var project = _vbe.ActiveVBProject ?? (_vbe.VBProjects.Count == 1 ? _vbe.VBProjects[1] : null);
-
-            if (project != null)
+            string projectId;
+            using (var project = _vbe.ActiveVBProject)
             {
-                var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.ProjectId);
-                return possibleRepos.Count() == 1;
+                projectId = project?.ProjectId;
             }
 
+            if (projectId == null && _vbe.ProjectsCount == 1)
+            {
+                using(var projects = _vbe.VBProjects)
+                {
+                    using (var project = projects[1])
+                    {
+                        projectId = project?.ProjectId;
+                    }
+                }
+            }
+
+            if (projectId != null)
+            {
+                var possibleRepos = _config.Repositories.Where(repo => repo.Id == projectId);
+                return possibleRepos.Count() == 1;
+            }
+            
             HandleViewModelError(this, new ErrorEventArgs(RubberduckUI.SourceControl_NoActiveProject, RubberduckUI.SourceControl_ActivateProject, NotificationType.Error));
             return false;
         }

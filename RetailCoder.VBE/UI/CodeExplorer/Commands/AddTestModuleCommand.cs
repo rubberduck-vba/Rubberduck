@@ -23,7 +23,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             try
             {
-                return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
+                return GetDeclaration(parameter) != null || _vbe.ProjectsCount == 1;
             }
             catch (COMException)
             {
