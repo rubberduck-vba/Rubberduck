@@ -313,6 +313,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddRemoveReferences\ReferenceModel.cs" />
+    <Compile Include="AddRemoveReferences\ReferenceStatus.cs" />
     <Compile Include="API\VBA\Accessibility.cs" />
     <Compile Include="API\VBA\Declaration.cs" />
     <Compile Include="API\VBA\DeclarationType.cs" />
@@ -357,7 +359,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="AddRemoveReferences\AddRemoveReferencesModel.cs" />
+    <Compile Include="AddRemoveReferences\AddRemoveReferencesViewModel.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
@@ -395,6 +397,7 @@
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesViewModel.cs" />
+    <Compile Include="UI\AddRemoveReferences\ReferenceStatusImageSourceConverter.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
@@ -444,6 +447,7 @@
     <Compile Include="UI\Converters\SubtractionConverter.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
+    <Compile Include="UI\Converters\ImageSourceConverter.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
     <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesDialog.cs">
       <SubType>Form</SubType>

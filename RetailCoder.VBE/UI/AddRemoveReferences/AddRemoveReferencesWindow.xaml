@@ -11,14 +11,12 @@
     <UserControl.Resources>
         <BitmapImage x:Key="SearchIcon" UriSource="../../Resources/magnifier-medium.png" />
         <BitmapImage x:Key="BrowseIcon" UriSource="../../Resources/folder-open.png" />
-        <BitmapImage x:Key="TickIcon" UriSource="../../Resources/tick.png" />
-        <BitmapImage x:Key="LockIcon" UriSource="../../Resources/lock.png" />
         <BitmapImage x:Key="LibraryIcon" UriSource="../../Resources/Custom/PNG/ObjectLibrary.png" />
         <BitmapImage x:Key="VbaProjectIcon" UriSource="../../Resources/Custom/PNG/ObjectClass.png" />
         <BitmapImage x:Key="PriorityIcon" UriSource="../../Resources/edit-list-order.png" />
         <BitmapImage x:Key="MoveUpIcon" UriSource="../../Resources/arrow-090.png" />
 
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
         <Style x:Key="DialogButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="5,0" />
             <Setter Property="Height" Value="24" />
@@ -78,7 +76,7 @@
                                       SelectedItem="{Binding SelectedLibrary}"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate DataType="refs:AddRemoveReferencesModel">
+                                    <DataTemplate DataType="refs:ReferenceModel">
                                         <Grid Margin="2,0,2,0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="20" />
@@ -91,7 +89,7 @@
                                             <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="2,0" />
                                             <TextBlock Grid.Column="2" Text="{Binding Version}" Margin="2,0" />
                                             <TextBlock Grid.Column="3" Text="{Binding Description}" Margin="2,0" />
-                                            <Image Grid.Column="4" Source="/Rubberduck;component/Resources/tick.png" />
+                                            <Image Grid.Column="4" Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -147,7 +145,7 @@
                                       SelectedItem="{Binding SelectedProject}"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate DataType="refs:AddRemoveReferencesModel">
+                                    <DataTemplate DataType="refs:ReferenceModel">
                                         <Grid Margin="2,0,2,0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="20" />
@@ -160,7 +158,7 @@
                                             <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="2,0" />
                                             <TextBlock Grid.Column="2" Text="{Binding Description}" Margin="2,0" />
                                             <TextBlock Grid.Column="3" Text="{Binding FullPath}" Margin="2,0" />
-                                            <Image Grid.Column="4" Source="{StaticResource TickIcon}" />
+                                            <Image Grid.Column="4" Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -181,7 +179,7 @@
                                       ItemsSource="{Binding ComLibraries}"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate DataType="refs:AddRemoveReferencesModel">
+                                    <DataTemplate DataType="refs:ReferenceModel">
                                         <Grid Margin="2,0,2,0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />

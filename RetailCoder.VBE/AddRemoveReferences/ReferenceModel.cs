@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.UI;
+using System;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AddRemoveReferences
 {
-    public class AddRemoveReferencesModel : ViewModelBase
-    {
-        public AddRemoveReferencesModel(IReadOnlyList<ReferenceModel> model)
-        {
-            AvailableReferences = model;
-        }
-
-        public IEnumerable<ReferenceModel> AvailableReferences { get; }
-    }
-
     public class ReferenceModel
     {
         public ReferenceModel(IVBProject project, int priority)
@@ -58,7 +45,6 @@ namespace Rubberduck.AddRemoveReferences
 
         public bool IsSelected { get; set; }
         public bool IsRemoved { get; set; }
-        public bool IsPinned { get; set; }
         public int Priority { get; set; }
 
         public string Name { get; }
@@ -69,5 +55,15 @@ namespace Rubberduck.AddRemoveReferences
         public bool IsBuiltIn { get; }
         public bool IsBroken { get; }
         public ReferenceKind Type { get; }
+
+        public ReferenceStatus Status => IsBuiltIn
+            ? ReferenceStatus.BuiltIn
+            : IsBroken
+                ? ReferenceStatus.Broken
+                : IsRemoved
+                    ? ReferenceStatus.Removed
+                    : IsSelected
+                        ? ReferenceStatus.Loaded
+                        : ReferenceStatus.None;
     }
 }
