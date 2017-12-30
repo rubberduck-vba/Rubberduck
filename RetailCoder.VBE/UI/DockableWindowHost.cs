@@ -48,10 +48,10 @@ namespace Rubberduck.UI
     //
     // -- Wayne Phillips 29th Dec 2017
 
-    static class COMConstants
+    public enum COMConstants
     {
-        public const int E_NOTIMPL = -2147467263;
-        public const int S_OK = 0;
+        E_NOTIMPL = -2147467263,
+        S_OK = 0
     }   
   
     [ComImport(), Guid("00000112-0000-0000-C000-000000000046"), InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
@@ -172,9 +172,9 @@ namespace Rubberduck.UI
         // just cast the returned object to a local equivalent interface
         public static object ObtainInternalInterface(object objectInstance, Type internalType)
         {
-            var AggregatedObjectPtr = CreateAggregatedWrapper(objectInstance, new Type[] { internalType });
-            var retVal = Marshal.GetObjectForIUnknown(AggregatedObjectPtr);
-            Marshal.Release(AggregatedObjectPtr);       // retVal holds an RCW reference now, so this can be released
+            var aggregatedObjectPtr = CreateAggregatedWrapper(objectInstance, new Type[] { internalType });
+            var retVal = Marshal.GetObjectForIUnknown(aggregatedObjectPtr);
+            Marshal.Release(aggregatedObjectPtr);       // retVal holds an RCW reference now, so this can be released
             return retVal;
         }
 
@@ -197,10 +197,10 @@ namespace Rubberduck.UI
                         if (ppv != IntPtr.Zero)
                         {
                             return CustomQueryInterfaceResult.Handled;
-                        };
-                    };
-                };
-            };
+                        }
+                    }
+                }
+            }
             return CustomQueryInterfaceResult.Failed;
         }
         
@@ -240,7 +240,7 @@ namespace Rubberduck.UI
 
         public virtual void Dispose()
         {
-            if (_aggregatedObjectPtr != null)
+            if (_aggregatedObjectPtr != IntPtr.Zero)
             {
                 Marshal.Release(_aggregatedObjectPtr);
                 _aggregatedObjectPtr = IntPtr.Zero;
@@ -291,10 +291,10 @@ namespace Rubberduck.UI
 
         public Wrapper_IOleInPlaceFrame(IntPtr hostObjectPtr) : base(hostObjectPtr)
         {
-            if (hostObjectPtr != null)
+            if (hostObjectPtr != IntPtr.Zero)
             {
                 _IOleInPlaceFrame = (COM_IOleInPlaceFrame)GetObject();
-            };
+            }
         }
 
         public override void Dispose()
@@ -344,7 +344,7 @@ namespace Rubberduck.UI
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::SetActiveObject() called");
             // need to wrap IOleInPlaceActiveObject to support this.  Used by VBE on focus. Doesn't seem to be needed by UserControl?
             //return _IOleInPlaceFrame.SetActiveObject(pActiveObject, pszObjName);
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleInPlaceFrame:: */ InsertMenus([In] IntPtr hmenuShared, [In, Out] ref IntPtr /* tagOleMenuGroupWidths */ lpMenuWidths)
@@ -398,7 +398,7 @@ namespace Rubberduck.UI
             {
                 _IOleClientSite = (COM_IOleClientSite)GetObject();
                 _IOleInPlaceSite = (COM_IOleInPlaceSite)GetObject();
-            };
+            }
         }
 
         public override void Dispose()
@@ -436,7 +436,7 @@ namespace Rubberduck.UI
             //return _IOleClientSite.GetMoniker(dwAssign, dwWhichMoniker, out moniker);
             moniker = IntPtr.Zero;
             Debug.Assert(false);
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleClientSite:: */ GetContainer([Out] out IntPtr /* IOleContainer */ container)
@@ -445,7 +445,7 @@ namespace Rubberduck.UI
             // need to wrap IOleContainer to support this.  VBE doesn't implement this anyway (returns E_NOTIMPL)
             //return _IOleClientSite.GetContainer(out container);
             container = IntPtr.Zero;
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleClientSite:: */ ShowObject()
@@ -512,7 +512,7 @@ namespace Rubberduck.UI
                 ppFrame = _cachedFrame.CopyAggregatedReference();
 
                 Debug.Assert(ppDoc == IntPtr.Zero);  // ppDoc not used by VBE, so no need to wrap it
-            };
+            }
 
             return hr;
         }
@@ -556,7 +556,7 @@ namespace Rubberduck.UI
 
     // ExposedUserControl - wrapper for UserControl that also exposes the underlying 
     // IOleObject and IOleInPlaceObject COM interfaces implemented by it
-    public class ExposedUserControl : UserControl, IDisposable
+    public class ExposedUserControl : UserControl
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -572,7 +572,7 @@ namespace Rubberduck.UI
             _IOleInPlaceObject = (COM_IOleInPlaceObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleInPlaceObject"));
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_IOleObject != null)
             {
@@ -586,7 +586,7 @@ namespace Rubberduck.UI
                 _IOleInPlaceObject = null;
             }
 
-            base.Dispose();
+            base.Dispose(disposing);
         }
 
         protected override bool ProcessKeyPreview(ref Message m)
@@ -650,7 +650,18 @@ namespace Rubberduck.UI
         public void Release()
         {
             // WARNING: Disposal of _userControl / _cachedClientSite should be handled in IOleObject::Close(), not here, see top comments
+            RemoveChildControlsFromExposedControl();
         }
+
+        private void RemoveChildControlsFromExposedControl()
+        {
+            foreach(UserControl control in _userControl.Controls)
+            {
+                _userControl.Controls.Remove(control);
+                control.Dispose();
+            }
+        }
+
 
         public int /* IOleObject:: */ SetClientSite([In] IntPtr /* IOleClientSite */ pClientSite)
         {
@@ -666,15 +677,15 @@ namespace Rubberduck.UI
             {
                 _cachedClientSite = new Wrapper_IOleClientSite(pClientSite);
                 return _userControl._IOleObject.SetClientSite(_cachedClientSite.PeekAggregatedReference());     // callee will take its own reference
-            };
-            return COMConstants.S_OK;
+            }
+            return (int)COMConstants.S_OK;
         }
 
         public int /* IOleObject:: */ GetClientSite([Out] out IntPtr /* IOleClientSite */ ppClientSite)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::GetClientSite() called");
-            ppClientSite = (_cachedClientSite != null) ? _cachedClientSite.CopyAggregatedReference() : IntPtr.Zero;
-            return COMConstants.S_OK;
+            ppClientSite = _cachedClientSite?.CopyAggregatedReference() ?? IntPtr.Zero;
+            return (int)COMConstants.S_OK;
         }
 
         public int /* IOleObject:: */ SetHostNames([In, MarshalAs(UnmanagedType.LPWStr)] string szContainerApp, [In, MarshalAs(UnmanagedType.LPWStr)] string szContainerObj)
@@ -692,20 +703,41 @@ namespace Rubberduck.UI
             // If it didn't, we release all host COM objects here instead,
 
             // This is the point where we can deterministically, and safely release our COM references for this ActiveX control.
-            _logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down host COM references");
-            _cachedClientSite?.Dispose();
-            _cachedClientSite = null;
+            // Moreover, we can release the UserControl COM references, as Close() should be the very last call into the IOleObject interface.
+            PerformUserControlShutdown();
 
-            // Now release the UserControl COM references, as Close() should be the very last call into the IOleObject interface.
-            _logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down internal COM references");
-            _userControl.Dispose();
-            _userControl = null;
+            return hr;
+        }
 
+        private void PerformUserControlShutdown()
+        {
+            ReleaseCOMReferenceOfSctiveXControl();
+            ReleasedExposedControl();
+            UnsubclassParent();
+
+            GC.Collect(); //todo: Release enough COM objects to make this not necessary anymore.
+            GC.WaitForPendingFinalizers();
+        }
+
+        private void UnsubclassParent()
+        {
             _logger.Log(LogLevel.Trace, "IOleObject::Close() ... unsubclassing the host parent window");
             _subClassingWindow.CallBackEvent -= OnCallBackEvent;
             _subClassingWindow.Dispose();
+        }
 
-            return hr;
+        private void ReleasedExposedControl()
+        {
+            _logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down internal COM references");
+            _userControl.Dispose();
+            _userControl = null;
+        }
+
+        private void ReleaseCOMReferenceOfSctiveXControl()
+        {
+            _logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down host COM references");
+            _cachedClientSite?.Dispose();
+            _cachedClientSite = null;
         }
 
         public int /* IOleObject:: */ SetMoniker([In] uint dwWhichMoniker, [In] IntPtr /* IMoniker */ pmk)
@@ -714,7 +746,7 @@ namespace Rubberduck.UI
             // need to wrap IMoniker to support this.  Not used by VBE anyway?
             //return _IOleObject.SetMoniker(dwWhichMoniker, pmk);
             Debug.Assert(false);
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out IntPtr /* IMoniker */ ppmk)
@@ -724,7 +756,7 @@ namespace Rubberduck.UI
             //return _IOleObject.GetMoniker(dwAssign, dwWhichMoniker, out ppmk);
             ppmk = IntPtr.Zero;
             Debug.Assert(false);
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ InitFromData([In] IntPtr /* IDataObject */ pDataObject, [In] int fCreation, [In] uint dwReserved)
@@ -733,7 +765,7 @@ namespace Rubberduck.UI
             // need to wrap IDataObject to support this.  Not used by VBE anyway?
             //return _IOleObject.InitFromData(pDataObject, fCreation, dwReserved);
             Debug.Assert(false);
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ GetClipboardData([In] uint dwReserved, [Out] out IntPtr /*IDataObject*/ ppDataObject)
@@ -743,7 +775,7 @@ namespace Rubberduck.UI
             //return _IOleObject.GetClipboardData(dwReserved, out ppDataObject);
             ppDataObject = IntPtr.Zero;
             Debug.Assert(false);
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ DoVerb([In] int iVerb, [In] IntPtr lpmsg, [In] IntPtr /* IOleClientSite */ pActiveSite, [In] int lindex, [In] IntPtr hwndParent, [In] IntPtr /* COMRECT */ lprcPosRect)
@@ -761,7 +793,7 @@ namespace Rubberduck.UI
             //return _IOleObject.EnumVerbs(out ppEnumOleVerb);
             ppEnumOleVerb = IntPtr.Zero;
             Debug.Assert(false);
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ Update()
@@ -805,7 +837,7 @@ namespace Rubberduck.UI
             _logger.Log(LogLevel.Trace, "IOleObject::Advise() called");
             // need to wrap IAdviseSink to support this. VBE does try to use this, but the events don't look interesting?
             pdwConnection = 0;
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ Unadvise([In] uint pdwConnection)
@@ -814,7 +846,7 @@ namespace Rubberduck.UI
             // No sense supporting Unadvise, as we're not supporting Advise
             //return _IOleObject.Unadvise(pdwConnection);
             //Debug.Assert(false);                              stupid VBE still calls us, despite us not implementing Advise()
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ EnumAdvise([Out] out IntPtr /* IEnumSTATDATA */ enumAdvise)
@@ -823,7 +855,7 @@ namespace Rubberduck.UI
             // need to wrap IEnumSTATDATA to support this. No sense supporting EnumAdvise, as we're not supporting Advise
             //return _IOleObject.EnumAdvise(out enumAdvise);
             enumAdvise = IntPtr.Zero;
-            return COMConstants.E_NOTIMPL;
+            return (int)COMConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ GetMiscStatus([In] uint dwAspect, [Out] out uint pdwStatus)
@@ -880,6 +912,10 @@ namespace Rubberduck.UI
 
         private void OnCallBackEvent(object sender, SubClassingWindowEventArgs e)
         {
+            if (e.Closing)
+            {
+                return;
+            }
             var param = new LParam { Value = (uint)e.LParam };
             _userControl.Size = new Size(param.LowWord, param.HighWord);
         }
@@ -945,10 +981,7 @@ namespace Rubberduck.UI
 
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
-                if (CallBackEvent != null)
-                {
-                    CallBackEvent(this, e);
-                }
+                CallBackEvent?.Invoke(this, e);
             }
 
             public ParentWindow(IntPtr vbeHwnd, IntPtr id, IntPtr handle) : base(id, handle)
