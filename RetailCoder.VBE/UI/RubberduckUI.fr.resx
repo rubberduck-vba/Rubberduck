@@ -2068,7 +2068,7 @@ les projets dans le VBE.</value>
 {1} marqueurs trouvés.</value>
   </data>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>P</value>
+    <value>Nidification</value>
   </data>
   <data name="CodeMetrics_Complexity" xml:space="preserve">
     <value>Complexité Cyclomatique</value>
@@ -2093,5 +2093,8 @@ les projets dans le VBE.</value>
   </data>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Appliquer</value>
+  </data>
+  <data name="AddRemoveReferences_Title" xml:space="preserve">
+    <value>Modifier les Références</value>
   </data>
 </root>

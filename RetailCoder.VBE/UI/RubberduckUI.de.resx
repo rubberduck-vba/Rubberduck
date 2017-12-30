@@ -2091,4 +2091,7 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="ApplyButtonText" xml:space="preserve">
     <value>Bewerben</value>
   </data>
+  <data name="AddRemoveReferences_Title" xml:space="preserve">
+    <value>Projekt Referenzen</value>
+  </data>
 </root>

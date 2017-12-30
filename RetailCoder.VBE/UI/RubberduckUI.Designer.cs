@@ -186,6 +186,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project References.
+        /// </summary>
+        public static string AddRemoveReferences_Title {
+            get {
+                return ResourceManager.GetString("AddRemoveReferences_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implementations of &apos;{0}&apos;.
         /// </summary>
         public static string AllImplementations_Caption {
