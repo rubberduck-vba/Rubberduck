@@ -451,13 +451,29 @@ namespace Rubberduck.Refactorings.Rename
         private void RenameProject()
         {
             RequestParseAfterRename = false;
-            var projects = _model.VBE.VBProjects;
-            var project = projects.SingleOrDefault(p => p.ProjectId == _model.Target.ProjectId);
+            var project = ProjectById(_vbe, _model.Target.ProjectId);
 
             if (project != null)
             {
                 project.Name = _model.NewName;
+                project.Dispose();
             }
+        }
+
+        private IVBProject ProjectById(IVBE vbe, string projectId)
+        {
+            using (var projects = vbe.VBProjects)
+            {
+                foreach (var project in projects)
+                {
+                    if (project.ProjectId == projectId)
+                    {
+                        return project;
+                    }
+                    project.Dispose();
+                }
+            }
+            return null;
         }
 
         private void RenameDefinedFormatMembers(IEnumerable<Declaration> members, string underscoreFormat)
