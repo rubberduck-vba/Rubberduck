@@ -97,6 +97,7 @@ namespace Rubberduck.AddRemoveReferences
 
         private string GetLibraryPath(RegistryKey versionSubKey, out int subKeyValue)
         {
+            subKeyValue = 0;
             var result = string.Empty;
             foreach (var subKeyName in versionSubKey.GetSubKeyNames())
             {
