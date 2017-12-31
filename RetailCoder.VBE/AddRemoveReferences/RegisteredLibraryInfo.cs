@@ -9,5 +9,7 @@ namespace Rubberduck.AddRemoveReferences
         public string Description { get; set; }
         public Version Version { get; set; }
         public string FullPath { get; set; }
+        public int Flags { get; set; }
+        public int SubKey { get; set; }
     }
 }

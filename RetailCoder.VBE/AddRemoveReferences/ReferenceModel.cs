@@ -27,6 +27,8 @@ namespace Rubberduck.AddRemoveReferences
             FullPath = info.FullPath;
             IsBuiltIn = false;
             Type = ReferenceKind.TypeLibrary;
+            Flags = info.Flags;
+            SubKey = info.SubKey;
         }
 
         public ReferenceModel(IReference reference, int priority)
@@ -54,6 +56,8 @@ namespace Rubberduck.AddRemoveReferences
         public string FullPath { get; }
         public bool IsBuiltIn { get; }
         public bool IsBroken { get; }
+        public int Flags { get; }
+        public int SubKey { get; }
         public ReferenceKind Type { get; }
 
         public ReferenceStatus Status => IsBuiltIn
