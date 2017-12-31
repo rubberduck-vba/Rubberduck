@@ -315,6 +315,8 @@
   <ItemGroup>
     <Compile Include="AddRemoveReferences\ReferenceModel.cs" />
     <Compile Include="AddRemoveReferences\ReferenceStatus.cs" />
+    <Compile Include="AddRemoveReferences\RegisteredLibraryFinderService.cs" />
+    <Compile Include="AddRemoveReferences\RegisteredLibraryInfo.cs" />
     <Compile Include="API\VBA\Accessibility.cs" />
     <Compile Include="API\VBA\Declaration.cs" />
     <Compile Include="API\VBA\DeclarationType.cs" />

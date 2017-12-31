@@ -13,6 +13,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         public AddRemoveReferencesViewModel(IEnumerable<ReferenceModel> model)
         {
             ComLibraries = model.Where(item => item.Type == ReferenceKind.TypeLibrary);
+
         }
 
         /// <summary>
@@ -21,7 +22,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         public ICommand BrowseCommand { get; }
 
         /// <summary>
-        /// Applies all changes to project references, and updates pinned references settings.
+        /// Applies all changes to project references.
         /// </summary>
         public ICommand ApplyCommand { get; }
 
@@ -36,7 +37,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         public ReferenceModel SelectedReference { get; }
 
         /// <summary>
-        /// Gets all selected COM libraries and VBA projects 
+        /// Gets all selected COM libraries and VBA projects.
         /// </summary>
         public ICollection<ReferenceModel> ProjectReferences { get; }
     }

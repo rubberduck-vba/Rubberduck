@@ -18,7 +18,7 @@ namespace Rubberduck.AddRemoveReferences
             Type = ReferenceKind.Project;
         }
 
-        public ReferenceModel(dynamic info) // todo figure out what type that should be 
+        public ReferenceModel(RegisteredLibraryInfo info)
         {
             Name = info.Name;
             Guid = info.Guid;
@@ -65,5 +65,7 @@ namespace Rubberduck.AddRemoveReferences
                     : IsSelected
                         ? ReferenceStatus.Loaded
                         : ReferenceStatus.None;
+
+
     }
 }
