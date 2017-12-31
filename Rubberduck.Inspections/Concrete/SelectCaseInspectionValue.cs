@@ -25,7 +25,9 @@ namespace Rubberduck.Inspections.Concrete
     {
         private readonly string _ctorTypeName;
         private readonly string _valueAsString;
+        private readonly string _inputString;
         private string _useageTypeName;
+        private string _derivedTypeName;
         private  Func<VBAValue, VBAValue, bool> _operatorIsGT;
         private  Func<VBAValue, VBAValue, bool> _operatorIsLT;
         private  Func<VBAValue, VBAValue, bool> _operatorIsEQ;
@@ -58,7 +60,7 @@ namespace Rubberduck.Inspections.Concrete
             { Tokens.Double, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; } },
             { Tokens.Single, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; } },
             { Tokens.Currency, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsCurrency().Value > compValue.AsCurrency().Value; } },
-            { Tokens.Boolean, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsBoolean().Value == compValue.AsBoolean().Value ? false : !thisValue.AsBoolean().Value; } },
+            { Tokens.Boolean, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; } },
             { Tokens.String, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) > 0; } }
         };
 
@@ -70,7 +72,7 @@ namespace Rubberduck.Inspections.Concrete
             { Tokens.Double, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; } },
             { Tokens.Single, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; } },
             { Tokens.Currency, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsCurrency().Value < compValue.AsCurrency().Value; } },
-            { Tokens.Boolean, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsBoolean().Value == compValue.AsBoolean().Value ? false : thisValue.AsBoolean().Value; } },
+            { Tokens.Boolean, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; } },
             { Tokens.String, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) < 0; } }
         };
 
@@ -154,7 +156,8 @@ namespace Rubberduck.Inspections.Concrete
 
         public VBAValue(string valueToken, string ctorTypeName)
         {
-            _valueAsString = valueToken;
+            _inputString = valueToken;
+            _valueAsString = _inputString.Replace("\"", "");
             var endingCharacter = _valueAsString.Last().ToString();
             if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !ctorTypeName.Equals(Tokens.String))
             {
@@ -162,18 +165,27 @@ namespace Rubberduck.Inspections.Concrete
             }
             _ctorTypeName = ctorTypeName;
             UseageTypeName = _ctorTypeName;
+            _derivedTypeName = string.Empty;
         }
 
         public VBAValue(long value, string ctorTypeName = "Long")
         {
-            _valueAsString = value.ToString();
+            _inputString = value.ToString();
+            _valueAsString = _inputString;
             _ctorTypeName = ctorTypeName;
             UseageTypeName = _ctorTypeName;
+            _derivedTypeName = string.Empty;
         }
 
-        public static string DeriveTypeName(string textValue, string defaultType = "String")
+        public static VBAValue Zero => new VBAValue(0);
+        public static VBAValue False => Zero;
+        public static VBAValue True => new VBAValue(-1);
+        public static VBAValue Unity => new VBAValue(1);
+        public VBAValue AdditiveInverse => this * new VBAValue(-1, UseageTypeName);
+        public static bool IsSupportedVBAType(string typeName) => OperatorsIsEQ.Keys.Contains(typeName);
+
+        private static string DeriveTypeName(string textValue, string defaultType = "String")
         {
-            //TODO use TypeHintToTypeName - and add tests for each kind
             if (SymbolList.TypeHintToTypeName.TryGetValue(textValue.Last().ToString(), out string typeName))
             {
                 return typeName;
@@ -216,7 +228,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             set
             {
-                if(value != _useageTypeName)
+                if (value != _useageTypeName)
                 {
                     _useageTypeName = value;
                     _operatorIsGT = GetDelegate(OperatorsIsGT, _useageTypeName);
@@ -231,11 +243,25 @@ namespace Rubberduck.Inspections.Concrete
             get { return _useageTypeName; }
         }
 
+        public string DerivedTypeName
+        {
+            get
+            {
+                if (_derivedTypeName.Equals(string.Empty))
+                {
+                    _derivedTypeName = DeriveTypeName(_inputString, _ctorTypeName);
+                }
+                return _derivedTypeName;
+            }
+        }
+
         public bool HasValue
             => HasValueTests.ContainsKey(UseageTypeName) ? HasValueTests[UseageTypeName](this) : false;
 
-        public bool IsWithin(VBAValue start, VBAValue end ) 
-            => start > end ? this >= end && this <= start : this >= start && this <= end;
+        public bool IsWithin(VBAValue start, VBAValue end, bool isInclusive = true ) 
+            => isInclusive ?
+                start > end ? this >= end && this <= start : this >= start && this <= end
+                : start > end ? this > end && this < start : this > start && this < end;
 
         public bool ExceedsMaxMin()
               => MaxMinTests.ContainsKey(UseageTypeName) ? MaxMinTests[UseageTypeName](this) : false;
@@ -519,6 +545,10 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     _boolValueAsLong = Math.Abs(resultDecimal) > 0.0000001M ? -1 : 0;
                 }
+            }
+            if(_boolValueAsLong == null)
+            {
+                return null;
             }
             return _boolValueAsLong != 0 ? true : false;
         }

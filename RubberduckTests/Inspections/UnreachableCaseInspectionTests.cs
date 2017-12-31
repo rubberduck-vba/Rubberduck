@@ -91,7 +91,7 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         [TestCategory("Inspections")]
         public void UnreachableCaseInspection_PowOpEvaluationAlgebra()
         {
@@ -102,7 +102,11 @@ Select Case x
   Case x ^ 2 = 49
     'OK
   Case x = 7
-    'Unreachable, but not detected - math/algebra on the Select Case variable yet to be supported
+    'Unreachable, but not detected - math/algebra on prior Select Case variable yet to be supported
+  Case Is < 20
+    'OK
+  Case 13
+    'Unreachable
 End Select
 
 End Sub";
@@ -133,7 +137,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_TextOnlyCompareOutofOrder()
+        public void UnreachableCaseInspection_TextOnlyCompareCopyPasteOutofOrder()
         {
             const string inputCode =
 @"Sub Foo(x As Long)
@@ -160,7 +164,7 @@ End Sub";
 
 Select Case x
   Case Is > 5, 15, 20, Is < 55
-    'Conflict
+    'OK
   Case 4 To 10
     'Unreachable
   Case True
@@ -183,7 +187,7 @@ End Sub";
 Const x As String =""Bar""
 Select Case x
   Case ""Foo"", ""Bar""
-    'Do FooBar
+    'OK
   Case ""Foo""
     'Unreachable
   Case ""Bar""
@@ -201,12 +205,11 @@ End Sub";
         public void UnreachableCaseInspection_MultipleUnreachableCases()
         {
             const string inputCode =
-@"Sub Foo()
+@"Sub Foo(x As String)
 
-Const x As String =""Bar""
 Select Case x
   Case ""Foo"", ""Bar""
-    'Do FooBar
+    'OK
   Case ""Foo""
     'Unreachable
   Case ""Bar""
@@ -217,44 +220,6 @@ End Select
                 
 End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_ConflictingCaseStmt()
-        {
-            const string inputCode =
-@"Sub Foo(x As Long)
-
-Select Case x
-  Case 1 To 45, 35, 85
-    'Internal Conflict but reachable
-  Case Else
-    'OK
-End Select
-                
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_OverlapOnlyCaseStmt()
-        {
-            const string inputCode =
-@"Sub Foo(x As Long)
-
-Select Case x
-  Case 40
-    'OK
-  Case 1 To 45, 35, 85
-    'Internal Conflict but reachable
-  Case Else
-    'OK
-End Select
-                
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
         }
 
         [TestMethod]
@@ -355,7 +320,7 @@ End Sub";
 Const x As String =""Bar""
 Select Case x
   Case ""Alpha"" To ""Omega""
-    'Do FooBar
+    'OK
   Case ""Alphabet""
     'Unreachable
   Case ""Ohm""
@@ -379,7 +344,7 @@ Const x As String =""Bar""
   
 Select Case x
   Case ""Foo"", ""Bar""
-    'Do FooBar
+    'OK
   Case ""Foo""
     'Unreachable
   Case ""Food""
@@ -400,7 +365,7 @@ End Sub";
 
 Select Case x
   Case 1 To 100
-    'Do FooBar
+    'OK
   Case 50
     'Unreachable
 End Select
@@ -421,7 +386,7 @@ Const AUG As Long = 8
 
 Select Case x
   Case JAN To DEC
-    'Do FooBar
+    'OK
   Case AUG
     'Unreachable
 End Select
@@ -459,11 +424,11 @@ End Sub";
 
 Select Case x
   Case 150 To 250
-    'Do FooBar1
+    'OK
   Case 1 To 100
-    'Do FooBar2
+    'OK
   Case 101 To 149
-    'Do FooBar2
+    'OK
   Case 25 To 249 
     'Unreachable
 End Select
@@ -481,31 +446,13 @@ End Sub";
 
 Select Case x
   Case 100 To 1
-    'Do FooBar
+    'OK
   Case 50
     'Unreachable
 End Select
 
 End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_NumberRangeAndIsStmt()
-        {
-            const string inputCode =
-@"Sub Foo(x as Long)
-
-Select Case x
-  Case 1 To 100
-    'Do FooBar
-  Case Is <= 150
-    'Conflict
-End Select
-
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
         }
 
         [TestMethod]
@@ -517,7 +464,7 @@ End Sub";
 
 Select Case x
   Case 100 To 1
-    'Do FooBar
+    'OK
   Case 50
     'Unreachable
 End Select
@@ -528,40 +475,50 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_NumberRangeConflict()
+        public void UnreachableCaseInspection_CaseElseIsClausePlusRange()
         {
             const string inputCode =
 @"Sub Foo(x as Long)
 
 Select Case x
-  Case 1 To 100
-    'Do FooBar
-  Case 101 To 125
-    'reachable
+  Case Is > 200
+    'OK
   Case 50 To 200
-    'Conflict
+    'OK
+  Case Is < 50
+    'OK
+  Case Else
+    'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_NumberRangeFollowsScalar()
+        public void UnreachableCaseInspection_CaseElseIsClausePlusRangeAndSingles()
         {
             const string inputCode =
 @"Sub Foo(x as Long)
 
 Select Case x
-  Case 55
+  Case 53,54
     'OK
-  Case 50 To 200
+  Case Is > 200
     'OK
+  Case 55 To 200
+    'OK
+  Case Is < 50
+    'OK
+  Case 50,51,52
+    'OK
+  Case Else
+    'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
         [TestMethod]
@@ -573,13 +530,13 @@ End Sub";
 
 Select Case x
   Case 1 To 10
-    'Do FooBar
+    'OK
   Case 9
     'Unreachable
   Case 11
     Select Case  z
       Case 5 To 25
-        'Do FooBar
+        'OK
       Case 6
         'Unreachable
       Case 8
@@ -605,13 +562,13 @@ Const z As String = ""Bar""
 
 Select Case x
   Case ""Foo"", ""Bar""
-    'Do FooBar
+    'OK
   Case ""Foo""
     'Unreachable
   Case ""Food""
     Select Case  z
       Case ""Foo"", ""Bar"",""Goo""
-        'Do FooBar
+        'OK
       Case ""Bar""
         'Unreachable
       Case ""Foo""
@@ -633,7 +590,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case x
   Case 1,2,-5
-    'Do FooBar
+    'OK
   Case 2
     'Unreachable
   Case -5
@@ -652,7 +609,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case -x
   Case 1,2,-5
-    'Do FooBar
+    'OK
   Case 2
     'Unreachable
   Case -5
@@ -671,7 +628,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case x Or x < 5
   Case True
-    'Do FooBar
+    'OK
   Case False 
     'OK
   Case -5
@@ -713,7 +670,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case x And x < 5
   Case True
-    'Do FooBar
+    'OK
   Case False 
     'OK
   Case -5
@@ -760,7 +717,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case x = 1 Xor x < 5
   Case True
-    'Do FooBar
+    'OK
   Case False 
     'OK
   Case -5
@@ -779,7 +736,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case x Eqv 1
   Case True
-    'Do FooBar
+    'OK
   Case False 
     'OK
   Case -5
@@ -798,7 +755,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case Not x
   Case True
-    'Do FooBar
+    'OK
   Case False 
     'OK
   Case -5
@@ -836,7 +793,7 @@ End Sub";
 @"Sub Foo(x As Long)
 Select Case (x)
   Case 1,2,-5
-    'Do FooBar
+    'OK
   Case 2
     'Unreachable
   Case -5
@@ -874,7 +831,7 @@ End Sub";
 
 Select Case x
   Case 10,11,12
-    'Do FooBar
+    'OK
   Case 15, 40000
     'Exceeds Integer value - but other value makes case reachable....no Error
   Case x < 4
@@ -944,7 +901,7 @@ End Sub";
 
 Select Case x
   Case 85.5
-    'Do FooBar
+    'OK
   Case -922337203685477.5809
     'Unreachable
   Case 922337203685490.5808
@@ -964,7 +921,7 @@ End Sub";
 
 Select Case x
   Case 85.5
-    'Do FooBar
+    'OK
   Case -3402824E38
     'Unreachable
   Case 3402824E38
@@ -1033,6 +990,104 @@ End Select
 
 End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_BooleanUnreachableCaseElseIsStmt()
+        {
+            const string inputCode =
+@"Sub Foo(x As Boolean)
+
+Select Case x
+  Case Is > -40
+    'OK
+  Case False
+    'unreachable
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_BooleanUnreachableCaseElseIsStmtGTAndValue()
+        {
+            const string inputCode =
+@"Sub Foo(x As Boolean)
+
+Select Case x
+  Case Is > -1
+    'OK
+  Case -10
+    'OK
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_BooleanUnreachableCaseElseIsStmtLTAndValue()
+        {
+            const string inputCode =
+@"Sub Foo(x As Boolean)
+
+Select Case x
+  Case Is < 0
+    'OK
+  Case 0
+    'OK
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_BooleanUnreachableCaseElseRange()
+        {
+            const string inputCode =
+@"Sub Foo(x As Boolean)
+
+Select Case x
+  Case 0 To 10
+    'OK
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_BooleanUnreachableCaseElseValueRange()
+        {
+            const string inputCode =
+@"Sub Foo(x As Boolean)
+
+Select Case x
+  Case -10 To 5
+    'OK
+  Case False
+    'unreachable
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
         [TestMethod]
@@ -1115,10 +1170,12 @@ Select Case x
     'OK
   Case TheUnreachableValue
     'Unreachable
+  Case 55
+    'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
         [TestMethod]
@@ -1135,6 +1192,112 @@ Select Case VBA.Rnd()
     'OK
   Case 0.55
     'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_BooleanNEQ()
+        {
+            const string inputCode =
+@"Sub Foo( x As Boolean)
+
+Select Case x
+  Case True
+    'OK
+  Case x <> False
+    'Unreachable
+  Case 95
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_BooleanNEQCaseElse()
+        {
+            const string inputCode =
+@"Sub Foo( x As Boolean)
+
+Select Case x
+  Case 95
+    'OK
+  Case x <> False
+    'unreachable
+  Case 100
+    'unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_LongCollisionIndeterminateCase()
+        {
+            const string inputCode =
+@"Sub Foo( x As Long, y As Double)
+
+Select Case x
+  Case x > -3000
+    'OK
+  Case x < y
+    'OK - indeterminant
+  Case 95
+    'Unreachable
+  Case Else
+    'OK
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_LongCollisionMultipleVariablesSameType()
+        {
+            const string inputCode =
+@"Sub Foo( x As Long, y As Long)
+
+Select Case x * y
+  Case x > -3000
+    'OK
+  Case x < y
+    'OK - indeterminant
+  Case 95
+    'Unreachable
+  Case Else
+    'OK
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_LongCollisionMultipleVariablesDifferentType()
+        {
+            const string inputCode =
+@"Sub Foo( x As Long, y As Double)
+
+Select Case x * y
+  Case x > -3000
+    'OK
+  Case x < y
+    'OK - indeterminant
+  Case 95
+    'Unreachable
+  Case Else
+    'OK
 End Select
 
 End Sub";
@@ -1210,7 +1373,7 @@ End Sub";
 
 Select Case x
   Case 2,5,7
-    'Do FooBar
+    'OK
   Case 254
     'OK
   Case 255
@@ -1238,7 +1401,7 @@ End Sub";
 
 Select Case x
   Case 4.4, 4.5, 4.6
-    'Do FooBar
+    'OK
   Case 4.5
     'Unreachable
 End Select
@@ -1256,7 +1419,7 @@ End Sub";
 
 Select Case x
   Case 1,2,5
-    'Do FooBar
+    'OK
   Case 2
     'Unreachable
 End Select
@@ -1298,15 +1461,17 @@ Select Case x
   Case 1 To 49
     'OK
   Case ""Test"", 100, ""92""
-    'OK
+    'OK - ""Test"" will not be evaluated
   Case ""85""
     'OK
   Case 2
     'Unreachable
+  Case 92
+    'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
         [TestMethod]
@@ -1358,7 +1523,7 @@ End Sub";
 
 Select Case x
   Case 1 To 4, 7 To 9, 11, 13, 15 To 20
-    'Do FooBar
+    'OK
   Case 8
     'Unreachable
   Case 11
@@ -1382,18 +1547,16 @@ End Sub";
 
 Select Case LNumber
    Case Is < 100
-      LRegionName = ""North""
+      'OK
    Case Is < 200
-      'Conflict  
-      LRegionName = ""South""
+      'OK
    Case Is < 300
-      LRegionName = ""East""
-      'Conflict  
+      'OK
    Case Else
-      LRegionName = ""West""
+      'OK
    End Select
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
         [TestMethod]
@@ -1401,24 +1564,20 @@ End Sub";
         public void UnreachableCaseInspection_CascadingIsStatementsGT()
         {
             const string inputCode =
-@"Sub Foo()
-
-Const LNumber As Long = 340
+@"Sub Foo(LNumber As Long)
 
 Select Case LNumber
    Case Is > 300
-      LRegionName = ""North""
+    'OK
    Case Is > 200
-      'OK  
-      LRegionName = ""South""
+    'OK  
    Case Is > 100
-      LRegionName = ""East""
-       'OK  
-  Case Else
-      LRegionName = ""West""
+    'OK  
+   Case Else
+    'OK
    End Select
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
         [TestMethod]
@@ -1472,9 +1631,9 @@ End Sub";
 
 Select Case z
   Case Is > 5000
-    'Do FooBar
+    'OK
   Case 5000
-    'Do Foobar again
+    'OK
   Case 5001
     'Unreachable
   Case 10000
@@ -1487,24 +1646,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_IsStmtToIsStmt()
-        {
-            const string inputCode =
-@"Sub Foo(z As Long)
-
-Select Case z
-  Case Is > 5000 
-    'Do FooBar
-  Case Is < 10000
-    'Conflict
-End Select
-
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void UnreachableCaseInspection_IsStmtToIsStmtCaseElseUnreachable()
         {
             const string inputCode =
@@ -1512,9 +1653,9 @@ End Sub";
 
 Select Case z
   Case Is > 5000 
-    'Do FooBar
+    'OK
   Case Is < 10000
-    'Conflict
+    'OK
   Case Else
     'Unreachable
 End Select
@@ -1532,9 +1673,9 @@ End Sub";
 
 Select Case z
   Case Is > 5000 
-    'Do FooBar
+    'OK
   Case Is <= 10000
-    'Conflict
+    'OK
   Case Else
     'Unreachable
 End Select
@@ -1552,7 +1693,7 @@ End Sub";
 
 Select Case z
   Case z <> 5 
-    'Do FooBar
+    'OK
   Case Is = 5
     'OK
   Case 400
@@ -1562,30 +1703,6 @@ Select Case z
 End Select
 End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1,  caseElse: 1);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_Evil()
-        {
-            const string inputCode =
-@"Sub Foo(z As Long)
-
-Select Case z
-  Case 1 To 4, 7 To 9, 11, 13, Is > 400 
-    'Do FooBar
-  Case 401
-    'Unreachable
-  Case 15 To 25, 300 To 401
-    'Conflict
-  Case z < 2
-    'Conflict
-  Case 88
-    'OK
-End Select
-
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
         [TestMethod]
@@ -1641,9 +1758,9 @@ End Sub";
 
 Select Case z
   Case z > 5000
-    'Do FooBar
+    'OK
   Case 5000
-    'Do Foobar again
+    'OK
   Case 5001
     'Unreachable
   Case 10000
@@ -1668,9 +1785,9 @@ Sub Foo(z As Long)
 
 Select Case Bar() * z
   Case Is > 5000
-    'Do FooBar
+    'OK
   Case 5000
-    'Do Foobar again
+    'OK
   Case 5001
     'Unreachable
   Case 10000
@@ -1735,6 +1852,27 @@ Sub Foo(z As Long)
 private const maxValue As Long = 5000
 
 Select Case z
+  Case 2 * maxValue
+    'OK
+  Case 10000
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_CaseClauseHasMultOpInParens()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Long)
+
+private const maxValue As Long = 5000
+
+Select Case (((z)))
   Case 2 * maxValue
     'OK
   Case 10000
@@ -1819,7 +1957,7 @@ Sub Foo(z As Long)
 
 Select Case z
   Case Is > maxValue
-    'Do Foobar again
+    'OK
   Case 6000
     'Unreachable
   Case 8500
@@ -1836,7 +1974,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_NumberRangeEnumerationNoDetection()
+        public void UnreachableCaseInspection_EnumerationNumberRangeNoDetection()
         {
             const string inputCode =
 @"
@@ -1869,7 +2007,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_NumberRangeEnumeration()
+        public void UnreachableCaseInspection_EnumerationNumberRange()
         {
             const string inputCode =
 @"
@@ -1902,7 +2040,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_NumberRangeEnumerationNonConstant()
+        public void UnreachableCaseInspection_EnumerationNumberRangeNonConstant()
         {
             const string inputCode =
 @"
@@ -1934,7 +2072,7 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_NumberRangeEnumerationInvalidValue()
+        public void UnreachableCaseInspection_EnumerationNumberRangeInvalidValue()
         {
             const string inputCode =
 @"
@@ -1960,6 +2098,118 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_EnumerationNumberRangeConflicts()
+        {
+            const string inputCode =
+@"
+private Enum Fruit
+    Apple = 10
+    Pear = 20
+    Orange = 30
+ End Enum
+
+Sub Foo(z As Fruit)
+
+Select Case z
+  Case -4 To 11
+    'OK - captures 'Apple' only
+  Case 10 To 16 
+    'Unreachable - The only captured enum 'Apple' is already handled by the first case
+  Case 11 To 19
+    'Unreachable - no valid enums fall in this range
+  Case Else
+    'OK
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_EnumerationNumberRangeIsStmtConflictLT()
+        {
+            const string inputCode =
+@"
+private Enum Fruit
+    Apple = 10
+    Pear = 20
+    Orange = 30
+ End Enum
+
+Sub Foo(z As Fruit)
+
+Select Case z
+  Case 10 To 25
+    'OK
+  Case z < 21 
+    'Unreachable - all enums < 21 have already been captured
+  Case Else
+    'OK
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_EnumerationNumberRangeIsStmtConflictGTE()
+        {
+            const string inputCode =
+@"
+private Enum Fruit
+    Apple = 10
+    Pear = 20
+    Orange = 30
+ End Enum
+
+Sub Foo(z As Fruit)
+
+Select Case z
+  Case 25 To 30
+    'OK
+  Case z >= 30 
+    'Unreachable - all enums >= 30 have already been captured
+  Case Else
+    'OK
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_RangeCollisionsWithEnums()
+        {
+            const string inputCode =
+@"
+private Enum Fruit
+    Apple = 10
+    Pear = 20
+    Orange = 30
+ End Enum
+
+Sub Foo(z As Long)
+
+Select Case z
+  Case z >= Orange
+    'OK
+  Case 30 To 100
+    'Unreachable
+  Case Pear
+    'OK
+  Case 20
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
         public void UnreachableCaseInspection_SelectCaseUsesConstantReferenceExpr()
         {
             const string inputCode =
@@ -1970,7 +2220,7 @@ Sub Foo(z As Long)
 
 Select Case ( z * 3 ) - 2
   Case z > maxValue
-    'Do Foobar again
+    'OK
   Case 15
     'OK
   Case 6000
@@ -1997,7 +2247,7 @@ Sub Foo(z As Long)
 
 Select Case z
   Case maxValue < z
-    'Do Foobar again
+    'OK
   Case 6000
     'Unreachable
   Case 15
@@ -2053,9 +2303,9 @@ Sub Foo()
 
 Select Case Bar()
   Case Is > 5000
-    'Do FooBar
+    'OK
   Case 5000
-    'Do Foobar again
+    'OK
   Case 5001
     'Unreachable
   Case 10000
@@ -2075,9 +2325,9 @@ End Sub";
 
 Select Case z
   Case 500 < z
-    'Do FooBar
+    'OK
   'Case 500
-    'Do Foobar again
+    'OK
   Case 501
     'Unreachable
   Case 1000
@@ -2090,30 +2340,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_ConstantSelectStmt()
-        {
-            const string inputCode =
-@"Sub Foo()
-
-Dim x As Long
-x = 7
-
-Dim y As Long
-y = 9
-
-Select Case True
-  Case x >= 7
-    'Do FooBar
-  Case y >= 4
-    'Do Foobar again
-End Select
-
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void UnreachableCaseInspection_IsStmtGTFollowsRange()
         {
             const string inputCode =
@@ -2121,9 +2347,9 @@ End Sub";
 
 Select Case z
   Case 3 To 10
-    'Do FooBar
+    'OK
   Case Is > 8
-    'Conflict
+    'OK
   Case 4
     'Unreachable
   Case 2
@@ -2143,11 +2369,11 @@ End Sub";
 
 Select Case z
   Case 5000
-    'Do Foobar again
+    'OK
   Case 10000
     'OK
   Case Is > 5000
-    'Conflict
+    'OK
   Case 5001
     'Unreachable
 End Select
@@ -2165,9 +2391,9 @@ End Sub";
 
 Select Case z
   Case Is >= 5000
-    'Do FooBar
+    'OK
   Case 4999
-    'Do Foobar again
+    'OK
   Case 5000
     'Unreachable
   Case 10000
@@ -2187,13 +2413,13 @@ End Sub";
 
 Select Case z
   Case Is < 5000
-    'Do FooBar
+    'OK
   Case 7
     'Unreachable
   Case 4999
     'Unreachable
   Case 5000
-    'Do Foobar again
+    'OK
 End Select
 
 End Sub";
@@ -2209,11 +2435,11 @@ End Sub";
 
 Select Case z
   Case Is <= 5000
-    'Do FooBar
+    'OK
   Case 7
     'Unreachable
   Case 5001
-    'Do Foobar again
+    'OK
   Case 5000
     'Unreachable
 End Select
@@ -2233,9 +2459,9 @@ Select Case z
   Case 7
     'OK
   Case Is <= 5000
-    'Conflict
+    'OK
   Case 5001
-    'Do Foobar again
+    'OK
   Case 5000
     'Unreachable
 End Select
@@ -2253,7 +2479,7 @@ End Sub";
 
 Select Case z
   Case Is <> 8
-    'Do FooBar
+    'OK
   Case 7
     'Unreachable
   Case 5001
@@ -2373,7 +2599,7 @@ End Sub";
 
 Select Case z
   Case Is > 8
-    'Do FooBar
+    'OK
   Case 8
     'OK
   Case  Is = 9
@@ -2390,24 +2616,6 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_IsStmtAndRange()
-        {
-            const string inputCode =
-@"Sub Foo(z As Long)
-
-Select Case z
-  Case Is > 8
-    'OK
-  Case 3 To 10
-    'Conflict - OK
-End Select
-
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
         public void UnreachableCaseInspection_IsStmtAndNegativeRange()
         {
             const string inputCode =
@@ -2415,7 +2623,7 @@ End Sub";
 
 Select Case z
   Case Is < 8
-    'Do FooBar
+    'OK
   Case -10 To -3
     'Unreachable
   Case 0
@@ -2438,7 +2646,7 @@ private const FINISH As Long = 3
 Sub Foo(z As Long)
 Select Case z
   Case Is < 8
-    'Do FooBar
+    'OK
   Case -(START * 4) To -(FINISH * 2) 
     'Unreachable
   Case 0
@@ -2451,40 +2659,117 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_IsStmtAndRangeAreNegative()
+        public void UnreachableCaseInspection_TypeHintString()
         {
             const string inputCode =
-@"Sub Foo(z As Long)
+@"
+Sub Foo(z As String)
 
-Select Case z
-  Case Is < -8
+Dim SomeString$
+
+SomeString$ = SomeString$ & z
+
+Select Case SomeString$
+  Case ""Here"" To ""Eternity""
     'OK
-  Case -10 To -3
-    'Overlap - but reachable
-  Case 0
-    'OK
+  Case ""Forever""
+    'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_SingleValueFollowedByIsStmt()
+        public void UnreachableCaseInspection_TypeHintDouble()
         {
             const string inputCode =
-@"Sub Foo(z As Long)
+@"
+Sub Foo(z As Double)
 
-Select Case z
-  Case 200
+Dim SomeDouble#
+
+SomeDouble# = SomeDouble# + z
+
+Select Case SomeDouble#
+  Case 10.00 To 30.00
     'OK
-  Case Is > 8
-    'Conflict but OK
+  Case 20.00
+    'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_TypeHintSingle()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Single)
+
+Dim SomeSingle!
+
+SomeSingle! = SomeSingle! + z
+
+Select Case SomeSingle!
+  Case 10.00 To 30.00
+    'OK
+  Case 20.00
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_TypeHintInt()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Integer)
+
+Dim SomeInteger$
+
+SomeInteger% = SomeInteger% + z
+
+Select Case SomeInteger%
+  Case 10 To 30
+    'OK
+  Case 20
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_TypeHintLong()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Long)
+
+Dim SomeLong&
+
+SomeLong& = SomeLong& + z
+
+Select Case SomeLong&
+  Case 10 To 30
+    'OK
+  Case 20
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
         private void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, /*int outOfRange = 0,*/ int caseElse = 0)
