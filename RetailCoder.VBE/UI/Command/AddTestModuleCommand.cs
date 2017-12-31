@@ -119,15 +119,17 @@ namespace Rubberduck.UI.Command
 
         private IVBProject GetProject()
         {
-            var activeProject = _vbe.ActiveVBProject;
-            if (!activeProject.IsWrappingNullReference)
+            using (var activeProject = _vbe.ActiveVBProject)
             {
-                return activeProject;
+                if (!activeProject.IsWrappingNullReference)
+                {
+                    return activeProject;
+                }
             }
 
-            var projects = _vbe.VBProjects;
+            using (var projects = _vbe.VBProjects)
             {
-                return projects.Count == 1 
+                return projects.Count == 1
                     ? projects[1]
                     : new VBProject(null);
             }

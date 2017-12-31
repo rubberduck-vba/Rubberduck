@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Rubberduck.Common.WinAPI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.WindowsApi;
 using User32 = Rubberduck.Common.WinAPI.User32;
@@ -52,19 +51,12 @@ namespace Rubberduck.UI
 
         private IntPtr _parentHandle;
         private ParentWindow _subClassingWindow;
-        private GCHandle _thisHandle;
 
         internal void AddUserControl(UserControl control, IntPtr vbeHwnd)
         {
             _parentHandle = GetParent(Handle);
             _subClassingWindow = new ParentWindow(vbeHwnd, new IntPtr(GetHashCode()), _parentHandle);
             _subClassingWindow.CallBackEvent += OnCallBackEvent;
-
-            //DO NOT REMOVE THIS CALL. Dockable windows are instantiated by the VBE, not directly by RD.  On top of that,
-            //since we have to inherit from UserControl we don't have to keep handling window messages until the VBE gets
-            //around to destroying the control's host or it results in an access violation when the base class is disposed.
-            //We need to manually call base.Dispose() ONLY in response to a WM_DESTROY message.
-            _thisHandle = GCHandle.Alloc(this, GCHandleType.Normal);
 
             if (control != null)
             {
@@ -144,18 +136,7 @@ namespace Rubberduck.UI
             //See the comment in the ctor for why we have to listen for this.
             if (m.Msg == (int) WM.DESTROY && !_released)
             {
-                Debug.WriteLine("DockableWindowHost received WM.DESTROY.");
-                try
-                {
-                    _subClassingWindow.CallBackEvent -= OnCallBackEvent;
-                }
-                catch(Exception)
-                {
-                    Debug.WriteLine("Failed to unsubscribe event handler from the parent subclassing window of a DockableWindowHost on WM_DESTROY. It might have been unsubscribed already.");
-                    //We cannot really do anything here. This is only a safeguard to guarantee that the event gets unsubscribed. If it does not work, it might be gone already.
-                }
-
-                _thisHandle.Free();
+                Release();
             }
             base.DefWndProc(ref m);
         }
@@ -172,7 +153,6 @@ namespace Rubberduck.UI
 
             Debug.WriteLine("DockableWindowHost release called.");
             _subClassingWindow.Dispose();
-            _thisHandle.Free();
 
             _released = true;
         }
@@ -193,10 +173,7 @@ namespace Rubberduck.UI
 
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
-                if (CallBackEvent != null)
-                {
-                    CallBackEvent(this, e);
-                }
+                CallBackEvent?.Invoke(this, e);
             }
             
             public ParentWindow(IntPtr vbeHwnd, IntPtr id, IntPtr handle) : base(id, handle)
@@ -220,7 +197,6 @@ namespace Rubberduck.UI
                         if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
                         break;
                     case (uint)WM.DESTROY:
-                    case (uint)WM.RUBBERDUCK_SINKING:
                         OnCallBackEvent(new SubClassingWindowEventArgs(lParam) { Closing = true });
                         _closing = true;
                         break;
