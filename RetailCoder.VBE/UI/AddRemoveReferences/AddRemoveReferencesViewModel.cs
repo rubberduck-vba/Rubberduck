@@ -10,10 +10,10 @@ namespace Rubberduck.UI.AddRemoveReferences
 {
     public class AddRemoveReferencesViewModel : ViewModelBase
     {
-        public AddRemoveReferencesViewModel(IEnumerable<ReferenceModel> model)
+        public AddRemoveReferencesViewModel(IReadOnlyList<ReferenceModel> model)
         {
             ComLibraries = model.Where(item => item.Type == ReferenceKind.TypeLibrary);
-
+            VbaProjects = model.Where(item => item.Type == ReferenceKind.Project);
         }
 
         /// <summary>
@@ -31,7 +31,14 @@ namespace Rubberduck.UI.AddRemoveReferences
         /// </summary>
         public ICommand MoveUpCommand { get; }
 
+        /// <summary>
+        /// Moves the <see cref="SelectedReference"/> down on the 'Priority' tab.
+        /// </summary>
+        public ICommand MoveDownCommand { get; }
+
         public IEnumerable<ReferenceModel> ComLibraries { get; }
+        public IEnumerable<ReferenceModel> VbaProjects { get; }
+
         public ReferenceModel SelectedLibrary { get; }
         public ReferenceModel SelectedProject { get; }
         public ReferenceModel SelectedReference { get; }
