@@ -313,6 +313,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddRemoveReferences\ReferenceModel.cs" />
+    <Compile Include="AddRemoveReferences\ReferenceStatus.cs" />
+    <Compile Include="AddRemoveReferences\RegisteredLibraryFinderService.cs" />
+    <Compile Include="AddRemoveReferences\RegisteredLibraryInfo.cs" />
     <Compile Include="API\VBA\Accessibility.cs" />
     <Compile Include="API\VBA\Declaration.cs" />
     <Compile Include="API\VBA\DeclarationType.cs" />
@@ -357,6 +361,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="AddRemoveReferences\AddRemoveReferencesViewModel.cs" />
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
@@ -393,6 +398,8 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesViewModel.cs" />
+    <Compile Include="UI\AddRemoveReferences\ReferenceStatusImageSourceConverter.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
@@ -442,7 +449,17 @@
     <Compile Include="UI\Converters\SubtractionConverter.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
+    <Compile Include="UI\Converters\ImageSourceConverter.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesDialog.Designer.cs">
+      <DependentUpon>AddRemoveReferencesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\AddRemoveReferences\AddRemoveReferencesWindow.xaml.cs">
+      <DependentUpon>AddRemoveReferencesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml.cs">
       <DependentUpon>EncapsulateFieldView.xaml</DependentUpon>
     </Compile>
@@ -1006,6 +1023,9 @@
     <EmbeddedResource Include="UI\FindSymbol\FindSymbolDialog.resx">
       <DependentUpon>FindSymbolDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\AddRemoveReferences\AddRemoveReferencesDialog.resx">
+      <DependentUpon>AddRemoveReferencesDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.resx">
       <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -1311,6 +1331,8 @@
     <Resource Include="Resources\folder.png" />
     <None Include="Resources\RD-300x250-base.png" />
     <Resource Include="Resources\magnifier-medium.png" />
+    <Resource Include="Resources\lock.png" />
+    <Resource Include="Resources\pin.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
@@ -1431,6 +1453,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Controls\ToolBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\AddRemoveReferences\AddRemoveReferencesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
