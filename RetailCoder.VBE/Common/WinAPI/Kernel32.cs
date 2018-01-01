@@ -49,7 +49,14 @@ namespace Rubberduck.Common.WinAPI
         /// </remarks>
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
+        
+        /// <summary>
+        /// Sets the last-error code for the calling thread.
+        /// </summary>
+        /// <param name="dwErrorCode">The last-error code for the thread.</param>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void SetLastError(uint dwErrorCode);
 
-
+        public static uint ERROR_SUCCESS = 0;
     }
 }
