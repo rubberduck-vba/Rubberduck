@@ -76,7 +76,7 @@ End Sub";
                 var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix(state) });
 
                 var result = inspectionResults.First();
-                result.Properties.Add("DisableFixes", nameof(RemoveUnusedDeclarationQuickFix));
+                result.Properties.DisableFixes = nameof(RemoveUnusedDeclarationQuickFix);
 
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(result).Count());
             }

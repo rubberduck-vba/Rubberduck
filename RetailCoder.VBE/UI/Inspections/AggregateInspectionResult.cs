@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -29,7 +28,7 @@ namespace Rubberduck.UI.Inspections
 
         public ParserRuleContext Context => _result.Context;
 
-        public IDictionary<string, string> Properties => throw new NotImplementedException();
+        public dynamic Properties => throw new NotImplementedException();
 
         public int CompareTo(IInspectionResult other)
         {
@@ -37,8 +36,8 @@ namespace Rubberduck.UI.Inspections
             {
                 return 0;
             }
-            var aggregated = other as AggregateInspectionResult;
-            if (aggregated == null)
+
+            if (!(other is AggregateInspectionResult aggregated))
             {
                 return -1;
             }
