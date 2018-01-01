@@ -5,7 +5,7 @@ namespace Rubberduck.Parsing.Inspections
 {
     public class PropertyBag : DynamicObject
     {
-        readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
