@@ -147,7 +147,6 @@ namespace Rubberduck.Common
                     break;
                 case WM.CLOSE:
                 case WM.DESTROY:
-                case WM.RUBBERDUCK_SINKING:
                     Detach();
                     break;
             }
@@ -171,6 +170,15 @@ namespace Rubberduck.Common
                 Logger.Error(exception);
             }
             return processed;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Detach();
+            }
+            base.Dispose(disposing);
         }
     }
 }

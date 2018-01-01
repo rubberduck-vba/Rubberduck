@@ -40,6 +40,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 dynamic host = item.Value;
                 host.Release();
             }
+            _dockableHosts.Clear();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

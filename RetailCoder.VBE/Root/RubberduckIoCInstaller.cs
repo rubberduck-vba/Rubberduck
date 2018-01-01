@@ -260,9 +260,7 @@ namespace Rubberduck.Root
         private void RegisterRubberduckMenu(IWindsorContainer container)
         {
             const int windowMenuId = 30009;
-            var commandBars = _vbe.CommandBars;
-            var menuBar = commandBars[MenuBar];
-            var controls = menuBar.Controls;
+            var controls = MainCommandBarControls(MenuBar);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, windowMenuId);
             var menuItemTypes = RubberduckMenuItems();
             RegisterMenu<RubberduckParentMenu>(container, controls, beforeIndex, menuItemTypes);
@@ -299,24 +297,36 @@ namespace Rubberduck.Root
         {
             for (var i = 1; i <= controls.Count; i++)
             {
-                var item = controls[i];
-                if (item.IsBuiltIn && item.Id == beforeId)
+                using (var item = controls[i])
                 {
-                    return i;
+                    if (item.IsBuiltIn && item.Id == beforeId)
+                    {
+                        return i;
+                    }
                 }
             }
 
             return controls.Count;
         }
 
+        private ICommandBarControls MainCommandBarControls(int commandBarIndex)
+        {
+            ICommandBarControls controls;
+            using (var commandBars = _vbe.CommandBars)
+            {
+                using (var menuBar = commandBars[commandBarIndex])
+                {
+                    controls = menuBar.Controls;
+                }
+            }
+            return controls;
+        }
+
         private void RegisterCodePaneContextMenu(IWindsorContainer container)
         {
             const int listMembersMenuId = 2529;
-            var commandBars = _vbe.CommandBars;
-            var menuBar = commandBars[CodeWindow];
-            var controls = menuBar.Controls;
-            var beforeControl = controls.FirstOrDefault(control => control.Id == listMembersMenuId);
-            var beforeIndex = beforeControl == null ? 1 : beforeControl.Index;
+            var controls = MainCommandBarControls(CodeWindow);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, listMembersMenuId);
             var menuItemTypes = CodePaneContextMenuItems();
             RegisterMenu<CodePaneContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -336,11 +346,8 @@ namespace Rubberduck.Root
         private void RegisterFormDesignerContextMenu(IWindsorContainer container)
         {
             const int viewCodeMenuId = 2558;
-            var commandBars = _vbe.CommandBars;
-            var menuBar = commandBars[MsForms];
-            var controls = menuBar.Controls;
-            var beforeControl = controls.FirstOrDefault(control => control.Id == viewCodeMenuId);
-            var beforeIndex = beforeControl?.Index ?? 1;
+            var controls = MainCommandBarControls(MsForms);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, viewCodeMenuId);
             var menuItemTypes = FormDesignerContextMenuItems();
             RegisterMenu<FormDesignerContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -357,11 +364,8 @@ namespace Rubberduck.Root
         private void RegisterFormDesignerControlContextMenu(IWindsorContainer container)
         {
             const int viewCodeMenuId = 2558;
-            var commandBars = _vbe.CommandBars;
-            var menuBar = commandBars[MsFormsControl];
-            var controls = menuBar.Controls;
-            var beforeControl = controls.FirstOrDefault(control => control.Id == viewCodeMenuId);
-            var beforeIndex = beforeControl?.Index ?? 1;
+            var controls = MainCommandBarControls(MsFormsControl);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, viewCodeMenuId);
             var menuItemTypes = FormDesignerContextMenuItems();
             RegisterMenu<FormDesignerControlContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -369,11 +373,8 @@ namespace Rubberduck.Root
         private void RegisterProjectExplorerContextMenu(IWindsorContainer container)
         {
             const int projectPropertiesMenuId = 2578;
-            var commandBars = _vbe.CommandBars;
-            var menuBar = commandBars[ProjectWindow];
-            var controls = menuBar.Controls;
-            var beforeControl = controls.FirstOrDefault(control => control.Id == projectPropertiesMenuId);
-            var beforeIndex = beforeControl?.Index ?? 1;
+            var controls = MainCommandBarControls(ProjectWindow);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, projectPropertiesMenuId);
             var menuItemTypes = ProjectWindowContextMenuItems();
             RegisterMenu<ProjectWindowContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
