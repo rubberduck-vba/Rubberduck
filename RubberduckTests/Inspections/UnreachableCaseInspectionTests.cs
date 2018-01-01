@@ -552,13 +552,45 @@ End Sub";
 
         [TestMethod]
         [TestCategory("Inspections")]
-        public void UnreachableCaseInspection_EmbeddedSelectCaseStringType()
+        public void UnreachableCaseInspection_EmbeddedSelectCaseUsingConstants()
         {
             const string inputCode =
 @"Sub Foo()
 
 Const x As String = ""Foo""
 Const z As String = ""Bar""
+
+Select Case x
+  Case ""Foo"", ""Bar""
+    'OK
+  Case ""Foo""
+    'Unreachable
+  Case ""Food""
+    Select Case  z
+      Case ""Foo"", ""Bar"",""Goo""
+        'OK
+      Case ""Bar""
+        'Unreachable
+      Case ""Foo""
+        'Unreachable
+      Case ""Goo""
+        'Unreachable
+    End Select
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 4);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_EmbeddedSelectCaseStringType()
+        {
+            const string inputCode =
+@"Sub Foo(x As String, z As String)
+
+'Const x As String = ""Foo""
+'Const z As String = ""Bar""
 
 Select Case x
   Case ""Foo"", ""Bar""
@@ -1270,16 +1302,18 @@ End Sub";
 Select Case x * y
   Case x > -3000
     'OK
+  Case y > -3000
+    'OK
   Case x < y
     'OK - indeterminant
   Case 95
-    'Unreachable
+    'OK - this gives a false positive when evaluated as if 'x' or 'y' is the only select case variable
   Case Else
     'OK
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
         [TestMethod]
@@ -1292,16 +1326,68 @@ End Sub";
 Select Case x * y
   Case x > -3000
     'OK
+  Case y > -3000
+    'OK
   Case x < y
     'OK - indeterminant
   Case 95
+    'OK - this gives a false positive when evaluated as if 'x' or 'y' is the only select case variable
+  Case Else
+    'OK
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_LongCollisionVariableAndConstantDifferentType()
+        {
+            const string inputCode =
+@"Sub Foo( x As Long)
+
+private const y As Double = 0.5
+
+Select Case x * y
+  Case x > -3000
+    'OK
+  Case y > -3000
     'Unreachable
+  Case x < y
+    'OK - indeterminant
+  Case 95
+    'OK - this gives a false positive when evaluated as if 'x' is the only select case variable
   Case Else
     'OK
 End Select
 
 End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_LongCollisionUnaryMathOperation()
+        {
+            const string inputCode =
+@"Sub Foo( x As Long, y As Double)
+
+Select Case -x  'math on the Select Case variable disqualifies inspection
+  Case x > -3000
+    'OK
+  Case y > -3000
+    'OK
+  Case x < y
+    'OK - indeterminant
+  Case 95
+    'unreachable - not evaluated
+  Case Else
+    'OK
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
         [TestMethod]
@@ -2218,21 +2304,21 @@ private Const maxValue As Long = 5000
 
 Sub Foo(z As Long)
 
-Select Case ( z * 3 ) - 2
+Select Case ( z * 3 ) - 2   'math on the Select Case variable disqualifies inspection
   Case z > maxValue
     'OK
   Case 15
     'OK
   Case 6000
-    'Unreachable
+    'Unreachable - not evaluated
   Case 8500
-    'Unreachable
+    'Unreachable - not evaluated
    Case Else
     'OK
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
         [TestMethod]
@@ -2302,6 +2388,33 @@ End Function
 Sub Foo()
 
 Select Case Bar()
+  Case Is > 5000
+    'OK
+  Case 5000
+    'OK
+  Case 5001
+    'Unreachable
+  Case 10000
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+        }
+
+        [TestMethod]
+        [TestCategory("Inspections")]
+        public void UnreachableCaseInspection_SelectCaseIsFunctionWithParams()
+        {
+            const string inputCode =
+@"
+Function Bar(x As Long, y As Double) As Long
+    Bar = 5
+End Function
+
+Sub Foo(firstVar As Long, secondVar As Double)
+
+Select Case Bar( firstVar, secondVar )
   Case Is > 5000
     'OK
   Case 5000

@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete
@@ -21,20 +20,20 @@ namespace Rubberduck.Inspections.Concrete
         public const double SINGLEMAX = 3402823E38;
     }
 
-    public class VBAValue
+    public class SelectCaseInspectionValue
     {
-        private readonly string _ctorTypeName;
         private readonly string _valueAsString;
         private readonly string _inputString;
+        private readonly bool _ctorValueIsString;
         private string _useageTypeName;
         private string _derivedTypeName;
-        private  Func<VBAValue, VBAValue, bool> _operatorIsGT;
-        private  Func<VBAValue, VBAValue, bool> _operatorIsLT;
-        private  Func<VBAValue, VBAValue, bool> _operatorIsEQ;
-        private  Func<VBAValue, VBAValue, VBAValue> _opMult;
-        private  Func<VBAValue, VBAValue, VBAValue> _opDiv;
-        private  Func<VBAValue, VBAValue, VBAValue> _opMinus;
-        private  Func<VBAValue, VBAValue, VBAValue> _opPlus;
+        private  Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool> _operatorIsGT;
+        private  Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool> _operatorIsLT;
+        private  Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool> _operatorIsEQ;
+        private  Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue> _opMult;
+        private  Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue> _opDiv;
+        private  Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue> _opMinus;
+        private  Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue> _opPlus;
 
         private long? _valueAsLong;
         private long? _intValueAsLong;
@@ -52,146 +51,156 @@ namespace Rubberduck.Inspections.Concrete
             { Tokens.Single, new Tuple<string,string>(CompareExtents.SINGLEMIN.ToString(), CompareExtents.SINGLEMAX.ToString())}
         };
 
-        private static Dictionary<string, Func<VBAValue, VBAValue, bool>> OperatorsIsGT = new Dictionary<string, Func<VBAValue, VBAValue, bool>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool>> OperatorsIsGT = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool>>()
         {
-            { Tokens.Integer, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsInt().Value > compValue.AsInt().Value; } },
-            { Tokens.Long, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; } },
-            { Tokens.Byte, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsByte().Value > compValue.AsByte().Value; } },
-            { Tokens.Double, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; } },
-            { Tokens.Single, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; } },
-            { Tokens.Currency, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsCurrency().Value > compValue.AsCurrency().Value; } },
-            { Tokens.Boolean, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; } },
-            { Tokens.String, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) > 0; } }
+            { Tokens.Integer, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsCurrency().Value > compValue.AsCurrency().Value; } },
+            { Tokens.Boolean, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; } },
+            { Tokens.String, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) > 0; } }
         };
 
-        private static Dictionary<string, Func<VBAValue, VBAValue, bool>> OperatorsIsLT = new Dictionary<string, Func<VBAValue, VBAValue, bool>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool>> OperatorsIsLT = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool>>()
         {
-            { Tokens.Integer, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsInt().Value < compValue.AsInt().Value; } },
-            { Tokens.Long, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; } },
-            { Tokens.Byte, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsByte().Value < compValue.AsByte().Value; } },
-            { Tokens.Double, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; } },
-            { Tokens.Single, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; } },
-            { Tokens.Currency, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsCurrency().Value < compValue.AsCurrency().Value; } },
-            { Tokens.Boolean, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; } },
-            { Tokens.String, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) < 0; } }
+            { Tokens.Integer, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsCurrency().Value < compValue.AsCurrency().Value; } },
+            { Tokens.Boolean, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; } },
+            { Tokens.String, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) < 0; } }
         };
 
-        private static Dictionary<string, Func<VBAValue, VBAValue, bool>> OperatorsIsEQ = new Dictionary<string, Func<VBAValue, VBAValue, bool>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool>> OperatorsIsEQ = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, bool>>()
         {
-            { Tokens.Integer, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsInt().Value == compValue.AsInt().Value; } },
-            { Tokens.Long, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsLong().Value == compValue.AsLong().Value; } },
-            { Tokens.Byte, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsByte().Value == compValue.AsByte().Value; } },
-            { Tokens.Double, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value == compValue.AsDouble().Value; } },
-            { Tokens.Single, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsDouble().Value == compValue.AsDouble().Value; } },
-            { Tokens.Currency, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsCurrency().Value == compValue.AsCurrency().Value; } },
-            { Tokens.Boolean, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsBoolean().Value == compValue.AsBoolean().Value; } },
-            { Tokens.String, delegate(VBAValue thisValue, VBAValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) == 0; } }
+            { Tokens.Integer, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().HasValue && compValue.AsInt().HasValue ? thisValue.AsLong().Value == compValue.AsInt().Value : false; } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().HasValue && compValue.AsLong().HasValue ? thisValue.AsLong().Value == compValue.AsLong().Value : false; } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsLong().HasValue && compValue.AsByte().HasValue ? thisValue.AsLong().Value == compValue.AsByte().Value : false; } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue ? thisValue.AsDouble().Value == compValue.AsDouble().Value : false; } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue ? thisValue.AsDouble().Value == compValue.AsDouble().Value : false; } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsCurrency().HasValue && compValue.AsCurrency().HasValue ? thisValue.AsCurrency().Value == compValue.AsCurrency().Value : false; } },
+            { Tokens.Boolean, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsBoolean().HasValue && compValue.AsBoolean().HasValue ? thisValue.AsBoolean().Value == compValue.AsBoolean().Value : false; } },
+            { Tokens.String, delegate(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) == 0; } }
         };
 
-        private static Dictionary<string, Func<VBAValue, bool>> HasValueTests = new Dictionary<string, Func<VBAValue, bool>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, bool>> HasValueTests = new Dictionary<string, Func<SelectCaseInspectionValue, bool>>()
         {
-            { Tokens.Integer, delegate(VBAValue thisValue){ return thisValue.AsLong().HasValue; } },
-            { Tokens.Long, delegate(VBAValue thisValue){ return thisValue.AsLong().HasValue; } },
-            { Tokens.Byte, delegate(VBAValue thisValue){ return thisValue.AsLong().HasValue; } },
-            { Tokens.Double, delegate(VBAValue thisValue){ return thisValue.AsDouble().HasValue; } },
-            { Tokens.Single, delegate(VBAValue thisValue){ return thisValue.AsDouble().HasValue; } },
-            { Tokens.Currency, delegate(VBAValue thisValue){ return thisValue.AsCurrency().HasValue; } },
-            { Tokens.Boolean, delegate(VBAValue thisValue){ return thisValue.AsBoolean().HasValue; } },
-            { Tokens.String, delegate(VBAValue thisValue){ return true; } }
+            { Tokens.Integer, delegate(SelectCaseInspectionValue thisValue){ return thisValue.AsLong().HasValue; } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue thisValue){ return thisValue.AsLong().HasValue; } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue thisValue){ return thisValue.AsLong().HasValue; } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue thisValue){ return thisValue.AsDouble().HasValue; } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue thisValue){ return thisValue.AsDouble().HasValue; } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue thisValue){ return thisValue.AsCurrency().HasValue; } },
+            { Tokens.Boolean, delegate(SelectCaseInspectionValue thisValue){ return thisValue.AsBoolean().HasValue; } },
+            { Tokens.String, delegate(SelectCaseInspectionValue thisValue){ return true; } }
         };
 
-        private static Dictionary<string, Func<VBAValue, bool>> MaxMinTests = new Dictionary<string, Func<VBAValue, bool>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, bool>> MaxMinTests = new Dictionary<string, Func<SelectCaseInspectionValue, bool>>()
         {
-            { Tokens.Integer, delegate(VBAValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.INTEGERMAX) || (thisValue.AsLong() < CompareExtents.INTEGERMIN)  : false; } },
-            { Tokens.Long, delegate(VBAValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.LONGMAX) || (thisValue.AsLong() < CompareExtents.LONGMIN)  : false; } },
-            { Tokens.Byte, delegate(VBAValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.BYTEMAX) || (thisValue.AsLong() < CompareExtents.BYTEMIN)  : false; } },
-            { Tokens.Double, delegate(VBAValue thisValue){ return false; } },
-            { Tokens.Single, delegate(VBAValue thisValue){ return HasValueTests[Tokens.Single](thisValue) ? (thisValue.AsDouble() > CompareExtents.SINGLEMAX) || (thisValue.AsDouble() < CompareExtents.SINGLEMIN)  : false; } },
-            { Tokens.Currency, delegate(VBAValue thisValue){ return HasValueTests[Tokens.Currency](thisValue) ? (thisValue.AsCurrency() > CompareExtents.CURRENCYMAX) || (thisValue.AsCurrency() < CompareExtents.CURRENCYMIN)  : false; } },
-            { Tokens.Boolean, delegate(VBAValue thisValue){ return false; } },
-            { Tokens.String, delegate(VBAValue thisValue){ return false; } }
+            { Tokens.Integer, delegate(SelectCaseInspectionValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.INTEGERMAX) || (thisValue.AsLong() < CompareExtents.INTEGERMIN)  : false; } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.LONGMAX) || (thisValue.AsLong() < CompareExtents.LONGMIN)  : false; } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.BYTEMAX) || (thisValue.AsLong() < CompareExtents.BYTEMIN)  : false; } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue thisValue){ return false; } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue thisValue){ return HasValueTests[Tokens.Single](thisValue) ? (thisValue.AsDouble() > CompareExtents.SINGLEMAX) || (thisValue.AsDouble() < CompareExtents.SINGLEMIN)  : false; } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue thisValue){ return HasValueTests[Tokens.Currency](thisValue) ? (thisValue.AsCurrency() > CompareExtents.CURRENCYMAX) || (thisValue.AsCurrency() < CompareExtents.CURRENCYMIN)  : false; } },
+            { Tokens.Boolean, delegate(SelectCaseInspectionValue thisValue){ return false; } },
+            { Tokens.String, delegate(SelectCaseInspectionValue thisValue){ return false; } }
         };
 
-        private static Dictionary<string, Func<VBAValue, VBAValue, VBAValue>> OperatorsMult = new Dictionary<string, Func<VBAValue, VBAValue, VBAValue>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>> OperatorsMult = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>>()
         {
-            { Tokens.Integer, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Long, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Byte, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Double, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Single, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Currency, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsCurrency().Value * RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Boolean, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Integer, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsCurrency().Value * RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Boolean, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
         };
 
-        private static Dictionary<string, Func<VBAValue, VBAValue, VBAValue>> OperatorsDiv = new Dictionary<string, Func<VBAValue, VBAValue, VBAValue>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>> OperatorsDiv = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>>()
         {
-            { Tokens.Integer, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsInt().Value / RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Long, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Byte, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsByte().Value / RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Double, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Single, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Currency, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsCurrency().Value / RHS.AsCurrency().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Boolean, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Integer, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsInt().Value / RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsByte().Value / RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsCurrency().Value / RHS.AsCurrency().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Boolean, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
         };
 
-        private static Dictionary<string, Func<VBAValue, VBAValue, VBAValue>> OperatorsMinus = new Dictionary<string, Func<VBAValue, VBAValue, VBAValue>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>> OperatorsMinus = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>>()
         {
-            { Tokens.Integer, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsInt().Value - RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Long, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value - RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Byte, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsByte().Value - RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Double, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Single, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Currency, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsCurrency().Value - RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } }
+            { Tokens.Integer, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsInt().Value - RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value - RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsByte().Value - RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsCurrency().Value - RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } }
         };
 
-        private static Dictionary<string, Func<VBAValue, VBAValue, VBAValue>> OperatorsPlus = new Dictionary<string, Func<VBAValue, VBAValue, VBAValue>>()
+        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>> OperatorsPlus = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>>()
         {
-            { Tokens.Integer, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsInt().Value + RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Long, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsLong().Value + RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Byte, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsByte().Value + RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Double, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Single, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Currency, delegate(VBAValue LHS, VBAValue RHS){ return new VBAValue((LHS.AsCurrency().Value + RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } }
+            { Tokens.Integer, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsInt().Value + RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Long, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsLong().Value + RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Byte, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsByte().Value + RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Double, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Single, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Currency, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue((LHS.AsCurrency().Value + RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } }
         };
 
-        public VBAValue(string valueToken, string ctorTypeName)
+        public SelectCaseInspectionValue(string valueToken, string ctorTypeName)
         {
+            _useageTypeName = string.Empty;
             _inputString = valueToken;
+            _ctorValueIsString = CheckIsStringConstant(valueToken);
             _valueAsString = _inputString.Replace("\"", "");
             var endingCharacter = _valueAsString.Last().ToString();
             if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !ctorTypeName.Equals(Tokens.String))
             {
                 _valueAsString = _valueAsString.Replace(endingCharacter, ".00");
             }
-            _ctorTypeName = ctorTypeName;
-            UseageTypeName = _ctorTypeName;
+            UseageTypeName = ctorTypeName;
             _derivedTypeName = string.Empty;
+
+            if (!HasValueTests.ContainsKey(UseageTypeName))
+            {
+                UseageTypeName = DerivedTypeName;
+            }
         }
 
-        public VBAValue(long value, string ctorTypeName = "Long")
+        public SelectCaseInspectionValue(long value, string ctorTypeName = "")
         {
+            _useageTypeName = string.Empty;
             _inputString = value.ToString();
             _valueAsString = _inputString;
-            _ctorTypeName = ctorTypeName;
-            UseageTypeName = _ctorTypeName;
+            UseageTypeName = ctorTypeName;
             _derivedTypeName = string.Empty;
+            if (!HasValueTests.ContainsKey(UseageTypeName))
+            {
+                UseageTypeName = DerivedTypeName;
+            }
         }
 
-        public static VBAValue Zero => new VBAValue(0);
-        public static VBAValue False => Zero;
-        public static VBAValue True => new VBAValue(-1);
-        public static VBAValue Unity => new VBAValue(1);
-        public VBAValue AdditiveInverse => this * new VBAValue(-1, UseageTypeName);
+        public static SelectCaseInspectionValue Zero => new SelectCaseInspectionValue(0, Tokens.Long);
+        public static SelectCaseInspectionValue Unity => new SelectCaseInspectionValue(1, Tokens.Long);
+        public static SelectCaseInspectionValue False => Zero;
+        public static SelectCaseInspectionValue True => new SelectCaseInspectionValue(-1, Tokens.Long);
+        public SelectCaseInspectionValue AdditiveInverse => HasValue ? this * new SelectCaseInspectionValue(-1, UseageTypeName) : this;
         public static bool IsSupportedVBAType(string typeName) => OperatorsIsEQ.Keys.Contains(typeName);
 
-        private static string DeriveTypeName(string textValue, string defaultType = "String")
+        private string DeriveTypeName(string textValue, string defaultType = "String")
         {
             if (SymbolList.TypeHintToTypeName.TryGetValue(textValue.Last().ToString(), out string typeName))
             {
                 return typeName;
             }
 
-            if (textValue.StartsWith("\"") && textValue.EndsWith("\""))
+            if (CheckIsStringConstant(textValue))
             {
                 return Tokens.String;
             }
@@ -222,15 +231,13 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public string OriginTypeName => _ctorTypeName;
-
         public string UseageTypeName
         {
             set
             {
                 if (value != _useageTypeName)
                 {
-                    _useageTypeName = value;
+                     _useageTypeName = value;
                     _operatorIsGT = GetDelegate(OperatorsIsGT, _useageTypeName);
                     _operatorIsLT = GetDelegate(OperatorsIsLT, _useageTypeName);
                     _operatorIsEQ = GetDelegate(OperatorsIsEQ, _useageTypeName);
@@ -249,16 +256,18 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (_derivedTypeName.Equals(string.Empty))
                 {
-                    _derivedTypeName = DeriveTypeName(_inputString, _ctorTypeName);
+                    _derivedTypeName = DeriveTypeName(_inputString, UseageTypeName);
                 }
                 return _derivedTypeName;
             }
         }
 
+        public bool IsStringConstant => _ctorValueIsString;
+
         public bool HasValue
             => HasValueTests.ContainsKey(UseageTypeName) ? HasValueTests[UseageTypeName](this) : false;
 
-        public bool IsWithin(VBAValue start, VBAValue end, bool isInclusive = true ) 
+        public bool IsWithin(SelectCaseInspectionValue start, SelectCaseInspectionValue end, bool isInclusive = true ) 
             => isInclusive ?
                 start > end ? this >= end && this <= start : this >= start && this <= end
                 : start > end ? this > end && this < start : this > start && this < end;
@@ -266,17 +275,17 @@ namespace Rubberduck.Inspections.Concrete
         public bool ExceedsMaxMin()
               => MaxMinTests.ContainsKey(UseageTypeName) ? MaxMinTests[UseageTypeName](this) : false;
 
-        public static bool operator >(VBAValue thisValue, VBAValue compValue)
+        public static bool operator >(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue._operatorIsGT(thisValue, compValue);
         }
 
-        public static bool operator <(VBAValue thisValue, VBAValue compValue)
+        public static bool operator <(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue._operatorIsLT(thisValue, compValue);
         }
 
-        public static bool operator ==(VBAValue thisValue, VBAValue compValue)
+        public static bool operator ==(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             if(ReferenceEquals(null, thisValue))
             {
@@ -288,7 +297,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public static bool operator !=(VBAValue thisValue, VBAValue compValue)
+        public static bool operator !=(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             if (ReferenceEquals(null, thisValue))
             {
@@ -300,57 +309,57 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public static bool operator >=(VBAValue thisValue, VBAValue compValue)
+        public static bool operator >=(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue == compValue || thisValue > compValue;
         }
 
-        public static bool operator <=(VBAValue thisValue, VBAValue compValue)
+        public static bool operator <=(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue == compValue || thisValue < compValue;
         }
 
         public override bool Equals(Object obj)
         {
-            if (ReferenceEquals(null, obj) || !(obj is VBAValue))
+            if (ReferenceEquals(null, obj) || !(obj is SelectCaseInspectionValue))
             {
                 return false;
             }
-            var asValue = (VBAValue)obj;
-            return asValue.AsString() == AsString() ? asValue == this : false;
+            var asValue = (SelectCaseInspectionValue)obj;
+            return asValue == this;
         }
 
-        public static VBAValue operator *(VBAValue thisValue, VBAValue compValue)
+        public static SelectCaseInspectionValue operator *(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue._opMult != null ? thisValue._opMult(thisValue, compValue) : null;
         }
 
-        public static VBAValue operator /(VBAValue thisValue, VBAValue compValue)
+        public static SelectCaseInspectionValue operator /(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue._opDiv != null ? thisValue._opDiv(thisValue, compValue) : null;
         }
 
-        public static VBAValue operator -(VBAValue thisValue, VBAValue compValue)
+        public static SelectCaseInspectionValue operator -(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue._opMinus != null ? thisValue._opMinus(thisValue, compValue) : null;
         }
 
-        public static VBAValue operator +(VBAValue thisValue, VBAValue compValue)
+        public static SelectCaseInspectionValue operator +(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return thisValue._opPlus != null ? thisValue._opPlus(thisValue, compValue) : null;
         }
 
-        public static VBAValue operator ^(VBAValue thisValue, VBAValue compValue)
+        public static SelectCaseInspectionValue operator ^(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return (thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue)
-                ? new VBAValue((Math.Pow(thisValue.AsDouble().Value, compValue.AsDouble().Value)).ToString(), thisValue.UseageTypeName)
+                ? new SelectCaseInspectionValue((Math.Pow(thisValue.AsDouble().Value, compValue.AsDouble().Value)).ToString(), thisValue.UseageTypeName)
                 : null;
         }
 
-        public static VBAValue operator %(VBAValue thisValue, VBAValue compValue)
+        public static SelectCaseInspectionValue operator %(SelectCaseInspectionValue thisValue, SelectCaseInspectionValue compValue)
         {
             return (thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue)
-                ? new VBAValue((thisValue.AsDouble().Value % compValue.AsDouble().Value).ToString(), thisValue.UseageTypeName)
+                ? new SelectCaseInspectionValue((thisValue.AsDouble().Value % compValue.AsDouble().Value).ToString(), thisValue.UseageTypeName)
                 : null;
         }
 
@@ -361,7 +370,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public string AsString()
         {
-            return _valueAsString;
+            return IsStringConstant ? _inputString : _valueAsString;
         }
 
         public override string ToString()
@@ -601,7 +610,8 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        private Func<VBAValue, VBAValue, T> GetDelegate<T>(Dictionary<string, Func<VBAValue, VBAValue, T>> Operators, string targetTypeName)
+        private bool CheckIsStringConstant(string token) =>  token.StartsWith("\"") && token.EndsWith("\"");
+        private Func<SelectCaseInspectionValue, SelectCaseInspectionValue, T> GetDelegate<T>(Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, T>> Operators, string targetTypeName)
         {
             return Operators.ContainsKey(targetTypeName) ? Operators[targetTypeName] : null;
         }
