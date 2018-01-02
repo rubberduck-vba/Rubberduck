@@ -83,8 +83,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void PicksUpComments_SpecialCharacters()
         {
             const string inputCode =
@@ -118,8 +118,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void AvoidsFalsePositiveComments()
         {
             const string inputCode =
