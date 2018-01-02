@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class UnhandledOnErrorResumeNextInspectionTest
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_ReturnsResult()
         {
             const string inputCode =
@@ -31,8 +31,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_GoToDeclaredBefore_ReturnsResult()
         {
             const string inputCode =
@@ -53,8 +53,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_GoToDeclaredAfter_DoesNotReturnResult()
         {
             const string inputCode =
@@ -75,8 +75,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_MultipleStatements_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -97,8 +97,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_GoToDeclaredBeforeMultipleStatements_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -120,8 +120,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_GoToDeclaredBetweenMultipleStatements_ReturnsResult()
         {
             const string inputCode =
@@ -143,8 +143,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_GoToDeclaredAfterMultipleStatements_DoesNotReturnResult()
         {
             const string inputCode =
@@ -166,8 +166,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_StatementsInDifferentProcedures_ReturnsResultsPerProcedure()
         {
             const string inputCode =
@@ -192,8 +192,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnhandledOnErrorResumeNext_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -214,16 +214,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new UnhandledOnErrorResumeNextInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "UnhandledOnErrorResumeNextInspection";

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Inspections;
@@ -8,11 +8,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RestoreErrorHandlingQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnhandledOnErrorResumeNext_QuickFixWorks_Procedure()
         {
             const string inputCode =
@@ -45,8 +45,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnhandledOnErrorResumeNext_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -79,8 +79,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnhandledOnErrorResumeNext_QuickFixWorks_Property()
         {
             const string inputCode =
@@ -113,8 +113,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnhandledOnErrorResumeNext_QuickFixWorks_ExistingLabel()
         {
             const string inputCode =
@@ -151,8 +151,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnhandledOnErrorResumeNext_QuickFixWorks_MultipleIssues()
         {
             const string inputCode =
@@ -197,8 +197,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnhandledOnErrorResumeNext_QuickFixWorks_MultipleIssuesAndExistingLabel()
         {
             const string inputCode =
