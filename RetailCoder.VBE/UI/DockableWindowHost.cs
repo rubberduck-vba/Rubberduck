@@ -55,84 +55,6 @@ namespace Rubberduck.UI
     //
     
 
-    // ExposedUserControl - wrapper for UserControl that also exposes the underlying 
-    // IOleObject and IOleInPlaceObject COM interfaces implemented by it
-    public class ExposedUserControl : UserControl
-    {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
-        public COM_IOleObject _IOleObject;                  // cached interface obtained from UserConrol
-        public COM_IOleInPlaceObject _IOleInPlaceObject;    // cached interface obtained from UserConrol
-
-        public ExposedUserControl()
-        {
-            _logger.Log(LogLevel.Trace, "ExposedUserControl constructor called");
-            
-            // Gain access to the IOleObject and IOleInPlaceObject interfaces implemented by the UserControl
-            _IOleObject = (COM_IOleObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleObject"));
-            _IOleInPlaceObject = (COM_IOleInPlaceObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleInPlaceObject"));
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (_IOleObject != null)
-            {
-                Marshal.ReleaseComObject(_IOleObject);
-                _IOleObject = null;
-            }
-
-            if (_IOleInPlaceObject != null)
-            {
-                Marshal.ReleaseComObject(_IOleInPlaceObject);
-                _IOleInPlaceObject = null;
-            }
-
-            base.Dispose(disposing);
-        }
-
-        protected override bool ProcessKeyPreview(ref Message m)
-        {
-            const int wmKeydown = 0x100;
-            var result = false;
-
-            var hostedUserControl = (UserControl)Controls[0];
-
-            if (m.Msg == wmKeydown)
-            {
-                var pressedKey = (Keys)m.WParam;
-                switch (pressedKey)
-                {
-                    case Keys.Tab:
-                        switch (ModifierKeys)
-                        {
-                            case Keys.None:
-                                SelectNextControl(hostedUserControl.ActiveControl, true, true, true, true);
-                                result = true;
-                                break;
-                            case Keys.Shift:
-                                SelectNextControl(hostedUserControl.ActiveControl, false, true, true, true);
-                                result = true;
-                                break;
-                        }
-                        break;
-                    case Keys.Return:
-                        if (hostedUserControl.ActiveControl.GetType() == typeof(Button))
-                        {
-                            var activeButton = (Button)hostedUserControl.ActiveControl;
-                            activeButton.PerformClick();
-                        }
-                        break;
-                }
-            }
-
-            if (!result)
-            {
-                result = base.ProcessKeyPreview(ref m);
-            }
-            return result;
-        }
-    }
-
     [ComVisible(true)]
     [Guid(RubberduckGuid.DockableWindowHostGuid)]
     [ProgId(RubberduckProgId.DockableWindowHostProgId)]
@@ -178,7 +100,7 @@ namespace Rubberduck.UI
             if (pClientSite != IntPtr.Zero)
             {
                 _cachedClientSite = new Wrapper_IOleClientSite(pClientSite);
-                return _userControl._IOleObject.SetClientSite(_cachedClientSite.PeekAggregatedReference());     // callee will take its own reference
+                return _userControl.IOleObject.SetClientSite(_cachedClientSite.PeekAggregatedReference());     // callee will take its own reference
             }
             return (int)COMConstants.S_OK;
         }
@@ -193,13 +115,13 @@ namespace Rubberduck.UI
         public int /* IOleObject:: */ SetHostNames([In, MarshalAs(UnmanagedType.LPWStr)] string szContainerApp, [In, MarshalAs(UnmanagedType.LPWStr)] string szContainerObj)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::SetHostNames() called");
-            return _userControl._IOleObject.SetHostNames(szContainerApp, szContainerObj);
+            return _userControl.IOleObject.SetHostNames(szContainerApp, szContainerObj);
         }
 
         public int /* IOleObject:: */ Close([In] uint dwSaveOption)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::Close() called");
-            int hr = _userControl._IOleObject.Close(dwSaveOption);
+            int hr = _userControl.IOleObject.Close(dwSaveOption);
 
             // IOleObject::SetClientSite is typically called with pClientSite = null just before calling IOleObject::Close()
             // If it didn't, we release all host COM objects here instead,
@@ -213,7 +135,7 @@ namespace Rubberduck.UI
 
         private void PerformUserControlShutdown()
         {
-            ReleaseCOMReferenceOfSctiveXControl();
+            ReleaseActiveXControlComReference();
             ReleasedExposedControl();
             UnsubclassParent();
 
@@ -235,7 +157,7 @@ namespace Rubberduck.UI
             _userControl = null;
         }
 
-        private void ReleaseCOMReferenceOfSctiveXControl()
+        private void ReleaseActiveXControlComReference()
         {
             _logger.Log(LogLevel.Trace, "IOleObject::Close() ... closing down host COM references");
             _cachedClientSite?.Dispose();
@@ -285,7 +207,7 @@ namespace Rubberduck.UI
             _logger.Log(LogLevel.Trace, "IOleObject::DoVerb() called");
             // pActiveSite is not used by the UserControl implementation.  Either wrap it or pass null instead
             pActiveSite = IntPtr.Zero;
-            return _userControl._IOleObject.DoVerb(iVerb, lpmsg, pActiveSite, lindex, hwndParent, lprcPosRect);
+            return _userControl.IOleObject.DoVerb(iVerb, lpmsg, pActiveSite, lindex, hwndParent, lprcPosRect);
         }
 
         public int /* IOleObject:: */ EnumVerbs([Out] out IntPtr /* IEnumOLEVERB */ ppEnumOleVerb)
@@ -301,37 +223,37 @@ namespace Rubberduck.UI
         public int /* IOleObject:: */ Update()
         {
             _logger.Log(LogLevel.Trace, "IOleObject::Update() called");
-            return _userControl._IOleObject.Update();
+            return _userControl.IOleObject.Update();
         }
 
         public int /* IOleObject:: */ IsUpToDate()
         {
             _logger.Log(LogLevel.Trace, "IOleObject::IsUpToDate() called");
-            return _userControl._IOleObject.IsUpToDate();
+            return _userControl.IOleObject.IsUpToDate();
         }
 
         public int /* IOleObject:: */ GetUserClassID([Out] out Guid pClsid)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::GetUserClassID() called");
-            return _userControl._IOleObject.GetUserClassID(out pClsid);
+            return _userControl.IOleObject.GetUserClassID(out pClsid);
         }
 
         public int /* IOleObject:: */ GetUserType([In] uint dwFormOfType, [Out, MarshalAs(UnmanagedType.LPWStr)] out string pszUserType)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::GetUserType() called");
-            return _userControl._IOleObject.GetUserType(dwFormOfType, out pszUserType);
+            return _userControl.IOleObject.GetUserType(dwFormOfType, out pszUserType);
         }
 
         public int /* IOleObject:: */ SetExtent([In] uint dwDrawAspect, [In] IntPtr /* tagSIZE */ psizel)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::SetExtent() called");
-            return _userControl._IOleObject.SetExtent(dwDrawAspect, psizel);
+            return _userControl.IOleObject.SetExtent(dwDrawAspect, psizel);
         }
 
         public int /* IOleObject:: */ GetExtent([In] uint dwDrawAspect, [Out] out IntPtr /* tagSIZE */ psizel)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::GetExtent() called");
-            return _userControl._IOleObject.GetExtent(dwDrawAspect, out psizel);
+            return _userControl.IOleObject.GetExtent(dwDrawAspect, out psizel);
         }
 
         public int /* IOleObject:: */ Advise([In] IntPtr /* IAdviseSink */ pAdvSink, [Out] out uint pdwConnection)
@@ -363,13 +285,13 @@ namespace Rubberduck.UI
         public int /* IOleObject:: */ GetMiscStatus([In] uint dwAspect, [Out] out uint pdwStatus)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::GetMiscStatus() called");
-            return _userControl._IOleObject.GetMiscStatus(dwAspect, out pdwStatus);
+            return _userControl.IOleObject.GetMiscStatus(dwAspect, out pdwStatus);
         }
 
         public int /* IOleObject:: */ SetColorScheme([In] IntPtr /* tagLOGPALETTE */ pLogpal)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::SetColorScheme() called");
-            return _userControl._IOleObject.SetColorScheme(pLogpal);
+            return _userControl.IOleObject.SetColorScheme(pLogpal);
         }
 
         // --------------------------------------------------------------------
@@ -377,37 +299,37 @@ namespace Rubberduck.UI
         public int /* IOleInPlaceObject:: */ GetWindow([Out] out IntPtr hwnd)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceObject::GetWindow() called");
-            return _userControl._IOleInPlaceObject.GetWindow(out hwnd);
+            return _userControl.IOleInPlaceObject.GetWindow(out hwnd);
         }
 
         public int /* IOleInPlaceObject:: */ ContextSensitiveHelp([In] int fEnterMode)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceObject::ContextSensitiveHelp() called");
-            return _userControl._IOleInPlaceObject.ContextSensitiveHelp(fEnterMode);
+            return _userControl.IOleInPlaceObject.ContextSensitiveHelp(fEnterMode);
         }
 
         public int /* IOleInPlaceObject:: */ InPlaceDeactivate()
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceObject::InPlaceDeactivate() called");
-            return _userControl._IOleInPlaceObject.InPlaceDeactivate();
+            return _userControl.IOleInPlaceObject.InPlaceDeactivate();
         }
 
         public int /* IOleInPlaceObject:: */ UIDeactivate()
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceObject::UIDeactivate() called");
-            return _userControl._IOleInPlaceObject.UIDeactivate();
+            return _userControl.IOleInPlaceObject.UIDeactivate();
         }
 
         public int /* IOleInPlaceObject:: */ SetObjectRects([In] IntPtr lprcPosRect, [In] IntPtr lprcClipRect)
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceObject::SetObjectRects() called");
-            return _userControl._IOleInPlaceObject.SetObjectRects(lprcPosRect, lprcClipRect);
+            return _userControl.IOleInPlaceObject.SetObjectRects(lprcPosRect, lprcClipRect);
         }
 
         public int /* IOleInPlaceObject:: */ ReactivateAndUndo()
         {
             _logger.Log(LogLevel.Trace, "IOleInPlaceObject::ReactivateAndUndo() called");
-            return _userControl._IOleInPlaceObject.ReactivateAndUndo();
+            return _userControl.IOleInPlaceObject.ReactivateAndUndo();
         }
 
         // old stuff from old _DockableWindowHost --------------------------------------- [START]
@@ -526,5 +448,83 @@ namespace Rubberduck.UI
         }
 
         // old stuff from old _DockableWindowHost --------------------------------------- [END]
+
+        // ExposedUserControl - wrapper for UserControl that also exposes the underlying 
+        // IOleObject and IOleInPlaceObject COM interfaces implemented by it
+        public class ExposedUserControl : UserControl
+        {
+            private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+            public COM_IOleObject IOleObject;                  // cached interface obtained from UserConrol
+            public COM_IOleInPlaceObject IOleInPlaceObject;    // cached interface obtained from UserConrol
+
+            public ExposedUserControl()
+            {
+                _logger.Log(LogLevel.Trace, "ExposedUserControl constructor called");
+
+                // Gain access to the IOleObject and IOleInPlaceObject interfaces implemented by the UserControl
+                IOleObject = (COM_IOleObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleObject"));
+                IOleInPlaceObject = (COM_IOleInPlaceObject)AggregationHelper.ObtainInternalInterface(this, GetType().GetInterface("IOleInPlaceObject"));
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (IOleObject != null)
+                {
+                    Marshal.ReleaseComObject(IOleObject);
+                    IOleObject = null;
+                }
+
+                if (IOleInPlaceObject != null)
+                {
+                    Marshal.ReleaseComObject(IOleInPlaceObject);
+                    IOleInPlaceObject = null;
+                }
+
+                base.Dispose(disposing);
+            }
+
+            protected override bool ProcessKeyPreview(ref Message m)
+            {
+                const int wmKeydown = 0x100;
+                var result = false;
+
+                var hostedUserControl = (UserControl)Controls[0];
+
+                if (m.Msg == wmKeydown)
+                {
+                    var pressedKey = (Keys)m.WParam;
+                    switch (pressedKey)
+                    {
+                        case Keys.Tab:
+                            switch (ModifierKeys)
+                            {
+                                case Keys.None:
+                                    SelectNextControl(hostedUserControl.ActiveControl, true, true, true, true);
+                                    result = true;
+                                    break;
+                                case Keys.Shift:
+                                    SelectNextControl(hostedUserControl.ActiveControl, false, true, true, true);
+                                    result = true;
+                                    break;
+                            }
+                            break;
+                        case Keys.Return:
+                            if (hostedUserControl.ActiveControl.GetType() == typeof(Button))
+                            {
+                                var activeButton = (Button)hostedUserControl.ActiveControl;
+                                activeButton.PerformClick();
+                            }
+                            break;
+                    }
+                }
+
+                if (!result)
+                {
+                    result = base.ProcessKeyPreview(ref m);
+                }
+                return result;
+            }
+        }
     }
 }
