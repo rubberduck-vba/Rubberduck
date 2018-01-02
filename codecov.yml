@@ -1,0 +1,12 @@
+codecov:
+  branch:
+    - next
+    - master
+  ci:
+    - appveyor
+  max_report_age: off
+    
+coverage:
+  round: nearest
+  precision: 2
+  range: 40..80 
