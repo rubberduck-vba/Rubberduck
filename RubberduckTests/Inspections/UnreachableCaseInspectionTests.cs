@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
@@ -8,11 +8,11 @@ using System.Threading;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class UnreachableCaseInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SingleUnreachableCase()
         {
             const string inputCode =
@@ -34,8 +34,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_RangeConflictsWithPriorIsStmt()
         {
             const string inputCode =
@@ -52,8 +52,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_PowOpEvaluationAlgebraNoDetection()
         {
             const string inputCode =
@@ -70,8 +70,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_AlgebraNonInspectionFindsDuplicate()
         {
             const string inputCode =
@@ -92,8 +92,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_PowOpEvaluationAlgebra()
         {
             const string inputCode =
@@ -114,8 +114,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_TextOnlyCompareCopyPaste()
         {
             const string inputCode =
@@ -136,8 +136,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_TextOnlyCompareCopyPasteOutofOrder()
         {
             const string inputCode =
@@ -156,8 +156,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_InternalOverlap()
         {
             const string inputCode =
@@ -178,8 +178,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_MultiplyUsedSelectVariable()
         {
             const string inputCode =
@@ -201,8 +201,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_MultipleUnreachableCases()
         {
             const string inputCode =
@@ -223,8 +223,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CoverAllCases()
         {
             const string inputCode =
@@ -245,8 +245,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CoverAllCasesSingleClause()
         {
             const string inputCode =
@@ -267,8 +267,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseStmtCoversAll()
         {
             const string inputCode =
@@ -289,8 +289,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseStmtCoversAllNEQ()
         {
             const string inputCode =
@@ -311,8 +311,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_StringRange()
         {
             const string inputCode =
@@ -334,8 +334,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ReusedSelectExpressionVariable()
         {
             const string inputCode =
@@ -357,8 +357,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_NumberRange()
         {
             const string inputCode =
@@ -374,8 +374,8 @@ End Select
 End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_NumberRangeConstants()
         {
             const string inputCode =
@@ -396,8 +396,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_NumberRangeMixedTypes()
         {
             const string inputCode =
@@ -416,8 +416,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, mismatch: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_NumberRangeCummulativeCoverage()
         {
             const string inputCode =
@@ -438,8 +438,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_NumberRangeHighToLow()
         {
             const string inputCode =
@@ -456,8 +456,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_NumberRangeInverted()
         {
             const string inputCode =
@@ -474,8 +474,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseElseIsClausePlusRange()
         {
             const string inputCode =
@@ -496,8 +496,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseElseIsClausePlusRangeAndSingles()
         {
             const string inputCode =
@@ -522,8 +522,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EmbeddedSelectCase()
         {
             const string inputCode =
@@ -551,8 +551,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 4);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EmbeddedSelectCaseUsingConstants()
         {
             const string inputCode =
@@ -583,8 +583,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 4);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EmbeddedSelectCaseStringType()
         {
             const string inputCode =
@@ -615,8 +615,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 4);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollision()
         {
             const string inputCode =
@@ -634,8 +634,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionNegative()
         {
             const string inputCode =
@@ -653,8 +653,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionOrOp()
         {
             const string inputCode =
@@ -672,8 +672,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionConstantEvaluation()
         {
             const string inputCode =
@@ -695,8 +695,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionAndOp()
         {
             const string inputCode =
@@ -714,8 +714,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_MixedSelectCaseTypes()
         {
             const string inputCode =
@@ -742,8 +742,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionXOROp()
         {
             const string inputCode =
@@ -761,8 +761,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionEqvOp()
         {
             const string inputCode =
@@ -780,8 +780,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionLogicalNotOp()
         {
             const string inputCode =
@@ -799,8 +799,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleLongCollisionLogicalModOp()
         {
             const string inputCode =
@@ -818,8 +818,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ParensAroundSelectCase()
         {
             const string inputCode =
@@ -837,8 +837,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ExceedsIntegerValue()
         {
             const string inputCode =
@@ -855,8 +855,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ExceedsIntegerButIncludesAccessibleValues()
         {
             const string inputCode =
@@ -877,8 +877,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ExceedsLongValue()
         {
             const string inputCode =
@@ -901,8 +901,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IntegerWithDoubleValue()
         {
             const string inputCode =
@@ -925,8 +925,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ExceedsCurrencyValue()
         {
             const string inputCode =
@@ -945,8 +945,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ExceedsSingleValue()
         {
             const string inputCode =
@@ -965,8 +965,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_NumbersAsBooleanCases()
         {
             const string inputCode =
@@ -987,8 +987,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_HandlesBooleanConstants()
         {
             const string inputCode =
@@ -1005,8 +1005,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanUnreachableCaseElse()
         {
             const string inputCode =
@@ -1025,8 +1025,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanUnreachableCaseElseIsStmt()
         {
             const string inputCode =
@@ -1045,8 +1045,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanUnreachableCaseElseIsStmtGTAndValue()
         {
             const string inputCode =
@@ -1065,8 +1065,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanUnreachableCaseElseIsStmtLTAndValue()
         {
             const string inputCode =
@@ -1085,8 +1085,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanUnreachableCaseElseRange()
         {
             const string inputCode =
@@ -1103,8 +1103,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanUnreachableCaseElseValueRange()
         {
             const string inputCode =
@@ -1123,8 +1123,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanExpressionUnreachableCaseElseUsesLong()
         {
             const string inputCode =
@@ -1143,8 +1143,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_VariantSelectCase()
         {
             const string inputCode =
@@ -1163,8 +1163,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_VariantSelectCaseInferFromConstant()
         {
             const string inputCode =
@@ -1186,8 +1186,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_VariantSelectCaseInferFromConstant2()
         {
             const string inputCode =
@@ -1211,8 +1211,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BuiltInSelectCase()
         {
             const string inputCode =
@@ -1231,8 +1231,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanNEQ()
         {
             const string inputCode =
@@ -1251,8 +1251,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanNEQCaseElse()
         {
             const string inputCode =
@@ -1271,8 +1271,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_LongCollisionIndeterminateCase()
         {
             const string inputCode =
@@ -1293,8 +1293,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_LongCollisionMultipleVariablesSameType()
         {
             const string inputCode =
@@ -1317,8 +1317,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_LongCollisionMultipleVariablesDifferentType()
         {
             const string inputCode =
@@ -1341,8 +1341,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_LongCollisionVariableAndConstantDifferentType()
         {
             const string inputCode =
@@ -1367,8 +1367,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_LongCollisionUnaryMathOperation()
         {
             const string inputCode =
@@ -1391,8 +1391,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanExpressionUnreachableCaseElseRangeClauseLong()
         {
             const string inputCode =
@@ -1411,8 +1411,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanExpressionUnreachableCaseElseUsingBoolean()
         {
             const string inputCode =
@@ -1431,8 +1431,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanExpressionUnreachableCaseElseInvertBooleanRange()
         {
             const string inputCode =
@@ -1451,8 +1451,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_ExceedsByteValue()
         {
             const string inputCode =
@@ -1479,8 +1479,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleDoubleCollision()
         {
             const string inputCode =
@@ -1497,8 +1497,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SimpleIntegerCollision()
         {
             const string inputCode =
@@ -1515,8 +1515,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_StringWhereLongShouldBe()
         {
             const string inputCode =
@@ -1537,8 +1537,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, mismatch: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_MixedTypes()
         {
             const string inputCode =
@@ -1561,8 +1561,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_StringWhereLongShouldBeIncludeLongAsString()
         {
             const string inputCode =
@@ -1583,8 +1583,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, mismatch: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_DoubleWhereLongShouldBe()
         {
             const string inputCode =
@@ -1601,8 +1601,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_MultipleRanges()
         {
             const string inputCode =
@@ -1625,8 +1625,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CascadingIsStatements()
         {
             const string inputCode =
@@ -1646,8 +1646,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CascadingIsStatementsGT()
         {
             const string inputCode =
@@ -1667,8 +1667,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStatementUnreachableGT()
         {
             const string inputCode =
@@ -1688,8 +1688,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStatementUnreachableLT()
         {
             const string inputCode =
@@ -1709,8 +1709,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtGT()
         {
             const string inputCode =
@@ -1731,8 +1731,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtToIsStmtCaseElseUnreachable()
         {
             const string inputCode =
@@ -1751,8 +1751,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtToIsStmtCaseElseUnreachableLTE()
         {
             const string inputCode =
@@ -1771,8 +1771,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtToIsStmtCaseElseUnreachableUsingIs()
         {
             const string inputCode =
@@ -1792,8 +1792,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1,  caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasParens()
         {
             const string inputCode =
@@ -1814,8 +1814,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasMultipleParens()
         {
             const string inputCode =
@@ -1836,8 +1836,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_RelationalOpSimple()
         {
             const string inputCode =
@@ -1858,8 +1858,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod] 
-        [TestCategory("Inspections")]
+        [Test] 
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SelectCaseHasMultOpWithFunction()
         {
             const string inputCode =
@@ -1885,8 +1885,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasAddOp()
         {
             const string inputCode =
@@ -1906,8 +1906,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasAddOpWithConstants()
         {
             const string inputCode =
@@ -1928,8 +1928,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasMultOp()
         {
             const string inputCode =
@@ -1949,8 +1949,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasMultOpInParens()
         {
             const string inputCode =
@@ -1970,8 +1970,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasExpOp()
         {
             const string inputCode =
@@ -1991,8 +1991,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasMultOp2Constants()
         {
             const string inputCode =
@@ -2013,8 +2013,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseClauseHasMultOp2Literals()
         {
             const string inputCode =
@@ -2032,8 +2032,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SelectCaseUsesConstant()
         {
             const string inputCode =
@@ -2059,8 +2059,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberRangeNoDetection()
         {
             const string inputCode =
@@ -2092,8 +2092,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberRange()
         {
             const string inputCode =
@@ -2125,8 +2125,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberRangeNonConstant()
         {
             const string inputCode =
@@ -2157,8 +2157,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberRangeInvalidValue()
         {
             const string inputCode =
@@ -2183,8 +2183,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberRangeConflicts()
         {
             const string inputCode =
@@ -2212,8 +2212,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberRangeIsStmtConflictLT()
         {
             const string inputCode =
@@ -2239,8 +2239,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberRangeIsStmtConflictGTE()
         {
             const string inputCode =
@@ -2266,8 +2266,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_RangeCollisionsWithEnums()
         {
             const string inputCode =
@@ -2295,8 +2295,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SelectCaseUsesConstantReferenceExpr()
         {
             const string inputCode =
@@ -2322,8 +2322,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SelectCaseUsesConstantReferenceOnRHS()
         {
             const string inputCode =
@@ -2349,8 +2349,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SelectCaseUsesConstantIndeterminantExpression()
         {
             const string inputCode =
@@ -2376,8 +2376,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SelectCaseIsFunction()
         {
             const string inputCode =
@@ -2403,8 +2403,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_SelectCaseIsFunctionWithParams()
         {
             const string inputCode =
@@ -2430,8 +2430,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_RelationalOpExpression()
         {
             const string inputCode =
@@ -2452,8 +2452,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtGTFollowsRange()
         {
             const string inputCode =
@@ -2474,8 +2474,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtGTConflicts()
         {
             const string inputCode =
@@ -2496,8 +2496,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtGTE()
         {
             const string inputCode =
@@ -2518,8 +2518,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtLT()
         {
             const string inputCode =
@@ -2540,8 +2540,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtLTE()
         {
             const string inputCode =
@@ -2562,8 +2562,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtLTEReverse()
         {
             const string inputCode =
@@ -2584,8 +2584,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtNEQ()
         {
             const string inputCode =
@@ -2604,8 +2604,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtNEQReverseOrder()
         {
             const string inputCode =
@@ -2624,8 +2624,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_CaseElseIsStmtNEQAndSingleValue()
         {
             const string inputCode =
@@ -2646,8 +2646,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtNEQAllValues()
         {
             const string inputCode =
@@ -2668,8 +2668,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtEQ()
         {
             const string inputCode =
@@ -2686,8 +2686,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtEQReveserOrder()
         {
             const string inputCode =
@@ -2704,8 +2704,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtMultiple()
         {
             const string inputCode =
@@ -2728,8 +2728,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable:2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtAndNegativeRange()
         {
             const string inputCode =
@@ -2748,8 +2748,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_IsStmtAndNegativeRangeWithConstants()
         {
             const string inputCode =
@@ -2771,8 +2771,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_TypeHintString()
         {
             const string inputCode =
@@ -2794,8 +2794,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_TypeHintDouble()
         {
             const string inputCode =
@@ -2817,8 +2817,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_TypeHintSingle()
         {
             const string inputCode =
@@ -2840,8 +2840,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_TypeHintInt()
         {
             const string inputCode =
@@ -2863,8 +2863,8 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnreachableCaseInspection_TypeHintLong()
         {
             const string inputCode =
