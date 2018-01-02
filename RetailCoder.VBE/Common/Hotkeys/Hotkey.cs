@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.Common.WinAPI;
 using NLog;
@@ -32,7 +33,7 @@ namespace Rubberduck.Common.Hotkeys
         public Keys Combo { get; }
         public Keys SecondKey { get; }
         public bool IsTwoStepHotkey { get; }
-        public bool IsAttached { get; private set; }
+        public bool IsAttached => HotkeyInfo.HookId != IntPtr.Zero;
 
         public event EventHandler<HookEventArgs> MessageReceived;
 
@@ -68,10 +69,17 @@ namespace Rubberduck.Common.Hotkeys
                 return;
             }
 
-            User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId);
+            if (!User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId))
+            {
+                Logger.Warn($"Error calling UnregisterHotKey; the error was {Marshal.GetLastWin32Error()}; going to delete the atom anyway... The memory may leak.");
+            }
+            Kernel32.SetLastError(Kernel32.ERROR_SUCCESS);
             Kernel32.GlobalDeleteAtom(HotkeyInfo.HookId);
-
-            IsAttached = false;
+            var lastError = Marshal.GetLastWin32Error();
+            if (lastError != Kernel32.ERROR_SUCCESS)
+            {
+                Logger.Warn($"Error calling DeleteGlobalAtom; the error was {lastError} and the id was {HotkeyInfo.HookId}.");
+            }
             ClearCommandShortcutText();
         }
 
@@ -83,6 +91,12 @@ namespace Rubberduck.Common.Hotkeys
             }
 
             var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
+            if (hookId != IntPtr.Zero)
+            {
+                Logger.Warn($"Error calling GlobalAddAtom; the error was {Marshal.GetLastWin32Error()}; aborting the HookKey operation...");    
+                return;
+            }
+
             var success = User32.RegisterHotKey(_hWndVbe, hookId, shift, (uint)key);
             if (!success)
             {
@@ -90,7 +104,6 @@ namespace Rubberduck.Common.Hotkeys
             }
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
-            IsAttached = true;
         }
 
         private void SetCommandShortcutText()
@@ -108,8 +121,7 @@ namespace Rubberduck.Common.Hotkeys
                 command.ShortcutText = string.Empty;
             }
         }
-
-
+        
         private static readonly IDictionary<char,uint> Modifiers = new Dictionary<char, uint>
         {
             { '+', (uint)KeyModifier.SHIFT },

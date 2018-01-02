@@ -636,12 +636,7 @@ namespace Rubberduck.Root
         private void RegisterWindowsHooks(IWindsorContainer container)
         {
             var mainWindowHwnd = (IntPtr) _vbe.MainWindow.HWnd;
-
-            container.Register(Component.For<IAttachable>()
-                .ImplementedBy<TimerHook>()
-                .DependsOn(Dependency.OnValue<IntPtr>(mainWindowHwnd))
-                .LifestyleSingleton());
-
+            
             container.Register(Component.For<IRubberduckHooks>()
                 .ImplementedBy<RubberduckHooks>()
                 .DependsOn(Dependency.OnValue<IntPtr>(mainWindowHwnd))
