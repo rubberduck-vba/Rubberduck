@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Settings;
@@ -7,10 +7,10 @@ using Rubberduck.UI.Command;
 
 namespace RubberduckTests.Settings
 {
-    [TestClass]
+    [TestFixture]
     public class HotkeyFactoryTests
     {
-        [TestMethod]
+        [Test]
         public void CreatingHotkeyReturnsNullWhenNoSettingProvided()
         {
             var factory = new HotkeyFactory(null);
@@ -20,7 +20,7 @@ namespace RubberduckTests.Settings
             Assert.IsNull(hotkey);
         }
 
-        [TestMethod]
+        [Test]
         public void CreatingHotkeyReturnsNullWhenNoMatchingCommandExists()
         {
             var mockCommand = new Mock<CommandBase>(null).Object;
@@ -32,7 +32,7 @@ namespace RubberduckTests.Settings
             Assert.IsNull(hotkey);
         }
 
-        [TestMethod]
+        [Test]
         public void CreatingHotkeyReturnsCorrectResult()
         {
             var mockCommand = new Mock<CommandBase>(null).Object;
@@ -46,9 +46,10 @@ namespace RubberduckTests.Settings
 
             var hotkey = factory.Create(setting, IntPtr.Zero);
 
-            MultiAssert.Aggregate(
-                () => Assert.AreEqual(mockCommand, hotkey.Command),
-                () => Assert.AreEqual(setting.ToString(), hotkey.Key));
+            Assert.Multiple(() => {
+                Assert.AreEqual(mockCommand, hotkey.Command);
+                Assert.AreEqual(setting.ToString(), hotkey.Key);
+            });
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
@@ -8,16 +8,16 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
 using Rubberduck.Parsing.Inspections.Resources;
+using RubberduckTests.Common;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class IgnoreOnceQuickFixTests
     {
-
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -62,8 +62,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -89,8 +89,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ConstantNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -117,8 +117,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyStringLiteral_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -145,8 +145,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EncapsulatePublicField_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -168,9 +168,9 @@ Public fizz As Boolean";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        [TestCategory("Unused Value")]
+        [Test]
+        [Category("QuickFixes")]
+        [Category("Unused Value")]
         public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -202,8 +202,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AnnotationListFollowedByCommentAddsAnnotationCorrectly()
         {
             const string inputCode = @"
@@ -234,9 +234,9 @@ End Function
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ImplicitActiveSheetReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -279,9 +279,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -328,8 +328,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_IgnoredQuickFixWorks()
         {
             const string inputCode =
@@ -357,8 +357,8 @@ End Sub";
 
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitPublicMember_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -386,8 +386,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -411,9 +411,9 @@ End Function";
             }
         }
 
-        [TestMethod]
+        [Test]
 
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void LabelNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -438,8 +438,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ModuleScopeDimKeyword_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -462,8 +462,8 @@ Dim foo";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -491,8 +491,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MultilineParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -526,8 +526,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MultipleDeclarations_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -554,8 +554,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -580,8 +580,8 @@ End Function";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObjectVariableNotSet_IgnoreQuickFixWorks()
         {
             var inputCode =
@@ -619,8 +619,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCallStatement_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -661,8 +661,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -685,8 +685,8 @@ Rem test1";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteErrorSyntax_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -713,8 +713,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteGlobal_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -737,8 +737,8 @@ Global var1 As Integer";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteLetStatement_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -772,8 +772,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -804,8 +804,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void OptionBaseOneSpecified_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -829,8 +829,8 @@ Option Base 1";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -856,8 +856,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenPrivateSub_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -882,8 +882,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -908,8 +908,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -935,8 +935,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void RedundantByRefModifier_IgnoredQuickFixWorks()
         {
             const string inputCode =
@@ -963,8 +963,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void SelfAssignedDeclaration_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -997,8 +997,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariableUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1028,9 +1028,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        [Ignore] // not sure how to handle GetBuiltInDeclarations
+        [Test]
+        [Category("QuickFixes")]
+        [Ignore("Todo")] // not sure how to handle GetBuiltInDeclarations
         public void UntypedFunctionUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1075,8 +1075,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UseMeaningfulName_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1106,8 +1106,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1132,8 +1132,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnusedVariable_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1159,8 +1159,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void VariableTypeNotDeclared_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1183,8 +1183,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void WriteOnlyProperty_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1215,8 +1215,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void BooleanAssignedInIfElseInspection_IgnoreQuickFixWorks()
         {
             const string inputCode =

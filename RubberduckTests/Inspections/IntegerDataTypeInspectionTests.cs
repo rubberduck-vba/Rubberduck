@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,11 +7,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class IntegerDataTypeInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_Function()
         {
             const string inputCode =
@@ -28,8 +28,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_PropertyGet()
         {
             const string inputCode =
@@ -46,8 +46,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_Parameter()
         {
             const string inputCode =
@@ -64,8 +64,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_Variable()
         {
             const string inputCode =
@@ -83,8 +83,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_Constant()
         {
             const string inputCode =
@@ -102,8 +102,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_UserDefinedTypeMember()
         {
             const string inputCode =
@@ -121,8 +121,8 @@ End Type";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_FunctionInterfaceImplementation()
         {
             const string inputCode1 =
@@ -152,8 +152,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_PropertyGetInterfaceImplementation()
         {
             const string inputCode1 =
@@ -183,8 +183,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_ParameterInterfaceImplementation()
         {
             const string inputCode1 =
@@ -214,8 +214,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_ReturnsResult_MultipleInterfaceImplementations()
         {
             const string inputCode1 =
@@ -252,8 +252,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_DoesNotReturnResult_LibraryFunction()
         {
             const string inputCode =
@@ -269,8 +269,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_DoesNotReturnResult_LibraryFunctionParameter()
         {
             const string inputCode =
@@ -286,8 +286,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_DoesNotReturnResult_LibraryProcedureParameter()
         {
             const string inputCode =
@@ -303,8 +303,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IntegerDataType_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -322,16 +322,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new IntegerDataTypeInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "IntegerDataTypeInspection";
