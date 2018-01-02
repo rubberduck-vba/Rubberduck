@@ -91,7 +91,7 @@ namespace Rubberduck.Common.Hotkeys
             }
 
             var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
-            if (hookId != IntPtr.Zero)
+            if (hookId == IntPtr.Zero)
             {
                 Logger.Warn($"Error calling GlobalAddAtom; the error was {Marshal.GetLastWin32Error()}; aborting the HookKey operation...");    
                 return;
