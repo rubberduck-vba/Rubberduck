@@ -128,7 +128,7 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-		public static IEnumerable<IParseTree> GetDescendents(IParseTree context)
+        public static IEnumerable<IParseTree> GetDescendents(IParseTree context)
         {
             if (context == null)
             {

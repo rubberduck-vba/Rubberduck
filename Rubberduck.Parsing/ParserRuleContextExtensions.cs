@@ -48,6 +48,111 @@ namespace Rubberduck.Parsing
             return listener.Matches;
         }
 
+        public static IEnumerable<T> GetChildren<T>(this RuleContext context)
+        {
+            if (context == null)
+            {
+                yield break;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (child is T)
+                {
+                    yield return (T)child;
+                }
+            }
+        }
+
+        public static bool HasParent(this RuleContext context, RuleContext parent)
+        {
+            if (context == null)
+            {
+                return false;
+            }
+            if (context == parent)
+            {
+                return true;
+            }
+            return HasParent(context.Parent, parent);
+        }
+
+        public static TContext FindChild<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        {
+            if (context == null)
+            {
+                return default;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index) is TContext)
+                {
+                    return (TContext)child;
+                }
+            }
+            return default;
+        }
+
+        public static bool HasChildToken(this IParseTree context, string token)
+        {
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index).GetText().Equals(token))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static T GetDescendent<T>(this IParseTree context)
+        {
+            if (context == null)
+            {
+                return default;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index) is T)
+                {
+                    return (T)child;
+                }
+
+                var descendent = child.GetDescendent<T>();
+                if (descendent != null)
+                {
+                    return descendent;
+                }
+            }
+
+            return default;
+        }
+
+        public static IEnumerable<IParseTree> GetDescendents(this IParseTree context)
+        {
+            if (context == null)
+            {
+                yield break;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                yield return child;
+
+                foreach (var node in child.GetDescendents())
+                {
+                    yield return node;
+                }
+            }
+        }
+
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
         {
             private readonly HashSet<TContext> _matches = new HashSet<TContext>();
