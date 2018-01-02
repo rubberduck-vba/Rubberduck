@@ -2203,11 +2203,29 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Case Clause will never be executed. .
+        ///   Looks up a localized string similar to Detects Case Clauses that will never execute. .
         /// </summary>
         public static string UnreachableCaseInspectionMeta {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Case Clause(s) cannot be reached.
+        /// </summary>
+        public static string UnreachableCaseInspectionName {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Case Clause &apos;{0}&apos; cannot be reached.
+        /// </summary>
+        public static string UnreachableCaseInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionResultFormat", resourceCulture);
             }
         }
         

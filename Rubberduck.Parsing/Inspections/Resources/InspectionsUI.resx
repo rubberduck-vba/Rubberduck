@@ -891,7 +891,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Use of 'Error' statement</value>
   </data>
   <data name="UnreachableCaseInspectionMeta" xml:space="preserve">
-    <value>A Case Clause will never be executed. </value>
+    <value>Detects Case Clauses that will never execute. </value>
+  </data>
+  <data name="UnreachableCaseInspectionName" xml:space="preserve">
+    <value>Case Clause(s) cannot be reached</value>
+  </data>
+  <data name="UnreachableCaseInspectionResultFormat" xml:space="preserve">
+    <value>Case Clause '{0}' cannot be reached</value>
   </data>
   <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
     <value>Unreachable Case Else: All possible values are handled by prior Case statement(s)</value>
