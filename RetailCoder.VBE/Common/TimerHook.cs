@@ -35,7 +35,7 @@ namespace Rubberduck.Common
                 var timerId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
                 if (timerId == IntPtr.Zero)
                 {
-                    _log.Warn($"Unable to create a global atom for timer hook; error was {Marshal.GetLastWin32Error()}; aborting the Attach operation...");
+                    _log.Warn($"Unable to create a global atom for TimerHook; error was {Marshal.GetLastWin32Error()}; aborting the Attach operation...");
                     return;
                 }
 
@@ -45,7 +45,7 @@ namespace Rubberduck.Common
                 }
                 else
                 {
-                    _log.Warn($"Global atom was created but SetTime failed with error {Marshal.GetLastWin32Error()}; aborting the Attach operation...");
+                    _log.Warn($"Global atom was created but SetTimer failed with error {Marshal.GetLastWin32Error()}; aborting the Attach operation...");
                     Kernel32.SetLastError(Kernel32.ERROR_SUCCESS);
                     Kernel32.GlobalDeleteAtom(timerId);
                     var lastError = Marshal.GetLastWin32Error();
@@ -81,7 +81,7 @@ namespace Rubberduck.Common
                 var lastError = Marshal.GetLastWin32Error();
                 if(lastError!=Kernel32.ERROR_SUCCESS)
                 {
-                    _log.Warn($"Error with executing GlobalDeleteAtom; the error was {lastError}; the hook will be deatched anyway; the timerId was {_timerId}");
+                    _log.Warn($"Error with executing GlobalDeleteAtom; the error was {lastError}; the hook will be leaked; the timerId was {_timerId}");
                 }
 
                 _timerId = IntPtr.Zero;
