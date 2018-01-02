@@ -59,8 +59,6 @@ namespace Rubberduck.UI.Command
         }
 
         public string ShortcutText { get; set; }
-        
-        public virtual RubberduckHotkey Hotkey => RubberduckHotkey.None;
 
         public event EventHandler CanExecuteChanged
         {
