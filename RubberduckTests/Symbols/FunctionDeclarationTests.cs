@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -6,11 +6,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class FunctionDeclarationTests
     {
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void FunctionsHaveDeclarationTypeFunction()
         {
             var function = GetTestFunction("testFoo", null);
@@ -30,8 +30,8 @@ namespace RubberduckTests.Symbols
                 }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultFunctionsDoNotHaveParameters()
         {
             var function = GetTestFunction("testFoo", null);
@@ -40,8 +40,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var function = GetTestFunction("testFoo", null);
@@ -59,8 +59,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultFunctionsAreNotDefaultMembers()
         {
             var function = GetTestFunction("testFoo", null);
@@ -69,8 +69,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void FunctionsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

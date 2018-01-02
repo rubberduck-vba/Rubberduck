@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -8,11 +8,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ProcedureNotUsedInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -30,8 +30,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -52,8 +52,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureUsed_DoesNotReturnResult()
         {
             const string inputCode =
@@ -76,8 +76,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_ReturnsResult_SomeProceduresUsed()
         {
             const string inputCode =
@@ -99,8 +99,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_DoesNotReturnResult_InterfaceImplementation()
         {
             //Input
@@ -130,8 +130,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_HandlerIsIgnoredForUnraisedEvent()
         {
             //Input
@@ -159,8 +159,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_NoResultForClassInitialize()
         {
             //Input
@@ -179,8 +179,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_NoResultForCasedClassInitialize()
         {
             //Input
@@ -199,8 +199,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_NoResultForClassTerminate()
         {
             //Input
@@ -219,8 +219,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_NoResultForCasedClassTerminate()
         {
             //Input
@@ -240,8 +240,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -260,16 +260,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new ProcedureNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ProcedureNotUsedInspection";

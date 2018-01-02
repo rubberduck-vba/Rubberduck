@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rubberduck.RegexAssistant.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class CharacterClassTests
     {
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void InvertedCharacterClass()
         {
             var cut = new CharacterClass("[^ ]", Quantifier.None);
@@ -22,8 +22,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void SimpleCharacterRange()
         {
             var cut = new CharacterClass("[a-z]", Quantifier.None);
@@ -37,8 +37,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void UnicodeCharacterRange()
         {
             var cut = new CharacterClass(@"[\u00A2-\uFFFF]", Quantifier.None);
@@ -52,8 +52,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void OctalCharacterRange()
         {
             var cut = new CharacterClass(@"[\011-\777]", Quantifier.None);
@@ -67,8 +67,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void HexadecimalCharacterRange()
         {
             var cut = new CharacterClass(@"[\x00-\xFF]", Quantifier.None);
@@ -82,8 +82,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void MixedCharacterRanges()
         {
             var cut = new CharacterClass(@"[\x00-\777\u001A-Z]", Quantifier.None);
@@ -101,8 +101,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void RangeFailureWithCharacterClass()
         {
             foreach (var charClass in new[]{ @"\D", @"\d", @"\s", @"\S", @"\w", @"\W" }){
@@ -123,8 +123,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void EscapedLiteralRanges()
         {
             foreach (var escapedLiteral in new[] { @"\.", @"\[", @"\]" })
@@ -152,8 +152,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void SkipsIncorrectlyEscapedLiterals()
         {
             foreach (var escapedLiteral in new[] { @"\(", @"\)", @"\{", @"\}", @"\|", @"\?", @"\*" })
@@ -172,8 +172,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void IncorrectlyEscapedRangeTargetLiteralsBlowUp()
         {
             foreach (var escapedLiteral in new[] { @"\(", @"\)", @"\{", @"\}", @"\|", @"\?", @"\*" })
@@ -193,8 +193,8 @@ namespace Rubberduck.RegexAssistant.Tests
 
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void IgnoresBackreferenceSpecifiers()
         {
             var cut = new CharacterClass(@"[\1]", Quantifier.None);

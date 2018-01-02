@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -11,10 +11,10 @@ using Rubberduck.UI;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class GeneralInspectionTests
     {
-        [TestInitialize]
+        [SetUp]
         public void InitResources()
         {
             // ensure resources are using an invariant culture.
@@ -38,8 +38,8 @@ namespace RubberduckTests.Inspections
             return baseTypes;
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionNameStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
@@ -51,8 +51,8 @@ namespace RubberduckTests.Inspections
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionMetaStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
@@ -64,9 +64,9 @@ namespace RubberduckTests.Inspections
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
+        [Category("Inspections")]
         public void InspectionResultFormatStringsExist()
         {
             var inspectionsWithSharedResultFormat = new List<string>
@@ -90,8 +90,8 @@ namespace RubberduckTests.Inspections
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionNameStrings_AreNotFormatted()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()

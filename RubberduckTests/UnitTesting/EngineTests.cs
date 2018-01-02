@@ -1,6 +1,6 @@
 namespace RubberduckTests.UnitTesting
 {
-    //[TestClass]
+    //[TestFixture]
     //public class EngineTests
     //{
     //    private TestEngine _engine;
@@ -15,7 +15,7 @@ namespace RubberduckTests.UnitTesting
     //    private bool _wasEventRaised;
     //    private int _eventCount;
 
-    //    [TestInitialize]
+    //    [SetUp]
     //    public void Initialize()
     //    {
     //        _wasEventRaised = false;
@@ -40,7 +40,7 @@ namespace RubberduckTests.UnitTesting
     //        _engine.AllTests = tests;
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_FailedTests()
     //    {
     //        var actual = _engine.FailedTests().First();
@@ -48,7 +48,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(_failedMethod, actual);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_SuccessfulTests()
     //    {
     //        var actual = _engine.PassedTests().First();
@@ -56,7 +56,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(_successfulMethod, actual);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_NotRunTests()
     //    {
     //        var actual = _engine.NotRunTests().First();
@@ -64,7 +64,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(_notRunMethod, actual);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_LastRunTests_ReturnsAllRunTests()
     //    {
     //        var actual = _engine.LastRunTests().ToList();
@@ -76,7 +76,7 @@ namespace RubberduckTests.UnitTesting
     //        CollectionAssert.AreEquivalent(expected, actual);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_LastRunTests_Successful()
     //    {
     //        var actual = _engine.LastRunTests(TestOutcome.Succeeded).First();
@@ -84,7 +84,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(_successfulMethod, actual);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_LastRunTests_Failed()
     //    {
     //        var actual = _engine.LastRunTests(TestOutcome.Failed).First();
@@ -92,7 +92,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(_failedMethod, actual);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_LastRunTests_Inconclusive()
     //    {
     //        var actual = _engine.LastRunTests(TestOutcome.Inconclusive).First();
@@ -100,7 +100,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(_inconclusiveMethod, actual);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_Run_ModuleIntialize_IsRunOnce()
     //    {
     //        //arrange
@@ -115,7 +115,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(1, _eventCount, "Module Intialzie expected to be run once.");
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_Run_ModuleCleanup_IsRunOnce()
     //    {
     //        //arrange
@@ -129,7 +129,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(1, _eventCount, "Module Cleanup expected to be run once.");
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_Run_MethodIntialize_IsRunForEachTestMethod()
     //    {
     //        //arrange
@@ -144,7 +144,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(expectedCount, _eventCount, "Method Intialized was expected to be run {0} times", expectedCount);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_Run_MethodCleanup_IsRunForEachTestMethod()
     //    {
     //        //arrange
@@ -159,7 +159,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(expectedCount, _eventCount, "Method Initialized was expected to be run {0} times", expectedCount);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_Run_TestCompleteIsRaisedForEachTestMethod()
     //    {
     //        //arrange
@@ -174,7 +174,7 @@ namespace RubberduckTests.UnitTesting
     //        Assert.AreEqual(expectedCount, _eventCount, "TestCompleted event was expected to be raised {0} times.", expectedCount);
     //    }
 
-    //    [TestMethod]
+    //    [Test]
     //    public void TestEngine_Run_WhenTestListIsEmpty_Bail()
     //    {
     //        //arrange 

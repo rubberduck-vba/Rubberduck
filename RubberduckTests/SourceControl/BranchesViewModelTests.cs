@@ -1,21 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.SourceControl;
 
 namespace RubberduckTests.SourceControl
 {
-    [TestClass]
+    [TestFixture]
     public class BranchesViewModelTests
     {
         private Mock<ISourceControlProvider> _provider;
         private Branch _intialBranch;
         private List<IBranch> _branches;
 
-        [TestCategory("SourceControl")]
-        [TestInitialize]
+        [Category("SourceControl")]
+        [SetUp]
         public void IntializeFixtures()
         {
             _provider = new Mock<ISourceControlProvider>();
@@ -40,8 +40,8 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.CurrentBranch).Returns(_intialBranch);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void SelectedBranchShouldBeCurrentBranchAfterRefresh()
         {
             var vm = new BranchesPanelViewModel
@@ -56,8 +56,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_provider.Object.CurrentBranch.Name, vm.CurrentBranch);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void PublishedBranchesAreListed()
         {
             var vm = new BranchesPanelViewModel
@@ -69,8 +69,8 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEqual(expected, vm.PublishedBranches.ToList());
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void UnPublishedBranchesAreListed()
         {
             var vm = new BranchesPanelViewModel
@@ -82,8 +82,8 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEqual(expected, vm.UnpublishedBranches.ToList());
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnlyLocalBranchesInBranches()
         { 
             var vm = new BranchesPanelViewModel
@@ -95,8 +95,8 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.AreEquivalent(expected, vm.LocalBranches.ToList());
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void HeadIsNotIncludedInPublishedBranches()
         {
             var vm = new BranchesPanelViewModel
@@ -107,8 +107,8 @@ namespace RubberduckTests.SourceControl
             CollectionAssert.DoesNotContain(vm.PublishedBranches.ToList(), "HEAD");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void DeleteBranchDisabled_BranchIsActive()
         {
             var vm = new BranchesPanelViewModel
@@ -120,8 +120,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.DeleteBranchToolbarButtonCommand.CanExecute(bool.TrueString));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void DeleteBranchEnabled_BranchIsNotActive()
         {
             var vm = new BranchesPanelViewModel
@@ -133,8 +133,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.DeleteBranchToolbarButtonCommand.CanExecute(bool.TrueString));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void DeleteBranch_BranchIsNotActive_BranchIsRemoved()
         {
             var firstBranchName = "master";
@@ -164,8 +164,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(p => p.DeleteBranch(secondBranchName));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranchViewIsShownOnCreateBranch()
         {
             var vm = new BranchesPanelViewModel
@@ -178,8 +178,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.DisplayCreateBranchGrid);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void MergeBranchViewIsShownOnCreateBranch()
         {
             var vm = new BranchesPanelViewModel
@@ -192,8 +192,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.DisplayMergeBranchesGrid);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_BranchExists()
         {
             var vm = new BranchesPanelViewModel
@@ -204,8 +204,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute("master"));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_ValidBranchName()
         {
             var vm = new BranchesPanelViewModel
@@ -217,8 +217,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsSpace()
         {
             var vm = new BranchesPanelViewModel
@@ -230,8 +230,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsTwoConsecutiveDots()
         {
             var vm = new BranchesPanelViewModel
@@ -243,8 +243,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsTilde()
         {
             var vm = new BranchesPanelViewModel
@@ -256,8 +256,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsCaret()
         {
             var vm = new BranchesPanelViewModel
@@ -269,8 +269,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsColon()
         {
             var vm = new BranchesPanelViewModel
@@ -282,8 +282,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsQuestionMark()
         {
             var vm = new BranchesPanelViewModel
@@ -295,8 +295,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsAsteriks()
         {
             var vm = new BranchesPanelViewModel
@@ -308,8 +308,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsOpenBracket()
         {
             var vm = new BranchesPanelViewModel
@@ -321,8 +321,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsTwoConsecutiveSlashes()
         {
             var vm = new BranchesPanelViewModel
@@ -334,8 +334,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameStartsWithSlash()
         {
             var vm = new BranchesPanelViewModel
@@ -347,8 +347,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameEndsWithSlash()
         {            //arrange
             var vm = new BranchesPanelViewModel
@@ -360,8 +360,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameEndsWithDot()
         {
             var vm = new BranchesPanelViewModel
@@ -373,8 +373,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameIsAtSign()
         {
             var vm = new BranchesPanelViewModel
@@ -386,8 +386,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsConsecutiveAtSignAndOpenBrace()
         {
             var vm = new BranchesPanelViewModel
@@ -399,8 +399,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsBackslash()
         {
             var vm = new BranchesPanelViewModel
@@ -412,8 +412,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsSlashSectionStartingWithDot()
         {
             var vm = new BranchesPanelViewModel
@@ -425,8 +425,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranch_NameContainsSlashSectionEndingWithDotlock()
         {
             var vm = new BranchesPanelViewModel
@@ -438,8 +438,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.CreateBranchOkButtonCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranchViewIsNotShownWhenLocal_IsNull()
         {
             var vm = new BranchesPanelViewModel();
@@ -447,8 +447,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.NewBranchCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ProviderCallsCreateBranchOnCreateBranchConfirm()
         {
             var vm = new BranchesPanelViewModel
@@ -462,8 +462,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.CreateBranch(It.Is<string>(s => s == vm.CurrentBranch), It.Is<string>(s => s == "bugBranch")));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranchViewIshiddenAfterSubmit()
         {
             var vm = new BranchesPanelViewModel
@@ -477,8 +477,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.DisplayCreateBranchGrid);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranchViewIshiddenAfterCancel()
         {
             var vm = new BranchesPanelViewModel
@@ -492,8 +492,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.DisplayCreateBranchGrid);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranchUserInputIsClearedAfterSubmit()
         {
             var vm = new BranchesPanelViewModel
@@ -507,8 +507,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, vm.NewBranchName);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CreateBranchUserInputIsClearedAfterCancel()
         {
             var vm = new BranchesPanelViewModel
@@ -522,8 +522,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(string.Empty, vm.NewBranchName);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void MergeViewIsShownOnMergeClick()
         {
             var vm = new BranchesPanelViewModel
@@ -536,8 +536,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.DisplayMergeBranchesGrid);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void MergeViewIsNotShownWhenLocal_IsNull()
         {
             var vm = new BranchesPanelViewModel();
@@ -545,8 +545,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.MergeBranchCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void MergeViewSelectedDestinationBranchIsCurrentBranch()
         {
             var vm = new BranchesPanelViewModel
@@ -557,8 +557,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(_intialBranch.Name, vm.DestinationBranch);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ProviderMergesOnMergeViewSubmit()
         {
             var vm = new BranchesPanelViewModel
@@ -573,8 +573,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Merge("dev", "master"));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void MergeViewIsHiddenOnSuccessfulMerge()
         {
             var vm = new BranchesPanelViewModel
@@ -590,8 +590,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.DisplayMergeBranchesGrid);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void MergeViewIsHiddenOnCancel()
         {
             var vm = new BranchesPanelViewModel
@@ -605,8 +605,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.DisplayMergeBranchesGrid);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ChangingSelectedBranchChecksOutThatBranch()
         {
             var vm = new BranchesPanelViewModel
@@ -618,8 +618,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Checkout("dev"));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void RefreshingViewShouldNotCheckoutBranch()
         {
             var vm = new BranchesPanelViewModel
@@ -632,8 +632,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Checkout(It.IsAny<string>()), Times.Once);  //checkout when we first set provider
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnBranchChange_WhenCheckoutFails_ActionFailedEventIsRaised()
         {
             var vm = new BranchesPanelViewModel
@@ -655,8 +655,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnMergeBranch_WhenCheckoutFails_ActionFailedEventIsRaised()
         {
             var vm = new BranchesPanelViewModel
@@ -678,8 +678,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnDeleteBranch_WhenDeleteFails_ActionFailedEventIsRaised()
         {
             var branchName = "dev";
@@ -704,8 +704,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void OnCreateBranch_WhenCreateFails_ActionFailedEventIsRaised()
         {
             var wasRaised = false;
@@ -730,8 +730,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void PublishPublishesBranch()
         {
             var branch = "dev";
@@ -746,8 +746,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Publish(branch));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void UnpublishUnpublishesBranch()
         {
             var branch = "master";
@@ -762,8 +762,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Unpublish(branch));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void PublishBranch_ActionFailedEventIsRaised()
         {
             var vm = new BranchesPanelViewModel
@@ -785,8 +785,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void UnpublishBranch_ActionFailedEventIsRaised()
         {
             var vm = new BranchesPanelViewModel
