@@ -18,24 +18,15 @@ using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    //TODO: Add replace with UI Resource
-    public static class CaseInspectionMessages
+    public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
-        public static string Unreachable => "Unreachable: Case Statement is handled by prior Case statement(s)";
-        public static string MismatchType => "Invalid Type: Case Statement cannot be evaluated as the Select Statement Type";
-        public static string CaseElse => "Unreachable Case Else: All possible values are handled by prior Case statement(s)";
-    }
-
-    public sealed class SelectCaseInspection : ParseTreeInspectionBase
-    {
-
         internal enum ClauseEvaluationResult { Unreachable, MismatchType, CaseElse, NoResult };
 
         internal Dictionary<ClauseEvaluationResult, string> _resultMessages = new Dictionary<ClauseEvaluationResult, string>()
         {
-            { ClauseEvaluationResult.Unreachable, CaseInspectionMessages.Unreachable },
-            { ClauseEvaluationResult.MismatchType, CaseInspectionMessages.MismatchType },
-            { ClauseEvaluationResult.CaseElse, CaseInspectionMessages.CaseElse }
+            { ClauseEvaluationResult.Unreachable, InspectionsUI.UnreachableCaseInspection_Unreachable },
+            { ClauseEvaluationResult.MismatchType, InspectionsUI.UnreachableCaseInspection_TypeMismatch},
+            { ClauseEvaluationResult.CaseElse, InspectionsUI.UnreachableCaseInspection_CaseElse }
         };
 
         internal static class CompareTokens
@@ -48,47 +39,47 @@ namespace Rubberduck.Inspections.Concrete
             public static readonly string GTE = ">=";
         }
 
-        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>> MathOperations = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>>()
+        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> MathOperations = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
         {
-            { "*", delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return LHS * RHS; } },
-            { "/", delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return LHS / RHS; } },
-            { "+", delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return LHS + RHS; } },
-            { "-", delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return LHS - RHS; } },
-            { "^", delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return LHS ^ RHS; } },
-            { "Mod", delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return LHS % RHS; } }
+            { "*", delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return LHS * RHS; } },
+            { "/", delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return LHS / RHS; } },
+            { "+", delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return LHS + RHS; } },
+            { "-", delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return LHS - RHS; } },
+            { "^", delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return LHS ^ RHS; } },
+            { "Mod", delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return LHS % RHS; } }
         };
 
-        private static Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>> CompareOperations = new Dictionary<string, Func<SelectCaseInspectionValue, SelectCaseInspectionValue, SelectCaseInspectionValue>>()
+        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> CompareOperations = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
         {
-            { CompareTokens.EQ, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue(LHS == RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareTokens.NEQ, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue(LHS != RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareTokens.LT, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue(LHS < RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareTokens.LTE, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue(LHS <= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareTokens.GT, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue(LHS > RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
-            { CompareTokens.GTE, delegate(SelectCaseInspectionValue LHS, SelectCaseInspectionValue RHS){ return new SelectCaseInspectionValue(LHS >= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } }
+            { CompareTokens.EQ, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue(LHS == RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.NEQ, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue(LHS != RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.LT, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue(LHS < RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.LTE, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue(LHS <= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.GT, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue(LHS > RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } },
+            { CompareTokens.GTE, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue(LHS >= RHS ? Tokens.True: Tokens.False, Tokens.Boolean); } }
         };
 
         internal struct SummaryCaseCoverage
         {
-            public SelectCaseInspectionValue IsLTMax;
-            public SelectCaseInspectionValue IsGTMin;
-            public List<SelectCaseInspectionValue> SingleValues;
-            public List<Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>> Ranges;
+            public UnreachableCaseInspectionValue IsLTMax;
+            public UnreachableCaseInspectionValue IsGTMin;
+            public List<UnreachableCaseInspectionValue> SingleValues;
+            public List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> Ranges;
             public bool CaseElseIsUnreachable;
             public List<string> RangeClausesAsText;
-            public List<SelectCaseInspectionValue> EnumDiscretes;
+            public List<UnreachableCaseInspectionValue> EnumDiscretes;
         }
 
         internal struct ExpressionEvaluationDataObject
         {
             public ParserRuleContext ParentCtxt;
             public bool IsUnaryOperation;
-            public SelectCaseInspectionValue LHSValue;
-            public SelectCaseInspectionValue RHSValue;
+            public UnreachableCaseInspectionValue LHSValue;
+            public UnreachableCaseInspectionValue RHSValue;
             public string Operator;
             public string SelectCaseRefName;
             public string TypeNameTarget;
-            public SelectCaseInspectionValue Result;
+            public UnreachableCaseInspectionValue Result;
             public bool CanBeInspected;
             public bool EvaluateAsIsClause;
         }
@@ -117,10 +108,10 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     IsGTMin = null,
                     IsLTMax = null,
-                    SingleValues = new List<SelectCaseInspectionValue>(),
-                    Ranges = new List<Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>>(),
+                    SingleValues = new List<UnreachableCaseInspectionValue>(),
+                    Ranges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>(),
                     RangeClausesAsText = new List<string>(),
-                    EnumDiscretes = new List<SelectCaseInspectionValue>()
+                    EnumDiscretes = new List<UnreachableCaseInspectionValue>()
                 };
                 CanBeInspected = TryGetChildContext(SelectStmtContext, out SelectExpressionContext);
             }
@@ -151,9 +142,9 @@ namespace Rubberduck.Inspections.Concrete
             public string AsText;
             public string TypeNameTarget;
             public string CompareSymbol;
-            public SelectCaseInspectionValue SingleValue;
-            public SelectCaseInspectionValue MinValue;
-            public SelectCaseInspectionValue MaxValue;
+            public UnreachableCaseInspectionValue SingleValue;
+            public UnreachableCaseInspectionValue MinValue;
+            public UnreachableCaseInspectionValue MaxValue;
             public ClauseEvaluationResult ResultType;
             public bool CanBeInspected;
 
@@ -176,7 +167,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public SelectCaseInspection(RubberduckParserState state)
+        public UnreachableCaseInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
         public override IInspectionListener Listener { get; } =
@@ -368,8 +359,8 @@ namespace Rubberduck.Inspections.Concrete
             rangeClauseDO.IsValueRange = HasChildToken(rangeClauseDO.Context, Tokens.To);
             rangeClauseDO = SetTheCompareOperator(rangeClauseDO);
 
-            SelectCaseInspectionValue startValue;
-            SelectCaseInspectionValue endValue;
+            UnreachableCaseInspectionValue startValue;
+            UnreachableCaseInspectionValue endValue;
             if (rangeClauseDO.IsValueRange)
             {
                 var startContext = ParserRuleContextHelper.GetChild<SelectStartValueContext>(rangeClauseDO.Context);
@@ -413,7 +404,7 @@ namespace Rubberduck.Inspections.Concrete
             return rangeClauseDO;
         }
 
-        private RangeClauseDataObject ResolveRangeClauseValue(RangeClauseDataObject rangeClauseDO, ParserRuleContext context, out SelectCaseInspectionValue vbaValue)
+        private RangeClauseDataObject ResolveRangeClauseValue(RangeClauseDataObject rangeClauseDO, ParserRuleContext context, out UnreachableCaseInspectionValue vbaValue)
         {
             vbaValue = null;
             if (!(context is RangeClauseContext || context is SelectStartValueContext || context is SelectEndValueContext))
@@ -492,30 +483,30 @@ namespace Rubberduck.Inspections.Concrete
             return contextEvals;
         }
 
-        private SelectCaseInspectionValue CreateValue(ExpressionContext ctxt, string typeName = "")
+        private UnreachableCaseInspectionValue CreateValue(ExpressionContext ctxt, string typeName = "")
         {
             if (ctxt is LExprContext)
             {
                 var lexprTypeName = typeName;
                 if (TryGetTheLExprValue((LExprContext)ctxt, out string lexprValue, ref lexprTypeName))
                 {
-                    return typeName.Length > 0 ? new SelectCaseInspectionValue(lexprValue, typeName) : new SelectCaseInspectionValue(lexprValue, lexprTypeName);
+                    return typeName.Length > 0 ? new UnreachableCaseInspectionValue(lexprValue, typeName) : new UnreachableCaseInspectionValue(lexprValue, lexprTypeName);
                 }
                 var idRefs = (State.DeclarationFinder.MatchName(ctxt.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
                     .Where(idr => idr.Context.Parent == ctxt);
                 if (idRefs.Any())
                 {
                     var theTypeName = GetBaseTypeForDeclaration(idRefs.First().Declaration);
-                    return new SelectCaseInspectionValue(ctxt.GetText(), theTypeName);
+                    return new UnreachableCaseInspectionValue(ctxt.GetText(), theTypeName);
                 }
                 else
                 {
-                    return new SelectCaseInspectionValue(ctxt.GetText(), typeName);
+                    return new UnreachableCaseInspectionValue(ctxt.GetText(), typeName);
                 }
             }
             else if (ctxt is LiteralExprContext)
             {
-                return new SelectCaseInspectionValue(ctxt.GetText(), typeName);
+                return new UnreachableCaseInspectionValue(ctxt.GetText(), typeName);
             }
             return null;
         }
@@ -585,7 +576,7 @@ namespace Rubberduck.Inspections.Concrete
                         result = parentData.LHSValue.AsString();
                     }
                 }
-                parentData.Result = new SelectCaseInspectionValue(result, childData.TypeNameTarget);
+                parentData.Result = new UnreachableCaseInspectionValue(result, childData.TypeNameTarget);
             }
             return AddEvaluationData(ctxtEvalResults, childData.ParentCtxt, parentData);
         }
@@ -924,7 +915,7 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (rangeClauseDO.TypeNameTarget.Equals(Tokens.Boolean))
                     {
-                        isUnreachable = (rangeClauseDO.SingleValue == SelectCaseInspectionValue.False ?
+                        isUnreachable = (rangeClauseDO.SingleValue == UnreachableCaseInspectionValue.False ?
                             summaryCoverage.SingleValues.Any(sv => sv.AsLong().Value != 0)
                             : summaryCoverage.SingleValues.Any(sv => sv.AsLong().Value == 0));
                     }
@@ -938,7 +929,7 @@ namespace Rubberduck.Inspections.Concrete
             return rangeClauseDO;
         }
 
-        private bool SingleValueIsHandledPreviously(SelectCaseInspectionValue theValue, SummaryCaseCoverage summaryClauses)
+        private bool SingleValueIsHandledPreviously(UnreachableCaseInspectionValue theValue, SummaryCaseCoverage summaryClauses)
         {
             if (theValue.UseageTypeName.Equals(Tokens.Boolean))
             {
@@ -954,7 +945,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        private SummaryCaseCoverage UpdateSummaryIsClauseLimits(SelectCaseInspectionValue theValue, string compareSymbol, SummaryCaseCoverage priorHandlers)
+        private SummaryCaseCoverage UpdateSummaryIsClauseLimits(UnreachableCaseInspectionValue theValue, string compareSymbol, SummaryCaseCoverage priorHandlers)
         {
             var isIntegerType = IsIntegerNumberType(theValue.UseageTypeName);
             var isBooleanType = theValue.UseageTypeName.Equals(Tokens.Boolean);
@@ -980,11 +971,11 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if(CompareTokens.GTE == compareSymbol)
                     {
-                        priorHandlers.IsGTMin = theValue - SelectCaseInspectionValue.Unity;
+                        priorHandlers.IsGTMin = theValue - UnreachableCaseInspectionValue.Unity;
                     }
                     else
                     {
-                        priorHandlers.IsLTMax = theValue + SelectCaseInspectionValue.Unity;
+                        priorHandlers.IsLTMax = theValue + UnreachableCaseInspectionValue.Unity;
                     }
                 }
                 else if (!priorHandlers.SingleValues.Contains(theValue))
@@ -1001,13 +992,13 @@ namespace Rubberduck.Inspections.Concrete
 
             if (rangeClauseDO.TypeNameTarget.Equals(Tokens.Boolean))
             {
-                if (rangeClauseDO.MinValue != SelectCaseInspectionValue.Zero || rangeClauseDO.MaxValue != SelectCaseInspectionValue.Zero)
+                if (rangeClauseDO.MinValue != UnreachableCaseInspectionValue.Zero || rangeClauseDO.MaxValue != UnreachableCaseInspectionValue.Zero)
                 {
-                    summaryCoverage.SingleValues.Add(SelectCaseInspectionValue.True);
+                    summaryCoverage.SingleValues.Add(UnreachableCaseInspectionValue.True);
                 }
-                if (SelectCaseInspectionValue.Zero.IsWithin(rangeClauseDO.MinValue, rangeClauseDO.MaxValue))
+                if (UnreachableCaseInspectionValue.Zero.IsWithin(rangeClauseDO.MinValue, rangeClauseDO.MaxValue))
                 {
-                    summaryCoverage.SingleValues.Add(SelectCaseInspectionValue.False);
+                    summaryCoverage.SingleValues.Add(UnreachableCaseInspectionValue.False);
                 }
             }
             else if (summaryCoverage.EnumDiscretes.Any())
@@ -1016,18 +1007,18 @@ namespace Rubberduck.Inspections.Concrete
                 summaryCoverage.SingleValues.AddRange(used);
             }
 
-            var updatedRanges = new List<Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>>();
+            var updatedRanges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>();
             var overlapsMin = summaryCoverage.Ranges.Where(rg => rangeClauseDO.MinValue.IsWithin(rg.Item1, rg.Item2));
             var overlapsMax = summaryCoverage.Ranges.Where(rg => rangeClauseDO.MaxValue.IsWithin(rg.Item1, rg.Item2));
             foreach (var rg in summaryCoverage.Ranges)
             {
                 if (overlapsMin.Contains(rg))
                 {
-                    updatedRanges.Add(new Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>(rg.Item1, rangeClauseDO.MaxValue));
+                    updatedRanges.Add(new Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>(rg.Item1, rangeClauseDO.MaxValue));
                 }
                 else if (overlapsMax.Contains(rg))
                 {
-                    updatedRanges.Add(new Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>(rangeClauseDO.MinValue, rg.Item2));
+                    updatedRanges.Add(new Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>(rangeClauseDO.MinValue, rg.Item2));
                 }
                 else
                 {
@@ -1037,7 +1028,7 @@ namespace Rubberduck.Inspections.Concrete
 
             if (!overlapsMin.Any() && !overlapsMax.Any())
             {
-                updatedRanges.Add(new Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>(rangeClauseDO.MinValue, rangeClauseDO.MaxValue));
+                updatedRanges.Add(new Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>(rangeClauseDO.MinValue, rangeClauseDO.MaxValue));
             }
 
             summaryCoverage.Ranges = updatedRanges;
@@ -1084,11 +1075,11 @@ namespace Rubberduck.Inspections.Concrete
 
             if (typeName.Equals(Tokens.Boolean))
             {
-                return summaryClauses.SingleValues.Any(val => val == SelectCaseInspectionValue.Zero) && summaryClauses.SingleValues.Any(val => val != SelectCaseInspectionValue.Zero)
-                    || summaryClauses.IsLTMax != null && summaryClauses.IsLTMax > SelectCaseInspectionValue.False
-                    || summaryClauses.IsGTMin != null && summaryClauses.IsGTMin < SelectCaseInspectionValue.True
-                    || summaryClauses.IsLTMax != null && summaryClauses.IsLTMax == SelectCaseInspectionValue.False && summaryClauses.SingleValues.Any(sv => sv == SelectCaseInspectionValue.False)
-                    || summaryClauses.IsGTMin != null && summaryClauses.IsGTMin == SelectCaseInspectionValue.True && summaryClauses.SingleValues.Any(sv => sv == SelectCaseInspectionValue.True);
+                return summaryClauses.SingleValues.Any(val => val == UnreachableCaseInspectionValue.Zero) && summaryClauses.SingleValues.Any(val => val != UnreachableCaseInspectionValue.Zero)
+                    || summaryClauses.IsLTMax != null && summaryClauses.IsLTMax > UnreachableCaseInspectionValue.False
+                    || summaryClauses.IsGTMin != null && summaryClauses.IsGTMin < UnreachableCaseInspectionValue.True
+                    || summaryClauses.IsLTMax != null && summaryClauses.IsLTMax == UnreachableCaseInspectionValue.False && summaryClauses.SingleValues.Any(sv => sv == UnreachableCaseInspectionValue.False)
+                    || summaryClauses.IsGTMin != null && summaryClauses.IsGTMin == UnreachableCaseInspectionValue.True && summaryClauses.SingleValues.Any(sv => sv == UnreachableCaseInspectionValue.True);
             }
 
             if (summaryClauses.IsLTMax != null && summaryClauses.IsGTMin != null)
@@ -1115,7 +1106,7 @@ namespace Rubberduck.Inspections.Concrete
                     remainingValues.RemoveAll(rv => summaryClauses.Ranges.Any(rg => rg.Item1.AsLong().Value <= rv && rg.Item2.AsLong().Value >= rv));
                     if (remainingValues.Any())
                     {
-                        remainingValues.RemoveAll(rv => summaryClauses.SingleValues.Contains(new SelectCaseInspectionValue(rv, Tokens.Long)));
+                        remainingValues.RemoveAll(rv => summaryClauses.SingleValues.Contains(new UnreachableCaseInspectionValue(rv, Tokens.Long)));
                         return !remainingValues.Any();
                     }
                     else
@@ -1141,14 +1132,14 @@ namespace Rubberduck.Inspections.Concrete
             return currentSummaryCaseCoverage;
         }
 
-        private List<Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>> AppendRanges(List<Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>> ranges)
+        private List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> AppendRanges(List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> ranges)
         {
             if (ranges.Count() <= 1 || !IsIntegerNumberType(ranges.First().Item1.UseageTypeName))
             {
                 return ranges;
             }
 
-            var updatedRanges = new List<Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>>();
+            var updatedRanges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>();
             var combinedLastRange = false;
 
             for (var idx = 0; idx < ranges.Count(); idx++)
@@ -1168,12 +1159,12 @@ namespace Rubberduck.Inspections.Concrete
                 var theNextMax = ranges[idx + 1].Item2;
                 if (theMax.AsLong() == theNextMin.AsLong() - 1)
                 {
-                    updatedRanges.Add(new Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>(theMin, theNextMax));
+                    updatedRanges.Add(new Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>(theMin, theNextMax));
                     combinedLastRange = true;
                 }
                 else if (theMin.AsLong() == theNextMax.AsLong() + 1)
                 {
-                    updatedRanges.Add(new Tuple<SelectCaseInspectionValue, SelectCaseInspectionValue>(theNextMin, theMax));
+                    updatedRanges.Add(new Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>(theNextMin, theMax));
                     combinedLastRange = true;
                 }
                 else
@@ -1275,7 +1266,6 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (mathOnTheSelectCaseVariable || mathOnNonConstants)
                 {                
-                    //TODO: (Future)implement the necessary algebra to support these use cases
                     canBeInspected = false;
                 }
             }

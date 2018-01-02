@@ -2176,6 +2176,42 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unreachable Case Else: All possible values are handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_CaseElse {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_CaseElse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Type: Case Statement cannot be evaluated as the Select Statement Type.
+        /// </summary>
+        public static string UnreachableCaseInspection_TypeMismatch {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_TypeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreachable: Case Statement is handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_Unreachable {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Case Clause will never be executed. .
+        /// </summary>
+        public static string UnreachableCaseInspectionMeta {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. 
         ///If the parameter can be null, ignore this inspection result; passing a null value to a function expecting a string would raise a type mismatch runtime error..
         /// </summary>
