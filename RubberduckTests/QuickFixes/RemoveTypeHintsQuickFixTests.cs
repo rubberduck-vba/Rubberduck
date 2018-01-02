@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
@@ -6,12 +6,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveTypeHintsQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_LongTypeHint()
         {
             const string inputCode =
@@ -37,8 +37,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_IntegerTypeHint()
         {
             const string inputCode =
@@ -64,8 +64,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_DoubleTypeHint()
         {
             const string inputCode =
@@ -91,8 +91,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_SingleTypeHint()
         {
             const string inputCode =
@@ -118,8 +118,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_DecimalTypeHint()
         {
             const string inputCode =
@@ -145,8 +145,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_StringTypeHint()
         {
             const string inputCode =
@@ -172,8 +172,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Function_StringTypeHint()
         {
             const string inputCode =
@@ -203,8 +203,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_PropertyGet_StringTypeHint()
         {
             const string inputCode =
@@ -234,8 +234,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Parameter_StringTypeHint()
         {
             const string inputCode =
@@ -265,8 +265,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Variable_StringTypeHint()
         {
             const string inputCode =
@@ -296,8 +296,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Constant_StringTypeHint()
         {
             const string inputCode =

@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -9,11 +9,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class SelfAssignedDeclarationInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void SelfAssignedDeclaration_ReturnsResult()
         {
             const string inputCode =
@@ -36,8 +36,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void SelfAssignedDeclaration_DoesNotReturnResult()
         {
             const string inputCode =
@@ -60,8 +60,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void SelfAssignedDeclaration_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -85,16 +85,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new SelfAssignedDeclarationInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "SelfAssignedDeclarationInspection";

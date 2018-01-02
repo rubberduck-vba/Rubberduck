@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
@@ -11,11 +11,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
 {
-    [TestClass]
+    [TestFixture]
     public class UnitTestCommandTests
     {
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTest()
         {
             var input = @"
@@ -43,8 +43,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTest_NullActiveCodePane()
         {
             var input = @"
@@ -71,8 +71,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddTest_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -87,8 +87,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddTest_CanExecute_NoTestModule()
         {
             IVBComponent component;
@@ -101,8 +101,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddTest_CanExecute()
         {
             var input = @"
@@ -123,8 +123,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsExpectedErrorTest()
         {
             var input = @"
@@ -152,8 +152,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddExpectedErrorTest_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -168,8 +168,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddExpectedErrorTest_CanExecute_NoTestModule()
         {
             IVBComponent component;
@@ -182,8 +182,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddExpectedErrorTest_CanExecute()
         {
             var input = @"
@@ -204,8 +204,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsExpectedErrorTest_NullActiveCodePane()
         {
             var input = @"
@@ -230,8 +230,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTestModule()
         {
             IVBComponent component;
@@ -253,8 +253,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTestModuleWithStubs()
         {
             const string code =

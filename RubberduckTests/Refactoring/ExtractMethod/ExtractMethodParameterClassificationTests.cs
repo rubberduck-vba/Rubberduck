@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
     // https://github.com/rubberduck-vba/Rubberduck/wiki/Extract-Method-Refactoring-%3A-Workings---Determining-what-params-to-move
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodParameterClassificationTests
     {
 
@@ -32,12 +32,12 @@ End Sub
 ";
         #endregion
 
-        [TestClass]
+        [TestFixture]
         public class WhenClassifyingDeclarations : ExtractMethodParameterClassificationTests
         {
 
-            [TestMethod]
-            [TestCategory("Extract Method")]
+            [Test]
+            [Category("Extract Method")]
             public void shouldUseEachRuleInRulesCollectionToCheckEachReference()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -65,12 +65,12 @@ End Sub
             }
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenExtractingParameters : ExtractMethodParameterClassificationTests
         {
 
-            [TestMethod]
-            [TestCategory("Extract Method")]
+            [Test]
+            [Category("Extract Method")]
             public void shouldIncludeByValParams()
             {
 
@@ -99,8 +99,8 @@ End Sub
                 }
             }
 
-            [TestMethod]
-            [TestCategory("Extract Method")]
+            [Test]
+            [Category("Extract Method")]
             public void shouldIncludeByRefParams()
             {
 

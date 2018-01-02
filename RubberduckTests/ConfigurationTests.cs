@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -8,11 +8,11 @@ using Rubberduck.Settings;
 
 namespace RubberduckTests
 {
-    [TestClass]
+    [TestFixture]
     public class ConfigurationTests
     {
-        [TestMethod]
-        [TestCategory("Settings")]
+        [Test]
+        [Category("Settings")]
         public void GetDefaultTodoMarkersTest()
         {
             var settings = new ToDoListSettings();
@@ -23,8 +23,8 @@ namespace RubberduckTests
             Assert.AreEqual("BUG" , markers[2].Text.Trim(),"Bug failed to load.");
         }
 
-        [TestMethod]
-        [TestCategory("Settings")]
+        [Test]
+        [Category("Settings")]
         public void DefaultCodeInspectionsIsAsSpecified()
         {
             var inspection = new Mock<IInspection>();
@@ -40,8 +40,8 @@ namespace RubberduckTests
             Assert.AreEqual(inspection.Object.Severity, actual.First().Severity);
         }
 
-        [TestMethod]
-        [TestCategory("Settings")]
+        [Test]
+        [Category("Settings")]
         public void ToStringIsAsExpected()
         {
             var expected = "FixMe:";
