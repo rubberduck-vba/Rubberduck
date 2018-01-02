@@ -48,6 +48,10 @@ before_build:
 build:
   verbosity: minimal
 
+test_script:
+- OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+- codecov -f "Rubberduck_Coverage.xml"
+
 before_package:
 - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 
