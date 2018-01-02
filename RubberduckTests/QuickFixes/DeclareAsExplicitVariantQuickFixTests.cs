@@ -1,17 +1,17 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class DeclareAsExplicitVariantQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void VariableTypeNotDeclared_QuickFixWorks_Parameter()
         {
             const string inputCode =
@@ -33,8 +33,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void VariableTypeNotDeclared_QuickFixWorks_SubNameContainsParameterName()
         {
             const string inputCode =
@@ -56,8 +56,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void VariableTypeNotDeclared_QuickFixWorks_Variable()
         {
             const string inputCode =
@@ -81,8 +81,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void VariableTypeNotDeclared_QuickFixWorks_ParameterWithoutDefaultValue()
         {
             const string inputCode =
@@ -104,8 +104,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void VariableTypeNotDeclared_QuickFixWorks_ParameterWithDefaultValue()
         {
             const string inputCode =

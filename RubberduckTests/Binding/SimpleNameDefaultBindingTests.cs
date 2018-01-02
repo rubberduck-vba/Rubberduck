@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -11,15 +11,15 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
-    [TestClass]
+    [TestFixture]
     public class SimpleNameDefaultBindingTests
     {
         private const string BindingTargetName = "BindingTarget";
         private const string TestClassName = "TestClass";
         private const string ReferencedProjectFilepath = @"C:\Temp\ReferencedProjectA";
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingProcedureComesBeforeEnclosingModule()
         {
             string testCode = string.Format(@"
@@ -41,8 +41,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
             var builder = new MockVbeBuilder();
@@ -59,8 +59,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
             var builder = new MockVbeBuilder();
@@ -79,8 +79,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void OtherModuleInEnclosingProjectComesBeforeReferencedProjectModule()
         {
             var builder = new MockVbeBuilder();
@@ -108,8 +108,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void ReferencedProjectModuleComesBeforeReferencedProjectType()
         {
             var builder = new MockVbeBuilder();
@@ -138,8 +138,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void ReferencedProjectClassNotMarkedAsGlobalClassModuleIsNotReferenced()
         {
             var builder = new MockVbeBuilder();

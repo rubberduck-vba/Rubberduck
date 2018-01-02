@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -9,12 +9,12 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Grammar
 {
     //https://github.com/rubberduck-vba/Rubberduck/issues/2164
-    [TestClass]
+    [TestFixture]
     public class ParserRuleContextExtensionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
-        [TestCategory("Grammar")]
+        [Test]
+        [Category("Inspections")]
+        [Category("Grammar")]
         public void Evil_Code_Selection_Not_Evil()
         {
             const string inputCode =

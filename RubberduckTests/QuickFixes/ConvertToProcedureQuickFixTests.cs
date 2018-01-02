@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,11 +7,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ConvertToProcedureQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface()
         {
             const string inputCode =
@@ -45,8 +45,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface_ManyBodyStatements()
         {
             const string inputCode =
@@ -83,8 +83,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_Interface()
         {
             const string inputInterfaceCode =
@@ -136,8 +136,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -160,8 +160,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenFunctionNameWithTypeHint_SubNameHasNoTypeHint()
         {
             const string inputCode =
@@ -184,8 +184,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_QuickFixWorks_FunctionReturnsImplicitVariant()
         {
             const string inputCode =
@@ -208,8 +208,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_QuickFixWorks_FunctionHasVariable()
         {
             const string inputCode =
@@ -232,8 +232,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenNonReturningPropertyGetter_QuickFixConvertsToSub()
         {
             const string inputCode =
@@ -256,8 +256,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenNonReturningPropertyGetWithTypeHint_QuickFixDropsTypeHint()
         {
             const string inputCode =
@@ -280,8 +280,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenImplicitVariantPropertyGetter_StillConvertsToSub()
         {
             const string inputCode =
@@ -304,8 +304,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenParameterizedPropertyGetter_QuickFixKeepsParameter()
         {
             const string inputCode =

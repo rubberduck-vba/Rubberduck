@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
@@ -10,12 +10,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class UntypedFunctionUsageQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        [Ignore] // not sure how to handle GetBuiltInDeclarations
+        [Test]
+        [Category("QuickFixes")]
+        [Ignore("Todo")] // not sure how to handle GetBuiltInDeclarations
         public void UntypedFunctionUsage_QuickFixWorks()
         {
             const string inputCode =

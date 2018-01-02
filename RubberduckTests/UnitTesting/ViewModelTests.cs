@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Windows.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
@@ -10,11 +10,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.UnitTesting
 {
-    [TestClass]
+    [TestFixture]
     public class ViewModelTests
     {
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UIDiscoversAnnotatedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -43,8 +43,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UIRemovesRemovedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -83,8 +83,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess()
         {
             var testMethods = @"'@TestMethod
@@ -115,8 +115,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure()
         {
             var testMethods = @"'@TestMethod
@@ -146,8 +146,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive()
         {
             var testMethods = @"'@TestMethod
@@ -177,8 +177,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure_IncludesNonFailingTests()
         {
             var testMethods = @"'@TestMethod
@@ -227,8 +227,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive_IncludesNonFailingAndNonInconclusiveTests()
         {
             var testMethods = @"'@TestMethod
@@ -271,8 +271,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess_IncludesIgnoredTests()
         {
             var testMethods = @"'@TestMethod
@@ -309,8 +309,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void AddingExecutedTestUpdatesExecutedCount()
         {
             var testMethods = @"'@TestMethod
@@ -342,8 +342,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void AddingExecutedTestUpdatesLastRun()
         {
             var testMethods = @"'@TestMethod
@@ -375,8 +375,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Unit Testing")]
+        [Test]
+        [Category("Unit Testing")]
         public void ClearLastRun()
         {
             var testMethods = @"'@TestMethod

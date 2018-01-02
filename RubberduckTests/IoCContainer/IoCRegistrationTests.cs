@@ -1,5 +1,5 @@
 ﻿using Castle.Windsor;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -8,10 +8,10 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.IoCContainer
 {
-    [TestClass]
+    [TestFixture]
     public class IoCRegistrationTests
     {
-        [TestMethod]
+        [Test]
         public void RegistrationOfRubberduckIoCContainerWithSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -27,7 +27,7 @@ namespace RubberduckTests.IoCContainer
             //This test does not need an assert because it tests that no exception has been thrown.
         }
 
-        [TestMethod]
+        [Test]
         public void RegistrationOfRubberduckIoCContainerWithoutSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
