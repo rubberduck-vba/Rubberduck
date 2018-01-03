@@ -27,7 +27,7 @@ namespace Rubberduck.Settings
         public bool IsValid => HasAltModifier || HasCtrlModifier;
 
         [XmlIgnore]
-        public string Prompt => RubberduckUI.ResourceManager.GetString($"HotkeyDescription_{CommandTypeName}", CultureInfo.CurrentUICulture);
+        public string Prompt => RubberduckUI.ResourceManager.GetString($"CommandDescription_{CommandTypeName}", CultureInfo.CurrentUICulture);
 
         public override string ToString()
         {

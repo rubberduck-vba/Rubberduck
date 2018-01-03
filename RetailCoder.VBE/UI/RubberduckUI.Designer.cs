@@ -1196,15 +1196,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Indent Module.
-        /// </summary>
-        public static string CommandDescription_IndentCurrentModuleCommand {
-            get {
-                return ResourceManager.GetString("CommandDescription_IndentCurrentModuleCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Indent Procedure.
         /// </summary>
         public static string CommandDescription_IndentCurrentProcedureCommand {
@@ -2308,6 +2299,15 @@ namespace Rubberduck.UI {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Module.
+        /// </summary>
+        public static string HotkeyDescription_IndentCurrentModuleCommand {
+            get {
+                return ResourceManager.GetString("HotkeyDescription_IndentCurrentModuleCommand", resourceCulture);
             }
         }
         
