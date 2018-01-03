@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -11,14 +11,14 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
-    [TestClass]
+    [TestFixture]
     public class SimpleNameProcedurePointerBindingTests
     {
         private const string BINDING_TARGET_NAME = "BindingTarget";
         private const string TEST_CLASS_NAME = "TestClass";
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
             var builder = new MockVbeBuilder();
@@ -37,8 +37,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingProjectComesBeforeOtherProceduralModule()
         {
             var builder = new MockVbeBuilder();
@@ -58,8 +58,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void OtherProceduralModule()
         {
             var builder = new MockVbeBuilder();

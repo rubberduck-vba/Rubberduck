@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestFixture, Ignore("Broken feature")]
     public class EmptyCaseBlockInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyCaseBlock_InspectionType()
         {
             var inspection = new EmptyCaseBlockInspection(null);
@@ -20,8 +20,8 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyCaseBlock_InspectionName()
         {
             const string expectedName = nameof(EmptyCaseBlockInspection);
@@ -30,8 +30,8 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyCaseBlock_DoesNotFiresOnImplementedCaseBlocks()
         {
             const string inputCode =
@@ -50,8 +50,8 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyCaseBlock_FiresOnEmptyCaseBlocks()
         {
             const string inputCode =
@@ -67,8 +67,8 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 3);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyCaseBlock_FiresOnCommentCaseBlocks()
         {
             const string inputCode =

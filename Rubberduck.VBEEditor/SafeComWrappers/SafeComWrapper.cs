@@ -62,9 +62,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     {
                         _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper.");
                     }
-                }
-
-                
+                } 
             }
             catch(COMException exception)
             {

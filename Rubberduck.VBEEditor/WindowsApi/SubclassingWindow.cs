@@ -9,7 +9,6 @@ namespace Rubberduck.VBEditor.WindowsApi
         private readonly IntPtr _subclassId;
         private readonly SubClassCallback _wndProc;
         private bool _listening;
-        private GCHandle _thisHandle;
 
         private readonly object _subclassLock = new object();
 
@@ -55,12 +54,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                 {
                     throw new Exception("SetWindowSubClass Failed");
                 }
-                Debug.WriteLine("SubclassingWindow.AssignHandle called for hWnd " + Hwnd);
-                //DO NOT REMOVE THIS CALL. Dockable windows are instantiated by the VBE, not directly by RD.  On top of that,
-                //since we have to inherit from UserControl we don't have to keep handling window messages until the VBE gets
-                //around to destroying the control's host or it results in an access violation when the base class is disposed.
-                //We need to manually call base.Dispose() ONLY in response to a WM_DESTROY message.
-                _thisHandle = GCHandle.Alloc(this, GCHandleType.Normal);
+
                 _listening = true;
             }
         }
@@ -92,9 +86,9 @@ namespace Rubberduck.VBEditor.WindowsApi
                 return DefSubclassProc(hWnd, msg, wParam, lParam);
             }
 
-            if ((uint) msg == (uint) WM.RUBBERDUCK_SINKING || (uint) msg == (uint) WM.DESTROY)
+            if ((uint) msg == (uint) WM.DESTROY)
             {
-                ReleaseHandle();
+                Dispose();
             }
             return DefSubclassProc(hWnd, msg, wParam, lParam);
         }
@@ -111,8 +105,6 @@ namespace Rubberduck.VBEditor.WindowsApi
             {
                 ReleaseHandle();
             }
-
-            _thisHandle.Free();
 
             _disposed = true;
         }

@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -13,11 +13,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
 {
-    [TestClass]
+    [TestFixture]
     public class FindAllImplementationsTests
     {
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_ReturnsCorrectNumber()
         {
             const string inputClass =
@@ -50,8 +50,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_SelectedImplementation_ReturnsCorrectNumber()
         {
             const string inputClass =
@@ -84,8 +84,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_SelectedReference_ReturnsCorrectNumber()
         {
             const string inputClass =
@@ -123,8 +123,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_NoResults_DisplayMessageBox()
         {
             const string inputCode =
@@ -151,8 +151,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_SingleResult_Navigates()
         {
             const string inputClass =
@@ -185,8 +185,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_NullTarget_Aborts()
         {
             IVBComponent component;
@@ -204,8 +204,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_StateNotReady_Aborts()
         {
             const string inputCode =
@@ -235,8 +235,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_CanExecute_NullTarget()
         {
             IVBComponent component;
@@ -252,8 +252,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_CanExecute_StateNotReady()
         {
             const string inputCode =
@@ -281,8 +281,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllImplementations_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;

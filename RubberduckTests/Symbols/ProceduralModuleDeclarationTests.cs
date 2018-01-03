@@ -1,15 +1,15 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class ProceduralModuleDeclarationTests
     {
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ProceduralModulesHaveDeclarationTypeProceduralModule()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -36,8 +36,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultProceduralModulesAreNotPrivate()
         {
             var projectDeclaration = GetTestProject("testProject");
