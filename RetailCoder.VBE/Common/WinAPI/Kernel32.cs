@@ -29,27 +29,14 @@ namespace Rubberduck.Common.WinAPI
         /// <returns>The function always returns (ATOM) 0.</returns>
         [DllImport("kernel32.dll", SetLastError=true, ExactSpelling=true)]
         public static extern ushort GlobalDeleteAtom(IntPtr nAtom);
-
+        
         /// <summary>
-        /// Retrieves a module handle for the specified module. 
-        /// The module must have been loaded by the calling process.
+        /// Sets the last-error code for the calling thread.
         /// </summary>
-        /// <param name="lpModuleName">The name of the loaded module (either a .dll or .exe file). 
-        /// If the file name extension is omitted, the default library extension .dll is appended. 
-        /// The file name string can include a trailing point character (.) to indicate that the module name has no extension. 
-        /// The string does not have to specify a path. When specifying a path, be sure to use backslashes (\), not forward slashes (/). 
-        /// The name is compared (case independently) to the names of modules currently mapped into the address space of the calling process.</param>
-        /// <returns>If the function succeeds, the return value is a handle to the specified module. 
-        /// If the function fails, the return value is NULL. To get extended error information, call GetLastError.</returns>
-        /// <remarks>The returned handle is not global or inheritable. It cannot be duplicated or used by another process.
-        /// This function must be used carefully in a multithreaded application. There is no guarantee that the module handle remains valid between the time this function returns the handle and the time it is used. 
-        /// For example, suppose that a thread retrieves a module handle, but before it uses the handle, a second thread frees the module. 
-        /// If the system loads another module, it could reuse the module handle that was recently freed. 
-        /// Therefore, the first thread would have a handle to a different module than the one intended.
-        /// </remarks>
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr GetModuleHandle(string lpModuleName);
+        /// <param name="dwErrorCode">The last-error code for the thread.</param>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern void SetLastError(uint dwErrorCode);
 
-
+        public static uint ERROR_SUCCESS = 0;
     }
 }
