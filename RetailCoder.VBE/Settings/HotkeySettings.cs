@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common.Hotkeys;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Settings
@@ -77,7 +78,17 @@ namespace Rubberduck.Settings
 
         private static bool IsValid(HotkeySetting candidate)
         {
-            return candidate.IsValid;
+            //This feels a bit sleazy...
+            try
+            {
+                // ReSharper disable once UnusedVariable
+                var test = new Hotkey(new IntPtr(), candidate.ToString(), null);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void AddUnique(IEnumerable<HotkeySetting> settings)
