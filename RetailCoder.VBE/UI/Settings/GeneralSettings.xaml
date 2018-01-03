@@ -183,7 +183,7 @@
                         Width="*"
                         IsReadOnly="True" />
                             <DataGridTemplateColumn
-                        Header="Modifier Warning"
+                        Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ModifierWarning}"
                         Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

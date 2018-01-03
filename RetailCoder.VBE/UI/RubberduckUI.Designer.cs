@@ -2177,6 +2177,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modifier Warning.
+        /// </summary>
+        public static string GeneralSettings_ModifierWarning {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ModifierWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Logging.
         /// </summary>
         public static string GeneralSettings_OffLogLevel {
