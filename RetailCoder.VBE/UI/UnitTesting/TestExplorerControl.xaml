@@ -260,6 +260,7 @@
         <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Declaration.QualifiedName.QualifiedModuleName.Name" />
+                <componentModel:SortDescription PropertyName="Declaration.QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Declaration.QualifiedName.QualifiedModuleName.Name" />
@@ -269,6 +270,7 @@
         <CollectionViewSource x:Key="ResultsByOutcome" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Result.Outcome" />
+                <componentModel:SortDescription PropertyName="Declaration.QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 
