@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
@@ -10,12 +10,12 @@ using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class SpecifyExplicitByRefModifierQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_ImplicitByRefParameter()
         {
             const string inputCode =
@@ -40,8 +40,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_OptionalParameter()
         {
             const string inputCode =
@@ -66,8 +66,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_Optional_LineContinuations()
         {
             const string inputCode =
@@ -98,8 +98,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_LineContinuation()
         {
             const string inputCode =
@@ -128,8 +128,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_LineContinuation_FirstLine()
         {
             const string inputCode =
@@ -160,8 +160,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_InterfaceImplementation()
         {
             const string inputCode1 =
@@ -209,8 +209,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_InterfaceImplementationDifferentParameterName()
         {
             const string inputCode1 =
@@ -258,8 +258,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_QuickFixWorks_InterfaceImplementationWithMultipleParameters()
         {
             const string inputCode1 =

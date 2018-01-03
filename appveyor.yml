@@ -33,7 +33,6 @@ platform: Any CPU
 cache:
   - packages/ -> **/packages.config
 
-
 install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
 assembly_info:
@@ -42,9 +41,16 @@ assembly_info:
   assembly_version: '{version}'
 
 before_build:
-  cinst innosetup
+  - cinst innosetup
+  - cinst codecov
+  - cinst opencover.portable
+  - nuget restore
 build:
   verbosity: minimal
+
+test_script:
+- OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+- codecov -f "Rubberduck_Coverage.xml"
 
 before_package:
 - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -16,6 +18,8 @@ namespace Rubberduck
         private readonly IParseCoordinator _parser;
         private readonly ISelectionChangeService _selectionService;
         private readonly RubberduckCommandBar _stateBar;
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public AppMenu(IEnumerable<IParentMenuItem> menus, IParseCoordinator parser, ISelectionChangeService selectionService, RubberduckCommandBar stateBar)
         {
@@ -77,7 +81,13 @@ namespace Rubberduck
         {
             foreach (var menu in _menus.Where(menu => menu.Item != null))
             {
+                _logger.Debug($"Starting removal of top-level menu {menu.GetType()}.");
                 menu.RemoveMenu();
+                //We do this here and not in the menu items because we only want to dispose of/release the parents of the top level parent menus.
+                //The parents further down get disposed of/released as part of the remove chain.
+                _logger.Trace($"Removing parent menu of top-level menu {menu.GetType()}.");
+                menu.Parent.Dispose();
+                menu.Parent = null;
             }
         }
     }

@@ -66,6 +66,7 @@ namespace Rubberduck.Parsing.VBA
         public DeclarationFinder DeclarationFinder { get; private set; }
 
         private readonly IVBE _vbe;
+        private readonly IVBProjects _vbProjects;   //This field keeps the RCW for the events alive.
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
@@ -80,6 +81,7 @@ namespace Rubberduck.Parsing.VBA
                 throw new ArgumentNullException(nameof(declarationFinderFactory));
             }
             _vbe = vbe;
+            _vbProjects = _vbe.VBProjects;
             _declarationFinderFactory = declarationFinderFactory;
 
             var values = Enum.GetValues(typeof(ParserState));
@@ -247,11 +249,14 @@ namespace Rubberduck.Parsing.VBA
         {
             lock (_projects)
             {
+                var oldProjects = _projects.ToList();
+
                 _projects.Clear();
-                foreach (var project in vbe.VBProjects)
+                foreach (var project in _vbProjects)
                 {
                     if (project.Protection == ProjectProtection.Locked)
                     {
+                        project.Dispose();
                         continue;
                     }
 
@@ -261,6 +266,12 @@ namespace Rubberduck.Parsing.VBA
                     }
 
                     _projects.Add(project.ProjectId, project);
+                }
+
+                //We dispose afterwards so that the RCWs of still existing projects do not get released fully. 
+                foreach (var kvp in oldProjects)
+                {
+                    kvp.Value.Dispose();
                 }
             }
         }
@@ -376,18 +387,16 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var item in _projects)
                 {
-                    if (item.Value.HelpFile != projectId)
+                    if (item.Value.ProjectId == projectId)
                     {
-                        continue;
+                        if (project != null)
+                        {
+                            // ghost project detected, abort project iteration
+                            project = null;
+                            break;
+                        }
+                        project = item.Value;
                     }
-
-                    if (project != null)
-                    {
-                        // ghost project detected, abort project iteration
-                        project = null;
-                        break;
-                    }
-                    project = item.Value;
                 }
             }
 
@@ -425,16 +434,14 @@ namespace Rubberduck.Parsing.VBA
             var state = moduleStates[0];
             foreach (var moduleState in moduleStates)
             {
-                if (moduleState == moduleStates[0])
+                if (moduleState != moduleStates[0])
                 {
-                    continue;
+                    state = default;
+                    break;
                 }
-
-                state = default(ParserState);
-                break;
             }
 
-            if (state != default(ParserState))
+            if (state != default)
             {
                 // if all modules are in the same state, we have our result.
                 return state;
@@ -975,7 +982,6 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private bool _isDisposed;
-
         public void Dispose()
         {
             if (_isDisposed)
@@ -992,8 +998,14 @@ namespace Rubberduck.Parsing.VBA
             RemoveEventHandlers();
 
             _moduleStates.Clear();
+
+            foreach (var kvp in _projects)
+            {
+                kvp.Value.Dispose();
+            }
             // no lock because nobody should try to update anything here
             _projects.Clear();
+            _vbProjects.Dispose();
 
             _isDisposed = true;
         }

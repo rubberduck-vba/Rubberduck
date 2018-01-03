@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,11 +7,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ParameterCanBeByValInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
         {
             const string modelCode = @"
@@ -79,8 +79,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_NoResultForByValObjectInProperty()
         {
             const string inputCode =
@@ -97,8 +97,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_NoResultForByValObject()
         {
             const string inputCode =
@@ -115,8 +115,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedByNotSpecified()
         {
             const string inputCode =
@@ -133,8 +133,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedByRef_Unassigned()
         {
             const string inputCode =
@@ -151,8 +151,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_Multiple()
         {
             const string inputCode =
@@ -169,8 +169,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_PassedByValExplicitly()
         {
             const string inputCode =
@@ -187,8 +187,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_PassedByRefAndAssigned()
         {
             const string inputCode =
@@ -206,8 +206,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_BuiltInEventParam()
         {
             const string inputCode =
@@ -225,8 +225,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_SomeParams()
         {
             const string inputCode =
@@ -243,8 +243,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenArrayParameter_ReturnsNoResult()
         {
             const string inputCode =
@@ -261,8 +261,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedToByRefProc_NoAssignment()
         {
             const string inputCode =
@@ -283,8 +283,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_PassedToByRefProc_WithAssignment()
         {
             const string inputCode =
@@ -306,8 +306,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedToByValProc_WithAssignment()
         {
             const string inputCode =
@@ -329,8 +329,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -348,8 +348,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleParam()
         {
             //Input
@@ -380,8 +380,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleByValParam()
         {
             //Input
@@ -412,8 +412,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRef()
         {
             //Input
@@ -445,8 +445,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal()
         {
             //Input
@@ -483,8 +483,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_SingleParam()
         {
             //Input
@@ -515,8 +515,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_SingleByValParam()
         {
             //Input
@@ -547,8 +547,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_SingleParamUsedByRef()
         {
             //Input
@@ -580,8 +580,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_MultipleParams_OneCanBeByVal()
         {
             //Input
@@ -613,16 +613,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new ParameterCanBeByValInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterCanBeByValInspection";

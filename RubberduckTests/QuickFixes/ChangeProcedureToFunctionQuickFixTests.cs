@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
@@ -8,12 +8,12 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ChangeProcedureToFunctionQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks()
         {
             const string inputCode =
@@ -38,8 +38,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_NoAsTypeClauseInParam()
         {
             const string inputCode =
@@ -64,8 +64,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody()
         {
             const string inputCode =
@@ -100,8 +100,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine()
         {
             const string inputCode =
@@ -130,8 +130,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine_BodyHasStringLiteralContainingColon()
         {
             const string inputCode =
@@ -160,8 +160,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsAbove()
         {
             const string inputCode =
@@ -196,8 +196,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsBelow()
         {
             const string inputCode =

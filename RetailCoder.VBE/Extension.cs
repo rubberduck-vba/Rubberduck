@@ -18,8 +18,6 @@ using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.WindowsApi;
-using User32 = Rubberduck.Common.WinAPI.User32;
 using Windows = Rubberduck.VBEditor.SafeComWrappers.VBA.Windows;
 
 namespace Rubberduck
@@ -75,6 +73,7 @@ namespace Rubberduck
                         // normal execution path - don't initialize just yet, wait for OnStartupComplete to be called by the host.
                         break;
                     case ext_ConnectMode.ext_cm_AfterStartup:
+                        _isBeginShutdownExecuted = false;   //When we reconnect after having been unloaded, the variable might no longer have its initial value.
                         InitializeAddIn();
                         break;
                 }
@@ -245,9 +244,6 @@ namespace Rubberduck
                 _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
                 VBENativeServices.UnhookEvents();
 
-                _logger.Log(LogLevel.Trace, "Broadcasting shutdown...");
-                User32.EnumChildWindows(_ide.MainWindow.Handle(), EnumCallback, new IntPtr(0));
-
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
                 Windows.ReleaseDockableHosts();
 
@@ -263,6 +259,20 @@ namespace Rubberduck
                     _logger.Log(LogLevel.Trace, "Disposing IoC container...");
                     _container.Dispose();
                     _container = null;
+                }
+
+                if (_addin != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing AddIn wrapper...");
+                    _addin.Dispose();
+                    _addin = null;
+                }
+
+                if (_ide != null)
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing VBE wrapper...");
+                    _ide.Dispose();
+                    _ide = null;
                 }
 
                 _isInitialized = false;
@@ -286,12 +296,6 @@ namespace Rubberduck
                 _logger.Log(LogLevel.Trace, "Done. Shutdown completed. Quack!");
                 _isInitialized = false;
             }
-        }
-
-        private static int EnumCallback(IntPtr hwnd, IntPtr lparam)
-        {
-            User32.SendMessage(hwnd, WM.RUBBERDUCK_SINKING, IntPtr.Zero, IntPtr.Zero);
-            return 1;
         }
     }
 }

@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Settings;
-using Rubberduck.UI.Command;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
@@ -15,20 +13,15 @@ namespace Rubberduck.Common
     public class RubberduckHooks : SubclassingWindow, IRubberduckHooks
     {
         private readonly IGeneralConfigService _config;
-        private readonly IEnumerable<CommandBase> _commands;
+        private readonly HotkeyFactory _hotkeyFactory;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, IEnumerable<CommandBase> commands)
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory)
             : base((IntPtr)vbe.MainWindow.HWnd, (IntPtr)vbe.MainWindow.HWnd)
         {
-            _commands = commands;
             _config = config;
-        }
-
-        private CommandBase Command(RubberduckHotkey hotkey)
-        {
-            return _commands.FirstOrDefault(s => s.Hotkey == hotkey);
+            _hotkeyFactory = hotkeyFactory;
         }
 
         public void HookHotkeys()
@@ -39,16 +32,15 @@ namespace Rubberduck.Common
             var config = _config.LoadConfiguration();
             var settings = config.UserSettings.HotkeySettings;
 
-            foreach (var hotkey in settings.Settings.Where(hotkey => hotkey.IsEnabled))
+            foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))
             {
-                if (Enum.TryParse(hotkey.Name, out RubberduckHotkey assigned))
+                var hotkey = _hotkeyFactory.Create(hotkeySetting, Hwnd);
+                if (hotkey != null)
                 {
-                    var command = Command(assigned);
-                    Debug.Assert(command != null);
-
-                    AddHook(new Hotkey(Hwnd, hotkey.ToString(), command));
+                    AddHook(hotkey);
                 }
             }
+
             Attach();
         }
 
@@ -155,7 +147,6 @@ namespace Rubberduck.Common
                     break;
                 case WM.CLOSE:
                 case WM.DESTROY:
-                case WM.RUBBERDUCK_SINKING:
                     Detach();
                     break;
             }
@@ -179,6 +170,15 @@ namespace Rubberduck.Common
                 Logger.Error(exception);
             }
             return processed;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Detach();
+            }
+            base.Dispose(disposing);
         }
     }
 }

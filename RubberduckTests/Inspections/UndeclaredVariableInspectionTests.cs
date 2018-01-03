@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -8,11 +8,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class UndeclaredVariableInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsResult()
         {
             const string inputCode =
@@ -36,8 +36,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfDeclaredLocally()
         {
             const string inputCode =
@@ -62,8 +62,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfDeclaredModuleScope()
         {
             const string inputCode =
@@ -90,8 +90,8 @@ End Sub";
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2525
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfAnnotated()
         {
             const string inputCode =

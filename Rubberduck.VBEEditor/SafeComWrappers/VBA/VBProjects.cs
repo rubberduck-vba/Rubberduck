@@ -21,7 +21,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             ItemActivated = 4
         }
 
-        public VBProjects(VB.VBProjects target) : base(target)
+        public VBProjects(VB.VBProjects target) 
+        :base(target)
         {
             if (_projects == null)
             {

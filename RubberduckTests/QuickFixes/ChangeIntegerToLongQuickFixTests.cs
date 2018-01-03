@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Grammar;
@@ -8,11 +8,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ChangeIntegerToLongQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -36,8 +36,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_FunctionWithTypeHint()
         {
             const string inputCode =
@@ -61,8 +61,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_PropertyGet()
         {
             const string inputCode =
@@ -86,8 +86,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_PropertyGetWithTypeHint()
         {
             const string inputCode =
@@ -111,8 +111,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_Parameter()
         {
             const string inputCode =
@@ -136,8 +136,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_ParameterWithTypeHint()
         {
             const string inputCode =
@@ -161,8 +161,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_Variable()
         {
             const string inputCode =
@@ -188,8 +188,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_VariableWithTypeHint()
         {
             const string inputCode =
@@ -215,8 +215,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_Constant()
         {
             const string inputCode =
@@ -242,8 +242,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_ConstantWithTypeHint()
         {
             const string inputCode =
@@ -269,8 +269,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_UserDefinedTypeReservedNameMember()
         {
             const string inputCode =
@@ -296,8 +296,8 @@ End Type";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_UserDefinedTypeUntypedNameMember()
         {
             const string inputCode =
@@ -323,8 +323,8 @@ End Type";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_FunctionInterfaceImplementation()
         {
             const string inputCode1 =
@@ -371,8 +371,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_FunctionInterfaceImplementationWithTypeHints()
         {
             const string inputCode1 =
@@ -419,8 +419,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_FunctionInterfaceImplementationWithInterfaceTypeHint()
         {
             const string inputCode1 =
@@ -467,8 +467,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_FunctionInterfaceImplementationWithImplementationTypeHint()
         {
             const string inputCode1 =
@@ -515,8 +515,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_PropertyGetInterfaceImplementation()
         {
             const string inputCode1 =
@@ -563,8 +563,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_PropertyGetInterfaceImplementationWithTypeHints()
         {
             const string inputCode1 =
@@ -611,8 +611,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_PropertyGetInterfaceImplementationWithInterfaceTypeHint()
         {
             const string inputCode1 =
@@ -659,8 +659,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_PropertyGetInterfaceImplementationWithImplementationTypeHint()
         {
             const string inputCode1 =
@@ -707,8 +707,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_ParameterInterfaceImplementationWithTypeHints()
         {
             const string inputCode1 =
@@ -755,8 +755,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_ParameterInterfaceImplementationWithInterfaceTypeHint()
         {
             const string inputCode1 =
@@ -803,8 +803,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_ParameterInterfaceImplementationWithImplementationTypeHint()
         {
             const string inputCode1 =
@@ -851,8 +851,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_ParameterInterfaceImplementation()
         {
             const string inputCode1 =
@@ -899,8 +899,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_ParameterInterfaceImplementationWithDifferentName()
         {
             const string inputCode1 =
@@ -947,8 +947,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void IntegerDataType_QuickFixWorks_MultipleParameterInterfaceImplementation()
         {
             const string inputCode1 =

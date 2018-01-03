@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,11 +7,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ParameterNotUsedInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -29,8 +29,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterNotUsed_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
@@ -51,8 +51,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterUsed_DoesNotReturnResult()
         {
             const string inputCode =
@@ -71,8 +71,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterNotUsed_ReturnsResult_SomeParamsUsed()
         {
             const string inputCode =
@@ -91,8 +91,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
         {
             //Input
@@ -123,8 +123,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -143,16 +143,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new ParameterNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterNotUsedInspection";

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace Rubberduck.RegexAssistant.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class LiteralTests
     {
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void EscapedLiteralTests()
         {
             var literals = new[] { '(', ')', '{', '}', '[', ']', '.', '?', '+', '*' };
@@ -19,8 +19,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void EscapeSequences()
         {
             var escapes = "sSwWbBdDrnvtf123456789".ToCharArray();
@@ -31,8 +31,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void CodePoints()
         {
             string[] codePoints = { @"\uFFFF", @"\u0000", @"\xFF", @"\x00", @"\777", @"\000" };
@@ -43,8 +43,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void SimpleLiterals()
         {
             var literals = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§%&/=ß#'°".ToCharArray();
@@ -55,8 +55,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void EverythingElseBlowsUp()
         {
             var allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§%&/=ß#'°".ToCharArray();
@@ -78,8 +78,8 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void SingleEscapedCharsAreNotParsedAsLiteral()
         {
             var escapedChars = "(){}[]\\*?+$^".ToCharArray().Select(e => e.ToString()).ToArray();

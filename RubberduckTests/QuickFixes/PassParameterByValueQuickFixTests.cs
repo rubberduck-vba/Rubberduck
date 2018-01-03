@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,11 +7,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class PassParameterByValueQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_SubNameStartsWithParamName()
         {
             const string inputCode =
@@ -33,8 +33,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByUnspecified()
         {
             const string inputCode =
@@ -56,8 +56,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByRef()
         {
             const string inputCode =
@@ -79,8 +79,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByUnspecified_MultilineParameter()
         {
             const string inputCode =
@@ -104,8 +104,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByRef_MultilineParameter()
         {
             const string inputCode =
@@ -129,8 +129,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
         {
             //Input
@@ -189,8 +189,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_EventMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
         {
             //Input
@@ -248,8 +248,8 @@ End Sub";
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWithOptionalWorks()
         {
             const string inputCode =
@@ -274,8 +274,8 @@ End Sub";
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWithOptionalByRefWorks()
         {
             const string inputCode =
@@ -300,8 +300,8 @@ End Sub";
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWithOptional_LineContinuationsWorks()
         {
             const string inputCode =

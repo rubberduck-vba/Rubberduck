@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -20,8 +19,6 @@ namespace Rubberduck.UI.Command
             _indenter = indenter;
             _state = state;
         }
-
-        public override RubberduckHotkey Hotkey => RubberduckHotkey.IndentModule;
 
         protected override bool EvaluateCanExecute(object parameter)
         {

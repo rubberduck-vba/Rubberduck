@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.SourceControl;
 using Rubberduck.UI.SourceControl;
 
 namespace RubberduckTests.SourceControl
 {
-    [TestClass]
+    [TestFixture]
     public class ChangesViewModelTests
     {
         private Mock<ISourceControlProvider> _provider;
         private readonly object _locker = new object();
 
-        [TestInitialize]
+        [SetUp]
         public void SetupMocks()
         {
             _provider = new Mock<ISourceControlProvider>();
@@ -22,8 +22,8 @@ namespace RubberduckTests.SourceControl
             _provider.SetupGet(git => git.CurrentBranch).Returns(branch);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ProviderCommitIsCalledOnCommit()
         {
             var vm = new ChangesPanelViewModel
@@ -41,8 +41,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Commit(It.IsAny<string>()));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ProviderStagesBeforeCommit()
         {
             var vm = new ChangesPanelViewModel
@@ -61,8 +61,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Commit(It.IsAny<string>()));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ProviderCommits_NotificationOnSuccess()
         {
             var vm = new ChangesPanelViewModel
@@ -81,12 +81,12 @@ namespace RubberduckTests.SourceControl
             {
                 lock (_locker)
                 {
-                    MultiAssert.Aggregate(
-                        () => Assert.AreEqual(e.Title, Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus),
-                        () =>
-                            Assert.AreEqual(e.InnerMessage,
-                                Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus_CommitSuccess),
-                        () => Assert.AreEqual(e.NotificationType, NotificationType.Info));
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(e.Title, Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus);
+                        Assert.AreEqual(e.InnerMessage, Rubberduck.UI.RubberduckUI.SourceControl_CommitStatus_CommitSuccess);
+                        Assert.AreEqual(e.NotificationType, NotificationType.Info);
+                    });
 
                     errorThrown = bool.TrueString;
                 }
@@ -100,8 +100,8 @@ namespace RubberduckTests.SourceControl
             }
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ProviderCommitsAndPushes()
         {
             var vm = new ChangesPanelViewModel
@@ -121,8 +121,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Push());
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ProviderCommitsAndSyncs()
         {
             var vm = new ChangesPanelViewModel
@@ -143,8 +143,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Push());
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void RefreshDisplaysChangedFiles()
         {
             var fileStatusEntries = new List<FileStatusEntry>
@@ -169,8 +169,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(@"C:\path\to\untracked.frx", vm.UntrackedFiles[0].FilePath);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void CommitEnabledAfterActionSelectedAndMessageEntered()
         {
             var vm = new ChangesPanelViewModel
@@ -188,8 +188,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.CommitCommand.CanExecute(null));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void RefreshChangesAfterCommit()
         {
             var vm = new ChangesPanelViewModel
@@ -212,8 +212,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsFalse(vm.IncludedChanges.Any());
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ExcludedIsNotClearedAfterRefresh()
         {
             var vm = new ChangesPanelViewModel
@@ -235,8 +235,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(vm.ExcludedChanges.Any());
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ExcludeFileExcludesFile()
         {
             var fileStatusEntries = new List<FileStatusEntry>
@@ -260,8 +260,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(1, vm.ExcludedChanges.Count);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void ChangesPresenter_WhenCommitFails_ActionFailedEventIsRaised()
         {
             var vm = new ChangesPanelViewModel
@@ -291,8 +291,8 @@ namespace RubberduckTests.SourceControl
             Assert.IsTrue(wasRaised, "ActionFailedEvent was not raised.");
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void Undo_UndoesChanges()
         {
             var fileStatusEntries = new List<FileStatusEntry>
@@ -319,8 +319,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.Undo(@"C:\users\desktop\git\module.bas"));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void IncludeChanges_AddsUntrackedFile()
         {
             var fileStatusEntries = new List<FileStatusEntry>
@@ -344,8 +344,8 @@ namespace RubberduckTests.SourceControl
             _provider.Verify(git => git.AddFile(fileStatusEntries.Last().FilePath));
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void IncludeChanges_IncludesExcludedFile()
         {
             var fileStatusEntries = new List<FileStatusEntry>
@@ -372,8 +372,8 @@ namespace RubberduckTests.SourceControl
             Assert.AreEqual(0, vm.ExcludedChanges.Count);
         }
 
-        [TestCategory("SourceControl")]
-        [TestMethod]
+        [Category("SourceControl")]
+        [Test]
         public void UndoFails_ActionFailedEventIsRaised()
         {
             var wasRaised = false;

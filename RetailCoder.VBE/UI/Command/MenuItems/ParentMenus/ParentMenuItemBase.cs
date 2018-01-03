@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
@@ -93,6 +92,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Logger.Debug($"Removing menu {_key}.");
             RemoveChildren();
             Item?.Delete();
+            Item?.Dispose();
             Item = null;
         }
 
@@ -101,11 +101,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             foreach (var child in _items.Keys.Select(item => item as IParentMenuItem).Where(child => child != null))
             {
                 child.RemoveMenu();
+                child.Parent.Dispose();
             }
             foreach (var child in _items.Values.Select(item => item as ICommandBarButton).Where(child => child != null))
             {
                 child.Click -= child_Click;
                 child.Delete();
+                child.Dispose();
             }
         }
 
@@ -154,13 +156,20 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return null;
             }
 
-            var child = CommandBarButtonFactory.Create(Item.Controls);
+            ICommandBarButton child;
+            using (var controls = Item.Controls)
+            {
+                child = CommandBarButtonFactory.Create(controls);
+            }
             child.Picture = item.Image;
             child.Mask = item.Mask;
             child.ApplyIcon();
 
             child.BeginsGroup = item.BeginGroup;
-            child.Tag = $"{Item.Parent.Name}::{Item.Tag}::{item.GetType().Name}";
+            using (var itemParent = Item.Parent)
+            {
+                child.Tag = $"{itemParent.Name}::{Item.Tag}::{item.GetType().Name}";
+            }
             child.Caption = item.Caption.Invoke();
             var command = item.Command; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
             child.ShortcutText = command != null
