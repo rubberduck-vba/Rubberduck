@@ -83,7 +83,7 @@ namespace Rubberduck.Parsing.Symbols
             return Context.Parent is VBAParser.CallStmtContext && ((VBAParser.CallStmtContext)Context).CALL() != null;
         }
 
-        private Lazy<bool> _hasTypeHint;
+        private readonly Lazy<bool> _hasTypeHint;
         public bool HasTypeHint() => _hasTypeHint.Value;
 
         private bool ComputeTypeHint()
