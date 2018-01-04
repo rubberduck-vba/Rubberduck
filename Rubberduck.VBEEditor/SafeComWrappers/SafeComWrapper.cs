@@ -124,12 +124,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             GC.SuppressFinalize(this);
         }
 
+        private object _disposalLockObject = new object();
         private bool _isDisposed;
         protected virtual void Dispose(bool disposing)
         {
-            if (_isDisposed)
+            lock (_disposalLockObject)
             {
-                return;
+                if (_isDisposed)
+                {
+                    return;
+                }
+                _isDisposed = true;
             }
 
             if (disposing && !HasBeenReleased)
@@ -141,8 +146,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             {
                 _logger.Warn($"Failed to remove SafeComWrapper of type {this.GetType()} from COM safe.");
             }
-
-            _isDisposed = true;
         }
     }
 }
