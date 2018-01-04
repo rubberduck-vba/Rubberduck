@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -43,45 +42,39 @@ namespace Rubberduck.Parsing.Symbols
     {
         public IdentifierNode(string name)
         {
-            _name = name;
+            Name = name;
         }
 
-        private readonly string _name;
-        public string Name { get { return _name; } }
+        public string Name { get; }
     }
 
     public class ProjectNode : IIdentifier
     {
         public ProjectNode(IdentifierNode identifier, IReadOnlyList<ModuleNode> modules)
         {
-            _identifier = identifier;
-            _modules = modules;
+            Identifier = identifier;
+            Modules = modules;
         }
 
-        private readonly IdentifierNode _identifier;
-        private readonly IReadOnlyList<ModuleNode> _modules;
+        public IdentifierNode Identifier { get; }
 
-        public IdentifierNode Identifier { get { return _identifier; } }
-        public IReadOnlyList<ModuleNode> Modules { get { return _modules; } } 
+        public IReadOnlyList<ModuleNode> Modules { get; }
     }
 
     public class ModuleNode : IIdentifier
     {
         public ModuleNode(IdentifierNode identifier, IReadOnlyList<ModuleOptionNode> options, IReadOnlyList<MemberNode> members)
         {
-            _identifier = identifier;
-            _options = options;
-            _members = members;
+            Identifier = identifier;
+            Options = options;
+            Members = members;
         }
 
-        private readonly IdentifierNode _identifier;
-        public IdentifierNode Identifier { get { return _identifier; } }
+        public IdentifierNode Identifier { get; }
 
-        private readonly IReadOnlyList<ModuleOptionNode> _options;
-        public IReadOnlyList<ModuleOptionNode> Options { get { return _options; } } 
+        public IReadOnlyList<ModuleOptionNode> Options { get; }
 
-        private readonly IReadOnlyList<MemberNode> _members;
-        public IReadOnlyList<MemberNode> Members { get { return _members; } }
+        public IReadOnlyList<MemberNode> Members { get; }
     }
 
     public class ClassModuleNode : ModuleNode
@@ -118,11 +111,10 @@ namespace Rubberduck.Parsing.Symbols
     {
         public OptionBaseNode(int value)
         {
-            _value = value;
+            Value = value;
         }
 
-        private readonly int _value;
-        public int Value { get { return _value; } }
+        public int Value { get; }
     }
 
     public class OptionCompareNode : ModuleOptionNode
@@ -136,11 +128,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public OptionCompareNode(OptionCompareEnum value)
         {
-            _value = value;
+            Value = value;
         }
 
-        private readonly OptionCompareEnum _value;
-        public OptionCompareEnum Value { get { return _value; } }
+        public OptionCompareEnum Value { get; }
     }
 
     /// <summary>
@@ -154,11 +145,10 @@ namespace Rubberduck.Parsing.Symbols
     {
         protected NamedMemberNode(IdentifierNode identifier)
         {
-            _identifier = identifier;
+            Identifier = identifier;
         }
 
-        private readonly IdentifierNode _identifier;
-        public IdentifierNode Identifier { get { return _identifier; } }
+        public IdentifierNode Identifier { get; }
     }
 
     public class EnumerationNode : NamedMemberNode
@@ -166,11 +156,10 @@ namespace Rubberduck.Parsing.Symbols
         public EnumerationNode(IdentifierNode identifier, IReadOnlyList<EnumerationMemberNode> members) 
             : base(identifier)
         {
-            _members = members;
+            Members = members;
         }
 
-        private readonly IReadOnlyList<EnumerationMemberNode> _members;
-        public IReadOnlyList<EnumerationMemberNode> Members { get { return _members; } } 
+        public IReadOnlyList<EnumerationMemberNode> Members { get; }
     }
 
     public class EnumerationMemberNode : NamedMemberNode
@@ -186,11 +175,10 @@ namespace Rubberduck.Parsing.Symbols
         public UserDefinedTypeNode(IdentifierNode identifier, IReadOnlyList<UserDefinedTypeMemberNode> members) 
             : base(identifier)
         {
-            _members = members;
+            Members = members;
         }
 
-        private readonly IReadOnlyList<UserDefinedTypeMemberNode> _members;
-        public IReadOnlyList<UserDefinedTypeMemberNode> Members { get { return _members; } }
+        public IReadOnlyList<UserDefinedTypeMemberNode> Members { get; }
     }
 
     public class UserDefinedTypeMemberNode : NamedMemberNode
@@ -205,11 +193,10 @@ namespace Rubberduck.Parsing.Symbols
     {
         public DeclarationStatementNode(IReadOnlyList<NamedMemberNode> members)
         {
-            _members = members;
+            Members = members;
         }
 
-        private readonly IReadOnlyList<NamedMemberNode> _members;
-        public IReadOnlyList<NamedMemberNode> Members { get { return _members; } }
+        public IReadOnlyList<NamedMemberNode> Members { get; }
     }
 
     public class VariableDeclarationNode : NamedMemberNode
@@ -240,15 +227,13 @@ namespace Rubberduck.Parsing.Symbols
     {
         public ParameterDeclarationNode(IdentifierNode identifier, int ordinal)
         {
-            _identifier = identifier;
-            _ordinal = ordinal;
+            Identifier = identifier;
+            Ordinal = ordinal;
         }
 
-        private readonly IdentifierNode _identifier;
-        public IdentifierNode Identifier { get { return _identifier; } }
+        public IdentifierNode Identifier { get; }
 
-        private readonly int _ordinal;
-        public int Ordinal { get { return _ordinal; } }
+        public int Ordinal { get; }
     }
 
     public class ProcedureMemberNode : NamedMemberNode
@@ -256,11 +241,10 @@ namespace Rubberduck.Parsing.Symbols
         public ProcedureMemberNode(IdentifierNode identifier, IReadOnlyList<ParameterDeclarationNode> parameters) 
             : base(identifier)
         {
-            _parameters = parameters;
+            Parameters = parameters;
         }
 
-        private readonly IReadOnlyList<ParameterDeclarationNode> _parameters;
-        public IReadOnlyList<ParameterDeclarationNode> Parameters { get { return _parameters; } }
+        public IReadOnlyList<ParameterDeclarationNode> Parameters { get; }
     }
 
     public class FunctionMemberNode : ProcedureMemberNode

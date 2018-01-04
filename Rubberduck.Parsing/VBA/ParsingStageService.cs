@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.VBA
             IDeclarationResolveRunner declarationResolver,
             IReferenceResolveRunner referenceResolver)
         {
-            if(comSynchronizer == null)
+            if (comSynchronizer == null)
             {
                 throw new ArgumentNullException(nameof(comSynchronizer));
             }
@@ -41,7 +41,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(referenceResolver));
             }
-
             _comSynchronizer = comSynchronizer;
             _builtInDeclarationLoader = builtInDeclarationLoader;
             _parseRunner = parseRunner;
@@ -50,29 +49,11 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations
-        {
-            get
-            {
-                return _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
-            }
-        }
+        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations => _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
 
-        public bool LastSyncOfCOMReferencesLoadedReferences
-        {
-            get
-            {
-                return _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
-            }
-        }
+        public bool LastSyncOfCOMReferencesLoadedReferences => _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
 
-        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync
-        {
-            get
-            {
-                return _comSynchronizer.COMReferencesUnloadedUnloadedInLastSync;
-            }
-        }
+        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync => _comSynchronizer.COMReferencesUnloadedUnloadedInLastSync;
 
         public void LoadBuitInDeclarations()
         {

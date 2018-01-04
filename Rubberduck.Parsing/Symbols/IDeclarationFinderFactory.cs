@@ -1,5 +1,4 @@
-﻿using System;
-using Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.Application;
 using System.Collections.Generic;
 

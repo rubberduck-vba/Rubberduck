@@ -21,7 +21,8 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return null;
             }
-            else if (left.ValueType == ValueType.Bool && right.ValueType == ValueType.Bool)
+
+            if (left.ValueType == ValueType.Bool && right.ValueType == ValueType.Bool)
             {
                 var leftNumber = Convert.ToInt64(left.AsDecimal);
                 var rightNumber = Convert.ToInt64(right.AsDecimal);

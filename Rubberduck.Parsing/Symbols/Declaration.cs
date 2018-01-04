@@ -128,7 +128,7 @@ namespace Rubberduck.Parsing.Symbols
             Context = context;
             IsUserDefined = isUserDefined;
             _annotations = annotations;
-            _attributes = attributes ?? new Attributes();
+            Attributes = attributes ?? new Attributes();
 
             ProjectId = QualifiedName.QualifiedModuleName.ProjectId;
             var projectDeclaration = GetProjectParent(parentDeclaration);
@@ -288,8 +288,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly IEnumerable<IAnnotation> _annotations;
         public IEnumerable<IAnnotation> Annotations => _annotations ?? new List<IAnnotation>();
 
-        private readonly Attributes _attributes;
-        public Attributes Attributes => _attributes;
+        public Attributes Attributes { get; }
 
         /// <summary>
         /// Gets an attribute value that contains the docstring for a member.
@@ -300,14 +299,14 @@ namespace Rubberduck.Parsing.Symbols
             {
                 string literalDescription;
 
-                var memberAttribute = _attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
+                var memberAttribute = Attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
                 if (memberAttribute != null)
                 {
                     literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
                     return CorrectlyFormatedDescription(literalDescription);
                 }
 
-                var moduleAttribute = _attributes.SingleOrDefault(a => a.Name == "VB_Description");
+                var moduleAttribute = Attributes.SingleOrDefault(a => a.Name == "VB_Description");
                 if (moduleAttribute != null)
                 {
                     literalDescription = moduleAttribute.Values.SingleOrDefault() ?? string.Empty;
@@ -337,7 +336,7 @@ namespace Rubberduck.Parsing.Symbols
         /// Gets an attribute value indicating whether a member is an enumerator provider.
         /// Types with such a member support For Each iteration.
         /// </summary>
-        public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
+        public bool IsEnumeratorMember => Attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
         public void AddReference(
             QualifiedModuleName module,
@@ -431,24 +430,16 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         public string AsTypeName { get; }
 
-        public string AsTypeNameWithoutArrayDesignator
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(AsTypeName))
-                {
-                    return AsTypeName;
-                }
-                return AsTypeName.Replace("(", "").Replace(")", "").Trim();
-            }
-        }
+        public string AsTypeNameWithoutArrayDesignator => string.IsNullOrWhiteSpace(AsTypeName) 
+                                                            ? AsTypeName 
+                                                            : AsTypeName.Replace("(", "").Replace(")", "").Trim();
 
         public bool AsTypeIsBaseType => string.IsNullOrWhiteSpace(AsTypeName) || SymbolList.BaseTypes.Contains(AsTypeName.ToUpperInvariant());
 
         private Declaration _asTypeDeclaration;
         public Declaration AsTypeDeclaration
         {
-            get { return _asTypeDeclaration; }
+            get => _asTypeDeclaration;
             internal set
             {
                 _asTypeDeclaration = value;
@@ -456,28 +447,6 @@ namespace Rubberduck.Parsing.Symbols
                                  AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType);
             }
         }
-
-        private readonly IReadOnlyList<DeclarationType> _neverArray = new[]
-        {
-            DeclarationType.ClassModule,
-            DeclarationType.Control,
-            DeclarationType.Document,
-            DeclarationType.Enumeration,
-            DeclarationType.EnumerationMember,
-            DeclarationType.Event,
-            DeclarationType.Function,
-            DeclarationType.LibraryFunction,
-            DeclarationType.LibraryProcedure,
-            DeclarationType.LineLabel,
-            DeclarationType.ProceduralModule,
-            DeclarationType.Project,
-            DeclarationType.Procedure,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertyLet,
-            DeclarationType.UserDefinedType,
-            DeclarationType.Constant
-        };
 
         public bool IsSelected(QualifiedSelection selection)
         {
@@ -528,9 +497,9 @@ namespace Rubberduck.Parsing.Symbols
                     case DeclarationType.PropertyGet:
                     case DeclarationType.PropertyLet:
                     case DeclarationType.PropertySet:
-                        return QualifiedName.QualifiedModuleName + "." + IdentifierName;
+                        return $"{QualifiedName.QualifiedModuleName}.{IdentifierName}";
                     case DeclarationType.Event:
-                        return ParentScope + "." + IdentifierName;
+                        return $"{ParentScope}.{IdentifierName}";
                     default:
                         return ParentScope;
                 }

@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.VBA
         protected readonly IParserStateManager _parserStateManager;
         private readonly IProjectReferencesProvider _projectReferencesProvider;
 
-        public DeclarationResolveRunnerBase(
+        protected DeclarationResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             IProjectReferencesProvider projectReferencesProvider)
@@ -37,15 +37,12 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(projectReferencesProvider));
             }
-
             _state = state;
             _parserStateManager = parserStateManager;
             _projectReferencesProvider = projectReferencesProvider;
         }
 
-
         public abstract void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
-
 
         protected void ResolveDeclarations(QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
@@ -74,21 +71,22 @@ namespace Rubberduck.Parsing.VBA
 
         private Declaration GetOrCreateProjectDeclaration(QualifiedModuleName module)
         {
-            Declaration projectDeclaration;
-            if (!_projectDeclarations.TryGetValue(module.ProjectId, out projectDeclaration))
+            if (_projectDeclarations.TryGetValue(module.ProjectId, out var projectDeclaration))
             {
-                var project = module.Component.Collection.Parent;
-                projectDeclaration = CreateProjectDeclaration(project);
-
-                if (projectDeclaration.ProjectId != module.ProjectId)
-                {
-                    Logger.Error($"Inconsistent projectId between QualifiedModuleName {module} (projectID {module.ProjectId}) and its project (projectId {projectDeclaration.ProjectId})");
-                    throw new ArgumentException($"Inconsistent projectID on {nameof(module)}");
-                }
-
-                _projectDeclarations.AddOrUpdate(module.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
-                _state.AddDeclaration(projectDeclaration);
+                return projectDeclaration;
             }
+
+            var project = module.Component.Collection.Parent;
+            projectDeclaration = CreateProjectDeclaration(project);
+
+            if (projectDeclaration.ProjectId != module.ProjectId)
+            {
+                Logger.Error($"Inconsistent projectId between QualifiedModuleName {module} (projectID {module.ProjectId}) and its project (projectId {projectDeclaration.ProjectId})");
+                throw new ArgumentException($"Inconsistent projectID on {nameof(module)}");
+            }
+
+            _projectDeclarations.AddOrUpdate(module.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
+            _state.AddDeclaration(projectDeclaration);
 
             return projectDeclaration;
         }
@@ -111,7 +109,7 @@ namespace Rubberduck.Parsing.VBA
             var projectId = projectDeclaration.ProjectId;
             foreach (var reference in references)
             {
-                int priority = reference[projectId];
+                var priority = reference[projectId];
                 projectDeclaration.AddProjectReference(reference.ReferencedProjectId, priority);
             }
         }

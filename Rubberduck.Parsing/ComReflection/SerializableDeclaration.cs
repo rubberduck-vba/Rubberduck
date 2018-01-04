@@ -16,8 +16,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<SerializableDeclarationTree> Children
         {
-            get { return _children; } 
-            set { _children = new List<SerializableDeclarationTree>(value); }
+            get => _children;
+            set => _children = new List<SerializableDeclarationTree>(value);
         }
 
         public SerializableDeclarationTree() { } 
@@ -88,8 +88,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<SerializableDeclarationTree> Declarations
         {
-            get { return _declarations; }
-            set { _declarations = new List<SerializableDeclarationTree>(value); }
+            get => _declarations;
+            set => _declarations = new List<SerializableDeclarationTree>(value);
         }
 
         [DataMember(IsRequired = true)]
@@ -170,17 +170,16 @@ namespace Rubberduck.Parsing.ComReflection
             ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
             ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
 
-            var param = declaration as ParameterDeclaration;
-            if (param != null)
+            switch (declaration)
             {
-                IsOptionalParam = param.IsOptional;
-                IsByRefParam = param.IsByRef;
-                IsParamArray = param.IsParamArray;
-            }
-            var coclass = declaration as ClassModuleDeclaration;
-            if (coclass != null)
-            {
-                IsControl = coclass.IsControl;
+                case ParameterDeclaration param:
+                    IsOptionalParam = param.IsOptional;
+                    IsByRefParam = param.IsByRef;
+                    IsParamArray = param.IsParamArray;
+                    break;
+                case ClassModuleDeclaration coclass:
+                    IsControl = coclass.IsControl;
+                    break;
             }
         }
 

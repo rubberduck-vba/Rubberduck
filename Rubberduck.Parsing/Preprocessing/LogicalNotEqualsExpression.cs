@@ -14,11 +14,7 @@
         public override IValue Evaluate()
         {
             var eq = new LogicalEqualsExpression(_left, _right).Evaluate();
-            if (eq == null)
-            {
-                return null;
-            }
-            return new BoolValue(!eq.AsBool);
+            return eq == null ? null : new BoolValue(!eq.AsBool);
         }
     }
 }

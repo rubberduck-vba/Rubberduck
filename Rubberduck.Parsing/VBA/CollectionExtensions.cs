@@ -3,29 +3,25 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.VBA
 {
-
     // See http://stackoverflow.com/questions/34362316/how-to-turn-icollectiont-into-ireadonlycollectiont
     public class ReadOnlyCollectionWrapper<T> : IReadOnlyCollection<T>
     {
-        private ICollection<T> collection;
+        private readonly ICollection<T> _collection;
         public ReadOnlyCollectionWrapper(ICollection<T> collection)
         {
-            this.collection = collection;
+            _collection = collection;
         }
 
-        public int Count
-        {
-            get { return collection.Count; }
-        }
+        public int Count => _collection.Count;
 
         public IEnumerator<T> GetEnumerator()
         {
-            return collection.GetEnumerator();
+            return _collection.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return collection.GetEnumerator();
+            return _collection.GetEnumerator();
         }
     }
 

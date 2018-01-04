@@ -19,16 +19,8 @@
             {
                 return null;
             }
-            string leftValue = string.Empty;
-            if (left != null)
-            {
-                leftValue = left.AsString;
-            }
-            string rightValue = string.Empty;
-            if (right != null)
-            {
-                rightValue = right.AsString;
-            }
+            var leftValue = left == null ? string.Empty : left.AsString;
+            var rightValue = right == null ? string.Empty : right.AsString;
             return new StringValue(leftValue + rightValue);
         }
     }

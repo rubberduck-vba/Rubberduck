@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _module;
         private readonly Declaration _parent;
         private readonly VBAParser.MemberAccessExprContext _expression;
-        private ParserRuleContext _unrestrictedNameContext;
+        private readonly ParserRuleContext _unrestrictedNameContext;
         private readonly IExpressionBinding _lExpressionBinding;
 
         public MemberAccessProcedurePointerBinding(
@@ -34,18 +34,17 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            IBoundExpression boundExpression = null;
             var lExpression = _lExpressionBinding.Resolve();
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
                 return lExpression;
             }
-            string name = Identifier.GetName(_expression.unrestrictedIdentifier());
+            var name = Identifier.GetName(_expression.unrestrictedIdentifier());
             if (lExpression.Classification != ExpressionClassification.ProceduralModule)
             {
                 return null;
             }
-            boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Function, ExpressionClassification.Function);
+            var boundExpression = ResolveMemberInModule(lExpression, name, lExpression.ReferencedDeclaration, DeclarationType.Function, ExpressionClassification.Function);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -72,11 +71,9 @@ namespace Rubberduck.Parsing.Binding
              */
             // AddressOf is only allowed in the same project. See The "procedure pointer binding context" for "simple name expressions" section in the MS-VBAL document.
             var enclosingProjectType = _declarationFinder.FindMemberEnclosedProjectInModule(_project, _module, _parent, module, name, memberType);
-            if (enclosingProjectType != null)
-            {
-                return new MemberAccessExpression(enclosingProjectType, classification, _expression, _unrestrictedNameContext, lExpression);
-            }
-            return null;
+            return enclosingProjectType != null
+                ? new MemberAccessExpression(enclosingProjectType, classification, _expression, _unrestrictedNameContext, lExpression) 
+                : null;
         }
     }
 }

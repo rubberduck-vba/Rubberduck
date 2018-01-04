@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.VBEditor;
-using System;
 
 namespace Rubberduck.Parsing
 {
@@ -19,11 +18,12 @@ namespace Rubberduck.Parsing
         /// <returns>Boolean with true indicating that token is within the selection</returns>
         public static bool Contains(this Selection selection, IToken token)
         {
+            // The -1 is for the zero and one based difference
             return
-                (((selection.StartLine == token.Line) && (selection.StartColumn - 1) <= token.Column) 
-                    || (selection.StartLine < token.Line))
-             && (((selection.EndLine == token.EndLine()) && (selection.EndColumn - 1) >= (token.EndColumn())) 
-                    || (selection.EndLine > token.EndLine()));
+                (selection.StartLine == token.Line && selection.StartColumn - 1 <= token.Column
+                    || selection.StartLine < token.Line)
+             && (selection.EndLine == token.EndLine() && selection.EndColumn - 1 >= token.EndColumn()
+                    || selection.EndLine > token.EndLine());
         }
 
         /// <summary>
@@ -34,11 +34,12 @@ namespace Rubberduck.Parsing
         /// <returns>Boolean with true indicating that context is within the selection</returns>
         public static bool Contains(this Selection selection, ParserRuleContext context)
         {
+            // The -1 is for the zero and one based difference
             return
-               (((selection.StartLine == context.Start.Line) && (selection.StartColumn - 1) <= context.Start.Column) 
-                    || (selection.StartLine < context.Start.Line))
-            && (((selection.EndLine == context.Stop.EndLine()) && (selection.EndColumn - 1) >= (context.Stop.EndColumn())) 
-                    || (selection.EndLine > context.Stop.EndLine()));
+               (selection.StartLine == context.Start.Line && selection.StartColumn - 1 <= context.Start.Column
+                    || selection.StartLine < context.Start.Line)
+            && (selection.EndLine == context.Stop.EndLine() && selection.EndColumn - 1 >= context.Stop.EndColumn()
+                    || selection.EndLine > context.Stop.EndLine());
         }
 
         /// <summary>

@@ -19,17 +19,18 @@ namespace Rubberduck.Parsing
             {
                 return token.Column;
             }
-            else if (token.Text.Contains(Environment.NewLine))
+
+            if (token.Text.Contains(Environment.NewLine))
             {
-                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                var splitStrings = token.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 var lastOccupiedLine = splitStrings[splitStrings.Length - 1];
 
                 return lastOccupiedLine.Length;
             }
-            else
-            {
-                return token.Column + token.Text.Length;
-            }
+            
+
+            return token.Column + token.Text.Length;
+            
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Rubberduck.Parsing
         {
             if (token.Text != Environment.NewLine && token.Text.Contains(Environment.NewLine))
             {
-                var splitStrings = token.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                var splitStrings = token.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
                 return token.Line + (splitStrings.Length - 1);
             }

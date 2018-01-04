@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             var startIndex = mainBlockStmt.Start.TokenIndex;
             if (count == 1)
             {
-                int stopIndex = variables.Stop.TokenIndex + 1; // also remove trailing newlines?
+                var stopIndex = variables.Stop.TokenIndex + 1; // also remove trailing newlines?
                 
                 var containingBlock = (VBAParser.BlockContext)mainBlockStmt.Parent.Parent;
                 var blockStmtIndex = containingBlock.children.IndexOf(mainBlockStmt.Parent);
@@ -97,10 +97,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 
                 return new RewriterInfo(startIndex, stopIndex);
             }
-
-            var blockStmt = (VBAParser.BlockStmtContext)mainBlockStmt.Parent;
-            var block = (VBAParser.BlockContext)blockStmt.Parent;
-            var statements = block.blockStmt();
+            
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
         }
     }

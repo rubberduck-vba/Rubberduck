@@ -29,12 +29,11 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public static IExpression CreateLibraryFunction(string functionName, IExpression argument)
         {
-            Func<IExpression, IExpression> functionCreator;
-            if (_libraryFunctions.TryGetValue(functionName.ToUpper(), out functionCreator))
+            if (_libraryFunctions.TryGetValue(functionName.ToUpper(), out var functionCreator))
             {
                 return functionCreator(argument);
             }
-            throw new InvalidOperationException("Unexpected library function encountered: " + functionName);
+            throw new InvalidOperationException($"Unexpected library function encountered: {functionName}");
         }
     }
 }

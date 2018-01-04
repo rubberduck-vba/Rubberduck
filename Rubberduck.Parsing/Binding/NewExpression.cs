@@ -5,8 +5,6 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class NewExpression : BoundExpression
     {
-        private readonly IBoundExpression _typeExpression;
-
         public NewExpression(
             Declaration referencedDeclaration,
             ParserRuleContext context,
@@ -14,15 +12,9 @@ namespace Rubberduck.Parsing.Binding
             // Marked as Variable instead of Value to integrate into rest of binding process.
             : base(referencedDeclaration, ExpressionClassification.Variable, context)
         {
-            _typeExpression = typeExpression;
+            TypeExpression = typeExpression;
         }
 
-        public IBoundExpression TypeExpression
-        {
-            get
-            {
-                return _typeExpression;
-            }
-        }
+        public IBoundExpression TypeExpression { get; }
     }
 }

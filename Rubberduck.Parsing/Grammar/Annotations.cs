@@ -2,7 +2,7 @@
 {
     public static class Annotations
     {
-        public static readonly string AnnotationMarker = "@";
-        public static readonly string IgnoreInspection = "Ignore";
+        public const string AnnotationMarker = "@";
+        public const string IgnoreInspection = "Ignore";
     }
 }

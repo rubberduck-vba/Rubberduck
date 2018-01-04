@@ -12,11 +12,7 @@
         public override IValue Evaluate()
         {
             var expr = _expression.Evaluate();
-            if (expr == null)
-            {
-                return null;
-            }
-            return new BoolValue(expr.AsBool);
+            return expr == null ? null : new BoolValue(expr.AsBool);
         }
     }
 }

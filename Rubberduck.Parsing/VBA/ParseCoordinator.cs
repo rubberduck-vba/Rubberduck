@@ -52,7 +52,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
-
             State = state;
             _parsingStageService = parsingStageService;
             _projectManager = projectManager;
@@ -438,7 +437,6 @@ namespace Rubberduck.Parsing.VBA
             var removedProjects = projectsWithProjectDeclarations.Where(project => !currentlyExistingProjects.Contains(project));
             return removedProjects.Select(tuple => tuple.Item1).ToHashSet().AsReadOnly();
         }
-
 
         public void Dispose()
         {

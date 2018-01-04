@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
 
-        public ProjectManagerBase(
+        protected ProjectManagerBase(
             RubberduckParserState state,
             IVBE vbe)
         {
@@ -22,23 +22,13 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(vbe));
             }
-
             _state = state;
             _vbe = vbe;
         }
 
-
         public abstract IReadOnlyCollection<QualifiedModuleName> AllModules();
 
-
-        public IReadOnlyCollection<IVBProject> Projects
-        {
-            get
-            {
-                return _state.Projects.AsReadOnly();
-            }
-        }
-
+        public IReadOnlyCollection<IVBProject> Projects => _state.Projects.AsReadOnly();
 
         public void RefreshProjects()
         {

@@ -5,9 +5,6 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class BinaryOpExpression : BoundExpression
     {
-        private readonly IBoundExpression _left;
-        private readonly IBoundExpression _right;
-
         public BinaryOpExpression(
             Declaration referencedDeclaration,
             ParserRuleContext context,
@@ -15,24 +12,12 @@ namespace Rubberduck.Parsing.Binding
             IBoundExpression right)
             : base(referencedDeclaration, ExpressionClassification.Value, context)
         {
-            _left = left;
-            _right = right;
+            Left = left;
+            Right = right;
         }
 
-        public IBoundExpression Left
-        {
-            get
-            {
-                return _left;
-            }
-        }
+        public IBoundExpression Left { get; }
 
-        public IBoundExpression Right
-        {
-            get
-            {
-                return _right;
-            }
-        }
+        public IBoundExpression Right { get; }
     }
 }

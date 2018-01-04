@@ -10,11 +10,11 @@ namespace Rubberduck.Parsing.VBA
         {
             if (source == null)
             {
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             }
             if (keySelector == null)
             {
-                throw new ArgumentNullException("keySelector");
+                throw new ArgumentNullException(nameof(keySelector));
             }
 
             var hashSet = new HashSet<TKey>();

@@ -30,17 +30,12 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             var name = Identifier.GetName(_expression.identifier());
-            if (PreferProjectOverUdt)
-            {
-                return ResolvePreferProject(name);
-            }
-            return ResolvePreferUdt(name);
+            return PreferProjectOverUdt ? ResolvePreferProject(name) : ResolvePreferUdt(name);
         }
 
         private IBoundExpression ResolvePreferUdt(string name)
         {
-            IBoundExpression boundExpression = null;
-            boundExpression = ResolveEnclosingModule(name);
+            var boundExpression = ResolveEnclosingModule(name);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -70,9 +65,8 @@ namespace Rubberduck.Parsing.Binding
 
         private IBoundExpression ResolvePreferProject(string name)
         {
-            IBoundExpression boundExpression = null;
             // EnclosingProject and EnclosingModule have been switched.
-            boundExpression = ResolveEnclosingProject(name);
+            var boundExpression = ResolveEnclosingProject(name);
             if (boundExpression != null)
             {
                 return boundExpression;
@@ -108,11 +102,9 @@ namespace Rubberduck.Parsing.Binding
                 return new SimpleNameExpression(udt, ExpressionClassification.Type, _expression);
             }
             var enumType = _declarationFinder.FindMemberEnclosingModule(_module, _parent, name, DeclarationType.Enumeration);
-            if (enumType != null)
-            {
-                return new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
-            }
-            return null;
+            return enumType == null 
+                ? null
+                : new SimpleNameExpression(enumType, ExpressionClassification.Type, _expression);
         }
 
         private IBoundExpression ResolveEnclosingProject(string name)

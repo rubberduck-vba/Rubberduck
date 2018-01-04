@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 
-        public COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
+        protected COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
         {
             if (state == null)
             {
@@ -36,9 +36,12 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _state = state;
+
             _parserStateManager = parserStateManager;
+
             _serializedDeclarationsPath = serializedDeclarationsPath
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
+
             _unloadedCOMReferences = new List<QualifiedModuleName>();
         }
 
@@ -47,13 +50,7 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync => _unloadedCOMReferences;
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
-        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences
-        {
-            get
-            {
-                return _projectReferences.ToHashSet().AsReadOnly();
-            }
-        }
+        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences => _projectReferences.ToHashSet().AsReadOnly();
 
 
         protected abstract void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token);
@@ -80,12 +77,9 @@ namespace Rubberduck.Parsing.VBA
                 unmapped.Add(item);
             }
 
-            if (unmapped.Any())
+            foreach (var reference in unmapped)
             {
-                foreach (var reference in unmapped)
-                {
-                    UnloadComReference(reference, projects);
-                }
+                UnloadComReference(reference, projects);
             }
         }
 
@@ -128,11 +122,13 @@ namespace Rubberduck.Parsing.VBA
                         map[projectId] = priority;
                     }
 
-                    if (!map.IsLoaded)
+                    if (map.IsLoaded)
                     {
-                        referencesToLoad.Add(reference);
-                        map.IsLoaded = true;
+                        continue;
                     }
+
+                    referencesToLoad.Add(reference);
+                    map.IsLoaded = true;
                 }
             }
             return referencesToLoad;
@@ -162,20 +158,21 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            if (project != null)
+            if (project == null)
             {
-                if (string.IsNullOrEmpty(project.ProjectId))
-                {
-                    project.AssignProjectId();
-                }
-                return project.ProjectId;
+                return QualifiedModuleName.GetProjectId(reference);
             }
-            return QualifiedModuleName.GetProjectId(reference);
+
+            if (string.IsNullOrEmpty(project.ProjectId))
+            {
+                project.AssignProjectId();
+            }
+            return project.ProjectId;
         }
 
         protected void LoadReference(IReference localReference, ConcurrentBag<IReference> unmapped)
         {
-            Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
+            Logger.Trace($"Loading referenced type '{localReference.Name}'.");
             var comReflector = new ReferencedDeclarationsCollector(_state, localReference, _serializedDeclarationsPath);
             try
             {
@@ -191,14 +188,14 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception exception)
             {
                 unmapped.Add(localReference);
-                Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", localReference.Name));
+                Logger.Warn($"Types were not loaded from referenced type library '{localReference.Name}'.");
                 Logger.Error(exception);
             }
         }
 
         private void LoadReferenceByDeserialization(IReference localReference, ReferencedDeclarationsCollector comReflector)
         {
-            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
+            Logger.Trace($"Deserializing reference '{localReference.Name}'.");
             var declarations = comReflector.LoadDeclarationsFromXml();
             foreach (var declaration in declarations)
             {
@@ -208,7 +205,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void LoadReferenceFromTypeLibrary(IReference localReference, ReferencedDeclarationsCollector comReflector)
         {
-            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
+            Logger.Trace($"COM reflecting reference '{localReference.Name}'.");
             var declarations = comReflector.LoadDeclarationsFromLibrary();
             foreach (var declaration in declarations)
             {
@@ -246,12 +243,14 @@ namespace Rubberduck.Parsing.VBA
             }
 
             map.Remove(referencedProjectId);
-            if (map.Count == 0)
+            if (map.Count != 0)
             {
-                AddUnloadedReferenceToUnloadedReferences(reference);
-                _projectReferences.Remove(map);
-                _state.RemoveBuiltInDeclarations(reference);
+                return;
             }
+
+            AddUnloadedReferenceToUnloadedReferences(reference);
+            _projectReferences.Remove(map);
+            _state.RemoveBuiltInDeclarations(reference);
         }
 
         private void AddUnloadedReferenceToUnloadedReferences(IReference reference)

@@ -14,11 +14,7 @@
         public override IValue Evaluate()
         {
             var result = new LogicalLessThanExpression(_left, _right).Evaluate();
-            if (result == null)
-            {
-                return null;
-            }
-            return new BoolValue(!result.AsBool);
+            return result == null ? null : new BoolValue(!result.AsBool);
         }
     }
 }

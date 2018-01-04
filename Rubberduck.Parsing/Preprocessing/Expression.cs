@@ -7,11 +7,7 @@
         public bool EvaluateCondition()
         {
             var val = Evaluate();
-            if (val == null)
-            {
-                return false;
-            }
-            return val.AsBool;
+            return val != null && val.AsBool;
         }
     }
 }

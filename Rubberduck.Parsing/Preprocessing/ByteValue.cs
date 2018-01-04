@@ -6,72 +6,25 @@ namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class ByteValue : IValue
     {
-        private readonly byte _value;
-
         public ByteValue(byte value)
         {
-            _value = value;
+            AsByte = value;
         }
 
-        public ValueType ValueType
-        {
-            get
-            {
-                return ValueType.Byte;
-            }
-        }
+        public ValueType ValueType => ValueType.Byte;
 
-        public bool AsBool
-        {
-            get
-            {
-                return _value != 0;
-            }
-        }
+        public bool AsBool => AsByte != 0;
 
-        public byte AsByte
-        {
-            get
-            {
-                return _value;
-            }
-        }
+        public byte AsByte { get; }
 
-        public DateTime AsDate
-        {
-            get
-            {
-                return DateTime.FromOADate(Convert.ToDouble(_value));
-            }
-        }
+        public DateTime AsDate => DateTime.FromOADate(Convert.ToDouble(AsByte));
 
-        public decimal AsDecimal
-        {
-            get
-            {
-                return Convert.ToDecimal(_value);
-            }
-        }
+        public decimal AsDecimal => Convert.ToDecimal(AsByte);
 
-        public string AsString
-        {
-            get
-            {
-                return _value.ToString();
-            }
-        }
+        public string AsString => AsByte.ToString();
 
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
+        public IEnumerable<IToken> AsTokens => new List<IToken>();
 
-        public override string ToString()
-        {
-            return _value.ToString();
-        }
+        public override string ToString() => AsByte.ToString();
     }
 }

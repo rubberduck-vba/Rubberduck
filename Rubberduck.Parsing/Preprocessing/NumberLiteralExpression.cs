@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IValue Evaluate()
         {
-            string literal = _tokenText.Evaluate().AsString;
+            var literal = _tokenText.Evaluate().AsString;
             var number = decimal.Parse(literal
                 .Replace("%", "")
                 .Replace("&", "")

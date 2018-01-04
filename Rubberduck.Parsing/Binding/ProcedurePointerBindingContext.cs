@@ -15,12 +15,8 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
-            if (bindingTree != null)
-            {
-                return bindingTree.Resolve();
-            }
-            return null;
+            var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
+            return bindingTree?.Resolve();
         }
 
         public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)

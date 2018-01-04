@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
 
-        public ReferenceRemoverBase(
+        protected ReferenceRemoverBase(
             RubberduckParserState state,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager)
         {
@@ -23,11 +23,9 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(moduleToModuleReferenceManager));
             }
-
             _state = state;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
         }
-
 
         public abstract void RemoveReferencesTo(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
         protected abstract void RemoveReferencesByFromTargetModules(IReadOnlyCollection<QualifiedModuleName> referencingModules, IReadOnlyCollection<QualifiedModuleName> targetModules, CancellationToken token);

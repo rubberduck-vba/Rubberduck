@@ -8,65 +8,23 @@ namespace Rubberduck.Parsing.PreProcessing
     {
         public static readonly EmptyValue Value = new EmptyValue();
 
-        public ValueType ValueType
-        {
-            get
-            {
-                return ValueType.Empty;
-            }
-        }
+        public ValueType ValueType => ValueType.Empty;
 
-        public bool AsBool
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool AsBool => false;
 
-        public byte AsByte
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        public byte AsByte => 0;
 
-        public DateTime AsDate
-        {
-            get
-            {
-                return new DateTime(1899, 12, 30);
-            }
-        }
+        public DateTime AsDate => new DateTime(1899, 12, 30);
 
-        public decimal AsDecimal
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        public decimal AsDecimal => 0;
 
-        public string AsString
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public string AsString => string.Empty;
 
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
+        public IEnumerable<IToken> AsTokens => new List<IToken>();
 
         public override string ToString()
         {
             return "<Empty>";
-        }
+        } 
     }
 }

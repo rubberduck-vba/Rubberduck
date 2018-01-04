@@ -5,8 +5,6 @@ using Rubberduck.VBEditor;
 using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Antlr4.Runtime;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace Rubberduck.Parsing.VBA
@@ -43,7 +41,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(attributeParser));
             }
-
             _state = state;
             StateManager = parserStateManager;
             _preprocessorFactory = preprocessorFactory;

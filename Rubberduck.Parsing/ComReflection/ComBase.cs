@@ -20,10 +20,9 @@ namespace Rubberduck.Parsing.ComReflection
         public Guid Guid { get; protected set; }
         public int Index { get; protected set; }
         public ComDocumentation Documentation { get; protected set; }
-        public string Name
-        {
-            get { return Documentation == null ? string.Empty : Documentation.Name; }
-        }
+        public string Name => Documentation == null 
+            ? string.Empty 
+            : Documentation.Name;
 
         public DeclarationType Type { get; protected set; }
 
@@ -35,9 +34,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         protected ComBase(ITypeInfo info)
         {
-            ITypeLib typeLib;
-            int index;
-            info.GetContainingTypeLib(out typeLib, out index);
+            info.GetContainingTypeLib(out var typeLib, out var index);
             Index = index;
             Debug.Assert(typeLib != null);
             Documentation = new ComDocumentation(typeLib, index);

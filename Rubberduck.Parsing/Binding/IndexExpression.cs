@@ -5,9 +5,6 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class IndexExpression : BoundExpression
     {
-        private readonly IBoundExpression _lExpression;
-        private readonly ArgumentList _argumentList;
-
         public IndexExpression(
             Declaration referencedDeclaration, 
             ExpressionClassification classification, 
@@ -16,24 +13,12 @@ namespace Rubberduck.Parsing.Binding
             ArgumentList argumentList)
             : base(referencedDeclaration, classification, context)
         {
-            _lExpression = lExpression;
-            _argumentList = argumentList;
+            LExpression = lExpression;
+            ArgumentList = argumentList;
         }
 
-        public IBoundExpression LExpression
-        {
-            get
-            {
-                return _lExpression;
-            }
-        }
+        public IBoundExpression LExpression { get; }
 
-        public ArgumentList ArgumentList
-        {
-            get
-            {
-                return _argumentList;
-            }
-        }
+        public ArgumentList ArgumentList { get; }
     }
 }

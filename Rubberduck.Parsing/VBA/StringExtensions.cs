@@ -121,7 +121,7 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-            throw new ArgumentException(string.Format(ParsingText.StringExtensionsArgumentException, index, chr, line), "index");
+            throw new ArgumentException(string.Format(ParsingText.StringExtensionsArgumentException, index, chr, line), nameof(index));
         }
     }
 }

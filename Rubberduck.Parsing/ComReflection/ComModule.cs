@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -14,26 +13,14 @@ namespace Rubberduck.Parsing.ComReflection
     public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
     {
         private readonly List<ComMember> _members = new List<ComMember>();
-        public IEnumerable<ComMember> Members
-        {
-            get { return _members; }
-        }
+        public IEnumerable<ComMember> Members => _members;
 
-        public ComMember DefaultMember
-        {
-            get { return null; }
-        }
+        public ComMember DefaultMember => null;
 
-        public bool IsExtensible
-        {
-            get { return false; }
-        }
+        public bool IsExtensible => false;
 
         private readonly List<ComField> _fields = new List<ComField>();
-        public IEnumerable<ComField> Fields
-        {
-            get { return _fields; }
-        }
+        public IEnumerable<ComField> Fields => _fields;
 
         public ComModule(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
         {
@@ -55,11 +42,9 @@ namespace Rubberduck.Parsing.ComReflection
             var names = new string[255];
             for (var index = 0; index < attrib.cVars; index++)
             {
-                IntPtr varPtr;
-                info.GetVarDesc(index, out varPtr);
+                info.GetVarDesc(index, out var varPtr);
                 var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
-                int length;
-                info.GetNames(desc.memid, names, 255, out length);
+                info.GetNames(desc.memid, names, 255, out var length);
                 Debug.Assert(length == 1);
 
                 _fields.Add(new ComField(names[0], desc, index, DeclarationType.Constant));
@@ -71,8 +56,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             for (var index = 0; index < attrib.cFuncs; index++)
             {
-                IntPtr memberPtr;
-                info.GetFuncDesc(index, out memberPtr);
+                info.GetFuncDesc(index, out var memberPtr);
                 var member = (FUNCDESC)Marshal.PtrToStructure(memberPtr, typeof(FUNCDESC));
                 if (member.callconv != CALLCONV.CC_STDCALL)
                 {

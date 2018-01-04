@@ -42,11 +42,11 @@ namespace Rubberduck.Parsing.VBA
             string code;
             if (module.ComponentType == ComponentType.Document)
             {
-                code = File.ReadAllText(path, Encoding.UTF8);   //We export the code from Documents as UTF8.
+                code = File.ReadAllText(path, Encoding.UTF8); //We export the code from Documents as UTF8.
             }
             else
             {
-                code = File.ReadAllText(path, Encoding.Default);    //The VBE exports encoded in the current ANSI codepage from the windows settings.
+                code = File.ReadAllText(path, Encoding.Default); //The VBE exports encoded in the current ANSI codepage from the windows settings.
             }
 
             try

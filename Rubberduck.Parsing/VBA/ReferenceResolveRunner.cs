@@ -27,9 +27,11 @@ namespace Rubberduck.Parsing.VBA
 
         protected override void ResolveReferences(ICollection<KeyValuePair<QualifiedModuleName, IParseTree>> toResolve, CancellationToken token)
         {
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = _maxDegreeOfReferenceResolverParallelism
+            };
 
             try
             {

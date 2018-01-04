@@ -61,11 +61,9 @@ namespace Rubberduck.Parsing.VBA
             {
                 return TaskScheduler.Default;
             }
-            else
-            {
-                var taskSchedulerPair = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, maxLevelOfConcurrency);
-                return taskSchedulerPair.ConcurrentScheduler;
-            }
+            
+            var taskSchedulerPair = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, maxLevelOfConcurrency);
+            return taskSchedulerPair.ConcurrentScheduler;
         }
     }
 }

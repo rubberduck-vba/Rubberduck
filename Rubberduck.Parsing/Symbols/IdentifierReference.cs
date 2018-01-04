@@ -13,118 +13,95 @@ namespace Rubberduck.Parsing.Symbols
     public class IdentifierReference : IEquatable<IdentifierReference>
     {
         public IdentifierReference(
-            QualifiedModuleName qualifiedName, 
-            Declaration parentScopingDeclaration, 
-            Declaration parentNonScopingDeclaration, 
+            QualifiedModuleName qualifiedName,
+            Declaration parentScopingDeclaration,
+            Declaration parentNonScopingDeclaration,
             string identifierName,
             Selection selection,
-            ParserRuleContext context, 
-            Declaration declaration, 
+            ParserRuleContext context,
+            Declaration declaration,
             bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false, 
+            bool hasExplicitLetStatement = false,
             IEnumerable<IAnnotation> annotations = null)
         {
-            _parentScopingDeclaration = parentScopingDeclaration;
-            _parentNonScopingDeclaration = parentNonScopingDeclaration;
-            _qualifiedName = qualifiedName;
-            _identifierName = identifierName;
-            _selection = selection;
-            _context = context;
-            _declaration = declaration;
-            _hasExplicitLetStatement = hasExplicitLetStatement;
-            _isAssignmentTarget = isAssignmentTarget;
-            _annotations = annotations ?? new List<IAnnotation>();
+            ParentScoping = parentScopingDeclaration;
+            ParentNonScoping = parentNonScopingDeclaration;
+            QualifiedModuleName = qualifiedName;
+            IdentifierName = identifierName;
+            Selection = selection;
+            Context = context;
+            Declaration = declaration;
+            HasExplicitLetStatement = hasExplicitLetStatement;
+            IsAssignment = isAssignmentTarget;
+            Annotations = annotations ?? new List<IAnnotation>();
+
+            _hasTypeHint = new Lazy<bool>(ComputeTypeHint);
         }
 
-        private readonly QualifiedModuleName _qualifiedName;
-        public QualifiedModuleName QualifiedModuleName { get { return _qualifiedName; } }
+        public QualifiedModuleName QualifiedModuleName { get; }
 
-        private readonly string _identifierName;
-        public string IdentifierName { get { return _identifierName; } }
+        public string IdentifierName { get; }
 
-        private readonly Selection _selection;
-        public Selection Selection { get { return _selection; } }
+        public Selection Selection { get; }
 
-        private readonly Declaration _parentScopingDeclaration;
         /// <summary>
         /// Gets the scoping <see cref="Declaration"/> that contains this identifier reference,
         /// e.g. a module, procedure, function or property.
         /// </summary>
-        public Declaration ParentScoping { get { return _parentScopingDeclaration; } }
+        public Declaration ParentScoping { get; }
 
-        private readonly Declaration _parentNonScopingDeclaration;
         /// <summary>
         /// Gets the non-scoping <see cref="Declaration"/> that contains this identifier reference,
         /// e.g. a user-defined or enum type. Gets the <see cref="ParentScoping"/> if not applicable.
         /// </summary>
-        public Declaration ParentNonScoping { get { return _parentNonScopingDeclaration; } }
+        public Declaration ParentNonScoping { get; }
 
-        private readonly bool _isAssignmentTarget;
-        public bool IsAssignment { get { return _isAssignmentTarget; } }
+        public bool IsAssignment { get; }
 
-        private readonly ParserRuleContext _context;
-        public ParserRuleContext Context { get { return _context; } }
+        public ParserRuleContext Context { get; }
 
-        private readonly Declaration _declaration;
-        public Declaration Declaration { get { return _declaration; } }
+        public Declaration Declaration { get; }
 
-        private readonly IEnumerable<IAnnotation> _annotations;
-        public IEnumerable<IAnnotation> Annotations { get { return _annotations; } }
+        public IEnumerable<IAnnotation> Annotations { get; }
 
         public bool IsIgnoringInspectionResultFor(string inspectionName)
         {
             var isIgnoredAtModuleLevel =
-                Declaration.GetModuleParent(_parentScopingDeclaration).Annotations
+                Declaration.GetModuleParent(ParentScoping).Annotations
                 .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
                     && ((IgnoreModuleAnnotation)annotation).IsIgnored(inspectionName));
 
-            return isIgnoredAtModuleLevel || Annotations.Any(annotation => 
+            return isIgnoredAtModuleLevel || Annotations.Any(annotation =>
                        annotation.AnnotationType == AnnotationType.Ignore
-                       && ((IgnoreAnnotation) annotation).IsIgnored(inspectionName));
+                       && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
-        private readonly bool _hasExplicitLetStatement;
-        public bool HasExplicitLetStatement { get { return _hasExplicitLetStatement; } }
+        public bool HasExplicitLetStatement { get; }
 
         public bool HasExplicitCallStatement()
         {
             return Context.Parent is VBAParser.CallStmtContext && ((VBAParser.CallStmtContext)Context).CALL() != null;
         }
 
-        private bool? _hasTypeHint;
-        public bool HasTypeHint()
-        {
-            if (_hasTypeHint.HasValue)
-            {
-                return _hasTypeHint.Value;
-            }
+        private readonly Lazy<bool> _hasTypeHint;
+        public bool HasTypeHint() => _hasTypeHint.Value;
 
-            string token;
-            return HasTypeHint(out token);
-        }
-
-        public bool HasTypeHint(out string token)
+        private bool ComputeTypeHint()
         {
-            if (Context == null)
+            if (Context == null) 
             {
-                token = null;
-                _hasTypeHint = false;
                 return false;
             }
+
             var method = Context.Parent.GetType().GetMethods().FirstOrDefault(m => m.Name == "typeHint");
             if (method == null)
             {
-                token = null;
-                _hasTypeHint = false;
                 return false;
             }
 
-            var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
-            token = hint == null ? null : hint.GetText();
-            _hasTypeHint = hint != null;
-            return _hasTypeHint.Value;
+            return ((dynamic)Context.Parent).typeHint() is VBAParser.TypeHintContext;
         }
-
+        
         public bool IsSelected(QualifiedSelection selection)
         {
             return QualifiedModuleName == selection.QualifiedName &&

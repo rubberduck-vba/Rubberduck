@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing
         {
             if (concurrencyLevel < 1)
             {
-                throw new ArgumentOutOfRangeException("concurrencyLevel");
+                throw new ArgumentOutOfRangeException(nameof(concurrencyLevel));
             }
 
             _tasks = new BlockingCollection<Task>();
@@ -56,10 +56,7 @@ namespace Rubberduck.Parsing
             return _tasks.ToArray();
         }
 
-        public override int MaximumConcurrencyLevel
-        {
-            get { return _threads.Count; }
-        }
+        public override int MaximumConcurrencyLevel => _threads.Count;
 
         public void Dispose()
         {

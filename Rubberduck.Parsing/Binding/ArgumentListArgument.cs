@@ -6,9 +6,6 @@ namespace Rubberduck.Parsing.Binding
     public sealed class ArgumentListArgument
     {
         private readonly IExpressionBinding _binding;
-        private IBoundExpression _expression;
-        private IBoundExpression _namedArgumentExpression;
-        private readonly ArgumentListArgumentType _argumentType;
         private readonly Func<Declaration, IBoundExpression> _namedArgumentExpressionCreator;
 
         public ArgumentListArgument(IExpressionBinding binding, ArgumentListArgumentType argumentType)
@@ -19,40 +16,22 @@ namespace Rubberduck.Parsing.Binding
         public ArgumentListArgument(IExpressionBinding binding, ArgumentListArgumentType argumentType, Func<Declaration, IBoundExpression> namedArgumentExpressionCreator)
         {
             _binding = binding;
-            _argumentType = argumentType;
+            ArgumentType = argumentType;
             _namedArgumentExpressionCreator = namedArgumentExpressionCreator;
         }
 
-        public ArgumentListArgumentType ArgumentType
-        {
-            get
-            {
-                return _argumentType;
-            }
-        }
+        public ArgumentListArgumentType ArgumentType { get; }
 
-        public IBoundExpression NamedArgumentExpression
-        {
-            get
-            {
-                return _namedArgumentExpression;
-            }
-        }
+        public IBoundExpression NamedArgumentExpression { get; private set; }
 
-        public IBoundExpression Expression
-        {
-            get
-            {
-                return _expression;
-            }
-        }
+        public IBoundExpression Expression { get; private set; }
 
         public void Resolve(Declaration calledProcedure)
         {
-            _expression = _binding.Resolve();
+            Expression = _binding.Resolve();
             if (calledProcedure != null)
             {
-                _namedArgumentExpression = _namedArgumentExpressionCreator(calledProcedure);
+                NamedArgumentExpression = _namedArgumentExpressionCreator(calledProcedure);
             }
         }
     }

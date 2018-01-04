@@ -19,7 +19,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
-    class ComponentParseTask
+    internal class ComponentParseTask
     {
         private readonly QualifiedModuleName _module;
         private readonly TokenStreamRewriter _rewriter;

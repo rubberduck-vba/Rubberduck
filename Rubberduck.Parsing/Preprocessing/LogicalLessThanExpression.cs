@@ -19,6 +19,7 @@
             {
                 return null;
             }
+
             if ((left.ValueType == ValueType.String || left.ValueType == ValueType.Empty)
                 && (right.ValueType == ValueType.String || right.ValueType == ValueType.Empty))
             {

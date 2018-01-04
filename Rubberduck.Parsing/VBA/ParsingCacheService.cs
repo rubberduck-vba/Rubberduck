@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.VBA
             IReferenceRemover referenceRemover,
             ISupertypeClearer supertypeClearer)
         {
-            if(declarationFinderProvider == null)
+            if (declarationFinderProvider == null)
             {
                 throw new ArgumentNullException(nameof(declarationFinderProvider));
             }

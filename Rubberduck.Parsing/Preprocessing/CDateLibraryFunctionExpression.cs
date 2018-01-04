@@ -12,11 +12,7 @@
         public override IValue Evaluate()
         {
             var expr = _expression.Evaluate();
-            if (expr == null)
-            {
-                return null;
-            }
-            return new DateValue(expr.AsDate);
+            return expr == null ? null : new DateValue(expr.AsDate);
         }
     }
 }

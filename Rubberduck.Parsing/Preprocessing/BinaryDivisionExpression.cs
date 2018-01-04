@@ -19,9 +19,8 @@
             {
                 return null;
             }
-            var leftValue = left.AsDecimal;
-            var rightValue = right.AsDecimal;
-            return new DecimalValue(leftValue / rightValue);
+
+            return new DecimalValue(left.AsDecimal / right.AsDecimal);
         }
     }
 }

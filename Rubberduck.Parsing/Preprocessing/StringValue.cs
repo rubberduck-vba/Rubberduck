@@ -8,30 +8,22 @@ namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class StringValue : IValue
     {
-        private readonly string _value;
-
         public StringValue(string value)
         {
-            _value = value;
+            AsString = value;
         }
 
-        public ValueType ValueType
-        {
-            get
-            {
-                return ValueType.String;
-            }
-        }
+        public ValueType ValueType => ValueType.String;
 
         public bool AsBool
         {
             get
             {
-                if (_value == null)
+                if (AsString == null)
                 {
                     return false;
                 }
-                var value = _value;
+                var value = AsString;
                 if (string.CompareOrdinal(value.ToLower(), "true") == 0 || string.CompareOrdinal(value, "#TRUE#") == 0)
                 {
                     return true;
@@ -50,12 +42,12 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                byte value;
-                if (byte.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+                if (byte.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
                 {
                     return value;
                 }
-                return byte.Parse(_value, NumberStyles.Float);
+
+                return byte.Parse(AsString, NumberStyles.Float);
             }
         }
 
@@ -63,12 +55,11 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                DateTime value;
-                if (DateTime.TryParse(_value, out value))
+                if (DateTime.TryParse(AsString, out var value))
                 {
                     return value;
                 }
-                decimal number = AsDecimal;
+                var number = AsDecimal;
                 return new DecimalValue(number).AsDate;
             }
         }
@@ -77,8 +68,7 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                decimal value;
-                if (decimal.TryParse(_value, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+                if (decimal.TryParse(AsString, NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
                 {
                     return value;
                 }
@@ -87,25 +77,13 @@ namespace Rubberduck.Parsing.PreProcessing
             }
         }
 
-        public string AsString
-        {
-            get
-            {
-                return _value;
-            }
-        }
+        public string AsString { get; }
 
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
+        public IEnumerable<IToken> AsTokens => new List<IToken>();
 
         public override string ToString()
         {
-            return _value;
+            return AsString;
         }
     }
 }

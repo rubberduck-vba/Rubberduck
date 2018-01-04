@@ -433,7 +433,7 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return new ConstantExpression(EmptyValue.Value);
             }
-            throw new Exception(string.Format("Unexpected literal encountered: {0}", ParserRuleContextHelper.GetText(context, _stream)));
+            throw new Exception($"Unexpected literal encountered: {ParserRuleContextHelper.GetText(context, _stream)}");
         }
 
         private IExpression VisitStringLiteral(VBAConditionalCompilationParser.LiteralContext context)

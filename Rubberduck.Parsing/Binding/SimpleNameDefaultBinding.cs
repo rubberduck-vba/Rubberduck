@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.Binding
             _parent = parent;
             _context = context;
             // hack; SimpleNameContext.Identifier() excludes the square brackets
-            _name = context.Start.Text == "[" && context.Stop.Text == "]" ? "[" + name + "]" : name;
+            _name = context.Start.Text == "[" && context.Stop.Text == "]" ? $"[{name}]" : name;
             _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
         
@@ -38,8 +38,7 @@ namespace Rubberduck.Parsing.Binding
 
         public IBoundExpression Resolve()
         {
-            IBoundExpression boundExpression = null;
-            boundExpression = ResolveProcedureNamespace();
+            var boundExpression = ResolveProcedureNamespace();
             if (boundExpression != null)
             {
                 return boundExpression;

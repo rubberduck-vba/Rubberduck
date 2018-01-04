@@ -5,12 +5,12 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name} = {Value} ({ValueType})")]
+    [DebuggerDisplay("{" + nameof(Name) + "} = {" + nameof(Value) + "} ({" + nameof(ValueType) + "})")]
     public class ComEnumerationMember
     {
-        public string Name { get; private set; }
-        public int Value { get; private set; }
-        public VarEnum ValueType { get; private set; }
+        public string Name { get; }
+        public int Value { get; }
+        public VarEnum ValueType { get; }
 
         public ComEnumerationMember(ITypeInfo info, VARDESC varDesc)
         {
@@ -19,8 +19,7 @@ namespace Rubberduck.Parsing.ComReflection
             ValueType = value.VariantType;
 
             var names = new string[255];
-            int count;
-            info.GetNames(varDesc.memid, names, 1, out count);
+            info.GetNames(varDesc.memid, names, 1, out var count);
             Debug.Assert(count == 1);
             Name = names[0];
         }

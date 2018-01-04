@@ -84,7 +84,7 @@ namespace Rubberduck.Parsing.ComReflection
                     return false;
                 }
                 //TODO: This is naively based on file name for now - this should attempt to deserialize any SerializableProject.Nodes in the directory and test for equity.
-                var testFile = Path.Combine(_serializedDeclarationsPath, string.Format("{0}.{1}.{2}", _referenceName, _referenceMajor, _referenceMinor) + ".xml");
+                var testFile = Path.Combine(_serializedDeclarationsPath, $"{_referenceName}.{_referenceMajor}.{_referenceMinor}.xml");
                 return File.Exists(testFile);
             }
         }
@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.ComReflection
         public List<Declaration> LoadDeclarationsFromXml()
         {
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
-            var file = Path.Combine(path, string.Format("{0}.{1}.{2}", _referenceName, _referenceMajor, _referenceMinor) + ".xml");
+            var file = Path.Combine(path, $"{_referenceName}.{_referenceMajor}.{_referenceMinor}.xml");
             var reader = new XmlPersistableDeclarations();
             var deserialized = reader.Load(file);
 
@@ -117,9 +117,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public List<Declaration> LoadDeclarationsFromLibrary()
         {
-            ITypeLib typeLibrary;
             // Failure to load might mean that it's a "normal" VBProject that will get parsed by us anyway.
-            LoadTypeLibEx(_path, REGKIND.REGKIND_NONE, out typeLibrary);
+            LoadTypeLibEx(_path, REGKIND.REGKIND_NONE, out var typeLibrary);
             if (typeLibrary == null)
             {
                 return _declarations;
@@ -142,7 +141,7 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 var moduleName = new QualifiedModuleName(_referenceName, _path,
                     module.Type == DeclarationType.Enumeration || module.Type == DeclarationType.UserDefinedType
-                        ? string.Format("_{0}", module.Name)
+                        ? $"_{module.Name}"
                         : module.Name);
 
                 var declaration = CreateModuleDeclaration(module, moduleName, project, GetModuleAttributes(module));
@@ -150,41 +149,39 @@ namespace Rubberduck.Parsing.ComReflection
                 _declarations.Add(declaration);
                 _serialized.AddDeclaration(moduleTree);
 
-                var membered = module as IComTypeWithMembers;
-                if (membered != null)
+                switch (module)
                 {
-                    CreateMemberDeclarations(membered.Members, moduleName, declaration, moduleTree, membered.DefaultMember);
-                    var coClass = membered as ComCoClass;
-                    if (coClass != null)
+                    case IComTypeWithMembers membered:
+                        CreateMemberDeclarations(membered.Members, moduleName, declaration, moduleTree, membered.DefaultMember);
+                        if (membered is ComCoClass coClass)
+                        {
+                            CreateMemberDeclarations(coClass.SourceMembers, moduleName, declaration, moduleTree, coClass.DefaultMember, true);
+                        }
+                        break;
+                    case ComEnumeration enumeration:
                     {
-                        CreateMemberDeclarations(coClass.SourceMembers, moduleName, declaration, moduleTree, coClass.DefaultMember, true);
+                        var enumDeclaration = new Declaration(enumeration, declaration, moduleName);
+                        _declarations.Add(enumDeclaration);
+                        var members = enumeration.Members.Select(e => new Declaration(e, enumDeclaration, moduleName)).ToList();
+                        _declarations.AddRange(members);
+
+                        var enumTree = new SerializableDeclarationTree(enumDeclaration);
+                        moduleTree.AddChildTree(enumTree);
+                        enumTree.AddChildren(members);
+                        break;
                     }
-                }
+                    case ComStruct structure:
+                    {
+                        var typeDeclaration = new Declaration(structure, declaration, moduleName);
+                        _declarations.Add(typeDeclaration);
+                        var members = structure.Fields.Select(f => new Declaration(f, typeDeclaration, moduleName)).ToList();
+                        _declarations.AddRange(members);
 
-                var enumeration = module as ComEnumeration;
-                if (enumeration != null)
-                {
-                    var enumDeclaration = new Declaration(enumeration, declaration, moduleName);
-                    _declarations.Add(enumDeclaration);
-                    var members = enumeration.Members.Select(e => new Declaration(e, enumDeclaration, moduleName)).ToList();
-                    _declarations.AddRange(members);
-
-                    var enumTree = new SerializableDeclarationTree(enumDeclaration);
-                    moduleTree.AddChildTree(enumTree);
-                    enumTree.AddChildren(members);
-                }
-
-                var structure = module as ComStruct;
-                if (structure != null)
-                {
-                    var typeDeclaration = new Declaration(structure, declaration, moduleName);
-                    _declarations.Add(typeDeclaration);
-                    var members = structure.Fields.Select(f => new Declaration(f, typeDeclaration, moduleName)).ToList();
-                    _declarations.AddRange(members);
-
-                    var typeTree = new SerializableDeclarationTree(typeDeclaration);
-                    moduleTree.AddChildTree(typeTree);
-                    typeTree.AddChildren(members);
+                        var typeTree = new SerializableDeclarationTree(typeDeclaration);
+                        moduleTree.AddChildTree(typeTree);
+                        typeTree.AddChildren(members);
+                        break;
+                    }
                 }
 
                 var fields = module as IComTypeWithFields;
@@ -211,7 +208,7 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 attributes.AddGlobalClassAttribute();
             }
-            if (module as IComTypeWithMembers != null && ((IComTypeWithMembers)module).IsExtensible)
+            if (module is IComTypeWithMembers members && members.IsExtensible)
             {
                 attributes.AddExtensibledClassAttribute();
             }
@@ -229,32 +226,29 @@ namespace Rubberduck.Parsing.ComReflection
                 var memberTree = new SerializableDeclarationTree(memberDeclaration);
                 moduleTree.AddChildTree(memberTree);
 
-                var hasParams = memberDeclaration as IParameterizedDeclaration;
-                if (hasParams != null)
+                switch (memberDeclaration)
                 {
-                    _declarations.AddRange(hasParams.Parameters);
-                    memberTree.AddChildren(hasParams.Parameters);
-                }
-                var coClass = memberDeclaration as ClassModuleDeclaration;
-                if (coClass != null && item == defaultMember)
-                {
-                    coClass.DefaultMember = memberDeclaration;
+                    case IParameterizedDeclaration hasParams:
+                        _declarations.AddRange(hasParams.Parameters);
+                        memberTree.AddChildren(hasParams.Parameters);
+                        break;
+                    case ClassModuleDeclaration coClass when item == defaultMember:
+                        coClass.DefaultMember = memberDeclaration;
+                        break;
                 }
             }
         }
 
         private Declaration CreateModuleDeclaration(IComType module, QualifiedModuleName project, Declaration parent, Attributes attributes)
         {
-            var enumeration = module as ComEnumeration;
-            if (enumeration != null)
+            switch (module)
             {
-                return new ProceduralModuleDeclaration(enumeration, parent, project);
+                case ComEnumeration enumeration:
+                    return new ProceduralModuleDeclaration(enumeration, parent, project);
+                case ComStruct types:
+                    return new ProceduralModuleDeclaration(types, parent, project);
             }
-            var types = module as ComStruct;
-            if (types != null)
-            {
-                return new ProceduralModuleDeclaration(types, parent, project);
-            }
+
             var coClass = module as ComCoClass;
             var intrface = module as ComInterface;
             if (coClass != null || intrface != null)
@@ -292,7 +286,7 @@ namespace Rubberduck.Parsing.ComReflection
                 case DeclarationType.PropertyLet:
                     return new PropertyLetDeclaration(member, parent, module, attributes);
                 default:
-                    throw new InvalidEnumArgumentException(string.Format("Unexpected DeclarationType {0} encountered.", member.Type));
+                    throw new InvalidEnumArgumentException($"Unexpected DeclarationType {member.Type} encountered.");
             }
         }
 

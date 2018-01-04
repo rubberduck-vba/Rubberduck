@@ -31,9 +31,12 @@ namespace Rubberduck.Parsing.VBA
             _projectDeclarations.Clear();
             token.ThrowIfCancellationRequested();
 
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfDeclarationResolverParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = _maxDegreeOfDeclarationResolverParallelism
+            };
+
             try
             {
                 Parallel.ForEach(modules,

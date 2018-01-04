@@ -9,13 +9,12 @@ namespace Rubberduck.Parsing.VBA
     {
         protected readonly RubberduckParserState _state;
 
-        public ParserStateManagerBase(RubberduckParserState state)
+        protected ParserStateManagerBase(RubberduckParserState state)
         {
             if (state == null)
             {
                 throw new ArgumentNullException(nameof(state));
             }
-
             _state = state;
         }
 
@@ -23,13 +22,7 @@ namespace Rubberduck.Parsing.VBA
         public abstract void SetModuleStates(IReadOnlyCollection<QualifiedModuleName> modules, ParserState parserState, CancellationToken token, bool evaluateOverallParserState = true);
 
 
-        public ParserState OverallParserState
-        {
-            get
-            {
-                return _state.Status;
-            }
-        }
+        public ParserState OverallParserState => _state.Status;
 
         public ParserState GetModuleState(QualifiedModuleName module)
         {

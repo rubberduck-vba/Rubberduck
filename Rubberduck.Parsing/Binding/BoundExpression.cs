@@ -5,39 +5,17 @@ namespace Rubberduck.Parsing.Binding
 {
     public abstract class BoundExpression : IBoundExpression
     {
-        private readonly Declaration _referencedDeclaration;
-        private readonly ExpressionClassification _classification;
-        private readonly ParserRuleContext _context;
-
-        public BoundExpression(Declaration referencedDeclaration, ExpressionClassification classification, ParserRuleContext context)
+        protected BoundExpression(Declaration referencedDeclaration, ExpressionClassification classification, ParserRuleContext context)
         {
-            _referencedDeclaration = referencedDeclaration;
-            _classification = classification;
-            _context = context;
+            ReferencedDeclaration = referencedDeclaration;
+            Classification = classification;
+            Context = context;
         }
 
-        public ExpressionClassification Classification
-        {
-            get
-            {
-                return _classification;
-            }
-        }
+        public ExpressionClassification Classification { get; }
 
-        public Declaration ReferencedDeclaration
-        {
-            get
-            {
-                return _referencedDeclaration;
-            }
-        }
+        public Declaration ReferencedDeclaration { get; }
 
-        public ParserRuleContext Context
-        {
-            get
-            {
-                return _context;
-            }
-        }
+        public ParserRuleContext Context { get; }
     }
 }

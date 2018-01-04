@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.VBA
     public class BuiltInDeclarationLoader : IBuiltInDeclarationLoader
     {
         private readonly IEnumerable<ICustomDeclarationLoader> _customDeclarationLoaders;
-        private RubberduckParserState _state;
+        private readonly RubberduckParserState _state;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -26,12 +26,11 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _state = state;
+
             _customDeclarationLoaders = customDeclarationLoaders;
         }
 
-
         public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations { get; private set; }
-
 
         public void LoadBuitInDeclarations()
         {
@@ -41,13 +40,15 @@ namespace Rubberduck.Parsing.VBA
                 try
                 {
                     var customDeclarations = customDeclarationLoader.Load();
-                    if (customDeclarations.Any())
+                    if (!customDeclarations.Any())
                     {
-                        LastLoadOfBuiltInDeclarationsLoadedDeclarations = true;
-                        foreach (var declaration in customDeclarations)
-                        {
-                            _state.AddDeclaration(declaration);
-                        }
+                        continue;
+                    }
+
+                    LastLoadOfBuiltInDeclarationsLoadedDeclarations = true;
+                    foreach (var declaration in customDeclarations)
+                    {
+                        _state.AddDeclaration(declaration);
                     }
                 }
                 catch (Exception exception)

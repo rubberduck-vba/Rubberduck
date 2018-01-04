@@ -16,8 +16,10 @@ namespace Rubberduck.Parsing.Symbols
 
         protected override void ExecuteCollectionConstructionActions(List<Action> collectionConstructionActions)
         {
-            var options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = _maxDegreeOfConstructionParallelism;
+            var options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = _maxDegreeOfConstructionParallelism
+            };
 
             Parallel.ForEach(
                 collectionConstructionActions, 

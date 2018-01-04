@@ -80,7 +80,6 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(declarationFinderFactory));
             }
-
             _vbe = vbe;
             _vbProjects = _vbe.VBProjects;
             _declarationFinderFactory = declarationFinderFactory;
@@ -235,12 +234,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void OnStatusMessageUpdate(string message)
         {
-            var handler = StatusMessageUpdate;
-            if (handler != null)
-            {
-                var args = new RubberduckStatusMessageEventArgs(message);
-                handler.Invoke(this, args);
-            }
+            StatusMessageUpdate?.Invoke(this, new RubberduckStatusMessageEventArgs(message));
         }
 
         #endregion
@@ -347,12 +341,7 @@ namespace Rubberduck.Parsing.VBA
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
         private void OnModuleStateChanged(QualifiedModuleName module, ParserState state, ParserState oldState)
         {
-            var handler = ModuleStateChanged;
-            if (handler != null)
-            {
-                var args = new ParseProgressEventArgs(module, state, oldState);
-                handler.Invoke(this, args);
-            }
+            ModuleStateChanged?.Invoke(this, new ParseProgressEventArgs(module, state, oldState));
         }
 
         public void SetModuleState(QualifiedModuleName module, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
@@ -368,7 +357,7 @@ namespace Rubberduck.Parsing.VBA
             if (AllUserDeclarations.Any())
             {
                 var projectId = module.ProjectId;
-                IVBProject project = GetProject(projectId);
+                var project = GetProject(projectId);
 
                 if (project == null)
                 {
@@ -548,7 +537,7 @@ namespace Rubberduck.Parsing.VBA
         private ParserState _status;
         public ParserState Status
         {
-            get { return _status; }
+            get => _status;
             private set
             {
                 if (_status != value)
@@ -611,12 +600,9 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
-            if (_moduleStates.TryGetValue(module, out var result))
-            {
-                return result.Annotations;
-            }
-
-            return Enumerable.Empty<IAnnotation>();
+            return _moduleStates.TryGetValue(module, out var result) 
+                ? result.Annotations 
+                : Enumerable.Empty<IAnnotation>();
         }
 
         public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
@@ -669,7 +655,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
-        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees { get { return _builtInDeclarationTrees; } }
+        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees => _builtInDeclarationTrees;
 
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
@@ -691,7 +677,6 @@ namespace Rubberduck.Parsing.VBA
 
             if (declarations.ContainsKey(declaration))
             {
-                byte _;
                 while (!declarations.TryRemove(declaration, out _))
                 {
                     Logger.Warn("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
@@ -713,7 +698,6 @@ namespace Rubberduck.Parsing.VBA
 
             if (declarations.ContainsKey(declaration))
             {
-                byte _;
                 while (!declarations.TryRemove(declaration, out _))
                 {
                     Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
@@ -922,7 +906,6 @@ namespace Rubberduck.Parsing.VBA
         {
             var key = declaration.QualifiedName.QualifiedModuleName;
 
-            byte _;
             return _moduleStates[key].Declarations.TryRemove(declaration, out _);
         }
 

@@ -6,90 +6,31 @@ namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class BoolValue : IValue
     {
-        private readonly bool _value;
-
         public BoolValue(bool value)
         {
-            _value = value;
+            AsBool = value;
         }
 
-        public ValueType ValueType
-        {
-            get
-            {
-                return ValueType.Bool;
-            }
-        }
+        public ValueType ValueType => ValueType.Bool;
 
-        public bool AsBool
-        {
-            get
-            {
-                return _value;
-            }
-        }
+        public bool AsBool { get; }
 
-        public byte AsByte
-        {
-            get
-            {
-                if (_value)
-                {
-                    return 255;
-                }
-                return 0;
-            }
-        }
+        public byte AsByte => AsBool 
+            ? byte.MaxValue 
+            : byte.MinValue;
 
-        public DateTime AsDate
-        {
-            get
-            {
-                return new DecimalValue(AsDecimal).AsDate;
-            }
-        }
+        public DateTime AsDate => new DecimalValue(AsDecimal).AsDate;
 
-        public decimal AsDecimal
-        {
-            get
-            {
-                if (_value)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
+        public decimal AsDecimal => AsBool 
+            ? -1 
+            : 0;
 
-        public string AsString
-        {
-            get
-            {
-                if (_value)
-                {
-                    return "True";
-                }
-                else
-                {
-                    return "False";
-                }
-            }
-        }
+        public string AsString => AsBool 
+            ? bool.TrueString 
+            : bool.FalseString;
 
-        public IEnumerable<IToken> AsTokens
-        {
-            get
-            {
-                return new List<IToken>();
-            }
-        }
+        public IEnumerable<IToken> AsTokens => new List<IToken>();
 
-        public override string ToString()
-        {
-            return _value.ToString();
-        }
+        public override string ToString() => AsBool.ToString();
     }
 }

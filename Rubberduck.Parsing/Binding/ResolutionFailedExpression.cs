@@ -4,7 +4,7 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class ResolutionFailedExpression : BoundExpression
     {
-        private readonly List<IBoundExpression> _successfullyResolvedExpressions = new List<IBoundExpression>();
+        private readonly List<IBoundExpression> _successfullyResolvedExpressions;
 
         public ResolutionFailedExpression()
             : base(null, ExpressionClassification.ResolutionFailed, null)
@@ -12,13 +12,7 @@ namespace Rubberduck.Parsing.Binding
             _successfullyResolvedExpressions = new List<IBoundExpression>();
         }
 
-        public IReadOnlyList<IBoundExpression> SuccessfullyResolvedExpressions
-        {
-            get
-            {
-                return _successfullyResolvedExpressions;
-            }
-        }
+        public IReadOnlyList<IBoundExpression> SuccessfullyResolvedExpressions => _successfullyResolvedExpressions;
 
         public void AddSuccessfullyResolvedExpression(IBoundExpression expression)
         {

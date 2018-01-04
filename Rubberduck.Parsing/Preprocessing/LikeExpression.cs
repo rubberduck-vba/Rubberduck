@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         private string TranslateToNETRegex(VBALikeParser.LikePatternStringContext likePattern)
         {
-            StringBuilder regexStr = new StringBuilder();
+            var regexStr = new StringBuilder();
             foreach (var element in likePattern.likePatternElement())
             {
                 if (element.likePatternChar() != null)
@@ -57,13 +57,13 @@ namespace Rubberduck.Parsing.PreProcessing
                     var charlist = element.likePatternCharlist().GetText();
                     if (charlist.StartsWith("[!"))
                     {
-                        charlist = "[^" + charlist.Substring(2);
+                        charlist = $"[^{charlist.Substring(2)}";
                     }
                     regexStr.Append(charlist);
                 }
             }
             // Full string match, e.g. "abcd" should NOT match "a.c"
-            var regex = "^" + regexStr.ToString() + "$";
+            var regex = $"^{regexStr}$";
             return regex;
         }
     }

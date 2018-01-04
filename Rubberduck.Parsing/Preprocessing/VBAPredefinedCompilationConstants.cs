@@ -18,52 +18,16 @@ namespace Rubberduck.Parsing.PreProcessing
         public const string WIN16_NAME = "Win16";
         public const string MAC_NAME = "Mac";
 
-        public bool VBA7
-        {
-            get
-            {
-                return _vbVersion < 8;
-            }
-        }
+        public bool VBA7 => _vbVersion < 8;
 
-        public bool VBA6
-        {
-            get
-            {
-                return _vbVersion < 7;
-            }
-        }
+        public bool VBA6 => _vbVersion < 7;
 
-        public bool Win64
-        {
-            get
-            {
-                return Environment.Is64BitOperatingSystem;
-            }
-        }
+        public bool Win64 => Environment.Is64BitOperatingSystem;
 
-        public bool Win32
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool Win32 = true;
 
-        public bool Win16
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool Win16 = false;
 
-        public bool Mac
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool Mac = false;
     }
 }

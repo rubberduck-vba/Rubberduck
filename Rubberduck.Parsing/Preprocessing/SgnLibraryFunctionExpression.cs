@@ -14,11 +14,9 @@ namespace Rubberduck.Parsing.PreProcessing
         public override IValue Evaluate()
         {
             var expr = _expression.Evaluate();
-            if (expr == null)
-            {
-                return null;
-            }
-            return new DecimalValue(Math.Sign(expr.AsDecimal));
+            return expr == null 
+                ? null 
+                : new DecimalValue(Math.Sign(expr.AsDecimal));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.ComReflection
         IEnumerable<ComField> Fields { get; }
     }
 
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public abstract class ComType : ComBase, IComType
     {
         public bool IsAppObject { get; private set; }

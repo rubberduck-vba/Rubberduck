@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
@@ -16,8 +13,8 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ModuleState
     {
-        public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
-        public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
+        public ConcurrentDictionary<Declaration, byte> Declarations { get; }
+        public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; }
         public ITokenStream TokenStream { get; private set; }
         public IModuleRewriter ModuleRewriter { get; private set; }
         public IModuleRewriter AttributesRewriter { get; private set; }
