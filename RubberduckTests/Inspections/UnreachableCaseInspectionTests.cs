@@ -2159,7 +2159,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_EnumerationNumberRangeInvalidValue()
+        public void UnreachableCaseInspection_EnumerationLongCollision()
         {
             const string inputCode =
 @"
@@ -2173,10 +2173,10 @@ End Enum
 Sub Foo(z As BitCountMaxValues)
 
 Select Case z
-  Case 12
-    'Unreachable
   Case BitCountMaxValues.max3Bits
     'OK
+  Case 7
+    'Unreachable
 End Select
 
 End Sub";
@@ -2189,81 +2189,56 @@ End Sub";
         {
             const string inputCode =
 @"
-private Enum Fruit
-    Apple = 10
-    Pear = 20
-    Orange = 30
- End Enum
+        private Enum Fruit
+            Apple = 10
+            Pear = 20
+            Orange = 30
+         End Enum
 
-Sub Foo(z As Fruit)
+        Sub Foo(z As Fruit)
 
-Select Case z
-  Case -4 To 11
-    'OK - captures 'Apple' only
-  Case 10 To 16 
-    'Unreachable - The only captured enum 'Apple' is already handled by the first case
-  Case 11 To 19
-    'Unreachable - no valid enums fall in this range
-  Case Else
-    'OK
-End Select
+        Select Case z
+          Case Apple
+            'OK
+          Case Pear 
+            'OK     
+          Case Orange        
+            'OK
+          Case Else
+            'OK - avoid flagging CaseElse for enums so guard clauses such as below are retained
+            Err.Raise 5, ""MyFunction"", ""Invalid value given for the enumeration.""
+        End Select
 
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+        End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
         }
 
         [Test]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_EnumerationNumberRangeIsStmtConflictLT()
+        public void UnreachableCaseInspection_EnumerationNumberCaseElse()
         {
             const string inputCode =
 @"
-private Enum Fruit
-    Apple = 10
-    Pear = 20
-    Orange = 30
- End Enum
+        private Enum Fruit
+            Apple = 10
+            Pear = 20
+            Orange = 30
+         End Enum
 
-Sub Foo(z As Fruit)
+        Sub Foo(z As Fruit)
 
-Select Case z
-  Case 10 To 25
-    'OK
-  Case z < 21 
-    'Unreachable - all enums < 21 have already been captured
-  Case Else
-    'OK
-End Select
+        Select Case z
+          Case z <> Apple
+            'OK
+          Case Apple 
+            'OK     
+          Case Else
+            'unreachable - Guard clause will always be skipped
+            Err.Raise 5, ""MyFunction"", ""Invalid value given for the enumeration.""
+        End Select
 
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void UnreachableCaseInspection_EnumerationNumberRangeIsStmtConflictGTE()
-        {
-            const string inputCode =
-@"
-private Enum Fruit
-    Apple = 10
-    Pear = 20
-    Orange = 30
- End Enum
-
-Sub Foo(z As Fruit)
-
-Select Case z
-  Case 25 To 30
-    'OK
-  Case z >= 30 
-    'Unreachable - all enums >= 30 have already been captured
-  Case Else
-    'OK
-End Select
-
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        End Sub";
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
         [Test]
