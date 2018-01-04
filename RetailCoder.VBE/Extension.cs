@@ -270,7 +270,9 @@ namespace Rubberduck
                 {
                     _logger.Log(LogLevel.Trace, "Disposing COM safe...");
                     _comSafe.Dispose();
+                    _comSafe = null;
                     _addin = null;
+                    _ide = null;
                 }
 
                 _isInitialized = false;
