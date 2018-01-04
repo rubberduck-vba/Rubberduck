@@ -81,21 +81,30 @@ namespace Rubberduck.Parsing.Symbols
             return Context.Parent is VBAParser.CallStmtContext && ((VBAParser.CallStmtContext)Context).CALL() != null;
         }
 
+        private Lazy<bool> _hasTypeHint = new Lazy<bool>(() => ComputeHasTypeHint());
         public bool HasTypeHint()
         {
-            if (Context == null)
+            return _hasTypeHint.Value;
+        }
+
+        private bool ComputeHasTypeHint()
+        {
+            if (Context == null) 
             {
                 return false;
             }
+
+            //TODO: ask about using 'Context?' to eliminate the guard clause above
             var method = Context.Parent.GetType().GetMethods().FirstOrDefault(m => m.Name == "typeHint");
             if (method == null)
             {
                 return false;
             }
 
-            return ((dynamic)Context.Parent).typeHint() is VBAParser.TypeHintContext;
+            var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
+            return hint!= null;
         }
-
+        
         public bool IsSelected(QualifiedSelection selection)
         {
             return QualifiedModuleName == selection.QualifiedName &&
