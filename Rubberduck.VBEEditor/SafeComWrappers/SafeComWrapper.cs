@@ -2,17 +2,22 @@ using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using NLog;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();     
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        private IComSafe _comSafe;
 
         protected SafeComWrapper(T target)
         {
             Target = target;
+            _comSafe = ComSafeManager.GetCurrentComSafe();
+            _comSafe.Add(this);
         }
 
         private int? _rcwReferenceCount;
@@ -130,6 +135,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             if (disposing && !HasBeenReleased)
             {
                 Release();
+            }
+
+            if (!_comSafe.TryRemove(this))
+            {
+                _logger.Warn($"Failed to remove SafeComWrapper of type {this.GetType()} from COM safe.");
             }
 
             _isDisposed = true;
