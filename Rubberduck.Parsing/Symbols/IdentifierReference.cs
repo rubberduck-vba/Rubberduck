@@ -13,15 +13,15 @@ namespace Rubberduck.Parsing.Symbols
     public class IdentifierReference : IEquatable<IdentifierReference>
     {
         public IdentifierReference(
-            QualifiedModuleName qualifiedName, 
-            Declaration parentScopingDeclaration, 
-            Declaration parentNonScopingDeclaration, 
+            QualifiedModuleName qualifiedName,
+            Declaration parentScopingDeclaration,
+            Declaration parentNonScopingDeclaration,
             string identifierName,
             Selection selection,
-            ParserRuleContext context, 
-            Declaration declaration, 
+            ParserRuleContext context,
+            Declaration declaration,
             bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false, 
+            bool hasExplicitLetStatement = false,
             IEnumerable<IAnnotation> annotations = null)
         {
             ParentScoping = parentScopingDeclaration;
@@ -34,6 +34,8 @@ namespace Rubberduck.Parsing.Symbols
             HasExplicitLetStatement = hasExplicitLetStatement;
             IsAssignment = isAssignmentTarget;
             Annotations = annotations ?? new List<IAnnotation>();
+
+            _hasTypeHint = new Lazy<bool>(ComputeTypeHint);
         }
 
         public QualifiedModuleName QualifiedModuleName { get; }
@@ -69,9 +71,9 @@ namespace Rubberduck.Parsing.Symbols
                 .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
                     && ((IgnoreModuleAnnotation)annotation).IsIgnored(inspectionName));
 
-            return isIgnoredAtModuleLevel || Annotations.Any(annotation => 
+            return isIgnoredAtModuleLevel || Annotations.Any(annotation =>
                        annotation.AnnotationType == AnnotationType.Ignore
-                       && ((IgnoreAnnotation) annotation).IsIgnored(inspectionName));
+                       && ((IgnoreAnnotation)annotation).IsIgnored(inspectionName));
         }
 
         public bool HasExplicitLetStatement { get; }
@@ -82,15 +84,7 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         private Lazy<bool> _hasTypeHint;
-        public bool HasTypeHint()
-        {
-            if (_hasTypeHint == null)
-            {
-                _hasTypeHint = new Lazy<bool>(ComputeTypeHint());
-            }
-
-            return _hasTypeHint.Value;
-        }
+        public bool HasTypeHint() => _hasTypeHint.Value;
 
         private bool ComputeTypeHint()
         {
