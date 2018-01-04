@@ -13,12 +13,16 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public void Add(ISafeComWrapper comWrapper)
         {
-            _comWrapperCache.AddOrUpdate(comWrapper, key => 1, (key, value) => value);
+            if (comWrapper != null)
+            {
+                _comWrapperCache.AddOrUpdate(comWrapper, key => 1, (key, value) => value);
+            }
+            
         }
 
         public bool TryRemove(ISafeComWrapper comWrapper)
         {
-            return !_disposed && _comWrapperCache.TryRemove(comWrapper, out _);
+            return !_disposed && comWrapper != null && _comWrapperCache.TryRemove(comWrapper, out _);
         }
 
         private bool _disposed;

@@ -17,7 +17,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             Target = target;
 
-            if (!rewrapping)
+            if (!rewrapping && target != null)
             {
                 _comSafe = ComSafeManager.GetCurrentComSafe();
                 _comSafe.Add(this);
