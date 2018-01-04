@@ -427,9 +427,9 @@ namespace Rubberduck.Inspections.Concrete
 
         private Dictionary<IParseTree, ExpressionEvaluationDataObject> ResolveContextValue(Dictionary<IParseTree, ExpressionEvaluationDataObject> contextEvals, ParserRuleContext parentContext)
         {
+            var parentData = GetEvaluationData(parentContext, contextEvals);
             foreach (var child in parentContext.children.Where(ch => !(ch is WhiteSpaceContext)))
             {
-                var parentData = GetEvaluationData(parentContext, contextEvals);
                 var childData = GetEvaluationData(child, contextEvals);
                 childData.ParentCtxt = parentContext;
                 childData.TypeNameTarget = parentData.TypeNameTarget;
