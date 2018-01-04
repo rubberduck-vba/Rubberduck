@@ -439,6 +439,7 @@
       <DependentUpon>EmptyUIRefresh.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Converters\SubtractionConverter.cs" />
+    <Compile Include="UI\CustomComWrappers\IOleWrapper.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
@@ -945,9 +946,6 @@
     </Compile>
     <Compile Include="UI\DockableWindowHost.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\DockableWindowHost.Designer.cs">
-      <DependentUpon>DockableWindowHost.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>

@@ -147,7 +147,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0] removed", e.Component.Name);
+            Logger.Trace("Component {0} removed", e.Component.Name);
             var fileStatus = Provider.Status().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.Component.Name);
             if (fileStatus != null)
             {
