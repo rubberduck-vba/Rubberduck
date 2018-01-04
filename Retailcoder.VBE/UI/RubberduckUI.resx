@@ -2146,4 +2146,13 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Maximum Nesting</value>
   </data>
+  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
+    <value>Hotkeys should include either Alt and/or Ctrl.</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
+    <value>This hotkey configuration may cause undesirable side affects.</value>
+  </data>
+  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
+    <value>Modifier Warning</value>
+  </data>
 </root>
