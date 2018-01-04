@@ -137,12 +137,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 _isDisposed = true;
             }
 
-            if (disposing && !HasBeenReleased)
+            if (disposing)
             {
-                Release();
-            }
+                _comSafe.TryRemove(this);
 
-            _comSafe.TryRemove(this);
+                if (!HasBeenReleased)
+                {
+                    Release();
+                }
+            }
         }
     }
 }
