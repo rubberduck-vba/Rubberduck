@@ -111,50 +111,66 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
-                IVBComponent component;
-                try
-                {
-                    component = this[name];
-                }
-                catch
-                {
-                    throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
-                }
+                IVBComponent component = null;
+                try {
+                    try
+                    {
+                        component = this[name];
+                    }
+                    catch
+                    {
+                        throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
+                    }
 
-                var codeString = File.ReadAllText(path, Encoding.UTF8);
-                using (var codeModule = component.CodeModule)
-                {
-                    codeModule.Clear();
-                    codeModule.AddFromString(codeString);
+                    var codeString = File.ReadAllText(path, Encoding.UTF8);
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                        codeModule.AddFromString(codeString);
+                    }
                 }
-                component.Dispose();
+                finally
+                {
+                    component?.Dispose();
+                }
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
-                IVBComponent component;
+                IVBComponent component = null;
                 try
-                {
-                    component = this[name];
-                }
-                catch
-                {
-                    component = Import(path);
-                }
+                {   
+                    try
+                    {
+                        component = this[name];
+                    }
+                    catch
+                    {
+                        component = Import(path);
+                    }
 
-                var codeString = File.ReadAllText(path, Encoding.Default);  //The VBE uses the current ANSI codepage from the windows settings to export and import.
-                var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                    var codeString =
+                        File.ReadAllText(path,
+                            Encoding
+                                .Default); //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                    var codeLines = codeString.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
 
-                var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
-                var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
-                var declarationsStartLine = nonAttributeLines + attributeLines + 1;
-                var correctCodeString = string.Join(Environment.NewLine, codeLines.Skip(declarationsStartLine - 1).ToArray());
+                    var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+                    var attributeLines = codeLines.Skip(nonAttributeLines)
+                        .TakeWhile(line => line.StartsWith("Attribute")).Count();
+                    var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+                    var correctCodeString = string.Join(Environment.NewLine,
+                        codeLines.Skip(declarationsStartLine - 1).ToArray());
 
-                using (var codeModule = component.CodeModule)
-                {
-                    codeModule.Clear();
-                    codeModule.AddFromString(correctCodeString);
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                        codeModule.AddFromString(correctCodeString);
+                    }
                 }
-                component.Dispose();
+                finally
+                {
+                    component?.Dispose();
+                }
             }
             else if (ext != ComponentTypeExtensions.FormBinaryExtension)
             {
