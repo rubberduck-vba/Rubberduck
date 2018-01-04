@@ -142,10 +142,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 Release();
             }
 
-            if (!_comSafe.TryRemove(this))
-            {
-                _logger.Warn($"Failed to remove SafeComWrapper of type {this.GetType()} from COM safe.");
-            }
+            _comSafe.TryRemove(this);
         }
     }
 }

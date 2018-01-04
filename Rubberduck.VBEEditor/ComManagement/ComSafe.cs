@@ -18,7 +18,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public bool TryRemove(ISafeComWrapper comWrapper)
         {
-            return _comWrapperCache.TryRemove(comWrapper, out _);
+            return !_disposed && _comWrapperCache.TryRemove(comWrapper, out _);
         }
 
         private bool _disposed;
