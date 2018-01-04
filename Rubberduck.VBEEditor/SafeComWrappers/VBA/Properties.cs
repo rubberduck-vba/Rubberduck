@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Properties : SafeComWrapper<VB.Properties>, IProperties
     {
-        public Properties(VB.Properties target) 
-            : base(target)
+        public Properties(VB.Properties target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

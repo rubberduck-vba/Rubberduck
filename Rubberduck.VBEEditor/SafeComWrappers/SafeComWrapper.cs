@@ -13,11 +13,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         private IComSafe _comSafe;
 
-        protected SafeComWrapper(T target)
+        protected SafeComWrapper(T target, bool rewrapping = false)
         {
             Target = target;
-            _comSafe = ComSafeManager.GetCurrentComSafe();
-            _comSafe.Add(this);
+
+            if (!rewrapping)
+            {
+                _comSafe = ComSafeManager.GetCurrentComSafe();
+                _comSafe.Add(this);
+            }
         }
 
         private int? _rcwReferenceCount;
@@ -124,7 +128,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             GC.SuppressFinalize(this);
         }
 
-        private object _disposalLockObject = new object();
+        private readonly object _disposalLockObject = new object();
         private bool _isDisposed;
         protected virtual void Dispose(bool disposing)
         {
@@ -139,12 +143,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
             if (disposing)
             {
-                _comSafe.TryRemove(this);
+                _comSafe?.TryRemove(this);
 
                 if (!HasBeenReleased)
                 {
                     Release();
                 }
+
+                _comSafe = null;
             }
         }
     }

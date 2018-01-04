@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class CodePanes : SafeComWrapper<VB.CodePanes>, ICodePanes
     {
-        public CodePanes(VB.CodePanes target) 
-            : base(target)
+        public CodePanes(VB.CodePanes target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

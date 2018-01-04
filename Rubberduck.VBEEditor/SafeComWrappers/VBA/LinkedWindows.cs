@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class LinkedWindows : SafeComWrapper<VB.LinkedWindows>, ILinkedWindows
     {
-        public LinkedWindows(VB.LinkedWindows linkedWindows)
-            : base(linkedWindows)
+        public LinkedWindows(VB.LinkedWindows target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 

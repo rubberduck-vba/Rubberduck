@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
     {
         public const bool AddCommandBarControlsTemporarily = false;
 
-        public CommandBarControl(Microsoft.Office.Core.CommandBarControl target) 
-            : base(target)
+        public CommandBarControl(Microsoft.Office.Core.CommandBarControl target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

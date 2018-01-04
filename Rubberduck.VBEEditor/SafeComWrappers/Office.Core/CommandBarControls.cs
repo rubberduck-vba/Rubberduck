@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarControls : SafeComWrapper<Microsoft.Office.Core.CommandBarControls>, ICommandBarControls
     {
-        public CommandBarControls(Microsoft.Office.Core.CommandBarControls target) 
-            : base(target)
+        public CommandBarControls(Microsoft.Office.Core.CommandBarControls target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

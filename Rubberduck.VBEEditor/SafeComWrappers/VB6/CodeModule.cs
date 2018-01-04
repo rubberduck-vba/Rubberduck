@@ -11,8 +11,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class CodeModule : SafeComWrapper<VB.CodeModule>, ICodeModule
     {
-        public CodeModule(VB.CodeModule target) 
-            : base(target)
+        public CodeModule(VB.CodeModule target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

@@ -11,8 +11,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBars : SafeComWrapper<Microsoft.Office.Core.CommandBars>, ICommandBars, IEquatable<ICommandBars>
     {
-        public CommandBars(Microsoft.Office.Core.CommandBars target) 
-            : base(target)
+        public CommandBars(Microsoft.Office.Core.CommandBars target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

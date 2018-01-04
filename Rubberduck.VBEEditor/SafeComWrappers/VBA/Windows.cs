@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Windows : SafeComWrapper<VB.Windows>, IWindows
     {
-        public Windows(VB.Windows windows)
-            : base(windows)
+        public Windows(VB.Windows target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 

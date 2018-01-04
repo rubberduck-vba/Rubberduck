@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             ItemActivated = 4
         }
 
-        public VBProjects(VB.VBProjects target) : base(target)
+        public VBProjects(VB.VBProjects target, bool rewrapping = false) : base(target, rewrapping)
         {
             AttachEvents();
         }

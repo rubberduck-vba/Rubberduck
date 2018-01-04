@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class Windows : SafeComWrapper<VB.Windows>, IWindows
     {
-        public Windows(VB.Windows windows)
-            : base(windows)
+        public Windows(VB.Windows target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 

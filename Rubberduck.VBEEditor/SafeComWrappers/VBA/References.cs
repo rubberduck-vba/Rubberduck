@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class References : SafeComWrapper<VB.References>, IReferences
     {
-        public References(VB.References target) 
-            : base(target)
+        public References(VB.References target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
