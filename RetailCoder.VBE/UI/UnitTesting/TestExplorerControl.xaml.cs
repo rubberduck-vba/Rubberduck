@@ -52,5 +52,10 @@ namespace Rubberduck.UI.UnitTesting
 
             _isDisposed = true;
         }
+
+        private void ScrollViewer_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            System.Windows.MessageBox.Show(string.Format("Mouse wheel {0}", e.Delta > 0 ? "UP" : "DOWN"));
+        }
     }
 }

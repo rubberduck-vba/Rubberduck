@@ -461,7 +461,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid MouseWheel="ScrollViewer_MouseWheel">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
@@ -598,7 +598,7 @@
             </ProgressBar.Foreground>
         </ProgressBar>
 
-        <Border Grid.Row="2" Padding="2">
+        <Border Grid.Row="2" Padding="20">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"

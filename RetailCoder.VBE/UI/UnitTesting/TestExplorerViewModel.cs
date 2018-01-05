@@ -73,6 +73,9 @@ namespace Rubberduck.UI.UnitTesting
                 GroupByLocation = (bool)param;
                 GroupByOutcome = !(bool)param;
             });
+
+            MouseWheelUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteMouseWheelUpCommand, CanExecuteMouseWheelCommand);
+            MouseWheelDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteMouseWheelDownCommand, CanExecuteMouseWheelCommand);
         }
 
         private void RunCompleted(object sender, TestRunEventArgs e)
@@ -193,6 +196,24 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase RunSelectedTestCommand { get; }
 
         public CommandBase OpenTestSettingsCommand { get; }
+
+        public CommandBase MouseWheelUpCommand { get; }
+        public CommandBase MouseWheelDownCommand { get; }
+
+        private bool CanExecuteMouseWheelCommand(object parameter)
+        {
+            return !Model.IsBusy;
+        }
+
+        private void ExecuteMouseWheelUpCommand(object parameter)
+        {
+            System.Windows.MessageBox.Show("Mouse wheel UP");
+        }
+
+        private void ExecuteMouseWheelDownCommand(object parameter)
+        {
+            System.Windows.MessageBox.Show("Mouse wheel DOWN");
+        }
 
         private void OpenSettings(object param)
         {
