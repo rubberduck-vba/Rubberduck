@@ -349,7 +349,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
 
-            ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
+            ColumnInfo[] columnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
                                            new ColumnInfo("Start Time"), new ColumnInfo("End Time"), new ColumnInfo("Duration (ms)", hAlignment.Right) };
 
             var aResults = Model.Tests.Select(test => test.ToArray()).ToArray();
@@ -357,11 +357,11 @@ namespace Rubberduck.UI.UnitTesting
             var title = string.Format($"Rubberduck Test Results - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
 
             //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(aResults, title, ColumnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, ColumnInfos);
+            var csvResults = ExportFormatter.Csv(aResults, title, columnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(aResults, title);
 
-            var strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, ColumnInfos);
+            var strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, columnInfos);
             //Add the formats from richest formatting to least formatting
             _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
             _clipboard.AppendString(DataFormats.Rtf, rtfResults);
