@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -51,6 +53,19 @@ namespace Rubberduck.UI.UnitTesting
             ((TestExplorerViewModel)DataContext).TestCompleted -= OnTestCompleted;
 
             _isDisposed = true;
+        }
+
+        private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                ((ScrollViewer)sender).LineUp();
+            }
+            else
+            {
+                ((ScrollViewer)sender).LineDown();
+            }
+
         }
     }
 }
