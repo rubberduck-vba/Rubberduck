@@ -30,7 +30,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<ICodePane>(null, o => new CodePane(null))
-                : new ComWrapperEnumerator<ICodePane>(Target, o => new CodePane((VB.CodePane) o));
+                : new ComWrapperEnumerator<ICodePane>(Target, comObject => new CodePane((VB.CodePane) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

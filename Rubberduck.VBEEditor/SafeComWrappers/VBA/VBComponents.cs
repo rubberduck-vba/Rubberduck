@@ -73,7 +73,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent) o));
+                : new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -265,27 +265,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public static event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
         private static void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
         {
+            var component = new VBComponent(vbComponent);
             var handler = ComponentRenamed;
-            if (handler != null)
+            if (handler == null)
             {
-                var component = new VBComponent(vbComponent);
-                IVBProject project;
-                using (var components = component.Collection)
-                {
-                    project = components.Parent;
-                }
-                if (project.Protection != ProjectProtection.Locked)
-                {
-                    handler.Invoke(component,
-                        new ComponentRenamedEventArgs(project.ProjectId, project, new VBComponent(vbComponent),
-                            oldName));
-                }
-                else
-                {
-                    project.Dispose();
-                    component.Dispose();
-                }
+                component.Dispose();
+                return;
             }
+
+            IVBProject project;
+            using (var components = component.Collection)
+            {
+                project = components.Parent;
+            }
+
+
+            if (project.Protection == ProjectProtection.Locked)
+            {
+                project.Dispose();
+                component.Dispose();
+                return;
+            }
+
+            handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, component, oldName));
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
@@ -314,25 +316,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private static void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent vbComponent)
         {
+            var component = new VBComponent(vbComponent);
             var handler = dispatched;
-            if (handler != null)
+            if (handler == null)
             {
-                var component = new VBComponent(vbComponent);
-                IVBProject project;
-                using (var components = component.Collection)
-                {
-                    project = components.Parent;
-                }
-                if (project.Protection != ProjectProtection.Locked)
-                {
-                    handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
-                }
-                else
-                {
-                    project.Dispose();
-                    component.Dispose();
-                }
+                component.Dispose();
+                return;
             }
+
+            IVBProject project;
+            using (var components = component.Collection)
+            {
+                project = components.Parent;
+            }
+
+
+            if (project.Protection == ProjectProtection.Locked)
+            {
+                project.Dispose();
+                component.Dispose();
+                return;
+            }
+
+            handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 

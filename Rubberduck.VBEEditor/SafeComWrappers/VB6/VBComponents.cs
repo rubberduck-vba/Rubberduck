@@ -71,7 +71,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent)o));
+                : new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -225,8 +225,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
         private void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
         {
+            var component = new VBComponent(vbComponent);
             var handler = ComponentRenamed;
-            handler?.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, new VBComponent(vbComponent), oldName));
+            if (handler == null)
+            {
+                component.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, component, oldName));
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
@@ -255,8 +261,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent component)
         {
+            var vbComponent = new VBComponent(component);
             var handler = dispatched;
-            handler?.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, new VBComponent(component)));
+            if (handler == null)
+            {
+                vbComponent.Dispose();
+                return;
+            }
+            handler?.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, vbComponent));
         }
 
         #endregion

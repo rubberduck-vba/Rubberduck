@@ -26,18 +26,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Target.Update();
         }
 
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
-
         public override bool Equals(ISafeComWrapper<VB.Addins> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target.Parent, Parent));
@@ -62,7 +50,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IAddIn>(null, o => new AddIn(null))
-                : new ComWrapperEnumerator<IAddIn>(Target, o => new AddIn((VB.AddIn) o));
+                : new ComWrapperEnumerator<IAddIn>(Target, comObject => new AddIn((VB.AddIn) comObject));
         }
     }
 }

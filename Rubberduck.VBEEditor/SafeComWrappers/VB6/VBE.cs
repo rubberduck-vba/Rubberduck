@@ -69,9 +69,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
-        public IVBComponent SelectedVBComponent => new VBComponent(IsWrappingNullReference
-            ? null
-            : Target.SelectedVBComponent);
+        public IVBComponent SelectedVBComponent => new VBComponent(IsWrappingNullReference ? null : Target.SelectedVBComponent);
 
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 

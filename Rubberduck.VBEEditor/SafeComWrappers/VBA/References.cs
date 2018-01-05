@@ -54,14 +54,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void Target_ItemRemoved(VB.Reference reference)
         {
+            var referenceWrapper = new Reference(reference);
             var handler = ItemRemoved;
-            handler?.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
+            if (handler == null)
+            {
+                referenceWrapper.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
         private void Target_ItemAdded(VB.Reference reference)
         {
+            var referenceWrapper = new Reference(reference);
             var handler = ItemAdded;
-            handler?.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
+            if (handler == null)
+            {
+                referenceWrapper.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
         public IReference this[object index] => new Reference(IsWrappingNullReference ? null : Target.Item(index));
@@ -86,7 +98,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IReference>(null, o => new Reference(null))
-                : new ComWrapperEnumerator<IReference>(Target, o => new Reference((VB.Reference) o));
+                : new ComWrapperEnumerator<IReference>(Target, comObject => new Reference((VB.Reference) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
