@@ -12,10 +12,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private IComSafe _comSafe;
+        private bool _rewrapping;
 
         protected SafeComWrapper(T target, bool rewrapping = false)
         {
             Target = target;
+            _rewrapping = rewrapping;
 
             if (!rewrapping && target != null)
             {
@@ -145,7 +147,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             {
                 _comSafe?.TryRemove(this);
 
-                if (!HasBeenReleased)
+                if (!_rewrapping && !HasBeenReleased)
                 {
                     Release();
                 }
