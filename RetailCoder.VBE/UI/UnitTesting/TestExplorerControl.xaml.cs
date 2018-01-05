@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -53,9 +55,17 @@ namespace Rubberduck.UI.UnitTesting
             _isDisposed = true;
         }
 
-        private void ScrollViewer_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            System.Windows.MessageBox.Show(string.Format("Mouse wheel {0}", e.Delta > 0 ? "UP" : "DOWN"));
+            if (e.Delta > 0)
+            {
+                ((ScrollViewer)sender).LineUp();
+            }
+            else
+            {
+                ((ScrollViewer)sender).LineDown();
+            }
+
         }
     }
 }
