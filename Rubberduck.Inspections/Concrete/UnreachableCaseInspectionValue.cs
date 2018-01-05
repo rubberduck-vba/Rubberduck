@@ -8,16 +8,16 @@ namespace Rubberduck.Inspections.Concrete
 {
     internal static class CompareExtents
     {
-        public const long LONGMIN = Int32.MinValue; //- 2147486648;
-        public const long LONGMAX = Int32.MaxValue; //2147486647
-        public const long INTEGERMIN = Int16.MinValue; //- 32768;
-        public const long INTEGERMAX = Int16.MaxValue; //32767
-        public const long BYTEMIN = byte.MinValue;  //0
-        public const long BYTEMAX = byte.MaxValue;    //255
-        public const decimal CURRENCYMIN = -922337203685477.5808M;
-        public const decimal CURRENCYMAX = 922337203685477.5807M;
-        public const double SINGLEMIN = -3402823E38;
-        public const double SINGLEMAX = 3402823E38;
+        public static long LONGMIN = Int32.MinValue; //- 2147486648;
+        public static long LONGMAX = Int32.MaxValue; //2147486647
+        public static long INTEGERMIN = Int16.MinValue; //- 32768;
+        public static long INTEGERMAX = Int16.MaxValue; //32767
+        public static long BYTEMIN = byte.MinValue;  //0
+        public static long BYTEMAX = byte.MaxValue;    //255
+        public static decimal CURRENCYMIN = -922337203685477.5808M;
+        public static decimal CURRENCYMAX = 922337203685477.5807M;
+        public static double SINGLEMIN = -3402823E38;
+        public static double SINGLEMAX = 3402823E38;
     }
 
     public class UnreachableCaseInspectionValue
@@ -100,14 +100,14 @@ namespace Rubberduck.Inspections.Concrete
 
         private static Dictionary<string, Func<UnreachableCaseInspectionValue, bool>> MaxMinTests = new Dictionary<string, Func<UnreachableCaseInspectionValue, bool>>()
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.INTEGERMAX) || (thisValue.AsLong() < CompareExtents.INTEGERMIN)  : false; },
-            [Tokens.Long] = delegate(UnreachableCaseInspectionValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.LONGMAX) || (thisValue.AsLong() < CompareExtents.LONGMIN)  : false; },
-            [Tokens.Byte] = delegate(UnreachableCaseInspectionValue thisValue){ return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.BYTEMAX) || (thisValue.AsLong() < CompareExtents.BYTEMIN)  : false; },
-            [Tokens.Double] = delegate(UnreachableCaseInspectionValue thisValue){ return false; },
-            [Tokens.Single] = delegate(UnreachableCaseInspectionValue thisValue){ return HasValueTests[Tokens.Single](thisValue) ? (thisValue.AsDouble() > CompareExtents.SINGLEMAX) || (thisValue.AsDouble() < CompareExtents.SINGLEMIN)  : false; },
-            [Tokens.Currency] = delegate(UnreachableCaseInspectionValue thisValue){ return HasValueTests[Tokens.Currency](thisValue) ? (thisValue.AsCurrency() > CompareExtents.CURRENCYMAX) || (thisValue.AsCurrency() < CompareExtents.CURRENCYMIN)  : false; },
-            [Tokens.Boolean] = delegate(UnreachableCaseInspectionValue thisValue){ return false; },
-            [Tokens.String] = delegate(UnreachableCaseInspectionValue thisValue){ return false; }
+            [Tokens.Integer] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.INTEGERMAX) || (thisValue.AsLong() < CompareExtents.INTEGERMIN) : false; },
+            [Tokens.Long] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.LONGMAX) || (thisValue.AsLong() < CompareExtents.LONGMIN) : false; },
+            [Tokens.Byte] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.BYTEMAX) || (thisValue.AsLong() < CompareExtents.BYTEMIN) : false; },
+            [Tokens.Double] = delegate (UnreachableCaseInspectionValue thisValue) { return false; },
+            [Tokens.Single] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Single](thisValue) ? (thisValue.AsDouble() > CompareExtents.SINGLEMAX) || (thisValue.AsDouble() < CompareExtents.SINGLEMIN) : false; },
+            [Tokens.Currency] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Currency](thisValue) ? (thisValue.AsCurrency() > CompareExtents.CURRENCYMAX) || (thisValue.AsCurrency() < CompareExtents.CURRENCYMIN) : false; },
+            [Tokens.Boolean] = delegate (UnreachableCaseInspectionValue thisValue) { return false; },
+            [Tokens.String] = delegate (UnreachableCaseInspectionValue thisValue) { return false; }
         };
 
         private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> OperatorsMult = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
@@ -190,6 +190,8 @@ namespace Rubberduck.Inspections.Concrete
         public static UnreachableCaseInspectionValue True => new UnreachableCaseInspectionValue(-1, Tokens.Long);
         public UnreachableCaseInspectionValue AdditiveInverse => HasValue ? this * new UnreachableCaseInspectionValue(-1, UseageTypeName) : this;
         public static bool IsSupportedVBAType(string typeName) => OperatorsIsEQ.Keys.Contains(typeName);
+        public static Byte MinValueByte => (Byte)CompareExtents.BYTEMIN;
+        public static Byte MaxValueByte => (Byte)CompareExtents.BYTEMAX;
 
         private string DeriveTypeName(string defaultType = "String")
         {
@@ -262,7 +264,7 @@ namespace Rubberduck.Inspections.Concrete
         public bool HasValue
             => HasValueTests.ContainsKey(UseageTypeName) ? HasValueTests[UseageTypeName](this) : false;
 
-        public bool IsWithin(UnreachableCaseInspectionValue start, UnreachableCaseInspectionValue end, bool isInclusive = true ) 
+        public bool IsWithin(UnreachableCaseInspectionValue start, UnreachableCaseInspectionValue end, bool isInclusive = true) 
             => isInclusive ?
                 start > end ? this >= end && this <= start : this >= start && this <= end
                 : start > end ? this > end && this < start : this > start && this < end;

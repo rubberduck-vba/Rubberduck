@@ -2247,27 +2247,113 @@ End Sub";
         {
             const string inputCode =
 @"
-private Enum Fruit
-    Apple = 10
-    Pear = 20
-    Orange = 30
- End Enum
-
 Sub Foo(z As Long)
 
 Select Case z
-  Case z >= Orange
+  Case z >= 30
     'OK
   Case 30 To 100
-    'Unreachable
-  Case Pear
-    'OK
-  Case 20
     'Unreachable
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_CaseElseByte()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Byte)
+
+Select Case z
+  Case z >= 2
+    'OK
+  Case 0,1
+    'OK
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_CaseElseByteMultipleCases()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Byte)
+
+Select Case z
+  Case z >= 240
+    'OK
+  Case 0,1
+    'OK
+  Case Is < 100
+    'OK
+  Case 150 To 240
+    'OK
+  Case 100 To 228
+    'OK
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_RangeCollisionsAggregateClauses()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Long)
+
+Select Case z
+  Case z > 30
+    'OK
+  Case 14,15,16,17,18,19 To 30
+    'OK
+  Case 30 To 100
+    'Unreachable
+  Case Is <= 13
+    'OK   
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_IsStmtMirrored()
+        {
+            const string inputCode =
+@"
+Sub Foo(z As Long)
+
+Select Case z
+  Case z > 30
+    'OK
+  Case z < 30
+    'OK
+  Case 30 To 55
+    'OK
+  Case Else
+    'Unreachable
+End Select
+
+End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0, caseElse: 1);
         }
 
         [Test]

@@ -61,8 +61,8 @@ namespace Rubberduck.Inspections.Concrete
 
         internal struct SummaryCaseCoverage
         {
-            public UnreachableCaseInspectionValue IsLTMax;
-            public UnreachableCaseInspectionValue IsGTMin;
+            public UnreachableCaseInspectionValue IsLT;
+            public UnreachableCaseInspectionValue IsGT;
             public List<UnreachableCaseInspectionValue> SingleValues;
             public List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> Ranges;
             public bool CaseElseIsUnreachable;
@@ -105,8 +105,8 @@ namespace Rubberduck.Inspections.Concrete
                 CaseElseContext = SelectStmtContext.FindChild<CaseElseClauseContext>();
                 SummaryCaseClauses = new SummaryCaseCoverage
                 {
-                    IsGTMin = null,
-                    IsLTMax = null,
+                    IsGT = null,
+                    IsLT = null,
                     SingleValues = new List<UnreachableCaseInspectionValue>(),
                     Ranges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>(),
                     RangeClausesAsText = new List<string>(),
@@ -500,7 +500,6 @@ namespace Rubberduck.Inspections.Concrete
                 return AddEvaluationData(ctxtEvalResults, childData.ParentCtxt, parentData);
             }
 
-
             parentData.EvaluateAsIsClause = parentData.EvaluateAsIsClause ? true : childData.EvaluateAsIsClause;
             parentData.Operator = CompareOperations.ContainsKey(childData.Operator) ? childData.Operator : parentData.Operator;
 
@@ -802,15 +801,59 @@ namespace Rubberduck.Inspections.Concrete
             if (rangeClauseDO.MinValue != null && rangeClauseDO.MaxValue != null)
             {
 
-                var isUnreachable = summaryCoverage.Ranges.Where(rg => rangeClauseDO.MinValue.IsWithin(rg.Item1, rg.Item2)
-                                   && rangeClauseDO.MaxValue.IsWithin(rg.Item1, rg.Item2)).Any()
+                var isUnreachable = summaryCoverage.Ranges.Any(rg => rangeClauseDO.MinValue.IsWithin(rg.Item1, rg.Item2)
+                                   && rangeClauseDO.MaxValue.IsWithin(rg.Item1, rg.Item2))
                                     || rangeClauseDO.MinValue.ExceedsMaxMin() && rangeClauseDO.MaxValue.ExceedsMaxMin()
-                                    || summaryCoverage.IsLTMax != null && summaryCoverage.IsLTMax > rangeClauseDO.MaxValue
-                                    || summaryCoverage.IsGTMin != null && summaryCoverage.IsGTMin < rangeClauseDO.MinValue;
+                                    || summaryCoverage.IsLT != null && summaryCoverage.IsLT > rangeClauseDO.MaxValue
+                                    || summaryCoverage.IsGT != null && summaryCoverage.IsGT < rangeClauseDO.MinValue
+                                    || CheckEverything(summaryCoverage, rangeClauseDO);
 
                 rangeClauseDO.ResultType = isUnreachable ? ClauseEvaluationResult.Unreachable : ClauseEvaluationResult.NoResult;
             }
             return rangeClauseDO;
+        }
+
+        private bool CheckEverything(SummaryCaseCoverage summaryCoverage, RangeClauseDataObject rangeClauseDO)
+        {
+            if (IsIntegerNumberType(rangeClauseDO.TypeNameTarget))
+            {
+                if (summaryCoverage.IsGT != null)
+                {
+                    //e.g., Is > 50 Range: 30 to 75 
+                    if (summaryCoverage.IsGT < rangeClauseDO.MaxValue)
+                    {
+                        var overlapMin = rangeClauseDO.MinValue.AsLong().Value;
+                        var overlapMax = summaryCoverage.IsGT.AsLong().Value;
+                        return EvaluateCoverageGaps(summaryCoverage, rangeClauseDO, overlapMin, overlapMax);
+                    }
+                }
+                if (summaryCoverage.IsLT != null)
+                {
+                    //e.g., Is < 50 Range: 30 to 75
+                    if (summaryCoverage.IsLT > rangeClauseDO.MinValue)
+                    {
+                        var overlapMin = summaryCoverage.IsLT.AsLong().Value;
+                        var overlapMax = rangeClauseDO.MaxValue.AsLong().Value;
+                        return EvaluateCoverageGaps(summaryCoverage, rangeClauseDO, overlapMin, overlapMax);
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool EvaluateCoverageGaps(SummaryCaseCoverage summaryCoverage, RangeClauseDataObject rangeClauseDO, long overlapMin, long overlapMax)
+        {
+            var reachableValues = new List<long>();
+            for (var overlapValue = overlapMin; overlapValue <= overlapMax; overlapValue++)
+            {
+                var evalNum = new UnreachableCaseInspectionValue(overlapValue);
+                if (summaryCoverage.SingleValues.Contains(evalNum)
+                    || summaryCoverage.Ranges.Any(rg => evalNum.IsWithin(rg.Item1,rg.Item2)))
+                {
+                    reachableValues.Add(overlapValue);
+                }
+            }
+            return reachableValues.Count() == overlapMax - overlapMin + 1;
         }
 
         private RangeClauseDataObject InspectSingleValueRangeClause(SummaryCaseCoverage summaryCoverage, RangeClauseDataObject rangeClauseDO)
@@ -832,12 +875,12 @@ namespace Rubberduck.Inspections.Concrete
                 if (rangeClauseDO.CompareSymbol.Equals(CompareTokens.LT)
                     || rangeClauseDO.CompareSymbol.Equals(CompareTokens.LTE))
                 {
-                    isUnreachable = summaryCoverage.IsLTMax != null && summaryCoverage.IsLTMax >= rangeClauseDO.SingleValue;
+                    isUnreachable = summaryCoverage.IsLT != null && summaryCoverage.IsLT >= rangeClauseDO.SingleValue;
                 }
                 else if (rangeClauseDO.CompareSymbol.Equals(CompareTokens.GT)
                         || rangeClauseDO.CompareSymbol.Equals(CompareTokens.GTE))
                 {
-                        isUnreachable = summaryCoverage.IsGTMin != null && summaryCoverage.IsGTMin <= rangeClauseDO.SingleValue;
+                        isUnreachable = summaryCoverage.IsGT != null && summaryCoverage.IsGT <= rangeClauseDO.SingleValue;
                 }
                 else if (CompareTokens.EQ.Equals(rangeClauseDO.CompareSymbol))
                 {
@@ -869,27 +912,40 @@ namespace Rubberduck.Inspections.Concrete
             }
             else
             {
-                return summaryClauses.IsLTMax != null && theValue < summaryClauses.IsLTMax
-                    || summaryClauses.IsGTMin != null && theValue > summaryClauses.IsGTMin
+                return summaryClauses.IsLT != null && theValue < summaryClauses.IsLT
+                    || summaryClauses.IsGT != null && theValue > summaryClauses.IsGT
                     || summaryClauses.SingleValues.Contains(theValue)
-                    || summaryClauses.Ranges.Where(rg => theValue.IsWithin(rg.Item1, rg.Item2)).Any();
+                    || summaryClauses.Ranges.Any(rg => theValue.IsWithin(rg.Item1, rg.Item2));
             }
         }
 
         private SummaryCaseCoverage UpdateSummaryIsClauseLimits(UnreachableCaseInspectionValue theValue, string compareSymbol, SummaryCaseCoverage priorHandlers)
         {
-            var isIntegerType = IsIntegerNumberType(theValue.UseageTypeName);
-            var isBooleanType = theValue.UseageTypeName.Equals(Tokens.Boolean);
+            Debug.Assert(theValue != null);
 
             if (compareSymbol.Equals(CompareTokens.LT) || compareSymbol.Equals(CompareTokens.LTE))
             {
-                priorHandlers.IsLTMax = priorHandlers.IsLTMax == null ? theValue
-                    : priorHandlers.IsLTMax < theValue ? theValue : priorHandlers.IsLTMax;
+                priorHandlers.IsLT = priorHandlers.IsLT ?? theValue;
+                if (priorHandlers.IsLT < theValue)
+                {
+                    priorHandlers.IsLT = theValue;
+                }
+                if (theValue.UseageTypeName.Equals(Tokens.Byte))
+                {
+                    priorHandlers = LoadIntegerNumberRange(priorHandlers, UnreachableCaseInspectionValue.MinValueByte, priorHandlers.IsLT.AsLong().Value - 1);
+                }
             }
             else if (compareSymbol.Equals(CompareTokens.GT) || compareSymbol.Equals(CompareTokens.GTE))
             {
-                priorHandlers.IsGTMin = priorHandlers.IsGTMin == null ? theValue
-                    : priorHandlers.IsGTMin > theValue ? theValue : priorHandlers.IsGTMin;
+                priorHandlers.IsGT = priorHandlers.IsGT ?? theValue;
+                if (priorHandlers.IsGT > theValue)
+                {
+                    priorHandlers.IsGT = theValue;
+                }
+                if (theValue.UseageTypeName.Equals(Tokens.Byte))
+                {
+                    priorHandlers = LoadIntegerNumberRange(priorHandlers, priorHandlers.IsGT.AsLong().Value + 1, UnreachableCaseInspectionValue.MaxValueByte);
+                }
             }
             else
             {
@@ -898,21 +954,7 @@ namespace Rubberduck.Inspections.Concrete
 
             if (CompareTokens.LTE == compareSymbol || CompareTokens.GTE == compareSymbol)
             {
-                if (isIntegerType)
-                {
-                    if (CompareTokens.GTE == compareSymbol)
-                    {
-                        priorHandlers.IsGTMin = theValue - UnreachableCaseInspectionValue.Unity;
-                    }
-                    else
-                    {
-                        priorHandlers.IsLTMax = theValue + UnreachableCaseInspectionValue.Unity;
-                    }
-                }
-                else if (!priorHandlers.SingleValues.Contains(theValue))
-                {
-                    priorHandlers.SingleValues.Add(theValue);
-                }
+                priorHandlers.SingleValues.Add(theValue);
             }
             return priorHandlers;
         }
@@ -931,6 +973,11 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     summaryCoverage.SingleValues.Add(UnreachableCaseInspectionValue.False);
                 }
+            }
+
+            if (rangeClauseDO.TypeNameTarget.Equals(Tokens.Byte))
+            {
+                summaryCoverage = LoadIntegerNumberRange(summaryCoverage, rangeClauseDO.MinValue.AsLong().Value, rangeClauseDO.MaxValue.AsLong().Value);
             }
 
             var updatedRanges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>();
@@ -973,8 +1020,7 @@ namespace Rubberduck.Inspections.Concrete
                 if (rangeClauseDO.CompareSymbol.Equals(CompareTokens.LT)
                     || rangeClauseDO.CompareSymbol.Equals(CompareTokens.LTE)
                     || rangeClauseDO.CompareSymbol.Equals(CompareTokens.GT)
-                    || rangeClauseDO.CompareSymbol.Equals(CompareTokens.GTE)
-                    )
+                    || rangeClauseDO.CompareSymbol.Equals(CompareTokens.GTE))
                 {
                     summaryClauses = UpdateSummaryIsClauseLimits(rangeClauseDO.SingleValue, rangeClauseDO.CompareSymbol, summaryClauses);
                 }
@@ -1002,30 +1048,39 @@ namespace Rubberduck.Inspections.Concrete
             if (typeName.Equals(Tokens.Boolean))
             {
                 return summaryClauses.SingleValues.Any(val => val == UnreachableCaseInspectionValue.Zero) && summaryClauses.SingleValues.Any(val => val != UnreachableCaseInspectionValue.Zero)
-                    || summaryClauses.IsLTMax != null && summaryClauses.IsLTMax > UnreachableCaseInspectionValue.False
-                    || summaryClauses.IsGTMin != null && summaryClauses.IsGTMin < UnreachableCaseInspectionValue.True
-                    || summaryClauses.IsLTMax != null && summaryClauses.IsLTMax == UnreachableCaseInspectionValue.False && summaryClauses.SingleValues.Any(sv => sv == UnreachableCaseInspectionValue.False)
-                    || summaryClauses.IsGTMin != null && summaryClauses.IsGTMin == UnreachableCaseInspectionValue.True && summaryClauses.SingleValues.Any(sv => sv == UnreachableCaseInspectionValue.True);
+                    || summaryClauses.IsLT != null && summaryClauses.IsLT > UnreachableCaseInspectionValue.False
+                    || summaryClauses.IsGT != null && summaryClauses.IsGT < UnreachableCaseInspectionValue.True
+                    || summaryClauses.IsLT != null && summaryClauses.IsLT == UnreachableCaseInspectionValue.False && summaryClauses.SingleValues.Any(sv => sv == UnreachableCaseInspectionValue.False)
+                    || summaryClauses.IsGT != null && summaryClauses.IsGT == UnreachableCaseInspectionValue.True && summaryClauses.SingleValues.Any(sv => sv == UnreachableCaseInspectionValue.True);
             }
 
-            if (summaryClauses.IsLTMax != null && summaryClauses.IsGTMin != null)
+            if (typeName.Equals(Tokens.Byte))
             {
-                if (summaryClauses.IsLTMax > summaryClauses.IsGTMin
-                        || (summaryClauses.IsLTMax >= summaryClauses.IsGTMin
-                                && summaryClauses.SingleValues.Contains(summaryClauses.IsLTMax)))
+                if (summaryClauses.SingleValues.Count >= UnreachableCaseInspectionValue.MaxValueByte + 1)
+                {
+                    var distinctVals = summaryClauses.SingleValues.Distinct();
+                     return distinctVals.Count() == UnreachableCaseInspectionValue.MaxValueByte + 1;
+                }
+            }
+
+            if (summaryClauses.IsLT != null && summaryClauses.IsGT != null)
+            {
+                if (summaryClauses.IsLT > summaryClauses.IsGT
+                        || (summaryClauses.IsLT >= summaryClauses.IsGT
+                                && summaryClauses.SingleValues.Contains(summaryClauses.IsLT)))
                 {
                     return true;
                 }
 
                 else if (summaryClauses.Ranges.Count > 0)
                 {
-                    if (!IsIntegerNumberType(summaryClauses.IsLTMax.UseageTypeName))
+                    if (!IsIntegerNumberType(summaryClauses.IsLT.UseageTypeName))
                     {
                         return false;
                     }
 
                     var remainingValues = new List<long>();
-                    for (var idx = summaryClauses.IsLTMax.AsLong().Value; idx < summaryClauses.IsGTMin.AsLong().Value; idx++)
+                    for (var idx = summaryClauses.IsLT.AsLong().Value; idx < summaryClauses.IsGT.AsLong().Value; idx++)
                     {
                         remainingValues.Add(idx);
                     }
@@ -1125,6 +1180,15 @@ namespace Rubberduck.Inspections.Concrete
         {
             opCtxt = ctxt.FindChild<U>();
             return opCtxt != null;
+        }
+
+        private static SummaryCaseCoverage LoadIntegerNumberRange(SummaryCaseCoverage summaryCoverage, long start, long end)
+        {
+            for (var val = start; val <= end; val++)
+            {
+                summaryCoverage.SingleValues.Add(new UnreachableCaseInspectionValue(val));
+            }
+            return summaryCoverage;
         }
 
         private bool IsBinaryOperatorContext<T>(T child)
