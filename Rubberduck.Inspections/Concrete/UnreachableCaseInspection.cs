@@ -800,7 +800,6 @@ namespace Rubberduck.Inspections.Concrete
         {
             if (rangeClauseDO.MinValue != null && rangeClauseDO.MaxValue != null)
             {
-
                 var isUnreachable = summaryCoverage.Ranges.Any(rg => rangeClauseDO.MinValue.IsWithin(rg.Item1, rg.Item2)
                                    && rangeClauseDO.MaxValue.IsWithin(rg.Item1, rg.Item2))
                                     || rangeClauseDO.MinValue.ExceedsMaxMin() && rangeClauseDO.MaxValue.ExceedsMaxMin()
@@ -932,7 +931,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 if (theValue.UseageTypeName.Equals(Tokens.Byte))
                 {
-                    priorHandlers = LoadIntegerNumberRange(priorHandlers, UnreachableCaseInspectionValue.MinValueByte, priorHandlers.IsLT.AsLong().Value - 1);
+                   priorHandlers.SingleValues = LoadRangeOfByteValues(priorHandlers.SingleValues, UnreachableCaseInspectionValue.MinValueByte, priorHandlers.IsLT.AsLong().Value - 1);
                 }
             }
             else if (compareSymbol.Equals(CompareTokens.GT) || compareSymbol.Equals(CompareTokens.GTE))
@@ -944,7 +943,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 if (theValue.UseageTypeName.Equals(Tokens.Byte))
                 {
-                    priorHandlers = LoadIntegerNumberRange(priorHandlers, priorHandlers.IsGT.AsLong().Value + 1, UnreachableCaseInspectionValue.MaxValueByte);
+                    priorHandlers.SingleValues = LoadRangeOfByteValues(priorHandlers.SingleValues, priorHandlers.IsGT.AsLong().Value + 1, UnreachableCaseInspectionValue.MaxValueByte);
                 }
             }
             else
@@ -977,7 +976,7 @@ namespace Rubberduck.Inspections.Concrete
 
             if (rangeClauseDO.TypeNameTarget.Equals(Tokens.Byte))
             {
-                summaryCoverage = LoadIntegerNumberRange(summaryCoverage, rangeClauseDO.MinValue.AsLong().Value, rangeClauseDO.MaxValue.AsLong().Value);
+                summaryCoverage.SingleValues = LoadRangeOfByteValues(summaryCoverage.SingleValues, rangeClauseDO.MinValue.AsLong().Value, rangeClauseDO.MaxValue.AsLong().Value);
             }
 
             var updatedRanges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>();
@@ -1058,8 +1057,8 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (summaryClauses.SingleValues.Count >= UnreachableCaseInspectionValue.MaxValueByte + 1)
                 {
-                    var distinctVals = summaryClauses.SingleValues.Distinct();
-                     return distinctVals.Count() == UnreachableCaseInspectionValue.MaxValueByte + 1;
+                    summaryClauses.SingleValues = summaryClauses.SingleValues.Distinct().ToList();
+                    return summaryClauses.SingleValues.Count() == UnreachableCaseInspectionValue.MaxValueByte + 1;
                 }
             }
 
@@ -1080,7 +1079,7 @@ namespace Rubberduck.Inspections.Concrete
                     }
 
                     var remainingValues = new List<long>();
-                    for (var idx = summaryClauses.IsLT.AsLong().Value; idx < summaryClauses.IsGT.AsLong().Value; idx++)
+                    for (var idx = summaryClauses.IsLT.AsLong().Value; idx <= summaryClauses.IsGT.AsLong().Value; idx++)
                     {
                         remainingValues.Add(idx);
                     }
@@ -1182,13 +1181,19 @@ namespace Rubberduck.Inspections.Concrete
             return opCtxt != null;
         }
 
-        private static SummaryCaseCoverage LoadIntegerNumberRange(SummaryCaseCoverage summaryCoverage, long start, long end)
+        private static List<UnreachableCaseInspectionValue> LoadRangeOfByteValues(List<UnreachableCaseInspectionValue> SingleValues, long start, long end)
         {
-            for (var val = start; val <= end; val++)
+            if (start >= UnreachableCaseInspectionValue.MinValueByte 
+                    && start <= UnreachableCaseInspectionValue.MaxValueByte
+                    && start <= end)
             {
-                summaryCoverage.SingleValues.Add(new UnreachableCaseInspectionValue(val));
+                var constrainedEnd = end >= UnreachableCaseInspectionValue.MaxValueByte ? UnreachableCaseInspectionValue.MaxValueByte : end;
+                for (var val = start; val <= constrainedEnd; val++)
+                {
+                    SingleValues.Add(new UnreachableCaseInspectionValue(val));
+                }
             }
-            return summaryCoverage;
+            return SingleValues;
         }
 
         private bool IsBinaryOperatorContext<T>(T child)
