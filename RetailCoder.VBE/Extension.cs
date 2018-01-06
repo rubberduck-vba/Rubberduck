@@ -289,7 +289,7 @@ namespace Rubberduck
                 _logger.Log(LogLevel.Trace, "Unregistering AppDomain handlers....");
                 currentDomain.AssemblyResolve -= LoadFromSameFolder;
                 currentDomain.UnhandledException -= HandlAppDomainException;
-                _logger.Log(LogLevel.Trace, "Done. Shutdown completed. Quack!");
+                _logger.Log(LogLevel.Trace, "Done. Main Shutdown completed. Toolwindows follow. Quack!");
                 _isInitialized = false;
             }
         }
