@@ -203,7 +203,7 @@ namespace Rubberduck.UI
 
         public int /* IOleObject:: */ DoVerb([In] int iVerb, [In] IntPtr lpmsg, [In] IntPtr /* IOleClientSite */ pActiveSite, [In] int lindex, [In] IntPtr hwndParent, [In] IntPtr /* COMRECT */ lprcPosRect)
         {
-            _logger.Log(LogLevel.Trace, $"IOleObject::DoVerb() called with iVerb {iVerb}.");
+            _logger.Log(LogLevel.Trace, $"IOleObject::DoVerb() called with iVerb {(Enum.IsDefined(typeof(OleVerbs), iVerb) ? ((OleVerbs) iVerb).ToString() : iVerb.ToString())}.");
             // pActiveSite is not used by the UserControl implementation.  Either wrap it or pass null instead
             pActiveSite = IntPtr.Zero;
 
