@@ -121,7 +121,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public string Tag 
         {
-            get => Target.Tag;
+            get => Target?.Tag;
             set
             {
                 if (!IsWrappingNullReference)
