@@ -599,7 +599,8 @@
         </ProgressBar>
 
         <Border Grid.Row="2" Padding="2">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer PreviewMouseWheel="ScrollViewer_MouseWheel"
+                          VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
                                            SelectedItem="{Binding SelectedTest}"
