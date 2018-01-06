@@ -27,7 +27,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         }
 
         private int? _rcwReferenceCount;
-        public void Release(bool final = false)
+        private void Release(bool final = false)
         {
             if (HasBeenReleased)
             {
@@ -91,7 +91,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
         }
 
-        public bool HasBeenReleased => _rcwReferenceCount <= 0;
+        private bool HasBeenReleased => _rcwReferenceCount <= 0;
 
         public bool IsWrappingNullReference => Target == null;
         object INullObjectWrapper.Target => Target;
