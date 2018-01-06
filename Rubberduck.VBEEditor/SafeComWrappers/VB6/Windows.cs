@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class Windows : SafeComWrapper<VB.Windows>, IWindows
     {
-        public Windows(VB.Windows windows)
-            : base(windows)
+        public Windows(VB.Windows target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
@@ -35,20 +35,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window)o));
+            return new ComWrapperEnumerator<IWindow>(Target, comObject => new Window((VB.Window)comObject));
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.Windows> other)
         {

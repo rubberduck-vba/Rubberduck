@@ -39,10 +39,20 @@ namespace Rubberduck.UI.CustomComWrappers
     //
     //
 
-    public enum COMConstants
+    public enum ComConstants
     {
         E_NOTIMPL = -2147467263,
         S_OK = 0
+    }
+
+    public enum OleVerbs
+    {
+        OLEIVERB_SHOW = -1,
+        OLEIVERB_OPEN = -2,
+        OLEIVERB_HIDE = -3,
+        OLEIVERB_UIACTIVATE = -4,
+        OLEIVERB_INPLACEACTIVATE = -5,
+        OLEIVERB_DISCARDUNDOSTATE = -6
     }
 
     [ComImport(), Guid("00000112-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -335,7 +345,7 @@ namespace Rubberduck.UI.CustomComWrappers
             _logger.Log(LogLevel.Trace, "IOleInPlaceFrame::SetActiveObject() called");
             // need to wrap IOleInPlaceActiveObject to support this.  Used by VBE on focus. Doesn't seem to be needed by UserControl?
             //return _IOleInPlaceFrame.SetActiveObject(pActiveObject, pszObjName);
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleInPlaceFrame:: */ InsertMenus([In] IntPtr hmenuShared, [In, Out] ref IntPtr /* tagOleMenuGroupWidths */ lpMenuWidths)
@@ -427,7 +437,7 @@ namespace Rubberduck.UI.CustomComWrappers
             //return _IOleClientSite.GetMoniker(dwAssign, dwWhichMoniker, out moniker);
             moniker = IntPtr.Zero;
             Debug.Assert(false);
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleClientSite:: */ GetContainer([Out] out IntPtr /* IOleContainer */ container)
@@ -436,7 +446,7 @@ namespace Rubberduck.UI.CustomComWrappers
             // need to wrap IOleContainer to support this.  VBE doesn't implement this anyway (returns E_NOTIMPL)
             //return _IOleClientSite.GetContainer(out container);
             container = IntPtr.Zero;
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleClientSite:: */ ShowObject()

@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarControls : SafeComWrapper<Microsoft.Office.Core.CommandBarControls>, ICommandBarControls
     {
-        public CommandBarControls(Microsoft.Office.Core.CommandBarControls target) 
-            : base(target)
+        public CommandBarControls(Microsoft.Office.Core.CommandBarControls target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<ICommandBarControl>(null, o => new CommandBarControl(null))
                 : new ComWrapperEnumerator<ICommandBarControl>(Target,
-                    o => new CommandBarControl((Microsoft.Office.Core.CommandBarControl) o));
+                    comObject => new CommandBarControl((Microsoft.Office.Core.CommandBarControl) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
