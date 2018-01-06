@@ -28,7 +28,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             ItemReloaded = 6
         }
 
-        public VBComponents(VB.VBComponents target, bool rewrapping = false) : base(target, rewrapping)
+        public VBComponents(VB.VBComponents target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
             if (_components == null)
             {

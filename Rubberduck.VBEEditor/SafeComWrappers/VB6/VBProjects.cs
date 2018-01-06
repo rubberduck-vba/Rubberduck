@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IVBProject>(null, o => new VBProject(null))
-                : new ComWrapperEnumerator<IVBProject>(Target, o => new VBProject((VB.VBProject)o));
+                : new ComWrapperEnumerator<IVBProject>(Target, comObject => new VBProject((VB.VBProject)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -65,19 +65,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 ? (IEnumerator)new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IVBProject>)this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        DetatchEvents();
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBProjects> other)
         {
@@ -146,13 +133,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private ItemRenamedDelegate _projectRenamed;
         private void OnProjectRenamed(Microsoft.Vbe.Interop.VBProject vbProject, string oldName)
         {
-            if (!VBE.IsInDesignMode) { return; }
-
             var project = new VBA.VBProject(vbProject);
+
+            if (!VBE.IsInDesignMode)
+            {
+                project.Dispose();
+                return;
+            }
+            
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
-            handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
+            if (handler == null)
+            {
+                project.Dispose();
+                return;
+            }
+
+            handler.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;
@@ -165,17 +163,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, Microsoft.Vbe.Interop.VBProject vbProject, bool assignId = false)
         {
+            var project = new VBA.VBProject(vbProject);
+
             var handler = dispatched;
-            if (handler != null)
+            if (handler == null)
             {
-                var project = new VBA.VBProject(vbProject);
-                if (assignId)
-                {
-                    project.AssignProjectId();
-                }
-                var projectId = project.ProjectId;
-                handler.Invoke(this, new ProjectEventArgs(projectId, project));
+                project.Dispose();
+                return;
             }
+
+            if (assignId)
+            {
+                project.AssignProjectId();
+            }
+            var projectId = project.ProjectId;
+
+            handler.Invoke(this, new ProjectEventArgs(projectId, project));
         }
 
         #endregion
