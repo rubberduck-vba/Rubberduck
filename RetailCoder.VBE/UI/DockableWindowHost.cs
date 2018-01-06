@@ -138,9 +138,6 @@ namespace Rubberduck.UI
             ReleaseActiveXControlComReference();
             ReleasedExposedControl();
             UnsubclassParent();
-
-            GC.Collect(); //todo: Release enough COM objects to make this not necessary anymore.
-            GC.WaitForPendingFinalizers();
         }
 
         private void UnsubclassParent()
