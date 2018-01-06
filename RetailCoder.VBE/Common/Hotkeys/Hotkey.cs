@@ -71,14 +71,14 @@ namespace Rubberduck.Common.Hotkeys
 
             if (!User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId))
             {
-                Logger.Warn($"Error calling UnregisterHotKey; the error was {Marshal.GetLastWin32Error()}; going to delete the atom anyway... The memory may leak.");
+                Logger.Warn($"Error calling UnregisterHotKey on hokey with id {HotkeyInfo.HookId} for command of type {Command.GetType()}; the error was {Marshal.GetLastWin32Error()}; going to delete the atom anyway... The memory may leak.");
             }
             Kernel32.SetLastError(Kernel32.ERROR_SUCCESS);
             Kernel32.GlobalDeleteAtom(HotkeyInfo.HookId);
             var lastError = Marshal.GetLastWin32Error();
             if (lastError != Kernel32.ERROR_SUCCESS)
             {
-                Logger.Warn($"Error calling DeleteGlobalAtom; the error was {lastError} and the id was {HotkeyInfo.HookId}.");
+                Logger.Warn($"Error calling DeleteGlobalAtom; the error was {lastError}, the id {HotkeyInfo.HookId} and the type of the associated command {Command.GetType()}.");
             }
             ClearCommandShortcutText();
         }
@@ -101,9 +101,11 @@ namespace Rubberduck.Common.Hotkeys
             if (!success)
             {
                 Logger.Debug(RubberduckUI.CommonHotkey_KeyNotRegistered, key);
+                return;
             }
 
             HotkeyInfo = new HotkeyInfo(hookId, Combo);
+            Logger.Trace($"Hotkey for the associated command {Command.GetType()} was registered with id {HotkeyInfo.HookId}");
         }
 
         private void SetCommandShortcutText()
