@@ -67,11 +67,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     _rcwReferenceCount = Marshal.ReleaseComObject(Target);
                     if (_rcwReferenceCount >= 0)
                     {
+#if DEBUG
                         _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+#endif
                     }
                     else
                     {
-                        _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper.");
+                        _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper. New reference count is {_rcwReferenceCount}.");
                     }
                 } 
             }
