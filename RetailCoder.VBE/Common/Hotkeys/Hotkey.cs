@@ -80,6 +80,8 @@ namespace Rubberduck.Common.Hotkeys
             {
                 Logger.Warn($"Error calling DeleteGlobalAtom; the error was {lastError}, the id {HotkeyInfo.HookId} and the type of the associated command {Command.GetType()}.");
             }
+
+            HotkeyInfo = new HotkeyInfo(IntPtr.Zero, Combo);
             ClearCommandShortcutText();
         }
 
