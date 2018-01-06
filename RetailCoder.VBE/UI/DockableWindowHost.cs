@@ -70,9 +70,11 @@ namespace Rubberduck.UI
         private ExposedUserControl _userControl = new ExposedUserControl();
         private Wrapper_IOleClientSite _cachedClientSite;
 
+        private bool _releaseHasBeenCalled;
         public void Release()
         {
             // WARNING: Disposal of _userControl / _cachedClientSite should be handled in IOleObject::Close(), not here, see top comments
+            _releaseHasBeenCalled = true;
             RemoveChildControlsFromExposedControl();
         }
 
@@ -102,14 +104,14 @@ namespace Rubberduck.UI
                 _cachedClientSite = new Wrapper_IOleClientSite(pClientSite);
                 return _userControl.IOleObject.SetClientSite(_cachedClientSite.PeekAggregatedReference());     // callee will take its own reference
             }
-            return (int)COMConstants.S_OK;
+            return (int)ComConstants.S_OK;
         }
 
         public int /* IOleObject:: */ GetClientSite([Out] out IntPtr /* IOleClientSite */ ppClientSite)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::GetClientSite() called");
             ppClientSite = _cachedClientSite?.CopyAggregatedReference() ?? IntPtr.Zero;
-            return (int)COMConstants.S_OK;
+            return (int)ComConstants.S_OK;
         }
 
         public int /* IOleObject:: */ SetHostNames([In, MarshalAs(UnmanagedType.LPWStr)] string szContainerApp, [In, MarshalAs(UnmanagedType.LPWStr)] string szContainerObj)
@@ -167,7 +169,7 @@ namespace Rubberduck.UI
             // need to wrap IMoniker to support this.  Not used by VBE anyway?
             //return _IOleObject.SetMoniker(dwWhichMoniker, pmk);
             Debug.Assert(false);
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ GetMoniker([In] uint dwAssign, [In] uint dwWhichMoniker, [Out] out IntPtr /* IMoniker */ ppmk)
@@ -177,7 +179,7 @@ namespace Rubberduck.UI
             //return _IOleObject.GetMoniker(dwAssign, dwWhichMoniker, out ppmk);
             ppmk = IntPtr.Zero;
             Debug.Assert(false);
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ InitFromData([In] IntPtr /* IDataObject */ pDataObject, [In] int fCreation, [In] uint dwReserved)
@@ -186,7 +188,7 @@ namespace Rubberduck.UI
             // need to wrap IDataObject to support this.  Not used by VBE anyway?
             //return _IOleObject.InitFromData(pDataObject, fCreation, dwReserved);
             Debug.Assert(false);
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ GetClipboardData([In] uint dwReserved, [Out] out IntPtr /*IDataObject*/ ppDataObject)
@@ -196,7 +198,7 @@ namespace Rubberduck.UI
             //return _IOleObject.GetClipboardData(dwReserved, out ppDataObject);
             ppDataObject = IntPtr.Zero;
             Debug.Assert(false);
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ DoVerb([In] int iVerb, [In] IntPtr lpmsg, [In] IntPtr /* IOleClientSite */ pActiveSite, [In] int lindex, [In] IntPtr hwndParent, [In] IntPtr /* COMRECT */ lprcPosRect)
@@ -204,6 +206,13 @@ namespace Rubberduck.UI
             _logger.Log(LogLevel.Trace, "IOleObject::DoVerb() called");
             // pActiveSite is not used by the UserControl implementation.  Either wrap it or pass null instead
             pActiveSite = IntPtr.Zero;
+
+            //note: We swallow this OleVerb after release has been called because it is causing problems on shutdown.
+            if (_releaseHasBeenCalled && iVerb == (int)OleVerbs.OLEIVERB_DISCARDUNDOSTATE)
+            {
+                return (int)ComConstants.S_OK;
+            }
+
             return _userControl.IOleObject.DoVerb(iVerb, lpmsg, pActiveSite, lindex, hwndParent, lprcPosRect);
         }
 
@@ -214,7 +223,7 @@ namespace Rubberduck.UI
             //return _IOleObject.EnumVerbs(out ppEnumOleVerb);
             ppEnumOleVerb = IntPtr.Zero;
             Debug.Assert(false);
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ Update()
@@ -258,7 +267,7 @@ namespace Rubberduck.UI
             _logger.Log(LogLevel.Trace, "IOleObject::Advise() called");
             // need to wrap IAdviseSink to support this. VBE does try to use this, but the events don't look interesting?
             pdwConnection = 0;
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ Unadvise([In] uint pdwConnection)
@@ -267,7 +276,7 @@ namespace Rubberduck.UI
             // No sense supporting Unadvise, as we're not supporting Advise
             //return _IOleObject.Unadvise(pdwConnection);
             //Debug.Assert(false);                              stupid VBE still calls us, despite us not implementing Advise()
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ EnumAdvise([Out] out IntPtr /* IEnumSTATDATA */ enumAdvise)
@@ -276,7 +285,7 @@ namespace Rubberduck.UI
             // need to wrap IEnumSTATDATA to support this. No sense supporting EnumAdvise, as we're not supporting Advise
             //return _IOleObject.EnumAdvise(out enumAdvise);
             enumAdvise = IntPtr.Zero;
-            return (int)COMConstants.E_NOTIMPL;
+            return (int)ComConstants.E_NOTIMPL;
         }
 
         public int /* IOleObject:: */ GetMiscStatus([In] uint dwAspect, [Out] out uint pdwStatus)
