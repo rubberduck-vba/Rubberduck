@@ -10,8 +10,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
-        public VBComponent(VB.VBComponent target) 
-            : base(target)
+        public VBComponent(VB.VBComponent target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
