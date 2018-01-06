@@ -28,7 +28,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
             try
             {
-                var child = _items.FirstOrDefault(kvp => kvp.Value != null && kvp.Value.Tag == tag);
+                var child = _items.FirstOrDefault(kvp => kvp.Value != null && kvp.Value?.Tag == tag);
                 return Equals(child, default(KeyValuePair<ICommandMenuItem, ICommandBarControl>))
                     ? null
                     : child.Key;

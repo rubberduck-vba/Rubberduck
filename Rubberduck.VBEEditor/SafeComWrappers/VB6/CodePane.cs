@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class CodePane : SafeComWrapper<VB.CodePane>, ICodePane
     {
-        public CodePane(VB.CodePane codePane)
-            : base(codePane)
+        public CodePane(VB.CodePane target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 

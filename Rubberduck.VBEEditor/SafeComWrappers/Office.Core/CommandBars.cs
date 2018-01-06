@@ -11,8 +11,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBars : SafeComWrapper<Microsoft.Office.Core.CommandBars>, ICommandBars, IEquatable<ICommandBars>
     {
-        public CommandBars(Microsoft.Office.Core.CommandBars target) 
-            : base(target)
+        public CommandBars(Microsoft.Office.Core.CommandBars target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -60,7 +60,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<ICommandBar>(null, o => new CommandBar(null))
                 : new ComWrapperEnumerator<ICommandBar>(Target,
-                    o => new CommandBar((Microsoft.Office.Core.CommandBar) o));
+                    comObject => new CommandBar((Microsoft.Office.Core.CommandBar) comObject));
         }
 
         public IEnumerator GetEnumerator()
@@ -71,11 +71,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
         public ICommandBar this[object index] => new CommandBar(IsWrappingNullReference ? null : Target[index]);
-
-        //public override void Release(bool final = false)
-        //{
-        //    // important: no-op
-        //}
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBars> other)
         {

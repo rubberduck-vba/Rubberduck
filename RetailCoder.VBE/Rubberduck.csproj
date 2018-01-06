@@ -944,9 +944,7 @@
     <Compile Include="UI\ToDoItems\ToDoExplorerWindow.Designer.cs">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\DockableWindowHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="UI\DockableWindowHost.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>

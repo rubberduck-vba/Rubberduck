@@ -16,8 +16,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBE : SafeComWrapper<VB.VBE>, IVBE
     {
-        public VBE(VB.VBE target)
-            : base(target)
+        public VBE(VB.VBE target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
