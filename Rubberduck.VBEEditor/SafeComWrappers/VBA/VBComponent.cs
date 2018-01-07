@@ -41,13 +41,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                var designer = IsWrappingNullReference
+                using (var designer = IsWrappingNullReference
                     ? null
-                    : new UserForm(Target.Designer as VB.Forms.UserForm);
-
-                return designer == null 
-                    ? new Controls(null) 
-                    : designer.Controls;
+                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return designer == null
+                        ? new Controls(null)
+                        : designer.Controls;
+                }
             }
         }
 
@@ -55,13 +56,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                var designer = IsWrappingNullReference
+                using (var designer = IsWrappingNullReference
                     ? null
-                    : new UserForm(Target.Designer as VB.Forms.UserForm);
-
-                return designer == null
-                    ? new Controls(null)
-                    : designer.Selected;
+                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return designer == null
+                        ? new Controls(null)
+                        : designer.Selected;
+                }
             }
         }
         
