@@ -1,14 +1,14 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Settings;
 
 namespace RubberduckTests.Settings
 {
-    [TestClass]
+    [TestFixture]
     public class HotkeySettingsTests
     {
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void DefaultsSetInCtor()
         {
             var expected = new []
@@ -28,8 +28,8 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void InvalidSettingNameWontAdd()
         {
             var settings = new HotkeySettings(new[]
@@ -47,8 +47,8 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void InvalidSettingKeyWontAdd()
         {
             var settings = new HotkeySettings(new[]
@@ -66,8 +66,8 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void DuplicateKeysAreDeactivated()
         {
             var duplicate1 = new HotkeySetting {CommandTypeName = "FooCommand", IsEnabled = true, Key1 = "X"};
@@ -82,8 +82,8 @@ namespace RubberduckTests.Settings
             Assert.IsFalse(duplicate1.IsEnabled == duplicate2.IsEnabled);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void DuplicateNamesAreIgnored()
         {
             var expected = new HotkeySetting {CommandTypeName = "FooCommand", IsEnabled = true, Key1 = "X"};
@@ -95,6 +95,78 @@ namespace RubberduckTests.Settings
             };
 
             Assert.IsFalse(settings.Settings.Contains(duplicate));
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_None_IsNotValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", Key1 = "I" };
+
+            Assert.IsFalse(setting.IsValid);
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_Shift_IsNotValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, Key1 = "I" };
+
+            Assert.IsFalse(setting.IsValid);
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_ShiftAlt_IsValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, HasAltModifier = true, Key1 = "I" };
+
+            Assert.IsTrue(setting.IsValid);
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_ShiftCtrl_IsValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, HasCtrlModifier = true, Key1 = "I" };
+
+            Assert.IsTrue(setting.IsValid);
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_ShiftAltCtrl_IsValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasShiftModifier = true, HasAltModifier = true, HasCtrlModifier = true, Key1 = "I" };
+
+            Assert.IsTrue(setting.IsValid);
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_Alt_IsValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasAltModifier = true, Key1 = "I" };
+
+            Assert.IsTrue(setting.IsValid);
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_Ctrl_IsValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasCtrlModifier = true, Key1 = "I" };
+
+            Assert.IsTrue(setting.IsValid);
+        }
+
+        [Category("Settings)")]
+        [Test]
+        public void HotkeyModifier_AltCtrl_IsValid()
+        {
+            var setting = new HotkeySetting { CommandTypeName = "Foo", HasAltModifier = true, HasCtrlModifier = true, Key1 = "I" };
+
+            Assert.IsTrue(setting.IsValid);
         }
     }
 }

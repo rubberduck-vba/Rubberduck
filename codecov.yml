@@ -1,0 +1,39 @@
+codecov:
+  branch:
+    - next
+    - master
+  ci:
+    - appveyor
+  max_report_age: off
+    
+coverage:
+  round: nearest
+  precision: 2
+  range: 40..80 
+  status:
+    # don't check patch coverage
+    patch: off
+    changes: yes
+    # allow decrease by up to 5 %
+    threshold: 5
+    base: auto
+    project:
+      core:
+        # restrict core decrease to 1.5%
+        threshold: 1.5
+        flags: core
+  
+comment:
+  layout: "diff, files, changes, footer"
+  behavior: new
+  require_changes: yes
+  
+flags:
+  core:
+    paths:
+      - Rubberduck.Parsing
+      - Rubberduck.VBEEditor
+  inspections:
+    paths:
+      - Rubberduck.Inspections
+  

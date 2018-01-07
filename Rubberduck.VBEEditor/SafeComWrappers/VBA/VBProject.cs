@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBProject : SafeComWrapper<VB.VBProject>, IVBProject
     {
-        public VBProject(VB.VBProject vbProject)
-            :base(vbProject)
+        public VBProject(VB.VBProject target, bool rewrapping = false)
+            :base(target, rewrapping)
         {
         }
 
@@ -132,7 +132,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private bool IsProjectIdUnique()
         {
-            return VBE.VBProjects.Count(project => project.HelpFile == HelpFile) == 1;
+            using (var vbe = VBE)
+            {
+                using (var projects = vbe.VBProjects)
+                {
+                    var helpFile = HelpFile;
+                    int matchCount = 0;
+                    foreach (var project in projects)
+                    {
+                        if (project.HelpFile == helpFile)
+                        {
+                            matchCount++;
+                        }
+                        project.Dispose();
+                    }
+                    return matchCount == 1;
+                }
+            }
         }
 
 

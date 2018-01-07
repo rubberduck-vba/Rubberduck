@@ -128,6 +128,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
+    <Compile Include="ComManagement\ComSafe.cs" />
+    <Compile Include="ComManagement\IComSafe.cs" />
     <Compile Include="Events\ComponentEventArgs.cs" />
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />
     <Compile Include="Events\ProjectEventArgs.cs" />

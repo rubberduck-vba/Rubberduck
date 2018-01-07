@@ -43,7 +43,12 @@ namespace Rubberduck.VBEditor.Events
             if (_eventHandle == IntPtr.Zero)
             {               
                 _eventProc = VbeEventCallback;
-                _threadId = User32.GetWindowThreadProcessId(new IntPtr(_vbe.MainWindow.HWnd), IntPtr.Zero);
+                IntPtr mainWindowHwnd;
+                using (var mainWindow = _vbe.MainWindow)
+                {
+                    mainWindowHwnd = new IntPtr(mainWindow.HWnd);
+                }
+                _threadId = User32.GetWindowThreadProcessId(mainWindowHwnd, IntPtr.Zero);
                 _eventHandle = User32.SetWinEventHook((uint)WinEvent.Min, (uint)WinEvent.Max, IntPtr.Zero, _eventProc, 0, _threadId, WinEventFlags.OutOfContext);
             }
         }

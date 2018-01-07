@@ -28,7 +28,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             ItemReloaded = 6
         }
 
-        public VBComponents(VB.VBComponents target) : base(target)
+        public VBComponents(VB.VBComponents target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
             if (_components == null)
             {
@@ -73,7 +74,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent) o));
+                : new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -111,54 +112,79 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
-                try
-                {
-                    var temp = this[name];
-                }
-                catch
-                {
-                    throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
-                }
+                IVBComponent component = null;
+                try {
+                    try
+                    {
+                        component = this[name];
+                    }
+                    catch
+                    {
+                        throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
+                    }
 
-                var component = this[name];
-                component.CodeModule.Clear();
-
-                var codeString = File.ReadAllText(path, Encoding.UTF8);
-                component.CodeModule.AddFromString(codeString);
+                    var codeString = File.ReadAllText(path, Encoding.UTF8);
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                        codeModule.AddFromString(codeString);
+                    }
+                }
+                finally
+                {
+                    component?.Dispose();
+                }
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
+                IVBComponent component = null;
                 try
-                {
-                    var temp = this[name];
+                {   
+                    try
+                    {
+                        component = this[name];
+                    }
+                    catch
+                    {
+                        component = Import(path);
+                    }
+
+                    var codeString =
+                        File.ReadAllText(path,
+                            Encoding
+                                .Default); //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                    var codeLines = codeString.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+
+                    var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+                    var attributeLines = codeLines.Skip(nonAttributeLines)
+                        .TakeWhile(line => line.StartsWith("Attribute")).Count();
+                    var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+                    var correctCodeString = string.Join(Environment.NewLine,
+                        codeLines.Skip(declarationsStartLine - 1).ToArray());
+
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                        codeModule.AddFromString(correctCodeString);
+                    }
                 }
-                catch
+                finally
                 {
-                    Import(path);
+                    component?.Dispose();
                 }
-
-                var component = this[name];
-
-                var codeString = File.ReadAllText(path, Encoding.Default);  //The VBE uses the current ANSI codepage from the windows settings to export and import.
-                var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-                var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
-                var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
-                var declarationsStartLine = nonAttributeLines + attributeLines + 1;
-                var correctCodeString = string.Join(Environment.NewLine, codeLines.Skip(declarationsStartLine - 1).ToArray());
-
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(correctCodeString);
             }
             else if (ext != ComponentTypeExtensions.FormBinaryExtension)
             {
-                Import(path);
+                using(Import(path)){} //Nothing to do here, except properly disposing the wrapper returned from Import.
             }
         }
 
         public void RemoveSafely(IVBComponent component)
         {
-            if (component.IsWrappingNullReference) { return; }
+            if (component.IsWrappingNullReference)
+            {
+                return;
+            }
 
             switch (component.Type)
             {
@@ -169,9 +195,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     break;
                 case ComponentType.ActiveXDesigner:
                 case ComponentType.Document:
-                    component.CodeModule.Clear();
-                    break;
-                default:
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                    }
                     break;
             }
         }
@@ -239,16 +266,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public static event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
         private static void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
         {
+            var component = new VBComponent(vbComponent);
             var handler = ComponentRenamed;
-            if (handler != null)
+            if (handler == null)
             {
-                var component = new VBComponent(vbComponent);
-                var project = component.Collection.Parent;
-                if (project.Protection != ProjectProtection.Locked)
-                {
-                    handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, new VBComponent(vbComponent), oldName));
-                }
+                component.Dispose();
+                return;
             }
+
+            IVBProject project;
+            using (var components = component.Collection)
+            {
+                project = components.Parent;
+            }
+
+
+            if (project.Protection == ProjectProtection.Locked)
+            {
+                project.Dispose();
+                component.Dispose();
+                return;
+            }
+
+            handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, component, oldName));
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
@@ -277,16 +317,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private static void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent vbComponent)
         {
+            var component = new VBComponent(vbComponent);
             var handler = dispatched;
-            if (handler != null)
+            if (handler == null)
             {
-                var component = new VBComponent(vbComponent);
-                var project = component.Collection.Parent;
-                if (project.Protection != ProjectProtection.Locked)
-                {
-                    handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
-                }
+                component.Dispose();
+                return;
             }
+
+            IVBProject project;
+            using (var components = component.Collection)
+            {
+                project = components.Parent;
+            }
+
+
+            if (project.Protection == ProjectProtection.Locked)
+            {
+                project.Dispose();
+                component.Dispose();
+                return;
+            }
+
+            handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
         }
 
         #endregion

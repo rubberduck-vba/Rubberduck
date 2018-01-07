@@ -166,7 +166,10 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             child.ApplyIcon();
 
             child.BeginsGroup = item.BeginGroup;
-            child.Tag = $"{Item.Parent.Name}::{Item.Tag}::{item.GetType().Name}";
+            using (var itemParent = Item.Parent)
+            {
+                child.Tag = $"{itemParent.Name}::{Item.Tag}::{item.GetType().Name}";
+            }
             child.Caption = item.Caption.Invoke();
             var command = item.Command; // todo: add 'ShortcutText' to a new 'interface CommandBase : System.Windows.Input.CommandBase'
             child.ShortcutText = command != null

@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class EncapsulatePublicFieldInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PublicField_ReturnsResult()
         {
             const string inputCode =
@@ -26,8 +26,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MultiplePublicFields_ReturnMultipleResult()
         {
             const string inputCode =
@@ -45,8 +45,8 @@ Public buzz As Integer, _
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PrivateField_DoesNotReturnResult()
         {
             const string inputCode =
@@ -62,8 +62,8 @@ Public buzz As Integer, _
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PublicNonField_DoesNotReturnResult()
         {
             const string inputCode =
@@ -80,8 +80,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PublicField_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -98,16 +98,16 @@ Public fizz As Boolean";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new EncapsulatePublicFieldInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "EncapsulatePublicFieldInspection";

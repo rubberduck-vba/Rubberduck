@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
+using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ButtonState = Rubberduck.VBEditor.SafeComWrappers.MSForms.ButtonState;
@@ -11,8 +12,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarButton : CommandBarControl, ICommandBarButton
     {
-        public CommandBarButton(Microsoft.Office.Core.CommandBarButton target) 
-            : base(target)
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        public CommandBarButton(Microsoft.Office.Core.CommandBarButton target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -20,7 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
         {
-            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target);
+            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target, rewrapping: true);
         }
 
         private EventHandler<CommandBarButtonClickEventArgs> _clickHandler; 
@@ -33,7 +36,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                     ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
                 }
                 _clickHandler += value;
-                System.Diagnostics.Debug.WriteLine($"Added handler for: {Parent.Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
+                using (var parent = Parent)
+                {
+                    _logger.Trace($"Added handler for: {parent.Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
+                }
             }
             remove
             {
@@ -49,24 +55,32 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                 {
                     // he's gone, dave.
                 }
-                System.Diagnostics.Debug.WriteLine($"Removed handler for: {Parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
+                using (var parent = Parent)
+                {
+                    _logger.Trace($"Removed handler for: {parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
+                }
             }
         }
 
-        private void Target_Click(Microsoft.Office.Core.CommandBarButton ctrl, ref bool cancelDefault)
+        private void Target_Click(Microsoft.Office.Core.CommandBarButton control, ref bool cancelDefault)
         {
+            var button = new CommandBarButton(control);
+
             var handler = _clickHandler;
             if (handler == null || IsWrappingNullReference)
             {
+                button.Dispose();
                 return;
             }
 
             System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
 
             //note: event is fired for every parent the command exists under. not sure why.
-            System.Diagnostics.Debug.WriteLine($"Executing handler for: {Parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
+            using (var parent = Parent)
+            {
+                _logger.Trace($"Executing handler for: {parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
+            }
 
-            var button = new CommandBarButton(ctrl);
             var args = new CommandBarButtonClickEventArgs(button);
             handler.Invoke(this, args);
             cancelDefault = args.Cancel;

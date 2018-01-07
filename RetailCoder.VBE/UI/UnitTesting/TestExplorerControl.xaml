@@ -260,6 +260,7 @@
         <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Declaration.QualifiedName.QualifiedModuleName.Name" />
+                <componentModel:SortDescription PropertyName="Declaration.QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Declaration.QualifiedName.QualifiedModuleName.Name" />
@@ -269,6 +270,7 @@
         <CollectionViewSource x:Key="ResultsByOutcome" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Result.Outcome" />
+                <componentModel:SortDescription PropertyName="Declaration.QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 
@@ -597,7 +599,8 @@
         </ProgressBar>
 
         <Border Grid.Row="2" Padding="2">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer PreviewMouseWheel="ScrollViewer_MouseWheel"
+                          VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
                                            SelectedItem="{Binding SelectedTest}"

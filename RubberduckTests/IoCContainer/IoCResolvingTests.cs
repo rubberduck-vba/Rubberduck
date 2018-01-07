@@ -1,6 +1,6 @@
 ﻿using System;
 using Castle.Windsor;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
@@ -11,10 +11,10 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.IoCContainer
 {
-    [TestClass]
+    [TestFixture]
     public class IoCResolvingTests
     {
-        [TestMethod]
+        [Test]
         public void ResolveInspections_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -44,7 +44,7 @@ namespace RubberduckTests.IoCContainer
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ResolveRubberduckParserState_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();

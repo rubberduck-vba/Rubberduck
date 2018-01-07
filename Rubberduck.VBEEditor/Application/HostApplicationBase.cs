@@ -1,63 +1,117 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Application
 {
     [ComVisible(false)]
-    public abstract class HostApplicationBase<TApplication> : IHostApplication
+    public abstract class HostApplicationBase<TApplication> : SafeComWrapper<TApplication>, IHostApplication
         where TApplication : class
     {
-        protected readonly TApplication Application;
         protected HostApplicationBase(string applicationName)
+        :base(ApplicationFromComReflection(applicationName))
         {
             ApplicationName = applicationName;
-
-            try
-            {
-                Application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
-            }
-            catch (COMException)
-            {
-                Application = null; // unit tests don't need it anyway.
-            }
         }
 
         protected HostApplicationBase(IVBE vbe, string applicationName)
+        :base(ApplicationFromVbe(vbe, applicationName))
         {
             ApplicationName = applicationName;
+        }
 
+        private static TApplication ApplicationFromComReflection(string applicationName)
+        {
+            TApplication application;
             try
             {
-                var appProperty = vbe.VBProjects
-                    .Where(project => project.Protection == ProjectProtection.Unprotected)
-                    .SelectMany(project => project.VBComponents)
-                    .Where(component => component.Type == ComponentType.Document
-                    && component.Properties.Count > 1)
-                    .SelectMany(component => component.Properties)
-                    .FirstOrDefault(property => property.Name == "Application");
-                if (appProperty != null)
-                {
-                    Application = (TApplication)appProperty.Object;
-                }
-                else
-                {
-                    Application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
-                }
-                    
+                application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
             }
             catch (COMException)
             {
-                Application = null; // unit tests don't need it anyway.
+                application = null; // unit tests don't need it anyway.
+            }
+            return application;
+        }
+
+        private static TApplication ApplicationFromVbe(IVBE vbe, string applicationName)
+        {
+            TApplication application;
+            try
+            {
+                var appProperty = ApplicationPropertyFromDocumentModule(vbe);
+                if (appProperty != null)
+                {
+                    application = (TApplication)appProperty.Object;
+                }
+                else
+                {
+                    application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
+                }
+
+            }
+            catch (COMException)
+            {
+                application = null; // unit tests don't need it anyway.
+            }
+            return application;
+        }
+
+        private static IProperty ApplicationPropertyFromDocumentModule(IVBE vbe)
+        {
+            using (var projects = vbe.VBProjects)
+            {
+                foreach (var project in projects)
+                {
+                    try
+                    {
+                        if (project.Protection == ProjectProtection.Locked)
+                        {
+                            continue;
+                        }
+                        using (var components = project.VBComponents)
+                        {
+                            foreach (var component in components)
+                            {
+                                try
+                                {
+                                    if (component.Type != ComponentType.Document)
+                                    {
+                                        continue;
+                                    }
+                                    using (var properties = component.Properties)
+                                    {
+                                        if (properties.Count <= 1)
+                                        {
+                                            continue;
+                                        }
+                                        foreach (var property in properties)
+                                        {
+                                            if (property.Name == "Application")
+                                            {
+                                                return property;
+                                            }
+                                            property.Dispose();
+                                        }
+                                    }
+                                }
+                                finally
+                                {
+                                    component.Dispose();
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        project?.Dispose();
+                    }
+                }
+                return null;
             }
         }
 
-        ~HostApplicationBase()
-        {
-			Dispose(false);
-        }
+        protected TApplication Application => Target;
 
         public string ApplicationName { get; }
 
@@ -68,29 +122,19 @@ namespace Rubberduck.VBEditor.Application
             return null;
         }
 
-        public void Dispose()
+        public override bool Equals(ISafeComWrapper<TApplication> other)
         {
-            Dispose(true);
-			GC.SuppressFinalize(this);
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
-		private bool _disposed;
-        protected virtual void Dispose(bool disposing)
+        public override int GetHashCode()
         {
-			if (_disposed) { return; }
-			
-			// clean up managed resources
-			if (Application != null)
-            {
-                Marshal.ReleaseComObject(Application);
-            }
-		
-            if (disposing) 
-			{ 
-				// we don't have any managed resources to clean up right now.
-			}
+            return IsWrappingNullReference ? 0 : HashCode.Compute(Target);
+        }
 
-			_disposed = true;
+        ~HostApplicationBase()
+        {
+            Dispose(false);
         }
     }
 }

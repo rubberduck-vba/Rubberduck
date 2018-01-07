@@ -1,5 +1,5 @@
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -16,12 +16,12 @@ using Rubberduck.Common;
 namespace RubberduckTests.Symbols
 {
 
-    [TestClass]
+    [TestFixture]
     public class DeclarationFinderTests
     {
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_InProcedure_MethodDeclaration()
         {
             var expectedResults = new string[]
@@ -52,8 +52,8 @@ End Function
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_InProcedure_LocalVariableReference()
         {
             var expectedResults = new string[]
@@ -82,8 +82,8 @@ End Function
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_InProcedure_MemberDeclaration()
         {
             var expectedResults = new string[]
@@ -112,8 +112,8 @@ End Function
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_ModuleScope()
         {
             var expectedResults = new string[]
@@ -161,8 +161,8 @@ End Sub
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_PublicClassAndPublicModuleSub_RenameClassSub()
         {
             var expectedResults = new string[]
@@ -192,8 +192,8 @@ End Function
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_Module_To_ClassScope()
         {
             var expectedResults = new string[]
@@ -242,8 +242,8 @@ End Function
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_PrivateSub_RespectPublicSubInOtherModule()
         {
             var expectedResults = new string[]
@@ -277,8 +277,8 @@ End Sub
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_PrivateSub_MultipleReferences()
         {
             var expectedResults = new string[]
@@ -331,8 +331,8 @@ End Function"
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_PrivateSub_WithBlock()
         {
             var expectedResults = new string[]
@@ -392,8 +392,8 @@ End Sub
             TestAccessibleDeclarations(tdo, expectedResults);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void DeclarationFinder_Module_To_ModuleScopeResolution()
         {
             var expectedResults = new string[]
@@ -613,9 +613,9 @@ End Sub
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
-        [Ignore] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
+        [Test]
+        [Category("Resolver")]
+        [Ignore("Broken feature")] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
         {
             var code =
@@ -643,9 +643,9 @@ End Sub
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
         }
 
-        [TestMethod]
-        [TestCategory("Resolver")]
-        [Ignore] // bug: this test should pass... it's not all that evil
+        [Test]
+        [Category("Resolver")]
+        [Ignore("Broken feature")] // bug: this test should pass... it's not all that evil
         public void AmbiguousNameSelectsSmallestScopedDeclaration()
         {
             var code =
@@ -673,8 +673,8 @@ End Sub
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void DeclarationFinderCanCopeWithMultipleModulesImplementingTheSameInterface()
         {
             var project = GetTestProject("testProject");

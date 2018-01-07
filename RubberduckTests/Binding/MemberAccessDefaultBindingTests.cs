@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
-    [TestClass]
+    [TestFixture]
     public class MemberAccessDefaultBindingTests
     {
         private const string BINDING_TARGET_LEXPRESSION = "BindingTarget";
@@ -19,8 +19,8 @@ namespace RubberduckTests.Binding
         private const string TEST_CLASS_NAME = "TestClass";
         private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsVariablePropertyOrFunction()
         {
             var builder = new MockVbeBuilder();
@@ -40,8 +40,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProject()
         {
             const string PROJECT_NAME = "AnyProject";
@@ -61,8 +61,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProceduralModule()
         {
             const string PROJECT_NAME = "AnyProject";
@@ -82,8 +82,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsEnum()
         {
             const string PROJECT_NAME = "AnyProject";

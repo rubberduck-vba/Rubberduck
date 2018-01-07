@@ -1,18 +1,18 @@
 using System;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class IllegalAnnotationsInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NoAnnotation_NoResult()
         {
             const string inputCode =
@@ -32,8 +32,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenLegalModuleAnnotation_NoResult()
         {
             const string inputCode = @"
@@ -53,8 +53,8 @@ Option Explicit
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenOneIlegalModuleAnnotationAcrossModules_OneResult()
         {
             const string inputCode1 = @"
@@ -81,8 +81,8 @@ Option Explicit
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenTestModule_NoResult()
         {
             const string inputCode = @"
@@ -133,8 +133,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void SingleFolderAnnotation_NoResult()
         {
             const string inputCode =
@@ -155,8 +155,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MultipleFolderAnnotations_ReturnsResult()
         {
             const string inputCode =
@@ -178,8 +178,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void CorrectTestModuleAnnotation_NoResult()
         {
             const string inputCode = @"
@@ -207,8 +207,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void IllegalTestModuleAnnotation_OneResult()
         {
             const string inputCode = @"
@@ -234,8 +234,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleAnnotationOnTopMostMember_NoResult()
         {
             const string inputCode = @"
@@ -261,16 +261,16 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new IllegalAnnotationInspection(null);
             Assert.AreEqual(CodeInspectionType.RubberduckOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "IllegalAnnotationInspection";
