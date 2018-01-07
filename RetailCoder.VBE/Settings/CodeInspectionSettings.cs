@@ -52,7 +52,7 @@ namespace Rubberduck.Settings
                 {
                     return existing;
                 }
-                var proto = Convert.ChangeType(Activator.CreateInstance(inspectionType), inspectionType);
+                var proto = Convert.ChangeType(Activator.CreateInstance(inspectionType, new object[]{null}), inspectionType);
                 var setting = new CodeInspectionSetting(proto as IInspectionModel);
                 CodeInspections.Add(setting);
                 return setting;

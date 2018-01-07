@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBProject : SafeComWrapper<VB.VBProject>, IVBProject
     {
-        public VBProject(VB.VBProject vbProject)
-            :base(vbProject)
+        public VBProject(VB.VBProject target, bool rewrapping = false)
+            :base(target, rewrapping)
         {
         }
 

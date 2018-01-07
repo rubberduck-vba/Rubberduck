@@ -21,8 +21,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             ItemActivated = 4
         }
 
-        public VBProjects(VB.VBProjects target) 
-        :base(target)
+        public VBProjects(VB.VBProjects target, bool rewrapping = false) 
+        :base(target, rewrapping)
         {
             if (_projects == null)
             {
@@ -62,7 +62,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IVBProject>(null, o => new VBProject(null))
-                : new ComWrapperEnumerator<IVBProject>(Target, o => new VBProject((VB.VBProject) o));
+                : new ComWrapperEnumerator<IVBProject>(Target, comObject => new VBProject((VB.VBProject) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -71,18 +71,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IVBProject>) this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBProjects> other)
         {
@@ -156,19 +144,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private static ItemRenamedDelegate _projectRenamed;
         private static void OnProjectRenamed(VB.VBProject vbProject, string oldName)
         {
+            var project = new VBProject(vbProject);
+
             if (!IsInDesignMode() || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
             {
+                project.Dispose();
                 return;
             }
 
-            var project = new VBProject(vbProject);
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
-            if (handler != null && projectId != null)
+            if (handler == null || projectId == null)
             {
-                handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, oldName));
+                project.Dispose();
+                return;
             }
+            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, oldName));
         }
 
         public static event EventHandler<ProjectEventArgs> ProjectActivated;
@@ -184,25 +176,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private static void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
         {
+            var project = new VBProject(vbProject);
             var handler = dispatched;
-            if (handler != null && vbProject.Protection != VB.vbext_ProjectProtection.vbext_pp_locked)
+            if (handler == null || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
             {
-                var project = new VBProject(vbProject);
-                if (assignId)
-                {
-                    project.AssignProjectId();
-                }
-                var projectId = project.ProjectId;
-                if (projectId != null)
-                {
-                    handler.Invoke(project, new ProjectEventArgs(projectId, project));
-                }
+                project.Dispose();
+                return;
             }
+
+            if (assignId)
+            {
+                project.AssignProjectId();
+            }
+            var projectId = project.ProjectId;
+
+            if (projectId == null)
+            {
+                project.Dispose();
+                return;
+            }
+            handler.Invoke(project, new ProjectEventArgs(projectId, project));
         }
 
         private static bool IsInDesignMode()
         {
-            if (_projects == null) return true;
+            if (_projects == null)
+            {
+                return true;
+            }
             foreach (var project in _projects.Cast<VB.VBProject>())
             {
                 if (project.Mode != VB.vbext_VBAMode.vbext_vm_Design)

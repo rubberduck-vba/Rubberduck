@@ -6,8 +6,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Control : SafeComWrapper<VB.Forms.Control>, IControl
     {
-        public Control(VB.Forms.Control target) 
-            : base(target)
+        public Control(Microsoft.Vbe.Interop.Forms.Control target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

@@ -28,7 +28,8 @@ namespace RubberduckTests.Inspections
             settings.CodeInspections.Add(new CodeInspectionSetting
             {
                 Description = inspection.Description,
-                Severity = inspection.Severity
+                Severity = inspection.Severity, 
+                Name = inspection.ToString()
             });
             return new Configuration
             {
