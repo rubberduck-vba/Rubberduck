@@ -13,6 +13,8 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using static Rubberduck.Parsing.Grammar.VBAParser;
+using System.Diagnostics;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -106,16 +108,31 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, Declaration target, string localIdentifier)
         {
-            var localVariableDeclaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}{Environment.NewLine}";
-            
+            var localVariableDeclaration = $"{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}";
+
             var requiresAssignmentUsingSet =
                 target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState));
 
             var localVariableAssignment = string.Format("{0}{1}",
-                                                        requiresAssignmentUsingSet ? "Set " : string.Empty,
+                                                        requiresAssignmentUsingSet ? $"{Tokens.Set} " : string.Empty,
                                                         $"{localIdentifier} = {target.IdentifierName}");
 
-            rewriter.InsertBefore(((ParserRuleContext)target.Context.Parent).Stop.TokenIndex + 1, localVariableDeclaration + localVariableAssignment);
+            var endOfStmtCtxt = ParserRuleContextHelper.GetChild<EndOfStatementContext>(target.Context.Parent.Parent);
+            var eosContent = endOfStmtCtxt.GetText();
+            var idxLastNewLine = eosContent.LastIndexOf(Environment.NewLine);
+            var comment = eosContent.Substring(0, idxLastNewLine);
+            var endOfStmtNewLineContent = eosContent.Substring(idxLastNewLine);
+
+            Debug.Assert(target.Context.Parent is ArgListContext);
+
+            var insertCtxt = (ParserRuleContext)ParserRuleContextHelper.GetChild<AsTypeClauseContext>(target.Context.Parent.Parent);
+            if(insertCtxt == null)
+            {
+                insertCtxt = (ParserRuleContext)target.Context.Parent;
+            }
+
+            rewriter.Remove(endOfStmtCtxt);
+            rewriter.InsertAfter(insertCtxt.Stop.TokenIndex, $"{comment}{endOfStmtNewLineContent}{localVariableDeclaration}" + $"{endOfStmtNewLineContent}{localVariableAssignment}{endOfStmtNewLineContent}");
         }
     }
 }
