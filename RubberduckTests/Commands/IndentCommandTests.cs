@@ -135,7 +135,7 @@ End Sub
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, MockIndenterBuilder.Create(vbe.Object), state);
                 indentCommand.Execute(null);
 
                 var module1 = project.Object.VBComponents["Comp1"].CodeModule;
@@ -157,7 +157,7 @@ End Sub
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, MockIndenterBuilder.Create(vbe.Object), state);
                 Assert.IsFalse(indentCommand.CanExecute(null));
             }
         }
@@ -171,14 +171,9 @@ End Sub
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, MockIndenterBuilder.Create(vbe.Object), state);
                 Assert.IsTrue(indentCommand.CanExecute(null));
             }
-        }
-
-        private static IIndenter CreateIndenter(IVBE vbe)
-        {
-            return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
     }
 }

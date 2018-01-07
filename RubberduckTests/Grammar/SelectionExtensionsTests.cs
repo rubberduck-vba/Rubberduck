@@ -781,9 +781,9 @@ End Sub : 'Lame comment!
             }
         }
         
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Overlaps_Other_Selection()
         {
             const string inputCode = @"

@@ -1,9 +1,7 @@
-using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.Refactorings;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -23,8 +21,6 @@ namespace Rubberduck.UI.Command.Refactorings
             _state = state;
             _refactoringFactory = refactoringFactory;
         }
-
-        public override RubberduckHotkey Hotkey => RubberduckHotkey.RefactorExtractMethod;
 
         protected override bool EvaluateCanExecute(object parameter)
         {

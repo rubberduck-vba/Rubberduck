@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         private readonly RubberduckParserState _state;
 
         // TODO: encapsulate the model. See the TODO in command class
-        private QualifiedSelection selection;
+        private QualifiedSelection _selection;
         public ExtractMethodSelectionValidation Validator;
 
         public ExtractMethodRefactoring(
@@ -43,9 +43,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
                 return;
             }
 
-            selection = _codeModule.GetQualifiedSelection().Value;
+            _selection = _codeModule.GetQualifiedSelection().Value;
             
-            var model = new ExtractMethodModel(_state, selection, Validator.SelectedContexts, _indenter, _codeModule);
+            var model = new ExtractMethodModel(_state, _selection, Validator.SelectedContexts, _indenter, _codeModule);
             var presenter = ExtractMethodPresenter.Create(model);
 
             if (presenter == null)
@@ -121,11 +121,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public event EventHandler InvalidSelection;
         private void OnInvalidSelection()
         {
-            var handler = InvalidSelection;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            InvalidSelection?.Invoke(this, EventArgs.Empty);
         }
 
     }
