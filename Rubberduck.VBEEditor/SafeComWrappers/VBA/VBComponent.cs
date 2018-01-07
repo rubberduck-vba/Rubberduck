@@ -43,11 +43,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 var designer = IsWrappingNullReference
                     ? null
-                    : Target.Designer as VB.Forms.UserForm;
+                    : new UserForm(Target.Designer as VB.Forms.UserForm);
 
                 return designer == null 
                     ? new Controls(null) 
-                    : new Controls(designer.Controls);
+                    : designer.Controls;
             }
         }
 
@@ -57,11 +57,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 var designer = IsWrappingNullReference
                     ? null
-                    : Target.Designer as VB.Forms.UserForm;
+                    : new UserForm(Target.Designer as VB.Forms.UserForm);
 
                 return designer == null
                     ? new Controls(null)
-                    : new Controls(designer.Selected);
+                    : designer.Selected;
             }
         }
         
@@ -73,9 +73,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     return false;
                 }
-                var designer = Target.Designer;
-                var hasDesigner = designer != null;
-                return hasDesigner;
+                using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return !designer.IsWrappingNullReference;
+                }
             }
         }
 
@@ -188,17 +189,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Export(path);
             return path;
         }
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        DesignerWindow().Release();
-        //        Controls.Release();
-        //        Properties.Release();
-        //        CodeModule.Release();
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponent> other)
         {
