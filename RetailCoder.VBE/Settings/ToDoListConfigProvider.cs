@@ -11,7 +11,7 @@ namespace Rubberduck.Settings
         public ToDoListConfigProvider(IPersistanceService<ToDoListSettings> persister)
         {
             _persister = persister;
-            _defaultMarkers = new DefaultToDoMarkers().Markers;
+            _defaultMarkers = new DefaultSettings<ToDoMarker>().Defaults;
         }
 
         public ToDoListSettings Create()

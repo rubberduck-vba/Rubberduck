@@ -11,7 +11,7 @@ namespace Rubberduck.Settings
         public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister)
         {
             _persister = persister;
-            _defaultHotkeys = new DefaultHotkeySettings().Hotkeys;
+            _defaultHotkeys = new DefaultSettings<HotkeySetting>().Defaults;
         }
 
         public HotkeySettings Create()
