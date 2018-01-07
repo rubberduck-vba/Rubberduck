@@ -5512,33 +5512,6 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BUG.
-        /// </summary>
-        public static string TodoMarkerBug {
-            get {
-                return ResourceManager.GetString("TodoMarkerBug", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NOTE.
-        /// </summary>
-        public static string TodoMarkerNote {
-            get {
-                return ResourceManager.GetString("TodoMarkerNote", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TODO.
-        /// </summary>
-        public static string TodoMarkerTodo {
-            get {
-                return ResourceManager.GetString("TodoMarkerTodo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to TODO Explorer.
         /// </summary>
         public static string TodoSettings_Caption {

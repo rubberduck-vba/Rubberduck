@@ -18,6 +18,7 @@ namespace Rubberduck.Settings
         {
             var prototype = new HotkeySettings(_defaultHotkeys);
 
+            // Loaded settings don't contain defaults, so we need to use the `Settings` property to combine user settings with defaults.
             var loaded = _persister.Load(prototype);
             if (loaded != null)
             {
