@@ -28,12 +28,27 @@ comment:
   behavior: new
   require_changes: yes
   
+ignore:
+  # as requested by MDoerner, because they aren't really testable
+  - Rubberduck.VBEEditor
+  # it makes no sense to track coverage on unit-tests
+  - RubberduckTests
+
 flags:
   core:
     paths:
       - Rubberduck.Parsing
-      - Rubberduck.VBEEditor
+      - Retailcoder.VBE
+      # Exclude UI from the core flag, that has a separate flag
+      - !Retailcoder.VBE/UI 
+  ui:
+    paths:
+      - Retailcoder.VBE/UI
   inspections:
     paths:
       - Rubberduck.Inspections
-  
+  tools:
+     paths:
+       - Rubberduck.SourceControl
+       - Rubberduck.SmartIndenter
+       - Rubberduck.RegexAssistant
