@@ -1,4 +1,5 @@
-﻿using Rubberduck.SmartIndenter;
+﻿using Moq;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
