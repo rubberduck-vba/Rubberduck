@@ -150,15 +150,19 @@ namespace Rubberduck.Parsing.VBA
             return attributesParseResults;
         }
 
-        private static string GetCode(ICodeModule module)
+        private static string GetCode(IVBComponent component)
         {
-            var lines = module.CountOfLines;
-            if (lines == 0)
+            string codeLines;
+            using (var module = component.CodeModule)
             {
-                return string.Empty;
-            }
+                var lines = module.CountOfLines;
+                if (lines == 0)
+                {
+                    return string.Empty;
+                }
 
-            var codeLines = module.GetLines(1, lines);
+                codeLines = module.GetLines(1, lines);
+            }
             var code = string.Concat(codeLines);
 
             return code;
@@ -166,7 +170,7 @@ namespace Rubberduck.Parsing.VBA
 
         private CommonTokenStream RewriteAndPreprocess(CancellationToken cancellationToken)
         {
-            var code = _rewriter?.GetText() ?? string.Join(Environment.NewLine, GetCode(_module.Component.CodeModule));
+            var code = _rewriter?.GetText() ?? string.Join(Environment.NewLine, GetCode(_module.Component));
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             _preprocessor.PreprocessTokenStream(_module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);

@@ -210,21 +210,27 @@ namespace Rubberduck.Refactorings.Rename
 
             if (target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = module.Parent.Controls.FirstOrDefault(item => item.Name == target.IdentifierName);
-                if (control == null)
+                using (var controls = target.QualifiedName.QualifiedModuleName.Component.Controls)
                 {
-                    PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null control reference");
-                    return false;
+                    using (var control = controls.FirstOrDefault(item => item.Name == target.IdentifierName))
+                    {
+                        if (control == null)
+                        {
+                            PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null control reference");
+                            return false;
+                        }
+                    }
                 }
             }
             else if (target.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                if (module.IsWrappingNullReference)
+                using (var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule)
                 {
-                    PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null Module reference");
-                    return false;
+                    if (module.IsWrappingNullReference)
+                    {
+                        PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null Module reference");
+                        return false;
+                    }
                 }
             }
             return true;
@@ -381,13 +387,17 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = module.Parent.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName);
-                Debug.Assert(control != null, $"input validation fail: unable to locate '{_model.Target.IdentifierName}' in Controls collection");
+                using (var controls = _model.Target.QualifiedName.QualifiedModuleName.Component.Controls)
+                {
+                    using (var control = controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName))
+                    {
+                        Debug.Assert(control != null,
+                            $"input validation fail: unable to locate '{_model.Target.IdentifierName}' in Controls collection");
 
-                control.Name = _model.NewName;
+                        control.Name = _model.NewName;
+                    }
+                }
                 RenameReferences(_model.Target, _model.NewName);
-
                 var controlEventHandlers = FindEventHandlersForControl(_model.Target);
                 RenameDefinedFormatMembers(controlEventHandlers, _appendUnderscoreFormat);
             }
@@ -443,8 +453,11 @@ namespace Rubberduck.Refactorings.Rename
             }
             else
             {
-                Debug.Assert(!component.CodeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
-                component.CodeModule.Name = _model.NewName;
+                using (var codeModule = component.CodeModule)
+                {
+                    Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
+                    codeModule.Name = _model.NewName;
+                }
             }
         }
 

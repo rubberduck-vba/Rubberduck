@@ -75,7 +75,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }
