@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -51,15 +52,26 @@ namespace Rubberduck.Inspections.Concrete
                                 !whitelistedNames.Contains(declaration.IdentifierName) &&
                                 !VariableNameValidator.IsMeaningfulName(declaration.IdentifierName));
 
-            return (from issue in issues
-                    let props = issue.DeclarationType.HasFlag(DeclarationType.Module) ||
-                                issue.DeclarationType.HasFlag(DeclarationType.Project)
-                        ? new Dictionary<string, string> {{"DisableFixes", "IgnoreOnceQuickFix"}} : null
-                    select new DeclarationInspectionResult(this,
-                        string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
-                            RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType,
-                                CultureInfo.CurrentUICulture), issue.IdentifierName), issue, properties: props))
+            return (from issue in issues select CreateInspectionResult(this, issue))
                 .ToList();
+        }
+
+        private static DeclarationInspectionResult CreateInspectionResult(IInspection inspection, Declaration issue)
+        {
+            dynamic properties = null;
+
+            if (issue.DeclarationType.HasFlag(DeclarationType.Module) ||
+                issue.DeclarationType.HasFlag(DeclarationType.Project))
+            {
+                properties = new PropertyBag();
+                properties.DisableFixes = "IgnoreOnceQuickFix";
+            }
+
+            return new DeclarationInspectionResult(inspection,
+                string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
+                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType,
+                        CultureInfo.CurrentUICulture), issue.IdentifierName),
+                issue, properties: properties);
         }
     }
 }
