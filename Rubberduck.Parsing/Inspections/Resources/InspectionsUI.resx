@@ -542,7 +542,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Component '{0}' uses 'Option Base 1'</value>
   </data>
   <data name="UntypedFunctionUsageInspectionResultFormat" xml:space="preserve">
-    <value>Replace function `{0}` with existing typed function</value>
+    <value>Replace function '{0}' with existing typed function</value>
   </data>
   <data name="VariableTypeNotDeclaredInspectionResultFormat" xml:space="preserve">
     <value>{0} '{1}' is implicitly 'Variant'</value>
@@ -889,5 +889,17 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="ObsoleteErrorSyntaxInspectionName" xml:space="preserve">
     <value>Use of 'Error' statement</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionMeta" xml:space="preserve">
+    <value>Error handling should be restored after using 'On Error Resume Next'.</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionName" xml:space="preserve">
+    <value>Unhandled 'On Error Resume Next'</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionQuickFix" xml:space="preserve">
+    <value>Introduce error handling subroutine</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionResultFormat" xml:space="preserve">
+    <value>Errors are ignored but never handled again</value>
   </data>
 </root>
