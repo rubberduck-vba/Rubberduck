@@ -136,6 +136,7 @@
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\UnreachableCaseInspectionTests.cs" />
     <Compile Include="Inspections\EmptyModuleInspectionTests.cs" />
+    <Compile Include="Inspections\UnhandledOnErrorResumeNextInspectionTest.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RestoreErrorHandlingQuickFixTests.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFixTests.cs" />

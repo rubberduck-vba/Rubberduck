@@ -2181,6 +2181,14 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string UnreachableCaseInspection_CaseElse {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_CaseElse", resourceCulture);
+			}
+		}
+        /// <summary>
+        ///   Looks up a localized string similar to Error handling should be restored after using &apos;On Error Resume Next&apos;..
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionMeta {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionMeta", resourceCulture);
             }
         }
         
@@ -2190,6 +2198,14 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string UnreachableCaseInspection_TypeMismatch {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_TypeMismatch", resourceCulture);
+			}
+		}
+        /// <summary>
+        ///   Looks up a localized string similar to Unhandled &apos;On Error Resume Next&apos;.
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionName {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionName", resourceCulture);
             }
         }
         
@@ -2199,6 +2215,14 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string UnreachableCaseInspection_Unreachable {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
+			}
+		}
+        /// <summary>
+        ///   Looks up a localized string similar to Introduce error handling subroutine.
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionQuickFix", resourceCulture);
             }
         }
         
@@ -2226,6 +2250,14 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string UnreachableCaseInspectionResultFormat {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspectionResultFormat", resourceCulture);
+			}
+		}
+        /// <summary>
+        ///   Looks up a localized string similar to Errors are ignored but never handled again.
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -2249,7 +2281,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace function `{0}` with existing typed function.
+        ///   Looks up a localized string similar to Replace function &apos;{0}&apos; with existing typed function.
         /// </summary>
         public static string UntypedFunctionUsageInspectionResultFormat {
             get {

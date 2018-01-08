@@ -5,6 +5,7 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -40,21 +41,19 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<IInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
         {
             return from interfaceMember in interfaceMembers
-                   let implementationMembers =
-                       UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
-                   where interfaceMember.DeclarationType == DeclarationType.Function &&
-                       !IsReturnValueUsed(interfaceMember) &&
-                       implementationMembers.All(member => !IsReturnValueUsed(member))
-                   let implementationMemberIssues =
-                       implementationMembers.Select(
-                           implementationMember =>
-                               Tuple.Create(implementationMember.Context,
-                                   new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
-                                       implementationMember.Selection), implementationMember))
-                   select
-                       new DeclarationInspectionResult(this,
-                                            string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, interfaceMember.IdentifierName),
-                                            interfaceMember, properties: new Dictionary<string, string> { { "DisableFixes", nameof(QuickFixes.ConvertToProcedureQuickFix) } });
+                let implementationMembers =
+                    UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
+                where interfaceMember.DeclarationType == DeclarationType.Function &&
+                      !IsReturnValueUsed(interfaceMember) &&
+                      implementationMembers.All(member => !IsReturnValueUsed(member))
+                let implementationMemberIssues =
+                    implementationMembers.Select(
+                        implementationMember =>
+                            Tuple.Create(implementationMember.Context,
+                                new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
+                                    implementationMember.Selection), implementationMember))
+                select CreateInspectionResult(this, interfaceMember);
+
         }
 
         private IEnumerable<IInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
@@ -148,6 +147,17 @@ namespace Rubberduck.Inspections.Concrete
             var setStmt = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(usage.Context);
 
             return setStmt != null && setStmt == usage.Context;
+        }
+
+        private DeclarationInspectionResult CreateInspectionResult(IInspection inspection, Declaration interfaceMember)
+        {
+            dynamic properties = new PropertyBag();
+            properties.DisableFixes = nameof(QuickFixes.ConvertToProcedureQuickFix);
+
+            return new DeclarationInspectionResult(inspection,
+                string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat,
+                    interfaceMember.IdentifierName),
+                interfaceMember, properties: properties);
         }
     }
 }
