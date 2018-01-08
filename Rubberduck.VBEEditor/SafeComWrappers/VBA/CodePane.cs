@@ -45,7 +45,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (endLine > startLine && endColumn == 1)
             {
                 endLine -= 1;
-                endColumn = CodeModule.GetLines(endLine, 1).Length;
+                using (var codeModule = CodeModule)
+                {
+                    endColumn = codeModule.GetLines(endLine, 1).Length;
+                }
             }
 
             return new Selection(startLine, startColumn, endLine, endColumn);

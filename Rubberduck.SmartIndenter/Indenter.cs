@@ -23,28 +23,35 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         public void IndentCurrentProcedure()
         {
-            var pane = _vbe.ActiveCodePane;
-
-            if (pane == null)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                return;
+                if (pane == null)
+                {
+                    return;
+                }
+
+                using (var module = pane.CodeModule)
+                {
+                    var selection = GetSelection(pane);
+
+                    var procName = module.GetProcOfLine(selection.StartLine);
+                    var procKind = module.GetProcKindOfLine(selection.StartLine);
+
+                    if (string.IsNullOrEmpty(procName))
+                    {
+                        return;
+                    }
+
+                    var startLine = module.GetProcStartLine(procName, procKind);
+                    var endLine = startLine + module.GetProcCountLines(procName, procKind);
+
+                    selection = new Selection(startLine, 1, endLine, 1);
+                    using (var component = module.Parent)
+                    {
+                        Indent(component, selection);
+                    }
+                }
             }
-            var module = pane.CodeModule;
-            var selection = GetSelection(pane);
-
-            var procName = module.GetProcOfLine(selection.StartLine);
-            var procKind = module.GetProcKindOfLine(selection.StartLine);
-
-            if (string.IsNullOrEmpty(procName))
-            {
-                return;
-            }
-
-            var startLine = module.GetProcStartLine(procName, procKind);
-            var endLine = startLine + module.GetProcCountLines(procName, procKind);
-
-            selection = new Selection(startLine, 1, endLine, 1);
-            Indent(module.Parent, selection);
         }
 
         /// <summary>

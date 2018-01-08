@@ -32,7 +32,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             using (var components = node != null
                 ? GetDeclaration(node).Project.VBComponents
-                : ComponentsColectionFromActiveProject())
+                : ComponentsCollectionFromActiveProject())
             {
                 var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
 
@@ -46,7 +46,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        private IVBComponents ComponentsColectionFromActiveProject()
+        private IVBComponents ComponentsCollectionFromActiveProject()
         {
             using (var activeProject = _vbe.ActiveVBProject)
             {

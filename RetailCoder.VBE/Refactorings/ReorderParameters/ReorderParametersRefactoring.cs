@@ -41,21 +41,23 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
-            var pane = _vbe.ActiveCodePane;
-            if (!pane.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                QualifiedSelection? oldSelection;
-                var module = pane.CodeModule;
+                if (!pane.IsWrappingNullReference)
                 {
-                    oldSelection = module.GetQualifiedSelection();
-                }
+                    QualifiedSelection? oldSelection;
+                    using (var module = pane.CodeModule)
+                    {
+                        oldSelection = module.GetQualifiedSelection();
+                    }
 
-                AdjustReferences(_model.TargetDeclaration.References);
-                AdjustSignatures();
+                    AdjustReferences(_model.TargetDeclaration.References);
+                    AdjustSignatures();
 
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
+                    if (oldSelection.HasValue)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
                 }
             }
 
@@ -69,7 +71,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 pane.Selection = target.Selection;
                 Refactor();
@@ -83,7 +85,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 pane.Selection = target.QualifiedSelection.Selection;
                 Refactor();

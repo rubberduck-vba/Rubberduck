@@ -60,20 +60,26 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var pane = Vbe.ActiveCodePane;
-            var module = pane.CodeModule;
+            using (var pane = Vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {
                     return;
                 }
-                var selection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.Selection);
 
-                using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
+                using (var module = pane.CodeModule)
                 {
-                    var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                    var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox);
-                    refactoring.Refactor(selection);
+                    using (var component = module.Parent)
+                    {
+                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection); //The component does not get passed out. So, it is safe to dispose afterwards.
+
+                        using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
+                        {
+                            var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
+                            var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox);
+                            refactoring.Refactor(selection);
+                        }
+                    }
                 }
             }
         }
