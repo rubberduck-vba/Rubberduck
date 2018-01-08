@@ -1,10 +1,14 @@
 codecov:
-  branch:
-    - next
-    - master
+  branch: next
   ci:
     - appveyor
   max_report_age: off
+  
+ignore:
+  # as requested by MDoerner, because they aren't really testable
+  - Rubberduck.VBEEditor
+  # it makes no sense to track coverage on unit-tests
+  - RubberduckTests
     
 coverage:
   round: nearest
@@ -13,27 +17,45 @@ coverage:
   status:
     # don't check patch coverage
     patch: off
-    changes: yes
-    # allow decrease by up to 5 %
-    threshold: 5
-    base: auto
+    changes:
+      base: auto
     project:
+      default:
+        target: 0 # don't force a minimum coverage
+        # allow decrease by up to 5 %
+        threshold: 5
+        base: auto
       core:
         # restrict core decrease to 1.5%
         threshold: 1.5
         flags: core
+      ui:
+        flags: ui
+      inspections:
+        flags: inspections
+      tools:
+        flags: tools
   
 comment:
-  layout: "diff, files, changes, footer"
+  layout: "flags, diff, files"
   behavior: new
   require_changes: yes
-  
+
 flags:
   core:
     paths:
       - Rubberduck.Parsing
-      - Rubberduck.VBEEditor
+      - Retailcoder.VBE
+      # Exclude UI from the core flag, that has a separate flag
+      - !Retailcoder.VBE/UI 
+  ui:
+    paths:
+      - Retailcoder.VBE/UI
   inspections:
     paths:
       - Rubberduck.Inspections
-  
+  tools:
+     paths:
+       - Rubberduck.SourceControl
+       - Rubberduck.SmartIndenter
+       - Rubberduck.RegexAssistant
