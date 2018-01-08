@@ -32,6 +32,9 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
+            Debug.Assert(result.Target.Context.Parent is ArgListContext);
+            Debug.Assert(null != ParserRuleContextHelper.GetChild<EndOfStatementContext>(result.Target.Context.Parent.Parent));
+
             var forbiddenNames = _parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(result.Target).Select(n => n.IdentifierName);
 
             var localIdentifier = PromptForLocalVariableName(result.Target, forbiddenNames.ToList());
@@ -120,10 +123,8 @@ namespace Rubberduck.Inspections.QuickFixes
             var endOfStmtCtxt = ParserRuleContextHelper.GetChild<EndOfStatementContext>(target.Context.Parent.Parent);
             var eosContent = endOfStmtCtxt.GetText();
             var idxLastNewLine = eosContent.LastIndexOf(Environment.NewLine);
-            var comment = eosContent.Substring(0, idxLastNewLine);
-            var endOfStmtNewLineContent = eosContent.Substring(idxLastNewLine);
-
-            Debug.Assert(target.Context.Parent is ArgListContext);
+            var endOfStmtCtxtComment = eosContent.Substring(0, idxLastNewLine);
+            var endOfStmtCtxtEndFormat = eosContent.Substring(idxLastNewLine);
 
             var insertCtxt = (ParserRuleContext)ParserRuleContextHelper.GetChild<AsTypeClauseContext>(target.Context.Parent.Parent);
             if(insertCtxt == null)
@@ -132,7 +133,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             rewriter.Remove(endOfStmtCtxt);
-            rewriter.InsertAfter(insertCtxt.Stop.TokenIndex, $"{comment}{endOfStmtNewLineContent}{localVariableDeclaration}" + $"{endOfStmtNewLineContent}{localVariableAssignment}{endOfStmtNewLineContent}");
+            rewriter.InsertAfter(insertCtxt.Stop.TokenIndex, $"{endOfStmtCtxtComment}{endOfStmtCtxtEndFormat}{localVariableDeclaration}" + $"{endOfStmtCtxtEndFormat}{localVariableAssignment}{endOfStmtCtxtEndFormat}");
         }
     }
 }
