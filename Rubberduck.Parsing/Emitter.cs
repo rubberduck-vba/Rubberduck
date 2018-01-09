@@ -59,10 +59,19 @@ End Function
                 object result;
                 try
                 {
-                    component = project.VBComponents.Add(ComponentType.StandardModule);
-                    component.CodeModule.AddFromString(content);
-                    var host = project.VBE.HostApplication();
-                    result = host.Run(name, args);
+                    using (var components = project.VBComponents)
+                    {
+                        component = components.Add(ComponentType.StandardModule);
+                        using (var codeModule = component.CodeModule)
+                        {
+                            codeModule.AddFromString(content);
+                        }
+                        using (var vbe = project.VBE)
+                        {
+                            var host = vbe.HostApplication();
+                            result = host.Run(name, args);
+                        }
+                    }
                 }
                 catch (COMException)
                 {
@@ -73,7 +82,11 @@ End Function
                 {
                     if (component != null)
                     {
-                        project.VBComponents.Remove(component);
+                        using (var components = project.VBComponents)
+                        {
+                            components.Remove(component);
+                        }
+                        component.Dispose();
                     }
                 }
 

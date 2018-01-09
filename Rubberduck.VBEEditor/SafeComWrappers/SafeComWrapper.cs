@@ -149,7 +149,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             {
                 _comSafe?.TryRemove(this);
 
-                if (!_rewrapping && !HasBeenReleased)
+                if (!_rewrapping && !IsWrappingNullReference && !HasBeenReleased)
                 {
                     Release();
                 }
