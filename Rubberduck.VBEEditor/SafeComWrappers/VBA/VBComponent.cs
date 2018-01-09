@@ -41,13 +41,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                var designer = IsWrappingNullReference
+                using (var designer = IsWrappingNullReference
                     ? null
-                    : Target.Designer as VB.Forms.UserForm;
-
-                return designer == null 
-                    ? new Controls(null) 
-                    : new Controls(designer.Controls);
+                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return designer == null
+                        ? new Controls(null)
+                        : designer.Controls;
+                }
             }
         }
 
@@ -55,13 +56,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                var designer = IsWrappingNullReference
+                using (var designer = IsWrappingNullReference
                     ? null
-                    : Target.Designer as VB.Forms.UserForm;
-
-                return designer == null
-                    ? new Controls(null)
-                    : new Controls(designer.Selected);
+                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return designer == null
+                        ? new Controls(null)
+                        : designer.Selected;
+                }
             }
         }
         
@@ -73,9 +75,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     return false;
                 }
-                var designer = Target.Designer;
-                var hasDesigner = designer != null;
-                return hasDesigner;
+                using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return !designer.IsWrappingNullReference;
+                }
             }
         }
 
@@ -118,8 +121,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
             // we need to remove the extra newline before the file gets written to its output location.
 
-            var visibleCode = CodeModule.Content().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+            int legitEmptyLineCount;
+            using (var codeModule = CodeModule)
+            {
+                var visibleCode = codeModule.Content().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+            }
 
             var tempFile = ExportToTempFile();
             var tempFilePath = Directory.GetParent(tempFile).FullName;
@@ -172,13 +179,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void ExportDocumentModule(string path)
         {
-            var lineCount = CodeModule.CountOfLines;
-            if (lineCount > 0)
+            using (var codeModule = CodeModule)
             {
-                //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
-                //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
-                var text = CodeModule.GetLines(1, lineCount);
-                File.WriteAllText(path, text, Encoding.UTF8);  
+                var lineCount = codeModule.CountOfLines;
+                if (lineCount > 0)
+                {
+                    //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
+                    //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
+                    var text = codeModule.GetLines(1, lineCount);
+                    File.WriteAllText(path, text, Encoding.UTF8);
+                }
             }
         }
 
@@ -188,17 +198,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Export(path);
             return path;
         }
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        DesignerWindow().Release();
-        //        Controls.Release();
-        //        Properties.Release();
-        //        CodeModule.Release();
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponent> other)
         {

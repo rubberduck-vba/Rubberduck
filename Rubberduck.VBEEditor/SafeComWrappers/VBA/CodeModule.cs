@@ -63,7 +63,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 return null;
             }
-            return CodePane.GetQualifiedSelection();
+            using (var codePane = CodePane)
+            {
+                return codePane.GetQualifiedSelection();
+            }
         }
 
         public string Content()

@@ -142,16 +142,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public static void SetSelection(IVBProject vbProject, Selection selection, string name)
         {
-            var components = vbProject.VBComponents;
-            var component = components.SingleOrDefault(c => c.Name == name);
-            if (component == null || component.IsWrappingNullReference)
+            using (var components = vbProject.VBComponents)
             {
-                return;
-            }
+                using (var component = components.SingleOrDefault(c => ComponentHasName(c, name))) 
+                {
+                    if (component == null || component.IsWrappingNullReference)
+                    {
+                        return;
+                    }
 
-            var module = component.CodeModule;
-            var pane = module.CodePane;
-            pane.Selection = selection;
+                    using (var module = component.CodeModule)
+                    {
+                        using (var pane = module.CodePane)
+                        {
+                            pane.Selection = selection;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static bool ComponentHasName(IVBComponent c, string name)
+        {
+            var sameName = c.Name == name;
+            if (!sameName)
+            {
+                c.Dispose();
+            }
+            return sameName;
         }
 
 

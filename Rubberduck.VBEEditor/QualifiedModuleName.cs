@@ -49,15 +49,21 @@ namespace Rubberduck.VBEditor
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
             ContentHashCode = 0;
-            if (!component.IsWrappingNullReference)
+            if (!Component.IsWrappingNullReference)
             {
-                var module = Component.CodeModule;
-                ContentHashCode = module.CountOfLines > 0
-                    ? module.GetLines(1, module.CountOfLines).GetHashCode()
-                    : 0;
+                using (var module = Component.CodeModule)
+                {
+                    ContentHashCode = module.CountOfLines > 0
+                        ? module.GetLines(1, module.CountOfLines).GetHashCode()
+                        : 0;
+                }
             }
 
-            var project = component.Collection.Parent;
+            IVBProject project;
+            using (var components = component.Collection)
+            {
+                project = components.Parent;
+            }
             _projectName = project == null ? string.Empty : project.Name;
             ProjectPath = string.Empty;
             ProjectId = GetProjectId(project);
