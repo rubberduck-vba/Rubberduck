@@ -149,16 +149,16 @@ namespace Rubberduck.UI.ToDoItems
                         return;
                     }
 
-                    var module = _selectedItem.Selection.QualifiedName.Component.CodeModule;
+                    using (var module = _selectedItem.Selection.QualifiedName.Component.CodeModule)
                     {
                         var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
                         var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
 
                         module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
-
-                        RefreshCommand.Execute(null);
                     }
-                });
+                    RefreshCommand.Execute(null);
+                }
+                );
             }
         }
 
