@@ -2,6 +2,7 @@
 {
     public interface IProjectsRepository : IProjectsProvider
     {
-        void Refresh(string projectId = null);
+        void Refresh();
+        void Refresh(string projectId);
     }
 }
