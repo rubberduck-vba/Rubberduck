@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement
 {
     public class ProjectsRepository : IProjectsRepository, IDisposable
     {
-        private readonly IVBProjects _projectsCollection;
+        private IVBProjects _projectsCollection;
         private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
         private readonly IDictionary<string, IVBComponents> _componentsCollections = new Dictionary<string, IVBComponents>();
         private readonly IDictionary<QualifiedModuleName, IVBComponent> _components = new Dictionary<QualifiedModuleName, IVBComponent>();
@@ -68,16 +68,16 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             throw new NotImplementedException();
 
-            if (_disposed)
-            {
-                return;
-            }
-
             ExecuteWithinWriteLock(() => RefreshCollections());
         }
 
         private void ExecuteWithinWriteLock(Action action)
         {
+            if (_disposed)
+            {
+                return; //The lock has already been diposed.
+            }
+
             var writeLockTaken = false;
             try
             {
@@ -157,30 +157,26 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             throw new NotImplementedException();
 
-            if (_disposed)
-            {
-                return;
-            }
-
             ExecuteWithinWriteLock(() => RefreshCollections(projectId));
         }
 
         public IVBProjects ProjectsCollection()
         {
-            throw new NotImplementedException();
-
             return _projectsCollection;
         }
 
         public IEnumerable<(string ProjectId, IVBProject Project)> Projects()
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _projects.Select(kvp => (kvp.Key, kvp.Value)).ToList());
         }
 
-        private T EvaluateWithinReadLock<T>(Func<T> function)
+        private T EvaluateWithinReadLock<T>(Func<T> function) where T: class
         {
+            if (_disposed)
+            {
+                return default(T); //The lock has already been diposed.
+            }
+
             var readLockTaken = false;
             try
             {
@@ -199,22 +195,16 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public IVBProject Project(string projectId)
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _projects.TryGetValue(projectId, out var project) ? project : null);
         }
 
         public IVBComponents ComponentsCollection(string projectId)
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _componentsCollections.TryGetValue(projectId, out var componenstCollection) ? componenstCollection : null);
         }
 
         public IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components()
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _components.Select(kvp => (kvp.Key, kvp.Value)).ToList());
         }
 
@@ -253,13 +243,19 @@ namespace Rubberduck.VBEditor.ComManagement
         private bool _disposed;
         public void Dispose()
         {
+            throw new NotImplementedException();
+
             if (_disposed)
             {
                 return;
             }
+            
+            ExecuteWithinWriteLock(() => ClearCollections());
+
             _disposed = true;
 
-            ExecuteWithinWriteLock(() => ClearCollections());
+            _projectsCollection.Dispose();
+            _projectsCollection = null;
 
             _refreshProtectionLock.Dispose();
         }

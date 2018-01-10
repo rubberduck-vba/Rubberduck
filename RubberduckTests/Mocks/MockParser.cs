@@ -15,7 +15,6 @@ using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace RubberduckTests.Mocks
 {

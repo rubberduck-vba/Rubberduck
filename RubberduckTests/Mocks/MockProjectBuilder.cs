@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 namespace RubberduckTests.Mocks
 {
     /// <summary>
-    /// Builds a mock <see cref="VBProject"/>.
+    /// Builds a mock <see cref="IVBProject"/>.
     /// </summary>
     public class MockProjectBuilder
     {
@@ -24,15 +24,9 @@ namespace RubberduckTests.Mocks
         private readonly List<Mock<IVBComponent>> _componentsMock = new List<Mock<IVBComponent>>();
         private readonly List<IReference> _references = new List<IReference>();
 
-        public Mock<IVBComponents> MockVBComponents
-        {
-            get { return _vbComponents; }
-        }
+        public Mock<IVBComponents> MockVBComponents => _vbComponents;
 
-        public List<Mock<IVBComponent>> MockComponents
-        {
-            get { return _componentsMock; }
-        }
+        public List<Mock<IVBComponent>> MockComponents => _componentsMock;
 
         private List<IVBComponent> Components
         {
@@ -138,10 +132,19 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Gets the mock <see cref="VBProject"/> instance.
+        /// Gets the mock <see cref="IVBProject"/> instance.
         /// </summary>
         public Mock<IVBProject> Build()
         {
+            return _project;
+        }
+
+        /// <summary>
+        /// Gets the mock <see cref="IVBProject"/> instance after assigning the projectId.
+        /// </summary>
+        public Mock<IVBProject> BuildWIthAssignedProjectId()
+        {
+            _project.Object.AssignProjectId();
             return _project;
         }
 
@@ -149,6 +152,7 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<IVBProject>();
 
+            result.Setup(m => m.Dispose());
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.FileName).Returns(() => filename);
             result.SetupGet(m => m.Protection).Returns(() => protection);
@@ -161,6 +165,8 @@ namespace RubberduckTests.Mocks
         private Mock<IVBComponents> CreateComponentsMock()
         {
             var result = new Mock<IVBComponents>();
+
+            result.Setup(m => m.Dispose());
 
             result.SetupGet(m => m.Parent).Returns(() => _project.Object);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
@@ -212,6 +218,7 @@ namespace RubberduckTests.Mocks
         private Mock<IReferences> CreateReferencesMock()
         {
             var result = new Mock<IReferences>();
+            result.Setup(m => m.Dispose());
             result.SetupGet(m => m.Parent).Returns(() => _project.Object);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
@@ -225,6 +232,8 @@ namespace RubberduckTests.Mocks
         private Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true)
         {
             var result = new Mock<IReference>();
+
+            result.Setup(m => m.Dispose());
 
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Collection).Returns(() => _vbReferences.Object);
@@ -243,16 +252,18 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<IVBComponent>();
 
+            result.Setup(m => m.Dispose());
+
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Collection).Returns(() => _vbComponents.Object);
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupProperty(m => m.Name, name);
+            result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
 
             var module = CreateCodeModuleMock(name, content, selection, result);
-            module.SetupGet(m => m.Parent).Returns(() => result.Object);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
 
-            result.Setup(m => m.Activate());
+            result.Setup(m => m.Activate());       
 
             return result;
         }
@@ -260,13 +271,13 @@ namespace RubberduckTests.Mocks
         private Mock<ICodeModule> CreateCodeModuleMock(string name, string content, Selection selection, Mock<IVBComponent> component)
         {
             var codePane = CreateCodePaneMock(name, selection, component);
-            codePane.SetupGet(m => m.VBE).Returns(_getVbe);
 
             var result = CreateCodeModuleMock(content, name);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
-            
+            result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(component.Object));
+
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
 
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
@@ -283,6 +294,7 @@ namespace RubberduckTests.Mocks
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
             var codeModule = new Mock<ICodeModule>();
+            codeModule.Setup(m => m.Dispose());
             codeModule.Setup(m => m.Clear()).Callback(() => lines = new List<string>());
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
@@ -345,6 +357,7 @@ namespace RubberduckTests.Mocks
             var window = windows.CreateWindow(name);
             windows.Add(window);
 
+            codePane.Setup(m => m.Dispose());
             codePane.Setup(p => p.GetQualifiedSelection()).Returns(() => {
                 if (selection.IsEmpty()) { return null; }
                 return new QualifiedSelection(new QualifiedModuleName(component.Object), selection);
@@ -354,6 +367,7 @@ namespace RubberduckTests.Mocks
 
             codePane.SetupGet(p => p.VBE).Returns(_getVbe);
             codePane.SetupGet(p => p.Window).Returns(() => window);
+            codePane.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(component.Object));
 
             return codePane;
         }

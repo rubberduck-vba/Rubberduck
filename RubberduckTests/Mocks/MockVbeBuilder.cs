@@ -183,6 +183,7 @@ namespace RubberduckTests.Mocks
         {
             var vbe = new Mock<IVBE>();
             _windows.VBE = vbe.Object;
+            vbe.Setup(m => m.Dispose());
             vbe.Setup(m => m.Windows).Returns(() => _windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
@@ -252,6 +253,8 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<IVBProjects>();
 
+            result.Setup(m => m.Dispose());
+
             result.Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             
@@ -266,6 +269,8 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<ICodePanes>();
 
+            result.Setup(m => m.Dispose());
+
             result.Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             
@@ -274,5 +279,7 @@ namespace RubberduckTests.Mocks
 
             return result;
         }
+
+        public Mock<IVBProjects> MockProjectsCollection => _vbProjects;
     }
 }
