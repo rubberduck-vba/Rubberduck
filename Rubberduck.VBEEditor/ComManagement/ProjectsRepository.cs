@@ -13,6 +13,7 @@ namespace Rubberduck.VBEditor.ComManagement
         private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
         private readonly IDictionary<string, IVBComponents> _componentsCollections = new Dictionary<string, IVBComponents>();
         private readonly IDictionary<QualifiedModuleName, IVBComponent> _components = new Dictionary<QualifiedModuleName, IVBComponent>();
+        private readonly IDictionary<QualifiedModuleName, ICodeModule> _codeModules = new Dictionary<QualifiedModuleName, ICodeModule>();
 
         private readonly ReaderWriterLockSlim _refreshProtectionLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
@@ -57,7 +58,9 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             foreach (var component in componentsCollection)
             {
-                _components.Add(new QualifiedModuleName(component), component);
+                var qmn = new QualifiedModuleName(component);
+                _components.Add(qmn, component);
+                _codeModules.Add(qmn, component.CodeModule);
             }
         }
 
@@ -98,12 +101,14 @@ namespace Rubberduck.VBEditor.ComManagement
             var projects = ClearComWrapperDictionary(_projects);
             var componentCollections = ClearComWrapperDictionary(_componentsCollections);
             var components = ClearComWrapperDictionary(_components);
+            var codeModules = ClearComWrapperDictionary(_codeModules);
 
             LoadCollections();
 
             DisposeWrapperEnumerable(projects);
             DisposeWrapperEnumerable(componentCollections);
             DisposeWrapperEnumerable(components);
+            DisposeWrapperEnumerable(codeModules);
         }
 
         private IEnumerable<ISafeComWrapper> ClearComWrapperDictionary<TKey, TWrapper>(IDictionary<TKey, TWrapper> dictionary)
@@ -132,10 +137,12 @@ namespace Rubberduck.VBEditor.ComManagement
 
             var componentsCollection = _componentsCollections[projectId];
             var components = _components.Where(kvp => kvp.Key.ProjectId.Equals(projectId)).ToList();
+            var codeModules = _codeModules.Where(kvp => kvp.Key.ProjectId.Equals(projectId)).ToList();
 
             foreach (var qmn in components.Select(kvp => kvp.Key))
             {
                 _components.Remove(qmn);
+                _codeModules.Remove(qmn);
             }
 
             _componentsCollections[projectId] = project.VBComponents;
@@ -143,6 +150,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
             componentsCollection.Dispose();
             DisposeWrapperEnumerable(components.Select(kvp => kvp.Value));
+            DisposeWrapperEnumerable(codeModules.Select(kvp => kvp.Value));
         }
 
         public void Refresh(string projectId)
@@ -221,7 +229,25 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public IVBComponent Component(QualifiedModuleName qualifiedModuleName)
         {
+            throw new NotImplementedException();
+
             return EvaluateWithinReadLock(() => _components.TryGetValue(qualifiedModuleName, out var component) ? component : null);
+        }
+
+        public IEnumerable<(QualifiedModuleName QualifiedModuleName, ICodeModule CodeModule)> CodeModules(string projectId)
+        {
+            throw new NotImplementedException();
+
+            return EvaluateWithinReadLock(() => _codeModules.Where(kvp => kvp.Key.ProjectId.Equals(projectId))
+                                                            .Select(kvp => (kvp.Key, kvp.Value))
+                                                            .ToList());
+        }
+
+        public ICodeModule CodeModule(QualifiedModuleName qualifiedModuleName)
+        {
+            throw new NotImplementedException();
+
+            return EvaluateWithinReadLock(() => _codeModules.TryGetValue(qualifiedModuleName, out var codeModule) ? codeModule : null);
         }
 
         private bool _disposed;
@@ -243,10 +269,12 @@ namespace Rubberduck.VBEditor.ComManagement
             var projects = ClearComWrapperDictionary(_projects);
             var componentCollections = ClearComWrapperDictionary(_componentsCollections);
             var components = ClearComWrapperDictionary(_components);
+            var codeModules = ClearComWrapperDictionary(_codeModules);
 
             DisposeWrapperEnumerable(projects);
             DisposeWrapperEnumerable(componentCollections);
             DisposeWrapperEnumerable(components);
+            DisposeWrapperEnumerable(codeModules);
         }
     }
 }
