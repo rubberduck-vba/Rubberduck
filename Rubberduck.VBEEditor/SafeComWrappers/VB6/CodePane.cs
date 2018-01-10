@@ -65,13 +65,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 return null;
             }
 
-            IVBComponent component;
-            using (var codeModule = CodeModule)
-            {
-                component = codeModule.Parent;
-            }
-            var moduleName = new QualifiedModuleName(component);
+            var moduleName = QualifiedModuleName;
             return new QualifiedSelection(moduleName, selection);
+        }
+
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get
+            {
+                using (var codeModule = CodeModule)
+                {
+                    return codeModule.QualifiedModuleName;
+                }
+            }
         }
 
         private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)

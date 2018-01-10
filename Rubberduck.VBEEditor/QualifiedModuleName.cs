@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -51,7 +50,7 @@ namespace Rubberduck.VBEditor
             ContentHashCode = 0;
             if (!Component.IsWrappingNullReference)
             {
-                using (var module = Component.CodeModule)
+                using (var module = component.CodeModule)
                 {
                     ContentHashCode = module.CountOfLines > 0
                         ? module.GetLines(1, module.CountOfLines).GetHashCode()
@@ -59,14 +58,15 @@ namespace Rubberduck.VBEditor
                 }
             }
 
-            IVBProject project;
             using (var components = component.Collection)
             {
-                project = components.Parent;
+                using (var project = components.Parent)
+                {
+                    _projectName = project == null ? string.Empty : project.Name;
+                    ProjectPath = string.Empty;
+                    ProjectId = GetProjectId(project);
+                }
             }
-            _projectName = project == null ? string.Empty : project.Name;
-            ProjectPath = string.Empty;
-            ProjectId = GetProjectId(project);
         }
 
         /// <summary>
@@ -122,18 +122,19 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
-            if (obj == null) { return false; }
-
-            try
-            {
-                var other = (QualifiedModuleName)obj;
-                var result = other.ProjectId == ProjectId && other.ComponentName == ComponentName;
-                return result;
-            }
-            catch (InvalidCastException)
+            if (obj == null)
             {
                 return false;
             }
+
+            var other = obj as QualifiedModuleName?;
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.Value.ProjectId == ProjectId && other.Value.ComponentName == ComponentName;
         }
 
         public static bool operator ==(QualifiedModuleName a, QualifiedModuleName b)
