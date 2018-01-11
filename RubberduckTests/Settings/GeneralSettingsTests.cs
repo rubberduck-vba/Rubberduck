@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Settings;
@@ -5,6 +6,7 @@ using Rubberduck.UI.Settings;
 using GeneralSettings = Rubberduck.Settings.GeneralSettings;
 using Rubberduck.Common;
 using Moq;
+using Rubberduck.UI;
 
 namespace RubberduckTests.Settings
 {
@@ -23,6 +25,14 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("en-US"),
                 IsAutoSaveEnabled = false,
                 AutoSavePeriod = 10,
+                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                {
+                    new ExperimentalFeatures
+                    {
+                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl),
+                        IsEnabled = true
+                    }
+                }
                 //Delimiter = '.'
             };
 
@@ -143,7 +153,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
 
-            Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.IsSourceControlEnabled, viewModel.SourceControlEnabled);
+            Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.EnableExperimentalFeatures.SequenceEqual(viewModel.ExperimentalFeatures));
         }
 
         //[Category("Settings")]

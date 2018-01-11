@@ -2053,13 +2053,13 @@ Would you like to import them to Rubberduck?</value>
     <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
   </data>
   <data name="GeneralSettings_EnableSourceControl" xml:space="preserve">
-    <value>Enable Source Control. Requires a restart to take effect.</value>
+    <value>Enable Source Control.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Only enable these if you know what you're doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Experimental Features:</value>
+    <value>Experimental Features (Requires a restart to take effect):</value>
   </data>
   <data name="ToolsMenu_ExportProject" xml:space="preserve">
     <value>Export Active Project...</value>

@@ -7,7 +7,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestFixture, Ignore("Broken feature")]
+    [TestFixture]
     public class EmptyIfBlockInspectionTests
     {
         [Test]
