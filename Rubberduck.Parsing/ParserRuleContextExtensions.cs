@@ -3,6 +3,8 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
+using System.Linq;
+using Antlr4.Runtime.Misc;
 
 namespace Rubberduck.Parsing
 {
@@ -40,7 +42,212 @@ namespace Rubberduck.Parsing
                                  endContext.Start.Column + 1);
         }
 
-        public static IEnumerable<TContext> FindChildren<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        //public static IEnumerable<TContext> FindChildrenX<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        //{
+        //    var walker = new ParseTreeWalker();
+        //    var listener = new ChildNodeListener<TContext>();
+        //    walker.Walk(listener, context);
+        //    return listener.Matches;
+        //}
+
+        public static IEnumerable<IToken> GetTokens(this ParserRuleContext context, CommonTokenStream tokenStream)
+        {
+            var sourceInterval = context.SourceInterval;
+            if (sourceInterval.Equals(Interval.Invalid) || sourceInterval.b < sourceInterval.a)
+            {
+                return new List<IToken>();
+            }
+            // Gets the tokens belonging to the context from the token stream. 
+            return tokenStream.GetTokens(sourceInterval.a, sourceInterval.b);
+        }
+
+        public static string GetText(this ParserRuleContext context, ICharStream stream)
+        {
+            // Can be null if the input is empty it seems.
+            if (context.Stop == null)
+            {
+                return string.Empty;
+            }
+            // Gets the original source, without "synthetic" text such as "<EOF>".
+            return stream.GetText(new Interval(context.Start.StartIndex, context.Stop.StopIndex));
+        }
+
+        public static T GetChild<T>(this ParserRuleContext context)
+        {
+            if (context == null)
+            {
+                return default;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index) is T)
+                {
+                    return (T)child;
+                }
+            }
+
+            return default;
+        }
+
+        //public static IEnumerable<T> GetChildren<T>(this RuleContext context)
+        //{
+        //    if (context == null)
+        //    {
+        //        yield break;
+        //    }
+
+        //    for (var index = 0; index < context.ChildCount; index++)
+        //    {
+        //        var child = context.GetChild(index);
+        //        if (child is T)
+        //        {
+        //            yield return (T)child;
+        //        }
+        //    }
+        //}
+
+        public static T GetParent<T>(this ParserRuleContext context)
+        {
+            if (context == null)
+            {
+                return default;
+            }
+            if (context is T)
+            {
+                return (T)System.Convert.ChangeType(context, typeof(T));
+            }
+            //return GetMyParent<T>(context); //.Parent);
+            return GetParent<T>((ParserRuleContext)context.Parent);
+        }
+
+        //private static T GetMyParent<T>(ParserRuleContext context)
+        //{
+        //    if (context == null)
+        //    {
+        //        return default;
+        //    }
+        //    if (context is T)
+        //    {
+        //        return (T)System.Convert.ChangeType(context, typeof(T));
+        //    }
+        //    return GetMyParent<T>((ParserRuleContext)context.Parent);
+        //}
+
+        public static bool HasParent<TContext>(this ParserRuleContext context)
+        {
+            //return TryGetAncestor(context, out TContext _);
+            return GetParent<TContext>(context) != null;
+        }
+
+        public static bool HasParent(this ParserRuleContext context, IParseTree parent)
+        {
+            return HasParent((IParseTree)context, parent);
+            //if (TryGetAncestor(context, out IParseTree ancestor))
+            //{
+            //    if (ancestor == parent)
+            //    {
+            //        return true;
+            //    }
+            //}
+            //return HasParent(ancestor, parent);
+        }
+
+        private static bool HasParent(this IParseTree context, IParseTree targetParent)
+        {
+            if (context == null)
+            {
+                return false;
+            }
+            if (context == targetParent)
+            {
+                return true;
+            }
+            return HasParent(context.Parent, targetParent);
+        }
+
+        private static bool TryGetAncestor<TContext>(this ParserRuleContext context, out TContext ancestor)
+        {
+            ancestor = GetParent<TContext>(context);
+            return ancestor != null;
+        }
+
+        public static TContext FindChild<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
+        {
+            if (context == null)
+            {
+                return default;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index) is TContext)
+                {
+                    return (TContext)child;
+                }
+            }
+            return default;
+        }
+
+        //public static bool HasChildToken(this IParseTree context, string token)
+        //{
+        //    for (var index = 0; index < context.ChildCount; index++)
+        //    {
+        //        var child = context.GetChild(index);
+        //        if (context.GetChild(index).GetText().Equals(token))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
+
+        public static bool HasChildToken(this ParserRuleContext context, string token)
+        {
+            return context.children.Any(ch => ch.GetText().Equals(token));
+            //for (var index = 0; index < context.ChildCount; index++)
+            //{
+            //    var child = context.GetChild(index);
+            //    if (context.GetChild(index).GetText().Equals(token))
+            //    {
+            //        return true;
+            //    }
+            //}
+            //return false;
+        }
+
+        public static T GetDescendent<T>(this ParserRuleContext context)
+        {
+            return GetDescendent<T>((IParseTree)context);
+        }
+
+        private static T GetDescendent<T>(this IParseTree context)
+        {
+            if (context == null)
+            {
+                return default;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (context.GetChild(index) is T)
+                {
+                    return (T)child;
+                }
+
+                var descendent = child.GetDescendent<T>();
+                if (descendent != null)
+                {
+                    return descendent;
+                }
+            }
+
+            return default;
+        }
+
         {
             var walker = new ParseTreeWalker();
             var listener = new ChildNodeListener<TContext>();
