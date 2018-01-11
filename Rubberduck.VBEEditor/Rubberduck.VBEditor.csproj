@@ -128,6 +128,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
+    <Compile Include="ComManagement\ComSafe.cs" />
+    <Compile Include="ComManagement\IComSafe.cs" />
     <Compile Include="Events\ComponentEventArgs.cs" />
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />
     <Compile Include="Events\ProjectEventArgs.cs" />
@@ -136,6 +139,7 @@
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\IUserForm.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
     <Compile Include="SafeComWrappers\MSAccessComponentType.cs" />
@@ -193,6 +197,7 @@
     <Compile Include="SafeComWrappers\VBA\AddIn.cs" />
     <Compile Include="SafeComWrappers\VBA\AddIns.cs" />
     <Compile Include="SafeComWrappers\VBA\Application.cs" />
+    <Compile Include="SafeComWrappers\VBA\UserForm.cs" />
     <Compile Include="SafeComWrappers\VBA\CodeModule.cs" />
     <Compile Include="SafeComWrappers\VBA\CodePane.cs" />
     <Compile Include="SafeComWrappers\VBA\CodePanes.cs" />

@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.QuickFixes;
@@ -11,21 +11,21 @@ using Rubberduck.Inspections.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class AssignedByValParameterMakeLocalCopyQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        public void AssignedByValParameter_LocalVariableAssignment()
+        [Test]
+        [Category("QuickFixes")]
+        public void AssignedByValParameter_LocalVariableAssignment_Sub()
         {
             var inputCode =
-                @"Public Sub Foo(ByVal arg1 As String)
+@"Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
             var expectedCode =
-                @"Public Sub Foo(ByVal arg1 As String)
-Dim localArg1 As String
-localArg1 = arg1
+@"Public Sub Foo(ByVal arg1 As String)
+    Dim localArg1 As String
+    localArg1 = arg1
     Let localArg1 = ""test""
 End Sub";
 
@@ -33,8 +33,114 @@ End Sub";
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
+        public void AssignedByValParameter_LocalVariableAssignment_SubWithCommentn()
+        {
+            var inputCode =
+@"Public Sub Foo(ByVal arg1 As String)  'Comment is here _
+and here _
+and here
+    Let arg1 = ""test""
+End Sub";
+            var expectedCode =
+@"Public Sub Foo(ByVal arg1 As String)  'Comment is here _
+and here _
+and here
+    Dim localArg1 As String
+    localArg1 = arg1
+    Let localArg1 = ""test""
+End Sub";
+
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void AssignedByValParameter_LocalVariableAssignment_Function()
+        {
+            var inputCode =
+@"Public Function Foo(ByVal arg1 As String) As String
+    arg1 = ""test""
+    Foo = arg1
+End Function";
+            var expectedCode =
+@"Public Function Foo(ByVal arg1 As String) As String
+    Dim localArg1 As String
+    localArg1 = arg1
+    localArg1 = ""test""
+    Foo = localArg1
+End Function";
+
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void AssignedByValParameter_LocalVariableAssignment_FunctionWithComment()
+        {
+            var inputCode =
+@"Public Function Foo(ByVal arg1 As String) As String   'This is a comment
+    arg1 = ""test""
+    Foo = arg1
+End Function";
+            var expectedCode =
+@"Public Function Foo(ByVal arg1 As String) As String   'This is a comment
+    Dim localArg1 As String
+    localArg1 = arg1
+    localArg1 = ""test""
+    Foo = localArg1
+End Function";
+
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void AssignedByValParameter_LocalVariableAssignment_Property()
+        {
+            var inputCode =
+@"
+Option Explicit
+Private mBar as Long
+Public Property Let Foo(ByVal bar As Long)
+    bar = 42
+    bar = bar * 2
+    mBar = bar
+End Property
+
+Public Property Get Foo() As Long
+    Dim bar as Long
+    bar = 12
+    Foo = mBar
+End Property
+";
+            var expectedCode =
+@"
+Option Explicit
+Private mBar as Long
+Public Property Let Foo(ByVal bar As Long)
+    Dim localBar As Long
+    localBar = bar
+    localBar = 42
+    localBar = localBar * 2
+    mBar = localBar
+End Property
+
+Public Property Get Foo() As Long
+    Dim bar as Long
+    bar = 12
+    Foo = mBar
+End Property
+";
+            var quickFixResult = ApplyLocalVariableQuickFixToCodeFragment(inputCode);
+            Assert.AreEqual(expectedCode, quickFixResult);
+        }
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
         {
             var inputCode =
@@ -56,8 +162,8 @@ End Sub
         bar, _
     ByRef barbecue _
                     )
-Dim localFoo As Long
-localFoo = foo
+    Dim localFoo As Long
+    localFoo = foo
     localFoo = 4
     bar = barbecue * _
                 bar + localFoo / barbecue
@@ -68,8 +174,8 @@ End Sub
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_ComputedNameAvoidsCollision()
         {
             var inputCode =
@@ -83,8 +189,8 @@ End Sub"
             var expectedCode =
                     @"
 Public Sub Foo(ByVal arg1 As String)
-Dim localArg12 As String
-localArg12 = arg1
+    Dim localArg12 As String
+    localArg12 = arg1
     Dim fooVar, _
         localArg1 As Long
     Let localArg12 = ""test""
@@ -95,8 +201,8 @@ End Sub"
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherSub()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -127,8 +233,8 @@ End Sub"
             Assert.AreEqual(expectedCode, evaluatedResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NameInUseOtherProperty()
         {
             //Make sure the modified code stays within the specific method under repair
@@ -165,8 +271,8 @@ End Function
         }
 
         //Replicates issue #2873 : AssignedByValParameter quick fix needs to use `Set` for reference types.
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_UsesSet()
         {
             var inputCode =
@@ -178,8 +284,8 @@ End Sub"
             var expectedCode =
                     @"
 Public Sub Foo(ByVal target As Range)
-Dim localTarget As Range
-Set localTarget = target
+    Dim localTarget As Range
+    Set localTarget = target
     Set localTarget = Selection
 End Sub"
                 ;
@@ -188,8 +294,8 @@ End Sub"
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_NoAsTypeClause()
         {
             var inputCode =
@@ -201,8 +307,8 @@ End Sub"
             var expectedCode =
                     @"
 Public Sub Foo(FirstArg As Long, ByVal arg1)
-Dim localArg1 As Variant
-localArg1 = arg1
+    Dim localArg1 As Variant
+    localArg1 = arg1
     localArg1 = Range(""A1: C4"")
 End Sub"
                 ;
@@ -211,8 +317,8 @@ End Sub"
             Assert.AreEqual(expectedCode, quickFixResult);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_LocalVariableAssignment_EnumType()
         {
             var inputCode =
@@ -236,8 +342,8 @@ Enum TestEnum
 End Enum
 
 Public Sub Foo(FirstArg As Long, ByVal arg1 As TestEnum)
-Dim localArg1 As TestEnum
-localArg1 = arg1
+    Dim localArg1 As TestEnum
+    localArg1 = arg1
     localArg1 = EnumThree
 End Sub"
                 ;

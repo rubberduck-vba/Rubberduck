@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
@@ -13,12 +13,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class IntroduceFieldTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_NoFieldsInClass_Sub()
         {
             //Input
@@ -49,9 +49,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_NoFieldsInList_Function()
         {
             //Input
@@ -84,9 +84,9 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_OneFieldInList()
         {
             //Input
@@ -119,9 +119,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_OneFieldInList_MultipleLines()
         {
             //Input
@@ -157,9 +157,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleFieldsOnMultipleLines()
         {
             //Input
@@ -196,9 +196,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveFirst()
         {
             //Input
@@ -235,9 +235,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveSecond()
         {
             //Input
@@ -272,9 +272,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_MoveLast()
         {
             //Input
@@ -311,9 +311,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_MultipleVariablesInStatement_OnOneLine_MoveFirst()
         {
             //Input
@@ -347,9 +347,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
         {
             //Input
@@ -381,9 +381,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
         {
             //Input
@@ -417,9 +417,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_PassInTarget()
         {
             //Input
@@ -450,9 +450,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Introduce Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Introduce Field")]
         public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
         {
             //Input

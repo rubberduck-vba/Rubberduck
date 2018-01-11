@@ -41,18 +41,22 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             QualifiedSelection? oldSelection = null;
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            if (!module.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                oldSelection = module.GetQualifiedSelection();
-            }
+                using (var module = pane.CodeModule)
+                {
+                    if (!module.IsWrappingNullReference)
+                    {
+                        oldSelection = module.GetQualifiedSelection();
+                    }
+                }
 
-            RemoveParameters();
+                RemoveParameters();
 
-            if (oldSelection.HasValue)
-            {
-                pane.Selection = oldSelection.Value.Selection;
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
 
             _model.State.OnParseRequested(this);
@@ -116,7 +120,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
                 if (callStmt != null)
@@ -139,7 +142,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                RemoveCallArguments(argumentList, module);
+                using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                {
+                    RemoveCallArguments(argumentList, module);
+                }
             }
         }
 

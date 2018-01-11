@@ -24,7 +24,13 @@ namespace Rubberduck.UI.Command
 
             try
             {
-                param.QualifiedName.Component.CodeModule.CodePane.Selection = param.Selection;
+                using (var codeModule = param.QualifiedName.Component.CodeModule)
+                {
+                    using (var codePane = codeModule.CodePane)
+                    {
+                        codePane.Selection = param.Selection;
+                    }
+                }
             }
             catch (COMException)
             {

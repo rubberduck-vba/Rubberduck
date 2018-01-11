@@ -260,6 +260,7 @@
         <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Declaration.QualifiedName.QualifiedModuleName.Name" />
+                <componentModel:SortDescription PropertyName="Declaration.QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Declaration.QualifiedName.QualifiedModuleName.Name" />
@@ -269,6 +270,7 @@
         <CollectionViewSource x:Key="ResultsByOutcome" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Result.Outcome" />
+                <componentModel:SortDescription PropertyName="Declaration.QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 
@@ -470,66 +472,76 @@
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar IsEnabled="{Binding Model.IsReady}" Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+                <ToolBar.Resources>
+                    <Style TargetType="Image">
+                        <Setter Property="Height" Value="16" />
+                    </Style>
+                </ToolBar.Resources>
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
+                    <Image Source="../../Resources/arrow-circle-double.png" />
                 </Button>
 
                 <Separator />
                 <Menu>
                     <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Run}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../Resources/control.png" />
+                            <Image Source="../../Resources/control.png" />
                         </MenuItem.Icon>
                         <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunAllTests}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/flask--arrow.png" />
+                                <Image Source="../../Resources/flask--arrow.png" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
                         <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunNotRunTests}" >
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/question-white.png" />
+                                <Image Source="../../Resources/question-white.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="{Binding RunSelectedTestCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI ,Key=TestExplorer_RunSelectedTests}" >
+                            <MenuItem.Icon>
+                                <Image Source="../../Resources/flask--arrow.png" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunInconclusiveTests}" >
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/flask--exclamation.png" />
+                                <Image Source="../../Resources/flask--exclamation.png" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunPassedTests}" >
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/tick-circle.png" />
+                                <Image Source="../../Resources/tick-circle.png" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunFailedTests}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/cross-circle.png" />
+                                <Image Source="../../Resources/cross-circle.png" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
                         <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_RunLastRunTests}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/arrow-repeat.png" />
+                                <Image Source="../../Resources/arrow-repeat.png" />
                             </MenuItem.Icon>
                         </MenuItem>
 
                     </MenuItem>
                     <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Add}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../Resources/flask--plus.png" />
+                            <Image Source="../../Resources/flask--plus.png" />
                         </MenuItem.Icon>
                         <MenuItem Command="{Binding AddTestModuleCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_AddTestModule}">
                         </MenuItem>
                         <Separator />
                         <MenuItem Command="{Binding AddTestMethodCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_AddTestMethod}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/flask.png" />
+                                <Image Source="../../Resources/flask.png" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding AddErrorTestMethodCommand}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_AddExpectedErrorTestMethod}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="../../Resources/flask--exclamation.png" />
+                                <Image Source="../../Resources/flask--exclamation.png" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
@@ -539,7 +551,7 @@
                 <Menu>
                     <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../Resources/Custom/PNG/GroupBy.png" />
+                            <Image Source="../../Resources/Custom/PNG/GroupBy.png" />
                         </MenuItem.Icon>
 
                         <MenuItem x:Name="GroupByOutcome"
@@ -564,13 +576,13 @@
                 </Menu>
 
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Height="16" Source="../../Resources/document-copy.png" />
+                    <Image Source="../../Resources/document-copy.png" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
                 <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTestSettingsCommand}" BorderThickness="0" Background="Transparent">
-                    <Image Height="16" Source="{StaticResource SettingsImage}" />
+                    <Image Source="{StaticResource SettingsImage}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>
@@ -587,7 +599,8 @@
         </ProgressBar>
 
         <Border Grid.Row="2" Padding="2">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer PreviewMouseWheel="ScrollViewer_MouseWheel"
+                          VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
                                            SelectedItem="{Binding SelectedTest}"
@@ -595,7 +608,7 @@
                                            Visibility="{Binding IsChecked, ElementName=GroupByOutcome, Converter={StaticResource BoolToVisibility}}"
                                            Margin="-1,0,1,0">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
+                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Outcome}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate DataType="unitTesting:TestMethod">
                                         <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
@@ -613,7 +626,7 @@
                                            ShowGroupingItemCount="True"
                                            Visibility="{Binding IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Outcome}">
+                            <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorer_Outcome}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate DataType="unitTesting:TestMethod">
                                         <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />

@@ -159,6 +159,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InspectionsUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="Inspections\PropertyBag.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprocessorExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\ParsePassExceptionErrorListener.cs" />

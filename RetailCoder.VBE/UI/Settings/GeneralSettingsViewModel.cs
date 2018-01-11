@@ -74,6 +74,14 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        public bool ShouldDisplayHotkeyModificationLabel
+        {
+            get
+            {
+                return _hotkeys.Any(s => !s.IsValid);
+            }
+        }
+
         private bool _autoSaveEnabled;
         public bool AutoSaveEnabled
         {

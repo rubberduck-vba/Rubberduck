@@ -2176,6 +2176,42 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error handling should be restored after using &apos;On Error Resume Next&apos;..
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionMeta {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unhandled &apos;On Error Resume Next&apos;.
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionName {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Introduce error handling subroutine.
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionQuickFix {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Errors are ignored but never handled again.
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. 
         ///If the parameter can be null, ignore this inspection result; passing a null value to a function expecting a string would raise a type mismatch runtime error..
         /// </summary>
@@ -2195,7 +2231,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace function `{0}` with existing typed function.
+        ///   Looks up a localized string similar to Replace function &apos;{0}&apos; with existing typed function.
         /// </summary>
         public static string UntypedFunctionUsageInspectionResultFormat {
             get {

@@ -31,14 +31,17 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
 
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            var annotationLine = result.QualifiedSelection.Selection.StartLine;
-            while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
+            int annotationLine;
+            string codeLine;
+            using (var module = result.QualifiedSelection.QualifiedName.Component.CodeModule)
             {
-                annotationLine--;
+                annotationLine = result.QualifiedSelection.Selection.StartLine;
+                while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
+                {
+                    annotationLine--;
+                }
+                codeLine = annotationLine == 1 ? string.Empty : module.GetLines(annotationLine - 1, 1);
             }
-            var codeLine = annotationLine == 1 ? string.Empty : module.GetLines(annotationLine - 1, 1);
-
             RuleContext treeRoot = result.Context;
             while (treeRoot.Parent != null)
             {

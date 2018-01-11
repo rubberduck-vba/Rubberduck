@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class LineLabelNotUsedInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void LabelNotUsed_EdgeCaseIssue3226()
         {
             const string inputCode = @"
@@ -40,8 +40,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void LabelNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -59,8 +59,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void LabelNotUsed_ReturnsResult_MultipleLabels()
         {
             const string inputCode =
@@ -79,8 +79,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenGoToStatement_LabelUsed_YieldsNoResult()
         {
             const string inputCode =
@@ -99,8 +99,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenGoToStatement_GoToBeforeLabel_LabelUsed_YieldsNoResult()
         {
             const string inputCode =
@@ -119,8 +119,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenMultipleGoToStatements_BothLabelsUsed_YieldsNoResult()
         {
             const string inputCode =
@@ -141,8 +141,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void LabelNotUsed_ReturnsResult_WithUsedLabelThatDoesNotReturnResult()
         {
             const string inputCode =
@@ -167,8 +167,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void LabelNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -186,16 +186,16 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new LineLabelNotUsedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "LineLabelNotUsedInspection";

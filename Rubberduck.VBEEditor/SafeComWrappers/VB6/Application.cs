@@ -5,8 +5,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class Application : SafeComWrapper<VB.Application>, IApplication
     {
-        public Application(VB.Application application)
-            :base(application)
+        public Application(VB.Application target, bool rewrapping = false)
+            :base(target, rewrapping)
         {
         }
 

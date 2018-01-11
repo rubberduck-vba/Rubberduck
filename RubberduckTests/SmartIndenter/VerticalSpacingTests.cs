@@ -1,15 +1,15 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
 {
-    [TestClass]
+    [TestFixture]
     public class VerticalSpacingTests
     {
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_InsertBlankLinesWorks()
         {
             var code = new[]
@@ -50,8 +50,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_RemoveExtraLinesWorks()
         {
             var code = new[]
@@ -101,8 +101,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_RemoveAllExtraLinesWorks()
         {
             var code = new[]
@@ -149,8 +149,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_MixedInsertsAndDeletesWorks()
         {
             var code = new[]
@@ -196,8 +196,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_InsertBlankLinesWorksWithProperties()
         {
             var code = new[]
@@ -238,8 +238,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_InsertBlankLinesWorksWithTypes()
         {
             var code = new[]
@@ -275,8 +275,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_InsertBlankLinesWorksWithEnums()
         {
             var code = new[]
@@ -312,8 +312,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_CommentsDoNotEffectSpacing()
         {
             var code = new[]
@@ -348,8 +348,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_DimBlocksStayIntact()
         {
             var code = new[]
@@ -386,8 +386,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_IgnoresDeclareFunctions()
         {
             var code = new[]
@@ -424,8 +424,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_DoesNotChangeSpacingInProcedures()
         {
             var code = new[]
@@ -468,8 +468,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void VerticalSpacing_DoesNotChangeSpacingInEnumsOrTypes()
         {
             var code = new[]

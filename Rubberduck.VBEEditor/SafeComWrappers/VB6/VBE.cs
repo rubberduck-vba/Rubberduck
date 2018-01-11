@@ -13,8 +13,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBE : SafeComWrapper<VB.VBE>, IVBE
     {
-        public VBE(VB.VBE target)
-            :base(target)
+        public VBE(VB.VBE target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             {
                 if (!IsWrappingNullReference)
                 {
-                    Target.ActiveCodePane = (VB.CodePane)value.Target;
+                    Target.ActiveCodePane = (VB.CodePane) value.Target;
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             {
                 if (!IsWrappingNullReference)
                 {
-                    Target.ActiveVBProject = (VB.VBProject)value.Target;
+                    Target.ActiveVBProject = (VB.VBProject) value.Target;
                 }
             }
         }
@@ -113,7 +113,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             const string mdiClientClass = "MDIClient";
             const int maxCaptionLength = 512;
 
-            var mainWindow = (IntPtr)MainWindow.HWnd;
+            var mainWindow = (IntPtr) MainWindow.HWnd;
 
             var mdiClient = NativeMethods.FindWindowEx(mainWindow, IntPtr.Zero, mdiClientClass, string.Empty);
 
@@ -136,7 +136,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public bool IsInDesignMode
         {
-            get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
+            get
+            {
+                var allInDesignMode = true;
+                using (var projects = VBProjects)
+                {
+                    foreach (var project in projects)
+                    {
+                        allInDesignMode = allInDesignMode && project.Mode == EnvironmentMode.Design;
+                        project.Dispose();
+                        if (!allInDesignMode)
+                        {
+                            break;
+                        }
+                    }
+                }
+                return allInDesignMode;
+            }
+        }
+
+        public int ProjectsCount
+        {
+            get
+            {
+                using (var projects = VBProjects)
+                {
+                    return projects.Count;
+                }
+            }
         }
     }
 }

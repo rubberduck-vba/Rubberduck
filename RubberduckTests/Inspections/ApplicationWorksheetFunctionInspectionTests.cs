@@ -1,14 +1,15 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ApplicationWorksheetFunctionInspectionTests
     {
         private static RubberduckParserState ArrangeParserAndParse(string inputCode)
@@ -34,9 +35,9 @@ namespace RubberduckTests.Inspections
             return parser.State;
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_GlobalApplication()
         {
             const string inputCode =
@@ -56,9 +57,9 @@ End Sub
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithGlobalApplication()
         {
             const string inputCode =
@@ -80,9 +81,9 @@ End Sub
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_ApplicationVariable()
         {
             const string inputCode =
@@ -104,9 +105,9 @@ End Sub
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithApplicationVariable()
         {
             const string inputCode =
@@ -130,9 +131,9 @@ End Sub
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseGlobalApplication()
         {
             const string inputCode =
@@ -152,9 +153,9 @@ End Sub
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseApplicationVariable()
         {
             const string inputCode =
@@ -176,8 +177,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_NoExcelReference()
         {
             const string inputCode =
@@ -207,9 +208,9 @@ End Sub
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_Ignored_DoesNotReturnResult()
         {
             const string inputCode =

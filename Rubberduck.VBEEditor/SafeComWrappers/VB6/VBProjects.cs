@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             ItemActivated = 4
         }
 
-        public VBProjects(VB.VBProjects target) : base(target)
+        public VBProjects(VB.VBProjects target, bool rewrapping = false) : base(target, rewrapping)
         {
             AttachEvents();
         }
@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return IsWrappingNullReference
                 ? new ComWrapperEnumerator<IVBProject>(null, o => new VBProject(null))
-                : new ComWrapperEnumerator<IVBProject>(Target, o => new VBProject((VB.VBProject)o));
+                : new ComWrapperEnumerator<IVBProject>(Target, comObject => new VBProject((VB.VBProject)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -65,19 +65,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 ? (IEnumerator)new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IVBProject>)this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        DetatchEvents();
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBProjects> other)
         {
@@ -126,56 +113,72 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         }
 
         public event EventHandler<ProjectEventArgs> ProjectAdded;
-        private delegate void ItemAddedDelegate(Microsoft.Vbe.Interop.VBProject vbProject);
+        private delegate void ItemAddedDelegate(VB.VBProject vbProject);
         private ItemAddedDelegate _projectAdded;
-        private void OnProjectAdded(Microsoft.Vbe.Interop.VBProject vbProject)
+        private void OnProjectAdded(VB.VBProject vbProject)
         {
             if (VBE.IsInDesignMode) OnDispatch(ProjectAdded, vbProject, true);
         }
 
         public event EventHandler<ProjectEventArgs> ProjectRemoved;
-        private delegate void ItemRemovedDelegate(Microsoft.Vbe.Interop.VBProject vbProject);
+        private delegate void ItemRemovedDelegate(VB.VBProject vbProject);
         private ItemRemovedDelegate _projectRemoved;
-        private void OnProjectRemoved(Microsoft.Vbe.Interop.VBProject vbProject)
+        private void OnProjectRemoved(VB.VBProject vbProject)
         {
             if (VBE.IsInDesignMode) OnDispatch(ProjectRemoved, vbProject);
         }
 
         public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
-        private delegate void ItemRenamedDelegate(Microsoft.Vbe.Interop.VBProject vbProject, string oldName);
+        private delegate void ItemRenamedDelegate(VB.VBProject vbProject, string oldName);
         private ItemRenamedDelegate _projectRenamed;
-        private void OnProjectRenamed(Microsoft.Vbe.Interop.VBProject vbProject, string oldName)
+        private void OnProjectRenamed(VB.VBProject vbProject, string oldName)
         {
-            if (!VBE.IsInDesignMode) { return; }
+            var project = new VBProject(vbProject);
 
-            var project = new VBA.VBProject(vbProject);
+            if (!VBE.IsInDesignMode)
+            {
+                project.Dispose();
+                return;
+            }
+            
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
-            handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
+            if (handler == null)
+            {
+                project.Dispose();
+                return;
+            }
+
+            handler.Invoke(this, new ProjectRenamedEventArgs(projectId, project, oldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;
-        private delegate void ItemActivatedDelegate(Microsoft.Vbe.Interop.VBProject vbProject);
+        private delegate void ItemActivatedDelegate(VB.VBProject vbProject);
         private ItemActivatedDelegate _projectActivated;
-        private void OnProjectActivated(Microsoft.Vbe.Interop.VBProject vbProject)
+        private void OnProjectActivated(VB.VBProject vbProject)
         {
             if (VBE.IsInDesignMode) OnDispatch(ProjectActivated, vbProject);
         }
 
-        private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, Microsoft.Vbe.Interop.VBProject vbProject, bool assignId = false)
+        private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
         {
+            var project = new VBProject(vbProject);
+
             var handler = dispatched;
-            if (handler != null)
+            if (handler == null)
             {
-                var project = new VBA.VBProject(vbProject);
-                if (assignId)
-                {
-                    project.AssignProjectId();
-                }
-                var projectId = project.ProjectId;
-                handler.Invoke(this, new ProjectEventArgs(projectId, project));
+                project.Dispose();
+                return;
             }
+
+            if (assignId)
+            {
+                project.AssignProjectId();
+            }
+            var projectId = project.ProjectId;
+
+            handler.Invoke(this, new ProjectEventArgs(projectId, project));
         }
 
         #endregion

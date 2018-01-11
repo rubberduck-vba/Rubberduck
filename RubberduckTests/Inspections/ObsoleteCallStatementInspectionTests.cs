@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
@@ -7,11 +7,11 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ObsoleteCallStatementInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_ReturnsResult()
         {
             const string inputCode =
@@ -31,8 +31,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_DoesNotReturnResult()
         {
             const string inputCode =
@@ -52,8 +52,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_DoesNotReturnResult_InstructionSeparator()
         {
             const string inputCode =
@@ -73,8 +73,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_ReturnsResult_ColonInComment()
         {
             const string inputCode =
@@ -94,8 +94,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_ReturnsResult_ColonInStringLiteral()
         {
             const string inputCode =
@@ -115,8 +115,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -140,8 +140,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_ReturnsResults_SomeObsoleteCallStatements()
         {
             const string inputCode =
@@ -165,8 +165,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -188,16 +188,16 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteCallStatementInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteCallStatementInspection";

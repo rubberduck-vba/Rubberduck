@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class References : SafeComWrapper<VB.References>, IReferences
     {
-        public References(VB.References target) 
-            : base(target)
+        public References(VB.References target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
             if (!IsWrappingNullReference)
             {
@@ -29,14 +29,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private void Target_ItemRemoved(VB.Reference reference)
         {
+            var referenceWrapper = new Reference(reference);
             var handler = ItemRemoved;
-            handler?.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
+            if (handler == null)
+            {
+                referenceWrapper.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
         private void Target_ItemAdded(VB.Reference reference)
         {
+            var referenceWrapper = new Reference(reference);
             var handler = ItemAdded;
-            handler?.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
+            if (handler == null)
+            {
+                referenceWrapper.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
         public IReference this[object index] => new Reference(Target.Item(index));
@@ -58,7 +70,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IReference>(Target, o => new Reference((VB.Reference)o));
+            return new ComWrapperEnumerator<IReference>(Target, comObject => new Reference((VB.Reference)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -74,6 +74,7 @@
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
     <Compile Include="Concrete\ShadowedDeclarationInspection.cs" />
+    <Compile Include="Concrete\UnhandledOnErrorResumeNextInspection.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Abstract\QuickFixBase.cs" />
     <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\RestoreErrorHandlingQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />

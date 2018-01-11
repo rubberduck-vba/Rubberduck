@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Text.RegularExpressions;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -148,16 +149,16 @@ namespace Rubberduck.UI.ToDoItems
                         return;
                     }
 
-                    var module = _selectedItem.Selection.QualifiedName.Component.CodeModule;
+                    using (var module = _selectedItem.Selection.QualifiedName.Component.CodeModule)
                     {
                         var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
                         var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
 
                         module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
-
-                        RefreshCommand.Execute(null);
                     }
-                });
+                    RefreshCommand.Execute(null);
+                }
+                );
             }
         }
 
@@ -245,7 +246,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             var markers = _configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
-                                         && comment.CommentText.ToLowerInvariant().Contains(marker.Text.ToLowerInvariant()))
+                                         && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));
         }
 

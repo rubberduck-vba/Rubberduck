@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace Rubberduck.RegexAssistant.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class QuantifierTests
     {
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void AsteriskQuantifier()
         {
             var cut = new Quantifier("*");
@@ -15,8 +15,8 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void QuestionMarkQuantifier()
         {
             var cut = new Quantifier("?");
@@ -25,8 +25,8 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void PlusQuantifier()
         {
             var cut = new Quantifier("+");
@@ -35,8 +35,8 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Wildcard, cut.Kind);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void ExactQuantifier()
         {
             var cut = new Quantifier("{5}");
@@ -45,8 +45,8 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void FullRangeQuantifier()
         {
             var cut = new Quantifier("{2,5}");
@@ -55,8 +55,8 @@ namespace Rubberduck.RegexAssistant.Tests
             Assert.AreEqual(QuantifierKind.Expression, cut.Kind);
         }
 
-        [TestCategory("RegexAssistant")]
-        [TestMethod]
+        [Category("RegexAssistant")]
+        [Test]
         public void OpenRangeQuantifier()
         {
             var cut = new Quantifier("{3,}");

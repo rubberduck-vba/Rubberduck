@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -13,11 +13,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
 {
-    [TestClass]
+    [TestFixture]
     public class FindAllReferencesTests
     {
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_ReturnsCorrectNumber()
         {
             const string inputCode =
@@ -44,8 +44,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_ReferenceSelected_ReturnsCorrectNumber()
         {
             const string inputCode =
@@ -72,8 +72,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_NoResults_DisplayMessageBox()
         {
             const string inputCode =
@@ -100,8 +100,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_SingleResult_Navigates()
         {
             const string inputCode =
@@ -128,8 +128,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_NullTarget_Aborts()
         {
             IVBComponent component;
@@ -148,8 +148,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_StateNotReady_Aborts()
         {
             const string inputCode =
@@ -179,8 +179,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_CanExecute_NullTarget()
         {
             IVBComponent component;
@@ -197,8 +197,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_CanExecute_StateNotReady()
         {
             const string inputCode =
@@ -227,8 +227,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -245,8 +245,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_ControlMultipleResults_ReturnsCorrectNumber()
         {
             var code = @"
@@ -279,8 +279,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_ControlSingleResult_Navigates()
         {
             var code = @"
@@ -312,8 +312,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_ControlNoResults_DisplaysMessageBox()
         {
             var code = @"
@@ -349,8 +349,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_ControlMultipleSelection_IsNotEnabled()
         {
             var code = @"
@@ -378,8 +378,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_FormMultipleResults_ReturnsCorrectNumber()
         {
             var code = @"
@@ -412,8 +412,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_FormSingleResult_Navigates()
         {
             var code = @"
@@ -445,8 +445,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_FormNoResults_DisplaysMessageBox()
         {
             var code = @"
