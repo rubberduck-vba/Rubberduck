@@ -158,15 +158,7 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = assembly.DefinedTypes
-                    .Where(w =>
-                    {
-                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string) attribute.ConstructorArguments.First().Value : string.Empty;
-
-                        return attribute == null ||
-                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
-                    });
+                var assemblyTypes = GetIoCRegisteredTypes(assembly);
 
                 container.Register(Classes.From(assemblyTypes)
                     .InSameNamespaceAs<Configuration>()
@@ -198,15 +190,7 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = assembly.DefinedTypes
-                    .Where(w =>
-                    {
-                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
-
-                        return attribute == null ||
-                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
-                    });
+                var assemblyTypes = GetIoCRegisteredTypes(assembly);
 
                 assemblyTypes.Any(t => t.Name == nameof(IMessageBox));
                 
@@ -227,15 +211,7 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = assembly.DefinedTypes
-                    .Where(w =>
-                    {
-                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
-
-                        return attribute == null ||
-                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
-                    });
+                var assemblyTypes = GetIoCRegisteredTypes(assembly);
 
                 container.Register(Types.From(assemblyTypes)
                     .Where(type => type.IsInterface && type.Name.EndsWith("Factory"))
@@ -258,15 +234,7 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = assembly.DefinedTypes
-                    .Where(w =>
-                    {
-                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
-
-                        return attribute == null ||
-                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
-                    });
+                var assemblyTypes = GetIoCRegisteredTypes(assembly);
 
                 container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IQuickFix>()
@@ -280,15 +248,7 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = assembly.DefinedTypes
-                    .Where(w =>
-                    {
-                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
-
-                        return attribute == null ||
-                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled && a.IsEnabled);
-                    });
+                var assemblyTypes = GetIoCRegisteredTypes(assembly);
 
                 container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IInspection>()
@@ -301,15 +261,7 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = assembly.DefinedTypes
-                    .Where(w =>
-                    {
-                        var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-                        var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
-
-                        return attribute == null ||
-                               _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
-                    });
+                var assemblyTypes = GetIoCRegisteredTypes(assembly);
 
                 container.Register(Classes.From(assemblyTypes)
                     .BasedOn<IParseTreeInspection>()
@@ -917,6 +869,19 @@ namespace Rubberduck.Root
         private static void RegisterHotkeyFactory(IWindsorContainer container)
         {
             container.Register(Component.For<HotkeyFactory>().LifestyleSingleton());
+        }
+
+        private IEnumerable<TypeInfo> GetIoCRegisteredTypes(Assembly assembly)
+        {
+            return assembly.DefinedTypes
+                .Where(w =>
+                {
+                    var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
+                    var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
+
+                    return attribute == null ||
+                           _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
+                });
         }
     }
 }
