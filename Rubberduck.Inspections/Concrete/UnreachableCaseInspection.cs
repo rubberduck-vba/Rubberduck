@@ -63,7 +63,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             public UnreachableCaseInspectionValue IsLT;
             public UnreachableCaseInspectionValue IsGT;
-            public List<UnreachableCaseInspectionValue> SingleValues;
+            public HashSet<UnreachableCaseInspectionValue> SingleValues;
             public List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> Ranges;
             public bool CaseElseIsUnreachable;
             public List<string> RangeClausesAsText;
@@ -107,7 +107,7 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     IsGT = null,
                     IsLT = null,
-                    SingleValues = new List<UnreachableCaseInspectionValue>(),
+                    SingleValues = new HashSet<UnreachableCaseInspectionValue>(),
                     Ranges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>(),
                     RangeClausesAsText = new List<string>(),
                 };
@@ -1055,11 +1055,7 @@ namespace Rubberduck.Inspections.Concrete
 
             if (typeName.Equals(Tokens.Byte))
             {
-                if (summaryClauses.SingleValues.Count >= UnreachableCaseInspectionValue.MaxValueByte + 1)
-                {
-                    summaryClauses.SingleValues = summaryClauses.SingleValues.Distinct().ToList();
-                    return summaryClauses.SingleValues.Count() == UnreachableCaseInspectionValue.MaxValueByte + 1;
-                }
+                return summaryClauses.SingleValues.Count() == UnreachableCaseInspectionValue.MaxValueByte + 1;
             }
 
             if (summaryClauses.IsLT != null && summaryClauses.IsGT != null)
@@ -1181,7 +1177,7 @@ namespace Rubberduck.Inspections.Concrete
             return opCtxt != null;
         }
 
-        private static List<UnreachableCaseInspectionValue> LoadRangeOfByteValues(List<UnreachableCaseInspectionValue> SingleValues, long start, long end)
+        private static HashSet<UnreachableCaseInspectionValue> LoadRangeOfByteValues(HashSet<UnreachableCaseInspectionValue> SingleValues, long start, long end)
         {
             if (start >= UnreachableCaseInspectionValue.MinValueByte 
                     && start <= UnreachableCaseInspectionValue.MaxValueByte
