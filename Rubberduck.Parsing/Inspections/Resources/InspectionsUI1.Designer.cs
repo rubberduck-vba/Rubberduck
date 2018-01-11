@@ -331,6 +331,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;Def[Type]&apos; statement is implicitly typing variables and members based on a naming/prefix convention. This stye of typing is heavily discouraged and should be avoided..
+        /// </summary>
+        public static string DefTypeStatementInspectionMeta {
+            get {
+                return ResourceManager.GetString("DefTypeStatementInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage of &apos;Def[Type]&apos; statement.
+        /// </summary>
+        public static string DefTypeStatementInspectionName {
+            get {
+                return ResourceManager.GetString("DefTypeStatementInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consider the explicit use of &apos;as {0}&apos; instead of &apos;{1}&apos;.
+        /// </summary>
+        public static string DefTypeStatementInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("DefTypeStatementInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable this inspection.
         /// </summary>
         public static string DisableThisInspection {
@@ -1420,7 +1447,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Error&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Error&apos; statement.
         /// </summary>
         public static string ObsoleteErrorSyntaxInspectionName {
             get {
