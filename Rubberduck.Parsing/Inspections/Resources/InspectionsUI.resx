@@ -888,7 +888,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Module/class {0} is empty.</value>
   </data>
   <data name="ObsoleteErrorSyntaxInspectionName" xml:space="preserve">
-    <value>Use of 'Error' statement</value>
+    <value>Use of obsolete 'Error' statement</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspectionMeta" xml:space="preserve">
     <value>Error handling should be restored after using 'On Error Resume Next'.</value>

@@ -1997,7 +1997,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Source Control. Requires a restart to take effect..
+        ///   Looks up a localized string similar to Enable Source Control..
         /// </summary>
         public static string GeneralSettings_EnableSourceControl {
             get {
@@ -2015,7 +2015,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Experimental Features:.
+        ///   Looks up a localized string similar to Experimental Features (Requires a restart to take effect):.
         /// </summary>
         public static string GeneralSettings_ExperimentalFeatures {
             get {

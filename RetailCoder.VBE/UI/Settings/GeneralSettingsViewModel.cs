@@ -1,8 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.Common;
 using NLog;
+using Rubberduck.Parsing.Common;
+using Rubberduck.Root;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 
@@ -37,6 +41,8 @@ namespace Rubberduck.UI.Settings
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
+
+        public List<ExperimentalFeatures> ExperimentalFeatures { get; set; }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
 
@@ -161,20 +167,6 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool _sourceControlEnabled;
-        public bool SourceControlEnabled
-        {
-            get => _sourceControlEnabled;
-            set
-            {
-                if (_sourceControlEnabled != value)
-                {
-                    _sourceControlEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public CommandBase ShowLogFolderCommand { get; }
 
         private void ShowLogFolder()
@@ -204,7 +196,7 @@ namespace Rubberduck.UI.Settings
                 IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
                 MinimumLogLevel = SelectedLogLevel.Ordinal,
-                IsSourceControlEnabled = SourceControlEnabled
+                EnableExperimentalFeatures = ExperimentalFeatures
             };
         }
 
@@ -218,7 +210,14 @@ namespace Rubberduck.UI.Settings
             AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
-            SourceControlEnabled = general.IsSourceControlEnabled;
+            
+            ExperimentalFeatures = RubberduckIoCInstaller.AssembliesToRegister()
+                .SelectMany(s => s.DefinedTypes)
+                .Where(w => Attribute.IsDefined(w, typeof(ExperimentalAttribute)))
+                .SelectMany(s => s.CustomAttributes.Where(a => a.ConstructorArguments.Any()).Select(a => (string)a.ConstructorArguments.First().Value))
+                .Distinct()
+                .Select(s => new ExperimentalFeatures { IsEnabled = general.EnableExperimentalFeatures.SingleOrDefault(d => d.Key == s)?.IsEnabled ?? false, Key = s })
+                .ToList();
         }
 
         private void ImportSettings()

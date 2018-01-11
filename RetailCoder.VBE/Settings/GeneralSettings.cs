@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using System.Xml.Serialization;
 using Rubberduck.Common;
@@ -14,7 +16,7 @@ namespace Rubberduck.Settings
         bool IsAutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
         int MinimumLogLevel { get; set; }
-        bool IsSourceControlEnabled { get; set; }
+        List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
@@ -48,7 +50,7 @@ namespace Rubberduck.Settings
             }
         }
 
-        public bool IsSourceControlEnabled { get; set; }
+        public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
 
         public GeneralSettings()
         {
@@ -59,7 +61,7 @@ namespace Rubberduck.Settings
             IsAutoSaveEnabled = false;
             AutoSavePeriod = 10;
             MinimumLogLevel = LogLevel.Off.Ordinal;
-            IsSourceControlEnabled = false;
+            EnableExperimentalFeatures = new List<ExperimentalFeatures>();
         }
 
         public bool Equals(GeneralSettings other)
@@ -72,7 +74,8 @@ namespace Rubberduck.Settings
                    IsAutoSaveEnabled == other.IsAutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
                    MinimumLogLevel == other.MinimumLogLevel &&
-                   IsSourceControlEnabled == other.IsSourceControlEnabled;
+                   EnableExperimentalFeatures.All(a => other.EnableExperimentalFeatures.Contains(a)) &&
+                   EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count;
         }
     }
 }

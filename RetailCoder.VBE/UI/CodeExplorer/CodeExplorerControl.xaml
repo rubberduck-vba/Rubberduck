@@ -271,7 +271,7 @@
                                     </Image>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}" Visibility="{Binding IsSourceControlEnabled, Converter={StaticResource BoolToVisibility}}" >
+                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}" Visibility="{Binding EnableSourceControl, Converter={StaticResource BoolToVisibility}}" >
                                 <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Commit}"
                                       Command="{Binding CommitCommand}"
                                       CommandParameter="{Binding SelectedItem}" />
