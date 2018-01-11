@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -87,12 +88,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
+            return usage.Context.HasParent<VBAParser.AddressOfExpressionContext>();
         }
 
         private bool IsTypeOfExpression(IdentifierReference usage)
         {
-            return ParserRuleContextHelper.HasParent<VBAParser.TypeofexprContext>(usage.Context);
+            return usage.Context.HasParent<VBAParser.TypeofexprContext>();
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
@@ -107,7 +108,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsCallStmt(IdentifierReference usage)
         {
-            var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
+            var callStmt = usage.Context.GetParent<VBAParser.CallStmtContext>();
             if (callStmt == null)
             {
                 return false;
@@ -117,12 +118,12 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !usage.Context.HasParent(argumentList);
         }
 
         private bool IsIndexExprContext(IdentifierReference usage)
         {
-            var indexExpr = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(usage.Context);
+            var indexExpr = usage.Context.GetParent<VBAParser.IndexExprContext>();
             if (indexExpr == null)
             {
                 return false;
@@ -132,19 +133,19 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !usage.Context.HasParent(argumentList);
         }
 
         private bool IsLet(IdentifierReference usage)
         {
-            var letStmt = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(usage.Context);
+            var letStmt = usage.Context.GetParent<VBAParser.LetStmtContext>();
 
             return letStmt != null && letStmt == usage.Context;
         }
 
         private bool IsSet(IdentifierReference usage)
         {
-            var setStmt = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(usage.Context);
+            var setStmt = usage.Context.GetParent<VBAParser.SetStmtContext>();
 
             return setStmt != null && setStmt == usage.Context;
         }

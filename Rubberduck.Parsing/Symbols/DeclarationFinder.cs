@@ -191,12 +191,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
-                    .Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
+                    .Where(reference => (reference.Context).HasParent<VBAParser.ImplementsStmtContext>())
                     .Select(reference =>
                         new
                         {
                             IdentifierReference = reference,
-                            Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)
+                            Context = reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 ).ToList();
@@ -224,12 +224,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
-                    .Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
+                    .Where(reference => reference.Context.HasParent<VBAParser.ImplementsStmtContext>())
                     .Select(reference =>
                         new
                         {
                             IdentifierReference = reference,
-                            Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)
+                            Context = reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 );

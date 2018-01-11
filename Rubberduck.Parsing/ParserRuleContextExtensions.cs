@@ -248,6 +248,7 @@ namespace Rubberduck.Parsing
             return default;
         }
 
+        public static IEnumerable<TContext> GetDescendents<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
         {
             var walker = new ParseTreeWalker();
             var listener = new ChildNodeListener<TContext>();
