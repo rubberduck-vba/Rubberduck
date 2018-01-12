@@ -48,7 +48,7 @@ namespace RubberduckTests.SourceControl
             _vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
             
 

@@ -158,7 +158,7 @@ End Sub
             var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, class1)
                 .AddComponent("Module1", ComponentType.StandardModule, caller)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))

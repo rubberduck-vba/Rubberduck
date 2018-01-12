@@ -659,7 +659,7 @@ namespace RubberduckTests.CodeExplorer
         {
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
-            projectMock.AddComponent(projectMock.MockUserFormBuilder("UserForm1", "").Build());
+            projectMock.MockUserFormBuilder("UserForm1", "").AddFormToProjectBuilder();
 
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();

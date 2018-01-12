@@ -22,11 +22,13 @@ namespace RubberduckTests.Mocks
         private readonly Mock<IReferences> _vbReferences;
 
         private readonly List<Mock<IVBComponent>> _componentsMock = new List<Mock<IVBComponent>>();
+        private readonly List<Mock<ICodeModule>> _codeModuleMocks = new List<Mock<ICodeModule>>();
         private readonly List<IReference> _references = new List<IReference>();
 
         public Mock<IVBComponents> MockVBComponents => _vbComponents;
 
         public List<Mock<IVBComponent>> MockComponents => _componentsMock;
+        public List<Mock<ICodeModule>> MockCodeModules => _codeModuleMocks;
 
         private List<IVBComponent> Components
         {
@@ -78,18 +80,20 @@ namespace RubberduckTests.Mocks
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
         public MockProjectBuilder AddComponent(string name, ComponentType type, string content, Selection selection = new Selection())
         {
-            var component = CreateComponentMock(name, type, content, selection);
-            return AddComponent(component);
+            var component = CreateComponentMock(name, type, content, selection, out var codeModule);
+            return AddComponent(component, codeModule);
         }
 
         /// <summary>
         /// Adds a new mock component to the project.
         /// </summary>
         /// <param name="component">The component to add.</param>
+        /// <param name="codeModule">The codeModule of the component to add.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddComponent(Mock<IVBComponent> component)
+        public MockProjectBuilder AddComponent(Mock<IVBComponent> component, Mock<ICodeModule> codeModule)
         {
             _componentsMock.Add(component);
+            _codeModuleMocks.Add(codeModule);
             _getVbe().ActiveCodePane = component.Object.CodeModule.CodePane;
             return this;
         }
@@ -114,7 +118,7 @@ namespace RubberduckTests.Mocks
         /// to continue adding projects to the VBE.
         /// </summary>
         /// <returns></returns>
-        public MockVbeBuilder MockVbeBuilder()
+        public MockVbeBuilder AddProjectToVbeBuilder()
         {
             _mockVbeBuilder.AddProject(Build());
             return _mockVbeBuilder;
@@ -127,8 +131,8 @@ namespace RubberduckTests.Mocks
         /// <param name="content">The VBA code associated to the component.</param>
         public MockUserFormBuilder MockUserFormBuilder(string name, string content)
         {
-            var component = CreateComponentMock(name, ComponentType.UserForm, content, new Selection());
-            return new MockUserFormBuilder(component, this);
+            var component = CreateComponentMock(name, ComponentType.UserForm, content, new Selection(), out var codeModule);
+            return new MockUserFormBuilder(component, codeModule, this);
         }
 
         /// <summary>
@@ -153,6 +157,7 @@ namespace RubberduckTests.Mocks
             var result = new Mock<IVBProject>();
 
             result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.FileName).Returns(() => filename);
             result.SetupGet(m => m.Protection).Returns(() => protection);
@@ -167,6 +172,7 @@ namespace RubberduckTests.Mocks
             var result = new Mock<IVBComponents>();
 
             result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
 
             result.SetupGet(m => m.Parent).Returns(() => _project.Object);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
@@ -181,14 +187,13 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
                 .Callback((ComponentType c) =>
                 {
-                    _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection()));
+                    _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection(), out var codeModule));
+                    _codeModuleMocks.Add(codeModule);
                 })
                 .Returns(() =>
                 {
                     var lastComponent = _componentsMock.LastOrDefault();
-                    return lastComponent == null
-                        ? null
-                        : lastComponent.Object;
+                    return lastComponent?.Object;
                 });
 
             result.Setup(m => m.Remove(It.IsAny<IVBComponent>())).Callback((IVBComponent c) =>
@@ -209,7 +214,8 @@ namespace RubberduckTests.Mocks
                 ComponentType type;
                 types.TryGetValue(parts.Last(), out type);
 
-                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection()));
+                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection(), out var codeModule));
+                _codeModuleMocks.Add(codeModule);
             });
 
             return result;
@@ -219,6 +225,7 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<IReferences>();
             result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
             result.SetupGet(m => m.Parent).Returns(() => _project.Object);
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.Setup(m => m.GetEnumerator()).Returns(() => _references.GetEnumerator());
@@ -234,6 +241,7 @@ namespace RubberduckTests.Mocks
             var result = new Mock<IReference>();
 
             result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
 
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Collection).Returns(() => _vbReferences.Object);
@@ -248,11 +256,12 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<IVBComponent> CreateComponentMock(string name, ComponentType type, string content, Selection selection)
+        private Mock<IVBComponent> CreateComponentMock(string name, ComponentType type, string content, Selection selection, out Mock<ICodeModule> moduleMock)
         {
             var result = new Mock<IVBComponent>();
 
             result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
 
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Collection).Returns(() => _vbComponents.Object);
@@ -263,8 +272,9 @@ namespace RubberduckTests.Mocks
             var module = CreateCodeModuleMock(name, content, selection, result);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
 
-            result.Setup(m => m.Activate());       
+            result.Setup(m => m.Activate());
 
+            moduleMock = module;
             return result;
         }
 
@@ -295,6 +305,7 @@ namespace RubberduckTests.Mocks
 
             var codeModule = new Mock<ICodeModule>();
             codeModule.Setup(m => m.Dispose());
+            codeModule.SetupReferenceEqualityIncludingHashCode();
             codeModule.Setup(m => m.Clear()).Callback(() => lines = new List<string>());
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>
@@ -358,6 +369,7 @@ namespace RubberduckTests.Mocks
             windows.Add(window);
 
             codePane.Setup(m => m.Dispose());
+            codePane.SetupReferenceEqualityIncludingHashCode();
             codePane.Setup(p => p.GetQualifiedSelection()).Returns(() => {
                 if (selection.IsEmpty()) { return null; }
                 return new QualifiedSelection(new QualifiedModuleName(component.Object), selection);
