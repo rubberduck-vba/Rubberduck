@@ -263,6 +263,16 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _projects.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _projects.Count);
 
+            result.Setup(m => m.Add(It.IsAny<ProjectType>()))
+                .Returns((ProjectType pt) =>
+            {
+                var projectBuilder = ProjectBuilder("test", ProjectProtection.Unprotected);
+                var project = projectBuilder.Build();
+                project.Object.AssignProjectId();
+                AddProject(project);
+                return project.Object;
+            });
+            result.Setup(m => m.Remove(It.IsAny<IVBProject>())).Callback((IVBProject proj) => _projects.Remove(proj));
 
             return result;
         }

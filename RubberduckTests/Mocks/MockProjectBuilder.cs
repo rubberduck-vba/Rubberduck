@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Moq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -146,7 +147,7 @@ namespace RubberduckTests.Mocks
         /// <summary>
         /// Gets the mock <see cref="IVBProject"/> instance after assigning the projectId.
         /// </summary>
-        public Mock<IVBProject> BuildWIthAssignedProjectId()
+        public Mock<IVBProject> BuildWithAssignedProjectId()
         {
             _project.Object.AssignProjectId();
             return _project;
@@ -158,6 +159,8 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.Dispose());
             result.SetupReferenceEqualityIncludingHashCode();
+            result.Setup(m => m.Equals(It.IsAny<IVBProject>()))
+                .Returns((IVBProject other) => ReferenceEquals(result.Object, other));
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.FileName).Returns(() => filename);
             result.SetupGet(m => m.Protection).Returns(() => protection);
@@ -199,6 +202,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Remove(It.IsAny<IVBComponent>())).Callback((IVBComponent c) =>
             {
                 _componentsMock.Remove(_componentsMock.First(m => m.Object == c));
+                _codeModuleMocks.Remove(_codeModuleMocks.First(m => m.Object.Parent == c));
             });
 
             result.Setup(m => m.Import(It.IsAny<string>())).Callback((string s) =>
@@ -262,6 +266,8 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.Dispose());
             result.SetupReferenceEqualityIncludingHashCode();
+            result.Setup(m => m.Equals(It.IsAny<IVBComponent>()))
+                .Returns((IVBComponent other) => ReferenceEquals(result.Object, other));
 
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Collection).Returns(() => _vbComponents.Object);
@@ -283,6 +289,9 @@ namespace RubberduckTests.Mocks
             var codePane = CreateCodePaneMock(name, selection, component);
 
             var result = CreateCodeModuleMock(content, name);
+            result.SetupReferenceEqualityIncludingHashCode();
+            result.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
+                .Returns((ICodeModule other) => ReferenceEquals(result.Object, other));
             result.SetupGet(m => m.VBE).Returns(_getVbe);
             result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
@@ -305,7 +314,6 @@ namespace RubberduckTests.Mocks
 
             var codeModule = new Mock<ICodeModule>();
             codeModule.Setup(m => m.Dispose());
-            codeModule.SetupReferenceEqualityIncludingHashCode();
             codeModule.Setup(m => m.Clear()).Callback(() => lines = new List<string>());
             codeModule.SetupGet(c => c.CountOfLines).Returns(() => lines.Count);
             codeModule.SetupGet(c => c.CountOfDeclarationLines).Returns(() =>

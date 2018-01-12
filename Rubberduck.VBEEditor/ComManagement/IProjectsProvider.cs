@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
-    public interface IProjectsProvider
+    public interface IProjectsProvider : IDisposable
     {
         IVBProjects ProjectsCollection();
         IEnumerable<(string ProjectId, IVBProject Project)> Projects();
@@ -12,6 +13,7 @@ namespace Rubberduck.VBEditor.ComManagement
         IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components();
         IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(string projectId);
         IVBComponent Component(QualifiedModuleName qualifiedModuleName);
+        IEnumerable<(QualifiedModuleName QualifiedModuleName, ICodeModule CodeModule)> CodeModules();
         IEnumerable<(QualifiedModuleName QualifiedModuleName, ICodeModule CodeModule)> CodeModules(string projectId);
         ICodeModule CodeModule(QualifiedModuleName qualifiedModuleName);
     }

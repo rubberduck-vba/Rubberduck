@@ -7,7 +7,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
-    public class ProjectsRepository : IProjectsRepository, IDisposable
+    public class ProjectsRepository : IProjectsRepository
     {
         private IVBProjects _projectsCollection;
         private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
@@ -66,8 +66,6 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public void Refresh()
         {
-            throw new NotImplementedException();
-
             ExecuteWithinWriteLock(() => RefreshCollections());
         }
 
@@ -111,10 +109,10 @@ namespace Rubberduck.VBEditor.ComManagement
             DisposeWrapperEnumerable(codeModules);
         }
 
-        private IEnumerable<ISafeComWrapper> ClearComWrapperDictionary<TKey, TWrapper>(IDictionary<TKey, TWrapper> dictionary)
+        private IEnumerable<TWrapper> ClearComWrapperDictionary<TKey, TWrapper>(IDictionary<TKey, TWrapper> dictionary)
             where TWrapper : ISafeComWrapper
         {
-            var copy = dictionary.Values.ToList() as IEnumerable<ISafeComWrapper>;
+            var copy = dictionary.Values.ToList();
             dictionary.Clear();
             return copy;
         }
@@ -155,8 +153,6 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public void Refresh(string projectId)
         {
-            throw new NotImplementedException();
-
             ExecuteWithinWriteLock(() => RefreshCollections(projectId));
         }
 
@@ -167,7 +163,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public IEnumerable<(string ProjectId, IVBProject Project)> Projects()
         {
-            return EvaluateWithinReadLock(() => _projects.Select(kvp => (kvp.Key, kvp.Value)).ToList());
+            return EvaluateWithinReadLock(() => _projects.Select(kvp => (kvp.Key, kvp.Value)).ToList()) ?? new List<(string, IVBProject)>();
         }
 
         private T EvaluateWithinReadLock<T>(Func<T> function) where T: class
@@ -205,46 +201,43 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components()
         {
-            return EvaluateWithinReadLock(() => _components.Select(kvp => (kvp.Key, kvp.Value)).ToList());
+            return EvaluateWithinReadLock(() => _components.Select(kvp => (kvp.Key, kvp.Value)).ToList()) ?? new List<(QualifiedModuleName, IVBComponent)>();
         }
 
         public IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(string projectId)
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _components.Where(kvp => kvp.Key.ProjectId.Equals(projectId))
-                                                            .Select(kvp => (kvp.Key, kvp.Value))
-                                                            .ToList());
+                       .Select(kvp => (kvp.Key, kvp.Value))
+                       .ToList())
+                   ?? new List<(QualifiedModuleName, IVBComponent)>();
         }
 
         public IVBComponent Component(QualifiedModuleName qualifiedModuleName)
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _components.TryGetValue(qualifiedModuleName, out var component) ? component : null);
+        }
+
+        public IEnumerable<(QualifiedModuleName QualifiedModuleName, ICodeModule CodeModule)> CodeModules()
+        {
+            return EvaluateWithinReadLock(() => _codeModules.Select(kvp => (kvp.Key, kvp.Value)).ToList()) ?? new List<(QualifiedModuleName, ICodeModule)>();
         }
 
         public IEnumerable<(QualifiedModuleName QualifiedModuleName, ICodeModule CodeModule)> CodeModules(string projectId)
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _codeModules.Where(kvp => kvp.Key.ProjectId.Equals(projectId))
-                                                            .Select(kvp => (kvp.Key, kvp.Value))
-                                                            .ToList());
+                       .Select(kvp => (kvp.Key, kvp.Value))
+                       .ToList())
+                   ?? new List<(QualifiedModuleName, ICodeModule)>();
         }
 
         public ICodeModule CodeModule(QualifiedModuleName qualifiedModuleName)
         {
-            throw new NotImplementedException();
-
             return EvaluateWithinReadLock(() => _codeModules.TryGetValue(qualifiedModuleName, out var codeModule) ? codeModule : null);
         }
 
         private bool _disposed;
         public void Dispose()
         {
-            throw new NotImplementedException();
-
             if (_disposed)
             {
                 return;
