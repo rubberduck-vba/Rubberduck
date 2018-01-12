@@ -1420,7 +1420,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of &apos;Error&apos; statement.
+        ///   Looks up a localized string similar to Use of obsolete &apos;Error&apos; statement.
         /// </summary>
         public static string ObsoleteErrorSyntaxInspectionName {
             get {

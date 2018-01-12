@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1963,104 +1963,101 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="Preview" xml:space="preserve">
     <value>Vorschau</value>
   </data>
-  <data name="CodeExplorer_OpenDesigner">
+  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
     <value>Designer öffnen</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryTitle">
+  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
     <value>Neues lokales Repository erstellen.</value>
   </data>
-  <data name="EmptyUIRefreshMessage">
+  <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>Um die Projekte in der VBE zu parsen und zu analysieren.</value>
   </data>
-  <data name="CodeExplorer_ExportAll">
+  <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Projekt exportieren...</value>
   </data>
-  <data name="ToolsMenu_ExportProject">
+  <data name="ToolsMenu_ExportProject" xml:space="preserve">
     <value>Aktives Projekt exportieren</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_VBFiles">
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>VB Dateien</value>
   </data>
-  <data name="GeneralSettings_EnableSourceControl">
-    <value>Versionsverwaltung aktivieren. Benötigt Neustart zur Anwendung.</value>
-  </data>
-  <data name="RenameDialog_BuiltInNameError">
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0} {1} kann nicht geändert werden.</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryDescription">
+  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
     <value>Erstellt aus dem aktiven Projekt ein neues lokales Repository.</value>
   </data>
-  <data name="RenamePresenter_TargetIsControlEventHandler">
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>Methode '{0}' ist ein EventHandler für die Schaltfläche '{1}'. Nur die Schaltfläche kann umbenannt werden. Stattdessen '{1}' umbennen?</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Filter_AllFiles">
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Alle Dateien</value>
   </data>
-  <data name="SourceControl_CloneRepositoryDescription">
+  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
     <value>Ein entferntes Repository von einer anzugebenden URL auf die lokale Festplatte klonen. Das Repository wird anschließend in das aktive Projekt geladen.</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByType">
+  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
     <value>Nach Typ gruppieren</value>
   </data>
-  <data name="CodeExplorer_AddModule">
+  <data name="CodeExplorer_AddModule" xml:space="preserve">
     <value>Modul hinzufügen</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByName">
+  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
     <value>nach Name</value>
   </data>
-  <data name="ImportCommand_OpenDialog_Title">
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Quellcode aus Datei importieren</value>
   </data>
-  <data name="SourceControl_OpenRepositoryTitle">
+  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
     <value>Lokales Repository öffnen</value>
   </data>
-  <data name="EmptyUIRefreshMessage_Title">
+  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck sieht noch nichts</value>
   </data>
-  <data name="GeneralSettings_ExperimentalFeaturesWarning">
+  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Auf eigene Verantwortung und Gefahr aktivieren. Aktivierung und / oder Verwendung von Funktionalitäten in dieser Sektion kann zu unvorhergesehenen Fehlern und unwiederbringlichem Datenverlust führen.</value>
   </data>
-  <data name="HotkeyDescription_ExportActiveProject">
+  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
     <value>Aktives Projekt exportieren</value>
   </data>
-  <data name="CodeExplorer_Open">
+  <data name="CodeExplorer_Open" xml:space="preserve">
     <value>Öffnen</value>
   </data>
-  <data name="RenamePresenter_TargetIsEventHandlerImplementation">
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>Die Methode '{0}' ist eine Implementierung des Ereignisses '{1}.{2}'. Stattdessen Ereignis '{2}' umbenennen?</value>
   </data>
-  <data name="ExportAllCommand_SaveAsDialog_Title">
+  <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Einen Ordner als Ziel für den Quellcode von {0} wählen:</value>
   </data>
-  <data name="CodeExplorer_AddFormText">
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
     <value>Formular (.frm)</value>
   </data>
-  <data name="GeneralSettings_ExperimentalFeatures">
+  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Experimentelle Funktionalität:</value>
   </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText">
+  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
     <value>Testmodul mit Skelettmethoden</value>
   </data>
-  <data name="SourceControl_OpenRepositoryDescription">
+  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
     <value>Lokales Repository auf der Festplatte öffnen. Das aktive Projekt wird den Quellcode übernehmen.</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder">
+  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>Wie im Modul deklariert</value>
   </data>
-  <data name="RubberduckMenu_Refresh">
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
-  <data name="ToDoExplorer_CopyToolTip">
+  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>In die Zwischenablage kopieren</value>
   </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Plural">
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck TODO Markierungen - {0}
 {1} Markierungen gefunden.</value>
   </data>
-  <data name="ToDoExplorerToDoItemFormat">
+  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
     <value>{0}: {1} - {2}.{3} Zeile {4}.</value>
   </data>
-  <data name="ToDoExplorer_NumberOfIssuesFound_Singular">
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck TODO Markierungen - {0}
 {1} Markierungen gefunden.</value>
   </data>

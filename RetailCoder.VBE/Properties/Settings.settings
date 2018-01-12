@@ -49,7 +49,7 @@
     <Setting Name="DefaultHotkey_CodeExplorerCommand" Type="Rubberduck.Settings.HotkeySetting" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;HotkeySetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;Key1&gt;C&lt;/Key1&gt;
+  &lt;Key1&gt;R&lt;/Key1&gt;
   &lt;IsEnabled&gt;true&lt;/IsEnabled&gt;
   &lt;HasShiftModifier&gt;false&lt;/HasShiftModifier&gt;
   &lt;HasAltModifier&gt;false&lt;/HasAltModifier&gt;

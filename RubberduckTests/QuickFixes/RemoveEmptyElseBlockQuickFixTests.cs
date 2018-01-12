@@ -8,7 +8,7 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestFixture, Ignore("Broken feature")]
+    [TestFixture]
     public class RemoveEmptyElseBlockQuickFixTests
     {
         [Test]

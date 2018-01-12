@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestFixture, Ignore("Broken feature")]
+    [TestFixture]
     public class EmptyForEachInspectionTests
     {
         [Test]
