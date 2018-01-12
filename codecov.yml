@@ -45,12 +45,12 @@ flags:
   core:
     paths:
       - Rubberduck.Parsing
-      - Retailcoder.VBE
+      - RetailCoder.VBE
       # Exclude UI from the core flag, that has a separate flag
-      - !Retailcoder.VBE/UI 
+      - !RetailCoder.VBE/UI 
   ui:
     paths:
-      - Retailcoder.VBE/UI
+      - RetailCoder.VBE/UI
   inspections:
     paths:
       - Rubberduck.Inspections
