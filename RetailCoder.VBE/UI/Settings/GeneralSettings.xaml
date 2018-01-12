@@ -236,8 +236,17 @@
                             <AccessText TextWrapping="Wrap" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ExperimentalFeaturesWarning}"/>
                         </Label.Content>
                     </Label>
-                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_EnableSourceControl}"
-                           IsChecked="{Binding SourceControlEnabled}" />
+                    <ListView ItemsSource="{Binding ExperimentalFeatures}"
+                          HorizontalAlignment="Stretch"
+                          BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsEnabled}" Content="{Binding DisplayValue}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
