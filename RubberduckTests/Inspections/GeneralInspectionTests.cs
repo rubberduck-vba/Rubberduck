@@ -47,7 +47,7 @@ namespace RubberduckTests.Inspections
                           .Where(i => string.IsNullOrWhiteSpace(InspectionsUI.ResourceManager.GetString(i.Name + "Name")))
                           .Select(i => i.Name)
                           .ToList();
-            
+
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 

@@ -1,7 +1,9 @@
-﻿using Rubberduck.UI.Command.MenuItems.ParentMenus;
+﻿using Rubberduck.Parsing.Common;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
+    [Experimental(nameof(RubberduckUI.GeneralSettings_EnableSourceControl))]
     public class SourceControlCommandMenuItem : CommandMenuItemBase
     {
         public SourceControlCommandMenuItem(CommandBase command) 

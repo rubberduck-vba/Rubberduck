@@ -558,7 +558,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
 
-        public bool IsSourceControlEnabled => _generalSettings.IsSourceControlEnabled;
+        public bool EnableSourceControl => _generalSettings.EnableExperimentalFeatures.Any(a => a.Key == RubberduckUI.GeneralSettings_EnableSourceControl);
 
         public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
