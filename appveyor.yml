@@ -14,7 +14,7 @@ skip_commits:
   files:
   - docs/*
   - '**/*.md'
-  #- '**/*.yml'
+  - '**/*.yml'
   - license
   - License.rtf
 branches:
@@ -49,11 +49,14 @@ build:
   verbosity: minimal
 
 test_script:
-- OpenCover.Console.exe -register:user -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-- codecov -f "Rubberduck_Coverage.xml"
+  # we use -returntargetcode to fail the build if tests fail
+  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+
+after_test:
+  - codecov -f "Rubberduck_Coverage.xml"
 
 before_package:
-- copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
+  - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
 
 for:
   - branches:
