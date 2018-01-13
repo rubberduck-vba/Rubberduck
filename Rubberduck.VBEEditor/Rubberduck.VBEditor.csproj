@@ -142,6 +142,7 @@
     <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ISafeEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
     <Compile Include="SafeComWrappers\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\MSForms\ControlType.cs" />

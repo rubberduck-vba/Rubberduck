@@ -64,7 +64,7 @@ namespace Rubberduck.VBEditor.Events
                     info.Subclass.Dispose();
                 }
                 //SafeComWrappers.VBA.VBProjects.DetatchEvents();
-                SafeComWrappers.VBA.VBComponents.DetatchEvents();
+                //SafeComWrappers.VBA.VBComponents.DetatchEvents();
             }
         }
 

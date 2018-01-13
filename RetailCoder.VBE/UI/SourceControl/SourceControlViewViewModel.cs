@@ -110,18 +110,30 @@ namespace Rubberduck.UI.SourceControl
 
         private void AddComponentEventHandlers()
         {
+            _vbProjects.AttachEvents();
             _vbProjects.ProjectRemoved += ProjectRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded += ComponentAdded;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
+            foreach (var project in _vbProjects)
+            using(project)
+            {
+                project.VBComponents.AttachEvents();
+                project.VBComponents.ComponentAdded += ComponentAdded;
+                project.VBComponents.ComponentRemoved += ComponentRemoved;
+                project.VBComponents.ComponentRenamed += ComponentRenamed;
+            }
         }
 
         private void RemoveComponentEventHandlers()
         {
             _vbProjects.ProjectRemoved -= ProjectRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded -= ComponentAdded;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
-            VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
+            foreach (var project in _vbProjects)
+            using (project)
+            {
+                project.VBComponents.ComponentAdded -= ComponentAdded;
+                project.VBComponents.ComponentRemoved -= ComponentRemoved;
+                project.VBComponents.ComponentRenamed -= ComponentRenamed;
+                project.VBComponents.DetachEvents();
+            }
+            _vbProjects.DetachEvents();
         }
 
         private void ComponentAdded(object sender, ComponentEventArgs e)

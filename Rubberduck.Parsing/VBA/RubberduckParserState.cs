@@ -113,12 +113,18 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddEventHandlers()
         {
+            _vbProjects.AttachEvents();
             _vbProjects.ProjectAdded += Sinks_ProjectAdded;
             _vbProjects.ProjectRemoved += Sinks_ProjectRemoved;
             _vbProjects.ProjectRenamed += Sinks_ProjectRenamed;
-            VBComponents.ComponentAdded += Sinks_ComponentAdded;
-            VBComponents.ComponentRemoved += Sinks_ComponentRemoved;
-            VBComponents.ComponentRenamed += Sinks_ComponentRenamed;           
+            foreach (var project in _vbProjects)
+            using (project)
+            {
+                project.VBComponents.AttachEvents();
+                project.VBComponents.ComponentAdded += Sinks_ComponentAdded;
+                project.VBComponents.ComponentRemoved += Sinks_ComponentRemoved;
+                project.VBComponents.ComponentRenamed += Sinks_ComponentRenamed;
+            }
         }
 
         private void RemoveEventHandlers()
@@ -126,9 +132,15 @@ namespace Rubberduck.Parsing.VBA
             _vbProjects.ProjectAdded -= Sinks_ProjectAdded;
             _vbProjects.ProjectRemoved -= Sinks_ProjectRemoved;
             _vbProjects.ProjectRenamed -= Sinks_ProjectRenamed;
-            VBComponents.ComponentAdded -= Sinks_ComponentAdded;
-            VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
-            VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;
+            foreach (var project in _vbProjects)
+            using (project)
+            {
+                project.VBComponents.ComponentAdded -= Sinks_ComponentAdded;
+                project.VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
+                project.VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;
+                project.VBComponents.DetachEvents();
+            }
+            _vbProjects.DetachEvents();
         }
 
         private void Sinks_ProjectAdded(object sender, ProjectEventArgs e)
