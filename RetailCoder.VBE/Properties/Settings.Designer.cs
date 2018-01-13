@@ -295,5 +295,21 @@ namespace Rubberduck.Properties {
                 return ((global::Rubberduck.Settings.WindowSettings)(this["WindowSettings"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<UnitTestSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <BindingMode>LateBinding</BindingMode>
+  <AssertMode>StrictAssert</AssertMode>
+  <ModuleInit>true</ModuleInit>
+  <MethodInit>true</MethodInit>
+  <DefaultTestStubInNewModule>false</DefaultTestStubInNewModule>
+</UnitTestSettings>")]
+        public global::Rubberduck.Settings.UnitTestSettings UnitTestSettings {
+            get {
+                return ((global::Rubberduck.Settings.UnitTestSettings)(this["UnitTestSettings"]));
+            }
+        }
     }
 }

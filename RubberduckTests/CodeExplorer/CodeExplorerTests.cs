@@ -2112,14 +2112,7 @@ End Sub";
         #region Helpers
         private Configuration GetDefaultUnitTestConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.LateBinding,
-                AssertMode = AssertMode.StrictAssert,
-                ModuleInit = true,
-                MethodInit = true,
-                DefaultTestStubInNewModule = false
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false);
 
             var generalSettings = new GeneralSettings
             {
