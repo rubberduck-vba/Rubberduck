@@ -8,9 +8,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         where TSource : class
         where TEventInterface : class
     {
+        private const int NotAdvising = -1;
         private readonly object _lock = new object();
         private IConnectionPoint _icp; // The connection point
-        private int _cookie = -1;     // The cookie for the connection
+        private int _cookie = NotAdvising;     // The cookie for the connection
 
         protected SafeEventedComWrapper(TSource target, bool rewrapping = false) : base(target, rewrapping)
         {
@@ -25,6 +26,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         public void AttachEvents()
         {
             if (IsWrappingNullReference)
+            {
+                return;
+            }
+
+            if (_cookie != NotAdvising)
             {
                 return;
             }
@@ -47,13 +53,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             lock (_lock)
             {
-                if (_cookie != -1)
+                if (_cookie != NotAdvising)
                 {
                     _icp.Unadvise(_cookie);
                 }
                 if (_icp != null)
                 {
                     Marshal.ReleaseComObject(_icp);
+                    _icp = null;
                 }
             }
         }
