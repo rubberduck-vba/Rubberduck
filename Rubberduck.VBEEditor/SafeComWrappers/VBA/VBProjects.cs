@@ -10,26 +10,11 @@ using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects, VB._dispVBProjectsEvents
+    public class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects, VB._dispVBProjectsEvents
     {
-        private static readonly Guid VBProjectsEventsGuid = new Guid("0002E103-0000-0000-C000-000000000046");
-        private static VB.VBProjects _projects;
-        private enum ProjectEventDispId
-        {
-            ItemAdded = 1,
-            ItemRemoved = 2,
-            ItemRenamed = 3,
-            ItemActivated = 4
-        }
-
         public VBProjects(VB.VBProjects target, bool rewrapping = false) 
         :base(target, rewrapping)
-        {
-            if (_projects == null)
-            {
-                _projects = target;
-                AttachEvents();
-            }          
+        {        
         }
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
@@ -37,7 +22,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
         public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
-
+        
         public IVBProject Add(ProjectType type)
         {
             return new VBProject(IsWrappingNullReference ? null : Target.Add((VB.vbext_ProjectType)type));
@@ -91,40 +76,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         #region Events
         
-        private IConnectionPoint _icp; // The connection point
-        private int _cookie = -1;     // The cookie for the connection
-
-        private void AttachEvents()
-        {
-            // Call QueryInterface for IConnectionPointContainer
-            var icpc = (IConnectionPointContainer)Target;
-
-            // Find the connection point for the source interface
-            var g = typeof(VB._dispVBProjectsEvents).GUID;
-            icpc.FindConnectionPoint(ref g, out _icp);
-
-            // Pass a pointer to the host to the connection point
-            _icp.Advise(this as VB._dispVBProjectsEvents, out _cookie);
-        }
-
-        private void DetatchEvents()
-        {
-            if (_cookie != -1)
-            {
-                _icp.Unadvise(_cookie);
-            }
-            if (_icp != null)
-            {
-                Marshal.ReleaseComObject(_icp);
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            DetatchEvents();
-            base.Dispose(disposing);
-        }
-
         public event EventHandler<ProjectEventArgs> ProjectAdded;
         void VB._dispVBProjectsEvents.ItemAdded([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
@@ -199,15 +150,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             handler.Invoke(project, new ProjectEventArgs(projectId, project));
         }
 
-        private static bool IsInDesignMode()
+        private bool IsInDesignMode()
         {
-            if (_projects == null)
+            foreach (var project in this)
+            using(project)
             {
-                return true;
-            }
-            foreach (var project in _projects.Cast<VB.VBProject>())
-            {
-                if (project.Mode != VB.vbext_VBAMode.vbext_vm_Design)
+                if (project.Mode != EnvironmentMode.Design)
                 {
                     return false;
                 }

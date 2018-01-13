@@ -175,6 +175,7 @@
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarControls.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarPopup.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBars.cs" />
+    <Compile Include="SafeComWrappers\SafeEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB6\AddIn.cs" />
     <Compile Include="SafeComWrappers\VB6\AddIns.cs" />
     <Compile Include="SafeComWrappers\VB6\Application.cs" />
