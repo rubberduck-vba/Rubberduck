@@ -322,7 +322,7 @@ End Sub";
         public void InspectionType()
         {
             var inspection = new EmptyIfBlockInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
         [Test]

@@ -191,12 +191,15 @@ namespace Rubberduck.Parsing.Symbols
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
-                    .Where(reference => (reference.Context).HasParent<VBAParser.ImplementsStmtContext>())
+                    .Where(reference => reference.Context is VBAParser.ImplementsStmtContext 
+                        || (reference.Context).IsDescendentOf<VBAParser.ImplementsStmtContext>())
                     .Select(reference =>
                         new
                         {
                             IdentifierReference = reference,
-                            Context = reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
+                            Context = reference.Context is VBAParser.ImplementsStmtContext ? 
+                                (VBAParser.ImplementsStmtContext)reference.Context 
+                                    : reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 ).ToList();
@@ -224,12 +227,14 @@ namespace Rubberduck.Parsing.Symbols
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
-                    .Where(reference => reference.Context.HasParent<VBAParser.ImplementsStmtContext>())
+                    .Where(reference => reference.Context is VBAParser.ImplementsStmtContext || reference.Context.IsDescendentOf<VBAParser.ImplementsStmtContext>())
                     .Select(reference =>
                         new
                         {
                             IdentifierReference = reference,
-                            Context = reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
+                            Context = reference.Context is VBAParser.ImplementsStmtContext ?
+                                (VBAParser.ImplementsStmtContext)reference.Context
+                                : reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 );

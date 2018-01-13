@@ -88,12 +88,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            return usage.Context.HasParent<VBAParser.AddressOfExpressionContext>();
+            return usage.Context.IsDescendentOf<VBAParser.AddressOfExpressionContext>();
         }
 
         private bool IsTypeOfExpression(IdentifierReference usage)
         {
-            return usage.Context.HasParent<VBAParser.TypeofexprContext>();
+            return usage.Context.IsDescendentOf<VBAParser.TypeofexprContext>();
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
@@ -118,7 +118,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !usage.Context.HasParent(argumentList);
+            return !usage.Context.IsDescendentOf(argumentList);
         }
 
         private bool IsIndexExprContext(IdentifierReference usage)
@@ -133,7 +133,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !usage.Context.HasParent(argumentList);
+            return !usage.Context.IsDescendentOf(argumentList);
         }
 
         private bool IsLet(IdentifierReference usage)
