@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
+    public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects, VB._dispVBProjectsEvents
     {
         private static readonly Guid VBProjectsEventsGuid = new Guid("0002E103-0000-0000-C000-000000000046");
         private static VB.VBProjects _projects;
@@ -89,64 +90,66 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         }
 
         #region Events
+        
+        private IConnectionPoint _icp; // The connection point
+        private int _cookie = -1;     // The cookie for the connection
 
-        private static void AttachEvents()
+        private void AttachEvents()
         {
-            if (_projects != null)
+            // Call QueryInterface for IConnectionPointContainer
+            var icpc = (IConnectionPointContainer)Target;
+
+            // Find the connection point for the source interface
+            var g = typeof(VB._dispVBProjectsEvents).GUID;
+            icpc.FindConnectionPoint(ref g, out _icp);
+
+            // Pass a pointer to the host to the connection point
+            _icp.Advise(this as VB._dispVBProjectsEvents, out _cookie);
+        }
+
+        private void DetatchEvents()
+        {
+            if (_cookie != -1)
             {
-                _projectAdded = OnProjectAdded;
-                _projectRemoved = OnProjectRemoved;
-                _projectRenamed = OnProjectRenamed;
-                _projectActivated = OnProjectActivated;
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
+                _icp.Unadvise(_cookie);
+            }
+            if (_icp != null)
+            {
+                Marshal.ReleaseComObject(_icp);
             }
         }
 
-        internal static void DetatchEvents()
+        protected override void Dispose(bool disposing)
         {
-            if (_projects != null)
+            DetatchEvents();
+            base.Dispose(disposing);
+        }
+
+        public event EventHandler<ProjectEventArgs> ProjectAdded;
+        void VB._dispVBProjectsEvents.ItemAdded([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
+        {
+            if (IsInDesignMode() && VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
             {
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
-                _projects = null;
+                OnDispatch(ProjectAdded, VBProject, true);
             }
         }
 
-        public static event EventHandler<ProjectEventArgs> ProjectAdded;
-        private delegate void ItemAddedDelegate(VB.VBProject vbProject);
-        private static ItemAddedDelegate _projectAdded;
-        private static void OnProjectAdded(VB.VBProject vbProject)
+        public event EventHandler<ProjectEventArgs> ProjectRemoved;
+        void VB._dispVBProjectsEvents.ItemRemoved([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
+            if (IsInDesignMode() && VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
             {
-                OnDispatch(ProjectAdded, vbProject, true);
+                OnDispatch(ProjectRemoved, VBProject);
             }
         }
 
-        public static event EventHandler<ProjectEventArgs> ProjectRemoved;
-        private delegate void ItemRemovedDelegate(VB.VBProject vbProject);
-        private static ItemRemovedDelegate _projectRemoved;
-        private static void OnProjectRemoved(VB.VBProject vbProject)
+        public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
+        void VB._dispVBProjectsEvents.ItemRenamed([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject,
+            [MarshalAs(UnmanagedType.BStr), In] string OldName)
         {
-            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
-            {
-                OnDispatch(ProjectRemoved, vbProject);
-            }
-        }
+            var project = new VBProject(VBProject);
 
-        public static event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
-        private delegate void ItemRenamedDelegate(VB.VBProject vbProject, string oldName);
-        private static ItemRenamedDelegate _projectRenamed;
-        private static void OnProjectRenamed(VB.VBProject vbProject, string oldName)
-        {
-            var project = new VBProject(vbProject);
-
-            if (!IsInDesignMode() || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
             {
                 project.Dispose();
                 return;
@@ -160,17 +163,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 project.Dispose();
                 return;
             }
-            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, oldName));
+            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, OldName));
         }
 
-        public static event EventHandler<ProjectEventArgs> ProjectActivated;
-        private delegate void ItemActivatedDelegate(VB.VBProject vbProject);
-        private static ItemActivatedDelegate _projectActivated;
-        private static void OnProjectActivated(VB.VBProject vbProject)
+        public event EventHandler<ProjectEventArgs> ProjectActivated;
+        void VB._dispVBProjectsEvents.ItemActivated([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
+            if (IsInDesignMode() && VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
             {
-                OnDispatch(ProjectActivated, vbProject);
+                OnDispatch(ProjectActivated, VBProject);
             }
         }
 

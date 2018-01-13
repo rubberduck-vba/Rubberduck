@@ -33,6 +33,7 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CustomMarshalers" />
     <Reference Include="Interop.SldWorks.Extensibility">
       <HintPath>..\libs\Interop.SldWorks.Extensibility.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -128,6 +129,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\DispatchUtility.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
     <Compile Include="ComManagement\ComSafe.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />

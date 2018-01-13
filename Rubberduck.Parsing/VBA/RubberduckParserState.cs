@@ -66,7 +66,7 @@ namespace Rubberduck.Parsing.VBA
         public DeclarationFinder DeclarationFinder { get; private set; }
 
         private readonly IVBE _vbe;
-        private readonly IVBProjects _vbProjects;   //This field keeps the RCW for the events alive.
+        private readonly IVBProjects _vbProjects; //This field keeps the RCW for the events alive.
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
@@ -113,9 +113,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddEventHandlers()
         {
-            VBProjects.ProjectAdded += Sinks_ProjectAdded;
-            VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
-            VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
+            _vbProjects.ProjectAdded += Sinks_ProjectAdded;
+            _vbProjects.ProjectRemoved += Sinks_ProjectRemoved;
+            _vbProjects.ProjectRenamed += Sinks_ProjectRenamed;
             VBComponents.ComponentAdded += Sinks_ComponentAdded;
             VBComponents.ComponentRemoved += Sinks_ComponentRemoved;
             VBComponents.ComponentRenamed += Sinks_ComponentRenamed;           
@@ -123,9 +123,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void RemoveEventHandlers()
         {
-            VBProjects.ProjectAdded -= Sinks_ProjectAdded;
-            VBProjects.ProjectRemoved -= Sinks_ProjectRemoved;
-            VBProjects.ProjectRenamed -= Sinks_ProjectRenamed;
+            _vbProjects.ProjectAdded -= Sinks_ProjectAdded;
+            _vbProjects.ProjectRemoved -= Sinks_ProjectRemoved;
+            _vbProjects.ProjectRenamed -= Sinks_ProjectRenamed;
             VBComponents.ComponentAdded -= Sinks_ComponentAdded;
             VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
             VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;

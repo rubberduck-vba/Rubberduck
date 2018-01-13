@@ -77,9 +77,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
-
-        public Guid EventsInterfaceId => throw new NotImplementedException();
-
+        
         //public override void Release(bool final = false)
         //{
         //    if (!IsWrappingNullReference)
@@ -389,3 +387,4 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         }
     }
 }
+

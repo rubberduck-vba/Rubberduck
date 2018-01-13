@@ -17,6 +17,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using resx = Rubberduck.UI.SourceControl.SourceControl;
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -33,6 +34,7 @@ namespace Rubberduck.UI.SourceControl
     public sealed class SourceControlViewViewModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;
+        private readonly IVBProjects _vbProjects;
         private readonly RubberduckParserState _state;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
@@ -56,6 +58,7 @@ namespace Rubberduck.UI.SourceControl
             IEnvironmentProvider environment)
         {
             _vbe = vbe;
+            _vbProjects = vbe.VBProjects;
             _state = state;
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
@@ -107,7 +110,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void AddComponentEventHandlers()
         {
-            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved += ProjectRemoved;
+            _vbProjects.ProjectRemoved += ProjectRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded += ComponentAdded;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved += ComponentRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed += ComponentRenamed;
@@ -115,7 +118,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void RemoveComponentEventHandlers()
         {
-            VBEditor.SafeComWrappers.VBA.VBProjects.ProjectRemoved -= ProjectRemoved;
+            _vbProjects.ProjectRemoved -= ProjectRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentAdded -= ComponentAdded;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRemoved -= ComponentRemoved;
             VBEditor.SafeComWrappers.VBA.VBComponents.ComponentRenamed -= ComponentRenamed;
