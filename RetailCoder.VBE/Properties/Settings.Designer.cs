@@ -12,7 +12,7 @@ namespace Rubberduck.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -95,7 +95,7 @@ namespace Rubberduck.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <Key1>C</Key1>
+  <Key1>R</Key1>
   <IsEnabled>true</IsEnabled>
   <HasShiftModifier>false</HasShiftModifier>
   <HasAltModifier>false</HasAltModifier>
@@ -274,6 +274,25 @@ namespace Rubberduck.Properties {
         public global::Rubberduck.Settings.ToDoMarker ToDoMarker_Bug {
             get {
                 return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_Bug"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<WindowSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <CodeExplorerVisibleOnStartup>false</CodeExplorerVisibleOnStartup>
+  <CodeInspectionsVisibleOnStartup>false</CodeInspectionsVisibleOnStartup>
+  <SourceControlVisibleOnStartup>false</SourceControlVisibleOnStartup>
+  <TestExplorerVisibleOnStartup>false</TestExplorerVisibleOnStartup>
+  <TodoExplorerVisibleOnStartup>false</TodoExplorerVisibleOnStartup>
+  <CodeExplorer_SortByName>true</CodeExplorer_SortByName>
+  <CodeExplorer_SortByCodeOrder>false</CodeExplorer_SortByCodeOrder>
+  <CodeExplorer_GroupByType>false</CodeExplorer_GroupByType>
+</WindowSettings>")]
+        public global::Rubberduck.Settings.WindowSettings WindowSettings {
+            get {
+                return ((global::Rubberduck.Settings.WindowSettings)(this["WindowSettings"]));
             }
         }
     }
