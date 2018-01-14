@@ -16,12 +16,15 @@ namespace Rubberduck.VBEditor
                 return string.Empty;
             }
 
-            if (string.IsNullOrEmpty(project.HelpFile))
+            var projectId = project.ProjectId;
+
+            if (string.IsNullOrEmpty(projectId))
             {
-                project.HelpFile = project.GetHashCode().ToString(CultureInfo.InvariantCulture);
+                project.AssignProjectId();
+                projectId = project.ProjectId;
             }
 
-            return project.HelpFile;
+            return projectId;
         }
 
         public static string GetProjectId(IReference reference)
@@ -48,7 +51,7 @@ namespace Rubberduck.VBEditor
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
             ContentHashCode = 0;
-            if (!Component.IsWrappingNullReference)
+            if (!component.IsWrappingNullReference)
             {
                 using (var module = component.CodeModule)
                 {
