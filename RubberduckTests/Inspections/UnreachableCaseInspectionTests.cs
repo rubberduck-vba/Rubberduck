@@ -161,7 +161,7 @@ End Sub";
         [TestCase("Long", "Is <> -4", "4 - 8")]
         [TestCase("Long", "x > -5000", "Is < 1")]
         [TestCase("Long", "-5000 < x", "Is < 1")]
-        [TestCase("Long", "x <> 40", "35 To 45")]
+        [TestCase("Integer", "x <> 40", "35 To 45")]
         [TestCase("Double", "x > -5000.0", "Is < 1.7")]
         [TestCase("Single", "x > -5000.0", "Is < 1.7")]
         [TestCase("Currency", "x > -5000.0", "Is < 1.7")]
@@ -228,7 +228,7 @@ End Sub";
         [TestCase("x ^ 2 = 49, (CLng(VBA.Rnd() * 100) * x) < 30", "(CLng(VBA.Rnd() * 100) * x) < 30, x ^ 2 = 49")]
         [TestCase("x ^ 2 = 49, x ^ 3 = 8", "x ^ 3 = 8")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_AlgebraTextCompareDuplicate(string complexClause1, string complexClause2)
+        public void UnreachableCaseInspection_NoInspectionTextCompareOnly(string complexClause1, string complexClause2)
         {
             string inputCode =
 @"Sub Foo(x As Long)
@@ -248,6 +248,7 @@ End Sub";
 
         [TestCase("Long", "5000 - 1000", "4000")]
         [TestCase("Double", "50.00 - 10.00", "40.00")]
+        [TestCase("Currency", "50.00 - 10.00", "40.00")]
         [TestCase("Single", "50.00 - 10.00", "40.00")]
         [TestCase("Long", "5000 + 1000", "6000")]
         [TestCase("Double", "50.00 + 10.00", "60.00")]
@@ -257,6 +258,7 @@ End Sub";
         [TestCase("Single", "50.00 * 10.00", "500.00")]
         [TestCase("Long", "5000 / 1000", "5")]
         [TestCase("Double", "50.00 / 10.00", "5.0")]
+        [TestCase("Currency", "50.00 / 10.00", "5.0")]
         [TestCase("Single", "50.00 / 10.00", "5.0")]
         [TestCase("Single", "52.00 Mod 10.00", "2.0")]
         [TestCase("Single", "2.00 ^ 3.00", "8.0")]
@@ -332,7 +334,7 @@ End Sub";
 
 Select Case x
   Case 1 To ""Forever""
-    'unreachable
+    'Mismatch - unreachable
   Case 1 To 50
     'OK
   Case 45
@@ -468,7 +470,7 @@ End Sub";
 @"Sub Foo(x As String, z As String )
 
 Select Case x
-  Case ""Foo"", ""Bar""
+  Case ""Foo"", ""Bar"", ""Goo""
     'OK
   Case ""Foo""
     'Unreachable
@@ -491,7 +493,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_NestedSelectCaseStringType()
+        public void UnreachableCaseInspection_NestedSelectCaseSUnreachable()
         {
             const string inputCode =
 @"Sub Foo(x As String, z As String)
@@ -602,12 +604,12 @@ End Sub";
 @"Sub Foo(x As Integer)
 
 Select Case x
+  Case Is < -50
+    'OK
   Case 214.0
     'OK - ish
   Case -214#
-    'OK
-  Case Is < -5000
-    'OK
+    'unreachable
   Case 98
     'OK
   Case 5 To 25, 50, 80
@@ -615,7 +617,7 @@ Select Case x
 End Select
 
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
         [Test]
@@ -1295,7 +1297,7 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 0, caseElse: 0);
         }
 
         [Test]
@@ -1560,12 +1562,13 @@ End Sub";
             };
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new UnreachableCaseInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
+            IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnreachableCaseInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            }
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_Unreachable));
             var actualMismatches = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_TypeMismatch));
             var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_CaseElse));

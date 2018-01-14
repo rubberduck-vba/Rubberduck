@@ -356,15 +356,11 @@ namespace Rubberduck.Inspections.Concrete
 
         public override int GetHashCode()
         {
-            if (UseageTypeName.Equals(Tokens.String))
+            if (!UseageTypeName.Equals(Tokens.String) && AsDouble().HasValue)
             {
-                return _valueAsString.GetHashCode();
+                return AsDouble().Value.GetHashCode();
             }
-            else
-            {
-                var dValue = AsDouble().Value;
-                return dValue.GetHashCode();
-            }
+            return _valueAsString.GetHashCode();
         }
 
         public string AsString()
