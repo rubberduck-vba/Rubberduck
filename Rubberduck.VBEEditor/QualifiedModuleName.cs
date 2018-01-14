@@ -35,7 +35,6 @@ namespace Rubberduck.VBEditor
 
         public QualifiedModuleName(IVBProject project)
         {
-            Component = null;
             _componentName = null;
             ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
@@ -47,7 +46,6 @@ namespace Rubberduck.VBEditor
         public QualifiedModuleName(IVBComponent component)
         {
             ComponentType = component.Type;
-            Component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
             ContentHashCode = 0;
@@ -82,7 +80,6 @@ namespace Rubberduck.VBEditor
             ProjectPath = projectPath;
             ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
-            Component = null;
             ComponentType = ComponentType.ComComponent;
             ContentHashCode = 0;
         }
@@ -91,8 +88,6 @@ namespace Rubberduck.VBEditor
         {
             return new QualifiedMemberName(this, member);
         }
-
-        public IVBComponent Component { get; }
 
         public ComponentType ComponentType { get; }
 
