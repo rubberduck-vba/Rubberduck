@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.ComReflection
 
             var names = new string[1];
             int count;
-            info.GetNames(varDesc.memid, names, 1, out count);
+            info.GetNames(varDesc.memid, names, names.Length, out count);
             Debug.Assert(count == 1);
             Name = names[0];
         }

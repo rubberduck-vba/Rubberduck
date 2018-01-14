@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.ComReflection
                 info.GetVarDesc(index, out varPtr);
                 var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
                 int length;
-                info.GetNames(desc.memid, names, 1, out length);
+                info.GetNames(desc.memid, names, names.Length, out length);
                 Debug.Assert(length == 1);
 
                 _fields.Add(new ComField(names[0], desc, index, DeclarationType.UserDefinedTypeMember));
