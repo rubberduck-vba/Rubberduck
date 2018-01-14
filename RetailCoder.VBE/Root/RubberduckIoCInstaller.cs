@@ -46,6 +46,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.UI.CodeMetrics;
 using Rubberduck.Navigation.CodeMetrics;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Root
 {
@@ -85,6 +86,9 @@ namespace Rubberduck.Root
             RegisterConstantVbeAndAddIn(container);
             RegisterAppWithSpecialDependencies(container);
 
+            container.Register(Component.For<IProjectsProvider, IProjectsRepository>()
+                .ImplementedBy<ProjectsRepository>()
+                .LifestyleSingleton());
             container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider>()
                 .ImplementedBy<RubberduckParserState>()
                 .LifestyleSingleton());
