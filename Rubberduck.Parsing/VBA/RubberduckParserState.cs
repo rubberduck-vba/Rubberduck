@@ -264,6 +264,8 @@ namespace Rubberduck.Parsing.VBA
 
         public List<IVBProject> Projects => _projectRepository.Projects().Select(tpl => tpl.Project).ToList();
 
+        public IProjectsProvider ProjectsProvider => _projectRepository;
+
         public IReadOnlyList<Tuple<QualifiedModuleName, SyntaxErrorException>> ModuleExceptions
         {
             get
