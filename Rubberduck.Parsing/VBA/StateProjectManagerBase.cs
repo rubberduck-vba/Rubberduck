@@ -5,12 +5,12 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public abstract class ProjectManagerBase : IProjectManager
+    public abstract class StateProjectManagerBase : IProjectManager
     {
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
 
-        public ProjectManagerBase(
+        public StateProjectManagerBase(
             RubberduckParserState state,
             IVBE vbe)
         {
@@ -42,7 +42,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void RefreshProjects()
         {
-            _state.RefreshProjects(_vbe);
+            _state.RefreshProjects();
         }
     }
 }

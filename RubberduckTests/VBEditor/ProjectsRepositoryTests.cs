@@ -60,10 +60,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -83,10 +83,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -103,10 +103,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -123,7 +123,7 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -140,7 +140,7 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -161,10 +161,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -185,10 +185,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -207,10 +207,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -227,10 +227,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -248,10 +248,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -268,10 +268,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -287,10 +287,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -308,7 +308,7 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -325,7 +325,7 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -343,10 +343,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -364,10 +364,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -386,11 +386,11 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var componentsCollectionMock = projectBuilder.MockVBComponents;
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherComponentsCollectionMock = otherProjectBuilder.MockVBComponents;
 
@@ -408,11 +408,11 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var componentsCollectionMock = projectBuilder.MockVBComponents;
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherComponentsCollectionMock = otherProjectBuilder.MockVBComponents;
 
@@ -430,11 +430,11 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var componentsCollectionMock = projectBuilder.MockVBComponents;
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -452,10 +452,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -472,10 +472,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -491,10 +491,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -512,7 +512,7 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -529,7 +529,7 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -547,10 +547,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -568,10 +568,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -590,11 +590,11 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var componentsCollectionMock = projectBuilder.MockVBComponents;
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -611,10 +611,10 @@ namespace RubberduckTests.VBEditor
         {
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherComponentsCollectionMock = otherProjectBuilder.MockVBComponents;
 
@@ -634,12 +634,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockComponents = otherProjectBuilder.MockComponents;
 
@@ -664,12 +664,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockComponents = otherProjectBuilder.MockComponents;
 
@@ -691,11 +691,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -713,11 +713,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -736,11 +736,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -761,11 +761,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -785,11 +785,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -810,12 +810,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -837,12 +837,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -866,12 +866,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -893,12 +893,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -920,12 +920,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockComponents = otherProjectBuilder.MockComponents;
 
@@ -947,12 +947,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -974,11 +974,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockComponents = otherProjectBuilder.MockComponents;
 
@@ -1001,12 +1001,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1028,12 +1028,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1055,12 +1055,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1083,12 +1083,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1111,11 +1111,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1134,11 +1134,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1157,11 +1157,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1182,11 +1182,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1206,11 +1206,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1231,12 +1231,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1258,12 +1258,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1287,12 +1287,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1314,12 +1314,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1341,12 +1341,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1365,11 +1365,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1388,12 +1388,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1412,11 +1412,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1435,11 +1435,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1460,11 +1460,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1484,11 +1484,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1509,12 +1509,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1535,12 +1535,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1563,12 +1563,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1590,12 +1590,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1617,12 +1617,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockComponents = otherProjectBuilder.MockComponents;
 
@@ -1647,12 +1647,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockCodeModules = otherProjectBuilder.MockCodeModules;
 
@@ -1676,11 +1676,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1698,11 +1698,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1721,11 +1721,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1746,11 +1746,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1770,11 +1770,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1795,12 +1795,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1822,12 +1822,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1850,12 +1850,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1877,12 +1877,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1904,12 +1904,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockCodeModules = otherProjectBuilder.MockCodeModules;
 
@@ -1934,12 +1934,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -1964,11 +1964,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
             var otherMockCodeModules = otherProjectBuilder.MockCodeModules;
 
@@ -1993,12 +1993,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2023,13 +2023,13 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2054,13 +2054,13 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2085,12 +2085,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2113,11 +2113,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2136,11 +2136,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2159,11 +2159,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2184,11 +2184,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2208,11 +2208,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2233,12 +2233,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2260,12 +2260,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2289,12 +2289,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2316,12 +2316,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2343,12 +2343,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockCodeModules = projectBuilder.MockCodeModules;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2367,11 +2367,11 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2390,12 +2390,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2414,11 +2414,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2437,11 +2437,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2462,11 +2462,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2486,11 +2486,11 @@ namespace RubberduckTests.VBEditor
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2511,12 +2511,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2537,12 +2537,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2565,12 +2565,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -2592,12 +2592,12 @@ namespace RubberduckTests.VBEditor
             var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
             projectBuilder.AddComponent("component1", ComponentType.ClassModule, String.Empty);
             projectBuilder.AddComponent("component2", ComponentType.ClassModule, String.Empty);
-            var projectMock = projectBuilder.BuildWithAssignedProjectId();
+            var projectMock = projectBuilder.Build();
             var mockComponents = projectBuilder.MockComponents;
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             otherProjectBuilder.AddComponent("otherComponent", ComponentType.ClassModule, String.Empty);
-            var otherProjectMock = otherProjectBuilder.BuildWithAssignedProjectId();
+            var otherProjectMock = otherProjectBuilder.Build();
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;

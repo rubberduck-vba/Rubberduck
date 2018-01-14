@@ -769,7 +769,7 @@ namespace Rubberduck.Root
                 .ImplementedBy<ParsingCacheService>()
                 .LifestyleSingleton());
             container.Register(Component.For<IProjectManager>()
-                .ImplementedBy<ProjectManager>()
+                .ImplementedBy<RepositoryProjectManager>()
                 .LifestyleSingleton());
             container.Register(Component.For<IReferenceRemover>()
                 .ImplementedBy<ReferenceRemover>()

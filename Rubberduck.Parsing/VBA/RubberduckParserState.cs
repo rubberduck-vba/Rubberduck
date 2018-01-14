@@ -15,6 +15,7 @@ using NLog;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -46,9 +47,6 @@ namespace Rubberduck.Parsing.VBA
 
     public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider
     {
-        // circumvents VBIDE API's tendency to return a new instance at every parse, which breaks reference equality checks everywhere
-        private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
-
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
@@ -65,12 +63,11 @@ namespace Rubberduck.Parsing.VBA
 
         public DeclarationFinder DeclarationFinder { get; private set; }
 
-        private readonly IVBE _vbe;
-        private readonly IVBProjects _vbProjects;   //This field keeps the RCW for the events alive.
+        private readonly IProjectsRepository _projectRepository;   
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
-        public RubberduckParserState(IVBE vbe, IDeclarationFinderFactory declarationFinderFactory)
+        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory)
         {
             if (vbe == null)
             {
@@ -81,8 +78,7 @@ namespace Rubberduck.Parsing.VBA
                 throw new ArgumentNullException(nameof(declarationFinderFactory));
             }
 
-            _vbe = vbe;
-            _vbProjects = _vbe.VBProjects;
+            _projectRepository = projectRepository;
             _declarationFinderFactory = declarationFinderFactory;
 
             var values = Enum.GetValues(typeof(ParserState));
@@ -91,7 +87,7 @@ namespace Rubberduck.Parsing.VBA
                 States.Add((ParserState)value);
             }
 
-            _hostApp = _vbe.HostApplication();
+            _hostApp = vbe.HostApplication();
             AddEventHandlers();
             IsEnabled = true;
             RefreshFinder(_hostApp);
@@ -189,7 +185,10 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ComponentRenamed(object sender, ComponentRenamedEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode) { return; }
+            if (!e.Project.VBE.IsInDesignMode)
+            {
+                return;
+            }
 
             if (!ThereAreDeclarations())
             {
@@ -201,7 +200,7 @@ namespace Rubberduck.Parsing.VBA
             //todo: Find out for which situation this drastic (and problematic) cache invalidation has been introduced.
             if (ComponentIsWorksheet(e))
             {
-                RemoveProject(e.ProjectId);
+                RefreshProject(e.ProjectId);
                 Logger.Debug("Project '{0}' was removed.", e.Component.Name);
             }
 
@@ -251,66 +250,19 @@ namespace Rubberduck.Parsing.VBA
         /// were projects with duplicate ID's to clear the old
         /// declarations referencing the project by the old ID.
         /// </summary>
-        public void RefreshProjects(IVBE vbe)
+        public void RefreshProjects()
         {
-            lock (_projects)
-            {
-                var oldProjects = _projects.ToList();
-
-                _projects.Clear();
-                foreach (var project in _vbProjects)
-                {
-                    if (project.Protection == ProjectProtection.Locked)
-                    {
-                        project.Dispose();
-                        continue;
-                    }
-
-                    if (string.IsNullOrEmpty(project.ProjectId) || _projects.Keys.Contains(project.ProjectId))
-                    {
-                        project.AssignProjectId();
-                    }
-
-                    _projects.Add(project.ProjectId, project);
-                }
-
-                //We dispose afterwards so that the RCWs of still existing projects do not get released fully. 
-                foreach (var kvp in oldProjects)
-                {
-                    kvp.Value.Dispose();
-                }
-            }
+            _projectRepository.Refresh();
         }
 
-        //Overload using the vbe instance injected via the constructor.
-        private void RefreshProjects()
+        private void RefreshProject(string projectId, bool notifyStateChanged = false)
         {
-            RefreshProjects(_vbe);
-        }
-
-        private void RemoveProject(string projectId, bool notifyStateChanged = false)
-        {
-            lock (_projects)
-            {
-                if (_projects.ContainsKey(projectId))
-                {
-                    _projects.Remove(projectId);
-                }
-            }
+            _projectRepository.Refresh(projectId);
 
             ClearStateCache(projectId, notifyStateChanged);
         }
 
-        public List<IVBProject> Projects
-        {
-            get
-            {
-                lock(_projects)
-                {
-                    return new List<IVBProject>(_projects.Values);
-                }
-            }
-        }
+        public List<IVBProject> Projects => _projectRepository.Projects().Select(tpl => tpl.Project).ToList();
 
         public IReadOnlyList<Tuple<QualifiedModuleName, SyntaxErrorException>> ModuleExceptions
         {
@@ -393,25 +345,7 @@ namespace Rubberduck.Parsing.VBA
 
         private IVBProject GetProject(string projectId)
         {
-            IVBProject project = null;
-            lock (_projects)
-            {
-                foreach (var item in _projects)
-                {
-                    if (item.Value.ProjectId == projectId)
-                    {
-                        if (project != null)
-                        {
-                            // ghost project detected, abort project iteration
-                            project = null;
-                            break;
-                        }
-                        project = item.Value;
-                    }
-                }
-            }
-
-            return project;
+            return _projectRepository.Project(projectId);
         }
 
         public void EvaluateParserState()
@@ -1016,13 +950,8 @@ namespace Rubberduck.Parsing.VBA
 
             _moduleStates.Clear();
 
-            foreach (var kvp in _projects)
-            {
-                kvp.Value.Dispose();
-            }
             // no lock because nobody should try to update anything here
-            _projects.Clear();
-            _vbProjects.Dispose();
+            _projectRepository.Dispose();
 
             _isDisposed = true;
         }

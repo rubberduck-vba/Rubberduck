@@ -34,7 +34,16 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             foreach (var project in _projectsCollection)
             {
+                EnsureValidProjectId(project);
                 _projects.Add(project.ProjectId, project);
+            }
+        }
+
+        private void EnsureValidProjectId(IVBProject project)
+        {
+            if (string.IsNullOrEmpty(project.ProjectId) || _projects.Keys.Contains(project.ProjectId))
+            {
+                project.AssignProjectId();
             }
         }
 
