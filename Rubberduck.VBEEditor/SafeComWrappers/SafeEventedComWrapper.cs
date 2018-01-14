@@ -53,12 +53,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             lock (_lock)
             {
-                if (_cookie != NotAdvising)
-                {
-                    _icp.Unadvise(_cookie);
-                }
                 if (_icp != null)
                 {
+                    if (_cookie != NotAdvising)
+                    {
+                        _icp.Unadvise(_cookie);
+                    }
+
                     Marshal.ReleaseComObject(_icp);
                     _icp = null;
                 }
