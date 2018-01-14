@@ -2176,6 +2176,14 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unreachable Case Else: All possible values are handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_CaseElse {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_CaseElse", resourceCulture);
+			}
+		}
+        /// <summary>
         ///   Looks up a localized string similar to Error handling should be restored after using &apos;On Error Resume Next&apos;..
         /// </summary>
         public static string UnhandledOnErrorResumeNextInspectionMeta {
@@ -2184,6 +2192,14 @@ namespace Rubberduck.Parsing.Inspections.Resources {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Type: Case Statement cannot be evaluated as the Select Statement Type.
+        /// </summary>
+        public static string UnreachableCaseInspection_TypeMismatch {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_TypeMismatch", resourceCulture);
+			}
+		}
         /// <summary>
         ///   Looks up a localized string similar to Unhandled &apos;On Error Resume Next&apos;.
         /// </summary>
@@ -2194,6 +2210,14 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unreachable: Case Statement is handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_Unreachable {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
+			}
+		}
+        /// <summary>
         ///   Looks up a localized string similar to Introduce error handling subroutine.
         /// </summary>
         public static string UnhandledOnErrorResumeNextInspectionQuickFix {
@@ -2202,6 +2226,32 @@ namespace Rubberduck.Parsing.Inspections.Resources {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Detects Case Clauses that will never execute. .
+        /// </summary>
+        public static string UnreachableCaseInspectionMeta {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Case Clause(s) cannot be reached.
+        /// </summary>
+        public static string UnreachableCaseInspectionName {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Case Clause &apos;{0}&apos; cannot be reached.
+        /// </summary>
+        public static string UnreachableCaseInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionResultFormat", resourceCulture);
+			}
+		}
         /// <summary>
         ///   Looks up a localized string similar to Errors are ignored but never handled again.
         /// </summary>

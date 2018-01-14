@@ -890,6 +890,24 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ObsoleteErrorSyntaxInspectionName" xml:space="preserve">
     <value>Use of obsolete 'Error' statement</value>
   </data>
+  <data name="UnreachableCaseInspectionMeta" xml:space="preserve">
+    <value>Detects Case Clauses that will never execute. </value>
+  </data>
+  <data name="UnreachableCaseInspectionName" xml:space="preserve">
+    <value>Case Clause(s) cannot be reached</value>
+  </data>
+  <data name="UnreachableCaseInspectionResultFormat" xml:space="preserve">
+    <value>Case Clause '{0}' cannot be reached</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Unreachable Case Else: All possible values are handled by prior Case statement(s)</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>Invalid Type: Case Statement cannot be evaluated as the Select Statement Type</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Unreachable: Case Statement is handled by prior Case statement(s)</value>
+  </data>
   <data name="UnhandledOnErrorResumeNextInspectionMeta" xml:space="preserve">
     <value>Error handling should be restored after using 'On Error Resume Next'.</value>
   </data>

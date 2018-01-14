@@ -69,10 +69,12 @@
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspectionValue.cs" />
     <Compile Include="Concrete\ObsoleteErrorSyntaxInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection.cs" />
     <Compile Include="Concrete\ShadowedDeclarationInspection.cs" />
     <Compile Include="Concrete\UnhandledOnErrorResumeNextInspection.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />

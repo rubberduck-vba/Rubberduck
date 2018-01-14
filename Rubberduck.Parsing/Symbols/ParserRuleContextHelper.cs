@@ -62,11 +62,16 @@ namespace Rubberduck.Parsing.Symbols
            return tokenStream.GetTokens(sourceInterval.a, sourceInterval.b);
         }
 
+        public static bool HasChild<T>(RuleContext context)
+        {
+            return GetChild<T>(context) != null;
+        }
+
         public static T GetChild<T>(RuleContext context)
         {
             if (context == null)
             {
-                return default(T);
+                return default;
             }
 
             for (var index = 0; index < context.ChildCount; index++)
@@ -78,14 +83,14 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
 
-            return default(T);
+            return default;
         }
 
         public static T GetDescendent<T>(RuleContext context)
         {
             if (context == null)
             {
-                return default(T);
+                return default;
             }
 
             for (var index = 0; index < context.ChildCount; index++)
@@ -104,6 +109,23 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return default(T);
+        }
+
+        public static IEnumerable<T> GetChildren<T>(RuleContext context)
+        {
+            if (context == null)
+            {
+                yield break;
+            }
+
+            for (var index = 0; index < context.ChildCount; index++)
+            {
+                var child = context.GetChild(index);
+                if (child is T)
+                {
+                    yield return (T)child;
+                }
+            }
         }
 
         public static IEnumerable<IParseTree> GetDescendents(IParseTree context)
