@@ -365,7 +365,7 @@ namespace Rubberduck.Parsing.VBA
             var moduleStates = new List<ParserState>();
             foreach (var moduleState in _moduleStates)
             {
-                if (moduleState.Key.Component == null || string.IsNullOrEmpty(moduleState.Key.ComponentName))
+                if (string.IsNullOrEmpty(moduleState.Key.ComponentName) || ProjectsProvider.Component(moduleState.Key) == null)
                 {
                     continue;
                 }
@@ -667,17 +667,18 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var moduleState in _moduleStates.Where(moduleState => moduleState.Key.ProjectId == projectId))
                 {
-                    if (moduleState.Key.Component != null)
+                    var qualifiedModuleName = moduleState.Key;
+                    var component = ProjectsProvider.Component(moduleState.Key);
+                    if (component != null)
                     {
-                        while (!ClearStateCache(moduleState.Key.Component))
+                        while (!ClearStateCache(qualifiedModuleName))
                         {
                             // until Hell freezes over?
                         }
                     }
-                    else if (moduleState.Key.Component == null)
+                    else
                     {
                         // store project module name
-                        var qualifiedModuleName = moduleState.Key;
                         if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
                         {
                             state.Dispose();
@@ -698,10 +699,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool ClearStateCache(IVBComponent component, bool notifyStateChanged = false)
-        {
-            return component != null && ClearStateCache(new QualifiedModuleName(component), notifyStateChanged);
-        }
 
         public bool ClearStateCache(QualifiedModuleName module, bool notifyStateChanged = false)
         {
@@ -740,7 +737,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
         {
-            _moduleStates[module].SetTokenStream(module.Component.CodeModule, stream);
+            _moduleStates[module].SetTokenStream(ProjectsProvider.CodeModule(module), stream);
         }
 
         public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
@@ -843,7 +840,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void RewriteAllModules()
         {
-            foreach (var module in _moduleStates.Where(s => s.Key.Component != null))
+            foreach (var module in _moduleStates.Where(s => ProjectsProvider.Component(s.Key) != null))
             {
                 module.Value.ModuleRewriter.Rewrite();
             }

@@ -40,16 +40,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
             using (var pane = _vbe.ActiveCodePane)
             {
-                using (var module = pane.CodeModule)
-                {
-                    if (!module.IsWrappingNullReference)
-                    {
-                        oldSelection = module.GetQualifiedSelection();
-                    }
-                }
+                var oldSelection = pane.GetQualifiedSelection();
 
                 RemoveParameters();
 
@@ -64,7 +57,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -82,7 +75,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {

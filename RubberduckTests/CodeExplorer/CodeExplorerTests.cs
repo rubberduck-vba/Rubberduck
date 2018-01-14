@@ -730,14 +730,14 @@ namespace RubberduckTests.CodeExplorer
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                 .Returns(DialogResult.Yes);
 
-            var commands = new List<CommandBase>
-            {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
-
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
+
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -775,14 +775,14 @@ namespace RubberduckTests.CodeExplorer
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                 .Returns(DialogResult.Yes);
 
-            var commands = new List<CommandBase>
-            {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
-
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
+
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -819,14 +819,14 @@ namespace RubberduckTests.CodeExplorer
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                 .Returns(DialogResult.No);
 
-            var commands = new List<CommandBase>
-            {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
-
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
+
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -862,14 +862,14 @@ namespace RubberduckTests.CodeExplorer
                 m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>())).Returns(DialogResult.Cancel);
 
-            var commands = new List<CommandBase>
-            {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
-
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
+
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);

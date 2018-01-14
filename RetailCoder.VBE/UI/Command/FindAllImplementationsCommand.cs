@@ -156,7 +156,7 @@ namespace Rubberduck.UI.Command
                 new SearchResultItem(
                     declaration.ParentScopeDeclaration,
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
-                    declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.GetLines(declaration.Selection.StartLine, 1).Trim()));
+                    _state.ProjectsProvider.CodeModule(declaration.QualifiedName.QualifiedModuleName).GetLines(declaration.Selection.StartLine, 1).Trim()));
 
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, target.IdentifierName), target, results);

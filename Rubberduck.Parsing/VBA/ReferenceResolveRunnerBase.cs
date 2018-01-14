@@ -133,7 +133,13 @@ namespace Rubberduck.Parsing.VBA
 
         private Declaration SupertypeForDocument(QualifiedModuleName module, RubberduckParserState state)
         {
-            if(module.ComponentType != ComponentType.Document || module.Component == null)
+            if(module.ComponentType != ComponentType.Document)
+            {
+                return null;
+            }
+
+            var component = _state.ProjectsProvider.Component(module);
+            if (component == null)
             {
                 return null;
             }
@@ -141,13 +147,13 @@ namespace Rubberduck.Parsing.VBA
             int documentPropertyCount = 0;
             try
             {
-                if(module.Component.IsWrappingNullReference
-                    || module.Component.Properties == null
-                    || module.Component.Properties.IsWrappingNullReference)
+                if (component.IsWrappingNullReference
+                    || component.Properties == null
+                    || component.Properties.IsWrappingNullReference)
                 {
                     return null;
                 }
-                documentPropertyCount = module.Component.Properties.Count;
+                documentPropertyCount = component.Properties.Count;
             }
             catch(COMException)
             {
@@ -169,7 +175,7 @@ namespace Rubberduck.Parsing.VBA
                     var allNamesMatch = true;
                     for (var i = 0; i < coclass.Key.Count; i++)
                     {
-                        if (coclass.Key[i] != module.Component.Properties[i + 1].Name)
+                        if (coclass.Key[i] != _state.ProjectsProvider.Component(module)?.Properties[i + 1]?.Name)
                         {
                             allNamesMatch = false;
                             break;

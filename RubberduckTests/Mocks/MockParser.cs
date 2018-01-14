@@ -48,7 +48,7 @@ namespace RubberduckTests.Mocks
 
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)));
+            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state.ProjectsProvider);
             var exporter = new Mock<IModuleExporter>().Object;
             return Create(vbe, state, attributeParser, exporter, projectRepository, serializedDeclarationsPath);
         }

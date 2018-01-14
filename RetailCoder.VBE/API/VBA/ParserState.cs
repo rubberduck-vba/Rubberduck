@@ -72,7 +72,7 @@ namespace Rubberduck.API.VBA
             var exporter = new ModuleExporter();
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
-            _attributeParser = new AttributeParser(exporter, preprocessorFactory);
+            _attributeParser = new AttributeParser(exporter, preprocessorFactory, _state.ProjectsProvider);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);

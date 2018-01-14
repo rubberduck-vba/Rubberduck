@@ -153,7 +153,7 @@ namespace Rubberduck.UI.Command
                 new SearchResultItem(
                     reference.ParentNonScoping,
                     new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
-                    reference.QualifiedModuleName.Component.CodeModule.GetLines(reference.Selection.StartLine, 1).Trim()));
+                    _state.ProjectsProvider.CodeModule(reference.QualifiedModuleName).GetLines(reference.Selection.StartLine, 1).Trim()));
             
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
@@ -179,36 +179,59 @@ namespace Rubberduck.UI.Command
         }
 
         private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)
-        {            
-            (var projectId, var component) = qualifiedModuleName.HasValue
-                ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
-                : (_vbe.ActiveVBProject.ProjectId, _vbe.SelectedVBComponent);
+        {
+            if (qualifiedModuleName.HasValue)
+            {
+                return FindFormDesignerTarget(qualifiedModuleName.Value);
+            }
+
+            string projectId;
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                projectId = activeProject.ProjectId;
+            }
+            var component = _vbe.SelectedVBComponent;
 
             if (component?.HasDesigner ?? false)
             {
-                if (qualifiedModuleName.HasValue)
+                DeclarationType selectedType;
+                string selectedName;
+                using (var selectedControls = component.SelectedControls)
                 {
-                    return _state.DeclarationFinder
-                        .MatchName(qualifiedModuleName.Value.Name)
-                        .SingleOrDefault(m => m.ProjectId == projectId
-                            && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
-                            && m.ComponentName == component.Name);
+                    var selectedCount = selectedControls.Count;
+                    if (selectedCount > 1)
+                    {
+                        return null;
+                    }
+
+                    // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+                    (selectedType, selectedName) = selectedCount == 0
+                        ? (DeclarationType.ClassModule, component.Name)
+                        : (DeclarationType.Control, selectedControls[0].Name);
                 }
-
-                var selectedCount = component.SelectedControls.Count;                
-                if (selectedCount > 1) { return null; }
-
-                // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                (var selectedType, var selectedName) = selectedCount == 0
-                    ? (DeclarationType.ClassModule, component.Name)
-                    : (DeclarationType.Control, component.SelectedControls[0].Name);
-                
                 return _state.DeclarationFinder
                     .MatchName(selectedName)
                     .SingleOrDefault(m => m.ProjectId == projectId
                         && m.DeclarationType.HasFlag(selectedType)
                         && m.ComponentName == component.Name);                
             }
+            return null;
+        }
+
+        private Declaration FindFormDesignerTarget(QualifiedModuleName qualifiedModuleName)
+        {
+            var projectId = qualifiedModuleName.ProjectId;
+            var component = _state.ProjectsProvider.Component(qualifiedModuleName);
+
+            if (component?.HasDesigner ?? false)
+            {
+                return _state.DeclarationFinder
+                    .MatchName(qualifiedModuleName.Name)
+                    .SingleOrDefault(m => m.ProjectId == projectId
+                                          && m.DeclarationType.HasFlag(qualifiedModuleName.ComponentType)
+                                          && m.ComponentName == component.Name);
+            }
+
             return null;
         }
 
