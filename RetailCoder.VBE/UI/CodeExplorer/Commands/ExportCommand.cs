@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -14,6 +15,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class ExportCommand : CommandBase, IDisposable
     {
         private readonly ISaveFileDialog _saveFileDialog;
+        private readonly IProjectsProvider _projectsProvider;
         private readonly Dictionary<ComponentType, string> _exportableFileExtensions = new Dictionary<ComponentType, string>
         {
             { ComponentType.StandardModule, ".bas" },
@@ -22,10 +24,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { ComponentType.UserForm, ".frm" }
         };
 
-        public ExportCommand(ISaveFileDialog saveFileDialog) : base(LogManager.GetCurrentClassLogger())
+        public ExportCommand(ISaveFileDialog saveFileDialog, IProjectsProvider projectsProvider) 
+            : base(LogManager.GetCurrentClassLogger())
         {
             _saveFileDialog = saveFileDialog;
             _saveFileDialog.OverwritePrompt = true;
+
+            _projectsProvider = projectsProvider;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -51,16 +56,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override void OnExecute(object parameter)
         {
             var node = (CodeExplorerComponentViewModel)parameter;
-            var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
+            var qualifiedModuleName = node.Declaration.QualifiedName.QualifiedModuleName;
 
             string ext;
-            _exportableFileExtensions.TryGetValue(component.Type, out ext);
+            _exportableFileExtensions.TryGetValue(qualifiedModuleName.ComponentType, out ext);
 
-            _saveFileDialog.FileName = component.Name + ext;
+            _saveFileDialog.FileName = qualifiedModuleName.ComponentName + ext;
             var result = _saveFileDialog.ShowDialog();
 
             if (result == DialogResult.OK)
             {
+                var component = _projectsProvider.Component(qualifiedModuleName);
                 component.Export(_saveFileDialog.FileName);
             }
         }

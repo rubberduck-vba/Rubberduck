@@ -23,7 +23,7 @@ namespace Rubberduck.Navigation.Folders
         {
             var delimiter = GetDelimiter();
 
-            var root = new CodeExplorerCustomFolderViewModel(null, string.Empty, string.Empty);
+            var root = new CodeExplorerCustomFolderViewModel(null, string.Empty, string.Empty, _state.ProjectsProvider);
 
             var items = declaration == null
                 ? _state.AllUserDeclarations.ToList()
@@ -46,7 +46,7 @@ namespace Rubberduck.Navigation.Folders
                     var node = currentNode.Items.FirstOrDefault(i => i.Name == section);
                     if (node == null)
                     {
-                        node = new CodeExplorerCustomFolderViewModel(currentNode, section, fullPath);
+                        node = new CodeExplorerCustomFolderViewModel(currentNode, section, fullPath, _state.ProjectsProvider);
                         currentNode.AddChild(node);
                     }
 

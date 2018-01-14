@@ -465,7 +465,7 @@ namespace RubberduckTests.CodeExplorer
             {
                 var commands = new List<CommandBase>
                 {
-                    new ExportCommand(saveFileDialog.Object)
+                    new ExportCommand(saveFileDialog.Object, state.ProjectsProvider)
                 };
 
 
@@ -504,7 +504,7 @@ namespace RubberduckTests.CodeExplorer
             {
                 var commands = new List<CommandBase>
                 {
-                    new ExportCommand(saveFileDialog.Object)
+                    new ExportCommand(saveFileDialog.Object, state.ProjectsProvider)
                 };
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
@@ -687,7 +687,7 @@ namespace RubberduckTests.CodeExplorer
             {
                 var commands = new List<CommandBase>
                 {
-                    new OpenDesignerCommand()
+                    new OpenDesignerCommand(state.ProjectsProvider)
                 };
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
@@ -1709,7 +1709,7 @@ End Sub";
         [Test]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
-            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null);
             Assert.AreEqual(0, new CompareByName().Compare(folderNode, folderNode));
         }
 
@@ -1718,8 +1718,8 @@ End Sub";
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name");
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name");
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null);
 
             Assert.AreEqual(0, new CompareByName().Compare(folderNode1, folderNode2));
         }
@@ -1729,8 +1729,8 @@ End Sub";
         public void CompareByName_ReturnsCorrectOrdering()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1");
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2");
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1", null);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2", null);
 
             Assert.IsTrue(new CompareByName().Compare(folderNode1, folderNode2) < 0);
         }
@@ -1739,7 +1739,7 @@ End Sub";
         [Test]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2");
+            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2", null);
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
@@ -2159,8 +2159,8 @@ End Sub";
         [Test]
         public void CompareByNodeType_FoldersAreSortedByName()
         {
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty);
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "zzz", string.Empty);
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty, null);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "zzz", string.Empty, null);
 
             Assert.IsTrue(new CompareByNodeType().Compare(folderNode1, folderNode2) < 0);
         }

@@ -236,7 +236,7 @@ namespace Rubberduck.UI.ToDoItems
                 {
                     return _navigateCommand;
                 }
-                return _navigateCommand = new NavigateCommand();
+                return _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
             }
         }
 

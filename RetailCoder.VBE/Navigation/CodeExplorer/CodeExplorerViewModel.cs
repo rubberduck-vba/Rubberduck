@@ -28,7 +28,6 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
-        private IConfigProvider<GeneralSettings> _generalSettingsProvider;
         private readonly IConfigProvider<WindowSettings> _windowSettingsProvider;
         private readonly GeneralSettings _generalSettings;
         private readonly WindowSettings _windowSettings;
@@ -42,7 +41,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state = state;
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
-            _generalSettingsProvider = generalSettingsProvider;
             _windowSettingsProvider = windowSettingsProvider;
 
             if (generalSettingsProvider != null)
@@ -398,13 +396,13 @@ namespace Rubberduck.Navigation.CodeExplorer
                     {
                         if (folderNode == null)
                         {
-                            folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
+                            folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName, _state.ProjectsProvider);
                             projectNode.AddChild(folderNode);
                         }
 
                         var declaration = CreateDeclaration(e.Module);
                         var newNode =
-                            new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                            new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>(), _state.ProjectsProvider)
                             {
                                 IsErrorState = true
                             };

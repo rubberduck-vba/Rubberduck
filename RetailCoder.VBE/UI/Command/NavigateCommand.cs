@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.Command
 {
@@ -12,19 +13,25 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class NavigateCommand : CommandBase, INavigateCommand
     {
-        public NavigateCommand() : base(LogManager.GetCurrentClassLogger()) { }
+        private readonly IProjectsProvider _projectsProvider;
+
+        public NavigateCommand(IProjectsProvider projectsProvider)
+            : base(LogManager.GetCurrentClassLogger())
+        {
+            _projectsProvider = projectsProvider;
+        }
 
         protected override void OnExecute(object parameter)
         {
             var param = parameter as NavigateCodeEventArgs;
-            if (param == null || param.QualifiedName.Component == null)
+            if(param == null)
             {
                 return;
             }
 
             try
             {
-                using (var codeModule = param.QualifiedName.Component.CodeModule)
+                var codeModule = _projectsProvider.CodeModule(param.QualifiedName);
                 {
                     using (var codePane = codeModule.CodePane)
                     {

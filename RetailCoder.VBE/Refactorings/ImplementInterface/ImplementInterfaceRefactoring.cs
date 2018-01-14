@@ -87,7 +87,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             if (oldSelection.HasValue)
             {
-                using (var module = oldSelection.Value.QualifiedName.Component.CodeModule)
+                var module = _state.ProjectsProvider.CodeModule(oldSelection.Value.QualifiedName);
                 {
                     using (var pane = module.CodePane)
                     {
