@@ -10,9 +10,11 @@ namespace Rubberduck.Settings
         [XmlAttribute]
         public string Code { get; set; }
 
+        /// <Summary>
+        /// Default constructor required for XML serialization.
+        /// </Summary>
         public DisplayLanguageSetting()
         {
-            // serialization constructor
         }
 
         public DisplayLanguageSetting(string code)
@@ -43,8 +45,7 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            var other = obj as DisplayLanguageSetting;
-            return other != null && Code.Equals(other.Code);
+            return obj is DisplayLanguageSetting other && Code.Equals(other.Code);
         }
 
         public override int GetHashCode()

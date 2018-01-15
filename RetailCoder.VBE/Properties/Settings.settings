@@ -180,5 +180,18 @@
   &lt;DefaultTestStubInNewModule&gt;false&lt;/DefaultTestStubInNewModule&gt;
 &lt;/UnitTestSettings&gt;</Value>
     </Setting>
+    <Setting Name="GeneralSettings" Type="Rubberduck.Settings.GeneralSettings" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;GeneralSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Language Code="en-US" /&gt;
+  &lt;CanShowSplash&gt;true&lt;/CanShowSplash&gt;
+  &lt;CanCheckVersion&gt;true&lt;/CanCheckVersion&gt;
+  &lt;IsSmartIndenterPrompted&gt;false&lt;/IsSmartIndenterPrompted&gt;
+  &lt;IsAutoSaveEnabled&gt;false&lt;/IsAutoSaveEnabled&gt;
+  &lt;AutoSavePeriod&gt;10&lt;/AutoSavePeriod&gt;
+  &lt;MinimumLogLevel&gt;6&lt;/MinimumLogLevel&gt;
+  &lt;EnableExperimentalFeatures /&gt;
+&lt;/GeneralSettings&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

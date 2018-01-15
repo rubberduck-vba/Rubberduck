@@ -311,5 +311,24 @@ namespace Rubberduck.Properties {
                 return ((global::Rubberduck.Settings.UnitTestSettings)(this["UnitTestSettings"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<GeneralSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Language Code=""en-US"" />
+  <CanShowSplash>true</CanShowSplash>
+  <CanCheckVersion>true</CanCheckVersion>
+  <IsSmartIndenterPrompted>false</IsSmartIndenterPrompted>
+  <IsAutoSaveEnabled>false</IsAutoSaveEnabled>
+  <AutoSavePeriod>10</AutoSavePeriod>
+  <MinimumLogLevel>6</MinimumLogLevel>
+  <EnableExperimentalFeatures />
+</GeneralSettings>")]
+        public global::Rubberduck.Settings.GeneralSettings GeneralSettings {
+            get {
+                return ((global::Rubberduck.Settings.GeneralSettings)(this["GeneralSettings"]));
+            }
+        }
     }
 }
