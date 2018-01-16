@@ -314,7 +314,7 @@ Const JAN As Long = 1
 Const DEC As Long = 12
 Const AUG As Long = 8
 
-Select Case x
+Select Case JAN * x
   Case JAN To DEC
     'OK
   Case AUG
