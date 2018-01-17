@@ -96,9 +96,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IReference>(null, o => new Reference(null))
-                : new ComWrapperEnumerator<IReference>(Target, comObject => new Reference((VB.Reference) comObject));
+            return new ComWrapperEnumerator<IReference>(Target, comObject => new Reference((VB.Reference) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -57,9 +57,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         IEnumerator<ICommandBar> IEnumerable<ICommandBar>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<ICommandBar>(null, o => new CommandBar(null))
-                : new ComWrapperEnumerator<ICommandBar>(Target,
+            return new ComWrapperEnumerator<ICommandBar>(Target,
                     comObject => new CommandBar((Microsoft.Office.Core.CommandBar) comObject));
         }
 
