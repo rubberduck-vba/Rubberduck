@@ -59,8 +59,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
             if (hr < 0)
             {
-                // could expand this to handle DISP_E_EXCEPTION
-                throw new ArgumentException(string.Format("CallSimpleMethodNoArgs Error invoking DispId {0}:  COM error code is {1}", memberId, hr));
+                // could expand this to better handle DISP_E_EXCEPTION
+                throw Marshal.GetExceptionForHR(hr);
             }
 
             return pVarResult;
@@ -109,7 +109,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 int hr = _enumeratorRCW.Reset();      
                 if (hr < 0)
                 {
-                    throw new ArgumentException(string.Format("Error invoking IEnumVARIANT::Reset().  COM error code is {0}", hr));
+                    throw Marshal.GetExceptionForHR(hr);
                 }
             }
         }
@@ -134,7 +134,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             
             if (hr < 0)
             {
-                throw new ArgumentException(string.Format("Error invoking IEnumVARIANT::Next().  COM error code is {0}", hr));
+                throw Marshal.GetExceptionForHR(hr);
             }
            
             return (celtFetched == 1);      // celtFetched == 0 at end
