@@ -137,7 +137,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 throw Marshal.GetExceptionForHR(hr);
             }
            
-            return (celtFetched == 1);      // celtFetched == 0 at end
+            return (celtFetched == 1);      // celtFetched will be 0 when we reach the end of the collection
         }
     }
 }
