@@ -64,13 +64,15 @@ namespace Rubberduck.Inspections.Concrete
             //foreach (var op in ops)
             //{
                 var lExpressions = ((ParserRuleContext)selectExprCtxt).FindChildren<LExprContext>();
-                var exprIdentifiers = lExpressions.Select(lexpr => lexpr.GetDescendent<SimpleNameExprContext>().GetText());
-                foreach( var lexprId in exprIdentifiers)
+                var test = lExpressions.First().GetText();
+                //var exprIdentifiers = lExpressions.Select(lexpr => lexpr.GetDescendent<SimpleNameExprContext>().GetText());
+                //var exprIdentifiers = lExpressions.Select(lexpr => lexpr.GetText());
+                foreach ( var lExpr in lExpressions)
                 {
-                    var matchingDecs = State.DeclarationFinder.MatchName(lexprId);
-                    var matchingRefs = matchingDecs.SelectMany(md => md.References).Where(mr => mr.Context.HasParent(selectExprCtxt));
+                    var matchingDecs = State.DeclarationFinder.MatchName(lExpr.GetText());
+                    var matchingRefs = matchingDecs.SelectMany(md => md.References).Where(mr => mr.Context.Parent == lExpr);
                     //var ctxt = matchingRefs.First().Context;
-                    var xValues = matchingRefs.Select(mr => CreateValue((ExpressionContext)mr.Context));
+                    var xValues = matchingRefs.Select(mr => CreateValue((ExpressionContext)mr.Context.Parent, mr.Declaration.AsTypeName));
 
                     //var matchingRef = matchingRefs.Where(mr => mr.Context.HasParent(selectExprCtxt));
                 }

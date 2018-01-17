@@ -11,16 +11,16 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class UnreachableCaseInspectionTests
     {
-/*
+
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspection_AAACaseElseLong()
         {
             const string inputCode =
 @"
-Sub Foo(z As Long)
+Sub Foo(z As Long, k As Long, j As Long)
 
-Select Case z
+Select Case z * k * j * z
   Case z >= 2
     'OK
   Case 0,1
@@ -32,7 +32,7 @@ End Select
 End Sub";
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
-*/
+
 
 
         
