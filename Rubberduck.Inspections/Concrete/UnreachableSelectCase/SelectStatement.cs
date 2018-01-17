@@ -529,19 +529,19 @@ namespace Rubberduck.Inspections.Concrete
             return contextIndices;
         }
 
-        private bool IsBinaryOperatorContext<T>(T child)
+        public bool IsBinaryOperatorContext<T>(T child)
         {
             return IsBinaryMathOperation(child)
                 || IsBinaryLogicalOperation(child);
         }
 
-        private bool IsMathOperation<T>(T child)
+        public static bool IsMathOperation<T>(T child)
         {
             return IsBinaryMathOperation(child)
                 || IsUnaryMathOperation(child);
         }
 
-        private bool IsBinaryMathOperation<T>(T child)
+        public static bool IsBinaryMathOperation<T>(T child)
         {
             return child is VBAParser.MultOpContext
                 || child is VBAParser.AddOpContext
@@ -564,7 +564,7 @@ namespace Rubberduck.Inspections.Concrete
             return child is VBAParser.LogicalNotOpContext;
         }
 
-        private bool IsUnaryMathOperation<T>(T child)
+        public static bool IsUnaryMathOperation<T>(T child)
         {
             return child is VBAParser.UnaryMinusOpContext;
         }
