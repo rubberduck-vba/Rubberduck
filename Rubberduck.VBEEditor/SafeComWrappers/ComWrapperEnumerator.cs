@@ -12,7 +12,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     // The automatic custom marshalling of the enumeration getter method (DISPID_ENUM) prohibits access to the underlying IEnumVARIANT interface.
     // To work around it, we must call the IDispatch:::Invoke method directly (instead of using CLRs normal late-bound method calling ability).
 
-    [Guid("00020400-0000-0000-C000-000000000046")]
+    [ComImport(), Guid("00020400-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]        
     interface IDispatch
     {
@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         }
     }
 
-    [Guid("00020404-0000-0000-C000-000000000046")]
+    [ComImport(), Guid("00020404-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IEnumVARIANT
     {
