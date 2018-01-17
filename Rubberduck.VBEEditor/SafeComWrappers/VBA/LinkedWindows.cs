@@ -47,9 +47,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IWindow>(null, o => new Window(null))
-                : new ComWrapperEnumerator<IWindow>(Target, comObject => new Window((VB.Window) comObject));
+            return new ComWrapperEnumerator<IWindow>(Target, comObject => new Window((VB.Window) comObject));
         }
         
         public override bool Equals(ISafeComWrapper<VB.LinkedWindows> other)
