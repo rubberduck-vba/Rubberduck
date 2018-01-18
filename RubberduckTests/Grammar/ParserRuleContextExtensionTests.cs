@@ -84,8 +84,6 @@ End Function";
         [TestCase("selectCase3", "selectCase1", ExpectedResult = true)]
         [TestCase("selectCase1", "selectCase3", ExpectedResult = false)]
         [TestCase("selectCase3", "selectCase3", ExpectedResult = false)]
-        //[TestCase("selectCase3Arg", "selectCase1", ExpectedResult = false)]
-        //[TestCase("selectCase3Arg", "Foo", ExpectedResult = true)]
         [Category("Inspections")]
         public bool ParserRuleCtxtExt_IsDescendentOf_ByContext(string contextID, string parentContextID)
         {
