@@ -5,8 +5,6 @@ using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Grammar
@@ -56,7 +54,6 @@ End Function";
             }
         }
 
-
         [TestCase("selectCase3Arg", ExpectedResult = true)]
         [TestCase("firstArg", ExpectedResult = false)]
         [Category("Inspections")]
@@ -87,8 +84,10 @@ End Function";
         [TestCase("selectCase3", "selectCase1", ExpectedResult = true)]
         [TestCase("selectCase1", "selectCase3", ExpectedResult = false)]
         [TestCase("selectCase3", "selectCase3", ExpectedResult = false)]
+        //[TestCase("selectCase3Arg", "selectCase1", ExpectedResult = false)]
+        //[TestCase("selectCase3Arg", "Foo", ExpectedResult = true)]
         [Category("Inspections")]
-        public bool ParserRuleCtxtExt_HasParentContext(string contextID, string parentContextID)
+        public bool ParserRuleCtxtExt_IsDescendentOf_ByContext(string contextID, string parentContextID)
         {
             bool result = false;
             var parentIdDec = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentContextID)).First();
@@ -107,77 +106,96 @@ End Function";
 
         [Test]
         [Category("Inspections")]
-        public void ParserRuleCtxtExt_HasParent_ByType_False()
+        public void ParserRuleCtxtExt_IsDescendentOf_ByType_False()
         {
             var selectCase3Arg = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("selectCase3Arg")).First();
             var result = selectCase3Arg.Context.IsDescendentOf<VBAParser.SubStmtContext>();
             Assert.AreEqual(false, result);
         }
 
-        [Test]
+        [TestCase("Foo", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = 3)]
+        [TestCase("Foo", PRCExtensionTestContextTypes.PowOpCtxt, ExpectedResult = 0)]
         [Category("Inspections")]
-        public void ParserRuleCtxtExt_HasParent_ByContext_True()
+        public int ParserRuleCtxtExt_GetDescendents(string parentName, PRCExtensionTestContextTypes descendentType)
         {
-            var selectCase3Arg = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("selectCase3Arg")).First();
-            var functContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("Foo")).First().Context;
-            var result = selectCase3Arg.Context.IsDescendentOf(functContext);
-            Assert.AreEqual(true, result);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ParserRuleCtxtExt_HasParent_ByContext_False()
-        {
-            var selectCase3Arg = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("selectCase3Arg")).First();
-            var functContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("selectCase1")).First().Context;
-            var result = selectCase3Arg.Context.IsDescendentOf(functContext);
-            Assert.AreEqual(false, result);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ParserRuleCtxtExt_GetChild_NullResult()
-        {
-            var selectCase3Arg = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("selectCase3Arg")).First();
-            var result = selectCase3Arg.Context.GetChild<VBAParser.SelectCaseStmtContext>();
-            Assert.AreEqual(null, result);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        [Category("Grammar")]
-        public void ParserRuleCtxtExt_Evil_Code_Selection_Not_Evil()
-        {
-            const string inputCode =
-                @" _
- _
- Function _
- _
- Foo _
- _
- ( _
- _
- fizz _
- _
- ) As Boolean
-
- End _
- _
- Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var parentContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals("Foo")).First().Context;
+            var descendents = new List<ParserRuleContext>();
+            if (descendentType == PRCExtensionTestContextTypes.SelectStmtCtxt)
             {
-
-                var declaration = state.AllDeclarations.Single(d => d.IdentifierName.Equals("Foo"));
-
-                var actual = ((VBAParser.FunctionStmtContext)declaration.Context).GetProcedureSelection();
-                var expected = new Selection(3, 2, 11, 14);
-
-                Assert.AreEqual(actual, expected);
+                descendents = parentContext.GetDescendents<VBAParser.SelectCaseStmtContext>().Select(desc => (ParserRuleContext)desc).ToList();
             }
+            if (descendentType == PRCExtensionTestContextTypes.PowOpCtxt)
+            {
+                descendents = parentContext.GetDescendents<VBAParser.PowOpContext>().Select(desc => (ParserRuleContext)desc).ToList();
+            }
+            return descendents.Count();
+        }
+
+        [TestCase("Foo", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = true)]
+        [TestCase("Foo", PRCExtensionTestContextTypes.PowOpCtxt, ExpectedResult = false)]
+        [Category("Inspections")]
+        public bool ParserRuleCtxtExt_GetDescendent(string parentName, PRCExtensionTestContextTypes descendentType)
+        {
+            var parentContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentName)).First().Context;
+            ParserRuleContext descendent = null;
+            if (descendentType == PRCExtensionTestContextTypes.SelectStmtCtxt)
+            {
+                descendent = parentContext.GetDescendent<VBAParser.SelectCaseStmtContext>();
+            }
+            if (descendentType == PRCExtensionTestContextTypes.PowOpCtxt)
+            {
+                descendent = parentContext.GetDescendent<VBAParser.PowOpContext>();
+            }
+            return descendent != null;
+        }
+
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = true)]
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.PowOpCtxt, ExpectedResult = false)]
+        [Category("Inspections")]
+        public bool ParserRuleCtxtExt_GetAncestor(string name, PRCExtensionTestContextTypes ancestorType)
+        {
+            var context = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(name)).First().Context;
+            ParserRuleContext ancestor = null;
+            if (ancestorType == PRCExtensionTestContextTypes.SelectStmtCtxt)
+            {
+                ancestor = context.GetAncestor<VBAParser.SelectCaseStmtContext>();
+            }
+            if (ancestorType == PRCExtensionTestContextTypes.PowOpCtxt)
+            {
+                ancestor = context.GetAncestor<VBAParser.PowOpContext>();
+            }
+            return ancestor != null;
+        }
+
+        [TestCase("selectCase3Arg", "Foo", ExpectedResult = true)]
+        [TestCase("selectCase3Arg", "selectCase1", ExpectedResult = false)]
+        [Category("Inspections")]
+        public bool ParserRuleCtxtExt_IsDescendentOf_ByContext2(string contextName, string parentName)
+        {
+            var descendentCandidate = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(contextName)).First().Context;
+            var parentCandidate = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentName)).First().Context;
+            var result = descendentCandidate.IsDescendentOf(parentCandidate);
+            return result;
+        }
+
+        public enum PRCExtensionTestContextTypes {SelectStmtCtxt, AsTypeCtxt, PowOpCtxt };
+
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.SelectStmtCtxt, ExpectedResult = false)]
+        [TestCase("selectCase3Arg", PRCExtensionTestContextTypes.AsTypeCtxt, ExpectedResult = true)]
+        [Category("Inspections")]
+        public bool ParserRuleCtxtExt_GetChild(string parentContextName, PRCExtensionTestContextTypes ctxtType)
+        {
+            ParserRuleContext result = null;
+            var parentContext = AllTestingDeclarations.Where(dc => dc.IdentifierName.Equals(parentContextName)).First().Context;
+            if (ctxtType == PRCExtensionTestContextTypes.SelectStmtCtxt)
+            {
+                result = parentContext.GetChild<VBAParser.SelectCaseStmtContext>();
+            }
+            else if (ctxtType == PRCExtensionTestContextTypes.AsTypeCtxt)
+            {
+                result = parentContext.GetChild<VBAParser.AsTypeClauseContext>();
+            }
+            return result != null;
         }
 
         private IEnumerable<Declaration> GetAllUserDeclarations(string inputCode)

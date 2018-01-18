@@ -45,10 +45,10 @@ namespace Rubberduck.Inspections.Concrete
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
         {
             var allrefs = reference.Declaration.References;
-            var letStmtContext = reference.Context.GetParent<VBAParser.LetStmtContext>();
+            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
 
             return reference.IsAssignment && (letStmtContext != null
-                   || allrefs.Where(r => r.IsAssignment).All(r => r.Context.GetParent<VBAParser.SetStmtContext>()?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
+                   || allrefs.Where(r => r.IsAssignment).All(r => r.Context.GetAncestor<VBAParser.SetStmtContext>()?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
         }
     }
 }

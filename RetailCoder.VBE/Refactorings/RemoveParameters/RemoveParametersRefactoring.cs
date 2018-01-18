@@ -123,7 +123,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
                 VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = reference.Context.GetParent<VBAParser.CallStmtContext>();
+                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
@@ -132,7 +132,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 if (argumentList == null)
                 {
                     var indexExpression =
-                        reference.Context.GetParent<VBAParser.IndexExprContext>();
+                        reference.Context.GetAncestor<VBAParser.IndexExprContext>();
                     if (indexExpression != null)
                     {
                         argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();

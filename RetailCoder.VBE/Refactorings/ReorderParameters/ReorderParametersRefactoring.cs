@@ -124,7 +124,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             {
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = reference.Context.GetParent<VBAParser.CallStmtContext>();
+                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
@@ -132,7 +132,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 
                 if (argumentList == null)
                 {
-                    var indexExpression = reference.Context.GetParent<VBAParser.IndexExprContext>();
+                    var indexExpression = reference.Context.GetAncestor<VBAParser.IndexExprContext>();
                     if (indexExpression != null)
                     {
                         argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();

@@ -118,7 +118,7 @@ namespace Rubberduck.Inspections
             }
 
             //Variants can be assigned with or without 'Set' depending...
-            var letStmtContext = objectOrVariantRef.Context.GetParent<VBAParser.LetStmtContext>();
+            var letStmtContext = objectOrVariantRef.Context.GetAncestor<VBAParser.LetStmtContext>();
 
             //A potential error is only possible for let statements: rset, lset and other type specific assignments are always let assignments; 
             //assignemts in for each loop statements are do not require the set keyword.
@@ -149,13 +149,13 @@ namespace Rubberduck.Inspections
 
         private static bool IsLetAssignment(IdentifierReference reference)
         {
-            var letStmtContext = reference.Context.GetParent<VBAParser.LetStmtContext>();
+            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
             return (reference.IsAssignment && letStmtContext != null);
         }
 
         private static bool IsAlreadyAssignedUsingSet(IdentifierReference reference)
         {
-            var setStmtContext = reference.Context.GetParent<VBAParser.SetStmtContext>();
+            var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
             return (reference.IsAssignment && setStmtContext?.SET() != null);
         }
 

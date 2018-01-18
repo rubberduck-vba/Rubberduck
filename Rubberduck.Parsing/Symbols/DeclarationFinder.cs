@@ -199,7 +199,7 @@ namespace Rubberduck.Parsing.Symbols
                             IdentifierReference = reference,
                             Context = reference.Context is VBAParser.ImplementsStmtContext ? 
                                 (VBAParser.ImplementsStmtContext)reference.Context 
-                                    : reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
+                                    : reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 ).ToList();
@@ -234,7 +234,7 @@ namespace Rubberduck.Parsing.Symbols
                             IdentifierReference = reference,
                             Context = reference.Context is VBAParser.ImplementsStmtContext ?
                                 (VBAParser.ImplementsStmtContext)reference.Context
-                                : reference.Context.GetParent<VBAParser.ImplementsStmtContext>()
+                                : reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 );

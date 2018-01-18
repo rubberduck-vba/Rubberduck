@@ -573,7 +573,7 @@ namespace Rubberduck.Common
             {
                 foreach (var reference in declaration.References)
                 {
-                    var implementsStmt = reference.Context.GetParent<VBAParser.ImplementsStmtContext>();
+                    var implementsStmt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
 
                     if (implementsStmt == null) { continue; }
 

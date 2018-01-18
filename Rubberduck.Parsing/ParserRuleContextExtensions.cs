@@ -10,6 +10,9 @@ namespace Rubberduck.Parsing
 {
     public static class ParserRuleContextExtensions
     {
+        /// <summary>
+        ///  Returns a Selection structure containing the context
+        /// </summary>
         public static Selection GetSelection(this ParserRuleContext context)
         {
             // if we have an empty module, `Stop` is null
@@ -24,25 +27,6 @@ namespace Rubberduck.Parsing
                                  context.Start.Column + 1,
                                  context.Stop.Line == 0 ? 1 : context.Stop.EndLine(),
                                  context.Stop.EndColumn() + 1);
-        }
-
-//TODO: Question - remove?  None of the GetProcedureSelection overloads below are referenced (except for one...in a test)
-        //https://github.com/rubberduck-vba/Rubberduck/issues/2164
-        //This set of overloads returns the selection for the entire procedure statement body, i.e. Public Function Foo(bar As String) As String
-        public static Selection GetProcedureSelection(this VBAParser.FunctionStmtContext context) { return GetProcedureContextSelection(context); }
-        public static Selection GetProcedureSelection(this VBAParser.SubStmtContext context) { return GetProcedureContextSelection(context); }
-        public static Selection GetProcedureSelection(this VBAParser.PropertyGetStmtContext context) { return GetProcedureContextSelection(context); }
-        public static Selection GetProcedureSelection(this VBAParser.PropertyLetStmtContext context) { return GetProcedureContextSelection(context); }
-        public static Selection GetProcedureSelection(this VBAParser.PropertySetStmtContext context) { return GetProcedureContextSelection(context); }
-
-        private static Selection GetProcedureContextSelection(ParserRuleContext context)
-        {
-            var endContext1 = context.GetRuleContext<VBAParser.EndOfStatementContext>(0);
-            var endContext = context.GetChild<VBAParser.EndOfStatementContext>();
-            return new Selection(context.Start.Line == 0 ? 1 : context.Start.Line,
-                                 context.Start.Column + 1,
-                                 endContext.Start.Line == 0 ? 1 : endContext.Start.Line,
-                                 endContext.Start.Column + 1);
         }
 
         /// <summary>
@@ -90,27 +74,32 @@ namespace Rubberduck.Parsing
         /// </summary>
         public static bool IsDescendentOf<TContext>(this ParserRuleContext context)
         {
-            if(context is TContext)
-            {
-                return GetParent_Recursive<TContext>((ParserRuleContext)context.Parent) != null;
-            }
-            return GetParent_Recursive<TContext>(context) != null;
-        }
-
-        /// <summary>
-        /// Determines if any of the context's ancestors are equal to the parameter 'parent'.
-        /// </summary>
-        public static bool IsDescendentOf<T>(this ParserRuleContext context, T parent) where T : ParserRuleContext
-        {
-            if (context == null || parent == null)
+            if (context == null)
             {
                 return false;
             }
-            if (context != parent)
+
+            if (context is TContext)
             {
-                return IsDescendentOf_Recursive(context, parent);
+                return GetAncestor_Recursive<TContext>((ParserRuleContext)context.Parent) != null;
             }
-            return false;
+            return GetAncestor_Recursive<TContext>(context) != null;
+        }
+
+        /// <summary>
+        /// Determines if any of the context's ancestors are equal to the parameter 'ancestor'.
+        /// </summary>
+        public static bool IsDescendentOf<T>(this ParserRuleContext context, T ancestor) where T : ParserRuleContext
+        {
+            if (context == null || ancestor == null)
+            {
+                return false;
+            }
+            if (context == ancestor)
+            {
+                return IsDescendentOf_Recursive(context.Parent, ancestor);
+            }
+            return IsDescendentOf_Recursive(context, ancestor);
         }
 
         private static bool IsDescendentOf_Recursive(IParseTree context, IParseTree targetParent)
@@ -126,15 +115,10 @@ namespace Rubberduck.Parsing
             return IsDescendentOf_Recursive(context.Parent, targetParent);
         }
 
-        //TODO: Question: I would like to rename GetParent<T>(...) function to GetAncestor<T>(...)
-        //With a name like GetParent, I would expected the code to simply be: "return context.Parent;"
-        //This function is called when the caller is interested in looking 'up' the hierarchy including 
-        //and above the immediate parent.
-
         /// <summary>
         /// Returns the context's first ancestor of the generic Type.
         /// </summary>
-        public static TContext GetParent<TContext>(this ParserRuleContext context)
+        public static TContext GetAncestor<TContext>(this ParserRuleContext context)
         {
             if (context == null)
             {
@@ -142,12 +126,12 @@ namespace Rubberduck.Parsing
             }
             if (context is TContext)
             {
-                return GetParent_Recursive<TContext>((ParserRuleContext)context.Parent);
+                return GetAncestor_Recursive<TContext>((ParserRuleContext)context.Parent);
             }
-            return GetParent_Recursive<TContext>(context);
+            return GetAncestor_Recursive<TContext>(context);
         }
 
-        private static TContext GetParent_Recursive<TContext>(ParserRuleContext context)
+        private static TContext GetAncestor_Recursive<TContext>(ParserRuleContext context)
         {
             if (context == null)
             {
@@ -157,15 +141,7 @@ namespace Rubberduck.Parsing
             {
                 return (TContext)System.Convert.ChangeType(context, typeof(TContext));
             }
-            return GetParent_Recursive<TContext>((ParserRuleContext)context.Parent);
-        }
-
-        /// <summary>
-        /// Determines if the any of the child contexts child.GetText() equals token .
-        /// </summary>
-        public static bool HasChildToken(this ParserRuleContext context, string token)
-        {
-            return context.children.Any(ch => ch.GetText().Equals(token));
+            return GetAncestor_Recursive<TContext>((ParserRuleContext)context.Parent);
         }
 
         /// <summary>

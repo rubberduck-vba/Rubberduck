@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
                 .SelectMany(declaration => declaration.References)
                 .Where(reference =>
                 {
-                    var letStmtContext = reference.Context.GetParent<VBAParser.LetStmtContext>();
+                    var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
                     return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                 });
 

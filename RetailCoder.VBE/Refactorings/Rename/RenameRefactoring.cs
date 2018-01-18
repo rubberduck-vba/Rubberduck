@@ -423,7 +423,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 foreach (var reference in _model.Target.References)
                 {
-                    var ctxt = reference.Context.GetParent<VBAParser.ImplementsStmtContext>();
+                    var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
                         RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), _appendUnderscoreFormat);

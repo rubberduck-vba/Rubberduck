@@ -24,8 +24,8 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
-            var assignmentContext = result.Context.GetParent<VBAParser.LetStmtContext>() ??
-                                                  (ParserRuleContext)result.Context.GetParent<VBAParser.CallStmtContext>();
+            var assignmentContext = result.Context.GetAncestor<VBAParser.LetStmtContext>() ??
+                                                  (ParserRuleContext)result.Context.GetAncestor<VBAParser.CallStmtContext>();
 
             rewriter.Remove(assignmentContext);
         }

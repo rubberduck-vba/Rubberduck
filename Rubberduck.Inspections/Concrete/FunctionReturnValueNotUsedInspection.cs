@@ -108,7 +108,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsCallStmt(IdentifierReference usage)
         {
-            var callStmt = usage.Context.GetParent<VBAParser.CallStmtContext>();
+            var callStmt = usage.Context.GetAncestor<VBAParser.CallStmtContext>();
             if (callStmt == null)
             {
                 return false;
@@ -123,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsIndexExprContext(IdentifierReference usage)
         {
-            var indexExpr = usage.Context.GetParent<VBAParser.IndexExprContext>();
+            var indexExpr = usage.Context.GetAncestor<VBAParser.IndexExprContext>();
             if (indexExpr == null)
             {
                 return false;
@@ -138,14 +138,14 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsLet(IdentifierReference usage)
         {
-            var letStmt = usage.Context.GetParent<VBAParser.LetStmtContext>();
+            var letStmt = usage.Context.GetAncestor<VBAParser.LetStmtContext>();
 
             return letStmt != null && letStmt == usage.Context;
         }
 
         private bool IsSet(IdentifierReference usage)
         {
-            var setStmt = usage.Context.GetParent<VBAParser.SetStmtContext>();
+            var setStmt = usage.Context.GetAncestor<VBAParser.SetStmtContext>();
 
             return setStmt != null && setStmt == usage.Context;
         }

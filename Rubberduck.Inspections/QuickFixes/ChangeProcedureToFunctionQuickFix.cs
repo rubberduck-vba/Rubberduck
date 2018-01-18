@@ -64,7 +64,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private void UpdateCall(IdentifierReference reference, int argIndex)
         {
             var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
-            var callStmtContext = reference.Context.GetParent<VBAParser.CallStmtContext>();
+            var callStmtContext = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
             var argListContext = callStmtContext.GetChild<VBAParser.ArgumentListContext>();
 
             var arg = argListContext.argument()[argIndex];
