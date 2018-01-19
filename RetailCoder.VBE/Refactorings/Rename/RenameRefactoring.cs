@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -422,7 +423,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 foreach (var reference in _model.Target.References)
                 {
-                    var ctxt = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context);
+                    var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
                         RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), _appendUnderscoreFormat);
