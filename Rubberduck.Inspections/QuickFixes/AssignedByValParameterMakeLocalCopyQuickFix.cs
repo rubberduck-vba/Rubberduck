@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
@@ -13,7 +14,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using static Rubberduck.Parsing.Grammar.VBAParser;
 using System.Diagnostics;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -32,8 +32,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            Debug.Assert(result.Target.Context.Parent is ArgListContext);
-            Debug.Assert(null != ParserRuleContextHelper.GetChild<EndOfStatementContext>(result.Target.Context.Parent.Parent));
+            Debug.Assert(result.Target.Context.Parent is VBAParser.ArgListContext);
+            Debug.Assert(null != ((ParserRuleContext)result.Target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>());
 
             var forbiddenNames = _parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(result.Target).Select(n => n.IdentifierName);
 
@@ -120,14 +120,14 @@ namespace Rubberduck.Inspections.QuickFixes
                                                         requiresAssignmentUsingSet ? $"{Tokens.Set} " : string.Empty,
                                                         $"{localIdentifier} = {target.IdentifierName}");
 
-            var endOfStmtCtxt = ParserRuleContextHelper.GetChild<EndOfStatementContext>(target.Context.Parent.Parent);
+            var endOfStmtCtxt = ((ParserRuleContext)target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>();
             var eosContent = endOfStmtCtxt.GetText();
             var idxLastNewLine = eosContent.LastIndexOf(Environment.NewLine);
             var endOfStmtCtxtComment = eosContent.Substring(0, idxLastNewLine);
             var endOfStmtCtxtEndFormat = eosContent.Substring(idxLastNewLine);
 
-            var insertCtxt = (ParserRuleContext)ParserRuleContextHelper.GetChild<AsTypeClauseContext>(target.Context.Parent.Parent);
-            if(insertCtxt == null)
+            var insertCtxt = (ParserRuleContext)((ParserRuleContext)target.Context.Parent.Parent).GetChild<VBAParser.AsTypeClauseContext>();
+            if (insertCtxt == null)
             {
                 insertCtxt = (ParserRuleContext)target.Context.Parent;
             }

@@ -243,5 +243,38 @@ namespace Rubberduck.Properties {
                 return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_TestExplorerCommand"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoMarker xmlns:xsi=\"http://www.w3.org" +
+            "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"TOD" +
+            "O\" />")]
+        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_ToDo {
+            get {
+                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_ToDo"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoMarker xmlns:xsi=\"http://www.w3.org" +
+            "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"NOT" +
+            "E\" />")]
+        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_Note {
+            get {
+                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_Note"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoMarker xmlns:xsi=\"http://www.w3.org" +
+            "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"BUG" +
+            "\" />")]
+        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_Bug {
+            get {
+                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_Bug"]));
+            }
+        }
     }
 }

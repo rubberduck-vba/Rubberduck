@@ -318,7 +318,6 @@
     <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
     <Compile Include="Symbols\ICompilationPass.cs" />
     <Compile Include="Symbols\IDeclarationFinderFactory.cs" />
-    <Compile Include="Symbols\ParserRuleContextHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
