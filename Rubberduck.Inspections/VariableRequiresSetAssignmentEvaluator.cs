@@ -11,9 +11,8 @@ namespace Rubberduck.Inspections
     {
         public static IEnumerable<Declaration> GetDeclarationsPotentiallyRequiringSetAssignment(IEnumerable<Declaration> declarations)
         {
-            //Reduce most of the declaration list with the easy ones
-            var relevantDeclarations = declarations.Where(dec => dec.AsTypeName == Tokens.Variant
-                                 || !SymbolList.ValueTypes.Contains(dec.AsTypeName)
+            var relevantDeclarations = declarations.Where(dec => dec.AsTypeName != Tokens.Variant
+                                 && !SymbolList.ValueTypes.Contains(dec.AsTypeName)
                                  &&(MayRequireAssignmentUsingSet(dec) || RequiresAssignmentUsingSet(dec)));
 
             return relevantDeclarations;
@@ -21,19 +20,10 @@ namespace Rubberduck.Inspections
 
         public static bool RequiresSetAssignment(IdentifierReference reference, RubberduckParserState state)
         {
-            //Not an assignment...definitely does not require a 'Set' assignment
-            if (!reference.IsAssignment)
+            if (!reference.IsAssignment || !MayRequireAssignmentUsingSet(reference.Declaration))
             {
                 return false;
             }
-            
-            //We know for sure it DOES NOT use 'Set'
-            if (!MayRequireAssignmentUsingSet(reference.Declaration))
-            {
-                return false;
-            }
-
-            //We know for sure that it DOES use 'Set'
             if (RequiresAssignmentUsingSet(reference.Declaration))
             {
                 return true;
