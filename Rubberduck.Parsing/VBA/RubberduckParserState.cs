@@ -17,7 +17,6 @@ using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
@@ -129,7 +128,10 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectAdded(object sender, ProjectEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode) { return; }
+            if (!e.Project.VBE.IsInDesignMode)
+            {
+                return;
+            }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
             OnParseRequested(sender);
@@ -137,7 +139,10 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectRemoved(object sender, ProjectEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode) { return; }
+            if (!e.Project.VBE.IsInDesignMode)
+            {
+                return;
+            }
             
             Debug.Assert(e.ProjectId != null);
             OnParseRequested(sender);
@@ -145,7 +150,10 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectRenamed(object sender, ProjectRenamedEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode) { return; }
+            if (!e.Project.VBE.IsInDesignMode)
+            {
+                return;
+            }
 
             if (!ThereAreDeclarations())
             {
