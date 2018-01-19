@@ -1997,7 +1997,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Source Control. Requires a restart to take effect..
+        ///   Looks up a localized string similar to Enable Source Control..
         /// </summary>
         public static string GeneralSettings_EnableSourceControl {
             get {
@@ -2015,7 +2015,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Experimental Features:.
+        ///   Looks up a localized string similar to Experimental Features (Requires a restart to take effect):.
         /// </summary>
         public static string GeneralSettings_ExperimentalFeatures {
             get {
@@ -5535,33 +5535,6 @@ namespace Rubberduck.UI {
         public static string ToDoExplorerToDoItemFormat {
             get {
                 return ResourceManager.GetString("ToDoExplorerToDoItemFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to BUG.
-        /// </summary>
-        public static string TodoMarkerBug {
-            get {
-                return ResourceManager.GetString("TodoMarkerBug", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NOTE.
-        /// </summary>
-        public static string TodoMarkerNote {
-            get {
-                return ResourceManager.GetString("TodoMarkerNote", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TODO.
-        /// </summary>
-        public static string TodoMarkerTodo {
-            get {
-                return ResourceManager.GetString("TodoMarkerTodo", resourceCulture);
             }
         }
         

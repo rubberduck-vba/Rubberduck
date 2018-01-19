@@ -2179,7 +2179,13 @@ End Sub";
 
             var generalSettings = new GeneralSettings
             {
-                IsSourceControlEnabled = true
+                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                {
+                    new ExperimentalFeatures
+                    {
+                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl)
+                    }
+                }
             };
 
             var userSettings = new UserSettings(generalSettings, null, null, null, unitTestSettings, null, null);

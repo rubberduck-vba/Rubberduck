@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -11,6 +12,7 @@ using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -117,7 +119,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
                 VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
@@ -126,10 +128,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 if (argumentList == null)
                 {
                     var indexExpression =
-                        ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                        reference.Context.GetAncestor<VBAParser.IndexExprContext>();
                     if (indexExpression != null)
                     {
-                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                        argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();
                     }
                 }
 

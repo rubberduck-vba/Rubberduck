@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -44,10 +45,10 @@ namespace Rubberduck.Inspections.Concrete
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
         {
             var allrefs = reference.Declaration.References;
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
 
-            return reference.IsAssignment && (letStmtContext != null 
-                   || allrefs.Where(r => r.IsAssignment).All(r => ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(r.Context)?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
+            return reference.IsAssignment && (letStmtContext != null
+                   || allrefs.Where(r => r.IsAssignment).All(r => r.Context.GetAncestor<VBAParser.SetStmtContext>()?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
         }
     }
 }
