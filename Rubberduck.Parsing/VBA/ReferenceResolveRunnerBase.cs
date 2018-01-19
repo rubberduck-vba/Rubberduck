@@ -139,57 +139,59 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var component = _state.ProjectsProvider.Component(module);
-            if (component == null)
-            {
-                return null;
-            }
-
-            int documentPropertyCount = 0;
-            try
-            {
-                if (component.IsWrappingNullReference
-                    || component.Properties == null
-                    || component.Properties.IsWrappingNullReference)
-                {
-                    return null;
-                }
-                documentPropertyCount = component.Properties.Count;
-            }
-            catch(COMException)
+            if (component == null || component.IsWrappingNullReference)
             {
                 return null;
             }
 
             Declaration superType = null;
-            foreach (var coclass in state.CoClasses)
+            using (var properties = component.Properties)
             {
+                int documentPropertyCount = 0;
                 try
                 {
-                    
-
-                    if (coclass.Key.Count != documentPropertyCount)
+                    if (properties == null || properties.IsWrappingNullReference)
                     {
-                        continue;
+                        return null;
                     }
-
-                    var allNamesMatch = true;
-                    for (var i = 0; i < coclass.Key.Count; i++)
+                    documentPropertyCount = properties.Count;
+                }
+                catch(COMException)
+                {
+                    return null;
+                }
+                
+                foreach (var coclass in state.CoClasses)
+                {
+                    try
                     {
-                        if (coclass.Key[i] != _state.ProjectsProvider.Component(module)?.Properties[i + 1]?.Name)
+                        if (coclass.Key.Count != documentPropertyCount)
                         {
-                            allNamesMatch = false;
+                            continue;
+                        }
+
+                        var allNamesMatch = true;
+                        for (var i = 0; i < coclass.Key.Count; i++)
+                        {
+                            using(var property = properties[i+1])
+                            {
+                                if (coclass.Key[i] != property?.Name)
+                                {
+                                    allNamesMatch = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (allNamesMatch)
+                        {
+                            superType = coclass.Value;
                             break;
                         }
                     }
-
-                    if (allNamesMatch)
+                    catch (COMException)
                     {
-                        superType = coclass.Value;
-                        break;
                     }
-                }
-                catch (COMException)
-                {
                 }
             }
 
