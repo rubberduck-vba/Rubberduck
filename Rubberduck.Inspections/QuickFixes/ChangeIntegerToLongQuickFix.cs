@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
@@ -180,7 +181,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private static void ReplaceTypeHint(RuleContext context, IModuleRewriter rewriter)
         {
-            var typeHintContext = ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(context);
+            var typeHintContext = ((ParserRuleContext)context).GetDescendent<VBAParser.TypeHintContext>();
             rewriter.Replace(typeHintContext, "&");
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -63,8 +64,8 @@ namespace Rubberduck.Inspections.QuickFixes
         private void UpdateCall(IdentifierReference reference, int argIndex)
         {
             var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
-            var callStmtContext = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
-            var argListContext = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(callStmtContext);
+            var callStmtContext = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
+            var argListContext = callStmtContext.GetChild<VBAParser.ArgumentListContext>();
 
             var arg = argListContext.argument()[argIndex];
             var argName = arg.positionalArgument()?.argumentExpression() ?? arg.namedArgument().argumentExpression();
