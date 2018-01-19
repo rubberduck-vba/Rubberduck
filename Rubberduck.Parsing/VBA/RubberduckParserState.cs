@@ -134,7 +134,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Logger.Debug("Project '{0}' was added.", e.ProjectId);
-            OnParseRequested(sender);
+            
+            //todo: find out why this borks the second workbook opened and reactivate the automatic parse.
+            //OnParseRequested(sender);
+            SetStatusAndFireStateChanged(this,ParserState.Pending);
         }
 
         private void Sinks_ProjectRemoved(object sender, ProjectEventArgs e)
