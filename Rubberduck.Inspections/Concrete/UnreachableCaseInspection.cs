@@ -18,256 +18,25 @@ using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public interface ISelectExpression
+    //public interface ISelectExpression
+    //{
+    //    string TypeName { get; }
+    //    UnreachableCaseInspectionValue Result { get; }
+    //    bool IsVariable { get; }
+    //}
+
+    public interface ISupportTestsUnreachableCaseInspection
     {
-        string TypeName { get; }
-        UnreachableCaseInspectionValue Result { get; }
-        bool IsVariable { get; }
+        List<ParserRuleContext> CaseClauseContextsForSelectStmt(ParserRuleContext selectStmt);
     }
 
-    public class SelectCaseContextEvaluator : ISelectExpression
+    public sealed class UnreachableCaseInspection : ParseTreeInspectionBase, ISupportTestsUnreachableCaseInspection
     {
-        private readonly RubberduckParserState _state;
-        private string _typeName;
-        private UnreachableCaseInspectionValue _unreachableCaseValue;
-        private bool _isVariable;
-
-
-        public SelectCaseContextEvaluator(RubberduckParserState state)
+        public List<ParserRuleContext> CaseClauseContextsForSelectStmt(ParserRuleContext selectStmt)
         {
-            _state = state;
+            //return new List<QualifiedContext<ParserRuleContext>>();
+            return selectStmt.GetChildren<CaseClauseContext>().Select(cc => (ParserRuleContext)cc).ToList();
         }
-
-        public string TypeName { get; }
-        public UnreachableCaseInspectionValue Result { get; }
-        public bool IsVariable { get; }
-        public RubberduckParserState State => _state;
-    }
-
-    public class SelectExpressionEvaluator : SelectCaseContextEvaluator
-    {
-        private readonly VBAParser.SelectExpressionContext _context;
-
-        public SelectExpressionEvaluator(RubberduckParserState state, VBAParser.SelectExpressionContext selectExpressionCtxt)
-            : base(state)
-        {
-            _context = selectExpressionCtxt;
-            ResolveSelectStmtInspectionType(selectExpressionCtxt);
-        }
-
-        private void ResolveSelectStmtInspectionType(VBAParser.SelectExpressionContext selectExprCtxt)
-        {
-            var canBeInspected = true;
-            //var ops = selectExprCtxt.GetDescendents().Where(desc => (desc is ParserRuleContext) 
-            //        && (SelectStatement.IsBinaryMathOperation(desc) || SelectStatement.IsUnaryMathOperation(desc)));
-
-            //foreach (var op in ops)
-            //{
-                var lExpressions = ((ParserRuleContext)selectExprCtxt).FindChildren<LExprContext>();
-                var test = lExpressions.First().GetText();
-                //var exprIdentifiers = lExpressions.Select(lexpr => lexpr.GetDescendent<SimpleNameExprContext>().GetText());
-                //var exprIdentifiers = lExpressions.Select(lexpr => lexpr.GetText());
-                foreach ( var lExpr in lExpressions)
-                {
-                    var matchingDecs = State.DeclarationFinder.MatchName(lExpr.GetText());
-                    var matchingRefs = matchingDecs.SelectMany(md => md.References).Where(mr => mr.Context.Parent == lExpr);
-                    //var ctxt = matchingRefs.First().Context;
-                    var xValues = matchingRefs.Select(mr => CreateValue((ExpressionContext)mr.Context.Parent, mr.Declaration.AsTypeName));
-
-                    //var matchingRef = matchingRefs.Where(mr => mr.Context.HasParent(selectExprCtxt));
-                }
-
-                //var mathOnTheSelectCaseVariable = lExpressions.Any(lex => lex.GetText().Equals(refName));
-                //var mathOnNonConstants = lExpressions.Any(lex => !(CreateValue(lex, Tokens.Variant).HasValue));
-
-                //if (mathOnTheSelectCaseVariable || mathOnNonConstants)
-                //{
-                //    canBeInspected = false;
-                //}
-            //}
-
-            //if (!ContextCanBeEvaluated(selectExprCtxt.SelectExpressionContext, selectExprCtxt.IdReferenceName))
-            //{
-            //    return InferTheSelectStmtType(selectExprCtxt);
-            //}
-
-            //if (selectExprCtxt.SelectExpressionContext.GetDescendents()
-            //    .Any(desc => IsBinaryLogicalOperation(desc) || IsUnaryLogicalOperator(desc)))
-            //{
-            //    return SetTheTypeNames(selectExprCtxt, Tokens.Boolean);
-            //}
-
-            //var firstLExpr = selectExprCtxt.SelectExpressionContext.GetDescendent<LExprContext>();
-            //if (firstLExpr == null)
-            //{
-            //    return InferTheSelectStmtType(selectExprCtxt);
-            //}
-
-            //var expression = firstLExpr.GetDescendent<SimpleNameExprContext>().GetText();
-            //if (SymbolList.TypeHintToTypeName.ContainsKey(expression.Last().ToString()))
-            //{
-            //    return SetTheTypeNames(selectExprCtxt, SymbolList.TypeHintToTypeName[expression.Last().ToString()]);
-            //}
-
-            //var idRefs = (State.DeclarationFinder.MatchName(expression).Select(dec => dec.References))
-            //    .SelectMany(rf => rf).Where(idr => idr.Context.HasParent(selectExprCtxt.SelectExpressionContext));
-
-            //if (idRefs.Count() == 1)
-            //{
-            //    selectExprCtxt.IdReferenceName = idRefs.First().IdentifierName;
-            //    selectExprCtxt = SetTheTypeNames(selectExprCtxt, idRefs.First().Declaration.AsTypeName, SelectStatement.GetBaseTypeForDeclaration(idRefs.First().Declaration));
-
-            //    if (selectExprCtxt.BaseTypeName.Equals(Tokens.Variant))
-            //    {
-            //        return InferTheSelectStmtType(selectExprCtxt);
-            //    }
-            //    return selectExprCtxt;
-            //}
-            //return InferTheSelectStmtType(selectExprCtxt);
-        }
-
-        //private string EvaluateContextTypeName(VBAParser.ExpressionContext ctxt, SelectStmtDataObject selectStmtDO)
-        //{
-        //    var val = CreateValue(ctxt, selectStmtDO.BaseTypeName);
-        //    return val.HasValue ? selectStmtDO.BaseTypeName : val.DerivedTypeName;
-        //}
-
-        public UnreachableCaseInspectionValue CreateValue(VBAParser.ExpressionContext ctxt, string typeName = "")
-        {
-            if (ctxt is VBAParser.LExprContext)
-            {
-                var lexprTypeName = typeName;
-                if (TryGetTheLExprValue((VBAParser.LExprContext)ctxt, out string lexprValue, ref lexprTypeName))
-                {
-                    return typeName.Length > 0 ? new UnreachableCaseInspectionValue(lexprValue, typeName) : new UnreachableCaseInspectionValue(lexprValue, lexprTypeName);
-                }
-                var idRefs = (State.DeclarationFinder.MatchName(ctxt.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
-                    .Where(idr => idr.Context.Parent == ctxt);
-                if (idRefs.Any())
-                {
-                    var theTypeName = GetBaseTypeForDeclaration(idRefs.First().Declaration);
-                    return new UnreachableCaseInspectionValue(ctxt.GetText(), theTypeName);
-                }
-                return new UnreachableCaseInspectionValue(ctxt.GetText(), typeName);
-            }
-            else if (ctxt is VBAParser.LiteralExprContext)
-            {
-                return new UnreachableCaseInspectionValue(ctxt.GetText(), typeName);
-            }
-            return null;
-        }
-
-        private bool TryGetTheLExprValue(VBAParser.LExprContext ctxt, out string expressionValue, ref string typeName)
-        {
-            expressionValue = string.Empty;
-            if (SelectStatement.TryGetChildContext(ctxt, out VBAParser.MemberAccessExprContext member))
-            {
-                var smplNameMemberRHS = member.FindChild<VBAParser.UnrestrictedIdentifierContext>();
-                var memberDeclarations = State.DeclarationFinder.AllUserDeclarations.Where(dec => dec.IdentifierName.Equals(smplNameMemberRHS.GetText()));
-
-                foreach (var dec in memberDeclarations)
-                {
-                    if (dec.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                    {
-                        var theCtxt = dec.Context;
-                        if (theCtxt is VBAParser.EnumerationStmt_ConstantContext)
-                        {
-                            expressionValue = GetConstantDeclarationValue(dec);
-                            typeName = dec.AsTypeIsBaseType ? dec.AsTypeName : dec.AsTypeDeclaration.AsTypeName;
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-            else if (SelectStatement.TryGetChildContext(ctxt, out VBAParser.SimpleNameExprContext smplName))
-            {
-                var identifierReferences = (State.DeclarationFinder.MatchName(smplName.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
-
-                var rangeClauseReferences = identifierReferences.Where(rf => rf.Context.HasParent(smplName)
-                                        && (rf.Context.HasParent(smplName.Parent)));
-
-                var rangeClauseIdentifierReference = rangeClauseReferences.Any() ? rangeClauseReferences.First() : null;
-                if (rangeClauseIdentifierReference != null)
-                {
-                    if (rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Constant)
-                        || rangeClauseIdentifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                    {
-                        expressionValue = GetConstantDeclarationValue(rangeClauseIdentifierReference.Declaration);
-                        typeName = rangeClauseIdentifierReference.Declaration.AsTypeName;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        private string GetConstantDeclarationValue(Declaration valueDeclaration)
-        {
-            return "";
-            //var contextsOfInterest = GetRHSContexts(valueDeclaration.Context.children.ToList());
-            //foreach (var child in contextsOfInterest)
-            //{
-            //    if (IsMathOperation(child))
-            //    {
-            //        var parentData = new Dictionary<IParseTree, ExpressionEvaluationDataObject>();
-            //        var exprEval = new ExpressionEvaluationDataObject
-            //        {
-            //            IsUnaryOperation = IsUnaryMathOperation(child),
-            //            Operator = CompareTokens.EQ,
-            //            CanBeInspected = true,
-            //            TypeNameTarget = valueDeclaration.AsTypeName,
-            //            SelectCaseRefName = valueDeclaration.IdentifierName
-            //        };
-
-            //        parentData = AddEvaluationData(parentData, child, exprEval);
-            //        return ResolveContextValue(parentData, child).First().Value.Result.AsString();
-            //    }
-
-            //    if (child is VBAParser.LiteralExprContext)
-            //    {
-            //        if (child.Parent is VBAParser.EnumerationStmt_ConstantContext)
-            //        {
-            //            return child.GetText();
-            //        }
-            //        else if (valueDeclaration is ConstantDeclaration)
-            //        {
-            //            return ((ConstantDeclaration)valueDeclaration).Expression;
-            //        }
-            //        else
-            //        {
-            //            return string.Empty;
-            //        }
-            //    }
-            //}
-            //return string.Empty;
-        }
-
-        private static string GetBaseTypeForDeclaration(Declaration declaration)
-        {
-            if (!declaration.AsTypeIsBaseType)
-            {
-                return GetBaseTypeForDeclaration(declaration.AsTypeDeclaration);
-            }
-            return declaration.AsTypeName;
-        }
-    }
-
-    public class RangeClauseContextEvaluator : SelectCaseContextEvaluator
-    {
-        public RangeClauseContextEvaluator(RubberduckParserState state, VBAParser.RangeClauseContext selectExpressionCtxt)
-            : base(state)
-        {
-
-        }
-
-        //public string TypeName { get; }
-        //public UnreachableCaseInspectionValue Result { get; }
-        //public bool IsVariable { get; }
-    }
-
-    public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
-    {
         //public enum ClauseEvaluationResult { Unreachable, MismatchType, CaseElse, NoResult };
 
         internal Dictionary<ClauseEvaluationResult, string> ResultMessages = new Dictionary<ClauseEvaluationResult, string>()
@@ -307,8 +76,8 @@ namespace Rubberduck.Inspections.Concrete
             {
                 Debug.Assert(selectStmt.Context.GetDescendent<VBAParser.SelectExpressionContext>() != null);
                 var selectExprCtxt = selectStmt.Context.GetDescendent<VBAParser.SelectExpressionContext>();
-                var evaluator = new SelectExpressionEvaluator(State, selectExprCtxt);
-                var typeName = evaluator.TypeName;
+                //var evaluator = new SelectExpressionEvaluator(State, selectExprCtxt);
+                //var typeName = evaluator.TypeName;
                 //Get the Type (and Value) of the SelectExpressionContext
 
                 //Build Dictionary of CaseClause to rangeClauses
