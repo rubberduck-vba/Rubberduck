@@ -34,8 +34,12 @@ namespace Rubberduck.Inspections.Concrete
     {
         public List<ParserRuleContext> CaseClauseContextsForSelectStmt(ParserRuleContext selectStmt)
         {
-            //return new List<QualifiedContext<ParserRuleContext>>();
             return selectStmt.GetChildren<CaseClauseContext>().Select(cc => (ParserRuleContext)cc).ToList();
+        }
+
+        public List<ParserRuleContext> RangeContextsForCase(ParserRuleContext caseCtxt)
+        {
+            return caseCtxt.GetChildren<RangeClauseContext>().Select(cc => (ParserRuleContext)cc).ToList();
         }
         //public enum ClauseEvaluationResult { Unreachable, MismatchType, CaseElse, NoResult };
 
