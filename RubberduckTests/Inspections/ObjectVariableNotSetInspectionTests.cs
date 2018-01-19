@@ -179,7 +179,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsNoResult()
         {
             var expectResultCount = 0;
             var input =

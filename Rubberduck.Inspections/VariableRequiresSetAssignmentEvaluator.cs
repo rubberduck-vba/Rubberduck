@@ -111,8 +111,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            if (IsAlreadyAssignedUsingSet(objectOrVariantRef)
-                    || objectOrVariantRef.Declaration.AsTypeName != Tokens.Variant)
+            if (objectOrVariantRef.Declaration.AsTypeName != Tokens.Variant)
             {
                 return true;
             }
@@ -144,7 +143,9 @@ namespace Rubberduck.Inspections
             //If the RHS is the identifierName of one of the 'interesting' declarations, we need to use 'Set'
             //unless the 'interesting' declaration is also a Variant
             var rhsIdentifier = GetRHSIdentifierExpressionText(letStmtContext);
-            return variantAndObjectDeclarations.Any(dec => dec.IdentifierName == rhsIdentifier && dec.AsTypeName != Tokens.Variant);
+            return variantAndObjectDeclarations.Any(dec => dec.IdentifierName == rhsIdentifier 
+                && dec.AsTypeName != Tokens.Variant
+                && dec.Attributes.HasDefaultMemberAttribute(dec.IdentifierName, out _));
         }
 
         private static bool IsLetAssignment(IdentifierReference reference)
