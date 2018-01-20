@@ -40,24 +40,12 @@ namespace Rubberduck.VBEditor
             _projectName = project.Name;
             ProjectPath = string.Empty;
             ProjectId = GetProjectId(project);           
-            ContentHashCode = 0;
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
             ComponentType = component.Type;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
-
-            ContentHashCode = 0;
-            if (!component.IsWrappingNullReference)
-            {
-                using (var module = component.CodeModule)
-                {
-                    ContentHashCode = module.CountOfLines > 0
-                        ? module.GetLines(1, module.CountOfLines).GetHashCode()
-                        : 0;
-                }
-            }
 
             using (var components = component.Collection)
             {
@@ -81,7 +69,6 @@ namespace Rubberduck.VBEditor
             ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
-            ContentHashCode = 0;
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -90,8 +77,6 @@ namespace Rubberduck.VBEditor
         }
 
         public ComponentType ComponentType { get; }
-
-        public int ContentHashCode { get; }
 
         public string ProjectId { get; }
 

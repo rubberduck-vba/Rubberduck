@@ -1661,11 +1661,9 @@ namespace RubberduckTests.VBEditor
             var repository = TestRepository(vbe);
             repository.Dispose();
 
-            //Generating a qmn from a component disposes the code module returned to get the content hash.
-            //Since the mocks always return the same mock, 1 additional disposal is expected for loading the repository.
             foreach (var mock in mockCodeModules.Concat(otherMockCodeModules))
             {
-                mock.Verify(m => m.Dispose(), Times.Exactly(2));
+                mock.Verify(m => m.Dispose(), Times.Once);
             }
         }
 
@@ -1918,12 +1916,9 @@ namespace RubberduckTests.VBEditor
             var repository = TestRepository(vbe);
             repository.Refresh();
 
-            //Generating a qmn from a component disposes the code module returned to get the content hash.
-            //Since the mocks always return the same mock, 2 additional disposals are expected 
-            //for loading the repository twice (initial + refresh).
             foreach (var mock in mockCodeModules.Concat(otherMockCodeModules))
             {
-                mock.Verify(m => m.Dispose(), Times.Exactly(3));    
+                mock.Verify(m => m.Dispose(), Times.Once);    
             }
         }
 
@@ -1948,12 +1943,9 @@ namespace RubberduckTests.VBEditor
             var repository = TestRepository(vbe);
             repository.Refresh(project.ProjectId);
 
-            //Generating a qmn from a component disposes the code module returned to get the content hash.
-            //Since the mocks always return the same mock, 2 additional disposals are expected 
-            //for loading the repository twice (initial + refresh).
             foreach (var mock in mockCodeModules)
             {
-                mock.Verify(m => m.Dispose(), Times.Exactly(3));
+                mock.Verify(m => m.Dispose(), Times.Once);
             }
         }
 
@@ -1978,11 +1970,9 @@ namespace RubberduckTests.VBEditor
             var repository = TestRepository(vbe);
             repository.Refresh(project.ProjectId);
 
-            //Generating a qmn from a component disposes the code module returned to get the content hash.
-            //Since the mocks always return the same mock, 1 additional disposal is expected for loading the repository.
             foreach (var mock in otherMockCodeModules)
             {
-                mock.Verify(m => m.Dispose(), Times.Once);
+                mock.Verify(m => m.Dispose(), Times.Never);
             }
         }
 
@@ -2010,10 +2000,7 @@ namespace RubberduckTests.VBEditor
             project.VBComponents.Remove(component2);
             repository.Refresh();
 
-            //Generating a qmn from a component disposes the code module returned to get the content hash.
-            //Since the mocks always return the same mock, 2 additional disposals are expected 
-            //for loading the repository (initial).
-            codeModule2Mock.Verify(m => m.Dispose(), Times.Exactly(2));
+            codeModule2Mock.Verify(m => m.Dispose(), Times.Once);
         }
 
         [Test()]
@@ -2041,10 +2028,7 @@ namespace RubberduckTests.VBEditor
             project.VBComponents.Remove(component2);
             repository.Refresh(project.ProjectId);
 
-            //Generating a qmn from a component disposes the code module returned to get the content hash.
-            //Since the mocks always return the same mock, 2 additional disposals are expected 
-            //for loading the repository (initial).
-            codeModule2Mock.Verify(m => m.Dispose(), Times.Exactly(2));
+            codeModule2Mock.Verify(m => m.Dispose(), Times.Once);
         }
 
         [Test()]
@@ -2073,9 +2057,7 @@ namespace RubberduckTests.VBEditor
             project.VBComponents.Remove(component2);
             repository.Refresh(otherProject.ProjectId);
 
-            //Generating a qmn from a component disposes the code module returned to get the content hash.
-            //Since the mocks always return the same mock, 1 additional disposal is expected for loading the repository.
-            codeModule2Mock.Verify(m => m.Dispose(), Times.Once);
+            codeModule2Mock.Verify(m => m.Dispose(), Times.Never);
         }
 
         [Test()]
