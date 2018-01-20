@@ -749,13 +749,13 @@ namespace Rubberduck.Parsing.VBA
         public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
         {
             _moduleStates[module].SetTokenStream(ProjectsProvider.CodeModule(module), stream);
+            _moduleStates[module].SetModuleContentHashCode(GetModuleContentHash(module));
         }
 
         public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
         {
             var key = module;
             _moduleStates[key].SetParseTree(parseTree, pass);
-            _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
         public IParseTree GetParseTree(QualifiedModuleName module, ParsePass pass = ParsePass.CodePanePass)
@@ -899,11 +899,19 @@ namespace Rubberduck.Parsing.VBA
             if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
-                return moduleState.IsNew || key.ContentHashCode != moduleState.ModuleContentHashCode;
+                return moduleState.IsNew || GetModuleContentHash(key) != moduleState.ModuleContentHashCode;
             }
 
             // new
             return true;
+        }
+
+        private int GetModuleContentHash(QualifiedModuleName module)
+        {
+            var codeModule = ProjectsProvider.CodeModule(module);
+            return codeModule != null && codeModule.CountOfLines > 0
+                    ? codeModule.GetLines(1, codeModule.CountOfLines).GetHashCode()
+                    : 0;
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
@@ -939,7 +947,6 @@ namespace Rubberduck.Parsing.VBA
         {
             var key = module;
             _moduleStates[key].SetAttributesRewriter(attributesRewriter);
-            _moduleStates[key].SetModuleContentHashCode(key.ContentHashCode);
         }
 
         private bool _isDisposed;
