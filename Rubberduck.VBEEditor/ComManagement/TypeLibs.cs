@@ -453,11 +453,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly ComTypes.ITypeLib _wrappedObject;
+        private readonly bool _wrappedObjectIsWeakReference;
 
-        public readonly string Name;
-        public readonly string DocString;
-        public readonly int HelpContext;
-        public readonly string HelpFile;
+        private string _name;
+        private string _docString;
+        private int _helpContext;
+        private string _helpFile;
+
+        public string Name { get => _name; }
+        public string DocString { get => _docString; }
+        public int HelpContext { get => _helpContext; }
+        public string HelpFile { get => _helpFile; }
 
         private ITypeLib_Ptrs _ITypeLibAlt
             { get => ((ITypeLib_Ptrs)_wrappedObject); }
@@ -479,12 +485,23 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        private void CacheCommonProperties()
+        {
+            _wrappedObject.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out _name, out _docString, out _helpContext, out _helpFile);
+        }
+
         public TypeLibWrapper(IntPtr rawObjectPtr)
         {
             _wrappedObject = (ComTypes.ITypeLib)Marshal.GetObjectForIUnknown(rawObjectPtr);
             Marshal.Release(rawObjectPtr);         // _wrappedObject holds a reference to this now
+            CacheCommonProperties();
+        }
 
-            _wrappedObject.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out Name, out DocString, out HelpContext, out HelpFile);
+        public TypeLibWrapper(ComTypes.ITypeLib rawTypeInfo)
+        {
+            _wrappedObject = rawTypeInfo;
+            _wrappedObjectIsWeakReference = true;
+            CacheCommonProperties();
         }
 
         private bool _isDisposed;
@@ -494,7 +511,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _isDisposed = true;
 
             if (_typeInfosWrapped != null) _typeInfosWrapped.Dispose();
-            Marshal.ReleaseComObject(_wrappedObject);
+            if (!_wrappedObjectIsWeakReference) Marshal.ReleaseComObject(_wrappedObject);
         }
 
         // We have to wrap the ITypeInfo returned by GetTypeInfo
