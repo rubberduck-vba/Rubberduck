@@ -20,7 +20,6 @@ namespace Rubberduck.VBEditor.ComManagement
         public ProjectsRepository(IVBE vbe)
         {
             _projectsCollection = vbe.VBProjects;
-            LoadCollections();
         }
 
         private void LoadCollections()
@@ -200,11 +199,21 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public IVBProject Project(string projectId)
         {
+            if (projectId == null)
+            {
+                return null;
+            }
+
             return EvaluateWithinReadLock(() => _projects.TryGetValue(projectId, out var project) ? project : null);
         }
 
         public IVBComponents ComponentsCollection(string projectId)
         {
+            if (projectId == null)
+            {
+                return null;
+            }
+
             return EvaluateWithinReadLock(() => _componentsCollections.TryGetValue(projectId, out var componenstCollection) ? componenstCollection : null);
         }
 
