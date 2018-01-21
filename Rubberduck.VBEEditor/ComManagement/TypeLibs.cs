@@ -381,6 +381,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         }                        
                     }
                 }
+                catch (Exception)
+                {
+                    // it's fine if GetNames() or GetRefTypeInfo() throws here, we just ignore and move on.
+                }                   
                 finally
                 {
                     ReleaseFuncDesc(funcDescPtr);
