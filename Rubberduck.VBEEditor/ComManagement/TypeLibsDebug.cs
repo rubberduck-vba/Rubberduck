@@ -33,7 +33,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             string libHelpFile;
             typeLib.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out libName, out libString, out libHelp, out libHelpFile);
 
-            if (libName == null) libName = "[VBA.Immediate.Window]";
+            libName = libName ?? "[VBA.Immediate.Window]";
 
             AppendLine("ITypeLib: " + libName);
             if (libString != null) AppendLineButRemoveEmbeddedNullChars("- Documentation: " + libString);

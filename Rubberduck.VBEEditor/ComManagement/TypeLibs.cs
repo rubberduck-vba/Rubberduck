@@ -254,7 +254,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var outVal = new TypeInfoWrapper(typeInfoPtr, _isUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
             ppTI = outVal;
 
-            if (_typeInfosWrapped == null) _typeInfosWrapped = new DisposableList<TypeInfoWrapper>();
+            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
         }
 
@@ -523,7 +523,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var outVal = new TypeInfoWrapper(typeInfoPtr);
             ppTI = outVal;     // takes ownership of the COM reference
 
-            if (_typeInfosWrapped == null) _typeInfosWrapped = new DisposableList<TypeInfoWrapper>();
+            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
         }
 
@@ -536,7 +536,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var outVal = new TypeInfoWrapper(typeInfoPtr);  // takes ownership of the COM reference
             ppTInfo = outVal;
 
-            if (_typeInfosWrapped == null) _typeInfosWrapped = new DisposableList<TypeInfoWrapper>();
+            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
         }
 
