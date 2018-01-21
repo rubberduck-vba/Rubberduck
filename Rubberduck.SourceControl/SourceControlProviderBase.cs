@@ -175,20 +175,18 @@ namespace Rubberduck.SourceControl
                                 {
                                     using (var component = module.Parent)
                                     {
-                                        var selection =
-                                            new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
+                                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
                                         var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName)
                                             ? null
                                             : selection.QualifiedName.ComponentName;
-
-                                        components.RemoveSafely(item);
-
-                                        var directory = CurrentRepository.LocalLocation;
-                                        directory += directory.EndsWith("\\") ? string.Empty : "\\";
-                                        components.Import(directory + filePath);
-
-                                        using (var project = components.Parent)
+                                        using (var project = component.ParentProject)
                                         {
+                                            components.RemoveSafely(item);
+
+                                            var directory = CurrentRepository.LocalLocation;
+                                            directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                                            components.Import(directory + filePath);
+
                                             VBE.SetSelection(project, selection.Selection, name);
                                         }
                                     }

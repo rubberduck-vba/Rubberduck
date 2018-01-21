@@ -50,33 +50,32 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (_state.Status != ParserState.Ready || pane.IsWrappingNullReference)
                 {
                     return false;
                 }
-
-                var testModules = _state.AllUserDeclarations.Where(d =>
+            }
+            var testModules = _state.AllUserDeclarations.Where(d =>
                             d.DeclarationType == DeclarationType.ProceduralModule &&
                             d.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
 
-                try
+            try
+            {
+                // the code modules consistently match correctly, but the components don't
+                using (var component = _vbe.SelectedVBComponent)
                 {
-                    // the code modules consistently match correctly, but the components don't
-                    using (var component = _vbe.SelectedVBComponent)
+                    using(var selectedModule = component.CodeModule)
                     {
-                        using(var selectedModule = component.CodeModule)
-                        {
-                            return testModules.Any(a => _state.ProjectsProvider.CodeModule(a.QualifiedName.QualifiedModuleName).Equals(selectedModule));
-                        }
+                        return testModules.Any(a => _state.ProjectsProvider.CodeModule(a.QualifiedName.QualifiedModuleName).Equals(selectedModule));
                     }
                 }
-                catch (COMException)
-                {
-                    return false;
-                }
             }
+            catch (COMException)
+            {
+                return false;
+            }      
         }
 
         protected override void OnExecute(object parameter)

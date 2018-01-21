@@ -47,22 +47,20 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             using (var pane = _vbe.ActiveCodePane)
             {
-                if (!pane.IsWrappingNullReference)
+                if (pane.IsWrappingNullReference)
                 {
-                    QualifiedSelection? oldSelection;
-                    using (var module = pane.CodeModule)
-                    {
-                        oldSelection = module.GetQualifiedSelection();
-                    }
-
-                    AdjustReferences(_model.TargetDeclaration.References);
-                    AdjustSignatures();
-
-                    if (oldSelection.HasValue)
-                    {
-                        pane.Selection = oldSelection.Value.Selection;
-                    }
+                    return;
                 }
+
+                var oldSelection = pane.GetQualifiedSelection();
+
+                AdjustReferences(_model.TargetDeclaration.References);
+                AdjustSignatures();
+
+                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                } 
             }
 
             foreach (var rewriter in _rewriters)
@@ -77,9 +75,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             using (var pane = _vbe.ActiveCodePane)
             {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
                 pane.Selection = target.Selection;
-                Refactor();
             }
+            Refactor();
         }
 
         public void Refactor(Declaration target)
@@ -91,9 +94,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             using (var pane = _vbe.ActiveCodePane)
             {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
                 pane.Selection = target.QualifiedSelection.Selection;
-                Refactor();
             }
+            Refactor();
         }
 
         private bool IsValidParamOrder()

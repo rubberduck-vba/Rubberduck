@@ -46,15 +46,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor(QualifiedSelection target)
         {
-            var pane = _vbe.ActiveCodePane;
-            pane.Selection = target.Selection;
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+                pane.Selection = target.Selection;
+            }
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
-            var pane = _vbe.ActiveCodePane;
-            pane.Selection = target.QualifiedSelection.Selection;
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                pane.Selection = target.QualifiedSelection.Selection;
+            }
             Refactor();
         }
 

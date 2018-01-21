@@ -23,7 +23,10 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _vbe.ActiveCodePane != null;
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                return activePane != null || !activePane.IsWrappingNullReference;
+            }
         }
 
         protected override void OnExecute(object parameter)

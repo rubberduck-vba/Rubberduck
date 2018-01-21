@@ -40,19 +40,17 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         public void Refactor()
         {
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
+            var selection = _vbe.GetActiveSelection();
+            
+            if (!selection.HasValue)
             {
-                var selection = module.GetQualifiedSelection();
-                if (!selection.HasValue)
-                {
-                    _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
-                        MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                }
-
-                Refactor(selection.Value);
+                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption,
+                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
             }
+
+            Refactor(selection.Value);
+            
         }
 
         public void Refactor(QualifiedSelection selection)
@@ -99,20 +97,21 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var rewriter = _state.GetRewriter(target);
             _rewriters.Add(rewriter);
 
-            QualifiedSelection? oldSelection = null;
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            if (_vbe.ActiveCodePane != null)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                oldSelection = module.GetQualifiedSelection();
-            }
+                QualifiedSelection? oldSelection = null;
+                if (pane != null && !pane.IsWrappingNullReference)
+                {
+                    oldSelection = pane.GetQualifiedSelection();
+                }
 
-            UpdateSignature(target);
-            rewriter.Remove(target);
+                UpdateSignature(target);
+                rewriter.Remove(target);
 
-            if (oldSelection.HasValue)
-            {
-                pane.Selection = oldSelection.Value.Selection;
+                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
 
             foreach (var tokenRewriter in _rewriters)

@@ -21,31 +21,29 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            using (var activePane = Vbe.ActiveCodePane)
             {
-                return false;
-            }
+                if (activePane == null || activePane .IsWrappingNullReference || _state.Status != ParserState.Ready)
+                {
+                    return false;
+                }
 
-            var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
-            return target != null 
-                && (target.DeclarationType == DeclarationType.Variable || target.DeclarationType == DeclarationType.Constant)
-                && target.References.Any();
+                var target = _state.FindSelectedDeclaration(activePane);
+                return target != null
+                       && (target.DeclarationType == DeclarationType.Variable ||
+                           target.DeclarationType == DeclarationType.Constant)
+                       && target.References.Any();
+            }
         }
 
         protected override void OnExecute(object parameter)
         {
-            var pane = Vbe.ActiveCodePane;
-            var module = pane.CodeModule;
+            var selection = Vbe.GetActiveSelection();
+
+            if (selection.HasValue)
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                var selection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.Selection);
-
                 var refactoring = new MoveCloserToUsageRefactoring(Vbe, _state, _msgbox);
-                refactoring.Refactor(selection);
+                refactoring.Refactor(selection.Value);
             }
         }
     }

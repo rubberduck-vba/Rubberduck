@@ -23,33 +23,26 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+
+            var qualifiedSelection = Vbe.GetActiveSelection();
+
+            if (!qualifiedSelection.HasValue)
             {
                 return false;
             }
 
-            var pane = Vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            {
-                var qualifiedSelection = pane.GetQualifiedSelection();
-                if (!qualifiedSelection.HasValue || module.IsWrappingNullReference)
-                {
-                    return false;
-                }
-
-                var allDeclarations = _state.AllDeclarations;
-                var extractMethodValidation = new ExtractMethodSelectionValidation(allDeclarations);
+            var allDeclarations = _state.AllDeclarations;
+            var extractMethodValidation = new ExtractMethodSelectionValidation(allDeclarations);
                 
-                var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
+            var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
 
-                return canExecute;
-            }
+            return canExecute;
         }
 
         protected override void OnExecute(object parameter)
         {
             var declarations = _state.AllDeclarations;
-            var qualifiedSelection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            var qualifiedSelection = Vbe.GetActiveSelection();
 
             var extractMethodValidation = new ExtractMethodSelectionValidation(declarations);
             var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
@@ -58,8 +51,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var pane = Vbe.ActiveCodePane;
-            var module = pane.CodeModule;
+            using (var pane = Vbe.ActiveCodePane)
+            using (var module = pane.CodeModule)
             {
                 var extraction = new ExtractMethodExtraction();
                 // bug: access to disposed closure
