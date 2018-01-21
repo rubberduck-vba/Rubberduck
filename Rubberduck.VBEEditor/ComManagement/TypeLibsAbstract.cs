@@ -13,6 +13,32 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     // A compatible version of ITypeInfo, where COM objects are outputted as IntPtrs instead of objects
     [ComImport(), Guid("00020401-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface ITypeInfo_Ptrs
+    {
+        void GetTypeAttr(out IntPtr ppTypeAttr);
+        void GetTypeComp(out IntPtr ppTComp);
+        void GetFuncDesc(int index, out IntPtr ppFuncDesc);
+        void GetVarDesc(int index, out IntPtr ppVarDesc);
+        void GetNames(int memid, [Out] out string rgBstrNames, int cMaxNames, out int pcNames);
+        void GetRefTypeOfImplType(int index, out int href);
+        void GetImplTypeFlags(int index, out ComTypes.IMPLTYPEFLAGS pImplTypeFlags);
+        void GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId);
+        void Invoke(object pvInstance, int memid, short wFlags, ref ComTypes.DISPPARAMS pDispParams, IntPtr pVarResult, IntPtr pExcepInfo, out int puArgErr);
+        void GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile);
+        void GetDllEntry(int memid, ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal);
+        void GetRefTypeInfo(int hRef, out IntPtr ppTI);
+        void AddressOfMember(int memid, ComTypes.INVOKEKIND invKind, out IntPtr ppv);
+        void CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj);
+        void GetMops(int memid, out string pBstrMops);
+        void GetContainingTypeLib(out IntPtr ppTLB, out int pIndex);
+        void ReleaseTypeAttr(IntPtr pTypeAttr);
+        void ReleaseFuncDesc(IntPtr pFuncDesc);
+        void ReleaseVarDesc(IntPtr pVarDesc);
+    }
+
+    // An extended version of ITypeInfo_Ptrs that includes a particularly helpful member, GetStdModInstance
+    [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface ITypeInfo_VBE
     {
         void GetTypeAttr(out IntPtr ppTypeAttr);
