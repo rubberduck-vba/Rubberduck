@@ -39,13 +39,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     public class StructHelper
     {
-        public static T ReadStructure<T>(object comObj)
+        public static T ReadComObjectStructure<T>(object comObj)
         {
             // Reads a COM object as a structure to copy its internal fields
-            var referencesPtr = Marshal.GetIUnknownForObject(comObj);
-            var retVal = StructHelper.ReadStructure<T>(referencesPtr);
-            Marshal.Release(referencesPtr);
-            return retVal;
+            if (Marshal.IsComObject(comObj))
+            {
+                var referencesPtr = Marshal.GetIUnknownForObject(comObj);
+                var retVal = StructHelper.ReadStructure<T>(referencesPtr);
+                Marshal.Release(referencesPtr);
+                return retVal;
+            }
+            else
+            {
+                throw new ArgumentException("Expected a COM object");
+            }
         }
 
         public static T ReadStructure<T>(IntPtr memAddress)
@@ -570,7 +577,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         using (var references = project.References)
                         {
                             // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
-                            var internalReferencesObj = StructHelper.ReadStructure<ReferencesObj_VBE>(references.Target);
+                            var internalReferencesObj = StructHelper.ReadComObjectStructure<ReferencesObj_VBE>(references.Target);
 
                             // Now we've got this one internalReferencesObj.typeLib, we can iterate through ALL loaded project TypeLibs
                             using (var typeLibIterator = new TypeLibsIterator_VBE(internalReferencesObj.TypeLib))
