@@ -240,9 +240,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (_isDisposed) return;
             _isDisposed = true;
 
-            if (_typeInfosWrapped != null) _typeInfosWrapped.Dispose();
-            if (_containerTypeLib != null) _containerTypeLib.Dispose();
-            if (_typeInfoAggregatorObj != null) _typeInfoAggregatorObj.Dispose();
+            _typeInfosWrapped?.Dispose();
+            _containerTypeLib?.Dispose();
+            _typeInfoAggregatorObj?.Dispose();
         }
 
         // We have to wrap the ITypeInfo returned by GetRefTypeInfo
@@ -510,7 +510,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (_isDisposed) return;
             _isDisposed = true;
 
-            if (_typeInfosWrapped != null) _typeInfosWrapped.Dispose();
+            _typeInfosWrapped?.Dispose();
             if (!_wrappedObjectIsWeakReference) Marshal.ReleaseComObject(_wrappedObject);
         }
 
