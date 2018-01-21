@@ -612,7 +612,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 }
             }
 
-            return null;
+            throw new ArgumentException($"TypeLibsAccessor_VBE::FindTypeLib failed. '{searchLibName}' project not found.");
         }
     }
 }
