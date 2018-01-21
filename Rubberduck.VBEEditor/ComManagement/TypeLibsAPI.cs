@@ -98,17 +98,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 
         public static string DocumentAll(IVBE ide)
         {
-            var documenter = new TypeLibDocumenter();
-
             using (var typeLibs = new TypeLibsAccessor_VBE(ide))
             {
+                var documenter = new TypeLibDocumenter();
+
                 foreach (var typeLib in typeLibs)
                 {
                     documenter.AddTypeLib(typeLib);
                 }
-            }
 
-            return documenter.ToString();
+                return documenter.ToString();
+            }            
         }
     }
 }
