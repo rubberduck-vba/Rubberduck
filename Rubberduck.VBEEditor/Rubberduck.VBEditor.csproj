@@ -128,13 +128,13 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComManagement\TypeLibs.cs" />
-    <Compile Include="ComManagement\TypeLibsAbstract.cs" />
-    <Compile Include="ComManagement\TypeLibsAPI.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsAbstract.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
     <Compile Include="ComManagement\ComSafe.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
-    <Compile Include="ComManagement\TypeLibsDebug.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsDebug.cs" />
     <Compile Include="Events\ComponentEventArgs.cs" />
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />
     <Compile Include="Events\ProjectEventArgs.cs" />
