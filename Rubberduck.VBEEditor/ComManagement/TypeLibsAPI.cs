@@ -61,19 +61,29 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             SetProjectConditionalCompilationArgsRaw(ide, projectName, rawArgsString);
         }
 
-        public static bool IsAWorkbook(IVBE ide, string projectName, string className)
+        public static bool IsExcelWorkbook(IVBE ide, string projectName, string className)
+        {
+            return DoesClassImplementInterface(ide, projectName, className, "Excel", "_Workbook");
+        }
+
+        public static bool IsExcelWorksheet(IVBE ide, string projectName, string className)
+        {
+            return DoesClassImplementInterface(ide, projectName, className, "Excel", "_Worksheet");
+        }
+
+        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string typeLibName, string interfaceName)
         {
             using (var typeLibs = new TypeLibsAccessor_VBE(ide))
             {
-                return typeLibs.FindTypeLib(projectName).FindTypeInfo(className).DoesImplement("_Workbook");
+                return typeLibs.FindTypeLib(projectName).FindTypeInfo(className).DoesImplement(typeLibName, interfaceName);
             }
         }
 
-        public static bool IsAWorksheet(IVBE ide, string projectName, string className)
+        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid interfaceIID)
         {
             using (var typeLibs = new TypeLibsAccessor_VBE(ide))
             {
-                return typeLibs.FindTypeLib(projectName).FindTypeInfo(className).DoesImplement("_Worksheet");
+                return typeLibs.FindTypeLib(projectName).FindTypeInfo(className).DoesImplement(interfaceIID);
             }
         }
 

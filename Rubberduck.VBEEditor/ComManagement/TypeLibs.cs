@@ -289,15 +289,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return (TypeInfoWrapper_VBE)typeInfoImpl;
         }
 
-        public bool DoesImplement(string interfaceName)
+        public bool DoesImplement(string containerName, string interfaceName)
         {
-            if (Name == interfaceName) return true;
+            // check we are not runtime generated with no container
+            if (IsRuntimeGenerated()) return false;
+
+            if ((containerName == _containerTypeLib.Name) && (Name == interfaceName)) return true;
 
             for (int implIndex = 0; implIndex < _cachedAttributes.cImplTypes; implIndex++)
             {
                 using (var typeInfoImplEx = GetImplementedTypeInfoByIndex(implIndex))
                 {
-                    if (typeInfoImplEx.DoesImplement(interfaceName))
+                    if (typeInfoImplEx.DoesImplement(containerName, interfaceName))
                     {
                         return true;
                     }
