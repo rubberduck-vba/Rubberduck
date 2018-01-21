@@ -227,7 +227,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if ((_cachedAttributes.typekind == ComTypes.TYPEKIND.TKIND_COCLASS) &&
                     IsVBEHosted() &&
                     HasNoContainer() &&
-                    (_cachedAttributes.cImplTypes == 2) && (Name == "Form"))
+                    (_cachedAttributes.cImplTypes == 2) && 
+                    (Name == "Form"))
             {
                 // we can be 99.999999% sure it IS the runtime generated UserForm base class
                 _isUserFormBaseClass = true;

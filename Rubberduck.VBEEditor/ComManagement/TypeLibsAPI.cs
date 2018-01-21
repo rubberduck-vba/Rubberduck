@@ -11,11 +11,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
     public class VBETypeLibsAPI
     {
-        public static void ExecuteCode(IVBE ide, string projectName, string standardModuleName, string procName, object[] args = null)
+        public static object ExecuteCode(IVBE ide, string projectName, string standardModuleName, string procName, object[] args = null)
         {
             using (var typeLibs = new TypeLibsAccessor_VBE(ide))
             {
-                typeLibs.FindTypeLib(projectName).FindTypeInfo(standardModuleName)
+                return typeLibs.FindTypeLib(projectName).FindTypeInfo(standardModuleName)
                     .StdModExecute(procName, Reflection.BindingFlags.InvokeMethod, args);
             }
         }
