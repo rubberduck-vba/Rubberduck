@@ -218,7 +218,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public bool HasPredeclaredId { get => _cachedAttributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID); }
 
-        private bool IsRuntimeGenerated() => _containerTypeLib == null;
+        private bool HasNoContainer() => _containerTypeLib == null;
 
         private void DetectUserFormClass()
         {
@@ -226,7 +226,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // the guids are dynamic, so we can't use them for detection.
             if ((_cachedAttributes.typekind == ComTypes.TYPEKIND.TKIND_COCLASS) &&
                     IsVBEHosted() &&
-                    IsRuntimeGenerated() &&
+                    HasNoContainer() &&
                     (_cachedAttributes.cImplTypes == 2) && (Name == "Form"))
             {
                 // we can be 99.999999% sure it IS the runtime generated UserForm base class
@@ -352,7 +352,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public bool DoesImplement(string containerName, string interfaceName)
         {
             // check we are not runtime generated with no container
-            if (IsRuntimeGenerated()) return false;
+            if (HasNoContainer()) return false;
 
             if ((containerName == _containerTypeLib.Name) && (Name == interfaceName)) return true;
 
