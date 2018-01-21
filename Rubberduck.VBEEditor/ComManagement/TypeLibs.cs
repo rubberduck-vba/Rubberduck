@@ -122,7 +122,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // FIXME there's probably some better builtin c# class for this
     public class DisposableList<T> : List<T>, IDisposable
         where T : IDisposable
     {
