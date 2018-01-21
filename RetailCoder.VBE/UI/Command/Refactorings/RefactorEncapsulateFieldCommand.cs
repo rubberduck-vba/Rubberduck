@@ -23,14 +23,16 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var pane = Vbe.ActiveCodePane;
-            if (pane == null || _state.Status != ParserState.Ready)
+            Declaration target;
+            using (var pane = Vbe.ActiveCodePane)
             {
-                return false;
+                if (pane == null || _state.Status != ParserState.Ready)
+                {
+                    return false;
+                }
+
+                target = _state.FindSelectedDeclaration(pane);
             }
-
-            var target = _state.FindSelectedDeclaration(pane);
-
             var canExecute = target != null 
                 && target.DeclarationType == DeclarationType.Variable
                 && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
@@ -40,9 +42,12 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
+            using(var activePane = Vbe.ActiveCodePane)
             {
-                return;
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return;
+                }
             }
 
             using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))

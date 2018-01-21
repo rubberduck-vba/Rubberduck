@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public NoIndentAnnotationCommand(IVBE vbe, RubberduckParserState state) 
+        public NoIndentAnnotationCommand(IVBE vbe, RubberduckParserState state)
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
@@ -24,16 +24,27 @@ namespace Rubberduck.UI.Command
         protected override bool EvaluateCanExecute(object parameter)
         {
             var target = FindTarget(parameter);
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 return !pane.IsWrappingNullReference && target != null &&
-                   target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
+                       target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
             }
         }
 
         protected override void OnExecute(object parameter)
         {
-            _vbe.ActiveCodePane.CodeModule.InsertLines(1, "'@NoIndent");
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                using (var codeModule = activePane.CodeModule)
+                {
+                    codeModule.InsertLines(1, "'@NoIndent");
+                }
+            }
         }
 
         private Declaration FindTarget(object parameter)
@@ -43,7 +54,11 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            var selectedDeclaration = _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
+            Declaration selectedDeclaration;
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                selectedDeclaration = _state.FindSelectedDeclaration(activePane);
+            }
 
             while (selectedDeclaration != null && selectedDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
             {

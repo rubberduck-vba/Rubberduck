@@ -43,7 +43,8 @@ namespace Rubberduck.Refactorings.Rename
             _messageBox = messageBox;
             _state = state;
             _model = null;
-            _initialSelection = new Tuple<ICodePane, Selection>(_vbe.ActiveCodePane, _vbe.ActiveCodePane.IsWrappingNullReference ? Selection.Empty : _vbe.ActiveCodePane.Selection);
+            var activeCodePane = _vbe.ActiveCodePane;
+            _initialSelection = new Tuple<ICodePane, Selection>(activeCodePane, activeCodePane.IsWrappingNullReference ? Selection.Empty : activeCodePane.Selection);
             _modulesToRewrite = new List<QualifiedModuleName>();
             _renameActions = new Dictionary<DeclarationType, Action>
             {
