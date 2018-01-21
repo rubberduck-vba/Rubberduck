@@ -367,18 +367,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     int cNames = 0;
                     GetNames(funcDesc.memid, names, names.Length, out cNames);
 
-                    if ((names[0] == controlName) &&
-                            ((funcDesc.invkind & ComTypes.INVOKEKIND.INVOKE_PROPERTYGET) != 0) &&
-                            (funcDesc.cParams == 0) &&
-                            (funcDesc.elemdescFunc.tdesc.vt == (int)VarEnum.VT_PTR))
+                    if (names[0] == controlName)
                     {
-                        var retValElement = StructHelper.ReadStructure<ComTypes.ELEMDESC>(funcDesc.elemdescFunc.tdesc.lpValue);
-                        if (retValElement.tdesc.vt == (int)VarEnum.VT_USERDEFINED)
+                        if (((funcDesc.invkind & ComTypes.INVOKEKIND.INVOKE_PROPERTYGET) != 0) && (funcDesc.cParams == 0))
                         {
-                            ComTypes.ITypeInfo referenceType;
-                            GetRefTypeInfo((int)retValElement.tdesc.lpValue, out referenceType);
-                            return (TypeInfoWrapper_VBE)referenceType;
-                        }                        
+                            if (funcDesc.elemdescFunc.tdesc.vt == 26)       // VT_PTR
+                            {
+                                var retValElement = StructHelper.ReadStructure<ComTypes.ELEMDESC>(funcDesc.elemdescFunc.tdesc.lpValue);
+                                if (retValElement.tdesc.vt == 29)       // VT_USERDEFINED
+                                {
+                                    ComTypes.ITypeInfo referenceType;
+                                    GetRefTypeInfo((int)retValElement.tdesc.lpValue, out referenceType);
+                                    return (TypeInfoWrapper_VBE)referenceType;
+                                }
+                            }
+                        }
                     }
                 }
                 finally
@@ -609,7 +612,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 }
             }
 
-            return null;
+            throw new ArgumentException($"TypeLibsAccessor_VBE::FindTypeLib failed. '{searchLibName}' project not found.");
         }
     }
 }

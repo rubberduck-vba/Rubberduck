@@ -62,16 +62,6 @@ namespace Rubberduck
                     
                     var addin = (AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
-
-                    //System.Windows.Forms.MessageBox.Show(Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI.DocumentAll(_ide));
-                    //var args = Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI.GetProjectConditionalCompilationArgs(_ide, "VBAProject");
-                    //args.Add("rd_debug", "123");
-                    //Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI.SetProjectConditionalCompilationArgs(_ide, "VBAProject", args);
-
-                    var a = Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI.IsExcelWorkbook(_ide, "VBAProject", "ThisWorkbook");
-                    var b = Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI.IsExcelWorkbook(_ide, "VBAProject", "Sheet1");
-                    var c = Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI.IsExcelWorksheet(_ide, "VBAProject", "ThisWorkbook");
-                    var d = Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI.IsExcelWorksheet(_ide, "VBAProject", "Sheet1");
                 }
                 else if (Application is Microsoft.VB6.Interop.VBIDE.VBE vbe2)
                 {
