@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {

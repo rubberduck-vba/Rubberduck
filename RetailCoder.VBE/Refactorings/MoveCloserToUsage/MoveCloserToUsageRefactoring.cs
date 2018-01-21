@@ -34,7 +34,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         public void Refactor()
         {
-            var qualifiedSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
+            var qualifiedSelection = _vbe.GetActiveSelection();
+
             if (qualifiedSelection != null)
             {
                 Refactor(_declarations.FindVariable(qualifiedSelection.Value));
@@ -103,22 +104,22 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             QualifiedSelection? oldSelection = null;
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            if (!module.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                oldSelection = module.GetQualifiedSelection();
-            }
-            
-            InsertNewDeclaration();
-            RemoveOldDeclaration();
-            UpdateOtherModules();
+                if (!pane.IsWrappingNullReference)
+                {
+                    oldSelection = pane.GetQualifiedSelection();
+                }
 
-            if (oldSelection.HasValue)
-            {
-                pane.Selection = oldSelection.Value.Selection;
-            }
+                InsertNewDeclaration();
+                RemoveOldDeclaration();
+                UpdateOtherModules();
 
+                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
+            }
             foreach (var rewriter in _rewriters)
             {
                 rewriter.Rewrite();
@@ -128,27 +129,28 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private void UpdateOtherModules()
         {
             QualifiedSelection? oldSelection = null;
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            if (!module.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                oldSelection = module.GetQualifiedSelection();
-            }
+                if (!pane.IsWrappingNullReference)
+                {
+                    oldSelection = pane.GetQualifiedSelection();
+                }
 
-            var newTarget = _state.DeclarationFinder.MatchName(_target.IdentifierName).FirstOrDefault(
-                item => item.ComponentName == _target.ComponentName &&
-                        item.ParentScope == _target.ParentScope &&
-                        item.ProjectId == _target.ProjectId &&
-                        Equals(item.Selection, _target.Selection));
+                var newTarget = _state.DeclarationFinder.MatchName(_target.IdentifierName).FirstOrDefault(
+                    item => item.ComponentName == _target.ComponentName &&
+                            item.ParentScope == _target.ParentScope &&
+                            item.ProjectId == _target.ProjectId &&
+                            Equals(item.Selection, _target.Selection));
 
-            if (newTarget != null)
-            {
-                UpdateCallsToOtherModule(newTarget.References.ToList());
-            }
+                if (newTarget != null)
+                {
+                    UpdateCallsToOtherModule(newTarget.References.ToList());
+                }
 
-            if (oldSelection.HasValue)
-            {
-                pane.Selection = oldSelection.Value.Selection;
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
         }
 

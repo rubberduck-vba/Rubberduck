@@ -39,25 +39,21 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return;
             }
 
-            var pane = _vbe.ActiveCodePane;
-            QualifiedSelection? oldSelection;
-            if (!pane.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                var module = pane.CodeModule;
+                if (pane.IsWrappingNullReference)
                 {
-                    oldSelection = module.GetQualifiedSelection();
+                    return;
                 }
-            }
-            else
-            {
-                return;
-            }
 
-            AddInterface();
+                var oldSelection = pane.GetQualifiedSelection();
 
-            if (oldSelection.HasValue)
-            {
-                pane.Selection = oldSelection.Value.Selection;
+                AddInterface();
+
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
 
             _model.State.OnParseRequested(this);
@@ -65,7 +61,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor(QualifiedSelection target)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -78,7 +74,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor(Declaration target)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {

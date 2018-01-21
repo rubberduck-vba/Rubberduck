@@ -60,13 +60,14 @@ namespace Rubberduck.Inspections.Abstract
             var documentName = Target != null 
                 ? Target.ProjectDisplayName 
                 : string.Empty;
-            if (string.IsNullOrEmpty(documentName))
-            {
-                var component = module.Component;
-                documentName = component != null 
-                    ? component.ParentProject.ProjectDisplayName 
-                    : string.Empty;
-            }
+            //todo: Find a sane way to reimplement this.
+            //if (string.IsNullOrEmpty(documentName))
+            //{
+            //    var component = module.Component;
+            //    documentName = component != null 
+            //        ? component.ParentProject.ProjectDisplayName 
+            //        : string.Empty;
+            //}
             if (string.IsNullOrEmpty(documentName))
             {
                 documentName = Path.GetFileName(module.ProjectPath);

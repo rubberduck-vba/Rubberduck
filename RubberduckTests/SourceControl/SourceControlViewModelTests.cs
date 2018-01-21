@@ -11,6 +11,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.SourceControl;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -48,7 +49,7 @@ namespace RubberduckTests.SourceControl
             _vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
             
 
@@ -124,7 +125,7 @@ namespace RubberduckTests.SourceControl
 
             _vm = new SourceControlViewViewModel(
                     _vbe.Object, 
-                    new RubberduckParserState(_vbe.Object, new SynchrounouslyConstructedDeclarationFinderFactory()),
+                    new RubberduckParserState(_vbe.Object, new ProjectsRepository(_vbe.Object), new SynchrounouslyConstructedDeclarationFinderFactory()),
                     _providerFactory.Object,
                     _folderBrowserFactory.Object,
                     _configService.Object, 

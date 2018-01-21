@@ -1652,7 +1652,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var vbe = builder.ProjectBuilder(oldName, ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -2210,7 +2210,8 @@ End Property";
                     {
                         form.AddControl(control);
                     }
-                    enclosingProjectBuilder.AddComponent(form.Build());
+                    (var component, var codeModule) = form.Build(); 
+                    enclosingProjectBuilder.AddComponent(component, codeModule);
                 }
                 else
                 {

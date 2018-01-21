@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ReorderParameters
@@ -20,12 +21,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
+        private readonly IProjectsProvider _projectsProvider;
 
-        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
+        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox, IProjectsProvider projectsProvider)
         {
             _vbe = vbe;
             _factory = factory;
             _messageBox = messageBox;
+            _projectsProvider = projectsProvider;
         }
 
         public void Refactor()
@@ -44,22 +47,20 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             using (var pane = _vbe.ActiveCodePane)
             {
-                if (!pane.IsWrappingNullReference)
+                if (pane.IsWrappingNullReference)
                 {
-                    QualifiedSelection? oldSelection;
-                    using (var module = pane.CodeModule)
-                    {
-                        oldSelection = module.GetQualifiedSelection();
-                    }
-
-                    AdjustReferences(_model.TargetDeclaration.References);
-                    AdjustSignatures();
-
-                    if (oldSelection.HasValue)
-                    {
-                        pane.Selection = oldSelection.Value.Selection;
-                    }
+                    return;
                 }
+
+                var oldSelection = pane.GetQualifiedSelection();
+
+                AdjustReferences(_model.TargetDeclaration.References);
+                AdjustSignatures();
+
+                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                } 
             }
 
             foreach (var rewriter in _rewriters)
@@ -74,9 +75,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             using (var pane = _vbe.ActiveCodePane)
             {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
                 pane.Selection = target.Selection;
-                Refactor();
             }
+            Refactor();
         }
 
         public void Refactor(Declaration target)
@@ -88,9 +94,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             using (var pane = _vbe.ActiveCodePane)
             {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
                 pane.Selection = target.QualifiedSelection.Selection;
-                Refactor();
             }
+            Refactor();
         }
 
         private bool IsValidParamOrder()
@@ -122,7 +132,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             foreach (var reference in references.Where(item => item.Context != _model.TargetDeclaration.Context))
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
+                var module = _projectsProvider.CodeModule(reference.QualifiedModuleName);
                 VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)

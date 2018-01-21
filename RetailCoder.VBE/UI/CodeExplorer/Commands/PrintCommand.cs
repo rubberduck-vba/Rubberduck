@@ -8,13 +8,20 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class PrintCommand : CommandBase
     {
-        public PrintCommand() : base(LogManager.GetCurrentClassLogger()) { }
+        private readonly IProjectsProvider _projectsProvider;
+
+        public PrintCommand(IProjectsProvider projectsProvider)
+            : base(LogManager.GetCurrentClassLogger())
+        {
+            _projectsProvider = projectsProvider;
+        }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
@@ -26,7 +33,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             try
             {
-                return node.Declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.CountOfLines != 0;
+                return _projectsProvider.CodeModule(node.Declaration.QualifiedName.QualifiedModuleName).CountOfLines != 0;
             }
             catch (COMException)
             {
@@ -38,12 +45,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override void OnExecute(object parameter)
         {
             var node = (CodeExplorerComponentViewModel)parameter;
-            var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
+            var qualifiedComponentName = node.Declaration.QualifiedName.QualifiedModuleName;
 
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
-                component.Name + ".txt");
+                qualifiedComponentName.ComponentName + ".txt");
 
-            var text = component.CodeModule.GetLines(1, component.CodeModule.CountOfLines)
+            var codeModule = _projectsProvider.CodeModule(qualifiedComponentName);
+            var text = codeModule.GetLines(1, codeModule.CountOfLines)
                 .Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
 
             var printDoc = new PrintDocument { DocumentName = path };

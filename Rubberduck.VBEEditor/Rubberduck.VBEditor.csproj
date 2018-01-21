@@ -128,6 +128,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\IProjectsProvider.cs" />
+    <Compile Include="ComManagement\IProjectsRepository.cs" />
+    <Compile Include="ComManagement\ProjectsRepository.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
     <Compile Include="ComManagement\ComSafe.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
@@ -138,6 +141,7 @@
     <Compile Include="Events\SelectionChangedEventArgs.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
+    <Compile Include="Extensions\KeyValuePairExtensions.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\IUserForm.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />

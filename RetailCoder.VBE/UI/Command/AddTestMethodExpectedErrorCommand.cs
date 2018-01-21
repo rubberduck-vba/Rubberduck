@@ -50,57 +50,64 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (_state.Status != ParserState.Ready || pane.IsWrappingNullReference)
                 {
                     return false;
                 }
-
-                var testModules = _state.AllUserDeclarations.Where(d =>
+            }
+            var testModules = _state.AllUserDeclarations.Where(d =>
                             d.DeclarationType == DeclarationType.ProceduralModule &&
                             d.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
 
-                try
+            try
+            {
+                // the code modules consistently match correctly, but the components don't
+                using (var component = _vbe.SelectedVBComponent)
                 {
-                    // the code modules consistently match correctly, but the components don't
-                    var component = _vbe.SelectedVBComponent;
-                    var selectedModule = component.CodeModule;
+                    using(var selectedModule = component.CodeModule)
                     {
-                        var result = testModules.Any( a => a.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(selectedModule));
-                        return result;
+                        return testModules.Any(a => _state.ProjectsProvider.CodeModule(a.QualifiedName.QualifiedModuleName).Equals(selectedModule));
                     }
                 }
-                catch (COMException)
-                {
-                    return false;
-                }
             }
+            catch (COMException)
+            {
+                return false;
+            }      
         }
 
         protected override void OnExecute(object parameter)
         {
-            var pane = _vbe.ActiveCodePane;
-            if (pane.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                return;
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                using (var activeModule = pane.CodeModule)
+                {
+                    var declaration = _state.GetTestModules().FirstOrDefault(f =>
+                    {
+                        var thisModule = _state.ProjectsProvider.CodeModule(f.QualifiedName.QualifiedModuleName);
+                        return thisModule.Equals(activeModule);
+                    });
+
+                    if (declaration != null)
+                    {
+                        string name;
+                        using (var component = activeModule.Parent)
+                        {
+                            name = GetNextTestMethodName(component);
+                        }
+                        var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
+                        activeModule.InsertLines(activeModule.CountOfLines, body);
+                        
+                    }
+                }
             }
-
-            var activeModule = pane.CodeModule;
-            var declaration = _state.GetTestModules().FirstOrDefault(f =>
-            {
-                var thisModule = f.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                return thisModule.Equals(activeModule);
-            });
-
-            if (declaration != null)
-            {
-                var module = pane.CodeModule;
-                var name = GetNextTestMethodName(module.Parent);
-                var body = TestMethodExpectedErrorTemplate.Replace(NamePlaceholder, name);
-                module.InsertLines(module.CountOfLines, body);
-            }
-
             _state.OnParseRequested(this);
         }
 

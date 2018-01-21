@@ -259,10 +259,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -292,10 +292,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -324,10 +324,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -361,10 +361,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").AddControl("TextBox2").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -392,10 +392,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -426,10 +426,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -457,10 +457,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {

@@ -167,6 +167,7 @@
     <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorInfo.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseSyntaxErrorException.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
+    <Compile Include="VBA\RepositoryProjectManager.cs" />
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
@@ -380,12 +381,12 @@
     <Compile Include="VBA\CollectionExtensions.cs" />
     <Compile Include="VBA\IParsingStageService.cs" />
     <Compile Include="VBA\IProjectReferencesProvider.cs" />
-    <Compile Include="VBA\ProjectManagerBase.cs" />
-    <Compile Include="VBA\ProjectManager.cs" />
+    <Compile Include="VBA\StateProjectManagerBase.cs" />
+    <Compile Include="VBA\StateProjectManager.cs" />
     <Compile Include="VBA\SynchronousReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemoverBase.cs" />
-    <Compile Include="VBA\SynchronousProjectManager.cs" />
+    <Compile Include="VBA\SynchronousStateProjectManager.cs" />
     <Compile Include="VBA\SynchronousReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunnerBase.cs" />

@@ -34,19 +34,25 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor()
         {
-            if (_vbe.ActiveCodePane == null)
+            QualifiedSelection? qualifiedSelection;
+            using (var activePane = _vbe.ActiveCodePane)
             {
-                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
-                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
-                return;
-            }
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage,
+                        RubberduckUI.ImplementInterface_Caption,
+                        System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+                    return;
+                }
 
-            var qualifiedSelection = _vbe.ActiveCodePane.GetQualifiedSelection();
-            if (!qualifiedSelection.HasValue)
-            {
-                _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption,
-                    System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
-                return;
+                qualifiedSelection = activePane.GetQualifiedSelection();
+                if (!qualifiedSelection.HasValue)
+                {
+                    _messageBox.Show(RubberduckUI.ImplementInterface_InvalidSelectionMessage,
+                        RubberduckUI.ImplementInterface_Caption,
+                        System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+                    return;
+                }
             }
 
             Refactor(qualifiedSelection.Value);
@@ -74,20 +80,13 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
-            {
-                using (var codePane = _vbe.ActiveCodePane)
-                {
-                    oldSelection = codePane.GetQualifiedSelection();
-                }
-            }
+            var oldSelection = _vbe.GetActiveSelection();
 
             ImplementMissingMembers(_state.GetRewriter(_targetClass));
 
             if (oldSelection.HasValue)
             {
-                using (var module = oldSelection.Value.QualifiedName.Component.CodeModule)
+                var module = _state.ProjectsProvider.CodeModule(oldSelection.Value.QualifiedName);
                 {
                     using (var pane = module.CodePane)
                     {
