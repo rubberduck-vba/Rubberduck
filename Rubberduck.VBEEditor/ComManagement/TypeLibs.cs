@@ -99,7 +99,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
     // FIXME there's probably some better builtin c# class for this
     public class DisposableList<T> : List<T>, IDisposable
-        where T : class
+        where T : IDisposable
     {
         public void Dispose() => ((IDisposable)this).Dispose();
 
@@ -156,7 +156,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 _ITypeInfoAlt.GetContainingTypeLib(out typeLibPtr, out _containerTypeLibIndex);
                 _containerTypeLib = new TypeLibWrapper_VBE(typeLibPtr);  // takes ownership of the COM reference
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // it is acceptable for a type to not have a container, as types can be runtime generated.
             }
@@ -585,7 +585,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         // we only need access to a single VBProject References object to make it work, so we can return now.
                         return;
                     }
-                    finally
+                    catch (Exception)
                     {
                         // probably a protected project, just move on to the next project.
                     }
