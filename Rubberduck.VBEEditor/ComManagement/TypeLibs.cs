@@ -183,6 +183,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        public bool HasPredeclaredId { get => _cachedAttributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID); }
+
         private bool IsRuntimeGenerated() => _containerTypeLib == null;
 
         private void DetectUserFormClass()
