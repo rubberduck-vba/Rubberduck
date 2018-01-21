@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase
     {
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 

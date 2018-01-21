@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
     {
         public ObsoleteErrorSyntaxInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new ObsoleteErrorSyntaxListener();
         }

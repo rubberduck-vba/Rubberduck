@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new SingleByRefParamArgListListener();
         }

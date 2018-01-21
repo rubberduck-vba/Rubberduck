@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class WriteOnlyPropertyInspection : InspectionBase
     {
         public WriteOnlyPropertyInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 

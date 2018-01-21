@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase
     {
         public ObsoleteCallStatementInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new ObsoleteCallStatementListener();
         }

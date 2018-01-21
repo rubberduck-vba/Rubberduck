@@ -1,41 +1,39 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Parsing.Inspections.Resources;
+using System.Linq;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Parsing.Inspections.Abstract;
-using System.Linq;
 
 namespace Rubberduck.Settings
 {
     public class CodeInspectionConfigProvider : IConfigProvider<CodeInspectionSettings>
     {
         private readonly IPersistanceService<CodeInspectionSettings> _persister;
-        private readonly IEnumerable<IInspection> _foundInspections;
+        private readonly CodeInspectionSettings _defaultSettings;
 
         public CodeInspectionConfigProvider(IPersistanceService<CodeInspectionSettings> persister, IEnumerable<IInspection> foundInspections)
         {
             _persister = persister;
-            _foundInspections = foundInspections;
+            _defaultSettings = new DefaultSettings<CodeInspectionSettings>().Default;
+
+            var nonDefaultInspections = foundInspections
+                .Where(inspection => !_defaultSettings.CodeInspections.Select(x => x.Name).Contains(inspection.Name));
+
+            _defaultSettings.CodeInspections.UnionWith(nonDefaultInspections.Select(inspection => new CodeInspectionSetting(inspection)));
         }
 
         public CodeInspectionSettings Create()
         {
-            var prototype = new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] { }, true);
-            return _persister.Load(prototype) ?? prototype;
+            return _persister.Load(_defaultSettings) ?? _defaultSettings;
         }
 
         public CodeInspectionSettings CreateDefaults()
         {
-            return new CodeInspectionSettings(GetDefaultCodeInspections(), new WhitelistedIdentifierSetting[] {}, true);
+            return _defaultSettings;
         }
 
         public void Save(CodeInspectionSettings settings)
         {
             _persister.Save(settings);
-        }
-
-        public IEnumerable<CodeInspectionSetting> GetDefaultCodeInspections()
-        {
-            return _foundInspections.Select(inspection => new CodeInspectionSetting(inspection));
         }
     }
 }

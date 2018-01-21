@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
         public EmptyIfBlockInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Warning) { }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

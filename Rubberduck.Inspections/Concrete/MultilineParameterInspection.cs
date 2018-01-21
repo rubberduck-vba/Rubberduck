@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MultilineParameterInspection : ParseTreeInspectionBase
     {
         public MultilineParameterInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new ParameterListener();
         }

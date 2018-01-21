@@ -18,20 +18,13 @@ namespace Rubberduck.Inspections.Abstract
         protected readonly RubberduckParserState State;
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly CodeInspectionSeverity _defaultSeverity;
 
-        protected InspectionBase(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
+        protected InspectionBase(RubberduckParserState state)
         {
             State = state;
-            _defaultSeverity = defaultSeverity;
-            Severity = _defaultSeverity;
+            Severity = CodeInspectionSeverity.Warning;
             Name = GetType().Name;
         }
-
-        /// <summary>
-        /// Gets a value the severity level to reset to, the "factory default" setting.
-        /// </summary>
-        public CodeInspectionSeverity DefaultSeverity => _defaultSeverity;
 
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.

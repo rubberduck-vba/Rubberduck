@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class OptionExplicitInspection : ParseTreeInspectionBase
     {
         public OptionExplicitInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
+            : base(state)
         {
             Listener = new MissingOptionExplicitListener();
         }

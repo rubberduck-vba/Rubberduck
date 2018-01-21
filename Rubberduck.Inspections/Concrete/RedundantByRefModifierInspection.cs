@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class RedundantByRefModifierInspection : ParseTreeInspectionBase
     {
         public RedundantByRefModifierInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.DoNotShow)
+            : base(state)
         {
         }
 

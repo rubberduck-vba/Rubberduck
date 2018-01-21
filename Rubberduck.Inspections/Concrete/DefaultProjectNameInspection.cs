@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class DefaultProjectNameInspection : InspectionBase
     {
         public DefaultProjectNameInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 

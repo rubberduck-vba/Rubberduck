@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase
     {
         public ObsoleteCommentSyntaxInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new ObsoleteCommentSyntaxListener();
         }
