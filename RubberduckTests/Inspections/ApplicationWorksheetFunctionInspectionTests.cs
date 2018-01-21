@@ -1,17 +1,18 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ApplicationWorksheetFunctionInspectionTests
     {
-        private static ParseCoordinator ArrangeParser(string inputCode)
+        private static RubberduckParserState ArrangeParserAndParse(string inputCode)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
@@ -24,39 +25,45 @@ namespace RubberduckTests.Inspections
             var parser = MockParser.Create(vbe.Object);
 
             parser.State.AddTestLibrary("Excel.1.8.xml");
-            return parser;
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            return parser.State;
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_GlobalApplication()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     foo = Application.Pi
 End Sub
 ";
 
-            var parser = ArrangeParser(inputCode);
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithGlobalApplication()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     With Application
         foo = .Pi
@@ -64,24 +71,23 @@ End Sub
 End Sub
 ";
 
-            var parser = ArrangeParser(inputCode);
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_ApplicationVariable()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     Dim xlApp as Excel.Application
     Set xlApp = Application
@@ -89,24 +95,23 @@ End Sub
 End Sub
 ";
 
-            var parser = ArrangeParser(inputCode);
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithApplicationVariable()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     Dim xlApp as Excel.Application
     Set xlApp = Application
@@ -116,47 +121,45 @@ End Sub
 End Sub
 ";
 
-            var parser = ArrangeParser(inputCode);
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseGlobalApplication()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     foo = Application.WorksheetFunction.Pi
 End Sub
 ";
 
-            var parser = ArrangeParser(inputCode);
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseApplicationVariable()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     Dim xlApp as Excel.Application
     Set xlApp = Application
@@ -164,23 +167,22 @@ End Sub
 End Sub
 ";
 
-            var parser = ArrangeParser(inputCode);
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_NoExcelReference()
         {
             const string inputCode =
-@"Sub NonExcelSub()
+                @"Sub NonExcelSub()
     Dim foo As Double
     foo = Application.Pi
 End Sub
@@ -192,39 +194,41 @@ End Sub
 
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub ExcelSub()
+                @"Sub ExcelSub()
     Dim foo As Double
     '@Ignore ApplicationWorksheetFunction
     foo = Application.Pi
 End Sub
 ";
 
-            var parser = ArrangeParser(inputCode);
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
     }
 }

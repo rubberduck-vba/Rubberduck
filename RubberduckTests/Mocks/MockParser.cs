@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
@@ -12,11 +12,10 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace RubberduckTests.Mocks
 {
@@ -31,7 +30,10 @@ namespace RubberduckTests.Mocks
             var parser = Create(vbe.Object);
 
             parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status == ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error: {0}");
+            }
             return parser.State;
 
         }
@@ -130,7 +132,7 @@ namespace RubberduckTests.Mocks
         public static void AddTestLibrary(this RubberduckParserState state, string serialized)
         {
             var reader = new XmlPersistableDeclarations();
-            var deserialized = reader.Load(Path.Combine("Resolver", serialized));
+            var deserialized = reader.Load(Path.Combine("Testfiles//Resolver", serialized));
             AddTestLibrary(state, deserialized);
         }
 

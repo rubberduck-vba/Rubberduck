@@ -5,12 +5,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Application : SafeComWrapper<VB.Application>, IApplication
     {
-        public Application(VB.Application application)
-            :base(application)
+        public Application(VB.Application target, bool rewrapping = false)
+            :base(target, rewrapping)
         {
         }
 
-        public string Version { get { return IsWrappingNullReference ? null : Target.Version; } }
+        public string Version => IsWrappingNullReference ? null : Target.Version;
 
         public override bool Equals(ISafeComWrapper<VB.Application> other)
         {

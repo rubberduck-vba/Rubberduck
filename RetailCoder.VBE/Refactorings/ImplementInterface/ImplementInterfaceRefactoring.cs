@@ -77,16 +77,23 @@ namespace Rubberduck.Refactorings.ImplementInterface
             QualifiedSelection? oldSelection = null;
             if (_vbe.ActiveCodePane != null)
             {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
+                using (var codePane = _vbe.ActiveCodePane)
+                {
+                    oldSelection = codePane.GetQualifiedSelection();
+                }
             }
 
             ImplementMissingMembers(_state.GetRewriter(_targetClass));
 
             if (oldSelection.HasValue)
             {
-                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
-                var pane = module.CodePane;
-                pane.Selection = oldSelection.Value.Selection;
+                using (var module = oldSelection.Value.QualifiedName.Component.CodeModule)
+                {
+                    using (var pane = module.CodePane)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
+                }
             }
 
             _state.OnParseRequested(this);

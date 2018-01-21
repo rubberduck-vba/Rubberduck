@@ -7,42 +7,28 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class CodePanes : SafeComWrapper<VB.CodePanes>, ICodePanes
     {
-        public CodePanes(VB.CodePanes target) 
-            : base(target)
+        public CodePanes(VB.CodePanes target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE Parent
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
         public ICodePane Current 
         { 
-            get { return new CodePane(IsWrappingNullReference ? null : Target.Current); }
+            get => new CodePane(IsWrappingNullReference ? null : Target.Current);
             set { if (!IsWrappingNullReference) Target.Current = (VB.CodePane)value.Target; }
         }
 
-        public ICodePane this[object index]
-        {
-            get { return new CodePane(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public ICodePane this[object index] => new CodePane(IsWrappingNullReference ? null : Target.Item(index));
 
         IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<ICodePane>(null, o => new CodePane(null))
-                : new ComWrapperEnumerator<ICodePane>(Target, o => new CodePane((VB.CodePane) o));
+            return new ComWrapperEnumerator<ICodePane>(Target, comObject => new CodePane((VB.CodePane) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

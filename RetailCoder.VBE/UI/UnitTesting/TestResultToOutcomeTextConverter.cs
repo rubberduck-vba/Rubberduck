@@ -9,13 +9,12 @@ namespace Rubberduck.UI.UnitTesting
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var result = value as TestResult;
-            if (result != null)
+            if (value is TestResult result)
             {
                 return RubberduckUI.ResourceManager.GetString("TestOutcome_" + result.Outcome, CultureInfo.CurrentUICulture);
             }
 
-            throw new ArgumentException("value is not a TestResult object.", "value");
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

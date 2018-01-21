@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -16,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(ImplicitActiveWorkbookReferenceInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         private static readonly string[] Targets =
@@ -25,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
             "Worksheets", "Sheets", "Names", "_Default"
         };
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }

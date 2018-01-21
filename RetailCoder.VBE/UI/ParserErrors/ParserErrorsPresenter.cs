@@ -25,7 +25,7 @@ namespace Rubberduck.UI.ParserErrors
             control.Navigate += Control_Navigate;
         }
 
-        void Control_Navigate(object sender, ListItemActionEventArgs e)
+        private void Control_Navigate(object sender, ListItemActionEventArgs e)
         {
             var selection = (ParseErrorListItem) e.SelectedItem;
             selection.Navigate();

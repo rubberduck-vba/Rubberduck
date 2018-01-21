@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using System.Xml.Serialization;
 using Rubberduck.Common;
@@ -8,29 +10,29 @@ namespace Rubberduck.Settings
     public interface IGeneralSettings 
     {
         DisplayLanguageSetting Language { get; set; }
-        bool ShowSplash { get; set; }
-        bool CheckVersion { get; set; }
-        bool SmartIndenterPrompted { get; set; }
-        bool AutoSaveEnabled { get; set; }
+        bool CanShowSplash { get; set; }
+        bool CanCheckVersion { get; set; }
+        bool IsSmartIndenterPrompted { get; set; }
+        bool IsAutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
         int MinimumLogLevel { get; set; }
-        bool SourceControlEnabled { get; set; }
+        List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
     public class GeneralSettings : IGeneralSettings, IEquatable<GeneralSettings>
     {
         public DisplayLanguageSetting Language { get; set; }
-        public bool ShowSplash { get; set; }
-        public bool CheckVersion { get; set; }
-        public bool SmartIndenterPrompted { get; set; }
-        public bool AutoSaveEnabled { get; set; }
+        public bool CanShowSplash { get; set; }
+        public bool CanCheckVersion { get; set; }
+        public bool IsSmartIndenterPrompted { get; set; }
+        public bool IsAutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
 
         private int _logLevel;
         public int MinimumLogLevel
         {
-            get { return _logLevel; }
+            get => _logLevel;
             set
             {
                 if (value < LogLevelHelper.MinLogLevel())
@@ -48,31 +50,32 @@ namespace Rubberduck.Settings
             }
         }
 
-        public bool SourceControlEnabled { get; set; }
+        public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
 
         public GeneralSettings()
         {
             Language = new DisplayLanguageSetting("en-US");
-            ShowSplash = true;
-            CheckVersion = true;
-            SmartIndenterPrompted = false;
-            AutoSaveEnabled = false;
+            CanShowSplash = true;
+            CanCheckVersion = true;
+            IsSmartIndenterPrompted = false;
+            IsAutoSaveEnabled = false;
             AutoSavePeriod = 10;
             MinimumLogLevel = LogLevel.Off.Ordinal;
-            SourceControlEnabled = false;
+            EnableExperimentalFeatures = new List<ExperimentalFeatures>();
         }
 
         public bool Equals(GeneralSettings other)
         {
             return other != null &&
                    Language.Equals(other.Language) &&
-                   ShowSplash == other.ShowSplash &&
-                   CheckVersion == other.CheckVersion &&
-                   SmartIndenterPrompted == other.SmartIndenterPrompted &&
-                   AutoSaveEnabled == other.AutoSaveEnabled &&
+                   CanShowSplash == other.CanShowSplash &&
+                   CanCheckVersion == other.CanCheckVersion &&
+                   IsSmartIndenterPrompted == other.IsSmartIndenterPrompted &&
+                   IsAutoSaveEnabled == other.IsAutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
                    MinimumLogLevel == other.MinimumLogLevel &&
-                   SourceControlEnabled == other.SourceControlEnabled;
+                   EnableExperimentalFeatures.All(a => other.EnableExperimentalFeatures.Contains(a)) &&
+                   EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count;
         }
     }
 }

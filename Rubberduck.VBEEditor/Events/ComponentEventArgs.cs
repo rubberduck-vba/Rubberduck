@@ -7,19 +7,15 @@ namespace Rubberduck.VBEditor.Events
     {
         public ComponentEventArgs(string projectId, IVBProject project, IVBComponent component)
         {
-            _projectId = projectId;
-            _project = project;
-            _component = component;
+            ProjectId = projectId;
+            Project = project;
+            Component = component;
         }
 
-        private readonly string _projectId;
-        public string ProjectId { get { return _projectId; } }
+        public string ProjectId { get; }
 
-        private readonly IVBProject _project;
-        public IVBProject Project { get { return _project; } }
+        public IVBProject Project { get; }
 
-        private readonly IVBComponent _component;
-        public IVBComponent Component { get { return _component; } }
-
+        public IVBComponent Component { get; }
     }
 }

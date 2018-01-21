@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
-    [TestClass]
+    [TestFixture]
     public class MemberAccessDefaultBindingTests
     {
         private const string BINDING_TARGET_LEXPRESSION = "BindingTarget";
@@ -19,8 +19,8 @@ namespace RubberduckTests.Binding
         private const string TEST_CLASS_NAME = "TestClass";
         private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsVariablePropertyOrFunction()
         {
             var builder = new MockVbeBuilder();
@@ -31,15 +31,17 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProject()
         {
             const string PROJECT_NAME = "AnyProject";
@@ -51,15 +53,16 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
-
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProceduralModule()
         {
             const string PROJECT_NAME = "AnyProject";
@@ -71,15 +74,16 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Function && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
-
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsEnum()
         {
             const string PROJECT_NAME = "AnyProject";
@@ -91,11 +95,12 @@ namespace RubberduckTests.Binding
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
             var vbe = builder.Build();
-            var state = Parse(vbe);
+            using (var state = Parse(vbe))
+            {
+                var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.EnumerationMember && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
 
-            var declaration = state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.EnumerationMember && d.IdentifierName == BINDING_TARGET_UNRESTRICTEDNAME);
-
-            Assert.AreEqual(1, declaration.References.Count());
+                Assert.AreEqual(1, declaration.References.Count());
+            }
         }
 
         private static RubberduckParserState Parse(Mock<IVBE> vbe)
@@ -112,20 +117,20 @@ namespace RubberduckTests.Binding
 
         private string CreateFunction(string functionName)
         {
-            return string.Format(@"
-Public Function {0}() As Variant
+            return $@"
+Public Function {functionName}() As Variant
     TestEnumMember
 End Function
-", functionName);
+";
         }
 
         private string CreateEnumType(string typeName, string memberName)
         {
-            return string.Format(@"
-Public Enum {0}
-    {1}
+            return $@"
+Public Enum {typeName}
+    {memberName}
 End Enum
-", typeName, memberName);
+";
         }
     }
 }

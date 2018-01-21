@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Xml.Serialization;
 
 namespace Rubberduck.Settings
@@ -8,6 +9,7 @@ namespace Rubberduck.Settings
         string Text { get; set; }
     }
 
+    [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     [XmlType(AnonymousType = true)]
     public class ToDoMarker : IToDoMarker
     {
@@ -35,7 +37,7 @@ namespace Rubberduck.Settings
         {
         }
 
-        /// <summary>   Convert this object into a string representation. Over-riden for easy databinding.</summary>
+        /// <summary>   Convert this object into a string representation. Overriden for easy databinding.</summary>
         /// <returns>   The Text property. </returns>
         public override string ToString()
         {
@@ -44,9 +46,10 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            var other = obj as ToDoMarker;
-
-            if (other == null) { return false; }
+            if (!(obj is ToDoMarker other))
+            {
+                return false;
+            }
 
             return Text == other.Text;
         }

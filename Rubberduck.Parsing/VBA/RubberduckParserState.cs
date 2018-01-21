@@ -12,8 +12,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -66,12 +66,13 @@ namespace Rubberduck.Parsing.VBA
         public DeclarationFinder DeclarationFinder { get; private set; }
 
         private readonly IVBE _vbe;
+        private readonly IVBProjects _vbProjects;   //This field keeps the RCW for the events alive.
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
         public RubberduckParserState(IVBE vbe, IDeclarationFinderFactory declarationFinderFactory)
         {
-            if(vbe == null)
+            if (vbe == null)
             {
                 throw new ArgumentNullException(nameof(vbe));
             }
@@ -81,6 +82,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             _vbe = vbe;
+            _vbProjects = _vbe.VBProjects;
             _declarationFinderFactory = declarationFinderFactory;
 
             var values = Enum.GetValues(typeof(ParserState));
@@ -97,7 +99,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void RefreshFinder(IHostApplication host)
         {
+            var oldDecalarationFinder = DeclarationFinder;
             DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, host);
+            _declarationFinderFactory.Release(oldDecalarationFinder);
         }
 
         public void RefreshDeclarationFinder()
@@ -251,11 +255,14 @@ namespace Rubberduck.Parsing.VBA
         {
             lock (_projects)
             {
+                var oldProjects = _projects.ToList();
+
                 _projects.Clear();
-                foreach (var project in vbe.VBProjects)
+                foreach (var project in _vbProjects)
                 {
                     if (project.Protection == ProjectProtection.Locked)
                     {
+                        project.Dispose();
                         continue;
                     }
 
@@ -265,6 +272,12 @@ namespace Rubberduck.Parsing.VBA
                     }
 
                     _projects.Add(project.ProjectId, project);
+                }
+
+                //We dispose afterwards so that the RCWs of still existing projects do not get released fully. 
+                foreach (var kvp in oldProjects)
+                {
+                    kvp.Value.Dispose();
                 }
             }
         }
@@ -299,11 +312,11 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IReadOnlyList<Tuple<IVBComponent, SyntaxErrorException>> ModuleExceptions
+        public IReadOnlyList<Tuple<QualifiedModuleName, SyntaxErrorException>> ModuleExceptions
         {
             get
             {
-                var exceptions = new List<Tuple<IVBComponent, SyntaxErrorException>>();
+                var exceptions = new List<Tuple<QualifiedModuleName, SyntaxErrorException>>();
                 foreach (var kvp in _moduleStates)
                 {
                     if (kvp.Value.ModuleException == null)
@@ -311,7 +324,7 @@ namespace Rubberduck.Parsing.VBA
                         continue;
                     }
 
-                    exceptions.Add(Tuple.Create(kvp.Key.Component, kvp.Value.ModuleException));
+                    exceptions.Add(Tuple.Create(kvp.Key, kvp.Value.ModuleException));
                 }
 
                 return exceptions;
@@ -332,12 +345,12 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
-        private void OnModuleStateChanged(IVBComponent component, ParserState state, ParserState oldState)
+        private void OnModuleStateChanged(QualifiedModuleName module, ParserState state, ParserState oldState)
         {
             var handler = ModuleStateChanged;
             if (handler != null)
             {
-                var args = new ParseProgressEventArgs(component, state, oldState);
+                var args = new ParseProgressEventArgs(module, state, oldState);
                 handler.Invoke(this, args);
             }
         }
@@ -371,7 +384,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates.AddOrUpdate(module, new ModuleState(state), (c, e) => e.SetState(state));
             _moduleStates.AddOrUpdate(module, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", module.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
-            OnModuleStateChanged(module.Component, state, oldState);
+            OnModuleStateChanged(module, state, oldState);
             if (evaluateOverallState)
             {
                 EvaluateParserState();
@@ -385,7 +398,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 foreach (var item in _projects)
                 {
-                    if (item.Value.HelpFile == projectId)
+                    if (item.Value.ProjectId == projectId)
                     {
                         if (project != null)
                         {
@@ -434,12 +447,12 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (moduleState != moduleStates[0])
                 {
-                    state = default(ParserState);
+                    state = default;
                     break;
                 }
             }
 
-            if (state != default(ParserState))
+            if (state != default)
             {
                 // if all modules are in the same state, we have our result.
                 return state;
@@ -598,8 +611,7 @@ namespace Rubberduck.Parsing.VBA
 
         public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
-            ModuleState result;
-            if (_moduleStates.TryGetValue(module, out result))
+            if (_moduleStates.TryGetValue(module, out var result))
             {
                 return result.Annotations;
             }
@@ -730,8 +742,7 @@ namespace Rubberduck.Parsing.VBA
                     {
                         // store project module name
                         var qualifiedModuleName = moduleState.Key;
-                        ModuleState state;
-                        if (_moduleStates.TryRemove(qualifiedModuleName, out state))
+                        if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
                         {
                             state.Dispose();
                         }
@@ -923,8 +934,7 @@ namespace Rubberduck.Parsing.VBA
         /// Omit parameter to request a full reparse.
         /// </summary>
         /// <param name="requestor">The object requesting a reparse.</param>
-        /// <param name="component">The component to reparse.</param>
-        public void OnParseRequested(object requestor, IVBComponent component = null)
+        public void OnParseRequested(object requestor)
         {
             var handler = ParseRequest;
             if (handler != null && IsEnabled)
@@ -942,8 +952,7 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(QualifiedModuleName key)
         {
-            ModuleState moduleState;
-            if (_moduleStates.TryGetValue(key, out moduleState))
+            if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
                 return moduleState.IsNew || key.ContentHashCode != moduleState.ModuleContentHashCode;
@@ -963,8 +972,7 @@ namespace Rubberduck.Parsing.VBA
             var projectName = reference.Name;
             var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
             ClearAsTypeDeclarationPointingToReference(key);
-            ModuleState moduleState;
-            if (_moduleStates.TryRemove(key, out moduleState))
+            if (_moduleStates.TryRemove(key, out var moduleState))
             {
                 moduleState?.Dispose();
                 Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
@@ -991,7 +999,6 @@ namespace Rubberduck.Parsing.VBA
         }
 
         private bool _isDisposed;
-
         public void Dispose()
         {
             if (_isDisposed)
@@ -1008,8 +1015,14 @@ namespace Rubberduck.Parsing.VBA
             RemoveEventHandlers();
 
             _moduleStates.Clear();
+
+            foreach (var kvp in _projects)
+            {
+                kvp.Value.Dispose();
+            }
             // no lock because nobody should try to update anything here
             _projects.Clear();
+            _vbProjects.Dispose();
 
             _isDisposed = true;
         }

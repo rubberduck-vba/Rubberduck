@@ -17,19 +17,17 @@ namespace Rubberduck.VBEditor.Events
   
         public struct WindowInfo
         {
-            private readonly IntPtr _handle;
-            private readonly IWindow _window;
-            private readonly IWindowEventProvider _subclass;
+            public IntPtr Hwnd { get; }
 
-            public IntPtr Hwnd { get { return _handle; } } 
-            public IWindow Window { get { return _window; } }
-            internal IWindowEventProvider Subclass { get { return _subclass; } }
+            public IWindow Window { get; }
+
+            internal IWindowEventProvider Subclass { get; }
 
             internal WindowInfo(IntPtr handle, IWindow window, IWindowEventProvider source)
             {
-                _handle = handle;
-                _window = window;
-                _subclass = source;
+                Hwnd = handle;
+                Window = window;
+                Subclass = source;
             }
         }
 
@@ -45,7 +43,12 @@ namespace Rubberduck.VBEditor.Events
             if (_eventHandle == IntPtr.Zero)
             {               
                 _eventProc = VbeEventCallback;
-                _threadId = User32.GetWindowThreadProcessId(new IntPtr(_vbe.MainWindow.HWnd), IntPtr.Zero);
+                IntPtr mainWindowHwnd;
+                using (var mainWindow = _vbe.MainWindow)
+                {
+                    mainWindowHwnd = new IntPtr(mainWindow.HWnd);
+                }
+                _threadId = User32.GetWindowThreadProcessId(mainWindowHwnd, IntPtr.Zero);
                 _eventHandle = User32.SetWinEventHook((uint)WinEvent.Min, (uint)WinEvent.Max, IntPtr.Zero, _eventProc, 0, _threadId, WinEventFlags.OutOfContext);
             }
         }
@@ -162,10 +165,7 @@ namespace Rubberduck.VBEditor.Events
         public static event EventHandler<WindowChangedEventArgs> WindowFocusChange;
         private static void OnWindowFocusChange(object sender, WindowChangedEventArgs eventArgs)
         {
-            if (WindowFocusChange != null)
-            {
-                WindowFocusChange.Invoke(sender, eventArgs);
-            }
+            WindowFocusChange?.Invoke(sender, eventArgs);
         } 
 
         private static ICodePane GetCodePaneFromHwnd(IntPtr hwnd)
@@ -200,9 +200,8 @@ namespace Rubberduck.VBEditor.Events
         /// </summary>
         /// <returns>True if the active thread is on the VBE's thread.</returns>
         public static bool IsVbeWindowActive()
-        {           
-            uint hThread;
-            User32.GetWindowThreadProcessId(User32.GetForegroundWindow(), out hThread);
+        {
+            User32.GetWindowThreadProcessId(User32.GetForegroundWindow(), out var hThread);
             return (IntPtr)hThread == (IntPtr)_threadId;
         }
 

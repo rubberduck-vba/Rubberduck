@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
@@ -8,21 +8,21 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestFixture]
     public class EmptyForEachInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForEachBlock_InspectionType()
         {
             var inspection = new EmptyForEachBlockInspection(null);
-            var expectedInspection = CodeInspectionType.CodeQualityIssues;
+            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForEachBlock_InspectionName()
         {
             const string expectedName = nameof(EmptyForEachBlockInspection);
@@ -31,12 +31,12 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForEachBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     For Each var in results
         Msgbox Cstr(var)
     next var
@@ -44,12 +44,12 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod, Ignore]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyForLoopBlock_FiresOnEmptyLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     For Each var in results
         'Msgbox Cstr(var)
     next var
@@ -61,13 +61,15 @@ End Sub";
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyForEachBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new EmptyForEachBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
     }
 }

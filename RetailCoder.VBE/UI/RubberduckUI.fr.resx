@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -181,9 +181,6 @@
     <value>Veuillez spécifier un nouveau nom pour {0} '{1}'.</value>
     <comment>0: DeclarationType; 1: IdentifierName</comment>
   </data>
-  <data name="RenameDialog_ModuleRenameError" xml:space="preserve">
-    <value>Impossible de renommer le module.</value>
-  </data>
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Renommer l'identifiant</value>
   </data>
@@ -201,9 +198,6 @@
   </data>
   <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
     <value>Configuration des marqueurs à reconnaître dans les commentaires.</value>
-  </data>
-  <data name="RenameDialog_ProjectRenameError" xml:space="preserve">
-    <value>Impossible de renommer le projet.</value>
   </data>
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>le projet</value>
@@ -617,15 +611,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Liste:</value>
   </data>
-  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
-    <value>Problème de qualité du code</value>
-  </data>
-  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
-    <value>Opportunités du language</value>
-  </data>
-  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Problème de lisibilité et de maintenance</value>
-  </data>
   <data name="CodeInspections_NextToolTip" xml:space="preserve">
     <value>Naviguer au prochain problème</value>
   </data>
@@ -811,21 +796,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="SourceControl_MergeFormTitle" xml:space="preserve">
     <value>Fusionner les branches</value>
-  </data>
-  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
-    <value>Ne pas afficher</value>
-  </data>
-  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
-    <value>Erreur</value>
-  </data>
-  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>Astuce</value>
-  </data>
-  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
-    <value>Suggestion</value>
-  </data>
-  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
-    <value>Avertissement</value>
   </data>
   <data name="SourceControl_NoRepoFound" xml:space="preserve">
     <value>Dépôt introuvable.</value>
@@ -1608,9 +1578,6 @@ End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberd
 
 End Sub</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Initialiser un noueau repository</value>
-  </data>
   <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
     <value>Échec de l'ouverture de l'invite de commande</value>
   </data>
@@ -1659,9 +1626,6 @@ End Sub</value>
   <data name="SourceControl_FileStatus_RenamedInIndex" xml:space="preserve">
     <value>Renommé en index</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Crée un nouveau repository avec le projet actif..</value>
-  </data>
   <data name="SourceControl_ExternalModifications" xml:space="preserve">
     <value>Un fichier source a été modifié sans l'éditeur; recharger le fichier?</value>
   </data>
@@ -1673,9 +1637,6 @@ End Sub</value>
   </data>
   <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
     <value>Emplacement de l'exécutable de l'invite de commande</value>
-  </data>
-  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clone un 'repository' distant à partir d'une URI; Ayez un projet (vide) actif dans l'éditeur.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Cloner un repository distant</value>
@@ -1694,9 +1655,6 @@ End Sub</value>
   </data>
   <data name="SourceControl_ActivateProject" xml:space="preserve">
     <value>Veuillez ouvrir ou activer un projet et essayer de nouveau.</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Ouvrir un repository existant</value>
   </data>
   <data name="ToolsMenu" xml:space="preserve">
     <value>&amp;Outils</value>
@@ -1767,9 +1725,6 @@ End Sub</value>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Niveau de sévérité</value>
   </data>
-  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Ouvrir un repository existant. Le projet actif recevra le code.</value>
-  </data>
   <data name="SourceControl_FileStatus_Nonexistent" xml:space="preserve">
     <value>Non-existent</value>
   </data>
@@ -1831,7 +1786,7 @@ End Sub</value>
     <value>Charger les paramètres d'inspections</value>
   </data>
   <data name="SettingsCaption_ExportSettings" xml:space="preserve">
-    <value>Export</value>
+    <value>Exporter</value>
   </data>
   <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
     <value>Enregistrer les paramètres d'indentation</value>
@@ -1843,7 +1798,7 @@ End Sub</value>
     <value>Charger les paramètres généraux</value>
   </data>
   <data name="SettingsCaption_ImportSettings" xml:space="preserve">
-    <value>Import</value>
+    <value>Importer</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Vérifier si une nouvelle version est diponible au démarrage</value>
@@ -1882,7 +1837,7 @@ End Sub</value>
     <value>Un nom de variable ne peut pas contenir de caractères spéciaux autre que la barre de soulignement ("underscore").</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
-    <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre '{0}'.</value>
+    <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre {0} '{1}'.</value>
   </data>
   <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
     <value>Maintenir l'espacement vertical</value>
@@ -1894,7 +1849,7 @@ End Sub</value>
     <value>Le nom de la variable doit être différent de celui du paramètre '{0}'.</value>
   </data>
   <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value />
+    <value>L'identifiant '{0}' produira un résultat lors de l'inspection des noms. Considérez utiliser un nom plus descriptif.</value>
   </data>
   <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
     <value>Enregistrer les paramètres des fenêtres</value>
@@ -1916,5 +1871,221 @@ End Sub</value>
   </data>
   <data name="SettingsCaption_WindowSettings" xml:space="preserve">
     <value>Paramètres des fenêtres</value>
+  </data>
+  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
+    <value>Ouvrir le designer</value>
+  </data>
+  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
+    <value>Créer un nouveau repository local</value>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
+    <value>Impossible de renommer le membre '{0}' de l'interface.</value>
+  </data>
+  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
+    <value>Ni [attendu] ni [réel] n'est un tableau.</value>
+  </data>
+  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
+    <value>[attendu] et [réel] sont des tableaux. Considérez utiliser {0}.</value>
+  </data>
+  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
+    <value>[attendu] est une référence, mais [réel] est une valeur.</value>
+  </data>
+  <data name="Assert_GenericException" xml:space="preserve">
+    <value>Une exception s'est produite lors de l'exécution des tests.</value>
+  </data>
+  <data name="EmptyUIRefreshMessage" xml:space="preserve">
+    <value>pour analyser et traiter
+les projets dans le VBE.</value>
+  </data>
+  <data name="CodeExplorer_ExportAll" xml:space="preserve">
+    <value>Exporter le projet...</value>
+  </data>
+  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
+    <value>Dimension {0}: valeur UBound attendue {1}; valeur UBound réelle {2}. {3}</value>
+  </data>
+  <data name="Assert_FailedMessageFormat" xml:space="preserve">
+    <value>Échec de l'assertion {0}. {1}</value>
+  </data>
+  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
+    <value>[attendu] et [réel] sont 'Nothing'. Considérez utiliser {0}.</value>
+  </data>
+  <data name="ToolsMenu_ExportProject" xml:space="preserve">
+    <value>Exporter le projet actif...</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>Fichiers VB</value>
+  </data>
+  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
+    <value>[attendu] et [réel] sont des valeurs. Considérez utiliser {0}.</value>
+  </data>
+  <data name="Assert_ComException" xml:space="preserve">
+    <value>Une erreur COM inattendue s'est produite lors de l'exécution des tests.</value>
+  </data>
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
+    <value>{0}{1} ne peut être renommé.</value>
+  </data>
+  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
+    <value>Crée un nouveau repository à partir du projet actif.</value>
+  </data>
+  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+    <value>Tests inconclusifs</value>
+  </data>
+  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
+    <value>[attendu] et [réel] sont des références. Considérez utiliser {0}.</value>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Tous les fichiers</value>
+  </data>
+  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
+    <value>Cloner sur le disque local un repository situé à l'URL spécifiée. Le repository sera ensuite chargé dans le projet actif.</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
+    <value>Regrouper par type</value>
+  </data>
+  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
+    <value>L'identifiant {0} ne peut être renommé.</value>
+  </data>
+  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
+    <value>Ouais, moi aussi je vérifie mes entrées =)</value>
+  </data>
+  <data name="CodeExplorer_AddModule" xml:space="preserve">
+    <value>Ajouter un module</value>
+  </data>
+  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
+    <value>Impossible de détecter la cible à renommer</value>
+  </data>
+  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
+    <value>Configuration invalide de IFake {0}. La propriété PassThrough doit être à False.</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
+    <value>Par nom</value>
+  </data>
+  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
+    <value>On essaie de faire quoi au juste?</value>
+  </data>
+  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
+    <value>{0} dimensions attendues; {1} dimensions réelles. {2}</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Importer fichiers source</value>
+  </data>
+  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
+    <value>Ouvrir un repository local</value>
+  </data>
+  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
+    <value>Le paramètre {0} n'avait pas une valeur numérique lors de l'invocation {1}. {2}</value>
+  </data>
+  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
+    <value>Rubberduck ne voit rien pour l'instant.</value>
+  </data>
+  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
+    <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
+  </data>
+  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
+    <value>Aucune invocation correspondante pour le paramètre {0}; seulement {1} invocations. {2}</value>
+  </data>
+  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
+    <value>Rubberduck n'a pas pu traiter les résultats de l'invocation.</value>
+  </data>
+  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
+    <value>Exporter le projet actif</value>
+  </data>
+  <data name="CodeExplorer_Open" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>La méthode '{0}' répond à l'événement '{1}.{2}'. Renommer l'événement '{2}'?</value>
+  </data>
+  <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
+    <value>Veuillez sélectionner un dossier où exporter les fichier source de {0}:</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>Formulaire (.frm)</value>
+  </data>
+  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
+    <value>Le paramètre {0} n'a pas été passé lors de l'invocation {1}. {2}</value>
+  </data>
+  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
+    <value>{0} n'est pas un tableau.</value>
+  </data>
+  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
+    <value>Fonctionnalités expérimentales:</value>
+  </data>
+  <data name="Assert_MismatchedTypes" xml:space="preserve">
+    <value>[attendu] et [réel] sont de types différents.</value>
+  </data>
+  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
+    <value>Dimension {0}: valeur LBound attendue {1}; valeur LBound réelle {2}. {3}</value>
+  </data>
+  <data name="Assert_NotImplemented" xml:space="preserve">
+    <value>Pas implémenté.</value>
+  </data>
+  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
+    <value>[attendu] est une valeur, mais [réel] est une référence.</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Module de tests avec modèles</value>
+  </data>
+  <data name="Assert_ParameterResultFormat" xml:space="preserve">
+    <value>Attendu: {0}; Réel: {1}. {2}</value>
+  </data>
+  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
+    <value>Ouvrir un repository local; le projet actif recevra le code source.</value>
+  </data>
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
+    <value>Impossible de renommer {0}.</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>Tel que dans le module</value>
+  </data>
+  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
+    <value>Attendu: Stack overflow?; Réel: Clause de garde. Oui oui!</value>
+  </data>
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Aperçu</value>
+  </data>
+  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copier dans le presse-papier</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck - {0}
+{1} marqueurs TODO trouvés.</value>
+  </data>
+  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3} ligne {4}.</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck marqueurs TODO - {0}
+{1} marqueurs trouvés.</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>P</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Complexité Cyclomatique</value>
+  </data>
+  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
+    <value>Les informations ont été copiées dans le presse-papier.</value>
+  </data>
+  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
+    <value>Cliquer ici pour copier les informations dans le presse-papier.</value>
+  </data>
+  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
+    <value>Copie complétée.</value>
+  </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Lignes</value>
   </data>
 </root>

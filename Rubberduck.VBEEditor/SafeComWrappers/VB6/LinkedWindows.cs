@@ -7,30 +7,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class LinkedWindows : SafeComWrapper<VB.LinkedWindows>, ILinkedWindows
     {
-        public LinkedWindows(VB.LinkedWindows linkedWindows)
-            : base(linkedWindows)
+        public LinkedWindows(VB.LinkedWindows target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IWindow Parent
-        {
-            get { return new Window(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IWindow Parent => new Window(IsWrappingNullReference ? null : Target.Parent);
 
-        public IWindow this[object index]
-        {
-            get { return new Window(Target.Item(index)); }
-        }
+        public IWindow this[object index] => new Window(Target.Item(index));
 
         public void Remove(IWindow window)
         {
@@ -51,18 +39,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window)o));
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.LinkedWindows> other)
         {

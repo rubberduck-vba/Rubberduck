@@ -45,7 +45,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         public double OffsetLeft
         {
-            get { return _offsetLeft; }
+            get => _offsetLeft;
             set
             {
                 _offsetLeft = value;
@@ -72,7 +72,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         /// </summary>
         public double OffsetTop
         {
-            get { return _offsetTop; }
+            get => _offsetTop;
             set
             {
                 _offsetTop = value;

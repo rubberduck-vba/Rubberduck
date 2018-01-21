@@ -26,13 +26,18 @@ namespace Rubberduck.UI.IdentifierReferences
 
         public static void OnNavigateIdentifierReference(IdentifierReference reference)
         {
-            reference.QualifiedModuleName.Component.CodeModule.CodePane.Selection = reference.Selection;
+            using (var codeModule = reference.QualifiedModuleName.Component.CodeModule)
+            {
+                using (var codePane = codeModule.CodePane)
+                {
+                    codePane.Selection = reference.Selection;
+                }
+            }
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
         {
-            var reference = e.SelectedItem as IdentifierReferenceListItem;
-            if (reference != null)
+            if (e.SelectedItem is IdentifierReferenceListItem reference)
             {
                 OnNavigateIdentifierReference(reference.GetReferenceItem());
             }

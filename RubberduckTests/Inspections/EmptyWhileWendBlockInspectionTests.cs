@@ -1,27 +1,27 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestFixture]
     public class EmptyWhileWendBlockInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyWhileWendBlock_InspectionType()
         {
             var inspection = new EmptyWhileWendBlockInspection(null);
-            var expectedInspection = CodeInspectionType.CodeQualityIssues;
+            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
             Assert.AreEqual(expectedInspection, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyWhileWendBlock_InspectionName()
         {
             const string expectedName = nameof(EmptyWhileWendBlockInspection);
@@ -30,12 +30,12 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyWhileWendBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     Dim LTotal As Integer
 
     LTotal = 1
@@ -48,12 +48,12 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyWhileWendBlock_FiresOnEmptyLoopBlocks()
         {
             const string inputCode =
-@"Sub Foo(results As Collection)
+                @"Sub Foo(results As Collection)
     Dim LTotal As Integer
 
     LTotal = 1
@@ -69,13 +69,15 @@ End Sub";
         private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EmptyWhileWendBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new EmptyWhileWendBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(expectedCount, actualResults.Count());
+                Assert.AreEqual(expectedCount, actualResults.Count());
+            }
         }
     }
 }

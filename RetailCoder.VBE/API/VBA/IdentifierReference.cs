@@ -31,28 +31,19 @@ namespace Rubberduck.API.VBA
         }
 
         private Declaration _declaration;
-        public Declaration Declaration
-        {
-            get { return _declaration ?? (_declaration = new Declaration(_reference.Declaration)); }
-        }
+        public Declaration Declaration => _declaration ?? (_declaration = new Declaration(_reference.Declaration));
 
         private Declaration _parentScoping;
-        public Declaration ParentScope
-        {
-            get { return _parentScoping ?? (_parentScoping = new Declaration(_reference.ParentScoping)); }
-        }
+        public Declaration ParentScope => _parentScoping ?? (_parentScoping = new Declaration(_reference.ParentScoping));
 
         private Declaration _parentNonScoping;
-        public Declaration ParentNonScoping
-        {
-            get { return _parentNonScoping ?? (_parentNonScoping = new Declaration(_reference.ParentNonScoping)); }
-        }
+        public Declaration ParentNonScoping => _parentNonScoping ?? (_parentNonScoping = new Declaration(_reference.ParentNonScoping));
 
-        public bool IsAssignment { get { return _reference.IsAssignment; } }
+        public bool IsAssignment => _reference.IsAssignment;
 
-        public int StartLine { get { return _reference.Selection.StartLine; } }
-        public int EndLine { get { return _reference.Selection.EndLine; } }
-        public int StartColumn { get { return _reference.Selection.StartColumn; } }
-        public int EndColumn { get { return _reference.Selection.EndColumn; } }
+        public int StartLine => _reference.Selection.StartLine;
+        public int EndLine => _reference.Selection.EndLine;
+        public int StartColumn => _reference.Selection.StartColumn;
+        public int EndColumn => _reference.Selection.EndColumn;
     }
 }

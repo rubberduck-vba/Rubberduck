@@ -1,76 +1,82 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class VariableNotAssignedInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableNotAssigned_ReturnsResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim var1 As String
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotAssignedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotAssignedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnassignedVariable_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim var1 As String
     Dim var2 As Date
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotAssignedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotAssignedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnassignedVariable_DoesNotReturnResult()
         {
             const string inputCode =
-@"Function Foo() As Boolean
+                @"Function Foo() As Boolean
     Dim var1 as String
     var1 = ""test""
 End Function";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotAssignedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotAssignedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UnassignedVariable_ReturnsResult_MultipleVariables_SomeAssigned()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     Dim var1 as Integer
     var1 = 8
 
@@ -78,43 +84,47 @@ End Function";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotAssignedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotAssignedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableNotAssigned_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
 '@Ignore VariableNotAssigned
 Dim var1 As String
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new VariableNotAssignedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new VariableNotAssignedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new VariableNotAssignedInspection(null);
             Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "VariableNotAssignedInspection";

@@ -150,11 +150,11 @@ namespace Rubberduck.API.VBA
 
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            _allDeclarations = _state.AllDeclarations
+            AllDeclarations = _state.AllDeclarations
                                      .Select(item => new Declaration(item))
                                      .ToArray();
             
-            _userDeclarations = _state.AllUserDeclarations
+            UserDeclarations = _state.AllUserDeclarations
                                      .Select(item => new Declaration(item))
                                      .ToArray();
 
@@ -177,20 +177,9 @@ namespace Rubberduck.API.VBA
             }
         }
 
-        private Declaration[] _allDeclarations;
+        public Declaration[] AllDeclarations { get; private set; }
 
-        public Declaration[] AllDeclarations
-        {
-            //[return: MarshalAs(UnmanagedType.SafeArray/*, SafeArraySubType = VarEnum.VT_VARIANT*/)]
-            get { return _allDeclarations; }
-        }
-
-        private Declaration[] _userDeclarations;
-        public Declaration[] UserDeclarations
-        {
-            //[return: MarshalAs(UnmanagedType.SafeArray/*, SafeArraySubType = VarEnum.VT_VARIANT*/)]
-            get { return _userDeclarations; }
-        }
+        public Declaration[] UserDeclarations { get; private set; }
 
         private bool _disposed;
         public void Dispose()

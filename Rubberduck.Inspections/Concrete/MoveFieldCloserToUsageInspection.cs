@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -15,11 +14,9 @@ namespace Rubberduck.Inspections.Concrete
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Hint) { }
 
-        public override Type Type => typeof(MoveFieldCloserToUsageInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(declaration =>

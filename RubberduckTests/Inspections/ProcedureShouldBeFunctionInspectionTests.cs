@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
@@ -8,131 +8,142 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ProcedureShouldBeFunctionInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_ReturnsResult()
         {
             const string inputCode =
-@"Private Sub Foo(ByRef foo As Boolean)
+                @"Private Sub Foo(ByRef foo As Boolean)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
-@"Private Sub Foo(ByRef foo As Boolean)
+                @"Private Sub Foo(ByRef foo As Boolean)
 End Sub
 
 Private Sub Goo(ByRef foo As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_Function()
         {
             const string inputCode =
-@"Private Function Foo(ByRef bar As Integer) As Integer
+                @"Private Function Foo(ByRef bar As Integer) As Integer
     Foo = bar
 End Function";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_SingleByValParam()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal foo As Integer)
+                @"Private Sub Foo(ByVal foo As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByValParams()
         {
             const string inputCode =
-@"Private Sub Foo(ByVal foo As Integer, ByVal goo As Integer)
+                @"Private Sub Foo(ByVal foo As Integer, ByVal goo As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByRefParams()
         {
             const string inputCode =
-@"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
+                @"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
         {
             //Input
             const string inputCode1 =
-@"Public Sub DoSomething(ByRef a As Integer)
+                @"Public Sub DoSomething(ByRef a As Integer)
 End Sub";
             const string inputCode2 =
-@"Implements IClass1
+                @"Implements IClass1
 
 Private Sub IClass1_DoSomething(ByRef a As Integer)
 End Sub";
@@ -144,24 +155,26 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_EventImplementation()
         {
             //Input
             const string inputCode1 =
-@"Public Event Foo(ByRef arg1 As Integer)";
+                @"Public Event Foo(ByRef arg1 As Integer)";
             const string inputCode2 =
-@"Private WithEvents abc As Class1
+                @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByRef arg1 As Integer)
 End Sub";
@@ -173,44 +186,48 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore ProcedureCanBeWrittenAsFunction
+                @"'@Ignore ProcedureCanBeWrittenAsFunction
 Private Sub Foo(ByRef foo As Boolean)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ProcedureCanBeWrittenAsFunctionInspection";

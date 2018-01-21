@@ -21,7 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.SldWorks.Extensibility">
@@ -109,6 +109,9 @@
       <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="office">
       <HintPath>..\libs\Office.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -125,6 +128,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
+    <Compile Include="ComManagement\ComSafe.cs" />
+    <Compile Include="ComManagement\IComSafe.cs" />
     <Compile Include="Events\ComponentEventArgs.cs" />
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />
     <Compile Include="Events\ProjectEventArgs.cs" />
@@ -133,6 +139,7 @@
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
+    <Compile Include="SafeComWrappers\Office.Core\Abstract\IUserForm.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
     <Compile Include="SafeComWrappers\MSAccessComponentType.cs" />
@@ -190,6 +197,7 @@
     <Compile Include="SafeComWrappers\VBA\AddIn.cs" />
     <Compile Include="SafeComWrappers\VBA\AddIns.cs" />
     <Compile Include="SafeComWrappers\VBA\Application.cs" />
+    <Compile Include="SafeComWrappers\VBA\UserForm.cs" />
     <Compile Include="SafeComWrappers\VBA\CodeModule.cs" />
     <Compile Include="SafeComWrappers\VBA\CodePane.cs" />
     <Compile Include="SafeComWrappers\VBA\CodePanes.cs" />
@@ -274,14 +282,17 @@
     <Compile Include="WindowsApi\WM.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="VBEEditorText.de.resx" />
     <EmbeddedResource Include="VBEEditorText.fr.resx" />
     <EmbeddedResource Include="VBEEditorText.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>VBEEditorText.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="VBEEditorText.sv.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

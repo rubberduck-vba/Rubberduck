@@ -6,6 +6,7 @@
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:hiddenVisibility="clr-namespace:Rubberduck.UI.Converters"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignWidth="300"
@@ -14,6 +15,8 @@
         <converters:DelimiterValueToTextConverter x:Key="DelimiterValueToText" />
         <converters:DelimiterToTextConverter x:Key="DelimiterToText" />
         <converters:HotkeyDisplayConverter x:Key="HotkeyDisplay" />
+        <hiddenVisibility:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -137,7 +140,14 @@
                             Command="{Binding ShowLogFolderCommand}"/>
                     </StackPanel>
 
-                    <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
+                    <DockPanel>
+                        <Label DockPanel.Dock="Left" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeysLabel}" FontWeight="SemiBold" />
+                        <Label DockPanel.Dock="Right" Content="{Resx ResxName=Rubberduck.Ui.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionLabel}"
+                               Visibility="{Binding ShouldDisplayHotkeyModificationLabel, Converter={StaticResource BoolToVisibility}}"
+                               Foreground="Red"
+                               FontWeight="Bold"/>
+                    </DockPanel>
+
                     <DataGrid ItemsSource="{Binding Hotkeys}"
                       HorizontalAlignment="Stretch"
                       AutoGenerateColumns="False"
@@ -172,6 +182,18 @@
                         Binding="{Binding Prompt}"
                         Width="*"
                         IsReadOnly="True" />
+                            <DataGridTemplateColumn
+                        Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ModifierWarning}"
+                        Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Resx ResxName=Rubberduck.Properties.Resources, Key=exclamation}"
+                                               Visibility="{Binding IsValid, Converter={StaticResource BoolToHiddenVisibility}}"
+                                               HorizontalContentAlignment="Center"
+                                               ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionToolTip}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridCheckBoxColumn
                         Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyShift}"
                         Width="Auto"
@@ -194,6 +216,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+
                             <DataGridTemplateColumn
                         Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_HotkeyKey2}"
                         Width="Auto"
@@ -207,16 +230,23 @@
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ExperimentalFeatures}" FontWeight="SemiBold" />
                     <Label Margin="5,0,0,5" FontWeight="Bold" Foreground="Red">
                         <Label.Content>
                             <AccessText TextWrapping="Wrap" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_ExperimentalFeaturesWarning}"/>
                         </Label.Content>
                     </Label>
-                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_EnableSourceControl}"
-                           IsChecked="{Binding SourceControlEnabled}" />
-
+                    <ListView ItemsSource="{Binding ExperimentalFeatures}"
+                          HorizontalAlignment="Stretch"
+                          BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsEnabled}" Content="{Binding DisplayValue}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

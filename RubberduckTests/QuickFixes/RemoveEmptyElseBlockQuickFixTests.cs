@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -8,38 +8,39 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass, Ignore]
+    [TestFixture]
     public class RemoveEmptyElseBlockQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyElseBlock_QuickFixRemovesElse()
         {
             const string inputCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     Else
     End If
 End Sub";
 
             const string expectedCode =
-@"Sub Foo()
+                @"Sub Foo()
     If True Then
     End If
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new EmptyElseBlockInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var inspection = new EmptyElseBlockInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                new RemoveEmptyElseBlockQuickFix(state).Fix(actualResults.First());
 
-            new RemoveEmptyElseBlockQuickFix(state).Fix(actualResults.First());
+                string actualRewrite = state.GetRewriter(component).GetText();
 
-            string actualRewrite = state.GetRewriter(component).GetText();
-
-            Assert.AreEqual(expectedCode, actualRewrite);
+                Assert.AreEqual(expectedCode, actualRewrite);
+            }
         }
     }
 }

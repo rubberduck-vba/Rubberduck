@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
@@ -13,6 +14,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using System.Diagnostics;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -30,6 +32,9 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
+            Debug.Assert(result.Target.Context.Parent is VBAParser.ArgListContext);
+            Debug.Assert(null != ((ParserRuleContext)result.Target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>());
+
             var forbiddenNames = _parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(result.Target).Select(n => n.IdentifierName);
 
             var localIdentifier = PromptForLocalVariableName(result.Target, forbiddenNames.ToList());
@@ -43,22 +48,21 @@ namespace Rubberduck.Inspections.QuickFixes
             InsertLocalVariableDeclarationAndAssignment(rewriter, result.Target, localIdentifier);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix;
 
-        public override bool CanFixInProcedure { get; } = false;
-        public override bool CanFixInModule { get; } = false;
-        public override bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
 
         private string PromptForLocalVariableName(Declaration target, List<string> forbiddenNames)
         {
-            using (var view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), forbiddenNames))
+            IAssignedByValParameterQuickFixDialog view = null;
+            try
             {
+                view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), forbiddenNames);
                 view.NewName = GetDefaultLocalIdentifier(target, forbiddenNames);
                 view.ShowDialog();
-                
+
                 if (view.DialogResult == DialogResult.Cancel || !IsValidVariableName(view.NewName, forbiddenNames))
                 {
                     return string.Empty;
@@ -66,11 +70,15 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 return view.NewName;
             }
+            finally
+            {
+                _dialogFactory.Release(view);
+            }
         }
 
         private string GetDefaultLocalIdentifier(Declaration target, List<string> forbiddenNames)
         {
-            var newName = "local" + target.IdentifierName.CapitalizeFirstLetter();
+            var newName = $"local{target.IdentifierName.CapitalizeFirstLetter()}";
             if (IsValidVariableName(newName, forbiddenNames))
             {
                 return newName;
@@ -103,14 +111,29 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, Declaration target, string localIdentifier)
         {
-            var localVariableDeclaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}{Environment.NewLine}";
-            
+            var localVariableDeclaration = $"{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}";
+
             var requiresAssignmentUsingSet =
                 target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState));
 
-            var localVariableAssignment = requiresAssignmentUsingSet ? $"Set {localIdentifier} = {target.IdentifierName}" : $"{localIdentifier} = {target.IdentifierName}";
+            var localVariableAssignment = string.Format("{0}{1}",
+                                                        requiresAssignmentUsingSet ? $"{Tokens.Set} " : string.Empty,
+                                                        $"{localIdentifier} = {target.IdentifierName}");
 
-            rewriter.InsertBefore(((ParserRuleContext)target.Context.Parent).Stop.TokenIndex + 1, localVariableDeclaration + localVariableAssignment);
+            var endOfStmtCtxt = ((ParserRuleContext)target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>();
+            var eosContent = endOfStmtCtxt.GetText();
+            var idxLastNewLine = eosContent.LastIndexOf(Environment.NewLine);
+            var endOfStmtCtxtComment = eosContent.Substring(0, idxLastNewLine);
+            var endOfStmtCtxtEndFormat = eosContent.Substring(idxLastNewLine);
+
+            var insertCtxt = (ParserRuleContext)((ParserRuleContext)target.Context.Parent.Parent).GetChild<VBAParser.AsTypeClauseContext>();
+            if (insertCtxt == null)
+            {
+                insertCtxt = (ParserRuleContext)target.Context.Parent;
+            }
+
+            rewriter.Remove(endOfStmtCtxt);
+            rewriter.InsertAfter(insertCtxt.Stop.TokenIndex, $"{endOfStmtCtxtComment}{endOfStmtCtxtEndFormat}{localVariableDeclaration}" + $"{endOfStmtCtxtEndFormat}{localVariableAssignment}{endOfStmtCtxtEndFormat}");
         }
     }
 }

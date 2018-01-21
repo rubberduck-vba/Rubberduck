@@ -52,14 +52,14 @@ namespace Rubberduck.Parsing.ComReflection
 
         private void GetComFields(ITypeInfo info, TYPEATTR attrib)
         {
-            var names = new string[255];
+            var names = new string[1];
             for (var index = 0; index < attrib.cVars; index++)
             {
                 IntPtr varPtr;
                 info.GetVarDesc(index, out varPtr);
                 var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
                 int length;
-                info.GetNames(desc.memid, names, 255, out length);
+                info.GetNames(desc.memid, names, names.Length, out length);
                 Debug.Assert(length == 1);
 
                 _fields.Add(new ComField(names[0], desc, index, DeclarationType.Constant));

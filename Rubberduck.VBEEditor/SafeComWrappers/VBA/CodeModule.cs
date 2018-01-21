@@ -11,39 +11,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class CodeModule : SafeComWrapper<VB.CodeModule>, ICodeModule
     {
-        public CodeModule(VB.CodeModule target) 
-            : base(target)
+        public CodeModule(VB.CodeModule target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IVBComponent Parent
-        {
-            get { return new VBComponent(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IVBComponent Parent => new VBComponent(IsWrappingNullReference ? null : Target.Parent);
 
-        public ICodePane CodePane
-        {
-            get { return new CodePane(IsWrappingNullReference ? null : Target.CodePane); }
-        }
+        public ICodePane CodePane => new CodePane(IsWrappingNullReference ? null : Target.CodePane);
 
-        public int CountOfDeclarationLines
-        {
-            get { return IsWrappingNullReference ? 0 : Target.CountOfDeclarationLines; }
-        }
+        public int CountOfDeclarationLines => IsWrappingNullReference ? 0 : Target.CountOfDeclarationLines;
 
-        public int CountOfLines
-        {
-            get { return IsWrappingNullReference ? 0 : Target.CountOfLines; }
-        }
+        public int CountOfLines => IsWrappingNullReference ? 0 : Target.CountOfLines;
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 
@@ -78,7 +63,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 return null;
             }
-            return CodePane.GetQualifiedSelection();
+            using (var codePane = CodePane)
+            {
+                return codePane.GetQualifiedSelection();
+            }
         }
 
         public string Content()
@@ -105,7 +93,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        public bool IsDirty { get { return _previousContentHash.Equals(ContentHash()); } }
+        public bool IsDirty => _previousContentHash.Equals(ContentHash());
 
         public void AddFromString(string content)
         {
@@ -168,16 +156,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string GetProcOfLine(int line)
         {
-            if (IsWrappingNullReference) return string.Empty;
-            vbext_ProcKind procKind;
-            return Target.get_ProcOfLine(line, out procKind);
+            return IsWrappingNullReference ? string.Empty : Target.get_ProcOfLine(line, out _);
         }
 
         public ProcKind GetProcKindOfLine(int line)
         {
             if (IsWrappingNullReference) return 0;
-            vbext_ProcKind procKind;
-            Target.get_ProcOfLine(line, out procKind);
+            Target.get_ProcOfLine(line, out var procKind);
             return (ProcKind)procKind;
         }
 

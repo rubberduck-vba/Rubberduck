@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
             if (!string.IsNullOrWhiteSpace(result.Target.TypeHint))
             {
                 var rewriter = _state.GetRewriter(result.Target);
-                var typeHintContext = ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(result.Context);
+                var typeHintContext = result.Context.GetDescendent<VBAParser.TypeHintContext>();
 
                 rewriter.Remove(typeHintContext);
 
@@ -57,7 +57,7 @@ namespace Rubberduck.Inspections.QuickFixes
             foreach (var reference in result.Target.References)
             {
                 var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
-                var context = ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(reference.Context);
+                var context = reference.Context.GetDescendent<VBAParser.TypeHintContext>();
 
                 if (context != null)
                 {
@@ -66,10 +66,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveTypeHintsQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveTypeHintsQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

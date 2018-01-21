@@ -6,40 +6,35 @@ namespace Rubberduck.UnitTesting
     {
         public void SetValues(TestOutcome outcome, string output = "", long duration = 0, DateTime? startTime = null, DateTime? endTime = null)
         {
-            _outcome = outcome;
-            _output = output;
-            _duration = duration;
-            _startTime = startTime ?? DateTime.Now;
-            _endTime = endTime ?? DateTime.Now;
+            Outcome = outcome;
+            Output = output;
+            Duration = duration;
+            StartTime = startTime ?? DateTime.Now;
+            EndTime = endTime ?? DateTime.Now;
         }
 
         public void SetDuration(long duration)
         {
-            _duration = duration;
+            Duration = duration;
         }
 
         public TestResult(TestOutcome outcome, string output = "", long duration = 0)
         {
-            _outcome = outcome;
-            _output = output;
-            _duration = duration;
-            _startTime = DateTime.Now;
-            _endTime = DateTime.Now;
+            Outcome = outcome;
+            Output = output;
+            Duration = duration;
+            StartTime = DateTime.Now;
+            EndTime = DateTime.Now;
         }
 
-        private long _duration;
-        public long Duration { get { return _duration; } }
+        public long Duration { get; private set; }
 
-        private DateTime _startTime;
-        public DateTime StartTime { get { return _startTime; } }
+        public DateTime StartTime { get; private set; }
 
-        private DateTime _endTime;
-        public DateTime EndTime { get { return _endTime; } }
+        public DateTime EndTime { get; private set; }
 
-        private TestOutcome _outcome;
-        public TestOutcome Outcome { get { return _outcome; } }
+        public TestOutcome Outcome { get; private set; }
 
-        private string _output;
-        public string Output { get { return _output; } }
+        public string Output { get; private set; }
     }
 }

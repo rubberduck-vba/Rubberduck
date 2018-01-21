@@ -6,26 +6,23 @@ namespace Rubberduck.UI.Controls
 {
     public class SearchResultsWindowViewModel : ViewModelBase, ISearchResultsWindowViewModel
     {
-        private readonly ObservableCollection<SearchResultsViewModel> _tabs = 
-            new ObservableCollection<SearchResultsViewModel>();
-
         public void AddTab(SearchResultsViewModel viewModel)
         {
             viewModel.Close += viewModel_Close;
-            _tabs.Add(viewModel);
+            Tabs.Add(viewModel);
         }
 
-        void viewModel_Close(object sender, EventArgs e)
+        private void viewModel_Close(object sender, EventArgs e)
         {
             RemoveTab(sender as SearchResultsViewModel);
         }
 
-        public ObservableCollection<SearchResultsViewModel> Tabs { get { return _tabs; } }
+        public ObservableCollection<SearchResultsViewModel> Tabs { get; } = new ObservableCollection<SearchResultsViewModel>();
 
         private SearchResultsViewModel _selectedTab;
         public SearchResultsViewModel SelectedTab
         {
-            get { return _selectedTab; }
+            get => _selectedTab;
             set
             {
                 if (_selectedTab != value)
@@ -40,10 +37,10 @@ namespace Rubberduck.UI.Controls
         {
             if (viewModel != null)
             {
-                _tabs.Remove(viewModel);
+                Tabs.Remove(viewModel);
             }
 
-            if (!_tabs.Any())
+            if (!Tabs.Any())
             {
                 OnLastTabClosed();
             }
@@ -52,11 +49,7 @@ namespace Rubberduck.UI.Controls
         public event EventHandler LastTabClosed;
         private void OnLastTabClosed()
         {
-            var handler = LastTabClosed;
-            if (handler != null)
-            {
-                handler.Invoke(this, EventArgs.Empty);
-            }
+            LastTabClosed?.Invoke(this, EventArgs.Empty);
         }
     }
 }

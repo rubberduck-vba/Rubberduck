@@ -19,8 +19,8 @@ namespace Rubberduck.Common
 
         public void Write(string text)
         {
-            this.AppendString(DataFormats.UnicodeText, text);
-            this.Flush();
+            AppendString(DataFormats.UnicodeText, text);
+            Flush();
         }
 
         public void AppendImage(BitmapSource image)

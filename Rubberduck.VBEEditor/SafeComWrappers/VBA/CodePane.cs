@@ -7,50 +7,32 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class CodePane : SafeComWrapper<VB.CodePane>, ICodePane
     {
-        public CodePane(VB.CodePane codePane)
-            : base(codePane)
+        public CodePane(VB.CodePane target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
-        public ICodePanes Collection
-        {
-            get { return new CodePanes(IsWrappingNullReference ? null : Target.Collection); }
-        }
+        public ICodePanes Collection => new CodePanes(IsWrappingNullReference ? null : Target.Collection);
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IWindow Window
-        {
-            get { return new Window(IsWrappingNullReference ? null : Target.Window); }
-        }
+        public IWindow Window => new Window(IsWrappingNullReference ? null : Target.Window);
 
         public int TopLine
         {
-            get { return IsWrappingNullReference ? 0 : Target.TopLine; }
+            get => IsWrappingNullReference ? 0 : Target.TopLine;
             set { if (!IsWrappingNullReference) Target.TopLine = value; }
         }
 
-        public int CountOfVisibleLines
-        {
-            get { return IsWrappingNullReference ? 0 : Target.CountOfVisibleLines; }
-        }
-        
-        public ICodeModule CodeModule
-        {
-            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
-        }
+        public int CountOfVisibleLines => IsWrappingNullReference ? 0 : Target.CountOfVisibleLines;
 
-        public CodePaneView CodePaneView
-        {
-            get { return IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView; }
-        }
+        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
+
+        public CodePaneView CodePaneView => IsWrappingNullReference ? 0 : (CodePaneView)Target.CodePaneView;
 
         public Selection Selection
         {
-            get { return GetSelection(); }
+            get => GetSelection();
             set { if (!IsWrappingNullReference) SetSelection(value.StartLine, value.StartColumn, value.EndLine, value.EndColumn); }
         }
 
@@ -58,16 +40,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             if (IsWrappingNullReference) return new Selection(0, 0, 0, 0);
 
-            int startLine;
-            int startColumn;
-            int endLine;
-            int endColumn;
-            Target.GetSelection(out startLine, out startColumn, out endLine, out endColumn);
+            Target.GetSelection(out var startLine, out var startColumn, out var endLine, out var endColumn);
 
             if (endLine > startLine && endColumn == 1)
             {
                 endLine -= 1;
-                endColumn = CodeModule.GetLines(endLine, 1).Length;
+                using (var codeModule = CodeModule)
+                {
+                    endColumn = codeModule.GetLines(endLine, 1).Length;
+                }
             }
 
             return new Selection(startLine, startColumn, endLine, endColumn);
@@ -86,14 +67,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return null;
             }
 
-            var component = new VBComponent((VB.VBComponent)CodeModule.Parent.Target);
+            IVBComponent component;
+            using (var codeModule = CodeModule)
+            {
+                component = new VBComponent((VB.VBComponent)codeModule.Parent.Target, rewrapping: true);
+            }
             var moduleName = new QualifiedModuleName(component);
             return new QualifiedSelection(moduleName, selection);
         }
 
         private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }

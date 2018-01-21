@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -106,11 +105,9 @@ namespace Rubberduck.Inspections.Concrete
             _settings = settings;
         }
 
-        public override Type Type => typeof(HungarianNotationInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
@@ -121,7 +118,7 @@ namespace Rubberduck.Inspections.Concrete
                                       HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
-                                                                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType, CultureInfo.CurrentUICulture),
+                                                                    RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),
                                                                     issue.IdentifierName),
                                                       issue));
 

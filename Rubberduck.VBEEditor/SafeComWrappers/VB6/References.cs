@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class References : SafeComWrapper<VB.References>, IReferences
     {
-        public References(VB.References target) 
-            : base(target)
+        public References(VB.References target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
             if (!IsWrappingNullReference)
             {
@@ -21,39 +21,37 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public event EventHandler<ReferenceEventArgs> ItemAdded;
         public event EventHandler<ReferenceEventArgs> ItemRemoved;
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBProject Parent
-        {
-            get { return new VBProject(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IVBProject Parent => new VBProject(IsWrappingNullReference ? null : Target.Parent);
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
         private void Target_ItemRemoved(VB.Reference reference)
         {
+            var referenceWrapper = new Reference(reference);
             var handler = ItemRemoved;
-            if (handler == null) { return; }
-            handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
+            if (handler == null)
+            {
+                referenceWrapper.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
         private void Target_ItemAdded(VB.Reference reference)
         {
+            var referenceWrapper = new Reference(reference);
             var handler = ItemAdded;
-            if (handler == null) { return; }
-            handler.Invoke(this, new ReferenceEventArgs(new Reference(reference)));
+            if (handler == null)
+            {
+                referenceWrapper.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
-        public IReference this[object index]
-        {
-            get { return new Reference(Target.Item(index)); }
-        }
+        public IReference this[object index] => new Reference(Target.Item(index));
 
         public IReference AddFromGuid(string guid, int major, int minor)
         {
@@ -72,7 +70,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IReference>(Target, o => new Reference((VB.Reference)o));
+            return new ComWrapperEnumerator<IReference>(Target, comObject => new Reference((VB.Reference)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

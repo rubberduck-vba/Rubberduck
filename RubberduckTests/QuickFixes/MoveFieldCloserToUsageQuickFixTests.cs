@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -8,33 +8,34 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class MoveFieldCloserToUsageQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MoveFieldCloserToUsage_QuickFixWorks()
         {
             const string inputCode =
-@"Private bar As String
+                @"Private bar As String
 Public Sub Foo()
     bar = ""test""
 End Sub";
 
             const string expectedCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim bar As String
 bar = ""test""
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MoveFieldCloserToUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new MoveFieldCloserToUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new MoveFieldCloserToUsageQuickFix(state, new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+                new MoveFieldCloserToUsageQuickFix(state, new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            }
         }
     }
 }

@@ -25,17 +25,18 @@ namespace Rubberduck.Inspections.QuickFixes
             var parameters = ((IParameterizedDeclaration) result.Target).Parameters.Cast<ParameterDeclaration>().ToList();
 
             var signatureParams = parameters.Except(new[] {parameters.Last()}).Select(GetParamText);
-            var propertyGet = "Public Property Get " + result.Target.IdentifierName + "(" + string.Join(", ", signatureParams) + ") As " +
-                parameters.Last().AsTypeName + Environment.NewLine + "End Property" + Environment.NewLine + Environment.NewLine;
+
+            var propertyGet = string.Format("Public Property Get {0}({1}) As {2}{3}End Property{3}{3}",
+                                            result.Target.IdentifierName,
+                                            string.Join(", ", signatureParams),
+                                            parameters.Last().AsTypeName,
+                                            Environment.NewLine);
 
             var rewriter = _state.GetRewriter(result.Target);
             rewriter.InsertBefore(result.Target.Context.Start.TokenIndex, propertyGet);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.WriteOnlyPropertyQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.WriteOnlyPropertyQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;
@@ -43,7 +44,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private string GetParamText(ParameterDeclaration param)
         {
-            return (((VBAParser.ArgContext)param.Context).BYVAL() == null ? "ByRef " : "ByVal ") + param.IdentifierName + " As " + param.AsTypeName;
+            return string.Format("{0} {1} As {2}",
+                ((VBAParser.ArgContext)param.Context).BYVAL() == null ? "ByRef" : "ByVal",
+                param.IdentifierName,
+                param.AsTypeName);
         }
     }
 }

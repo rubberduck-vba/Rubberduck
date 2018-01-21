@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -18,11 +17,9 @@ namespace Rubberduck.Inspections.Concrete
         public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(ApplicationWorksheetFunctionInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }

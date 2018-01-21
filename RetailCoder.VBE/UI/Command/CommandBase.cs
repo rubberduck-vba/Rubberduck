@@ -59,13 +59,11 @@ namespace Rubberduck.UI.Command
         }
 
         public string ShortcutText { get; set; }
-        
-        public virtual RubberduckHotkey Hotkey => RubberduckHotkey.None;
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

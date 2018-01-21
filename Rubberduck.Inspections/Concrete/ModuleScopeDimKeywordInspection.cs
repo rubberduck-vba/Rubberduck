@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -19,17 +18,15 @@ namespace Rubberduck.Inspections.Concrete
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
             : base(state, CodeInspectionSeverity.Suggestion) { }
 
-        public override Type Type => typeof(ModuleScopeDimKeywordInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .SelectMany(result => result.Context.FindChildren<VBAParser.VariableSubStmtContext>()
+                .SelectMany(result => result.Context.GetDescendents<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),

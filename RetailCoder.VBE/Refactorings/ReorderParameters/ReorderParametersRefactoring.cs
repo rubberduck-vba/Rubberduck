@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
@@ -41,21 +42,23 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
-            var pane = _vbe.ActiveCodePane;
-            if (!pane.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                QualifiedSelection? oldSelection;
-                var module = pane.CodeModule;
+                if (!pane.IsWrappingNullReference)
                 {
-                    oldSelection = module.GetQualifiedSelection();
-                }
+                    QualifiedSelection? oldSelection;
+                    using (var module = pane.CodeModule)
+                    {
+                        oldSelection = module.GetQualifiedSelection();
+                    }
 
-                AdjustReferences(_model.TargetDeclaration.References);
-                AdjustSignatures();
+                    AdjustReferences(_model.TargetDeclaration.References);
+                    AdjustSignatures();
 
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
+                    if (oldSelection.HasValue)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
                 }
             }
 
@@ -69,7 +72,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 pane.Selection = target.Selection;
                 Refactor();
@@ -83,7 +86,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 pane.Selection = target.QualifiedSelection.Selection;
                 Refactor();
@@ -106,12 +109,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
 
             var indexOfParamArray = _model.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray >= 0 && indexOfParamArray != _model.Parameters.Count - 1)
+            if (indexOfParamArray < 0 || indexOfParamArray == _model.Parameters.Count - 1)
             {
-                _messageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return false;
+                return true;
             }
-            return true;
+
+            _messageBox.Show(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references)
@@ -120,7 +124,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             {
                 var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
@@ -128,10 +132,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 
                 if (argumentList == null)
                 {
-                    var indexExpression = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                    var indexExpression = reference.Context.GetAncestor<VBAParser.IndexExprContext>();
                     if (indexExpression != null)
                     {
-                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                        argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();
                     }
                 }
 

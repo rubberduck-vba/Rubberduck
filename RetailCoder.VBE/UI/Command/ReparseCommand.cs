@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.UI.CodeExplorer.Commands;
 
 namespace Rubberduck.UI.Command
@@ -15,11 +14,6 @@ namespace Rubberduck.UI.Command
         public ReparseCommand(RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
-        }
-
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.ParseAll; }
         }
 
         protected override bool EvaluateCanExecute(object parameter)

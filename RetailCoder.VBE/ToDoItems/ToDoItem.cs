@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
@@ -9,27 +10,42 @@ namespace Rubberduck.ToDoItems
     /// Represents a Todo comment and the necessary information to display and navigate to that comment.
     /// This is a binding item. Changing it's properties changes how it is displayed.
     /// </summary>
-    public class ToDoItem : INavigateSource
+    public class ToDoItem : INavigateSource, IExportable
     {
-        private readonly string _description;
-        public string Description { get { return _description; } }
+        public string Description { get; }
 
-        private readonly string _type;
-        public string Type { get { return _type; } }
+        public string Type { get; }
 
-        private readonly QualifiedSelection _selection;
-        public QualifiedSelection Selection { get { return _selection; } }
+        public QualifiedSelection Selection { get; }
 
         public ToDoItem(string markerText, CommentNode comment)
         {
-            _description = comment.CommentText;
-            _selection = comment.QualifiedSelection;
-            _type = markerText;
+            Description = comment.CommentText;
+            Selection = comment.QualifiedSelection;
+            Type = markerText;
         }
 
         public NavigateCodeEventArgs GetNavigationArgs()
         {
-            return new NavigateCodeEventArgs(_selection);
+            return new NavigateCodeEventArgs(Selection);
+        }
+
+        public object[] ToArray()
+        {
+            var module = Selection.QualifiedName;
+            return new object[] { Type, Description, module.ProjectName, module.ComponentName, Selection.Selection.StartLine, Selection.Selection.StartColumn };
+        }
+
+        public string ToClipboardString()
+        {
+            var module = Selection.QualifiedName;
+            return string.Format(
+                RubberduckUI.ToDoExplorerToDoItemFormat,
+                Type,
+                Description,
+                module.ProjectName,
+                module.ComponentName,
+                Selection.Selection.StartLine);
         }
     }
 }

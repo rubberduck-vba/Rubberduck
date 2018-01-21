@@ -35,15 +35,9 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         public IEnumerable<RegexSearchResult> Search(string searchPattern, RegexSearchReplaceScope scope = RegexSearchReplaceScope.CurrentFile)
         {
-            Func<string,IEnumerable<RegexSearchResult>> searchFunc;
-            if (_search.TryGetValue(scope, out searchFunc))
-            {
-                return searchFunc.Invoke(searchPattern);
-            }
-            else
-            {
-                return new List<RegexSearchResult>();
-            }
+            return _search.TryGetValue(scope, out var searchFunc) 
+                ? searchFunc.Invoke(searchPattern) 
+                : new List<RegexSearchResult>();
         }
 
         public void Replace(string searchPattern, string replaceValue, RegexSearchReplaceScope scope)
@@ -100,11 +94,13 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)
         {
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
+            using (var pane = _vbe.ActiveCodePane)
             {
-                var results = GetResultsFromModule(module, searchPattern);
-                return results.Where(r => pane.Selection.Contains(r.Selection)).ToList();
+                using (var module = pane.CodeModule)
+                {
+                    var results = GetResultsFromModule(module, searchPattern);
+                    return results.Where(r => pane.Selection.Contains(r.Selection)).ToList();
+                }
             }
         }
 
@@ -121,34 +117,56 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                     };
 
             var state = _parser.State;
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
+            using (var pane = _vbe.ActiveCodePane)
             {
-                var results = GetResultsFromModule(module, searchPattern);
+                using (var module = pane.CodeModule)
+                {
+                    var results = GetResultsFromModule(module, searchPattern);
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(module.Parent), pane.Selection);
-                dynamic block = state.AllDeclarations.FindTarget(qualifiedSelection, declarationTypes).Context.Parent;
-                var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line, block.Stop.Column);
-                return results.Where(r => selection.Contains(r.Selection)).ToList();
+                    using (var moduleParent = module.Parent)
+                    {
+                        var qualifiedSelection =
+                            new QualifiedSelection(new QualifiedModuleName(moduleParent), pane.Selection);
+                        dynamic block = state.AllDeclarations.FindTarget(qualifiedSelection, declarationTypes).Context
+                            .Parent;
+                        var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
+                            block.Stop.Column);
+
+                        return results.Where(r => selection.Contains(r.Selection)).ToList();
+                    }
+                }
             }
         }
 
         private List<RegexSearchResult> SearchCurrentFile(string searchPattern)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
-                return GetResultsFromModule(pane.CodeModule, searchPattern).ToList();
+                using (var codeModule = pane.CodeModule)
+                {
+                    return GetResultsFromModule(codeModule, searchPattern).ToList();
+                }
             }
         }
 
         private List<RegexSearchResult> SearchOpenFiles(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
-            var panes = _vbe.CodePanes;
+            using (var panes = _vbe.CodePanes)
             {
                 foreach (var codePane in panes)
                 {
-                    results.AddRange(GetResultsFromModule(codePane.CodeModule, searchPattern));
+                    try
+                    {
+                        using (var codeModule = codePane.CodeModule)
+                        {
+                            results.AddRange(GetResultsFromModule(codeModule, searchPattern));
+                        }
+                    }
+                    finally
+                    {
+                        codePane.Dispose();
+                    }
                 }
 
                 return results;
@@ -158,35 +176,68 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         private List<RegexSearchResult> SearchCurrentProject(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
-            var project = _vbe.ActiveVBProject;
-            var components = project.VBComponents;
+            using (var project = _vbe.ActiveVBProject)
             {
-                foreach (var component in components)
+                using (var components = project.VBComponents)
                 {
-                    results.AddRange(GetResultsFromModule(component.CodeModule, searchPattern));
+                    foreach (var component in components)
+                    {
+                        try
+                        {
+                            using (var codeModule = component.CodeModule)
+                            {
+                                results.AddRange(GetResultsFromModule(codeModule, searchPattern));
+                            }
+                        }
+                        finally
+                        {
+                            component.Dispose();
+                        }
+                    }
+                    return results;
                 }
-
-                return results;
             }
         }
 
         private List<RegexSearchResult> SearchOpenProjects(string searchPattern)
         {
             var results = new List<RegexSearchResult>();
-            var projects = _vbe.VBProjects;
+            using (var projects = _vbe.VBProjects)
             {
-                var modules = projects
-                    .Where(project => project.Protection == ProjectProtection.Unprotected)
-                    .SelectMany(project => project.VBComponents)
-                    .Select(component => component.CodeModule);
-
-                foreach (var module in modules)
+                foreach (var project in projects)
                 {
-                    results.AddRange(GetResultsFromModule(module, searchPattern));
-                }
+                    try
+                    {
+                        if (project.Protection == ProjectProtection.Locked)
+                        {
+                            continue;
+                        }
 
-                return results;
+                        using (var components = project.VBComponents)
+                        {
+                            foreach (var component in components)
+                            {
+                                try
+                                {
+                                    using (var codeModule = component.CodeModule)
+                                    {
+                                        results.AddRange(GetResultsFromModule(codeModule, searchPattern));
+                                    }
+                                }
+                                finally
+                                {
+                                    component.Dispose();
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        project.Dispose();
+                    }
+                }
             }
+            return results;
         }
     }
 }

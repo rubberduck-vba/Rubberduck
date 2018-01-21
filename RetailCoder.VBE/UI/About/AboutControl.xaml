@@ -6,7 +6,8 @@
              xmlns:about="clr-namespace:Rubberduck.UI.About"
              mc:Ignorable="d" 
              d:DesignWidth="499"
-             d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}">
+             d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}"
+             KeyDown="OnKeyDownHandler">
     <UserControl.Resources>
         <BitmapImage x:Key="Ducky" UriSource="../../Resources/AboutBanner.png" />
         <BitmapImage x:Key="RD" UriSource="../../Resources/Rubberduck.png" />
@@ -22,10 +23,19 @@
             <RowDefinition Height="64" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Grid.Row="0" Background="White" Margin="5,5,0,0">
-            <TextBlock Margin="5,10,5,10" Text="{Binding Version}" Foreground="Black"
-                   FontWeight="Bold" FontSize="14"
-                   VerticalAlignment="Top" HorizontalAlignment="Left" />
+        <Border Grid.Column="0" Grid.Row="0" Background="White" Margin="5,5,0,0"
+                MouseLeftButtonDown="CopyVersionInfo_MouseLeftButtonDown">
+            <StackPanel>
+                <TextBlock x:Name="Version"
+                           Margin="5,10,5,0" Text="{Binding Version}" Foreground="Black"
+                           FontWeight="Bold" FontSize="14"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Label Name="CopyVersionInfo"
+                       Foreground="Gray"
+                       FontSize="8"
+                       HorizontalAlignment="Center"
+                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_CopyVersionLabel}"/>
+            </StackPanel>
         </Border>
         
         <Border Grid.Column="1" Grid.Row="0" Background="White" Margin="0,5,5,0">
@@ -172,8 +182,8 @@ Stephen Bullen (Smart Indenter)
             </StackPanel>
         </Border>
         <TextBlock Grid.Row="2" Grid.Column="1"
-                    Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_Copyright}"
-                    FontSize="8" Margin="10"
-                    VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="11" Width="237" />
+                   Text="{Binding AboutCopyright}"
+                   FontSize="8" Margin="10"
+                   VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="11" Width="237" />
     </Grid>
 </UserControl>

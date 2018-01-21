@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -16,11 +17,9 @@ namespace Rubberduck.Inspections.Concrete
         public ObjectVariableNotSetInspection(RubberduckParserState state)
             : base(state, CodeInspectionSeverity.Error) {  }
 
-        public override Type Type => typeof(ObjectVariableNotSetInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var allInterestingDeclarations =
                 VariableRequiresSetAssignmentEvaluator.GetDeclarationsPotentiallyRequiringSetAssignment(State.AllUserDeclarations);
@@ -36,17 +35,20 @@ namespace Rubberduck.Inspections.Concrete
 
             var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(FlagIfObjectVariableNotSet);
 
-            return objectVariableNotSetReferences.Select(reference =>
+            return objectVariableNotSetReferences
+                .Select(reference =>
                 new IdentifierReferenceInspectionResult(this,
-                                     string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
-                                     State,
-                                     reference));
+                    string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
+                    State, reference));
         }
 
         private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
         {
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-            return (reference.IsAssignment && letStmtContext != null);
+            var allrefs = reference.Declaration.References;
+            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
+
+            return reference.IsAssignment && (letStmtContext != null
+                   || allrefs.Where(r => r.IsAssignment).All(r => r.Context.GetAncestor<VBAParser.SetStmtContext>()?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
         }
     }
 }

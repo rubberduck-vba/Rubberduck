@@ -79,7 +79,7 @@ namespace Rubberduck.UI.FindSymbol
         private string _searchString;
         public string SearchString
         {
-            get { return _searchString; }
+            get => _searchString;
             set
             {
                 SearchResult firstResult = GetSearchResultCollectionOfString(value).FirstOrDefault();
@@ -96,7 +96,7 @@ namespace Rubberduck.UI.FindSymbol
         private SearchResult _selectedItem;
         public SearchResult SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set 
             {
                 if (_selectedItem != value)
@@ -110,7 +110,7 @@ namespace Rubberduck.UI.FindSymbol
         private ObservableCollection<SearchResult> _matchResults;
         public ObservableCollection<SearchResult> MatchResults
         {
-            get { return _matchResults; }
+            get => _matchResults;
             set
             {
                 var oldSelectedItem = SelectedItem;
@@ -140,8 +140,7 @@ namespace Rubberduck.UI.FindSymbol
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

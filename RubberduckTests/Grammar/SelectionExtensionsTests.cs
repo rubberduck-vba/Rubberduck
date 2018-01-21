@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace RubberduckTests.Grammar
 {
-    [TestClass]
+    [TestFixture]
     public class SelectionExtensionsTests
     {
         public class CollectorVBAParserBaseVisitor<Result> : VBAParserBaseVisitor<IEnumerable<Result>>
@@ -40,9 +40,9 @@ namespace RubberduckTests.Grammar
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_ZeroBased_EvilCode()
         {
             const string inputCode = @"
@@ -57,21 +57,23 @@ Debug.Print ""foo""
     End _
   Sub : 'Lame comment!
 ";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(3, 0, 10, 5);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsFalse(selection.IsContainedIn(context));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(3, 0, 10, 5);
+
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsFalse(selection.IsContainedIn(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_Selection_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -88,19 +90,21 @@ Debug.Print ""foo""
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 11, 8);
-            
-            Assert.IsTrue(selection.Contains(context));
-            Assert.IsFalse(selection.IsContainedIn(context));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 11, 8);
+
+                Assert.IsTrue(selection.Contains(context));
+                Assert.IsFalse(selection.IsContainedIn(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_Start_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -117,19 +121,21 @@ Debug.Print ""foo""
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(5, 1, 11, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(5, 1, 11, 8);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsFalse(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsFalse(selection.IsContainedIn(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_End_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -146,19 +152,21 @@ Debug.Print ""foo""
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 10, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 10, 8);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_GetSelection_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -176,20 +184,22 @@ Debug.Print ""foo""
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            pane.Selection = new Selection(4, 1, 11, 6);
-            
-            Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
-            Assert.IsTrue(pane.Selection.IsContainedIn(context));
-            Assert.IsTrue(pane.Selection.Contains(context));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                pane.Selection = new Selection(4, 1, 11, 6);
+
+                Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
+                Assert.IsTrue(pane.Selection.IsContainedIn(context));
+                Assert.IsTrue(pane.Selection.Contains(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_GetSelection_ZeroBased()
         {
             const string inputCode = @"
@@ -204,20 +214,22 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            pane.Selection = new Selection(3, 0, 7, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                pane.Selection = new Selection(3, 0, 7, 7);
 
-            Assert.IsFalse(context.GetSelection().Contains(pane.Selection));
-            Assert.IsFalse(pane.Selection.IsContainedIn(context));
-            Assert.IsFalse(pane.Selection.Contains(context));
+                Assert.IsFalse(context.GetSelection().Contains(pane.Selection));
+                Assert.IsFalse(pane.Selection.IsContainedIn(context));
+                Assert.IsFalse(pane.Selection.Contains(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_GetSelection_OneBased()
         {
             const string inputCode = @"
@@ -232,20 +244,22 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            pane.Selection = new Selection(4, 1, 8, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                pane.Selection = new Selection(4, 1, 8, 8);
 
-            Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
-            Assert.IsTrue(pane.Selection.IsContainedIn(context));
-            Assert.IsTrue(pane.Selection.Contains(context));
+                Assert.IsTrue(context.GetSelection().Contains(pane.Selection));
+                Assert.IsTrue(pane.Selection.IsContainedIn(context));
+                Assert.IsTrue(pane.Selection.Contains(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_Selection_OneBased()
         {
             const string inputCode = @"
@@ -260,19 +274,21 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 8, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 8, 8);
 
-            Assert.IsTrue(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsTrue(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_NotIn_Selection_StartTooLate_OneBased()
         {
             const string inputCode = @"
@@ -287,19 +303,21 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 2, 8, 8);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 2, 8, 8);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_NotIn_Selection_EndsTooSoon_OneBased()
         {
             const string inputCode = @"
@@ -314,18 +332,20 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new SubStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).First();
-            var selection = new Selection(4, 1, 8, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new SubStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).First();
+                var selection = new Selection(4, 1, 8, 7);
 
-            Assert.IsFalse(selection.Contains(context));
-            Assert.IsTrue(selection.IsContainedIn(context));
+                Assert.IsFalse(selection.Contains(context));
+                Assert.IsTrue(selection.IsContainedIn(context));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
+        [Test]
+        [Category("Grammar")]
         public void Context_In_Selection_FirstBlock_OneBased()
         {
             const string inputCode = @"
@@ -350,19 +370,21 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var selection = new Selection(6, 1, 10, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_SecondBlock_OneBased()
         {
             const string inputCode = @"
@@ -387,19 +409,21 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var selection = new Selection(6, 1, 10, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var selection = new Selection(6, 1, 10, 7);
 
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // first If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // second If block
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_Selection_SecondBlock_OneBased()
         {
             const string inputCode = @"
@@ -424,19 +448,21 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var selection = new Selection(12, 1, 16, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var selection = new Selection(12, 1, 16, 7);
 
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Contains_LastToken()
         {
             const string inputCode = @"
@@ -461,21 +487,23 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree);
-            var token = contexts.ElementAt(1).Stop;
-            var selection = new Selection(12, 1, 16, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var token = contexts.ElementAt(1).Stop;
+                var selection = new Selection(12, 1, 16, 7);
 
-            Assert.IsTrue(selection.Contains(token));                   // last token in second If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+                Assert.IsTrue(selection.Contains(token));                   // last token in second If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // first If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // second If block
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Not_Contains_LastToken()
         {
             const string inputCode = @"
@@ -500,19 +528,21 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var context = visitor.Visit(tree).Last();
-            var token = context.Stop;
-            var selection = new Selection(12, 1, 14, 1);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var context = visitor.Visit(tree).Last();
+                var token = context.Stop;
+                var selection = new Selection(12, 1, 14, 1);
 
-            Assert.IsFalse(selection.Contains(token));
+                Assert.IsFalse(selection.Contains(token));
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Contains_Only_Innermost_Nested_Context()
         {
             const string inputCode = @"
@@ -540,22 +570,24 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree); 
-            var token = contexts.ElementAt(0).Stop; 
-            var selection = new Selection(8, 1, 10, 9);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree);
+                var token = contexts.ElementAt(0).Stop;
+                var selection = new Selection(8, 1, 10, 9);
 
-            Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+                Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Contains_Both_Nested_Context()
         {
             const string inputCode = @"
@@ -583,22 +615,24 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
-            var token = contexts.ElementAt(0).Stop;
-            var selection = new Selection(6, 1, 13, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
+                var token = contexts.ElementAt(0).Stop;
+                var selection = new Selection(6, 1, 13, 7);
 
-            Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // first outer If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+                Assert.IsTrue(selection.Contains(token));                   // last token in innermost If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(0)));   // innermost If block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(1)));   // first outer If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(2)));  // second outer If block
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Not_Contained_In_Neither_Nested_Context()
         {
             const string inputCode = @"
@@ -626,22 +660,24 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var visitor = new IfStmtContextElementCollectorVisitor();
-            var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
-            var token = contexts.ElementAt(0).Stop;
-            var selection = new Selection(15, 1, 19, 7);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var visitor = new IfStmtContextElementCollectorVisitor();
+                var contexts = visitor.Visit(tree); //returns innermost statement first then topmost consecutively
+                var token = contexts.ElementAt(0).Stop;
+                var selection = new Selection(15, 1, 19, 7);
 
-            Assert.IsFalse(selection.Contains(token));                  // last token in innermost If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // innermost If block
-            Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer if block
-            Assert.IsTrue(selection.Contains(contexts.ElementAt(2)));   // second outer If block
+                Assert.IsFalse(selection.Contains(token));                  // last token in innermost If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(0)));  // innermost If block
+                Assert.IsFalse(selection.Contains(contexts.ElementAt(1)));  // first outer if block
+                Assert.IsTrue(selection.Contains(contexts.ElementAt(2)));   // second outer If block
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenOnlyBlankLines_EndColumn_Works()
         {
             const string inputCode = @"
@@ -652,21 +688,23 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
 
-            var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
-            var startToken = tree.Start;
-            var endToken = tree.Stop;
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
 
-            // Reminder: token columns are zero-based but lines are one-based
-            Assert.IsTrue(startToken.EndColumn() == 0);
-            Assert.IsTrue(endToken.EndColumn() == 0);
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndColumn() == 0);
+                Assert.IsTrue(endToken.EndColumn() == 0);
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenOnlyBlankLines_EndLine_Works()
         {
             const string inputCode = @"
@@ -677,21 +715,23 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
 
-            var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
-            var startToken = tree.Start;
-            var endToken = tree.Stop;
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
 
-            // Reminder: token columns are zero-based but lines are one-based
-            Assert.IsTrue(startToken.EndLine() == 1);
-            Assert.IsTrue(endToken.EndLine() == 4);
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndLine() == 1);
+                Assert.IsTrue(endToken.EndLine() == 4);
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenBlankLinesWithLeadingSpaces_EndColumn_Works()
         {
             const string inputCode = @"
@@ -701,21 +741,23 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
 
-            var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
-            var startToken = tree.Start;
-            var endToken = tree.Stop;
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
 
-            // Reminder: token columns are zero-based but lines are one-based
-            Assert.IsTrue(startToken.EndColumn() == 0);
-            Assert.IsTrue(endToken.EndColumn() == 3);
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndColumn() == 0);
+                Assert.IsTrue(endToken.EndColumn() == 3);
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenBlankLinesWithLeadingSpaces_EndLine_Works()
         {
             const string inputCode = @"
@@ -725,16 +767,18 @@ End Sub : 'Lame comment!
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
 
-            var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
-            var startToken = tree.Start;
-            var endToken = tree.Stop;
+                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var startToken = tree.Start;
+                var endToken = tree.Stop;
 
-            // Reminder: token columns are zero-based but lines are one-based
-            Assert.IsTrue(startToken.EndLine() == 1);
-            Assert.IsTrue(endToken.EndLine() == 3);
+                // Reminder: token columns are zero-based but lines are one-based
+                Assert.IsTrue(startToken.EndLine() == 1);
+                Assert.IsTrue(endToken.EndLine() == 3);
+            }
         }
     }
 }

@@ -2,10 +2,8 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
-using System;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -23,11 +21,6 @@ namespace Rubberduck.UI.Command.Refactorings
             _indenter = indenter;
         }
 
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.RefactorExtractMethod; }
-        }
-
         protected override bool EvaluateCanExecute(object parameter)
         {
             if (Vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
@@ -43,21 +36,11 @@ namespace Rubberduck.UI.Command.Refactorings
                 {
                     return false;
                 }
-                var selection = qualifiedSelection.Value.Selection;
-
-                var code = module.GetLines(selection.StartLine, selection.LineCount);
 
                 var allDeclarations = _state.AllDeclarations;
                 var extractMethodValidation = new ExtractMethodSelectionValidation(allDeclarations);
-                //var parentProcedure = _state.AllDeclarations.FindSelectedDeclaration(qualifiedSelection.Value, DeclarationExtensions.ProcedureTypes, d => ((ParserRuleContext)d.Context.Parent).GetSelection());
+                
                 var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
-
-                /*
-                var canExecute = parentProcedure != null
-                    && selection.StartColumn != selection.EndColumn
-                    && selection.LineCount > 0
-                    && !string.IsNullOrWhiteSpace(code);
-                */
 
                 return canExecute;
             }
@@ -77,9 +60,19 @@ namespace Rubberduck.UI.Command.Refactorings
 
             var pane = Vbe.ActiveCodePane;
             var module = pane.CodeModule;
-            var component = module.Parent;
             {
-                Func<QualifiedSelection?, string, IExtractMethodModel> createMethodModel = (qs, code) =>
+                var extraction = new ExtractMethodExtraction();
+                // bug: access to disposed closure
+
+                // todo: make ExtractMethodRefactoring request reparse like everyone else.
+                var refactoring = new ExtractMethodRefactoring(module, ParseRequest, CreateMethodModel, extraction);
+                refactoring.InvalidSelection += HandleInvalidSelection;
+                refactoring.Refactor();
+
+
+                void ParseRequest(object obj) => _state.OnParseRequested(obj);
+
+                IExtractMethodModel CreateMethodModel(QualifiedSelection? qs, string code)
                 {
                     if (qs == null)
                     {
@@ -101,15 +94,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     var extractedMethodModel = new ExtractMethodModel(extractedMethod, paramClassify);
                     extractedMethodModel.extract(declarations, qs.Value, code);
                     return extractedMethodModel;
-                };
-
-                var extraction = new ExtractMethodExtraction();
-                // bug: access to disposed closure - todo: make ExtractMethodRefactoring request reparse like everyone else.
-                Action<object> parseRequest = obj => _state.OnParseRequested(obj, component); 
-
-                var refactoring = new ExtractMethodRefactoring(module, parseRequest, createMethodModel, extraction);
-                refactoring.InvalidSelection += HandleInvalidSelection;
-                refactoring.Refactor();
+                }
             }
         }
     }

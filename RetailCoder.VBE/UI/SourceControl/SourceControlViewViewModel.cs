@@ -65,10 +65,10 @@ namespace Rubberduck.UI.SourceControl
             _messageBox = messageBox;
             _environment = environment;
 
-            InitRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.VBProjects.Count != 0);
-            OpenRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.VBProjects.Count != 0);
-            CloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.VBProjects.Count != 0);
-            PublishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.VBProjects.Count != 0 && Provider != null);
+            InitRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => InitRepo(), _ => _vbe.ProjectsCount != 0);
+            OpenRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenRepo(), _ => _vbe.ProjectsCount != 0);
+            CloneRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowCloneRepoGrid(), _ => _vbe.ProjectsCount != 0);
+            PublishRepoCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowPublishRepoGrid(), _ => _vbe.ProjectsCount != 0 && Provider != null);
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => Refresh());
             DismissErrorMessageCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DismissErrorMessage());
             ShowFilePickerCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowFilePicker());
@@ -147,7 +147,7 @@ namespace Rubberduck.UI.SourceControl
                 return;
             }
 
-            Logger.Trace("Component {0] removed", e.Component.Name);
+            Logger.Trace("Component {0} removed", e.Component.Name);
             var fileStatus = Provider.Status().SingleOrDefault(stat => Path.GetFileNameWithoutExtension(stat.FilePath) == e.Component.Name);
             if (fileStatus != null)
             {
@@ -209,9 +209,16 @@ namespace Rubberduck.UI.SourceControl
 
             UiDispatcher.InvokeAsync(() =>
             {
-                foreach (var tab in _tabItems)
+                try
                 {
-                    tab.ViewModel.ResetView();
+                    foreach (var tab in _tabItems)
+                    {
+                        tab.ViewModel.ResetView();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Exception thrown while trying to reset the source control view on the UI thread.");
                 }
             });
         }
@@ -235,7 +242,7 @@ namespace Rubberduck.UI.SourceControl
         private ISourceControlProvider _provider;
         public ISourceControlProvider Provider
         {
-            get { return _provider; } // smell: getter can be private
+            get => _provider; // smell: getter can be private
             set
             {
                 Logger.Trace($"{nameof(Provider)} is being assigned.");
@@ -349,7 +356,7 @@ namespace Rubberduck.UI.SourceControl
         private ObservableCollection<IControlView> _tabItems;
         public ObservableCollection<IControlView> TabItems
         {
-            get { return _tabItems; }
+            get => _tabItems;
             set
             {
                 if (_tabItems != value)
@@ -363,7 +370,7 @@ namespace Rubberduck.UI.SourceControl
         private IControlView _selectedItem;
         public IControlView SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
                 if (_selectedItem != value)
@@ -377,7 +384,7 @@ namespace Rubberduck.UI.SourceControl
         private string _status;
         public string Status
         {
-            get { return _status; }
+            get => _status;
             set
             {
                 if (_status != value)
@@ -391,7 +398,7 @@ namespace Rubberduck.UI.SourceControl
         private bool _displayCloneRepoGrid;
         public bool DisplayCloneRepoGrid
         {
-            get { return _displayCloneRepoGrid; }
+            get => _displayCloneRepoGrid;
             set
             {
                 if (DisplayPublishRepoGrid)
@@ -412,7 +419,7 @@ namespace Rubberduck.UI.SourceControl
         private bool _displayPublishRepoGrid;
         public bool DisplayPublishRepoGrid
         {
-            get { return _displayPublishRepoGrid; }
+            get => _displayPublishRepoGrid;
             set
             {
                 if (DisplayCloneRepoGrid)
@@ -434,7 +441,7 @@ namespace Rubberduck.UI.SourceControl
         private string _cloneRemotePath;
         public string CloneRemotePath
         {
-            get { return _cloneRemotePath; }
+            get => _cloneRemotePath;
             set
             {
                 if (_cloneRemotePath != value)
@@ -451,7 +458,7 @@ namespace Rubberduck.UI.SourceControl
         private string _publishRemotePath;
         public string PublishRemotePath
         {
-            get { return _publishRemotePath; }
+            get => _publishRemotePath;
             set
             {
                 if (_publishRemotePath != value)
@@ -469,7 +476,7 @@ namespace Rubberduck.UI.SourceControl
         private string _localDirectory;
         public string LocalDirectory
         {
-            get { return _localDirectory; }
+            get => _localDirectory;
             set
             {
                 if (_localDirectory != value)
@@ -483,7 +490,7 @@ namespace Rubberduck.UI.SourceControl
         private bool _displayErrorMessageGrid;
         public bool DisplayErrorMessageGrid
         {
-            get { return _displayErrorMessageGrid; }
+            get => _displayErrorMessageGrid;
             set
             {
                 if (_displayErrorMessageGrid != value)
@@ -497,7 +504,7 @@ namespace Rubberduck.UI.SourceControl
         private string _errorTitle;
         public string ErrorTitle
         {
-            get { return _errorTitle; }
+            get => _errorTitle;
             set
             {
                 if (_errorTitle != value)
@@ -511,7 +518,7 @@ namespace Rubberduck.UI.SourceControl
         private string _errorMessage;
         public string ErrorMessage
         {
-            get { return _errorMessage; }
+            get => _errorMessage;
             set
             {
                 if (_errorMessage != value)
@@ -525,7 +532,7 @@ namespace Rubberduck.UI.SourceControl
         private BitmapImage _errorIcon;
         public BitmapImage ErrorIcon
         {
-            get { return _errorIcon; }
+            get => _errorIcon;
             set
             {
                 if (!Equals(_errorIcon, value))
@@ -541,14 +548,13 @@ namespace Rubberduck.UI.SourceControl
 
         private static bool IsValidUri(string path) // note: could it be worth extending Uri for this?
         {
-            Uri uri;
-            return Uri.TryCreate(path, UriKind.Absolute, out uri);
+            return Uri.TryCreate(path, UriKind.Absolute, out var uri);
         }
 
         private bool _displayLoginGrid;
         public bool DisplayLoginGrid
         {
-            get { return _displayLoginGrid; }
+            get => _displayLoginGrid;
             set
             {
                 if (_displayLoginGrid != value)
@@ -604,7 +610,9 @@ namespace Rubberduck.UI.SourceControl
         {
             if (!_isCloning)
             {
+                var oldProvider = Provider;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, Provider.CurrentRepository, credentials);
+                _providerFactory.Release(oldProvider);
             }
             else
             {
@@ -625,9 +633,13 @@ namespace Rubberduck.UI.SourceControl
 
                 try
                 {
+                    var oldProvider = _provider;
                     _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                    _providerFactory.Release(oldProvider);
                     var repo = _provider.InitVBAProject(folderPicker.SelectedPath);
+                    oldProvider = Provider;
                     Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
+                    _providerFactory.Release(oldProvider);
 
                     AddOrUpdateLocalPathConfig((Repository) repo);
                     Status = RubberduckUI.Online;
@@ -651,7 +663,7 @@ namespace Rubberduck.UI.SourceControl
 
         private void SetChildPresenterSourceControlProviders(ISourceControlProvider provider)
         {
-            if (Provider.CurrentBranch == null)
+            if (Provider?.CurrentBranch == null)
             {
                 HandleViewModelError(null,
                     new ErrorEventArgs(RubberduckUI.SourceControl_NoBranchesTitle, RubberduckUI.SourceControl_NoBranchesMessage, NotificationType.Error));
@@ -709,7 +721,9 @@ namespace Rubberduck.UI.SourceControl
                 _listening = false;
                 try
                 {
+                    var oldProvider = Provider;
                     Provider = _providerFactory.CreateProvider(project, repo);
+                    _providerFactory.Release(oldProvider);
                 }
                 catch (SourceControlException ex)
                 {
@@ -742,7 +756,9 @@ namespace Rubberduck.UI.SourceControl
             Logger.Trace("Cloning repo");
             try
             {
+                var oldProvider = _provider;
                 _provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject);
+                _providerFactory.Release(oldProvider);
                 var repo = _provider.Clone(CloneRemotePath, LocalDirectory, credentials);
                 AddOrUpdateLocalPathConfig(new Repository
                 {
@@ -750,8 +766,9 @@ namespace Rubberduck.UI.SourceControl
                     LocalLocation = repo.LocalLocation,
                     RemoteLocation = repo.RemoteLocation
                 });
-
+                oldProvider = Provider;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject, repo);
+                _providerFactory.Release(oldProvider);
             }
             catch (SourceControlException ex)
             {
@@ -862,8 +879,10 @@ namespace Rubberduck.UI.SourceControl
             try
             {
                 _listening = false;
+                var oldProvider = Provider;
                 Provider = _providerFactory.CreateProvider(_vbe.ActiveVBProject,
                     _config.Repositories.First(repo => repo.Id == _vbe.ActiveVBProject.HelpFile));
+                _providerFactory.Release(oldProvider);
                 Status = RubberduckUI.Online;
             }
             catch (SourceControlException ex)
@@ -887,25 +906,33 @@ namespace Rubberduck.UI.SourceControl
 
         private void Refresh()
         {
-            _fileSystemWatcher.EnableRaisingEvents = false;
-            Logger.Trace("FileSystemWatcher.EnableRaisingEvents is disabled.");
-
-            if(Provider == null)
+            try
             {
-                OpenRepoAssignedToProject();
+                _fileSystemWatcher.EnableRaisingEvents = false;
+                Logger.Trace("FileSystemWatcher.EnableRaisingEvents is disabled.");
+
+                if (Provider == null)
+                {
+                    OpenRepoAssignedToProject();
+                }
+                else
+                {
+                    foreach (var tab in TabItems)
+                    {
+                        tab.ViewModel.RefreshView();
+                    }
+
+                    if (Directory.Exists(Provider.CurrentRepository.LocalLocation))
+                    {
+                        _fileSystemWatcher.EnableRaisingEvents = true;
+                        Logger.Trace("FileSystemWatcher.EnableRaisingEvents is enabled.");
+                    }
+                }
             }
-            else
+            catch (Exception exception)
             {
-                foreach (var tab in TabItems)
-                {
-                    tab.ViewModel.RefreshView();
-                }
-
-                if(Directory.Exists(Provider.CurrentRepository.LocalLocation))
-                {
-                    _fileSystemWatcher.EnableRaisingEvents = true;
-                    Logger.Trace("FileSystemWatcher.EnableRaisingEvents is enabled.");
-                }
+                //We catch and log everything since this generally gets dispatched to the UI thread.
+                Logger.Error(exception, "Exception while trying to refresh th source control view.");
             }
         }
 
@@ -916,14 +943,29 @@ namespace Rubberduck.UI.SourceControl
                 return false;
             }
 
-            var project = _vbe.ActiveVBProject ?? (_vbe.VBProjects.Count == 1 ? _vbe.VBProjects[1] : null);
-
-            if (project != null)
+            string projectId;
+            using (var project = _vbe.ActiveVBProject)
             {
-                var possibleRepos = _config.Repositories.Where(repo => repo.Id == _vbe.ActiveVBProject.ProjectId);
-                return possibleRepos.Count() == 1;
+                projectId = project?.ProjectId;
             }
 
+            if (projectId == null && _vbe.ProjectsCount == 1)
+            {
+                using(var projects = _vbe.VBProjects)
+                {
+                    using (var project = projects[1])
+                    {
+                        projectId = project?.ProjectId;
+                    }
+                }
+            }
+
+            if (projectId != null)
+            {
+                var possibleRepos = _config.Repositories.Where(repo => repo.Id == projectId);
+                return possibleRepos.Count() == 1;
+            }
+            
             HandleViewModelError(this, new ErrorEventArgs(RubberduckUI.SourceControl_NoActiveProject, RubberduckUI.SourceControl_ActivateProject, NotificationType.Error));
             return false;
         }

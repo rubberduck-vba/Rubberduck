@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -11,11 +11,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class PassParameterByReferenceQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_PassByReferenceQuickFixWorks()
         {
 
@@ -165,18 +165,14 @@ End Sub
         private string ApplyPassParameterByReferenceQuickFixToVBAFragment(string inputCode)
         {
             var vbe = BuildMockVBEStandardModuleForVBAFragment(inputCode);
-            var inspectionResults = GetAssignedByValParameterInspectionResults(vbe.Object, out var state);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            new PassParameterByReferenceQuickFix(state).Fix(inspectionResults.First());
-            return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
-        }
-
-        private IEnumerable<IInspectionResult> GetAssignedByValParameterInspectionResults(IVBE vbe, out RubberduckParserState state)
-        {
-            state = MockParser.CreateAndParse(vbe);
-
-            var inspection = new AssignedByValParameterInspection(state);
-            return inspection.GetInspectionResults();
+                new PassParameterByReferenceQuickFix(state).Fix(inspectionResults.First());
+                return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
+            }
         }
 
         private Mock<IVBE> BuildMockVBEStandardModuleForVBAFragment(string inputCode)

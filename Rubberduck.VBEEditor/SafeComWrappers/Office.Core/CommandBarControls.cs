@@ -8,25 +8,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarControls : SafeComWrapper<Microsoft.Office.Core.CommandBarControls>, ICommandBarControls
     {
-        public CommandBarControls(Microsoft.Office.Core.CommandBarControls target) 
-            : base(target)
+        public CommandBarControls(Microsoft.Office.Core.CommandBarControls target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public ICommandBar Parent
-        {
-            get { return new CommandBar(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public ICommandBar Parent => new CommandBar(IsWrappingNullReference ? null : Target.Parent);
 
-        public ICommandBarControl this[object index]
-        {
-            get { return new CommandBarControl(!IsWrappingNullReference ? Target[index] : null); }
-        }
+        public ICommandBarControl this[object index] => new CommandBarControl(!IsWrappingNullReference ? Target[index] : null);
 
         public ICommandBarControl Add(ControlType type)
         {
@@ -40,10 +31,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         IEnumerator<ICommandBarControl> IEnumerable<ICommandBarControl>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<ICommandBarControl>(null, o => new CommandBarControl(null))
-                : new ComWrapperEnumerator<ICommandBarControl>(Target,
-                    o => new CommandBarControl((Microsoft.Office.Core.CommandBarControl) o));
+            return new ComWrapperEnumerator<ICommandBarControl>(Target,
+                    comObject => new CommandBarControl((Microsoft.Office.Core.CommandBarControl) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

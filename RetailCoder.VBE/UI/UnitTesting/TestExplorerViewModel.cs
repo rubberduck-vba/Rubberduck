@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using NLog;
@@ -115,12 +114,12 @@ namespace Rubberduck.UI.UnitTesting
             handler?.Invoke(sender, e);
         }
 
-        public INavigateSource SelectedItem { get { return SelectedTest; } }
+        public INavigateSource SelectedItem => SelectedTest;
 
         private TestMethod _selectedTest;
         public TestMethod SelectedTest
         {
-            get { return _selectedTest; }
+            get => _selectedTest;
             set
             {
                 _selectedTest = value;
@@ -131,28 +130,32 @@ namespace Rubberduck.UI.UnitTesting
         private bool _groupByOutcome = true;
         public bool GroupByOutcome
         {
-            get { return _groupByOutcome; }
+            get => _groupByOutcome;
             set
             {
-                if (_groupByOutcome != value)
+                if (_groupByOutcome == value)
                 {
-                    _groupByOutcome = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _groupByOutcome = value;
+                OnPropertyChanged();
             }
         }
 
         private bool _groupByLocation;
         public bool GroupByLocation
         {
-            get { return _groupByLocation; }
+            get => _groupByLocation;
             set
             {
-                if (_groupByLocation != value)
+                if (_groupByLocation == value)
                 {
-                    _groupByLocation = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                _groupByLocation = value;
+                OnPropertyChanged();
             }
         }
 
@@ -346,20 +349,19 @@ namespace Rubberduck.UI.UnitTesting
         {
             const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
 
-            ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
+            ColumnInfo[] columnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
                                            new ColumnInfo("Start Time"), new ColumnInfo("End Time"), new ColumnInfo("Duration (ms)", hAlignment.Right) };
 
             var aResults = Model.Tests.Select(test => test.ToArray()).ToArray();
 
-            var resource = "Rubberduck Test Results - {0}";
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+            var title = string.Format($"Rubberduck Test Results - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
 
             //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(aResults, title, ColumnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, ColumnInfos);
+            var csvResults = ExportFormatter.Csv(aResults, title, columnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(aResults, title);
 
-            MemoryStream strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, ColumnInfos);
+            var strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, columnInfos);
             //Add the formats from richest formatting to least formatting
             _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
             _clipboard.AppendString(DataFormats.Rtf, rtfResults);

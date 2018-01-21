@@ -1,103 +1,113 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class EncapsulatePublicFieldInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PublicField_ReturnsResult()
         {
             const string inputCode =
-@"Public fizz As Boolean";
+                @"Public fizz As Boolean";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EncapsulatePublicFieldInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new EncapsulatePublicFieldInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MultiplePublicFields_ReturnMultipleResult()
         {
             const string inputCode =
-@"Public fizz As Boolean
+                @"Public fizz As Boolean
 Public buzz As Integer, _
        bazz As Integer";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EncapsulatePublicFieldInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new EncapsulatePublicFieldInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(3, inspectionResults.Count());
+                Assert.AreEqual(3, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PrivateField_DoesNotReturnResult()
         {
             const string inputCode =
-@"Private fizz As Boolean";
+                @"Private fizz As Boolean";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EncapsulatePublicFieldInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new EncapsulatePublicFieldInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PublicNonField_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public Sub Foo(ByRef arg1 As String)
+                @"Public Sub Foo(ByRef arg1 As String)
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EncapsulatePublicFieldInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new EncapsulatePublicFieldInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PublicField_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"'@Ignore EncapsulatePublicField
+                @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new EncapsulatePublicFieldInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
+                var inspection = new EncapsulatePublicFieldInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new EncapsulatePublicFieldInspection(null);
             Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "EncapsulatePublicFieldInspection";

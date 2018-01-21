@@ -27,8 +27,8 @@ namespace Rubberduck.UI.SourceControl
 
         private string GetInnerExceptionMessage(Exception ex)
         {
-            return ex is AggregateException
-                ? string.Join(Environment.NewLine, ((AggregateException) ex).InnerExceptions.Select(s => s.Message))
+            return ex is AggregateException exception
+                ? string.Join(Environment.NewLine, exception.InnerExceptions.Select(s => s.Message))
                 : ex.Message;
         }
     }

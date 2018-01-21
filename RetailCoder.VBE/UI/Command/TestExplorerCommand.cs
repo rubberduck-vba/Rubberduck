@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using NLog;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -13,11 +12,6 @@ namespace Rubberduck.UI.Command
             : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
-        }
-
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.TestExplorer; }
         }
 
         protected override void OnExecute(object parameter)

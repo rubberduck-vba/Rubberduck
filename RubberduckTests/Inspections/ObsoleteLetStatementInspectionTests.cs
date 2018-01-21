@@ -1,5 +1,5 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
@@ -7,36 +7,38 @@ using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ObsoleteLetStatementInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteLetStatement_ReturnsResult()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
     Let var2 = var1
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteLetStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteLetStatement_ReturnsResult_MultipleLets()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
@@ -44,42 +46,46 @@ End Sub";
     Let var1 = var2
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteLetStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(2, inspectionResults.Count());
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteLetStatement_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
     var2 = var1
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteLetStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteLetStatement_ReturnsResult_SomeConstantsUsed()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
@@ -87,21 +93,23 @@ End Sub";
     var1 = var2
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteLetStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteLetStatement_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-@"Public Sub Foo()
+                @"Public Sub Foo()
     Dim var1 As Integer
     Dim var2 As Integer
     
@@ -109,25 +117,27 @@ End Sub";
     Let var2 = var1
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
 
-            var inspection = new ObsoleteLetStatementInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspection = new ObsoleteLetStatementInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionType()
         {
             var inspection = new ObsoleteLetStatementInspection(null);
             Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteLetStatementInspection";

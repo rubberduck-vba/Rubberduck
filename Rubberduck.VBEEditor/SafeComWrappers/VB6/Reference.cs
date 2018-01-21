@@ -5,8 +5,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class Reference : SafeComWrapper<VB.Reference>, IReference
     {
-        public Reference(VB.Reference target) 
-            : base(target)
+        public Reference(VB.Reference target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public string Version
         {
-            get { return string.Format("{0}.{1}", Major, Minor); }
+            get { return string.Format($"{Major}.{Minor}"); }
         }
 
         public string Description

@@ -7,47 +7,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class AddIns : SafeComWrapper<VB.Addins>, IAddIns
     {
-        public AddIns(Microsoft.Vbe.Interop.Addins target) : 
-            base(target)
+        public AddIns(VB.Addins target, bool rewrapping = false) : 
+            base(target, rewrapping)
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
         public object Parent // todo: verify if this could be 'public Application Parent' instead
-        {
-            get { return IsWrappingNullReference ? null : Target.Parent; }
-        }
+            => IsWrappingNullReference ? null : Target.Parent;
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IAddIn this[object index]
-        {
-            get { return new AddIn(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public IAddIn this[object index] => new AddIn(IsWrappingNullReference ? null : Target.Item(index));
 
         public void Update()
         {
             Target.Update();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.Addins> other)
         {
@@ -71,9 +48,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IAddIn> IEnumerable<IAddIn>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IAddIn>(null, o => new AddIn(null))
-                : new ComWrapperEnumerator<IAddIn>(Target, o => new AddIn((VB.AddIn) o));
+            return new ComWrapperEnumerator<IAddIn>(Target, comObject => new AddIn((VB.AddIn) comObject));
         }
     }
 }

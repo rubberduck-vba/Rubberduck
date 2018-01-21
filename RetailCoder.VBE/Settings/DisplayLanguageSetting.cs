@@ -23,26 +23,23 @@ namespace Rubberduck.Settings
             try
             {
                 culture = CultureInfo.GetCultureInfo(code);
-                _exists = true;
+                Exists = true;
             }
             catch (CultureNotFoundException)
             {
                 culture = RubberduckUI.Culture;
-                _exists = false;
+                Exists = false;
             }
 
             var resource = "Language_" + Code.Substring(0, 2).ToUpper();
-            _name = RubberduckUI.ResourceManager.GetString(resource, culture);
+            Name = RubberduckUI.ResourceManager.GetString(resource, culture);
         }
 
-        private readonly string _name;
-        private readonly bool _exists;
+        [XmlIgnore]
+        public string Name { get; }
 
         [XmlIgnore]
-        public string Name { get { return _name; } }
-
-        [XmlIgnore]
-        public bool Exists { get { return _exists; } }
+        public bool Exists { get; }
 
         public override bool Equals(object obj)
         {

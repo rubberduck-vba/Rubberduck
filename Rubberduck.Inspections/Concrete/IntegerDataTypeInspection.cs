@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Common;
@@ -20,11 +19,9 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override Type Type => typeof(IntegerDataTypeInspection);
+        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
-        public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
-
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var interfaceImplementationMembers = UserDeclarations.FindInterfaceImplementationMembers().ToHashSet();
 
@@ -40,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(issue =>
                     new DeclarationInspectionResult(this,
                         string.Format(InspectionsUI.IntegerDataTypeInspectionResultFormat,
-                            RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType, CultureInfo.CurrentUICulture), issue.IdentifierName),
+                            RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture), issue.IdentifierName),
                         issue));
 
             return result;

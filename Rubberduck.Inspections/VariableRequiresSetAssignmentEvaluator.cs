@@ -22,13 +22,22 @@ namespace Rubberduck.Inspections
         public static bool RequiresSetAssignment(IdentifierReference reference, RubberduckParserState state)
         {
             //Not an assignment...definitely does not require a 'Set' assignment
-            if (!reference.IsAssignment) { return false; }
+            if (!reference.IsAssignment)
+            {
+                return false;
+            }
             
             //We know for sure it DOES NOT use 'Set'
-            if (!MayRequireAssignmentUsingSet(reference.Declaration)) { return false; }
+            if (!MayRequireAssignmentUsingSet(reference.Declaration))
+            {
+                return false;
+            }
 
             //We know for sure that it DOES use 'Set'
-            if (RequiresAssignmentUsingSet(reference.Declaration)) { return true; }
+            if (RequiresAssignmentUsingSet(reference.Declaration))
+            {
+                return true;
+            }
 
             //We need to look everything to understand the RHS - the assigned reference is probably a Variant 
             var allInterestingDeclarations = GetDeclarationsPotentiallyRequiringSetAssignment(state.AllUserDeclarations);
@@ -38,11 +47,20 @@ namespace Rubberduck.Inspections
 
         private static bool MayRequireAssignmentUsingSet(Declaration declaration)
         {
-            if (declaration.DeclarationType == DeclarationType.PropertyLet) { return false; }
+            if (declaration.DeclarationType == DeclarationType.PropertyLet)
+            {
+                return false;
+            }
 
-            if (declaration.AsTypeName == Tokens.Variant) { return true; }
+            if (declaration.AsTypeName == Tokens.Variant)
+            {
+                return true;
+            }
 
-            if (declaration.IsArray) { return false; }
+            if (declaration.IsArray)
+            {
+                return false;
+            }
 
             if (declaration.AsTypeDeclaration != null)
             {
@@ -100,11 +118,11 @@ namespace Rubberduck.Inspections
             }
 
             //Variants can be assigned with or without 'Set' depending...
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(objectOrVariantRef.Context);
+            var letStmtContext = objectOrVariantRef.Context.GetAncestor<VBAParser.LetStmtContext>();
 
             //A potential error is only possible for let statements: rset, lset and other type specific assignments are always let assignments; 
             //assignemts in for each loop statements are do not require the set keyword.
-            if(letStmtContext == null)
+            if (letStmtContext == null)
             {
                 return false;
             }
@@ -131,20 +149,20 @@ namespace Rubberduck.Inspections
 
         private static bool IsLetAssignment(IdentifierReference reference)
         {
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
             return (reference.IsAssignment && letStmtContext != null);
         }
 
         private static bool IsAlreadyAssignedUsingSet(IdentifierReference reference)
         {
-            var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(reference.Context);
-            return (reference.IsAssignment && setStmtContext != null && setStmtContext.SET() != null);
+            var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
+            return (reference.IsAssignment && setStmtContext?.SET() != null);
         }
 
         private static string GetRHSIdentifierExpressionText(VBAParser.LetStmtContext letStmtContext)
         {
             var expression = letStmtContext.expression();
-            return expression != null && expression is VBAParser.LExprContext ? expression.GetText() : string.Empty;
+            return expression is VBAParser.LExprContext ? expression.GetText() : string.Empty;
         }
 
         private static bool RHSUsesNew(VBAParser.LetStmtContext letStmtContext)

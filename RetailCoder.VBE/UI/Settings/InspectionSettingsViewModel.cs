@@ -15,7 +15,10 @@ namespace Rubberduck.UI.Settings
         public InspectionSettingsViewModel(Configuration config)
         {
             InspectionSettings = new ListCollectionView(
-                    config.UserSettings.CodeInspectionSettings.CodeInspections.ToList());
+                        config.UserSettings.CodeInspectionSettings.CodeInspections
+                                        .OrderBy(inspection => inspection.TypeLabel)
+                                        .ThenBy(inspection => inspection.Description)
+                                        .ToList());
 
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>(
                 config.UserSettings.CodeInspectionSettings.WhitelistedIdentifiers.OrderBy(o => o.Identifier).Distinct());
@@ -39,10 +42,36 @@ namespace Rubberduck.UI.Settings
             InspectionSettings.CommitEdit();
         }
 
+        private string _inspectionSettingsFilter;
+        public string InspectionSettingsFilter
+        {
+            get => _inspectionSettingsFilter;
+            set
+            {
+                if (_inspectionSettingsFilter != value)
+                {
+                    _inspectionSettingsFilter = value;
+                    OnPropertyChanged(nameof(InspectionSettings));
+                }
+            }
+        }
+
         private ListCollectionView _inspectionSettings;
         public ListCollectionView InspectionSettings
         {
-            get { return _inspectionSettings; }
+            get
+            {
+                if (string.IsNullOrEmpty(_inspectionSettingsFilter))
+                {
+                    _inspectionSettings.Filter = null;
+                }
+                else
+                {
+                    _inspectionSettings.Filter = filter => FilterInspectionSettings(filter);
+                }
+                return _inspectionSettings;
+            }
+
             set
             {
                 if (_inspectionSettings != value)
@@ -53,10 +82,16 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool FilterInspectionSettings(object filter)
+        {
+            var cis = filter as CodeInspectionSetting;
+            return cis.Description.ToUpper().Contains(_inspectionSettingsFilter.ToUpper());
+        }
+
         private bool _runInspectionsOnSuccessfulParse;
         public bool RunInspectionsOnSuccessfulParse
         {
-            get { return _runInspectionsOnSuccessfulParse; }
+            get => _runInspectionsOnSuccessfulParse;
             set
             {
                 if (_runInspectionsOnSuccessfulParse != value)
@@ -70,7 +105,7 @@ namespace Rubberduck.UI.Settings
         private ObservableCollection<WhitelistedIdentifierSetting> _whitelistedNameSettings;
         public ObservableCollection<WhitelistedIdentifierSetting> WhitelistedIdentifierSettings
         {
-            get { return _whitelistedNameSettings; }
+            get => _whitelistedNameSettings;
             set
             {
                 if (_whitelistedNameSettings != value)
@@ -129,7 +164,7 @@ namespace Rubberduck.UI.Settings
         {
             InspectionSettings = new ListCollectionView(toLoad.CodeInspections.ToList());
             
-            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
+            InspectionSettings.GroupDescriptions.Add(new PropertyGroupDescription("TypeLabel"));
             
             WhitelistedIdentifierSettings = new ObservableCollection<WhitelistedIdentifierSetting>();
             RunInspectionsOnSuccessfulParse = true;

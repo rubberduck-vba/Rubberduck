@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command
             _configLoader = configLoader;
         }
 
-        private string TestModuleEmptyTemplate = new StringBuilder()
+        private readonly string _testModuleEmptyTemplate = new StringBuilder()
             .AppendLine("'@TestModule")
             .AppendLine("'@Folder(\"Tests\")")
             .AppendLine()
@@ -81,10 +81,10 @@ namespace Rubberduck.UI.Command
             var assertType = string.Format("Rubberduck.{0}AssertClass", settings.AssertMode == AssertMode.StrictAssert ? string.Empty : "Permissive");
             var assertDeclaredAs = DeclarationFormatFor(AssertFieldDeclarationFormat, assertType, settings);
 
-            var fakesType = "Rubberduck.FakesProvider";
+            const string fakesType = "Rubberduck.FakesProvider";
             var fakesDeclaredAs = DeclarationFormatFor(FakesFieldDeclarationFormat, fakesType, settings); 
 
-            var formattedModuleTemplate = string.Format(TestModuleEmptyTemplate, assertDeclaredAs, fakesDeclaredAs);
+            var formattedModuleTemplate = string.Format(_testModuleEmptyTemplate, assertDeclaredAs, fakesDeclaredAs);
 
             if (settings.ModuleInit)
             {
@@ -119,15 +119,17 @@ namespace Rubberduck.UI.Command
 
         private IVBProject GetProject()
         {
-            var activeProject = _vbe.ActiveVBProject;
-            if (!activeProject.IsWrappingNullReference)
+            using (var activeProject = _vbe.ActiveVBProject)
             {
-                return activeProject;
+                if (!activeProject.IsWrappingNullReference)
+                {
+                    return activeProject;
+                }
             }
 
-            var projects = _vbe.VBProjects;
+            using (var projects = _vbe.VBProjects)
             {
-                return projects.Count == 1 
+                return projects.Count == 1
                     ? projects[1]
                     : new VBProject(null);
             }
@@ -157,62 +159,72 @@ namespace Rubberduck.UI.Command
                 project.EnsureReferenceToAddInLibrary();
             }
 
-            var component = project.VBComponents.Add(ComponentType.StandardModule);
-            var module = component.CodeModule;
-            component.Name = GetNextTestModuleName(project);
-
-            var hasOptionExplicit = false;
-            if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
+            using(var components = project.VBComponents)
             {
-                hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines).Contains("Option Explicit");
-            }
-
-            var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
-                "Option Private Module\r\n\r\n");
-
-            if (parameterIsModuleDeclaration)
-            {
-                var moduleCodeBuilder = new StringBuilder();
-                var declarationsToStub = GetDeclarationsToStub((Declaration)parameter);
-
-                foreach (var declaration in declarationsToStub)
+                using (var component = components.Add(ComponentType.StandardModule))
                 {
-                    var name = string.Empty;
-
-                    switch (declaration.DeclarationType)
+                    using (var module = component.CodeModule)
                     {
-                        case DeclarationType.Procedure:
-                        case DeclarationType.Function:
-                            name = declaration.IdentifierName;
-                            break;
-                        case DeclarationType.PropertyGet:
-                            name = $"Get{declaration.IdentifierName}";
-                            break;
-                        case DeclarationType.PropertyLet:
-                            name = $"Let{declaration.IdentifierName}";
-                            break;
-                        case DeclarationType.PropertySet:
-                            name = $"Set{declaration.IdentifierName}";
-                            break;
+                        component.Name = GetNextTestModuleName(project);
+
+                        var hasOptionExplicit = false;
+                        if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
+                        {
+                            hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines)
+                                .Contains("Option Explicit");
+                        }
+
+                        var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
+                            "Option Private Module\r\n\r\n");
+
+                        if (parameterIsModuleDeclaration)
+                        {
+                            var moduleCodeBuilder = new StringBuilder();
+                            var declarationsToStub = GetDeclarationsToStub((Declaration) parameter);
+
+                            foreach (var declaration in declarationsToStub)
+                            {
+                                var name = string.Empty;
+
+                                switch (declaration.DeclarationType)
+                                {
+                                    case DeclarationType.Procedure:
+                                    case DeclarationType.Function:
+                                        name = declaration.IdentifierName;
+                                        break;
+                                    case DeclarationType.PropertyGet:
+                                        name = $"Get{declaration.IdentifierName}";
+                                        break;
+                                    case DeclarationType.PropertyLet:
+                                        name = $"Let{declaration.IdentifierName}";
+                                        break;
+                                    case DeclarationType.PropertySet:
+                                        name = $"Set{declaration.IdentifierName}";
+                                        break;
+                                }
+
+                                var stub = AddTestMethodCommand.TestMethodTemplate.Replace(
+                                    AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
+                                moduleCodeBuilder.AppendLine(stub);
+                            }
+
+                            module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
+                        }
+                        else
+                        {
+                            var defaultTestMethod = settings.DefaultTestStubInNewModule
+                                ? AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder,
+                                    "TestMethod1")
+                                : string.Empty;
+
+                            module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
+                        }
                     }
 
-                    var stub = AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
-                    moduleCodeBuilder.AppendLine(stub);
+                    component.Activate();
                 }
-
-                module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
             }
-            else
-            {
-                var defaultTestMethod = settings.DefaultTestStubInNewModule
-                    ? AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder, "TestMethod1")
-                    : string.Empty;
-
-                module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
-            }
-
-            component.Activate();
-            _state.OnParseRequested(this, component);
+            _state.OnParseRequested(this);
         }
 
         private string GetNextTestModuleName(IVBProject project)

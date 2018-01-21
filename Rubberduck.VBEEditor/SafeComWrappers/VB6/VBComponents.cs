@@ -25,35 +25,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             ItemReloaded = 6
         }
 
-        public VBComponents(VB.VBComponents target)
-            : base(target)
+        public VBComponents(VB.VBComponents target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
             AttachEvents();
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBProject Parent
-        {
-            get { return new VBProject(IsWrappingNullReference ? null : Target.Parent); }
-        }
+        public IVBProject Parent => new VBProject(IsWrappingNullReference ? null : Target.Parent);
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IVBComponent this[object index]
-        {
-            get { return new VBComponent(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public IVBComponent this[object index] => new VBComponent(IsWrappingNullReference ? null : Target.Item(index));
 
         public void Remove(IVBComponent item)
         {
-            if (item != null && item.Target != null && !IsWrappingNullReference)
+            if (item?.Target != null && !IsWrappingNullReference)
             {
                 Target.Remove((VB.VBComponent)item.Target);
             }
@@ -81,9 +69,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent)o));
+            return new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -92,19 +78,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 ? (IEnumerator)new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IVBComponent>)this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        DetatchEvents();
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponents> other)
         {
@@ -137,10 +110,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 var component = this[name];
                 if (component.IsWrappingNullReference)
                 {
-                    throw new IndexOutOfRangeException(string.Format("Could not find document component named '{0}'.", name));
+                    throw new IndexOutOfRangeException($"Could not find document component named '{name}'.");
                 }
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(codeString);
+                using (var codeModule = component.CodeModule)
+                {
+                    codeModule.Clear();
+                    codeModule.AddFromString(codeString);
+                }
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
@@ -157,8 +133,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 var declarationsStartLine = nonAttributeLines + attributeLines + 1;
                 var correctCodeString = string.Join(Environment.NewLine, codeLines.Skip(declarationsStartLine - 1).ToArray());
 
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(correctCodeString);
+                using (var codeModule = component.CodeModule)
+                {
+                    codeModule.Clear();
+                    codeModule.AddFromString(correctCodeString);
+                }
             }
             else if (ext != ComponentTypeExtensions.FormBinaryExtension)
             {
@@ -184,7 +163,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     break;
                 case ComponentType.ActiveXDesigner:
                 case ComponentType.Document:
-                    component.CodeModule.Clear();
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                    }
                     break;
                 default:
                     break;
@@ -250,11 +232,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
         private void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
         {
+            var component = new VBComponent(vbComponent);
             var handler = ComponentRenamed;
-            if (handler != null)
+            if (handler == null)
             {
-                handler.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, new VBComponent(vbComponent), oldName));
+                component.Dispose();
+                return;
             }
+            handler.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, component, oldName));
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
@@ -283,11 +268,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent component)
         {
+            var vbComponent = new VBComponent(component);
             var handler = dispatched;
-            if (handler != null)
+            if (handler == null)
             {
-                handler.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, new VBComponent(component)));
+                vbComponent.Dispose();
+                return;
             }
+            handler?.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, vbComponent));
         }
 
         #endregion

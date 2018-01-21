@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,7 +13,8 @@
     <AssemblyName>Rubberduck</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>480c0557</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -29,7 +31,7 @@
     <NoWarn>1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -42,7 +44,7 @@
     <DocumentationFile>bin\Release\Rubberduck.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1591</NoWarn>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -56,7 +58,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -154,7 +156,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -195,7 +197,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release64|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -231,8 +233,13 @@
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
+    <Reference Include="Castle.Core, Version=4.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.4.0.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EasyHook, Version=2.7.6270.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <HintPath>..\packages\EasyHook.2.7.6270\lib\net40\EasyHook.dll</HintPath>
@@ -245,15 +252,15 @@
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="Infralution.Localization.Wpf">
       <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="LibGit2Sharp, Version=0.24.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150516171636\lib\net40\LibGit2Sharp.dll</HintPath>
+      <HintPath>..\packages\LibGit2Sharp.0.24.0\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
@@ -268,23 +275,8 @@
       <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ninject.Extensions.Conventions">
-      <HintPath>..\packages\ninject.extensions.conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Factory">
-      <HintPath>..\packages\Ninject.Extensions.Factory.3.2.1.0\lib\net45-full\Ninject.Extensions.Factory.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Interception, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.Extensions.Interception.3.2.0.0\lib\net45-full\Ninject.Extensions.Interception.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ninject.Extensions.Interception.DynamicProxy, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.Extensions.Interception.DynamicProxy.3.2.0.0\lib\net45-full\Ninject.Extensions.Interception.DynamicProxy.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ninject.Extensions.NamedScope, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.Extensions.NamedScope.3.2.0.0\lib\net45-full\Ninject.Extensions.NamedScope.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -319,12 +311,6 @@
     <Reference Include="office">
       <HintPath>..\libs\Office.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7">
-      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
-      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\VBA\Accessibility.cs" />
@@ -338,6 +324,7 @@
     <Compile Include="Common\ClipboardWriter.cs" />
     <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
+    <Compile Include="Common\Hotkeys\HotkeyFactory.cs" />
     <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
     <Compile Include="Common\Hotkeys\Hotkey.cs" />
     <Compile Include="Common\IAttachable.cs" />
@@ -351,7 +338,6 @@
     <Compile Include="Common\VariableNameValidator.cs" />
     <Compile Include="Common\WinAPI\RegistryAccess.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
-    <Compile Include="Common\TimerHook.cs" />
     <Compile Include="Common\WinAPI\POINT.cs" />
     <Compile Include="Common\WinAPI\Kernel32.cs" />
     <Compile Include="Common\KeyHookEventArgs.cs" />
@@ -360,7 +346,16 @@
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
+    <Compile Include="Navigation\CodeMetrics\CodeMetricsAnalyst.cs" />
+    <Compile Include="Navigation\CodeMetrics\CodeMetricsResult.cs" />
+    <Compile Include="Navigation\CodeMetrics\CodeMetricsViewModel.cs" />
+    <Compile Include="Navigation\CodeMetrics\ICodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
@@ -373,18 +368,16 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
-    <Compile Include="Root\EnumerableCounterInterceptor.cs" />
-    <Compile Include="Root\InterceptedException.cs" />
-    <Compile Include="Root\InterceptorBase.cs" />
-    <Compile Include="Root\TimedCallLoggerInterceptor.cs" />
+    <Compile Include="Root\RubberduckIoCInstaller.cs" />
     <Compile Include="RubberduckGuid.cs" />
     <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
+    <Compile Include="Settings\ExperimentalFeatures.cs" />
+    <Compile Include="Settings\DefaultSettings.cs" />
     <Compile Include="Settings\GeneralConfigProvider.cs" />
     <Compile Include="Settings\HotkeySettings.cs" />
     <Compile Include="Settings\HotkeyConfigProvider.cs" />
     <Compile Include="Settings\MinimumLogLevel.cs" />
-    <Compile Include="Settings\RubberduckHotkey.cs" />
     <Compile Include="Settings\ToDoListConfigProvider.cs" />
     <Compile Include="Settings\UnitTestConfigProvider.cs" />
     <Compile Include="Settings\WhitelistedIdentifierSetting.cs" />
@@ -405,6 +398,20 @@
     <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeMetrics\CodeMetricsWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\CodeMetrics\CodeMetricsWindow.Designer.cs">
+      <DependentUpon>CodeMetricsWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CodeMetrics\CodeMetricsDockablePresenter.cs" />
+    <Compile Include="UI\Command\CodeMetricsCommand.cs" />
+    <Compile Include="UI\Command\MenuItems\CodeMetricsCommandMenuItem.cs" />
+    <Compile Include="UI\Converters\StringHasNoValueToVisibilityConverter.cs" />
+    <Compile Include="UI\Converters\StringHasValueToVisibilityConverter.cs" />
+    <Compile Include="UI\CodeMetrics\CodeMetricsControl.xaml.cs">
+      <DependentUpon>CodeMetricsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Command\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
@@ -421,13 +428,19 @@
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddComponentCommand.cs" />
+    <Compile Include="UI\Command\FormDesignerFindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProjectCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextDescriptionLabelMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\RefreshCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\FormDesignerFindAllReferencesCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentProjectCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ExportAllCommandMenuItem.cs" />
+    <Compile Include="UI\Command\RefreshCommand .cs" />
     <Compile Include="UI\Controls\EmptyUIRefresh.xaml.cs">
       <DependentUpon>EmptyUIRefresh.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Converters\SubtractionConverter.cs" />
+    <Compile Include="UI\CustomComWrappers\IOleWrapper.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
@@ -458,6 +471,11 @@
       <DependentUpon>ReorderParametersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
+    <Compile Include="UI\RubberduckUI.Designer.cs">
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="UnitTesting\Fakes\CurDir.cs" />
     <Compile Include="UnitTesting\Fakes\DoEvents.cs" />
@@ -496,7 +514,7 @@
     <Compile Include="UI\Command\MenuItems\ParentMenus\CommandBarButtonFactory.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\CommandBarPopupFactory.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\IAppCommandBar.cs" />
-    <Compile Include="UI\Command\MenuItems\RegexAssistantCommand.cs" />
+    <Compile Include="UI\Command\RegexAssistantCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RegexAssistantCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\ParentMenus\ToolsParentMenu.cs" />
     <Compile Include="UI\Command\VersionCheckCommand.cs" />
@@ -559,7 +577,6 @@
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
-    <Compile Include="Root\RubberduckModule.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\GeneralSettings.cs" />
     <Compile Include="Settings\HotkeySetting.cs" />
@@ -707,11 +724,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\Converters\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
@@ -933,12 +945,7 @@
     <Compile Include="UI\ToDoItems\ToDoExplorerWindow.Designer.cs">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\DockableWindowHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\DockableWindowHost.Designer.cs">
-      <DependentUpon>DockableWindowHost.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\DockableWindowHost.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -983,6 +990,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\CodeMetrics\CodeMetricsWindow.resx">
+      <DependentUpon>CodeMetricsWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Inspections\InspectionResultsWindow.resx">
       <DependentUpon>InspectionResultsWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -1009,6 +1019,11 @@
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\RubberduckUI.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -1032,11 +1047,6 @@
       <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\SourceControl\SourceControl.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SourceControl.Designer.cs</LastGenOutput>
@@ -1056,6 +1066,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NLog.dll.nlog">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1139,6 +1152,10 @@
     <Resource Include="Resources\blue-folder-horizontal-open.png" />
     <Resource Include="Resources\blue-folder-horizontal.png" />
     <Resource Include="Resources\lock--exclamation.png" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\document-smiley-sad.png" />
     <None Include="Resources\document-word.png" />
     <None Include="Resources\document-office.png" />
@@ -1289,6 +1306,7 @@
     <Resource Include="Resources\folder-open.png" />
     <Resource Include="Resources\folder.png" />
     <None Include="Resources\RD-300x250-base.png" />
+    <Resource Include="Resources\magnifier-medium.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
@@ -1367,6 +1385,10 @@
     <Page Include="UI\About\AboutControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\CodeMetrics\CodeMetricsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Controls\GroupingGrid.xaml">
       <SubType>Designer</SubType>
@@ -1497,6 +1519,7 @@
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
     <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props'))" />
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>

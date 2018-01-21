@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -14,11 +14,11 @@ using RubberduckTests.Mocks;
 // ReSharper disable InvokeAsExtensionMethod
 namespace RubberduckTests.PostProcessing
 {
-    [TestClass]
+    [TestFixture]
     public class ModuleRewriterTests
     {
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RewriteClearsEntireModule()
         {
             var module = new Mock<ICodeModule>();
@@ -37,8 +37,8 @@ namespace RubberduckTests.PostProcessing
             module.Verify(m => m.Clear());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RewriteDoesNotRewriteIfNotDirty()
         {
             var module = new Mock<ICodeModule>();
@@ -52,29 +52,30 @@ namespace RubberduckTests.PostProcessing
             module.Verify(m => m.Clear(), Times.Never);
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RewriterInsertsRewriterOutputAtLine1()
         {
             const string content = @"Option Explicit";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
 
-            var parser = MockParser.Create(vbe);
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var rewriter = state.GetRewriter(component);
+                rewriter.Rewrite();
+
+                Assert.AreEqual(content, rewriter.GetText());
             }
-
-            var rewriter = parser.State.GetRewriter(component);
-            rewriter.Rewrite();
-
-            Assert.AreEqual(content, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleVariableDeclarationStatement()
         {
             const string expected = @"
@@ -84,29 +85,29 @@ Private foo As String
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-            
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No variable was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("No variable was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);            
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleConstantDeclarationStatement()
         {
             const string expected = @"
@@ -116,29 +117,29 @@ Private Const foo As String = ""Something""
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No constant was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("No constant was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLocalVariableDeclarationStatement()
         {
             const string expected = @"
@@ -152,29 +153,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No variable was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("No variable was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLocalConstantDeclarationStatement()
         {
             const string expected = @"
@@ -188,30 +189,30 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No constant was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                var rewrittenCode = rewriter.GetText();
+                Assert.AreEqual(expected, rewrittenCode);
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("No constant was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            var rewrittenCode = rewriter.GetText();
-            Assert.AreEqual(expected, rewrittenCode);
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesSingleParameterDeclaration()
         {
             const string expected = @"
@@ -224,29 +225,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No parameter was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
-            if (target == null)
-            {
-                Assert.Inconclusive("No parameter was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesEventParameterDeclaration()
         {
             const string expected = @"
@@ -257,29 +258,29 @@ Public Event SomeEvent(ByVal foo As Long)
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No parameter was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
-            if (target == null)
-            {
-                Assert.Inconclusive("No parameter was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesDeclareFunctionParameterDeclaration()
         {
             const string expected = @"
@@ -290,29 +291,29 @@ Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" (ByVal bar As Long) As Long
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No parameter was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
-            if (target == null)
-            {
-                Assert.Inconclusive("No parameter was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstVariableInStatement()
         {
             const string expected = @"
@@ -327,29 +328,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No 'foo' variable was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("No 'foo' variable was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstConstantInStatement()
         {
             const string expected = @"
@@ -364,29 +365,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No 'foo' constant was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("No 'foo' constant was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstParameterInSignature()
         {
             const string expected = @"
@@ -399,29 +400,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Parameter);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No 'foo' parameter was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Parameter);
-            if (target == null)
-            {
-                Assert.Inconclusive("No 'foo' parameter was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastVariableInStatement()
         {
             const string expected = @"
@@ -436,29 +437,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No variable was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("No variable was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastParameterInSignature()
         {
             const string expected = @"
@@ -471,29 +472,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Parameter);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No parameter was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Parameter);
-            if (target == null)
-            {
-                Assert.Inconclusive("No parameter was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastConstantInStatement()
         {
             const string expected = @"
@@ -508,29 +509,29 @@ End Sub
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No 'bar' constant was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("No 'bar' constant was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleVariableDeclarationWithLineContinuations()
         {
             const string expected = @"
@@ -542,29 +543,29 @@ Private foo _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No variable was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("No variable was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleConstantDeclarationWithLineContinuations()
         {
             const string expected = @"
@@ -576,29 +577,29 @@ Private Const foo _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No constant was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("No constant was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstVariableInDeclarationList()
         {
             const string content = @"
@@ -609,29 +610,29 @@ Private bar As Long
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target variable was not found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target variable was not found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstConstantInDeclarationList()
         {
             const string content = @"
@@ -642,29 +643,29 @@ Private Const bar As Long = 42
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target constant was not found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target constant was not found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastVariableInDeclarationList()
         {
             const string content = @"
@@ -675,29 +676,29 @@ Private foo As String
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target variable was not found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target variable was not found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastConstantInDeclarationList()
         {
             const string content = @"
@@ -708,29 +709,29 @@ Private Const foo As String = ""Something""
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target constant was not found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target constant was not found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleVariableInDeclarationList()
         {
             const string content = @"
@@ -741,29 +742,29 @@ Private foo As String, buzz As Integer
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target variable was not found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target variable was not found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleConstantInDeclarationList()
         {
             const string content = @"
@@ -774,29 +775,29 @@ Private Const foo As String = ""Something"", buzz As Integer = 12
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target constant was not found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target constant was not found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleVariableInDeclarationListWithLineContinuations()
         {
             const string content = @"
@@ -810,29 +811,29 @@ Private foo As String, _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target variable was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target variable was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleConstantInDeclarationListWithLineContinuations()
         {
             const string content = @"
@@ -849,25 +850,25 @@ Private Const foo _
 ";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-            var parser = MockParser.Create(vbe);
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status != ParserState.Ready)
+            using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var declarations = state.AllUserDeclarations;
+                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
+                if (target == null)
+                {
+                    Assert.Inconclusive("Target constant was found in test code.");
+                }
+
+                var rewriter = state.GetRewriter(target);
+                rewriter.Remove(target);
+
+                Assert.AreEqual(expected, rewriter.GetText());
             }
-
-            var declarations = parser.State.AllUserDeclarations;
-            var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-            if (target == null)
-            {
-                Assert.Inconclusive("Target constant was found in test code.");
-            }
-
-            var rewriter = parser.State.GetRewriter(target);
-            rewriter.Remove(target);
-
-            Assert.AreEqual(expected, rewriter.GetText());
         }
     }
 }

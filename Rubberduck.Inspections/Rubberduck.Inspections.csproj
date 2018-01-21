@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
@@ -41,8 +41,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -62,18 +61,22 @@
     <Compile Include="Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
+    <Compile Include="Concrete\EmptyModuleInspection.cs" />
     <Compile Include="Concrete\EmptyBlockInspectionListenerBase.cs" />
     <Compile Include="Concrete\EmptyCaseBlockInspection.cs" />
     <Compile Include="Concrete\EmptyDoWhileBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Concrete\EmptyForLoopBlockInspection.cs" />
+    <Compile Include="Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
+    <Compile Include="Concrete\ObsoleteErrorSyntaxInspection.cs" />
     <Compile Include="Concrete\StepIsNotSpecifiedInspection.cs" />
     <Compile Include="Concrete\StepOneIsRedundantInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
     <Compile Include="Concrete\ShadowedDeclarationInspection.cs" />
+    <Compile Include="Concrete\UnhandledOnErrorResumeNextInspection.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
@@ -90,7 +93,6 @@
     <Compile Include="Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
     <Compile Include="Concrete\ImplicitPublicMemberInspection.cs" />
     <Compile Include="Concrete\ImplicitVariantReturnTypeInspection.cs" />
-    <Compile Include="Concrete\MissingAnnotationInspection.cs" />
     <Compile Include="Concrete\MissingAttributeInspection.cs" />
     <Compile Include="Abstract\InspectionResultBase.cs" />
     <Compile Include="Concrete\RedundantByRefModifierInspection.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Concrete\ProcedureCanBeWrittenAsFunctionInspection.cs" />
     <Compile Include="Concrete\ProcedureNotUsedInspection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFix.cs" />
     <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="QuickFixes\AddStepOneQuickFix.cs" />
     <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
@@ -126,6 +129,8 @@
     <Compile Include="Abstract\QuickFixBase.cs" />
     <Compile Include="QuickFixes\RemoveStepOneQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
+    <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFix.cs" />
+    <Compile Include="QuickFixes\RestoreErrorHandlingQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />
@@ -157,7 +162,6 @@
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFix.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFix.cs" />
     <Compile Include="QuickFixes\SplitMultipleDeclarationsQuickFix.cs" />
-    <Compile Include="QuickFixes\SynchronizeAttributesQuickFix.cs" />
     <Compile Include="QuickFixes\UntypedFunctionUsageQuickFix.cs" />
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFix.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFix.cs" />
@@ -204,12 +208,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Debug" /Y</PostBuildEvent>
+    <PostBuildEvent>if "$(Configuration)" == "Debug" (
+   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Debug" /Y
+)
+if "$(Configuration)" == "Release" (
+   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Release" /Y
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

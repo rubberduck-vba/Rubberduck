@@ -20,7 +20,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             try
             {
-                return GetDeclaration(parameter) != null || _vbe.VBProjects.Count == 1;
+                return GetDeclaration(parameter) != null || _vbe.ProjectsCount == 1;
             }
             catch (COMException)
             {
@@ -30,14 +30,28 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public void AddComponent(CodeExplorerItemViewModel node, ComponentType type)
         {
-            var components = node != null
+            using (var components = node != null
                 ? GetDeclaration(node).Project.VBComponents
-                : _vbe.ActiveVBProject.VBComponents;
+                : ComponentsCollectionFromActiveProject())
+            {
+                var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
 
-            var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
+                using (var newComponent = components.Add(type))
+                {
+                    using (var codeModule = newComponent.CodeModule)
+                    {
+                        codeModule.InsertLines(1, folderAnnotation);
+                    }
+                }
+            }
+        }
 
-            var newComponent = components.Add(type);
-            newComponent.CodeModule.AddFromString(folderAnnotation);
+        private IVBComponents ComponentsCollectionFromActiveProject()
+        {
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                return activeProject.VBComponents;
+            }
         }
 
         private Declaration GetDeclaration(CodeExplorerItemViewModel node)
@@ -52,20 +66,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private string GetFolder(CodeExplorerItemViewModel node)
         {
-            if (node == null)
+            switch (node)
             {
-                return DefaultFolder;
+                case null:
+                    return DefaultFolder;
+                case ICodeExplorerDeclarationViewModel declarationNode:
+                    return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
+                        ? DefaultFolder
+                        : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
+                default:
+                    return ((CodeExplorerCustomFolderViewModel)node).FullPath;
             }
-
-            var declarationNode = node as ICodeExplorerDeclarationViewModel;
-            if (declarationNode != null)
-            {
-                return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
-                    ? DefaultFolder
-                    : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
-            }
-
-            return ((CodeExplorerCustomFolderViewModel)node).FullPath;
         }
     }
 }

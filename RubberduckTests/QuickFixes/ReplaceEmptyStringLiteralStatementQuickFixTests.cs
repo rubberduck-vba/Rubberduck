@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
@@ -8,33 +8,34 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ReplaceEmptyStringLiteralStatementQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyStringLiteral_QuickFixWorks()
         {
             const string inputCode =
-@"Public Sub Foo(ByRef arg1 As String)
+                @"Public Sub Foo(ByRef arg1 As String)
     arg1 = """"
 End Sub";
 
             const string expectedCode =
-@"Public Sub Foo(ByRef arg1 As String)
+                @"Public Sub Foo(ByRef arg1 As String)
     arg1 = vbNullString
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new EmptyStringLiteralInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-            var inspection = new EmptyStringLiteralInspection(state);
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                new ReplaceEmptyStringLiteralStatementQuickFix(state).Fix(inspectionResults.First());
 
-            new ReplaceEmptyStringLiteralStatementQuickFix(state).Fix(inspectionResults.First());
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
 
     }

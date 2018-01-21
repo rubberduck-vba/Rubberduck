@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -10,7 +11,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
-        public VBComponent(VB.VBComponent target) : base(target) { }
+        public VBComponent(VB.VBComponent target, bool rewrapping = false) 
+            : base(target, rewrapping)
+        { }
 
         public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
         public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
@@ -22,8 +25,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { if (!IsWrappingNullReference) Target.Name = value; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Name = value;
+                }
+            }
         }
 
         private string SafeName => Path.GetInvalidFileNameChars().Aggregate(Name, (current, c) => current.Replace(c.ToString(), "_"));
@@ -32,13 +41,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                var designer = IsWrappingNullReference
+                using (var designer = IsWrappingNullReference
                     ? null
-                    : Target.Designer as VB.Forms.UserForm;
-
-                return designer == null 
-                    ? new Controls(null) 
-                    : new Controls(designer.Controls);
+                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return designer == null
+                        ? new Controls(null)
+                        : designer.Controls;
+                }
             }
         }
 
@@ -46,13 +56,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             get
             {
-                var designer = IsWrappingNullReference
+                using (var designer = IsWrappingNullReference
                     ? null
-                    : Target.Designer as VB.Forms.UserForm;
-
-                return designer == null
-                    ? new Controls(null)
-                    : new Controls(designer.Selected);
+                    : new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return designer == null
+                        ? new Controls(null)
+                        : designer.Selected;
+                }
             }
         }
         
@@ -64,9 +75,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     return false;
                 }
-                var designer = Target.Designer;
-                var hasDesigner = designer != null;
-                return hasDesigner;
+                using (var designer = new UserForm(Target.Designer as VB.Forms.UserForm))
+                {
+                    return !designer.IsWrappingNullReference;
+                }
             }
         }
 
@@ -109,12 +121,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
             // we need to remove the extra newline before the file gets written to its output location.
 
-            var visibleCode = CodeModule.Content().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+            int legitEmptyLineCount;
+            using (var codeModule = CodeModule)
+            {
+                var visibleCode = codeModule.Content().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+            }
 
             var tempFile = ExportToTempFile();
             var tempFilePath = Directory.GetParent(tempFile).FullName;
-            var contents = File.ReadAllLines(tempFile);
+            var fileEncoding = System.Text.Encoding.Default;    //We use the current ANSI codepage because that is what the VBE does.
+            var contents = File.ReadAllLines(tempFile, fileEncoding);
             var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
             var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
             var declarationsStartLine = nonAttributeLines + attributeLines + 1;
@@ -130,15 +147,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                        contents.Skip(declarationsStartLine + emptyLineCount - legitEmptyLineCount))
                                .ToArray();
             }
-            File.WriteAllLines(path, code);
+            File.WriteAllLines(path, code, fileEncoding);
 
             // LINQ hates this search, therefore, iterate the long way
             foreach (string line in contents)
             {
                 if (line.Contains("OleObjectBlob"))
                 {
-                    var binaryFileName = line.Trim().Split(new Char[] { '"' })[1];
-                    var tempName = Path.GetFileName(tempFile);
+                    var binaryFileName = line.Trim().Split('"')[1];
                     var destPath = Directory.GetParent(path).FullName;
                     if (File.Exists(Path.Combine(tempFilePath, binaryFileName)) && !destPath.Equals(tempFilePath))
                     {
@@ -163,11 +179,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void ExportDocumentModule(string path)
         {
-            var lineCount = CodeModule.CountOfLines;
-            if (lineCount > 0)
+            using (var codeModule = CodeModule)
             {
-                var text = CodeModule.GetLines(1, lineCount);
-                File.WriteAllText(path, text);
+                var lineCount = codeModule.CountOfLines;
+                if (lineCount > 0)
+                {
+                    //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
+                    //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
+                    var text = codeModule.GetLines(1, lineCount);
+                    File.WriteAllText(path, text, Encoding.UTF8);
+                }
             }
         }
 
@@ -177,17 +198,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             Export(path);
             return path;
         }
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        DesignerWindow().Release();
-        //        Controls.Release();
-        //        Properties.Release();
-        //        CodeModule.Release();
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponent> other)
         {

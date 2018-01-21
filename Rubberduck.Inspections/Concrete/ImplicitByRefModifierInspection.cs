@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -21,13 +20,11 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override Type Type => typeof(ImplicitByRefModifierInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; } = new ImplicitByRefModifierListener();
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
             var interfaceImplementationMemberContexts = UserDeclarations.FindInterfaceImplementationMembers().Select(member => member.Context).ToHashSet();

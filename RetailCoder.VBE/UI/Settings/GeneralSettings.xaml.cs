@@ -15,6 +15,6 @@
             DataContext = vm;
         }
 
-        public ISettingsViewModel ViewModel { get { return DataContext as ISettingsViewModel; } }
+        public ISettingsViewModel ViewModel => DataContext as ISettingsViewModel;
     }
 }

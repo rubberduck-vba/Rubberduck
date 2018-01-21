@@ -50,7 +50,7 @@ namespace Rubberduck.UI.Settings
         private bool _alignCommentsWithCode;
         public bool AlignCommentsWithCode
         {
-            get { return _alignCommentsWithCode; }
+            get => _alignCommentsWithCode;
             set 
             { 
                 if (_alignCommentsWithCode != value)
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.Settings
 
         public bool IndentEnumTypeAsProcedure
         {
-            get { return _indentEnumTypeAsProcedure; }
+            get => _indentEnumTypeAsProcedure;
             set
             {
                 if (_indentEnumTypeAsProcedure != value)
@@ -79,7 +79,7 @@ namespace Rubberduck.UI.Settings
         private bool _alignContinuations;
         public bool AlignContinuations
         {
-            get { return _alignContinuations; }
+            get => _alignContinuations;
             set 
             {
                 if (_alignContinuations != value)
@@ -93,7 +93,7 @@ namespace Rubberduck.UI.Settings
         private int _alignDimColumn;
         public int AlignDimColumn
         {
-            get { return _alignDimColumn; }
+            get => _alignDimColumn;
             set
             { 
                 if (_alignDimColumn != value)
@@ -107,7 +107,7 @@ namespace Rubberduck.UI.Settings
         private bool _alignDims;
         public bool AlignDims
         {
-            get { return _alignDims; }
+            get => _alignDims;
             set 
             { 
                 if (_alignDims != value)
@@ -121,7 +121,7 @@ namespace Rubberduck.UI.Settings
         private int _endOfLineCommentColumnSpaceAlignment;
         public int EndOfLineCommentColumnSpaceAlignment
         {
-            get { return _endOfLineCommentColumnSpaceAlignment; }
+            get => _endOfLineCommentColumnSpaceAlignment;
             set
             {
                 if (_endOfLineCommentColumnSpaceAlignment != value)
@@ -135,7 +135,7 @@ namespace Rubberduck.UI.Settings
         private EndOfLineCommentStyle _endOfLineCommentStyle;
         public EndOfLineCommentStyle EndOfLineCommentStyle
         {
-            get { return _endOfLineCommentStyle; }
+            get => _endOfLineCommentStyle;
             set 
             {
                 if (_endOfLineCommentStyle != value)
@@ -149,7 +149,7 @@ namespace Rubberduck.UI.Settings
         private bool _forceCompilerDirectivesInColumn1;
         public bool ForceCompilerDirectivesInColumn1
         {
-            get { return _forceCompilerDirectivesInColumn1; }
+            get => _forceCompilerDirectivesInColumn1;
             set 
             {
                 if (_forceCompilerDirectivesInColumn1 != value)
@@ -163,7 +163,7 @@ namespace Rubberduck.UI.Settings
         private bool _forceDebugStatementsInColumn1;
         public bool ForceDebugStatementsInColumn1
         {
-            get { return _forceDebugStatementsInColumn1; }
+            get => _forceDebugStatementsInColumn1;
             set 
             {
                 if (_forceDebugStatementsInColumn1 != value)
@@ -176,7 +176,7 @@ namespace Rubberduck.UI.Settings
         private bool _ignoreOperatorsInContinuations;
         public bool IgnoreOperatorsInContinuations
         {
-            get { return _ignoreOperatorsInContinuations; }
+            get => _ignoreOperatorsInContinuations;
             set
             {
                 if (_ignoreOperatorsInContinuations != value)
@@ -190,7 +190,7 @@ namespace Rubberduck.UI.Settings
         private bool _indentCase;
         public bool IndentCase
         {
-            get { return _indentCase; }
+            get => _indentCase;
             set
             {
                 if (_indentCase != value)
@@ -204,7 +204,7 @@ namespace Rubberduck.UI.Settings
         private bool _indentCompilerDirectives;
         public bool IndentCompilerDirectives
         {
-            get { return _indentCompilerDirectives; }
+            get => _indentCompilerDirectives;
             set
             {
                 if (_indentCompilerDirectives != value)
@@ -218,7 +218,7 @@ namespace Rubberduck.UI.Settings
         private bool _indentEntireProcedureBody;
         public bool IndentEntireProcedureBody
         {
-            get { return _indentEntireProcedureBody; }
+            get => _indentEntireProcedureBody;
             set
             {
                 if (_indentEntireProcedureBody != value)
@@ -232,7 +232,7 @@ namespace Rubberduck.UI.Settings
         private bool _indentFirstCommentBlock;
         public bool IndentFirstCommentBlock
         {
-            get { return _indentFirstCommentBlock; }
+            get => _indentFirstCommentBlock;
             set
             {
                 if (_indentFirstCommentBlock != value)
@@ -246,7 +246,7 @@ namespace Rubberduck.UI.Settings
         private bool _indentFirstDeclarationBlock;
         public bool IndentFirstDeclarationBlock
         {
-            get { return _indentFirstDeclarationBlock; }
+            get => _indentFirstDeclarationBlock;
             set
             {
                 if (_indentFirstDeclarationBlock != value)
@@ -260,7 +260,7 @@ namespace Rubberduck.UI.Settings
         private int _indentSpaces;
         public int IndentSpaces
         {
-            get { return _indentSpaces; }
+            get => _indentSpaces;
             set
             {
                 if (_indentSpaces != value)
@@ -274,7 +274,7 @@ namespace Rubberduck.UI.Settings
         private bool _spaceProcedures;
         public bool VerticallySpaceProcedures
         {
-            get { return _spaceProcedures; }
+            get => _spaceProcedures;
             set
             {
                 if (_spaceProcedures != value)
@@ -288,7 +288,7 @@ namespace Rubberduck.UI.Settings
         private int _procedureSpacing;
         public int LinesBetweenProcedures
         {
-            get { return _procedureSpacing; }
+            get => _procedureSpacing;
             set
             {
                 if (_procedureSpacing != value)

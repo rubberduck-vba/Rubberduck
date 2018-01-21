@@ -4,7 +4,6 @@ using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -12,17 +11,12 @@ namespace Rubberduck.UI.Command
     public class ExportAllCommand : CommandBase 
     {
         private readonly IVBE _vbe;
-        private IFolderBrowserFactory _factory;
+        private readonly IFolderBrowserFactory _factory;
 
         public ExportAllCommand(IVBE vbe, IFolderBrowserFactory folderBrowserFactory) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _factory = folderBrowserFactory;
-        }
-
-        public override RubberduckHotkey Hotkey
-        {
-            get { return RubberduckHotkey.ExportActiveProject; }
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -51,7 +45,7 @@ namespace Rubberduck.UI.Command
 
             var vbproject = parameter as IVBProject;
 
-            IVBProject project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
+            var project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
             
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 

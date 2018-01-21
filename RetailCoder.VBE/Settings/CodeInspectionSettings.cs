@@ -52,7 +52,7 @@ namespace Rubberduck.Settings
                 {
                     return existing;
                 }
-                var proto = Convert.ChangeType(Activator.CreateInstance(inspectionType), inspectionType);
+                var proto = Convert.ChangeType(Activator.CreateInstance(inspectionType, new object[]{null}), inspectionType);
                 var setting = new CodeInspectionSetting(proto as IInspectionModel);
                 CodeInspections.Add(setting);
                 return setting;
@@ -94,7 +94,7 @@ namespace Rubberduck.Settings
         public string AnnotationName => Name.Replace("Inspection", string.Empty);
 
         [XmlIgnore]
-        public CodeInspectionSeverity DefaultSeverity { get; private set; }
+        public CodeInspectionSeverity DefaultSeverity { get; }
 
         [XmlAttribute]
         public CodeInspectionSeverity Severity { get; set; }
@@ -150,9 +150,7 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            var inspectionSetting = obj as CodeInspectionSetting;
-
-            return inspectionSetting != null &&
+            return obj is CodeInspectionSetting inspectionSetting &&
                    inspectionSetting.InspectionType == InspectionType &&
                    inspectionSetting.Name == Name &&
                    inspectionSetting.Severity == Severity;

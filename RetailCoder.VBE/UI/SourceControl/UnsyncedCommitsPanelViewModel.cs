@@ -12,16 +12,16 @@ namespace Rubberduck.UI.SourceControl
 
         public UnsyncedCommitsPanelViewModel()
         {
-            _fetchCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => FetchCommits(), _ => Provider != null);
-            _pullCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PullCommits(), _ => Provider != null);
-            _pushCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PushCommits(), _ => Provider != null);
-            _syncCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SyncCommits(), _ => Provider != null);
+            FetchCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => FetchCommits(), _ => Provider != null);
+            PullCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PullCommits(), _ => Provider != null);
+            PushCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => PushCommits(), _ => Provider != null);
+            SyncCommitsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => SyncCommits(), _ => Provider != null);
         }
 
         private ISourceControlProvider _provider;
         public ISourceControlProvider Provider
         {
-            get { return _provider; }
+            get => _provider;
             set
             {
                 Logger.Trace("Provider changed");
@@ -55,7 +55,7 @@ namespace Rubberduck.UI.SourceControl
             OutgoingCommits = new ObservableCollection<ICommit>();
         }
 
-        public SourceControlTab Tab { get { return SourceControlTab.UnsyncedCommits; } }
+        public SourceControlTab Tab => SourceControlTab.UnsyncedCommits;
 
         private void Provider_BranchChanged(object sender, EventArgs e)
         {
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.SourceControl
         private ObservableCollection<ICommit> _incomingCommits;
         public ObservableCollection<ICommit> IncomingCommits
         {
-            get { return _incomingCommits; }
+            get => _incomingCommits;
             set
             {
                 if (_incomingCommits != value)
@@ -79,7 +79,7 @@ namespace Rubberduck.UI.SourceControl
         private ObservableCollection<ICommit> _outgoingCommits;
         public ObservableCollection<ICommit> OutgoingCommits
         {
-            get { return _outgoingCommits; }
+            get => _outgoingCommits;
             set
             {
                 if (_outgoingCommits != value)
@@ -93,7 +93,7 @@ namespace Rubberduck.UI.SourceControl
         private string _currentBranch;
         public string CurrentBranch
         {
-            get { return _currentBranch; }
+            get => _currentBranch;
             set
             {
                 if (_currentBranch != value)
@@ -189,59 +189,23 @@ namespace Rubberduck.UI.SourceControl
             }
         }
 
-        private readonly CommandBase _fetchCommitsCommand;
-        public CommandBase FetchCommitsCommand
-        {
-            get
-            {
-                return _fetchCommitsCommand;
-            }
-        }
+        public CommandBase FetchCommitsCommand { get; }
 
-        private readonly CommandBase _pullCommitsCommand;
-        public CommandBase PullCommitsCommand
-        {
-            get
-            {
-                return _pullCommitsCommand;
-            }
-        }
+        public CommandBase PullCommitsCommand { get; }
 
-        private readonly CommandBase _pushCommitsCommand;
-        public CommandBase PushCommitsCommand
-        {
-            get
-            {
-                return _pushCommitsCommand;
-            }
-        }
+        public CommandBase PushCommitsCommand { get; }
 
-        private readonly CommandBase _syncCommitsCommand;
-        public CommandBase SyncCommitsCommand
-        {
-            get
-            {
-                return _syncCommitsCommand;
-            }
-        }
+        public CommandBase SyncCommitsCommand { get; }
 
         public event EventHandler<ErrorEventArgs> ErrorThrown;
         private void RaiseErrorEvent(string message, Exception innerException, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(message, innerException, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(message, innerException, notificationType));
         }
 
         private void RaiseErrorEvent(string title, string message, NotificationType notificationType)
         {
-            var handler = ErrorThrown;
-            if (handler != null)
-            {
-                handler(this, new ErrorEventArgs(title, message, notificationType));
-            }
+            ErrorThrown?.Invoke(this, new ErrorEventArgs(title, message, notificationType));
         }
     }
 }

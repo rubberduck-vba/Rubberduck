@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -15,11 +14,9 @@ namespace Rubberduck.Inspections.Concrete
         public HostSpecificExpressionInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override Type Type => typeof(HostSpecificExpressionInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)
                 .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionsUI.HostSpecificExpressionInspectionResultFormat, item.IdentifierName), item));

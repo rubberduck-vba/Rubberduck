@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly RubberduckParserState _state;
 
         public IgnoreOnceQuickFix(RubberduckParserState state, IEnumerable<IInspection> inspections)
-            : base(inspections.Select(s => s.Type).Where(i => i.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray())
+            : base(inspections.Select(s => s.GetType()).Where(i => i.CustomAttributes.All(a => a.AttributeType != typeof(CannotAnnotateAttribute))).ToArray())
         {
             _state = state;
         }
@@ -31,14 +31,17 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
 
-            var module = result.QualifiedSelection.QualifiedName.Component.CodeModule;
-            var annotationLine = result.QualifiedSelection.Selection.StartLine;
-            while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
+            int annotationLine;
+            string codeLine;
+            using (var module = result.QualifiedSelection.QualifiedName.Component.CodeModule)
             {
-                annotationLine--;
+                annotationLine = result.QualifiedSelection.Selection.StartLine;
+                while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
+                {
+                    annotationLine--;
+                }
+                codeLine = annotationLine == 1 ? string.Empty : module.GetLines(annotationLine - 1, 1);
             }
-            var codeLine = annotationLine == 1 ? string.Empty : module.GetLines(annotationLine - 1, 1);
-
             RuleContext treeRoot = result.Context;
             while (treeRoot.Parent != null)
             {
@@ -83,10 +86,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.IgnoreOnce;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.IgnoreOnce;
 
         private class AnnotationListener : VBAParserBaseListener
         {

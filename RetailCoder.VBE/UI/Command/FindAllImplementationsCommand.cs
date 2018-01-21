@@ -27,6 +27,8 @@ namespace Rubberduck.UI.Command
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IVBE _vbe;
 
+        private new static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
             RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService)
@@ -63,28 +65,35 @@ namespace Rubberduck.UI.Command
 
         private void UpdateTab()
         {
-            var findImplementationsTabs = _viewModel.Tabs.Where(
-                t => t.Header.StartsWith(RubberduckUI.AllImplementations_Caption.Replace("'{0}'", ""))).ToList();
-
-            foreach (var tab in findImplementationsTabs)
+            try
             {
-                var newTarget = FindNewDeclaration(tab.Target);
-                if (newTarget == null)
-                {
-                    tab.CloseCommand.Execute(null);
-                    return;
-                }
+                var findImplementationsTabs = _viewModel.Tabs.Where(
+                    t => t.Header.StartsWith(RubberduckUI.AllImplementations_Caption.Replace("'{0}'", ""))).ToList();
 
-                var vm = CreateViewModel(newTarget);
-                if (vm.SearchResults.Any())
+                foreach (var tab in findImplementationsTabs)
                 {
-                    tab.SearchResults = vm.SearchResults;
-                    tab.Target = vm.Target;
+                    var newTarget = FindNewDeclaration(tab.Target);
+                    if (newTarget == null)
+                    {
+                        tab.CloseCommand.Execute(null);
+                        return;
+                    }
+
+                    var vm = CreateViewModel(newTarget);
+                    if (vm.SearchResults.Any())
+                    {
+                        tab.SearchResults = vm.SearchResults;
+                        tab.Target = vm.Target;
+                    }
+                    else
+                    {
+                        tab.CloseCommand.Execute(null);
+                    }
                 }
-                else
-                {
-                    tab.CloseCommand.Execute(null);
-                }
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception, "Exception thrown while trying to update the find implementations tab.");
             }
         }
 
@@ -157,8 +166,7 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindTarget(object parameter)
         {
-            var declaration = parameter as Declaration;
-            if (declaration != null)
+            if (parameter is Declaration declaration)
             {
                 return declaration;
             }
@@ -169,10 +177,9 @@ namespace Rubberduck.UI.Command
         private IEnumerable<Declaration> FindImplementations(Declaration target)
         {
             var items = _state.AllDeclarations;
-            string name;
             var implementations = (target.DeclarationType == DeclarationType.ClassModule
-                ? FindAllImplementationsOfClass(target, items, out name)
-                : FindAllImplementationsOfMember(target, items, out name)) ?? new List<Declaration>();
+                ? FindAllImplementationsOfClass(target, items, out _)
+                : FindAllImplementationsOfMember(target, items, out _)) ?? new List<Declaration>();
 
             return implementations;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Threading;
+using NLog;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -61,7 +62,11 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public static void Shutdown()
         {
-            Invoke(() => Dispatcher.CurrentDispatcher.InvokeShutdown());
+            Invoke(() =>
+            {
+                LogManager.GetCurrentClassLogger().Debug("Invoking shutdown on UI thread dispatcher.");
+                Dispatcher.CurrentDispatcher.InvokeShutdown();
+            });
         }
     }
 }

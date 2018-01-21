@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -8,12 +9,13 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveUnusedParameterQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
+        [Apartment(ApartmentState.STA)]
         public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
         {
             const string inputCode = @"
@@ -25,15 +27,15 @@ Private Sub Foo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ParameterNotUsedInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
-                inspectionResults.First());
-            Assert.AreEqual(expectedCode, component.CodeModule.Content());
+                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
+                    inspectionResults.First());
+                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            }
         }
-
     }
 }

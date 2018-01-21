@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -21,25 +20,25 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ObsoleteCallStatementListener();
         }
 
-        public override Type Type => typeof(ObsoleteCallStatementInspection);
-
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var results = new List<IInspectionResult>();
 
             foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line)))
             {
-                var module = context.ModuleName.Component.CodeModule;
-                var lines = module.GetLines(context.Context.Start.Line,
-                    context.Context.Stop.Line - context.Context.Start.Line + 1);
+                string lines;
+                using (var module = context.ModuleName.Component.CodeModule)
+                {
+                    lines = module.GetLines(context.Context.Start.Line,
+                        context.Context.Stop.Line - context.Context.Start.Line + 1);
+                }
 
                 var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
 
-                int commentIndex;
-                if (stringStrippedLines.HasComment(out commentIndex))
+                if (stringStrippedLines.HasComment(out var commentIndex))
                 {
                     stringStrippedLines = stringStrippedLines.Remove(commentIndex);
                 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
@@ -9,15 +9,15 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
 
-    [TestClass]
+    [TestFixture]
     public class ExtractedMethodTests
     {
-        [TestClass]
+        [TestFixture]
         public class WhenAMethodIsDefined : ExtractedMethodTests
         {
 
-            [TestCategory("ExtractedMethodTests")]
-            [TestMethod]
+            [Category("ExtractedMethodTests")]
+            [Test]
             public void shouldReturnStringCorrectly()
             {
                 var method = new ExtractedMethod();
@@ -36,11 +36,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
 
             }
         }
-        [TestClass]
+        [TestFixture]
         public class WhenDeclarationsContainNoPreviousNewMethod : ExtractedMethodTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldReturnNewMethod()
             {
                 var inputCode = @"
@@ -51,28 +51,30 @@ Private Sub Foo()
 End Sub";
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var SUT = new ExtractedMethod();
+                    var SUT = new ExtractedMethod();
 
-                var expected = "NewMethod";
-                //Act
-                var actual = SUT.getNewMethodName(declarations);
+                    var expected = "NewMethod";
+                    //Act
+                    var actual = SUT.getNewMethodName(declarations);
 
-                //Assert
+                    //Assert
 
-                Assert.AreEqual(expected, actual);
+                    Assert.AreEqual(expected, actual);
 
+                }
             }
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenDeclarationsContainAPreviousNewMethod
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldReturnAnIncrementedMethodName()
             {
                 #region inputCode
@@ -89,27 +91,29 @@ End Sub";
                 #endregion inputCode
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var SUT = new ExtractedMethod();
+                    var SUT = new ExtractedMethod();
 
-                var expected = "NewMethod1";
-                //Act
-                var actual = SUT.getNewMethodName(declarations);
+                    var expected = "NewMethod1";
+                    //Act
+                    var actual = SUT.getNewMethodName(declarations);
 
-                //Assert
-                Assert.AreEqual(expected, actual);
+                    //Assert
+                    Assert.AreEqual(expected, actual);
 
+                }
             }
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenDeclarationsContainAPreviousUnOrderedNewMethod
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldReturnAnLeastNextMethod()
             {
                 #region inputCode
@@ -134,18 +138,20 @@ End Sub";
                 #endregion inputCode
 
                 QualifiedModuleName qualifiedModuleName;
-                var state = MockParser.ParseString(inputCode, out qualifiedModuleName);
-                var declarations = state.AllDeclarations;
+                using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                {
+                    var declarations = state.AllDeclarations;
 
-                var SUT = new ExtractedMethod();
+                    var SUT = new ExtractedMethod();
 
-                var expected = "NewMethod2";
-                //Act
-                var actual = SUT.getNewMethodName(declarations);
+                    var expected = "NewMethod2";
+                    //Act
+                    var actual = SUT.getNewMethodName(declarations);
 
-                //Assert
-                Assert.AreEqual(expected, actual);
+                    //Assert
+                    Assert.AreEqual(expected, actual);
 
+                }
             }
 
         }

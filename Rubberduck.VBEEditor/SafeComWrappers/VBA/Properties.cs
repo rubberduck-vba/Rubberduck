@@ -7,41 +7,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Properties : SafeComWrapper<VB.Properties>, IProperties
     {
-        public Properties(VB.Properties target) 
-            : base(target)
+        public Properties(VB.Properties target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
-        public int Count
-        {
-            get { return IsWrappingNullReference ? 0 : Target.Count; }
-        }
+        public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IApplication Application
-        {
-            get { return new Application(IsWrappingNullReference ? null : Target.Application); }
-        }
+        public IApplication Application => new Application(IsWrappingNullReference ? null : Target.Application);
 
-        public object Parent
-        {
-            get { return IsWrappingNullReference ? null : Target.Parent; }
-        }
+        public object Parent => IsWrappingNullReference ? null : Target.Parent;
 
-        public IProperty this[object index]
-        {
-            get { return new Property(IsWrappingNullReference ? null : Target.Item(index)); }
-        }
+        public IProperty this[object index] => new Property(IsWrappingNullReference ? null : Target.Item(index));
 
         IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IProperty>(null, o => new Property(null))
-                : new ComWrapperEnumerator<IProperty>(Target, o => new Property((VB.Property) o));
+            return new ComWrapperEnumerator<IProperty>(Target, comObject => new Property((VB.Property) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -50,18 +33,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IProperty>) this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.Properties> other)
         {

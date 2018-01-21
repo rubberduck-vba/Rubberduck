@@ -25,10 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(result.Target);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveUnusedDeclarationQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveUnusedDeclarationQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

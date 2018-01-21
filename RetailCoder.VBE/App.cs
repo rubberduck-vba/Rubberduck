@@ -120,7 +120,7 @@ namespace Rubberduck
             _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
             _appMenus.Localize();
 
-            if (_config.UserSettings.GeneralSettings.CheckVersion)
+            if (_config.UserSettings.GeneralSettings.CanCheckVersion)
             {
                 _checkVersionCommand.Execute(null);
             }
@@ -165,7 +165,7 @@ namespace Rubberduck
             try
             {
                 Logger.Trace("Checking for legacy Smart Indenter settings.");
-                if (_config.UserSettings.GeneralSettings.SmartIndenterPrompted ||
+                if (_config.UserSettings.GeneralSettings.IsSmartIndenterPrompted ||
                     !_config.UserSettings.IndenterSettings.LegacySettingsExist())
                 {
                     return;
@@ -177,7 +177,7 @@ namespace Rubberduck
                     Logger.Trace("Attempting to load legacy Smart Indenter settings.");
                     _config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
-                _config.UserSettings.GeneralSettings.SmartIndenterPrompted = true;
+                _config.UserSettings.GeneralSettings.IsSmartIndenterPrompted = true;
                 _configService.SaveConfiguration(_config);
             }
             catch 
@@ -192,11 +192,11 @@ namespace Rubberduck
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
             var headers = new List<string>
             {
-                string.Format("\r\n\tRubberduck version {0} loading:", version),
-                string.Format("\tOperating System: {0} {1}", Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86"),
-                string.Format("\tHost Product: {0} {1}", Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86"),
-                string.Format("\tHost Version: {0}", Application.ProductVersion),
-                string.Format("\tHost Executable: {0}", Path.GetFileName(Application.ExecutablePath)),
+                $"\r\n\tRubberduck version {version} loading:",
+                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}",
+                $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
+                $"\tHost Version: {Application.ProductVersion}",
+                $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
             };
             LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
         }

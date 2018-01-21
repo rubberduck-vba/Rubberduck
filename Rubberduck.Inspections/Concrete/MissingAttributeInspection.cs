@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -24,14 +23,12 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingMemberAttributeListener(state);
         }
 
-        public override Type Type => typeof(MissingAttributeInspection);
-
         public override ParsePass Pass => ParsePass.AttributesPass;
 
         public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Select(context =>
             {

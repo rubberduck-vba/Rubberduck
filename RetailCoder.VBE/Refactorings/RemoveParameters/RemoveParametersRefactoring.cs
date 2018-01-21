@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -10,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -41,18 +43,22 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             QualifiedSelection? oldSelection = null;
-            var pane = _vbe.ActiveCodePane;
-            var module = pane.CodeModule;
-            if (!module.IsWrappingNullReference)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                oldSelection = module.GetQualifiedSelection();
-            }
+                using (var module = pane.CodeModule)
+                {
+                    if (!module.IsWrappingNullReference)
+                    {
+                        oldSelection = module.GetQualifiedSelection();
+                    }
+                }
 
-            RemoveParameters();
+                RemoveParameters();
 
-            if (oldSelection.HasValue)
-            {
-                pane.Selection = oldSelection.Value.Selection;
+                if (oldSelection.HasValue)
+                {
+                    pane.Selection = oldSelection.Value.Selection;
+                }
             }
 
             _model.State.OnParseRequested(this);
@@ -116,9 +122,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
@@ -127,10 +132,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 if (argumentList == null)
                 {
                     var indexExpression =
-                        ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                        reference.Context.GetAncestor<VBAParser.IndexExprContext>();
                     if (indexExpression != null)
                     {
-                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                        argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();
                     }
                 }
 
@@ -139,7 +144,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                RemoveCallArguments(argumentList, module);
+                using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                {
+                    RemoveCallArguments(argumentList, module);
+                }
             }
         }
 
@@ -219,8 +227,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers().Where(item =>
                 item.ProjectId == _model.TargetDeclaration.ProjectId
                 &&
-                item.IdentifierName ==
-                _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
+                item.IdentifierName == $"{_model.TargetDeclaration.ComponentName}_{_model.TargetDeclaration.IdentifierName}");
 
             foreach (var interfaceImplentation in interfaceImplementations)
             {

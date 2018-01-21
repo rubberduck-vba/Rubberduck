@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
@@ -6,15 +6,16 @@ using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
+using RubberduckTests.Common;
 
 namespace RubberduckTests.PreProcessing
 {
-    [TestClass]
+    [TestFixture]
     public class VBAPreprocessorTests
     {
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Preprocessor")]
+        [Category("Preprocessor")]
         public void TestPreprocessor()
         {
             foreach (var testfile in GetTestFiles())
@@ -36,7 +37,7 @@ namespace RubberduckTests.PreProcessing
         {
             // Reference_Module_1 = raw, unprocessed code.
             // Reference_Module_1_Processed = result of preprocessor.
-            var all = Directory.EnumerateFiles("Preprocessor").ToList();
+            var all = Directory.EnumerateFiles("Testfiles//Preprocessor").ToList();
             var rawAndProcessed = all
                 .Where(file => !file.Contains("_Processed"))
                 .Select(file => Tuple.Create(file, all.First(f => f.Contains(Path.GetFileNameWithoutExtension(file)) && f.Contains("_Processed")))).ToList();
@@ -50,15 +51,17 @@ namespace RubberduckTests.PreProcessing
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
             
-            var state = MockParser.CreateAndParse(vbe.Object);
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var parsed = tree.GetText();
-            var withoutEOF = parsed;
-            while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
-                withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var parsed = tree.GetText();
+                var withoutEOF = parsed;
+                while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+                {
+                    withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+                }
+                return withoutEOF;
             }
-            return withoutEOF;
         }
     }
 }

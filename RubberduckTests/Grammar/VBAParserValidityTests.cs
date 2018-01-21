@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using System;
@@ -9,16 +9,17 @@ using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Symbols;
+using RubberduckTests.Common;
 
 namespace RubberduckTests.Grammar
 {
-    [TestClass]
+    [TestFixture]
     public class VBAParserValidityTests
     {
-        [TestMethod]
-        [TestCategory("LongRunning")]
-        [TestCategory("Grammar")]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("LongRunning")]
+        [Category("Grammar")]
+        [Category("Parser")]
         [DeploymentItem(@"Testfiles\")]
         public void TestParser()
         {
@@ -37,7 +38,7 @@ namespace RubberduckTests.Grammar
 
         private IEnumerable<Tuple<string, string>> GetTestFiles()
         {
-            return Directory.EnumerateFiles("Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
+            return Directory.EnumerateFiles("Testfiles//Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
         }
 
         private static string Parse(string code, string filename)
@@ -45,14 +46,21 @@ namespace RubberduckTests.Grammar
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
 
-            var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory());
-            var parser = MockParser.Create(vbe.Object, state);
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.Error) { Assert.Inconclusive("Parser Error: " + filename); }
+            string parsedCode;
+            var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                parser.Parse(new CancellationTokenSource());
 
-            var tree = state.GetParseTree(new QualifiedModuleName(component));
-            var parsed = tree.GetText();
-            var withoutEOF = parsed;
+                if (state.Status == ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error: " + filename);
+                }
+
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                parsedCode = tree.GetText();
+            }
+            var withoutEOF = parsedCode;
             while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
             {
                 withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);

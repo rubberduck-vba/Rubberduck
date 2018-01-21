@@ -6,14 +6,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Control : SafeComWrapper<VB.Forms.Control>, IControl
     {
-        public Control(VB.Forms.Control target) 
-            : base(target)
+        public Control(Microsoft.Vbe.Interop.Forms.Control target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
             set { if (!IsWrappingNullReference) Target.Name = value; }
         }
 

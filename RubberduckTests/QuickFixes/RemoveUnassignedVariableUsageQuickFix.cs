@@ -1,17 +1,17 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveUnassignedVariableUsageQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariableUsage_QuickFixWorks()
         {
             const string inputCode =
@@ -29,13 +29,14 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new UnassignedVariableUsageInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new RemoveUnassignedVariableUsageQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new RemoveUnassignedVariableUsageQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
         }
     }
 }

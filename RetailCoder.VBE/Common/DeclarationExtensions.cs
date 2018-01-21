@@ -42,7 +42,7 @@ namespace Rubberduck.Common
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+                throw new ArgumentException("Target DeclarationType is not Variable.", nameof(target));
             }
 
             var statement = GetVariableStmtContext(target) ?? target.Context; // undeclared variables don't have a VariableStmtContext
@@ -59,7 +59,7 @@ namespace Rubberduck.Common
         {
             if (target.DeclarationType != DeclarationType.Constant)
             {
-                throw new ArgumentException("Target DeclarationType is not Constant.", "target");
+                throw new ArgumentException("Target DeclarationType is not Constant.", nameof(target));
             }
 
             var statement = GetConstStmtContext(target);
@@ -76,7 +76,7 @@ namespace Rubberduck.Common
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+                throw new ArgumentException("Target DeclarationType is not Variable.", nameof(target));
             }
 
             Debug.Assert(target.IsUndeclared || target.Context is VBAParser.VariableSubStmtContext);
@@ -99,7 +99,7 @@ namespace Rubberduck.Common
         {
             if (target.DeclarationType != DeclarationType.Constant)
             {
-                throw new ArgumentException("Target DeclarationType is not Constant.", "target");
+                throw new ArgumentException("Target DeclarationType is not Constant.", nameof(target));
             }
 
             var statement = target.Context.Parent as VBAParser.ConstStmtContext;
@@ -121,11 +121,11 @@ namespace Rubberduck.Common
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+                throw new ArgumentException("Target DeclarationType is not Variable.", nameof(target));
             }
 
-            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
-            return statement != null && statement.children.OfType<VBAParser.VariableSubStmtContext>().Count() > 1;
+            return target.Context.Parent is VBAParser.VariableListStmtContext statement 
+                && statement.children.OfType<VBAParser.VariableSubStmtContext>().Count() > 1;
         }
 
         /// <summary>
@@ -138,17 +138,15 @@ namespace Rubberduck.Common
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+                throw new ArgumentException("Target DeclarationType is not Variable.", nameof(target));
             }
 
-            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
-
-            if (statement != null)
+            if (target.Context.Parent is VBAParser.VariableListStmtContext statement)
             {
                 return statement.children.OfType<VBAParser.VariableSubStmtContext>().Count();
             }
 
-            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariabelListStmtContext", "target");
+            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariabelListStmtContext", nameof(target));
         }
 
         /// <summary>
@@ -161,20 +159,17 @@ namespace Rubberduck.Common
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                throw new ArgumentException("Target DeclarationType is not Variable.", "target");
+                throw new ArgumentException("Target DeclarationType is not Variable.", nameof(target));
             }
 
-            var statement = target.Context.Parent as VBAParser.VariableListStmtContext;
-
-            if (statement != null)
+            if (target.Context.Parent is VBAParser.VariableListStmtContext statement)
             {
                 return statement.children.OfType<VBAParser.VariableSubStmtContext>()
                         .ToList()
                         .IndexOf((VBAParser.VariableSubStmtContext)target.Context) + 1;
             }
 
-            // ReSharper disable once LocalizableElement
-            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariabelListStmtContext", "target");
+            throw new ArgumentException("'target.Context.Parent' is not type VBAParser.VariableListStmtContext", nameof(target));
         }
 
         public static readonly DeclarationType[] ProcedureTypes =
@@ -298,9 +293,7 @@ namespace Rubberduck.Common
                 && item.QualifiedName.QualifiedModuleName == selection.QualifiedName).ToList();
 
             var declaration = items.SingleOrDefault(item =>
-                selector == null
-                    ? item.Selection.Contains(selection.Selection)
-                    : selector(item).Contains(selection.Selection));
+                selector?.Invoke(item).Contains(selection.Selection) ?? item.Selection.Contains(selection.Selection));
 
             if (declaration != null)
             {
@@ -580,7 +573,7 @@ namespace Rubberduck.Common
             {
                 foreach (var reference in declaration.References)
                 {
-                    var implementsStmt = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context);
+                    var implementsStmt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
 
                     if (implementsStmt == null) { continue; }
 

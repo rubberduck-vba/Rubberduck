@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Settings
         private ObservableCollection<ToDoMarker> _todoSettings;
         public ObservableCollection<ToDoMarker> TodoSettings
         {
-            get { return _todoSettings; }
+            get => _todoSettings;
             set
             {
                 if (_todoSettings != value)
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Settings
                 {
                     var placeholder = TodoSettings.Count(m => m.Text.StartsWith("PLACEHOLDER")) + 1;
                     TodoSettings.Add(
-                        new ToDoMarker(string.Format("PLACEHOLDER{0} ",
+                        new ToDoMarker(string.Format("PLACEHOLDER{0}",
                             placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))));
                 });
             }

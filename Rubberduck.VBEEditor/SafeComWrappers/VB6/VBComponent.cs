@@ -10,81 +10,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
-        public VBComponent(VB.VBComponent target) 
-            : base(target)
+        public VBComponent(VB.VBComponent target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
-        public ComponentType Type
-        {
-            get { return IsWrappingNullReference ? 0 : (ComponentType)Target.Type; }
-        }
+        public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
 
-        public ICodeModule CodeModule
-        {
-            get { return new CodeModule(IsWrappingNullReference ? null : Target.CodeModule); }
-        }
+        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
 
-        public IVBE VBE
-        {
-            get { return new VBE(IsWrappingNullReference ? null : Target.VBE); }
-        }
+        public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        public IVBComponents Collection
-        {
-            get { return new VBComponents(IsWrappingNullReference ? null : Target.Collection); }
-        }
+        public IVBComponents Collection => new VBComponents(IsWrappingNullReference ? null : Target.Collection);
 
-        public IProperties Properties
-        {
-            get { return new Properties(IsWrappingNullReference ? null : Target.Properties); }
-        }
+        public IProperties Properties => new Properties(IsWrappingNullReference ? null : Target.Properties);
 
-        public bool HasOpenDesigner
-        {
-            get { return !IsWrappingNullReference && Target.HasOpenDesigner; }
-        }
+        public bool HasOpenDesigner => !IsWrappingNullReference && Target.HasOpenDesigner;
 
-        public string DesignerId
-        {
-            get { return IsWrappingNullReference ? string.Empty : Target.DesignerID; }
-        }
+        public string DesignerId => IsWrappingNullReference ? string.Empty : Target.DesignerID;
 
         public string Name
         {
-            get { return IsWrappingNullReference ? string.Empty : Target.Name; }
-            set { Target.Name = value; }
+            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            set => Target.Name = value;
         }
 
-        public IControls Controls
-        {
-            get
-            {
-                throw new NotImplementedException();
-                //var designer = IsWrappingNullReference
-                //    ? null
-                //    : Target.Designer as VB.UserForm;
+        public IControls Controls => throw new NotImplementedException();
 
-                //return designer == null 
-                //    ? new Controls(null) 
-                //    : new Controls(designer.Controls);
-            }
-        }
-
-        public IControls SelectedControls
-        {
-            get
-            {
-                throw new NotImplementedException();
-                //var designer = IsWrappingNullReference
-                //    ? null
-                //    : Target.Designer as VB.UserForm;
-
-                //return designer == null 
-                //    ? new Controls(null) 
-                //    : new Controls(designer.Selected);
-            }
-        }
+        public IControls SelectedControls => throw new NotImplementedException();
 
         public bool HasDesigner
         {
@@ -110,14 +63,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             Target.Activate();
         }
 
-        public bool IsSaved
-        {
-            get
-            {
-                throw new NotImplementedException();
-                /*return !IsWrappingNullReference && Target.Saved;*/
-            }
-        }
+        public bool IsSaved => throw new NotImplementedException();
 
         public void Export(string path)
         {
@@ -158,8 +104,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
             // we need to remove the extra newline before the file gets written to its output location.
 
-            var visibleCode = CodeModule.Content().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            var legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+            int legitEmptyLineCount;
+            using (var codeModule = CodeModule)
+            {
+                var visibleCode = codeModule.Content().Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+                legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+            }
 
             var tempFile = ExportToTempFile();
             var contents = File.ReadAllLines(tempFile);
@@ -183,11 +133,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private void ExportDocumentModule(string path)
         {
-            var lineCount = CodeModule.CountOfLines;
-            if (lineCount > 0)
+            using (var codeModule = CodeModule)
             {
-                var text = CodeModule.GetLines(1, lineCount);
-                File.WriteAllText(path, text);
+                var lineCount = codeModule.CountOfLines;
+                if (lineCount > 0)
+                {
+                    var text = codeModule.GetLines(1, lineCount);
+                    File.WriteAllText(path, text);
+                }
             }
         }
 
@@ -197,17 +150,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             Export(path);
             return path;
         }
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        DesignerWindow().Release();
-        //        Controls.Release();
-        //        Properties.Release();
-        //        CodeModule.Release();
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.VBComponent> other)
         {

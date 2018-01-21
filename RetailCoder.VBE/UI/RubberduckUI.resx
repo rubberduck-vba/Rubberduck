@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -382,13 +382,13 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG </value>
+    <value>BUG</value>
   </data>
   <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE </value>
+    <value>NOTE</value>
   </data>
   <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO </value>
+    <value>TODO</value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementations of '{0}'</value>
@@ -475,7 +475,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Result" xml:space="preserve">
     <value>Result</value>
   </data>
-  <data name="Outcome" xml:space="preserve">
+  <data name="TestExplorer_Outcome" xml:space="preserve">
     <value>Outcome</value>
   </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
@@ -634,7 +634,7 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>Passed Tests</value>
   </data>
   <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Selected Tests</value>
+    <value>Selected Test</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Line</value>
@@ -1194,10 +1194,10 @@ Are you sure you want to proceed with this rename?</value>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Special Options</value>
   </data>
-  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indent Module</value>
   </data>
-  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
     <value>Indent Procedure</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
@@ -1406,19 +1406,19 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Shift</value>
   </data>
-  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
     <value>Code Inspections</value>
   </data>
-  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
     <value>Refactor / Extract Method</value>
   </data>
-  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
     <value>Refactor / Rename</value>
   </data>
-  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
     <value>Test Explorer</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
@@ -1454,16 +1454,16 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) not registered.</value>
   </data>
-  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
     <value>Find symbol</value>
   </data>
-  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
     <value>Refactor / Move declaration closer to usage</value>
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rege&amp;x Search/Replace</value>
   </data>
-  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
     <value>Refresh parser state</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
@@ -1659,25 +1659,25 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Untracked</value>
   </data>
   <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clones remote repository from provided URI. Have an (empty) project active in the editor.</value>
+    <value>Clone a remote repository from a provided URL to the local disk. The repository will then be loaded into the active project.</value>
   </data>
   <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
     <value>Clone Remote Repository</value>
   </data>
   <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Creates a new repository from the active project.</value>
+    <value>Creates a new local repository from the active project.</value>
   </data>
   <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Initialize New Repository</value>
+    <value>Create New Local Repository</value>
   </data>
   <data name="SourceControl_ManageRepositories" xml:space="preserve">
     <value>Manage</value>
   </data>
   <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Open repository from disk. The active project will host the source code.</value>
+    <value>Open local repository from disk. The active project will host the source code.</value>
   </data>
   <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Open Existing Repository</value>
+    <value>Open Local Repository</value>
   </data>
   <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
     <value>Open Working Directory</value>
@@ -1703,7 +1703,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Indent</value>
   </data>
-  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
+  <data name="CommandDescription_SourceControlCommand" xml:space="preserve">
     <value>Source Control</value>
   </data>
   <data name="RegexAssistant_Caption" xml:space="preserve">
@@ -1742,7 +1742,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>These identifiers will be ignored by the 'Use meaningful names' inspection</value>
   </data>
-  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactor / Encapsulate Field</value>
   </data>
   <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
@@ -2026,7 +2026,7 @@ Would you like to import them to Rubberduck?</value>
     <comment>{0} = name of the function being faked.</comment>
   </data>
   <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Unable To Detect Selected Rename Target</value>
+    <value>Unable to detect selected rename target</value>
   </data>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>Identifier {0} cannot be renamed.</value>
@@ -2045,21 +2045,21 @@ Would you like to import them to Rubberduck?</value>
     <value>Inspection Severities</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
-    <value>Method {0} is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}'?</value>
+    <value>Method '{0}' is an EventHandler for control '{1}'.  Only the control can be renamed.  Rename '{1}' instead?</value>
     <comment>0: Selected target Identifier; 1: Control Name</comment>
   </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
-    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}'?</value>
+    <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
     <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
   </data>
   <data name="GeneralSettings_EnableSourceControl" xml:space="preserve">
-    <value>Enable Source Control. Requires a restart to take effect.</value>
+    <value>Enable Source Control.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Only enable these if you know what you're doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
-    <value>Experimental Features:</value>
+    <value>Experimental Features (Requires a restart to take effect):</value>
   </data>
   <data name="ToolsMenu_ExportProject" xml:space="preserve">
     <value>Export Active Project...</value>
@@ -2071,7 +2071,7 @@ Would you like to import them to Rubberduck?</value>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Export Project...</value>
   </data>
-  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Export Active Project</value>
   </data>
   <data name="CodeExplorer_Open" xml:space="preserve">
@@ -2093,8 +2093,7 @@ Would you like to import them to Rubberduck?</value>
     <value>Add Module</value>
   </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
-    <value>to parse and process
-the projects in the VBE.</value>
+    <value>to parse and process the projects in the VBE.</value>
     <comment>Follows the text for "Refresh"</comment>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
@@ -2103,5 +2102,57 @@ the projects in the VBE.</value>
   <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
     <value>Test module with stubs</value>
     <comment>TC</comment>
+  </data>
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck TODO Items - {0}
+{1} items found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck TODO Items - {0}
+{1} items found.</value>
+    <comment>{0}=timestamp; {1}=number</comment>
+  </data>
+  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3} line {4}.</value>
+  </data>
+  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
+    <value>Copy successful</value>
+  </data>
+  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
+    <value>Click here to copy version info to clipboard.</value>
+  </data>
+  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
+    <value>Version information copied to clipboard.</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Code Metrics</value>
+  </data>
+  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
+    <value>Code Metrics</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Cyclomatic Complexity</value>
+  </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Lines</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Maximum Nesting</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
+    <value>Hotkeys should include either Alt and/or Ctrl.</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
+    <value>This hotkey configuration may cause undesirable side affects.</value>
+  </data>
+  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
+    <value>Modifier Warning</value>
   </data>
 </root>

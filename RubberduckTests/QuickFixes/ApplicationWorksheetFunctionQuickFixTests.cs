@@ -1,20 +1,21 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ApplicationWorksheetFunctionQuickFixTests
     {
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks()
         {
             const string inputCode =
@@ -40,22 +41,27 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
+                new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks_WithBlock()
         {
             const string inputCode =
@@ -85,22 +91,27 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
+                new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
+            }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks_HasParameters()
         {
             const string inputCode =
@@ -126,17 +137,22 @@ End Sub
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                state.AddTestLibrary("Excel.1.8.xml");
 
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new ApplicationWorksheetFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ApplicationWorksheetFunctionInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            new ApplicationWorksheetFunctionQuickFix(parser.State).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, parser.State.GetRewriter(project.Object.VBComponents.First()).GetText());
+                new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
+            }
         }
     }
 }

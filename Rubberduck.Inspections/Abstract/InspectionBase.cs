@@ -8,12 +8,16 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using System.Diagnostics;
+using NLog;
 
 namespace Rubberduck.Inspections.Abstract
 {
     public abstract class InspectionBase : IInspection
     {
         protected readonly RubberduckParserState State;
+
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly CodeInspectionSeverity _defaultSeverity;
 
         protected InspectionBase(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
@@ -25,11 +29,6 @@ namespace Rubberduck.Inspections.Abstract
         }
 
         /// <summary>
-        /// Gets the type of the inspection class. GetType() returns an interceptor proxy type.
-        /// </summary>
-        public abstract Type Type { get; }
-
-        /// <summary>
         /// Gets a value the severity level to reset to, the "factory default" setting.
         /// </summary>
         public CodeInspectionSeverity DefaultSeverity => _defaultSeverity;
@@ -37,18 +36,12 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
         /// </summary>
-        public virtual string Description => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
+        public virtual string Description => InspectionsUI.ResourceManager.GetString($"{Name}Name", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.
         /// </summary>
         public abstract CodeInspectionType InspectionType { get; }
-
-        /// <summary>
-        /// A method that inspects the parser state and returns all issues it can find.
-        /// </summary>
-        /// <returns></returns>
-        public abstract IEnumerable<IInspectionResult> GetInspectionResults();
 
         /// <summary>
         /// The inspection type name, obtained by reflection.
@@ -63,13 +56,13 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Meta-information about why an inspection exists.
         /// </summary>
-        public virtual string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
+        public virtual string Meta => InspectionsUI.ResourceManager.GetString($"{Name}Meta", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a localized string representing the type of inspection.
         /// <see cref="InspectionType"/>
         /// </summary>
-        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType.ToString(), CultureInfo.CurrentUICulture);
+        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString($"CodeInspectionSettings_{InspectionType.ToString()}", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a string representing the text that must be present in an 
@@ -119,9 +112,9 @@ namespace Rubberduck.Inspections.Abstract
                     return true;
                 }
 
-                if (ignoreModuleAnnotation != null &&
-                    (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName) ||
-                     !ignoreModuleAnnotation.InspectionNames.Any()))
+                if (ignoreModuleAnnotation != null
+                    && (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName)
+                    || !ignoreModuleAnnotation.InspectionNames.Any()))
                 {
                     return true;
                 }
@@ -165,6 +158,22 @@ namespace Rubberduck.Inspections.Abstract
         public int CompareTo(object obj)
         {
             return CompareTo(obj as IInspection);
+        }
+        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults();
+
+        /// <summary>
+        /// A method that inspects the parser state and returns all issues it can find.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IInspectionResult> GetInspectionResults()
+        {
+            var _stopwatch = new Stopwatch();
+            _stopwatch.Start();
+            var result = DoGetInspectionResults();
+            _stopwatch.Stop();
+            _logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count());
+            _logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), _stopwatch.ElapsedMilliseconds);
+            return result;
         }
     }
 }

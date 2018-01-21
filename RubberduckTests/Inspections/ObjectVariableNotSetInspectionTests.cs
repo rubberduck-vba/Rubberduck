@@ -1,18 +1,52 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ObjectVariableNotSetInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_OnlyAssignedToNothing_ReturnsResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub DoSomething()
+    Dim target As Object
+    target.DoSomething ' error 91
+    Set target = Nothing
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub DoSomething()
+    Dim target As Object
+    Set target = New Object
+    target.DoSomething
+    Set target = Nothing
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -27,8 +61,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenPropertyLet_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -44,8 +78,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenPropertySet_WithoutSet_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -61,8 +95,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenPropertySet_WithSet_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -78,8 +112,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -94,8 +128,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenStringVariable_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -112,8 +146,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedObject_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -129,8 +163,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedNewObject_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -143,8 +177,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
         {
             var expectResultCount = 0;
@@ -157,8 +191,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -171,8 +205,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredVariant_ReturnsNoResult()
         {
             var expectResultCount = 1;
@@ -185,8 +219,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedBaseType_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -199,8 +233,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -217,8 +251,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_Ignored_DoesNotReturnResult()
         {
             var expectResultCount = 0;
@@ -236,8 +270,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenSetObjectVariable_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -255,9 +289,9 @@ End Sub";
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2266
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_FunctionReturnsArrayOfType_ReturnsNoResult()
         {
             var expectedResultCount = 0;
@@ -291,8 +325,8 @@ End Function";
 
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LongPtrVariable_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -305,8 +339,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_NoTypeSpecified_ReturnsResult()
         {
             var expectResultCount = 0;
@@ -319,8 +353,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_SelfAssigned_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -333,8 +367,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_EnumVariable_ReturnsNoResult()
         {
 
@@ -354,8 +388,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_FunctionReturnNotSet_ReturnsResult()
         {
 
@@ -368,8 +402,8 @@ End Function";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_ObjectLiteral_ReturnsResult()
         {
 
@@ -383,8 +417,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_NonObjectLiteral_ReturnsNoResult()
         {
 
@@ -401,8 +435,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_ForEach_ReturnsNoResult()
         {
 
@@ -417,8 +451,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_RSet_ReturnsNoResult()
         {
 
@@ -433,8 +467,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LSet_ReturnsNoResult()
         {
 
@@ -449,8 +483,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LSetOnUDT_ReturnsNoResult()
         {
 
@@ -480,12 +514,13 @@ End Sub";
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ObjectVariableNotSetInspection(state);
+                var inspectionResults = inspection.GetInspectionResults();
 
-            var inspection = new ObjectVariableNotSetInspection(state);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(expected, inspectionResults.Count());
+                Assert.AreEqual(expected, inspectionResults.Count());
+            }
         }
     }
 }

@@ -100,17 +100,23 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             AddInterfaceMembersToClass(rewriter);
 
-            var components = _model.TargetDeclaration.Project.VBComponents;
-            var interfaceComponent = components.Add(ComponentType.ClassModule);
-            var interfaceModule = interfaceComponent.CodeModule;
-            interfaceComponent.Name = _model.InterfaceName;
-
-            var optionPresent = interfaceModule.CountOfLines > 1;
-            if (!optionPresent)
+            using (var components = _model.TargetDeclaration.Project.VBComponents)
             {
-                interfaceModule.InsertLines(1, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
+                using (var interfaceComponent = components.Add(ComponentType.ClassModule))
+                {
+                    using (var interfaceModule = interfaceComponent.CodeModule)
+                    {
+                        interfaceComponent.Name = _model.InterfaceName;
+
+                        var optionPresent = interfaceModule.CountOfLines > 1;
+                        if (!optionPresent)
+                        {
+                            interfaceModule.InsertLines(1, $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}");
+                        }
+                        interfaceModule.InsertLines(3, GetInterfaceModuleBody());
+                    }
+                }
             }
-            interfaceModule.InsertLines(3, GetInterfaceModuleBody());
         }
 
         private void AddInterfaceMembersToClass(IModuleRewriter rewriter)

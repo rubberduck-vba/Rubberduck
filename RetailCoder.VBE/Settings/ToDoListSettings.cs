@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
-using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
-    interface IToDoListSettings
+    internal interface IToDoListSettings
     {
         ToDoMarker[] ToDoMarkers { get; set; }
     }
@@ -19,7 +18,7 @@ namespace Rubberduck.Settings
         [XmlArrayItem("ToDoMarker", IsNullable = false)]
         public ToDoMarker[] ToDoMarkers
         {
-            get { return _markers.ToArray(); }
+            get => _markers.ToArray();
             set
             {
                 //Only take the first marker if there are duplicates.
@@ -27,18 +26,16 @@ namespace Rubberduck.Settings
             }
         }
 
+        /// <Summary>
+        /// Default constructor required for XML serialization.
+        /// </Summary>
         public ToDoListSettings()
         {
-            var note = new ToDoMarker(RubberduckUI.TodoMarkerNote);
-            var todo = new ToDoMarker(RubberduckUI.TodoMarkerTodo);
-            var bug = new ToDoMarker(RubberduckUI.TodoMarkerBug);
-
-            ToDoMarkers = new[] { note, todo, bug };
         }
 
-        public ToDoListSettings(IEnumerable<ToDoMarker> markers)
+        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers)
         {
-            _markers = markers;
+            _markers = defaultMarkers;
         }
 
         public bool Equals(ToDoListSettings other)
