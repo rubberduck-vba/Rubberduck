@@ -100,7 +100,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void set_ConditionalCompilationArgs(string args);
     }
 
-    public enum TYPEKINDEx
+    public enum TYPEKIND_VBE
     {
         TKIND_ENUM = 0,
         TKIND_RECORD = 1,

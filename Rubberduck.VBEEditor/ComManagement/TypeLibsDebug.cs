@@ -98,7 +98,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (typeHelp != 0) AppendLineButRemoveEmbeddedNullChars("- HelpContext: " + typeHelp);
             if (TypeHelpFile != null) AppendLineButRemoveEmbeddedNullChars("- HelpFile: " + TypeHelpFile.Replace("\0", string.Empty));
 
-            AppendLine("- Type: " + (TYPEKINDEx)typeInfoAttributes.typekind);
+            AppendLine("- Type: " + (TYPEKIND_VBE)typeInfoAttributes.typekind);
             AppendLine("- Guid: {" + typeInfoAttributes.guid + "}");
 
             AppendLine("- cImplTypes (implemented interfaces count): " + typeInfoAttributes.cImplTypes);
