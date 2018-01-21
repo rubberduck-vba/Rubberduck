@@ -10,7 +10,7 @@ using Reflection = System.Reflection;
 // USAGE GUIDE:   see class VBETypeLibsAPI for demonstrations of usage.
 //
 // The root object for exposure of the type libraries is TypeLibsAccessor_VBE.  It takes the VBE in its construtor.
-// The main wrappers (TypeLibWrapper_VBE and TypeInfoWrapper) can be used as regular ITypeLib and ITypeInfo objects through casting.
+// The main wrappers (TypeLibWrapper and TypeInfoWrapper) can be used as regular ITypeLib and ITypeInfo objects through casting.
 //
 // THIS IS A WORK IN PROGRESS.  ERROR HANDLING NEEDS WORK, AS DOES A FEW OF THE HELPER ROUTINES.
 //
@@ -145,7 +145,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     public class TypeInfoWrapper : ComTypes.ITypeInfo, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
-        private TypeLibWrapper_VBE _containerTypeLib;
+        private TypeLibWrapper _containerTypeLib;
         private int _containerTypeLibIndex;
         private AggregateInterfacesWrapper _typeInfoAggregatorObj;
         private bool _isUserFormBaseClass = false;
@@ -185,7 +185,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // so we cast to our ITypeInfo_Ptrs interface in order to work with the raw IntPtrs
                 IntPtr typeLibPtr = IntPtr.Zero;
                 _ITypeInfoAlt.GetContainingTypeLib(out typeLibPtr, out _containerTypeLibIndex);
-                _containerTypeLib = new TypeLibWrapper_VBE(typeLibPtr);  // takes ownership of the COM reference
+                _containerTypeLib = new TypeLibWrapper(typeLibPtr);  // takes ownership of the COM reference
             }
             catch (Exception)
             {
@@ -401,7 +401,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 typeInfoImplEx.Dispose();
             }
 
-            throw new ArgumentException($"TypeLibWrapper_VBE::GetImplementedTypeInfo failed. '{searchTypeName}' module not found.");
+            throw new ArgumentException($"TypeLibWrapper::GetImplementedTypeInfo failed. '{searchTypeName}' module not found.");
         }
 
         // FIXME this needs work
@@ -450,7 +450,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
 
     // A wrapper for ITypeLib that exposes VBE ITypeInfos safely for managed consumption, plus adds ConditionalCompilationArguments property
-    public class TypeLibWrapper_VBE : ComTypes.ITypeLib, IDisposable
+    public class TypeLibWrapper : ComTypes.ITypeLib, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly ComTypes.ITypeLib _wrappedObject;
@@ -460,13 +460,27 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public readonly int HelpContext;
         public readonly string HelpFile;
 
-        private ITypeLib_VBE _ITypeLibAlt
-            { get => ((ITypeLib_VBE)_wrappedObject); }
+        private ITypeLib_Ptrs _ITypeLibAlt
+            { get => ((ITypeLib_Ptrs)_wrappedObject); }
+
+        public bool IsVBEHosted() => (_wrappedObject as IVBProjectEx_VBE) != null;
 
         private IVBProjectEx_VBE _IVBProjectEx
-            { get => ((IVBProjectEx_VBE)_wrappedObject); }
+        {
+            get
+            {
+                if (IsVBEHosted())
+                {
+                    return (IVBProjectEx_VBE)_wrappedObject;
+                }
+                else
+                {
+                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support _IVBProjectEx");
+                };
+            }
+        }
 
-        public TypeLibWrapper_VBE(IntPtr rawObjectPtr)
+        public TypeLibWrapper(IntPtr rawObjectPtr)
         {
             _wrappedObject = (ComTypes.ITypeLib)Marshal.GetObjectForIUnknown(rawObjectPtr);
             Marshal.Release(rawObjectPtr);         // _wrappedObject holds a reference to this now
@@ -532,8 +546,29 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public string ConditionalCompilationArguments
         {
-            get => _IVBProjectEx.get_ConditionalCompilationArgs();
-            set => _IVBProjectEx.set_ConditionalCompilationArgs(value);
+            get
+            {
+                if (IsVBEHosted())
+                {
+                    return _IVBProjectEx.get_ConditionalCompilationArgs();
+                }
+                else
+                {
+                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                }
+            }
+
+            set
+            {
+                if (IsVBEHosted())
+                {
+                    _IVBProjectEx.set_ConditionalCompilationArgs(value);
+                }
+                else
+                {
+                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                }
+            }
         }
 
         public TypeInfoWrapper FindTypeInfo(string searchTypeName)
@@ -554,12 +589,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 typeInfoEx.Dispose();
             }
 
-            throw new ArgumentException($"TypeLibWrapper_VBE::FindTypeInfo failed. '{searchTypeName}' module not found.");
+            throw new ArgumentException($"TypeLibWrapper::FindTypeInfo failed. '{searchTypeName}' module not found.");
         }
     }
 
     // class for iterating over the double linked list of ITypeLibs provided by the VBE
-    public class TypeLibsIterator_VBE : IEnumerable<TypeLibWrapper_VBE>, IEnumerator<TypeLibWrapper_VBE>, IDisposable
+    public class TypeLibsIterator_VBE : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>, IDisposable
     {
         private IntPtr _currentTypeLibPtr;
         private TypeLibObj_VBE _currentTypeLibStruct;
@@ -578,7 +613,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         IEnumerator IEnumerable.GetEnumerator() => this;
-        public IEnumerator<TypeLibWrapper_VBE> GetEnumerator() => this;
+        public IEnumerator<TypeLibWrapper> GetEnumerator() => this;
 
         public IntPtr GetCurrentReference()
         {
@@ -586,8 +621,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return _currentTypeLibPtr;
         }
 
-        TypeLibWrapper_VBE IEnumerator<TypeLibWrapper_VBE>.Current => new TypeLibWrapper_VBE(GetCurrentReference());
-        object IEnumerator.Current => new TypeLibWrapper_VBE(GetCurrentReference());
+        TypeLibWrapper IEnumerator<TypeLibWrapper>.Current => new TypeLibWrapper(GetCurrentReference());
+        object IEnumerator.Current => new TypeLibWrapper(GetCurrentReference());
 
         public void Reset()  // walk back to the first project in the chain
         {
@@ -616,7 +651,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
 
     // the main class for hooking into the live ITypeLibs provided by the VBE
-    public class TypeLibsAccessor_VBE : DisposableList<TypeLibWrapper_VBE>, IDisposable
+    public class TypeLibsAccessor_VBE : DisposableList<TypeLibWrapper>, IDisposable
     {
         public TypeLibsAccessor_VBE(IVBE ide)
         {
@@ -657,7 +692,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // return an empty list on error
         }
 
-        public TypeLibWrapper_VBE FindTypeLib(string searchLibName)
+        public TypeLibWrapper FindTypeLib(string searchLibName)
         {
             foreach (var typeLib in this)
             {

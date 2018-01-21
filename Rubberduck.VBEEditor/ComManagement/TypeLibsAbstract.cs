@@ -68,7 +68,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     // A compatible version of ITypeLib, where COM objects are outputted as IntPtrs instead of objects
     [ComImport(), Guid("00020402-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface ITypeLib_VBE
+    public interface ITypeLib_Ptrs
     {
         int GetTypeInfoCount();
         void GetTypeInfo(int index, out IntPtr ppTI);

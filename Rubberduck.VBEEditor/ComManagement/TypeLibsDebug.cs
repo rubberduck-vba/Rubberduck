@@ -52,11 +52,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             AppendLine("- MajorVer: " + typeLibAttributes.wMajorVerNum);
             AppendLine("- MinorVer: " + typeLibAttributes.wMinorVerNum);
 
-            var typeLibVBE = typeLib as TypeLibWrapper_VBE;
+            var typeLibVBE = typeLib as TypeLibWrapper;
             if (typeLibVBE != null)
             {
-                // This is a VBE ITypeInfo, so we should be able to obtain the conditional compilation arguments
-                AppendLine("- VBE Conditional Compilation Arguments: " + typeLibVBE.ConditionalCompilationArguments);
+                AppendLine("- IsVBEHosted: " + typeLibVBE.IsVBEHosted());
+                if (typeLibVBE.IsVBEHosted())
+                {
+                    AppendLine("- VBE Conditional Compilation Arguments: " + typeLibVBE.ConditionalCompilationArguments);
+                };
             }
 
             int CountOfTypes = typeLib.GetTypeInfoCount();
