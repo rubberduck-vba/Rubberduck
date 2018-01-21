@@ -151,10 +151,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private bool _isUserFormBaseClass = false;
         private ComTypes.TYPEATTR _cachedAttributes;
 
-        public readonly string Name;
-        public readonly string DocString;
-        public readonly int HelpContext;
-        public readonly string HelpFile;
+        private string _name;
+        private string _docString;
+        private int _helpContext;
+        private string _helpFile;
+
+        public string Name { get => _name; }
+        public string DocString { get => _docString; }
+        public int HelpContext { get => _helpContext; }
+        public string HelpFile { get => _helpFile; }
 
         private ComTypes.ITypeInfo _wrappedObject;
 
@@ -186,12 +191,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // it is acceptable for a type to not have a container, as types can be runtime generated.
             }
+
+            if (Name == null) _wrappedObject.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out _name, out _docString, out _helpContext, out _helpFile);
         }
 
         public TypeInfoWrapper(ComTypes.ITypeInfo rawTypeInfo)
         {
             _wrappedObject = rawTypeInfo;
-
             CacheCommonProperties();
         }
 
@@ -199,22 +205,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             _typeInfoAggregatorObj = new AggregateInterfacesWrapper(rawObjectPtr, new Type[] { typeof(ComTypes.ITypeInfo), typeof(ITypeInfo_VBE) });
             _wrappedObject = (ComTypes.ITypeInfo)_typeInfoAggregatorObj.WrappedObject;
-
-            CacheCommonProperties();
             
             // base classes of VBE UserForms cause an access violation on calling GetDocumentation(MEMBERID_NIL)
             // so we have to detect UserForm parents, and ensure GetDocumentation(MEMBERID_NIL) never gets through
             if (parentUserFormUniqueId.HasValue)
             {
-                Name = "_UserFormBase{unnamed}#" + parentUserFormUniqueId;
-            }
-            else
-            {
-                // cache the type Name etc
-                _wrappedObject.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out Name, out DocString, out HelpContext, out HelpFile);
+                _name = "_UserFormBase{unnamed}#" + parentUserFormUniqueId;
+            };
 
-                DetectUserFormClass();
-            }
+            CacheCommonProperties();
+            DetectUserFormClass();
         }
 
         public bool HasPredeclaredId { get => _cachedAttributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID); }
