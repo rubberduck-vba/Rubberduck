@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Reflection = System.Reflection;
+using System.Linq;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
@@ -19,7 +20,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             }
         }
 
-        public static string GetProjectConditionalCompilationArgs(IVBE ide, string projectName)
+        // returns the raw conditional arguments string, e.g. "foo = 1 : bar = 2"
+        public static string GetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName)
         {
             using (var typeLibs = new TypeLibsAccessor_VBE(ide))
             {
@@ -27,12 +29,36 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             }
         }
 
-        public static void SetProjectConditionalCompilationArgs(IVBE ide, string projectName, string newConditionalArgs)
+        // return the parsed conditional arguments string as a Dictionary<string, string>
+        public static Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBE ide, string projectName)
+        {
+            var args = GetProjectConditionalCompilationArgsRaw(ide, projectName);
+
+            if (args.Length > 0)
+            { 
+                string[] argsArray = args.Split(new[] { ':' });
+                return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0], s => s[1]);
+            }
+            else
+            {
+                return new Dictionary<string, string>();
+            }
+        }
+
+        // sets the raw conditional arguments string, e.g. "foo = 1 : bar = 2"
+        public static void SetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName, string newConditionalArgs)
         {
             using (var typeLibs = new TypeLibsAccessor_VBE(ide))
             {
                 typeLibs.FindTypeLib(projectName).ConditionalCompilationArguments = newConditionalArgs;
             }
+        }
+
+        // sets the conditional arguments string via a Dictionary<string, string>
+        public static void SetProjectConditionalCompilationArgs(IVBE ide, string projectName, Dictionary<string, string> newConditionalArgs)
+        {
+            var rawArgsString = string.Join(" : ", newConditionalArgs.Select(x => x.Key + " = " + x.Value));
+            SetProjectConditionalCompilationArgsRaw(ide, projectName, rawArgsString);
         }
 
         public static bool IsAWorkbook(IVBE ide, string projectName, string className)
