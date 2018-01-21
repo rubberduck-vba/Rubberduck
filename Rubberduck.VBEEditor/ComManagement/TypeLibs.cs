@@ -120,10 +120,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     public class TypeInfoWrapper_VBE : ComTypes.ITypeInfo, IDisposable
     {
         private DisposableList<TypeInfoWrapper_VBE> _typeInfosWrapped;
-        private DisposableList<TypeLibWrapper_VBE> _typeLibsWrapped;
+        private TypeLibWrapper_VBE _containerTypeLib;
+        private int _containerTypeLibIndex;
         private AggregateSingleInterface<ComTypes.ITypeInfo> _typeInfoAggregatorObj;
         private bool _isUserFormBaseClass = false;
-        private int _firstImplementedTypeHref = -1;
         private ComTypes.TYPEATTR _cachedAttributes;
 
         public readonly string Name;
@@ -135,7 +135,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeInfo_VBE _ITypeInfoAlt
             { get => ((ITypeInfo_VBE)_wrappedObject); }
 
-        public TypeInfoWrapper_VBE(IntPtr rawObjectPtr, bool isBrokenUserFormBaseClass = false, bool isBrokenUserFormBaseEventsClass = false)
+        public TypeInfoWrapper_VBE(IntPtr rawObjectPtr, int? parentUserFormUniqueId = null)
         {
             _typeInfoAggregatorObj = new AggregateSingleInterface<ComTypes.ITypeInfo>(rawObjectPtr);
             var aggObjPtr = Marshal.CreateAggregatedObject(rawObjectPtr, _typeInfoAggregatorObj);
@@ -147,24 +147,47 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _cachedAttributes = StructHelper.ReadStructure<ComTypes.TYPEATTR>(typeAttrPtr);
             ReleaseTypeAttr(typeAttrPtr);      // don't need to keep a hold of it, as _cachedAttributes is a copy
 
-            if (isBrokenUserFormBaseClass)
+            // cache the container type library if it is available
+            try
             {
-                Name = "_UserFormBase{unnamed}";
+                // We have to wrap the ITypeLib returned by GetContainingTypeLib
+                // so we cast to our ITypeInfo_VBE interface in order to work with the raw IntPtrs
+                IntPtr typeLibPtr = IntPtr.Zero;
+                _ITypeInfoAlt.GetContainingTypeLib(out typeLibPtr, out _containerTypeLibIndex);
+                _containerTypeLib = new TypeLibWrapper_VBE(typeLibPtr);  // takes ownership of the COM reference
             }
-            else if (isBrokenUserFormBaseEventsClass)
+            catch (Exception e)
             {
-                Name = "_UserFormBaseEvents{unnamed}";
+                // it is acceptable for a type to not have a container, as types can be runtime generated.
+            }
+            
+            // base classes of UserForms cause an access violation on calling GetDocumentation(MEMBERID_NIL)
+            // so we have to detect UserForm parents, and ensure GetDocumentation(MEMBERID_NIL) never gets through
+            if (parentUserFormUniqueId.HasValue)
+            {
+                Name = "_UserFormBase{unnamed}#" + parentUserFormUniqueId;
             }
             else
             {
+                // cache the type Name etc
                 _wrappedObject.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out Name, out DocString, out HelpContext, out HelpFile);
 
-                // Determine if this is a UserForm base class, that requires special handling to workaround a VBE bug in its implemented classes
-                // the guids are dynamic, so we can't use them for detection.
-                if ((_cachedAttributes.typekind == ComTypes.TYPEKIND.TKIND_COCLASS) && (Name == "Form") && (_cachedAttributes.cImplTypes == 2))
-                {
-                    _isUserFormBaseClass = true;
-                }
+                DetectUserFormClass();
+            }
+        }
+
+        private bool IsRuntimeGenerated() => _containerTypeLib == null;
+
+        private void DetectUserFormClass()
+        {
+            // Determine if this is a UserForm base class, that requires special handling to workaround a VBE bug in its implemented classes
+            // the guids are dynamic, so we can't use them for detection.
+            if ((_cachedAttributes.typekind == ComTypes.TYPEKIND.TKIND_COCLASS) &&
+                    IsRuntimeGenerated() &&
+                    (_cachedAttributes.cImplTypes == 2) && (Name == "Form"))
+            {
+                // we can be 99.9999% sure it IS the runtime generated UserForm base class
+                _isUserFormBaseClass = true;
             }
         }
 
@@ -175,7 +198,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _isDisposed = true;
 
             if (_typeInfosWrapped != null) _typeInfosWrapped.Dispose();
-            if (_typeLibsWrapped != null) _typeLibsWrapped.Dispose();
+            if (_containerTypeLib != null) _containerTypeLib.Dispose();
             Marshal.ReleaseComObject(_wrappedObject);
             _typeInfoAggregatorObj.Dispose();
         }
@@ -186,26 +209,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             IntPtr typeInfoPtr = IntPtr.Zero;
             _ITypeInfoAlt.GetRefTypeInfo(hRef, out typeInfoPtr);
-            var isBrokenUserFormBaseClass = _isUserFormBaseClass && (hRef == _firstImplementedTypeHref);
-            var isBrokenUserFormBaseEventsClass = _isUserFormBaseClass && (hRef != _firstImplementedTypeHref);
-            var outVal = new TypeInfoWrapper_VBE(typeInfoPtr, isBrokenUserFormBaseClass, isBrokenUserFormBaseEventsClass); // takes ownership of the COM reference
+            var outVal = new TypeInfoWrapper_VBE(typeInfoPtr, _isUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
             ppTI = outVal;
 
             if (_typeInfosWrapped == null) _typeInfosWrapped = new DisposableList<TypeInfoWrapper_VBE>();
             _typeInfosWrapped.Add(outVal);
         }
 
-        // We have to wrap the ITypeLib returned by GetContainingTypeLib
-        // so we cast to our ITypeInfo_VBE interface in order to work with the raw IntPtr for aggregation
         public void /* ITypeInfo:: */ GetContainingTypeLib(out ComTypes.ITypeLib ppTLB, out int pIndex)
         {
-            IntPtr typeLibPtr = IntPtr.Zero;
-            _ITypeInfoAlt.GetContainingTypeLib(out typeLibPtr, out pIndex);
-            var outVal = new TypeLibWrapper_VBE(typeLibPtr);  // takes ownership of the COM reference
-            ppTLB = outVal;
-
-            if (_typeLibsWrapped == null) _typeLibsWrapped = new DisposableList<TypeLibWrapper_VBE>();
-            _typeLibsWrapped.Add(outVal);
+            ppTLB = _containerTypeLib;
+            pIndex = _containerTypeLibIndex;
         }
 
         // All other members just pass through to the wrappedObject
@@ -220,10 +234,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public void /* ITypeInfo:: */ GetNames(int memid, string[] rgBstrNames, int cMaxNames, out int pcNames)
             => _wrappedObject.GetNames(memid, rgBstrNames, cMaxNames, out pcNames);
         public void /* ITypeInfo:: */ GetRefTypeOfImplType(int index, out int href)
-        {
-            _wrappedObject.GetRefTypeOfImplType(index, out href);
-            if (index == 0) _firstImplementedTypeHref = href;
-        }
+            => _wrappedObject.GetRefTypeOfImplType(index, out href);
         public void /* ITypeInfo:: */ GetImplTypeFlags(int index, out ComTypes.IMPLTYPEFLAGS pImplTypeFlags)
             => _wrappedObject.GetImplTypeFlags(index, out pImplTypeFlags);
         public void /* ITypeInfo:: */ GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId)
