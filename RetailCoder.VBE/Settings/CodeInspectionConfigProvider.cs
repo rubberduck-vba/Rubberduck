@@ -23,7 +23,11 @@ namespace Rubberduck.Settings
 
         public CodeInspectionSettings Create()
         {
-            return _persister.Load(_defaultSettings) ?? _defaultSettings;
+            // Loaded settings don't contain defaults, so we need to combine user settings with defaults.
+            var loaded = _persister.Load(_defaultSettings);
+            loaded?.CodeInspections.UnionWith(_defaultSettings.CodeInspections);
+
+            return loaded ?? _defaultSettings;
         }
 
         public CodeInspectionSettings CreateDefaults()

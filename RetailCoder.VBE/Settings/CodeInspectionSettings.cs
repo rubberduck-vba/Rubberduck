@@ -156,8 +156,7 @@ namespace Rubberduck.Settings
         {
             return obj is CodeInspectionSetting inspectionSetting &&
                    inspectionSetting.InspectionType == InspectionType &&
-                   inspectionSetting.Name == Name &&
-                   inspectionSetting.Severity == Severity;
+                   inspectionSetting.Name == Name;
         }
 
         public override int GetHashCode()
@@ -165,7 +164,6 @@ namespace Rubberduck.Settings
             unchecked
             {
                 var hashCode = Name?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ (int)Severity;
                 hashCode = (hashCode * 397) ^ (int)InspectionType;
                 return hashCode;
             }
