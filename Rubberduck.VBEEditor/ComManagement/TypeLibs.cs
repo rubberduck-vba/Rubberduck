@@ -114,7 +114,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         ppv = _outerObject;
                         Marshal.AddRef(_outerObject);
                         return CustomQueryInterfaceResult.Handled;
-                    };
+                    }
                 }
             }
             
@@ -210,7 +210,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (parentUserFormUniqueId.HasValue)
             {
                 _name = "_UserFormBase{unnamed}#" + parentUserFormUniqueId;
-            };
+            }
 
             CacheCommonProperties();
             DetectUserFormClass();
@@ -475,7 +475,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 else
                 {
                     throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support _IVBProjectEx");
-                };
+                }
             }
         }
 

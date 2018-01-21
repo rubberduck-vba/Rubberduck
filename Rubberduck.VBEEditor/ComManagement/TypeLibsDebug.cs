@@ -59,7 +59,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (typeLibVBE.IsVBEHosted())
                 {
                     AppendLine("- VBE Conditional Compilation Arguments: " + typeLibVBE.ConditionalCompilationArguments);
-                };
+                }
             }
 
             int CountOfTypes = typeLib.GetTypeInfoCount();
