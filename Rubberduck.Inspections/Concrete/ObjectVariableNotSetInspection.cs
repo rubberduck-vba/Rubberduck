@@ -61,7 +61,13 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         // assignment already has a Set keyword
                         // (but is it misplaced? ...hmmm... beyond the scope of *this* inspection though)
-                        continue;
+                        // if we're only ever assigning to 'Nothing', might as well flag it though
+                        if (reference.Declaration.References.Where(r => r.IsAssignment).All(r =>
+                            r.Context.GetAncestor<VBAParser.SetStmtContext>().expression().GetText() == Tokens.Nothing))
+                        {
+                            result.Add(reference);
+                            continue;
+                        }
                     }
 
                     var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
@@ -78,8 +84,7 @@ namespace Rubberduck.Inspections.Concrete
                         continue;
                     }
 
-                    var isObjectVariable =
-                        declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false;
+                    var isObjectVariable = declaration.IsObject();
                     var isVariant = declaration.IsUndeclared || declaration.AsTypeName == Tokens.Variant;
                     if (!isObjectVariable && !isVariant)
                     {
@@ -88,13 +93,17 @@ namespace Rubberduck.Inspections.Concrete
 
                     if (isObjectVariable)
                     {
-                        var members = State.DeclarationFinder.Members(declaration.AsTypeDeclaration).ToHashSet();
-                        var parameters = members.Where(m => m.DeclarationType == DeclarationType.Parameter).Cast<ParameterDeclaration>().ToHashSet();
-                        if (members.Any(member => !parameters.Any() || parameters.All(p => p.IsOptional && p.ParentScopeDeclaration.Equals(member)) && member.Attributes.HasDefaultMemberAttribute()))
+                        // get the members of the returning type, a default member could make us lie otherwise
+                        var classModule = declaration.AsTypeDeclaration as ClassModuleDeclaration;
+                        if (classModule?.DefaultMember != null)
                         {
-                            // assigned declaration has a default parameterless member, which is legally being assigned here.
-                            // might be a good idea to flag that default member assignment though...
-                            continue;
+                            var parameters = (classModule.DefaultMember as IParameterizedDeclaration)?.Parameters.ToArray() ?? Enumerable.Empty<ParameterDeclaration>().ToArray();
+                            if (!parameters.Any() || parameters.All(p => p.IsOptional))
+                            {
+                                // assigned declaration has a default parameterless member, which is legally being assigned here.
+                                // might be a good idea to flag that default member assignment though...
+                                continue;
+                            }
                         }
 
                         // assign declaration is an object without a default parameterless (or with all parameters optional) member - LHS needs a 'Set' keyword.

@@ -141,7 +141,7 @@ Private Sub Workbook_Open()
     target = Range(""A1"")
     target.Value = ""all good""
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
@@ -157,7 +157,7 @@ Private Sub TestSub(ByRef testParam As Variant)
     testParam = target
     testParam.Add 100
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
         [Test]
@@ -170,34 +170,33 @@ End Sub";
 Private Sub TestSub(ByRef testParam As Variant)
     testParam = New Collection     
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
         [Test]
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsNoResult()
         {
-            var expectResultCount = 0;
+            var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
-'Range(""A1:C1"") is a LExprContext but is not a known interesting declaration
     testParam = Range(""A1:C1"")    
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsNoResult()
         {
-            var expectResultCount = 0; // legit default member assignment
+            var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant, target As Range)
     testParam = target
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
@@ -229,7 +228,7 @@ Private Sub Workbook_Open()
     target.Value = ""forgot something?""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
@@ -248,7 +247,7 @@ Private Sub Workbook_Open()
     target.Value = ""forgot something?""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
@@ -266,7 +265,7 @@ Private Sub Workbook_Open()
     target.Value = ""All good""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
@@ -308,7 +307,7 @@ Private Sub TestSelfAssigned()
     Dim arg1 As new Collection
     arg1.Add 7
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
         [Test]
@@ -342,7 +341,7 @@ End Sub";
 Private Function Test() As Collection
     Test = New Collection
 End Function";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
         [Test]
@@ -454,7 +453,7 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
+        private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected, params string[] testLibraries)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
@@ -466,8 +465,10 @@ End Sub";
 
             using(var coordinator = MockParser.Create(vbe.Object))
             {
-                coordinator.State.AddTestLibrary("Excel.1.8.xml");
-                coordinator.State.AddTestLibrary("VBA.4.2.xml");
+                foreach (var testLibrary in testLibraries)
+                {
+                    coordinator.State.AddTestLibrary(testLibrary);
+                }
                 coordinator.Parse(new CancellationTokenSource());
 
                 var inspection = new ObjectVariableNotSetInspection(coordinator.State);
