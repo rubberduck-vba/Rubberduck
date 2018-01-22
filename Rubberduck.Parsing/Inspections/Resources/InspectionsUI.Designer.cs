@@ -331,7 +331,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;Def[Type]&apos; statement is implicitly typing variables and members based on a naming/prefix convention. This stye of typing is heavily discouraged and should be avoided..
+        ///   Looks up a localized string similar to Using the &apos;Def[Type]&apos; statement leads to specifying types by using a prefix. This style of naming is heavily discouraged and should be avoided..
         /// </summary>
         public static string DefTypeStatementInspectionMeta {
             get {
