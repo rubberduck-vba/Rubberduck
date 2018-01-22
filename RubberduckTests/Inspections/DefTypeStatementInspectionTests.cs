@@ -21,15 +21,26 @@ namespace RubberduckTests.Inspections
         }
 
         [Test]
+        [TestCase("Bool")]
+        [TestCase("Byte")]
+        [TestCase("Int")]
+        [TestCase("Lng")]
+        [TestCase("Cur")]
+        [TestCase("Sng")]
+        [TestCase("Dbl")]
+        [TestCase("Date")]
+        [TestCase("Str")]
+        [TestCase("Obj")]
+        [TestCase("Var")]
         [Category("Inspections")]
-        public void DefType_Bool()
+        public void DefType_SingleResultFound(string type)
         {
             const string inputCode =
-@"DefBool A
+@"Def{0} A
 Public Function aFoo()
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Format(inputCode, type), out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new DefTypeStatementInspection(state);
@@ -41,216 +52,27 @@ End Function";
         }
 
         [Test]
+        [TestCase("Bool")]
+        [TestCase("Byte")]
+        [TestCase("Int")]
+        [TestCase("Lng")]
+        [TestCase("Cur")]
+        [TestCase("Sng")]
+        [TestCase("Dbl")]
+        [TestCase("Date")]
+        [TestCase("Str")]
+        [TestCase("Obj")]
+        [TestCase("Var")]
         [Category("Inspections")]
-        public void DefType_Byte()
-        {
-            const string inputCode =
-@"DefByte B
-Public Function bFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Integer()
-        {
-            const string inputCode =
-@"DefInt C
-Public Function cFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Long()
-        {
-            const string inputCode =
-@"DefLng D
-Public Function dFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Currency()
-        {
-            const string inputCode =
-@"DefCur E
-Public Function eFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Single()
-        {
-            const string inputCode =
-@"DefSng F
-Public Function fFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Double()
-        {
-            const string inputCode =
-@"DefDbl G
-Public Function gFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Date()
-        {
-            const string inputCode =
-@"DefDate H
-Public Function hFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_String()
-        {
-            const string inputCode =
-@"DefStr I
-Public Function iFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Object()
-        {
-            const string inputCode =
-@"DefObj J
-Public Function jFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_Variant()
-        {
-            const string inputCode =
-@"DefVar K
-Public Function kFoo()
-End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefType_SingleResultIgnored()
+        public void DefType_SingleResultIgnored(string type)
         {
             const string inputCode =
 @"'@Ignore DefTypeStatement
-DefInt F
+Def{0} F
 Public Function FunctionWontBeFoundInResult()
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Format(inputCode, type), out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new DefTypeStatementInspection(state);
