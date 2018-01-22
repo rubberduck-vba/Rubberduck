@@ -902,4 +902,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="UnhandledOnErrorResumeNextInspectionResultFormat" xml:space="preserve">
     <value>Errors are ignored but never handled again</value>
   </data>
+  <data name="DefTypeStatementInspectionMeta" xml:space="preserve">
+    <value>Using the 'Def[Type]' statement leads to specifying types by using a prefix. This style of naming is heavily discouraged and should be avoided.</value>
+  </data>
+  <data name="DefTypeStatementInspectionName" xml:space="preserve">
+    <value>Usage of 'Def[Type]' statement</value>
+  </data>
+  <data name="DefTypeStatementInspectionResultFormat" xml:space="preserve">
+    <value>Consider the explicit use of 'as {0}' instead of '{1}'</value>
+  </data>
 </root>
