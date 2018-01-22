@@ -47,11 +47,6 @@ namespace Rubberduck.Inspections
 
         private static bool MayRequireAssignmentUsingSet(Declaration declaration)
         {
-            if (declaration.DeclarationType == DeclarationType.PropertyLet)
-            {
-                return false;
-            }
-
             if (declaration.AsTypeName == Tokens.Variant)
             {
                 return true;
@@ -82,7 +77,7 @@ namespace Rubberduck.Inspections
         {
             if (declaration.AsTypeDeclaration != null)
             {
-                return declaration.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType
+                return declaration.AsTypeDeclaration.DeclarationType == DeclarationType.ClassModule
                         && (((IsVariableOrParameter(declaration) 
                                 && !declaration.IsSelfAssigned)
                             || (IsMemberWithReturnType(declaration)  
@@ -127,7 +122,10 @@ namespace Rubberduck.Inspections
             }
 
             //You can only new up objects.
-            if (RHSUsesNew(letStmtContext)) { return true; }
+            if (RHSUsesNew(letStmtContext))
+            {
+                return true;
+            }
 
             if (RHSIsLiteral(letStmtContext))
             {
@@ -146,18 +144,6 @@ namespace Rubberduck.Inspections
             return variantAndObjectDeclarations.Any(dec => dec.IdentifierName == rhsIdentifier 
                 && dec.AsTypeName != Tokens.Variant
                 && dec.Attributes.HasDefaultMemberAttribute(dec.IdentifierName, out _));
-        }
-
-        private static bool IsLetAssignment(IdentifierReference reference)
-        {
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
-            return (reference.IsAssignment && letStmtContext != null);
-        }
-
-        private static bool IsAlreadyAssignedUsingSet(IdentifierReference reference)
-        {
-            var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(reference.Context);
-            return (reference.IsAssignment && setStmtContext?.SET() != null);
         }
 
         private static string GetRHSIdentifierExpressionText(VBAParser.LetStmtContext letStmtContext)

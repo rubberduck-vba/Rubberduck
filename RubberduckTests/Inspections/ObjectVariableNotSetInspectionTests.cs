@@ -10,6 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
+    [DeploymentItem(@"TestFiles\")]
     public class ObjectVariableNotSetInspectionTests
     {
         [Test]
@@ -116,7 +117,7 @@ End Sub
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsResult()
         {
-            var expectResultCount = 1;
+            var expectResultCount = 0;
             var input =
 @"
 Private Sub DoSomething()
@@ -135,13 +136,10 @@ End Sub
             var expectResultCount = 0;
             var input =
 @"
-Private Sub Workbook_Open()
-    
+Private Sub Workbook_Open()    
     Dim target As String
     target = Range(""A1"")
-    
     target.Value = ""all good""
-
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
@@ -154,10 +152,9 @@ End Sub";
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
-'whoCares is a LExprContext and is a known interesting declaration
     Dim target As Collection
-    Set target = new Collection
-    testParam = target             
+    Set target = New Collection
+    testParam = target
     testParam.Add 100
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
@@ -171,8 +168,7 @@ End Sub";
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
-'is a NewExprContext
-    testParam = new Collection     
+    testParam = New Collection     
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
@@ -193,27 +189,12 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsNoResult()
         {
-            var expectResultCount = 1;
+            var expectResultCount = 0; // legit default member assignment
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant, target As Range)
-'target is a LExprContext and is a known interesting declaration
-    testParam = target
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredVariant_ReturnsNoResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub TestSub(ByRef testParam As Variant, target As Range)
-'target is a LExprContext and is a known interesting declaration
     testParam = target
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
@@ -228,7 +209,7 @@ End Sub";
 @"
 Private Sub Workbook_Open()
     Dim target As Variant
-    target = ""A1""     'is a LiteralExprContext
+    target = ""A1""
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
@@ -286,43 +267,6 @@ Private Sub Workbook_Open()
 
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
-        }
-
-        //https://github.com/rubberduck-vba/Rubberduck/issues/2266
-        [Test]
-        [DeploymentItem(@"Testfiles\")]
-        [Category("Inspections")]
-        public void ObjectVariableNotSet_FunctionReturnsArrayOfType_ReturnsNoResult()
-        {
-            var expectedResultCount = 0;
-            var input =
-@"
-Private Function GetSomeDictionaries() As Dictionary()
-    Dim temp(0 To 1) As Worksheet
-    Set temp(0) = New Dictionary
-    Set temp(1) = New Dictionary
-    GetSomeDictionaries = temp
-End Function";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Codez", ComponentType.StandardModule, input)
-                .AddReference("Scripting", "", 1, 0, true)
-                .Build();
-
-            var vbe = builder.AddProject(project).Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Scripting.1.0.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObjectVariableNotSetInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(expectedResultCount, inspectionResults.Count());
-
         }
 
         [Test]
@@ -392,12 +336,11 @@ End Sub";
         [Category("Inspections")]
         public void ObjectVariableNotSet_FunctionReturnNotSet_ReturnsResult()
         {
-
             var expectResultCount = 1;
             var input =
 @"
 Private Function Test() As Collection
-    Test = new Collection
+    Test = New Collection
 End Function";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
@@ -513,10 +456,21 @@ End Sub";
 
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using(var state = MockParser.CreateAndParse(vbe.Object))
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using(var coordinator = MockParser.Create(vbe.Object))
             {
-                var inspection = new ObjectVariableNotSetInspection(state);
+                coordinator.State.AddTestLibrary("Excel.1.8.xml");
+                coordinator.State.AddTestLibrary("VBA.4.2.xml");
+                coordinator.Parse(new CancellationTokenSource());
+
+                var inspection = new ObjectVariableNotSetInspection(coordinator.State);
                 var inspectionResults = inspection.GetInspectionResults();
 
                 Assert.AreEqual(expected, inspectionResults.Count());

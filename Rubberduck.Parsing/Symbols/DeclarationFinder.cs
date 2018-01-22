@@ -63,6 +63,8 @@ namespace Rubberduck.Parsing.Symbols
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
         private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
         private IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
+        private IDictionary<QualifiedModuleName, List<IdentifierReference>> _referencesByModule;
+        private IDictionary<QualifiedMemberName, List<IdentifierReference>> _referencesByMember;
 
         private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
         private Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
@@ -153,7 +155,16 @@ namespace Rubberduck.Parsing.Symbols
                     .GroupBy(declaration => declaration.DeclarationType)
                     .ToDictionary()
                 );
-
+            actions.Add(() =>
+                _referencesByModule = declarations
+                    .SelectMany(declaration => declaration.References)
+                    .GroupBy(reference => Declaration.GetModuleParent(reference.ParentScoping).QualifiedName.QualifiedModuleName)
+                    .ToDictionary());
+            actions.Add(() =>
+                _referencesByMember = declarations
+                    .SelectMany(declaration => declaration.References)
+                    .GroupBy(reference => reference.ParentScoping.QualifiedName)
+                    .ToDictionary());
             return actions;
         }
 
@@ -1039,6 +1050,16 @@ namespace Rubberduck.Parsing.Symbols
             return declaration.DeclarationType.HasFlag(DeclarationType.Property)
                 || declaration.DeclarationType == DeclarationType.Function
                 || declaration.DeclarationType == DeclarationType.Procedure;
+        }
+
+        public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedModuleName module)
+        {
+            return _referencesByModule[module];
+        }
+
+        public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedMemberName member)
+        {
+            return _referencesByMember[member];
         }
     }
 }

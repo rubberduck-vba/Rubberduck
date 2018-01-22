@@ -8,7 +8,6 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -197,7 +196,7 @@ namespace Rubberduck.Parsing.Symbols
                 var members = _declarationFinder.Members(module);
                 hasDefaultMember = members.Any(m => m.Attributes.Any(a => a.Name == $"{m.IdentifierName}.VB_UserMemId" && a.Values.SingleOrDefault() == "0"));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, (!hasDefaultMember || isSetAssignment) && isAssignmentTarget, hasExplicitLetStatement);
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, /*(!hasDefaultMember || isSetAssignment) &&*/ isAssignmentTarget, hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)
