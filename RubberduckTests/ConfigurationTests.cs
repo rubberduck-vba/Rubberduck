@@ -15,7 +15,8 @@ namespace RubberduckTests
         [Category("Settings")]
         public void GetDefaultTodoMarkersTest()
         {
-            var settings = new ToDoListSettings();
+            var defaultMarkers = new[] {new ToDoMarker("NOTE"), new ToDoMarker("TODO"), new ToDoMarker("BUG")};
+            var settings = new ToDoListSettings(defaultMarkers);
 
             ToDoMarker[] markers = settings.ToDoMarkers;
             Assert.AreEqual("NOTE", markers[0].Text.Trim(),"Note failed to load.");

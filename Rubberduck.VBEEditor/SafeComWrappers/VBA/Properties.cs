@@ -24,9 +24,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IProperty>(null, o => new Property(null))
-                : new ComWrapperEnumerator<IProperty>(Target, comObject => new Property((VB.Property) comObject));
+            return new ComWrapperEnumerator<IProperty>(Target, comObject => new Property((VB.Property) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

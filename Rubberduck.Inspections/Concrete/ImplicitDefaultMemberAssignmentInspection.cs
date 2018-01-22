@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
                 .SelectMany(declaration => declaration.References)
                 .Where(reference =>
                 {
-                    var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                    var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
                     return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                 });
 

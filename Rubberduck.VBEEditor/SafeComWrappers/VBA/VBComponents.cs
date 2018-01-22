@@ -72,9 +72,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent) comObject));
+            return new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
