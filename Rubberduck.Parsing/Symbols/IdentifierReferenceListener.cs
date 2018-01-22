@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             SetCurrentScope(Identifier.GetName(context.functionName().identifier()), DeclarationType.Function);
-            _resolver.Resolve(context.asTypeClause());
+            //_resolver.Resolve(context.asTypeClause());
         }
 
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -47,7 +47,7 @@ namespace Rubberduck.Parsing.Symbols
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             SetCurrentScope(Identifier.GetName(context.functionName().identifier()), DeclarationType.PropertyGet);
-            _resolver.Resolve(context.asTypeClause());
+            //_resolver.Resolve(context.asTypeClause());
         }
 
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
