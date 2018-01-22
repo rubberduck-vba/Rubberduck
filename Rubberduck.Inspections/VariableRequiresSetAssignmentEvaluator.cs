@@ -32,6 +32,7 @@ namespace Rubberduck.Inspections
             if (setStmtContext != null)
             {
                 // assignment already has a Set keyword
+                return true;
                 // (but is it misplaced? ...hmmm... beyond the scope of *this* inspection though)
                 // if we're only ever assigning to 'Nothing', might as well flag it though
                 if (reference.Declaration.References.Where(r => r.IsAssignment).All(r =>

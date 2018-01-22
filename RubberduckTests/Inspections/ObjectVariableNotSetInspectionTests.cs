@@ -117,7 +117,7 @@ End Sub
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsResult()
         {
-            var expectResultCount = 0;
+            var expectResultCount = 1;
             var input =
 @"
 Private Sub DoSomething()
@@ -175,9 +175,9 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsNoResult()
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
         {
-            var expectResultCount = 0;
+            var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
@@ -188,9 +188,9 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsNoResult()
+        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
         {
-            var expectResultCount = 0;
+            var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant, target As Range)
