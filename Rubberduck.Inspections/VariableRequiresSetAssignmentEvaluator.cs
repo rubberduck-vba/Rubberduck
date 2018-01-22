@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Rubberduck.Inspections
 {

@@ -342,7 +342,8 @@ namespace Rubberduck.Parsing.Symbols
         public virtual bool IsObject()
         {
             return AsTypeName == Tokens.Object
-                   || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false);
+                   || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
+                   || (!AsTypeIsBaseType && !IsArray && !DeclarationType.HasFlag(DeclarationType.UserDefinedType));
         }
 
         public void AddReference(

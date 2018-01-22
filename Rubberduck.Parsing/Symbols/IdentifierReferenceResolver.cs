@@ -194,7 +194,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
                 var members = _declarationFinder.Members(module);
-                defaultMember = (IParameterizedDeclaration)members.SingleOrDefault(m => m is IParameterizedDeclaration && m.Attributes.HasDefaultMemberAttribute());
+                defaultMember = (IParameterizedDeclaration)members.FirstOrDefault(m => m is IParameterizedDeclaration && m.Attributes.HasDefaultMemberAttribute() && (isAssignmentTarget ? m.DeclarationType.HasFlag(DeclarationType.Procedure) : m.DeclarationType.HasFlag(DeclarationType.Function)));
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget && (defaultMember == null || (!defaultMember.Parameters.Any() || defaultMember.Parameters.All(p => p.IsOptional)) || isSetAssignment), hasExplicitLetStatement);
         }
