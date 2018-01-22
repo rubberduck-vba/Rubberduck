@@ -120,14 +120,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     interface IVBProjectEx_VBE
     {
-        void Placeholder1();
-        void Placeholder2();
+        void Placeholder1();                    // returns E_NOTIMPL
+        void set_ProjectName(string value);
         int VBE_LCID();
-        void Placeholder3();
-        void Placeholder4();
-        void Placeholder5();
-        void Placeholder6();
-        void Placeholder7();
+        void set_ProjectVersion(ushort wMajorVerNum, ushort wMinorVerNum);
+        void set_ProjectGUID(ref Guid value);
+        void set_ProjectDescription(string value);
+        void set_ProjectHelpFileName(string value);
+        void set_ProjectHelpContext(int value);
         string get_ConditionalCompilationArgs();
         void set_ConditionalCompilationArgs(string args);
     }
