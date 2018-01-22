@@ -70,19 +70,35 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // AggregateSingleInterface is used to ensure that a wrapped COM object only responds to a specific interface
+    public class MarshalHelper
+    {
+        public static bool DoesComObjectSupportInterface(IntPtr rawObjectPtr, Guid IID)
+        {
+            IntPtr ppv = IntPtr.Zero;
+            if (Marshal.QueryInterface(rawObjectPtr, ref IID, out ppv) >= 0)
+            {
+                if (ppv != IntPtr.Zero)
+                {
+                    Marshal.Release(ppv);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    // RestrictComInterfaceByAggregation is used to ensure that a wrapped COM object only responds to a specific interface
     // In particular, we don't want them to respond to IProvideClassInfo, which is broken in the VBE for some ITypeInfo implementations 
-    public class AggregateInterfacesWrapper : ICustomQueryInterface, IDisposable
+    public class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
     {
         private IntPtr _outerObject;
-        private Type[] _supportedInterfaces;
         private object _wrappedObject;
 
-        public AggregateInterfacesWrapper(IntPtr outerObject, Type[] supportedInterfaces)
+        public RestrictComInterfaceByAggregation(IntPtr outerObject)
         {
             _outerObject = outerObject;
             Marshal.AddRef(_outerObject);
-            _supportedInterfaces = supportedInterfaces;
 
             var aggObjPtr = Marshal.CreateAggregatedObject(_outerObject, this);
             _wrappedObject = (ComTypes.ITypeInfo)Marshal.GetObjectForIUnknown(aggObjPtr);        // when this CCW object gets released, it will free the aggObjInner (well, after GC)
@@ -107,14 +123,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             if (!_isDisposed)
             {
-                foreach (var intf in _supportedInterfaces)
+                if (iid == typeof(T).GUID)
                 {
-                    if (intf.GUID == iid)
-                    {
-                        ppv = _outerObject;
-                        Marshal.AddRef(_outerObject);
-                        return CustomQueryInterfaceResult.Handled;
-                    }
+                    ppv = _outerObject;
+                    Marshal.AddRef(_outerObject);
+                    return CustomQueryInterfaceResult.Handled;
                 }
             }
             
@@ -168,7 +181,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private TypeLibWrapper _containerTypeLib;
         private int _containerTypeLibIndex;
-        private AggregateInterfacesWrapper _typeInfoAggregatorObj;
+        private RestrictComInterfaceByAggregation<ComTypes.ITypeInfo> _typeInfoAggregatorObj;
         private bool _isUserFormBaseClass = false;
         private ComTypes.TYPEATTR _cachedAttributes;
 
@@ -190,7 +203,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeInfo_VBE _ITypeInfoVBE
             { get => ((ITypeInfo_VBE)_wrappedObject); }
 
-        public bool IsVBEHosted() => (_wrappedObject as ITypeInfo_VBE) != null;
+        private readonly bool _hasVBEExtensions;
+        public bool HasVBEExtensions() => _hasVBEExtensions;
 
         private void CacheCommonProperties()
         {
@@ -224,7 +238,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public TypeInfoWrapper(IntPtr rawObjectPtr, int? parentUserFormUniqueId = null)
         {
-            _typeInfoAggregatorObj = new AggregateInterfacesWrapper(rawObjectPtr, new Type[] { typeof(ComTypes.ITypeInfo), typeof(ITypeInfo_VBE) });
+            // We have to use DoesComObjectSupportInterface to work with the raw pointer rather than the RCW here
+            // due to the IProvideClassInfo VBE bug
+            _hasVBEExtensions = MarshalHelper.DoesComObjectSupportInterface(rawObjectPtr, typeof(ITypeInfo_VBECheck).GUID);
+
+            _typeInfoAggregatorObj = new RestrictComInterfaceByAggregation<ComTypes.ITypeInfo>(rawObjectPtr);
             _wrappedObject = (ComTypes.ITypeInfo)_typeInfoAggregatorObj.WrappedObject;
             
             // base classes of VBE UserForms cause an access violation on calling GetDocumentation(MEMBERID_NIL)
@@ -247,7 +265,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // Determine if this is a UserForm base class, that requires special handling to workaround a VBE bug in its implemented classes
             // the guids are dynamic, so we can't use them for detection.
             if ((_cachedAttributes.typekind == ComTypes.TYPEKIND.TKIND_COCLASS) &&
-                    IsVBEHosted() &&
                     HasNoContainer() &&
                     (_cachedAttributes.cImplTypes == 2) && 
                     (Name == "Form"))
@@ -338,7 +355,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public IDispatch GetStdModInstance()
         {
-            if (IsVBEHosted())
+            if (HasVBEExtensions())
             {
                 return _ITypeInfoVBE.GetStdModInstance();
             }
@@ -350,7 +367,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public object StdModExecute(string name, Reflection.BindingFlags invokeAttr, object[] args = null)
         {
-            if (IsVBEHosted())
+            if (HasVBEExtensions())
             {
                 var StaticModule = GetStdModInstance();
                 var retVal = StaticModule.GetType().InvokeMember(name, invokeAttr, null, StaticModule, args);
@@ -491,13 +508,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeLib_Ptrs _ITypeLibAlt
             { get => ((ITypeLib_Ptrs)_wrappedObject); }
 
-        public bool IsVBEHosted() => (_wrappedObject as IVBProjectEx_VBE) != null;
+        public bool HasVBEExtensions() => (_wrappedObject as IVBProjectEx_VBE) != null;
 
         private IVBProjectEx_VBE _IVBProjectEx
         {
             get
             {
-                if (IsVBEHosted())
+                if (HasVBEExtensions())
                 {
                     return (IVBProjectEx_VBE)_wrappedObject;
                 }
@@ -587,7 +604,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             get
             {
-                if (IsVBEHosted())
+                if (HasVBEExtensions())
                 {
                     return _IVBProjectEx.get_ConditionalCompilationArgs();
                 }
@@ -599,7 +616,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             set
             {
-                if (IsVBEHosted())
+                if (HasVBEExtensions())
                 {
                     _IVBProjectEx.set_ConditionalCompilationArgs(value);
                 }

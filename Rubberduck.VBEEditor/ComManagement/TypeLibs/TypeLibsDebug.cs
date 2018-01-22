@@ -55,8 +55,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var typeLibVBE = typeLib as TypeLibWrapper;
             if (typeLibVBE != null)
             {
-                AppendLine("- IsVBEHosted: " + typeLibVBE.IsVBEHosted());
-                if (typeLibVBE.IsVBEHosted())
+                AppendLine("- HasVBEExtensions: " + typeLibVBE.HasVBEExtensions());
+                if (typeLibVBE.HasVBEExtensions())
                 {
                     AppendLine("- VBE Conditional Compilation Arguments: " + typeLibVBE.ConditionalCompilationArguments);
                 }
@@ -100,7 +100,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (typeString != null) AppendLineButRemoveEmbeddedNullChars("- Documentation: " + typeString.Replace("\0", string.Empty));
             if (typeHelp != 0) AppendLineButRemoveEmbeddedNullChars("- HelpContext: " + typeHelp);
             if (TypeHelpFile != null) AppendLineButRemoveEmbeddedNullChars("- HelpFile: " + TypeHelpFile.Replace("\0", string.Empty));
-            AppendLine("- IsVBEHosted: " + (((TypeInfoWrapper)typeInfo).IsVBEHosted() ? "true" : "false"));   // FIXME not safe for ITypeInfos that aren't from our wrappers
+            AppendLine("- HasVBEExtensions: " + (((TypeInfoWrapper)typeInfo).HasVBEExtensions() ? "true" : "false"));   // FIXME not safe for ITypeInfos that aren't from our wrappers
 
             AppendLine("- Type: " + (TYPEKIND_VBE)typeInfoAttributes.typekind);
             AppendLine("- Guid: {" + typeInfoAttributes.guid + "}");

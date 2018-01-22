@@ -36,9 +36,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void ReleaseVarDesc(IntPtr pVarDesc);
     }
 
-    // An extended version of ITypeInfo_Ptrs that includes a particularly helpful member, GetStdModInstance
+    // An interface known to be supported by VBE hosted ITypeInfos
     [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface ITypeInfo_VBECheck
+    {
+    }
+
+    // An extended version of ITypeInfo_Ptrs that includes a particularly helpful member, GetStdModInstance
+    [ComImport(), Guid("00020401-0000-0000-C000-000000000046")]
     public interface ITypeInfo_VBE
     {
         void GetTypeAttr(out IntPtr ppTypeAttr);
