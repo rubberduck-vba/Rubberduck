@@ -77,10 +77,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
 
-        public override bool IsObject()
-        {
-            return base.IsObject()
-                   || (Parameters.OrderBy(p => p.Selection).LastOrDefault()?.IsObject() ?? false);
-        }
+        public override bool IsObject => 
+            base.IsObject || (Parameters.OrderBy(p => p.Selection).LastOrDefault()?.IsObject ?? false);
     }
 }

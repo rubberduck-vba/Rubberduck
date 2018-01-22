@@ -339,12 +339,13 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
-        public virtual bool IsObject()
-        {
-            return AsTypeName == Tokens.Object
-                   || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
-                   || (!AsTypeIsBaseType && !IsArray && !DeclarationType.HasFlag(DeclarationType.UserDefinedType));
-        }
+        public virtual bool IsObject => 
+            AsTypeName == Tokens.Object
+            || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
+            && !AsTypeIsBaseType 
+            && !IsArray 
+            && !DeclarationType.HasFlag(DeclarationType.UserDefinedType) 
+            && !DeclarationType.HasFlag(DeclarationType.Enumeration);
 
         public void AddReference(
             QualifiedModuleName module,

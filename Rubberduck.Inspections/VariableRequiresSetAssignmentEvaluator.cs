@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
-            var isObjectVariable = declaration.IsObject();
+            var isObjectVariable = declaration.IsObject;
             var isVariant = declaration.IsUndeclared || declaration.AsTypeName == Tokens.Variant;
             if (!isObjectVariable && !isVariant)
             {
@@ -179,77 +179,6 @@ namespace Rubberduck.Inspections
         {
             return item.DeclarationType == DeclarationType.Variable
                     || item.DeclarationType == DeclarationType.Parameter;
-        }
-
-        private static bool ObjectOrVariantRequiresSetAssignment(IdentifierReference objectOrVariantRef, IEnumerable<Declaration> variantAndObjectDeclarations)
-        {
-            //Not an assignment...nothing to evaluate
-            if (!objectOrVariantRef.IsAssignment)
-            {
-                return false;
-            }
-
-            if (objectOrVariantRef.Declaration.AsTypeName != Tokens.Variant)
-            {
-                return true;
-            }
-
-            //Variants can be assigned with or without 'Set' depending...
-            var letStmtContext = objectOrVariantRef.Context.GetAncestor<VBAParser.LetStmtContext>();
-
-            //A potential error is only possible for let statements: rset, lset and other type specific assignments are always let assignments; 
-            //assignemts in for each loop statements are do not require the set keyword.
-            if(letStmtContext == null)
-            {
-                return false;
-            }
-
-            //You can only new up objects.
-            if (RHSUsesNew(letStmtContext))
-            {
-                return true;
-            }
-
-            if (RHSIsLiteral(letStmtContext))
-            {
-                if(RHSIsObjectLiteral(letStmtContext))
-                {
-                    return true;
-                }
-                //All literals but the object literal potentially do not need a set assignment.
-                //We cannot get more information from the RHS and do not want false positives.
-                return false;
-            }
-
-            //If the RHS is the identifierName of one of the 'interesting' declarations, we need to use 'Set'
-            //unless the 'interesting' declaration is also a Variant
-            var rhsIdentifier = GetRHSIdentifierExpressionText(letStmtContext);
-            return variantAndObjectDeclarations.Any(dec => dec.IdentifierName == rhsIdentifier 
-                && dec.AsTypeName != Tokens.Variant
-                && dec.Attributes.HasDefaultMemberAttribute(dec.IdentifierName, out _));
-        }
-
-        private static string GetRHSIdentifierExpressionText(VBAParser.LetStmtContext letStmtContext)
-        {
-            var expression = letStmtContext.expression();
-            return expression is VBAParser.LExprContext ? expression.GetText() : string.Empty;
-        }
-
-        private static bool RHSUsesNew(VBAParser.LetStmtContext letStmtContext)
-        {
-            var expression = letStmtContext.expression();
-            return (expression is VBAParser.NewExprContext);
-        }
-
-        private static bool RHSIsLiteral(VBAParser.LetStmtContext letStmtContext)
-        {
-            return letStmtContext.expression() is VBAParser.LiteralExprContext;                   
-        }
-
-        private static bool RHSIsObjectLiteral(VBAParser.LetStmtContext letStmtContext)
-        {
-            var rhsAsLiteralExpr = letStmtContext.expression() as VBAParser.LiteralExprContext;
-            return rhsAsLiteralExpr?.literalExpression()?.literalIdentifier()?.objectLiteralIdentifier() != null;
         }
     }
 }
