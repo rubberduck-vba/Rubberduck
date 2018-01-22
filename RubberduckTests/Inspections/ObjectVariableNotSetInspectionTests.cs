@@ -177,7 +177,7 @@ End Sub";
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsNoResult()
         {
-            var expectResultCount = 1;
+            var expectResultCount = 0;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
@@ -190,7 +190,7 @@ End Sub";
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsNoResult()
         {
-            var expectResultCount = 1;
+            var expectResultCount = 0;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant, target As Range)
