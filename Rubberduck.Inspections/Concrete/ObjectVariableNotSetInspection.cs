@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -55,7 +56,7 @@ namespace Rubberduck.Inspections.Concrete
                         continue;
                     }
 
-                    var setStmtContext = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(reference.Context);
+                    var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
                     if (setStmtContext != null)
                     {
                         // assignment already has a Set keyword
@@ -63,7 +64,7 @@ namespace Rubberduck.Inspections.Concrete
                         continue;
                     }
 
-                    var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                    var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
                     if (letStmtContext == null)
                     {
                         // we're probably in a For Each loop
@@ -127,7 +128,7 @@ namespace Rubberduck.Inspections.Concrete
                     // todo resolve expression return type
 
                     var memberRefs = State.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
-                    var lastRef = memberRefs.LastOrDefault(r => !Equals(r, reference) && ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(r.Context) == letStmtContext);
+                    var lastRef = memberRefs.LastOrDefault(r => !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
                     if (lastRef?.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
                     {
                         // the last reference in the expression is referring to an object type

@@ -112,7 +112,7 @@ namespace Rubberduck.Inspections
             }
 
             //Variants can be assigned with or without 'Set' depending...
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(objectOrVariantRef.Context);
+            var letStmtContext = objectOrVariantRef.Context.GetAncestor<VBAParser.LetStmtContext>();
 
             //A potential error is only possible for let statements: rset, lset and other type specific assignments are always let assignments; 
             //assignemts in for each loop statements are do not require the set keyword.
