@@ -120,16 +120,30 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     interface IVBProjectEx_VBE
     {
+        void Placeholder1();                    
+        void Placeholder2();
+        int VBE_LCID();
+        void Placeholder3();
+        void Placeholder4();
+        void Placeholder5();
+        void Placeholder6();
+        void Placeholder7();
+        string get_ConditionalCompilationArgs();
+        void set_ConditionalCompilationArgs(string args);
+    }
+
+    // IVBProjectEx2_VBE, vtable position just before the IVBProjectEx_VBE, not queryable, so needs aggregation
+    [ComImport(), Guid("FFFFFFFF-0000-0000-C000-000000000046")]  // 
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    interface IVBProjectEx2_VBE
+    {
         void Placeholder1();                    // returns E_NOTIMPL
         void set_ProjectName(string value);
-        int VBE_LCID();
         void set_ProjectVersion(ushort wMajorVerNum, ushort wMinorVerNum);
         void set_ProjectGUID(ref Guid value);
         void set_ProjectDescription(string value);
         void set_ProjectHelpFileName(string value);
         void set_ProjectHelpContext(int value);
-        string get_ConditionalCompilationArgs();
-        void set_ConditionalCompilationArgs(string args);
     }
 
     public enum TYPEKIND_VBE

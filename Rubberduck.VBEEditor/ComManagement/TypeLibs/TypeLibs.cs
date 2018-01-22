@@ -101,7 +101,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             Marshal.AddRef(_outerObject);
 
             var aggObjPtr = Marshal.CreateAggregatedObject(_outerObject, this);
-            _wrappedObject = (ComTypes.ITypeInfo)Marshal.GetObjectForIUnknown(aggObjPtr);        // when this CCW object gets released, it will free the aggObjInner (well, after GC)
+            _wrappedObject = (T)Marshal.GetObjectForIUnknown(aggObjPtr);        // when this CCW object gets released, it will free the aggObjInner (well, after GC)
             Marshal.Release(aggObjPtr);         // _wrappedObject holds a reference to this now
         }
 
@@ -494,6 +494,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly ComTypes.ITypeLib _wrappedObject;
         private readonly bool _wrappedObjectIsWeakReference;
+        private RestrictComInterfaceByAggregation<IVBProjectEx2_VBE> _cachedIVBProjectEx2;
 
         private string _name;
         private string _docString;
@@ -524,6 +525,30 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 }
             }
         }
+        private IVBProjectEx2_VBE _IVBProjectEx2
+        {
+            // This is not yet used, but defined in case we want to use this interface at some point.
+            get
+            {
+                if (_cachedIVBProjectEx2 == null)
+                {
+                    if (HasVBEExtensions())
+                    {
+                        // This internal VBE interface doesn't have a queryable IID.  
+                        // The vtable for this interface directly preceeds the _IVBProjectEx, and we can access it through an aggregation helper
+                        var objIVBProjectExPtr = Marshal.GetComInterfaceForObject(_wrappedObject, typeof(IVBProjectEx_VBE));
+                        objIVBProjectExPtr -= IntPtr.Size;
+                        _cachedIVBProjectEx2 = new RestrictComInterfaceByAggregation<IVBProjectEx2_VBE>(objIVBProjectExPtr);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support _IVBProjectEx");
+                    }
+                }
+
+                return (IVBProjectEx2_VBE)_cachedIVBProjectEx2.WrappedObject;
+            }
+        }
 
         private void CacheCommonProperties()
         {
@@ -550,6 +575,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (_isDisposed) return;
             _isDisposed = true;
 
+            _cachedIVBProjectEx2?.Dispose();
             _typeInfosWrapped?.Dispose();
             if (!_wrappedObjectIsWeakReference) Marshal.ReleaseComObject(_wrappedObject);
         }
