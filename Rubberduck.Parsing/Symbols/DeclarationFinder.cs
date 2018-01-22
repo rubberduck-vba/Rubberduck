@@ -1061,12 +1061,16 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedModuleName module)
         {
-            return _referencesByModule[module];
+            return _referencesByModule.TryGetValue(module, out List<IdentifierReference> value)
+                ? value
+                : Enumerable.Empty<IdentifierReference>();
         }
 
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedMemberName member)
         {
-            return _referencesByMember[member];
+            return _referencesByMember.TryGetValue(member, out List<IdentifierReference> value)
+                ? value
+                : Enumerable.Empty<IdentifierReference>();
         }
     }
 }

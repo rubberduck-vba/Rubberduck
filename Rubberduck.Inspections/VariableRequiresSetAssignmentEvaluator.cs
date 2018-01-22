@@ -3,7 +3,9 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Rubberduck.Inspections
 {
@@ -21,28 +23,110 @@ namespace Rubberduck.Inspections
 
         public static bool RequiresSetAssignment(IdentifierReference reference, RubberduckParserState state)
         {
-            //Not an assignment...definitely does not require a 'Set' assignment
             if (!reference.IsAssignment)
             {
+                // reference isn't assigning its declaration; not interesting
                 return false;
             }
-            
-            //We know for sure it DOES NOT use 'Set'
-            if (!MayRequireAssignmentUsingSet(reference.Declaration))
+
+            var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
+            if (setStmtContext != null)
+            {
+                // assignment already has a Set keyword
+                // (but is it misplaced? ...hmmm... beyond the scope of *this* inspection though)
+                // if we're only ever assigning to 'Nothing', might as well flag it though
+                if (reference.Declaration.References.Where(r => r.IsAssignment).All(r =>
+                    r.Context.GetAncestor<VBAParser.SetStmtContext>().expression().GetText() == Tokens.Nothing))
+                {
+                    return true;
+                }
+            }
+
+            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
+            if (letStmtContext == null)
+            {
+                // we're probably in a For Each loop
+                return false;
+            }
+
+            var declaration = reference.Declaration;
+            if (declaration.IsArray)
+            {
+                // arrays don't need a Set statement... todo figure out if array items are objects
+                return false;
+            }
+
+            var isObjectVariable = declaration.IsObject();
+            var isVariant = declaration.IsUndeclared || declaration.AsTypeName == Tokens.Variant;
+            if (!isObjectVariable && !isVariant)
             {
                 return false;
             }
 
-            //We know for sure that it DOES use 'Set'
-            if (RequiresAssignmentUsingSet(reference.Declaration))
+            if (isObjectVariable)
+            {
+                // get the members of the returning type, a default member could make us lie otherwise
+                var classModule = declaration.AsTypeDeclaration as ClassModuleDeclaration;
+                if (classModule?.DefaultMember != null)
+                {
+                    var parameters = (classModule.DefaultMember as IParameterizedDeclaration)?.Parameters.ToArray() ?? Enumerable.Empty<ParameterDeclaration>().ToArray();
+                    if (!parameters.Any() || parameters.All(p => p.IsOptional))
+                    {
+                        // assigned declaration has a default parameterless member, which is legally being assigned here.
+                        // might be a good idea to flag that default member assignment though...
+                        return false;
+                    }
+                }
+
+                // assign declaration is an object without a default parameterless (or with all parameters optional) member - LHS needs a 'Set' keyword.
+                return true;
+            }
+
+            // assigned declaration is a variant. we need to know about the RHS of the assignment.
+
+            var expression = letStmtContext.expression();
+            if (expression == null)
+            {
+                Debug.Assert(false, "RHS expression is empty? What's going on here?");
+            }
+
+            if (expression is VBAParser.NewExprContext)
+            {
+                // RHS expression is newing up an object reference - LHS needs a 'Set' keyword:
+                return true;
+            }
+
+            var literalExpression = expression as VBAParser.LiteralExprContext;
+            if (literalExpression?.literalExpression()?.literalIdentifier()?.objectLiteralIdentifier() != null)
+            {
+                // RHS is a 'Nothing' token - LHS needs a 'Set' keyword:
+                return true;
+            }
+
+            // todo resolve expression return type
+
+            var memberRefs = state.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
+            var lastRef = memberRefs.LastOrDefault(r => !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
+            if (lastRef?.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
+            {
+                // the last reference in the expression is referring to an object type
+                return true;
+            }
+            if (lastRef?.Declaration.AsTypeName == Tokens.Object)
             {
                 return true;
             }
 
-            //We need to look everything to understand the RHS - the assigned reference is probably a Variant 
-            var allInterestingDeclarations = GetDeclarationsPotentiallyRequiringSetAssignment(state.AllUserDeclarations);
+            var accessibleDeclarations = state.DeclarationFinder.GetAccessibleDeclarations(reference.ParentScoping);
+            foreach (var accessibleDeclaration in accessibleDeclarations.Where(d => d.IdentifierName == expression.GetText()))
+            {
+                if (accessibleDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule) || accessibleDeclaration.AsTypeName == Tokens.Object)
+                {
+                    return true;
+                }
+            }
 
-            return ObjectOrVariantRequiresSetAssignment(reference, allInterestingDeclarations);
+            return false;
         }
 
         private static bool MayRequireAssignmentUsingSet(Declaration declaration)
