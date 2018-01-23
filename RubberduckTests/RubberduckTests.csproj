@@ -104,6 +104,7 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
     <Compile Include="VBEditor\ComSafeTests.cs" />
