@@ -11,9 +11,28 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
     public class VBETypeLibsAPI
     {
+        // Compile the project, returning success (true)/failure (false)
+        public static bool CompileProject(IVBE ide, string projectName)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return typeLibs.FindTypeLib(projectName).CompileProject();
+            }
+        }
+
+        // Compile a module in a VBE project, returning success (true)/failure (false)
+        // NOTE: This will only return success if ALL modules that this module depends on compile successfully
+        public static bool CompileComponent(IVBE ide, string projectName, string componentName)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return typeLibs.FindTypeLib(projectName).FindTypeInfo(componentName).CompileComponent();
+            }
+        }
+
         public static object ExecuteCode(IVBE ide, string projectName, string standardModuleName, string procName, object[] args = null)
         {
-            using (var typeLibs = new TypeLibsAccessor_VBE(ide))
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
                 return typeLibs.FindTypeLib(projectName).FindTypeInfo(standardModuleName)
                     .StdModExecute(procName, Reflection.BindingFlags.InvokeMethod, args);
@@ -23,7 +42,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         // returns the raw conditional arguments string, e.g. "foo = 1 : bar = 2"
         public static string GetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName)
         {
-            using (var typeLibs = new TypeLibsAccessor_VBE(ide))
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
                 return typeLibs.FindTypeLib(projectName).ConditionalCompilationArguments;
             }
@@ -48,7 +67,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         // sets the raw conditional arguments string, e.g. "foo = 1 : bar = 2"
         public static void SetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName, string newConditionalArgs)
         {
-            using (var typeLibs = new TypeLibsAccessor_VBE(ide))
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
                 typeLibs.FindTypeLib(projectName).ConditionalCompilationArguments = newConditionalArgs;
             }
@@ -73,7 +92,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 
         public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string typeLibName, string interfaceName)
         {
-            using (var typeLibs = new TypeLibsAccessor_VBE(ide))
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
                 return typeLibs.FindTypeLib(projectName).FindTypeInfo(className).DoesImplement(typeLibName, interfaceName);
             }
@@ -81,7 +100,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 
         public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid interfaceIID)
         {
-            using (var typeLibs = new TypeLibsAccessor_VBE(ide))
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
                 return typeLibs.FindTypeLib(projectName).FindTypeInfo(className).DoesImplement(interfaceIID);
             }
@@ -89,7 +108,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 
         public static string GetUserFormControlType(IVBE ide, string projectName, string userFormName, string controlName)
         {
-            using (var typeLibs = new TypeLibsAccessor_VBE(ide))
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
                 return typeLibs.FindTypeLib(projectName).FindTypeInfo(userFormName)
                         .GetImplementedTypeInfo("FormItf").GetControlType(controlName).Name;
@@ -98,7 +117,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 
         public static string DocumentAll(IVBE ide)
         {
-            using (var typeLibs = new TypeLibsAccessor_VBE(ide))
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
                 var documenter = new TypeLibDocumenter();
 

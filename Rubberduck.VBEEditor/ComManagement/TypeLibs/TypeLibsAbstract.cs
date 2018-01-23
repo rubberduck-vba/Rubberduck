@@ -36,16 +36,49 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void ReleaseVarDesc(IntPtr pVarDesc);
     }
 
-    // An interface known to be supported by VBE hosted ITypeInfos
-    [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
+    [ComImport(), Guid("DDD557E1-D96F-11CD-9570-00AA0051E5D4")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface ITypeInfo_VBECheck
+    public interface IVBEComponent
     {
+        void Placeholder1();
+        void Placeholder2();
+        void Placeholder3();
+        void Placeholder4();
+        void Placeholder5();
+        void Placeholder6();
+        void Placeholder7();
+        void Placeholder8();
+        void Placeholder9();
+        void Placeholder10();
+        void Placeholder11();
+        void Placeholder12();
+        void CompileComponent();
+        void Placeholder14();
+        void Placeholder15();
+        void Placeholder16();
+        void Placeholder17();
+        void Placeholder18();
+        void Placeholder19();
+        void Placeholder20();
+        void Placeholder21();
+        void Placeholder22();
+        void Placeholder23();
+        void Placeholder24();
+        void Placeholder25();
+        void Placeholder26();
+        void Placeholder27();
+        void Placeholder28();
+        void Placeholder29();
+        void Placeholder30();
+        void Placeholder31();
+        void Placeholder32();
+        void Placeholder33();
+        void GetSomeRelatedTypeInfoPtrs(out IntPtr A, out IntPtr B);        // returns 2 TypeInfos, seemingly related to this ITypeInfo, but slightly different.
     }
 
-    // An extended version of ITypeInfo_Ptrs that includes a particularly helpful member, GetStdModInstance
-    [ComImport(), Guid("00020401-0000-0000-C000-000000000046")]
-    public interface ITypeInfo_VBE
+    // An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModInstance
+    [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
+    public interface IVBETypeInfo
     {
         void GetTypeAttr(out IntPtr ppTypeAttr);
         void GetTypeComp(out IntPtr ppTComp);
@@ -91,7 +124,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     // An internal representation of the VBE References collection object, as returned from the VBE.ActiveVBProject.References, or similar
     // These offsets are known to be valid across 32-bit and 64-bit versions of VBA and VB6, right back from when VBA6 was first released.
     [StructLayout(LayoutKind.Sequential)]
-    struct ReferencesObj_VBE
+    struct VBEReferencesObj
     {
         IntPtr vTable1;     // _References vtable
         IntPtr vTable2;
@@ -106,7 +139,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
 
     // A ITypeLib object hosted by the VBE, also providing Prev/Next pointers for a double linked list of all loaded project ITypeLibs
     [StructLayout(LayoutKind.Sequential)]
-    struct TypeLibObj_VBE
+    struct VBETypeLibObj
     {
         IntPtr vTable1;     // ITypeLib vtable
         IntPtr vTable2;
@@ -115,27 +148,39 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         public IntPtr Next;
     }
 
-    // IVBProjectEx_VBE, obtainable from a VBE hosted ITypeLib in order to access a few extra features...
+    // IVBEProject, obtainable from a VBE hosted ITypeLib in order to access a few extra features...
     [ComImport(), Guid("DDD557E0-D96F-11CD-9570-00AA0051E5D4")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IVBProjectEx_VBE
+    interface IVBEProject
     {
-        void Placeholder1();                    
-        void Placeholder2();
-        int VBE_LCID();
-        void Placeholder3();
-        void Placeholder4();
-        void Placeholder5();
+        string get_ProjectName();                 // same as calling ITypeLib::GetDocumentation(-1)                   
+        void set_ProjectName(string value);       // same as IVBEProject2::set_ProjectName()
+        int get_VBE_LCID();
+        void Placeholder3();                      // calls IVBEProject2::Placeholder8
+        void Placeholder4();                      
+        void Placeholder5();                    
         void Placeholder6();
         void Placeholder7();
         string get_ConditionalCompilationArgs();
         void set_ConditionalCompilationArgs(string args);
+        void Placeholder8();
+        void Placeholder9();
+        void Placeholder10();
+        void Placeholder11();
+        void Placeholder12();
+        void Placeholder13();
+        void Placeholder14();
+        void Placeholder15();
+        void Placeholder16();
+        void Placeholder17();
+        string get_ReferenceString(int ReferenceIndex); // the raw reference string
+        void CompileProject();                            // throws COM exception 0x800A9C64 if error occurred during compile.
     }
 
-    // IVBProjectEx2_VBE, vtable position just before the IVBProjectEx_VBE, not queryable, so needs aggregation
+    // IVBEProject2, vtable position just before the IVBEProject, not queryable, so needs aggregation
     [ComImport(), Guid("FFFFFFFF-0000-0000-C000-000000000046")]  // 
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IVBProjectEx2_VBE
+    interface IVBEProject2
     {
         void Placeholder1();                    // returns E_NOTIMPL
         void set_ProjectName(string value);
@@ -163,5 +208,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     public enum TypeLibConsts : int
     {
         MEMBERID_NIL = -1,
+    }
+
+    public enum VBECompilerConsts : int
+    {
+        E_VBA_COMPILEERROR = unchecked((int)0x800A9C64)
     }
 }

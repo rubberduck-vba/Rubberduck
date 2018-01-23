@@ -9,6 +9,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     // for debug purposes, just reinventing the wheel here to document the major things exposed by a particular ITypeLib
     // (compatible with all ITypeLibs, not just VBE ones, but also documents the VBE specific extensions)
     // this is a throw away class, once proper integration into RD has been achieved.
+
+    // FIXME rewrite this to use the TypeLibWrapper/TypeInfoWrapper classes, once they suport enumeration
     public class TypeLibDocumenter
     {
         StringBuilder _document = new StringBuilder();
@@ -85,9 +87,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             implementsLevel++;
 
             IntPtr typeAttrPtr = IntPtr.Zero;
-            typeInfo.GetTypeAttr(out typeAttrPtr);
-            var typeInfoAttributes = StructHelper.ReadStructure<ComTypes.TYPEATTR>(typeAttrPtr);
+            try
+            {
+                typeInfo.GetTypeAttr(out typeAttrPtr);
+            }
+            catch (Exception)
+            {
+            }
+            var typeInfoAttributes = typeAttrPtr != IntPtr.Zero ? StructHelper.ReadStructure<ComTypes.TYPEATTR>(typeAttrPtr) : new ComTypes.TYPEATTR();
             typeInfo.ReleaseTypeAttr(typeAttrPtr);
+
 
             string typeName = null;
             string typeString = null;
@@ -100,8 +109,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (typeString != null) AppendLineButRemoveEmbeddedNullChars("- Documentation: " + typeString.Replace("\0", string.Empty));
             if (typeHelp != 0) AppendLineButRemoveEmbeddedNullChars("- HelpContext: " + typeHelp);
             if (TypeHelpFile != null) AppendLineButRemoveEmbeddedNullChars("- HelpFile: " + TypeHelpFile.Replace("\0", string.Empty));
-            AppendLine("- HasVBEExtensions: " + (((TypeInfoWrapper)typeInfo).HasVBEExtensions() ? "true" : "false"));   // FIXME not safe for ITypeInfos that aren't from our wrappers
-
+            
+            var typeInfoVBE = typeInfo as TypeInfoWrapper;
+            if (typeInfoVBE != null)
+            {
+                AppendLine("- HasVBEExtensions: " + typeInfoVBE.HasVBEExtensions());
+                AppendLine("- HasModuleScopeCompilationErrors: " + typeInfoVBE.HasModuleScopeCompilationErrors.ToString());
+            }
+            
             AppendLine("- Type: " + (TYPEKIND_VBE)typeInfoAttributes.typekind);
             AppendLine("- Guid: {" + typeInfoAttributes.guid + "}");
 
