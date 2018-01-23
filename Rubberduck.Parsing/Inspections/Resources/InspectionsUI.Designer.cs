@@ -1933,7 +1933,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove usage of the &apos;stop&apos; keyword.
+        ///   Looks up a localized string similar to Remove usage of the &apos;Stop&apos; keyword.
         /// </summary>
         public static string RemoveStopKeywordQuickFix {
             get {
@@ -2104,11 +2104,47 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Step of the for-next loop is not specified. This might be unintentional..
+        /// </summary>
+        public static string StepIsNotSpecifiedInspectionMeta {
+            get {
+                return ResourceManager.GetString("StepIsNotSpecifiedInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;For...Next&apos; loop step is not specified.
+        /// </summary>
+        public static string StepIsNotSpecifiedInspectionName {
+            get {
+                return ResourceManager.GetString("StepIsNotSpecifiedInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Step not specified.
         /// </summary>
         public static string StepIsNotSpecifiedInspectionResultFormat {
             get {
                 return ResourceManager.GetString("StepIsNotSpecifiedInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 is the default step in a for-next loop and therefore is redundant..
+        /// </summary>
+        public static string StepOneIsRedundantInspectionMeta {
+            get {
+                return ResourceManager.GetString("StepOneIsRedundantInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;For...Next&apos; loop step 1 is redundant.
+        /// </summary>
+        public static string StepOneIsRedundantInspectionName {
+            get {
+                return ResourceManager.GetString("StepOneIsRedundantInspectionName", resourceCulture);
             }
         }
         
@@ -2122,7 +2158,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;stop&apos; keyword halts execution and brings up the debugger. Avoid its usage..
+        ///   Looks up a localized string similar to The &apos;Stop&apos; keyword halts execution and brings up the debugger. Avoid its use in distributed code..
         /// </summary>
         public static string StopKeywordInspectionMeta {
             get {

@@ -914,4 +914,16 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="AddStepOneQuickFix" xml:space="preserve">
     <value>Add step</value>
   </data>
+  <data name="StepIsNotSpecifiedInspectionMeta" xml:space="preserve">
+    <value>Step of the for-next loop is not specified. This might be unintentional.</value>
+  </data>
+  <data name="StepOneIsRedundantInspectionMeta" xml:space="preserve">
+    <value>1 is the default step in a for-next loop and therefore is redundant.</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspectionName" xml:space="preserve">
+    <value>'For...Next' loop step is not specified</value>
+  </data>
+  <data name="StepOneIsRedundantInspectionName" xml:space="preserve">
+    <value>'For...Next' loop step 1 is redundant</value>
+  </data>
 </root>

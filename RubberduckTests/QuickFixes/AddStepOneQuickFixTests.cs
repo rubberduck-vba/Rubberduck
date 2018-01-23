@@ -1,17 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 using System.Threading;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class AddStepOneQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AddStepOne_QuickFixWorks_Remove()
         {
             var inputCode =
@@ -29,8 +30,8 @@ End Sub";
             this.TestAddStepOneQuickFix(expectedCode, inputCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AddStepOne_QuickFixWorks_NestedLoops()
         {
             var inputCode =
@@ -52,8 +53,8 @@ End Sub";
             this.TestAddStepOneQuickFix(expectedCode, inputCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AddStepOne_QuickFixWorks_ComplexExpression()
         {
             var inputCode =
@@ -76,7 +77,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new StepIsNotSpecifiedInspection(state);
+            var inspection = new StepIsNotSpecifiedInspection(state) { Severity = CodeInspectionSeverity.Warning };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 

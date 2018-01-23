@@ -1,6 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 using System.Linq;
@@ -8,11 +9,11 @@ using System.Threading;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveStepOneQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void StepOne_QuickFixWorks_Remove()
         {
             var inputCode =
@@ -30,8 +31,8 @@ End Sub";
             this.TestStepOneQuickFix(expectedCode, inputCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void StepOne_QuickFixWorks_NestedLoops()
         {
             var inputCode =
@@ -58,7 +59,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var state = MockParser.CreateAndParse(vbe.Object);
 
-            var inspection = new StepOneIsRedundantInspection(state);
+            var inspection = new StepOneIsRedundantInspection(state) { Severity = CodeInspectionSeverity.Warning };
             var inspector = InspectionsHelper.GetInspector(inspection);
             var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 

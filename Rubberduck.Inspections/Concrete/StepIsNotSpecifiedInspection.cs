@@ -17,13 +17,11 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase
     {
-        public StepIsNotSpecifiedInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Warning) { }
-
-        public override Type Type => typeof(StepIsNotSpecifiedInspection);
+        public StepIsNotSpecifiedInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.DoNotShow) { }
 
         public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
-        public override IEnumerable<IInspectionResult> GetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
