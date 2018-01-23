@@ -78,6 +78,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
 
     // An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModInstance
     [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IVBETypeInfo
     {
         void GetTypeAttr(out IntPtr ppTypeAttr);

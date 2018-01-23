@@ -9,6 +9,22 @@ using System.Linq;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
+    // DEBUG TEMPORARY CLASS TO ALLOW ACCESS TO TypeLibsAPI from VBA
+    [System.Runtime.InteropServices.ComVisible(true)]
+    public class TypeLibsAPI_Object
+    {
+        IVBE _ide;
+        public TypeLibsAPI_Object(IVBE ide) => _ide = ide;
+
+        public bool CompileProject(string projectName) => VBETypeLibsAPI.CompileProject(_ide, projectName);
+        public bool CompileComponent(string projectName, string componentName) => VBETypeLibsAPI.CompileComponent(_ide, projectName, componentName);
+        public object ExecuteCode(string projectName, string standardModuleName, string procName) => VBETypeLibsAPI.ExecuteCode(_ide, projectName, standardModuleName, procName);
+        public string GetProjectConditionalCompilationArgsRaw(string projectName) => VBETypeLibsAPI.GetProjectConditionalCompilationArgsRaw(_ide, projectName);
+        public bool DoesClassImplementInterface(string projectName, string className, string typeLibName, string interfaceName) => VBETypeLibsAPI.DoesClassImplementInterface(_ide, projectName, className, typeLibName, interfaceName);
+        public string GetUserFormControlType(string projectName, string userFormName, string controlName) => VBETypeLibsAPI.GetUserFormControlType(_ide, projectName, userFormName, controlName);
+        public string DocumentAll() => VBETypeLibsAPI.DocumentAll(_ide);
+    }
+
     public class VBETypeLibsAPI
     {
         // Compile the project, returning success (true)/failure (false)
