@@ -577,6 +577,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }*/
 
+        public static TypeLibWrapper FromVBProject(IVBProject vbProject)
+        {
+            using (var references = vbProject.References)
+            {
+                // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
+                var internalReferencesObj = StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
+
+                return new TypeLibWrapper(internalReferencesObj.TypeLib);
+            }
+        }
+
         private void InitCommon()
         {
             target_IVBEProject = target_ITypeLib as IVBEProject;
