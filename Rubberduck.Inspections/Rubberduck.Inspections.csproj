@@ -61,6 +61,7 @@
     <Compile Include="Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
+    <Compile Include="Concrete\DefTypeStatementInspection.cs" />
     <Compile Include="Concrete\EmptyModuleInspection.cs" />
     <Compile Include="Concrete\EmptyBlockInspectionListenerBase.cs" />
     <Compile Include="Concrete\EmptyCaseBlockInspection.cs" />
