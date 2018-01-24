@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
     {
         public DefTypeStatementInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new DefTypeStatementInspectionListener();
         }
