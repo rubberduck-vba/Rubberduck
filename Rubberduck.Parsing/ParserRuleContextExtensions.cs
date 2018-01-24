@@ -283,5 +283,11 @@ namespace Rubberduck.Parsing
                 }
             }
         }
+
+        public static bool TryGetChildContext<TContext>(this ParserRuleContext ctxt, out TContext opCtxt) where TContext : ParserRuleContext
+        {
+            opCtxt = ctxt.GetChild<TContext>();
+            return opCtxt != null;
+        }
     }
 }

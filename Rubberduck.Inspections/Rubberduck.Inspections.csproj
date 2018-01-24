@@ -73,10 +73,9 @@
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection.cs" />
+    <Compile Include="Concrete\UnreachableSelectCase\UnreachableCaseInspection.cs" />
     <Compile Include="Concrete\ShadowedDeclarationInspection.cs" />
     <Compile Include="Concrete\UnhandledOnErrorResumeNextInspection.cs" />
-    <Compile Include="Concrete\UnreachableSelectCase\SelectStatement.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\SummaryCoverage.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\UnreachableCaseInspectionValue.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />

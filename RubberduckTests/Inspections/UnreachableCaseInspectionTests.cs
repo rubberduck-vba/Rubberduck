@@ -1,8 +1,12 @@
 ﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,175 +17,742 @@ namespace RubberduckTests.Inspections
     public class UnreachableCaseInspectionTests
     {
 
-        [Test]
+        [TestCase(@"""105""", "105")]
+        [TestCase("105", "105")]
+        [TestCase("45.2", "45")]
+        [TestCase("True", "-1")]
+        [TestCase("False", "0")]
+        [TestCase("32.000023@", "32")]
+        [TestCase("32.000023!", "32")]
+        [TestCase("32.500023#", "33")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_NestedSelectCase()
+        public void UnreachableCaseInspection_ValueConversions(string firstCase, string value)
         {
-            const string inputCode =
-@"Sub Foo(x As Long, z As Long) 
-
-    Select Case x   '1
-        Case 1 To 10
-        'OK
-        Case 9
-        'Unreachable
-        Case 11
-        Select Case  z  '2
-            Case 5 To 25
-            'OK
-            Case 6
-                Select Case  z  '3
-                    Case 5 To 25
-                    'OK
-                    Case 6
-                    'Unreachable
-                    Case 8
-                    'Unreachable
-                    Case 15
-                    'Unreachable
-                End Select
-            Case 8
-            'Unreachable
-            Case 15
-            'Unreachable
-        End Select
-    End Select
-
-    Select Case  z  '4
-        Case 5 To 25
-        'OK
-        Case 6
-        'Unreachable
-        Case 8
-        'Unreachable
-        Case 15
-        'Unreachable
-    End Select
-End Sub";
-            UnreachableCaseInspection inspection;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            long num = 0;
+            var cNum = new UnreachableCaseInspectionValue(firstCase);
+            if (cNum.AsLong().HasValue)
             {
-                inspection = new UnreachableCaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                num = cNum.AsLong().Value;
             }
+            else
+            {
+                Assert.IsTrue(false, "Unable to convert to Long");
+            }
+            Assert.AreEqual(num, long.Parse(value));
+        }
+
+        [TestCase("What@", "What")]
+        [TestCase("What!", "What")]
+        [TestCase("What#", "What")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_NonNumberConversions(string firstCase, string value)
+        {
+            var cNum = new UnreachableCaseInspectionValue(firstCase);
+            Assert.IsFalse(cNum.AsLong().HasValue);
+            Assert.AreEqual(cNum.AsString(),value);
+        }
+
+        [TestCase("z * b", "5 To 10", ExpectedResult = "Long")]
+        [TestCase("z * c", "5 To 10", ExpectedResult = "Double")]
+        [TestCase("CStr(z) & d", "5 To 10", ExpectedResult = "Long")]
+        [TestCase("z & d", "d To dd", ExpectedResult = "String")]
+        [TestCase(@"z & ""45""", "5 To 10", ExpectedResult = "Long")]
+        [TestCase("VBA.Rnd() > 0.5", "5 To 10", ExpectedResult = "Boolean")]
+        [TestCase("True", "5 To 10", ExpectedResult = "Boolean")]
+        [TestCase("z And True", "5 To 10", ExpectedResult = "Boolean")]
+        [TestCase("z And j > 0.00", "5 To 10", ExpectedResult = "Boolean")]
+        [TestCase("TestValueLong()", "5 To 10", ExpectedResult = "Long")]
+        [TestCase("v", "b To bb", ExpectedResult = "Long")]
+        [TestCase("v", "5 To 100", ExpectedResult = "Long")]
+        [TestCase("v", "5 To 45.6", ExpectedResult = "Double")]
+        [TestCase("v", "CLng(j) * bb * VBA.Rnd() + b ^ 4.5", ExpectedResult = "")]
+        [TestCase("v", @"Len(""Whaaaat"") * bb * VBA.Rnd() + b ^ 4.5", ExpectedResult = "")]
+        [TestCase("hint&", "5.0 To 45.6", ExpectedResult = "Long")]
+        [TestCase("Sunday", "5.0 To 45.6", ExpectedResult = "Long")]
+        [Category("Inspections")]
+        public string UnreachableCaseInspection_DetermineSelectCaseType(string selectExpr, string firstCaseExpr)
+        {
+            string inputCode =
+@"
+        private Enum Weekday
+            Sunday = 1
+            Monday = 2
+            Tuesday = 3
+            Wednesday = 4
+            Thursday = 5
+            Friday = 6
+            Saturday = 7
+        End Enum
+        Private const b As Long = 55
+        Private const bb As Long = 100
+        Private const c As Double = 0.0023
+        Private const cc As Double = 0.509
+        Private const d As String = ""Bar""
+        Private const dd As String = ""Foo""
+
+        Private Function TestValueLong() As Long
+            TestValueLong = 5
+        End Function
+
+        Sub Foo(z As Long, j As Double, m As String, v as Variant, w as Boolean)
+
+        Dim hint&
+        hint& = 25
+
+        Select Case <selectExpr>
+          Case <firstCaseExpr>
+            'OK
+          Case Else
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<selectExpr>", selectExpr);
+            inputCode = inputCode.Replace("<firstCaseExpr>", firstCaseExpr);
+            UnreachableCaseInspection inspection;
+            var TestTuple = GetInspectionAndParseTree(inputCode);
+            inspection = TestTuple.Item1;
+            var ctxt = GetDescendent<VBAParser.SelectCaseStmtContext>(TestTuple.Item2);
             var listener = inspection.Listener;
-            var selectStatements = listener.Contexts;
-            Assert.AreEqual(4, selectStatements.Count());
+            var result = inspection.GetSelectCaseEvaluationType(ctxt);
+            return result;
         }
 
         [Test]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_NestedSelectCaseCaseClauseCounts()
+        public void UnreachableCaseInspection_StringsInTheMixConvertable()
         {
             const string inputCode =
-@"Sub Foo(x As Long, z As Long) 
+@"
 
-    Select Case x
-        Case 1 To 10    '1
-        'OK
-        Case 9          '2
-        'Unreachable
-        Case 11         '3
-        Select Case  z
-            Case 5 To 25    '1
+        Sub Foo(z As Long, s As String)
+
+        Select Case z + CLng(s)
+            Case ""105""
             'OK
-            Case 6          '2
-                Select Case  z
-                    Case 5 To 25        '1
-                    'OK
-                    Case 6              '2
-                    'Unreachable
-                    Case 8              '3
-                    'Unreachable
-                    Case 15             '4
-                    'Unreachable
-                End Select
-            Case 8      '3
+            Case 55
             'Unreachable
-            Case 15     '4
+            Case 55
             'Unreachable
-            Case 15     '5
-            'Unreachable
+            Case Else
+            'OK
         End Select
-    End Select
 
-    Select Case  z
-        Case 5 To 25    '1
-        'OK
-        Case 6          '2
-        'Unreachable
-        Case 8          '3
-        'Unreachable
-        Case 15         '4
-        'Unreachable
-        Case 20        '5
-        'Unreachable
-        Case 20        '6
-        'Unreachable
-    End Select
-End Sub";
+        End Sub";
+
             UnreachableCaseInspection inspection;
-            IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
+            var TestTuple = GetInspectionAndParseTree(inputCode);
+            inspection = TestTuple.Item1;
+            var ctxt = GetDescendent<VBAParser.SelectCaseStmtContext>(TestTuple.Item2);
+            var listener = inspection.Listener;
+            var result = inspection.GetSelectCaseEvaluationType(ctxt);
+            Assert.AreEqual(Tokens.Long, result);
+        }
+
+        [TestCase(@"""105""")]
+        [TestCase("105")]
+        [TestCase("45.2")]
+        [TestCase("True")]
+        [TestCase("32.000023@")]
+        [TestCase("32.000023!")]
+        [TestCase("32.000023#")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageFromRangeClause(string firstCase)
+        {
+            string inputCode =
+@"
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            long num = 0;
+            if (UnreachableCaseInspectionValue.IsStringConstant(firstCase))
+            {
+                num = Convert.ToInt64(firstCase.Replace("\"", ""));
+            }
+            else
+            {
+                var cNum = new UnreachableCaseInspectionValue(firstCase);
+                if (cNum.AsLong().HasValue)
+                {
+                    num = cNum.AsLong().Value;
+                }
+                else
+                {
+                    Assert.IsTrue(false, "Unable to convert to Long");
+                }
+            }
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            UnreachableCaseInspection inspection;
+            var TestTuple = GetInspectionAndParseTree(inputCode);
+            inspection = TestTuple.Item1;
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(TestTuple.Item2);
+            var listener = inspection.Listener;
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+            Assert.AreEqual(true, result.Summary.SingleValues.Any());
+            Assert.AreEqual(num, result.Summary.SingleValues.First().AsLong());
+        }
+
+        [TestCase("50 To 100", 50, 100)]
+        [TestCase("fromVal To toVal", 50, 100)]
+        [TestCase("50.25 To 100.49", 50, 100)]
+        [TestCase("True To False", -1, 0)]
+        [TestCase("False To True", -1, 0)]
+        [TestCase(@"""50"" To ""100""", 50, 100)]
+        [TestCase("100 To 50", 50, 100)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageRanges(string firstCase, long start, long end)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 50
+        Private Const toVal As Long = 100
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.Ranges.Any());
+            var startVal = result.Summary.Ranges.First().Item1.AsLong().Value;
+            var endVal = result.Summary.Ranges.First().Item2.AsLong().Value;
+            Assert.AreEqual(start, startVal);
+            Assert.AreEqual(end, endVal);
+        }
+
+        [TestCase("Is < 100", 100)]
+        [TestCase("Is < 100.49", 100)]
+        [TestCase("Is < 100#", 100)]
+        [TestCase("Is < True", -1)]
+        [TestCase(@"Is < ""100""", 100)]
+        [TestCase("Is < toVal", 1000)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsLTClause(string firstCase, long isLTMax)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.IsLT != null);
+            var IsLTMax = result.Summary.IsLT.AsLong().Value;
+            Assert.AreEqual(isLTMax, IsLTMax);
+        }
+
+        [TestCase("Is < x", 0)]
+        [TestCase("z < x", 0)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsLTClauseVariable(string firstCase, long isLTMax)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long, x As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.IsLT == null);
+        }
+
+        [TestCase("Is < 45", "Is < 100", 100)]
+        [TestCase("Is < 100", "Is < 45", 100)]
+        [TestCase("Is > 45", "Is > 100", 45)]
+        [TestCase("Is > 100", "Is > 45", 45)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsLTClauses(string firstCase, string secondCase, long isMaxMin)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 50
+        Private Const toVal As Long = 100
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+            Case <secondCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            inputCode = inputCode.Replace("<secondCase>", secondCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var selectCaseStmtctxt = GetDescendent<VBAParser.SelectCaseStmtContext>(parseTree);
+            var ctxts = selectCaseStmtctxt.GetDescendents<VBAParser.RangeClauseContext>();
+            SummaryCoverage result = null;
+            foreach( var ctxt in ctxts)
+            {
+                result = inspection.GetCoverage(ctxt, Tokens.Long, result);
+            }
+
+            if(result.Summary.IsLT != null)
+            {
+                var IsLTMax = result.Summary.IsLT.AsLong().Value;
+                Assert.AreEqual(isMaxMin, IsLTMax);
+            }
+            else
+            {
+                var IsGTMin = result.Summary.IsGT.AsLong().Value;
+                Assert.AreEqual(isMaxMin, IsGTMin);
+            }
+        }
+
+        [TestCase("Is <= 100", 100)]
+        [TestCase("Is <= 100.49", 100)]
+        [TestCase("Is <= 100#", 100)]
+        [TestCase("Is <= True", -1)]
+        [TestCase(@"Is <= ""100""", 100)]
+        [TestCase("Is <= toVal", 1000)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsLTEClause(string firstCase, long isLTMax)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.IsLT != null);
+            var IsLTMax = result.Summary.IsLT.AsLong().Value;
+            Assert.AreEqual(isLTMax, IsLTMax);
+            Assert.AreEqual(true, result.Summary.SingleValues.Any(), "SingleValue not updated");
+            Assert.AreEqual(isLTMax, result.Summary.SingleValues.First().AsLong(), "SingleValue has incorrect Value");
+        }
+
+        [TestCase("Is > 100", 100)]
+        [TestCase("Is > 100.49", 100)]
+        [TestCase("Is > 100#", 100)]
+        [TestCase("Is > True", -1)]
+        [TestCase(@"Is > ""100""", 100)]
+        [TestCase("Is > toVal", 1000)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsGTClause(string firstCase, long isGTMin)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.IsGT != null);
+            var IsGTMin = result.Summary.IsGT.AsLong().Value;
+            Assert.AreEqual(isGTMin, IsGTMin);
+        }
+
+        [TestCase("Is >= 100", 100)]
+        [TestCase("Is >= 100.49", 100)]
+        [TestCase("Is >= 100#", 100)]
+        [TestCase("Is >= True", -1)]
+        [TestCase(@"Is >= ""100""", 100)]
+        [TestCase("Is >= toVal", 1000)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsGTEClause(string firstCase, long isGTMin)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.IsGT != null);
+            var IsGTMin = result.Summary.IsGT.AsLong().Value;
+            Assert.AreEqual(isGTMin, IsGTMin);
+            Assert.AreEqual(true, result.Summary.SingleValues.Any(), "SingleValue not updated");
+            Assert.AreEqual(isGTMin, result.Summary.SingleValues.First().AsLong(), "SingleValue has incorrect Value");
+        }
+
+        [TestCase("Is = 100", 100)]
+        [TestCase("Is = 100.49", 100)]
+        [TestCase("Is = 100#", 100)]
+        [TestCase("Is = True", -1)]
+        [TestCase(@"Is = ""100""", 100)]
+        [TestCase("Is = toVal", 1000)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsEQClause(string firstCase, long isGTMin)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.SingleValues.Any(), "SingleValue not updated");
+            Assert.AreEqual(isGTMin, result.Summary.SingleValues.First().AsLong(), "SingleValue has incorrect Value");
+        }
+
+        [TestCase("Is <> 100", 100)]
+        [TestCase("Is <> 100.49", 100)]
+        [TestCase("Is <> 100#", 100)]
+        [TestCase("Is <> True", -1)]
+        [TestCase(@"Is <> ""100""", 100)]
+        [TestCase("Is <> toVal", 1000)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageIsNEQClause(string firstCase, long isNEQ)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.IsGT != null);
+            var IsGTMin = result.Summary.IsGT.AsLong().Value;
+            Assert.AreEqual(isNEQ, IsGTMin);
+            Assert.AreEqual(true, result.Summary.IsLT != null);
+            var IsLTMax = result.Summary.IsLT.AsLong().Value;
+            Assert.AreEqual(isNEQ, IsLTMax);
+        }
+
+        [TestCase("z < 100", 100, true)]
+        [TestCase("z <= 101", 101, true)]
+        [TestCase("100 > z", 100, true)]
+        [TestCase("101 >= z", 101, true)]
+        [TestCase("z > 300", 300, false)]
+        [TestCase("300 < z", 300, false)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageRelationalOp(string firstCase, long valToCheck, bool checkLT)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            if (checkLT)
+            {
+                Assert.AreEqual(true, result.Summary.IsLT != null);
+                var IsLTMax = result.Summary.IsLT.AsLong().Value;
+                Assert.AreEqual(valToCheck, IsLTMax);
+            }
+            else
+            {
+                Assert.AreEqual(true, result.Summary.IsGT != null);
+                var IsGTMin = result.Summary.IsGT.AsLong().Value;
+                Assert.AreEqual(valToCheck, IsGTMin);
+            }
+        }
+
+        [TestCase("50 * 5", 250)]
+        [TestCase("8 / 2", 4)]
+        [TestCase("toVal / fromVal", 2)]
+        [TestCase("toVal + fromVal", 1500)]
+        [TestCase("fromVal - toVal", -500)]
+        [TestCase("toVal * True + fromVal / 2", -750)]
+        [TestCase("2 ^ 3", 8)]
+        [TestCase("9 Mod 4", 1)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageBinaryMathOps(string firstCase, long target)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.SingleValues.Any(), "SingleValue not updated");
+            Assert.AreEqual(target, result.Summary.SingleValues.First().AsLong(), "SingleValue has incorrect Value");
+        }
+
+        [TestCase("fromVal > 5 And toVal > 20", -1)]
+        [TestCase("fromVal > 500000 Or toVal > 20000000", 0)]
+        [TestCase("True Xor True", 0)]
+        [TestCase("Not fromVal", 0)]
+        //[TestCase("10 Eqv 8", -3)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageLogicOps(string firstCase, long target)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.SingleValues.Any(), "SingleValue not updated");
+            Assert.AreEqual(target, result.Summary.SingleValues.First().AsLong(), "SingleValue has incorrect Value");
+        }
+
+        [TestCase("(fromVal - toVal) * 2", -1000)]
+        [TestCase("(((((fromVal) - (toVal)) * (2))))", -1000)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageParentheses(string firstCase, long target)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.SingleValues.Any(), "SingleValue not updated");
+            Assert.AreEqual(target, result.Summary.SingleValues.First().AsLong(), "SingleValue has incorrect Value");
+        }
+
+        [TestCase("-fromVal", -500)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SummaryCoverageUnaryMinus(string firstCase, long target)
+        {
+            string inputCode =
+@"
+        Private Const fromVal As long = 500
+        Private Const toVal As Long = 1000
+
+        Sub Foo(z As Long)
+
+        Select Case z
+            Case <firstCase>
+            'OK
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var testTuple = GetInspectionAndParseTree(inputCode);
+            var inspection = testTuple.Item1;
+            var parseTree = testTuple.Item2;
+
+            var ctxt = GetDescendent<VBAParser.RangeClauseContext>(parseTree);
+            var result = inspection.GetCoverage(ctxt, Tokens.Long);
+
+            Assert.AreEqual(true, result.Summary.SingleValues.Any(), "SingleValue not updated");
+            Assert.AreEqual(target, result.Summary.SingleValues.First().AsLong(), "SingleValue has incorrect Value");
+        }
+
+        private Tuple<UnreachableCaseInspection, IParseTree> GetInspectionAndParseTree(string inputCode)
+        {
+            UnreachableCaseInspection inspection;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            string result = string.Empty;
+            IParseTree parseTree;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 inspection = new UnreachableCaseInspection(state);
                 var inspector = InspectionsHelper.GetInspector(inspection);
-                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                parseTree = state.ParseTrees.First().Value;
             }
+            var ctxt = GetDescendent<VBAParser.SelectCaseStmtContext>(parseTree);
             var listener = inspection.Listener;
-            var selectStatements = listener.Contexts;
-            var selectStmtToCaseClauses = new Dictionary<ParserRuleContext, List<ParserRuleContext>>(); 
-            foreach(var selectStmt in selectStatements)
-            {
-                selectStmtToCaseClauses.Add(selectStmt.Context, inspection.CaseClauseContextsForSelectStmt(selectStmt.Context));
-            }
-            var caseClauseCounts = new List<int>();
-            foreach( var ctxt in selectStmtToCaseClauses.Keys)
-            {
-                caseClauseCounts.Add(selectStmtToCaseClauses[ctxt].Count);
-            }
-            Assert.IsTrue(caseClauseCounts.Contains(3));
-            Assert.IsTrue(caseClauseCounts.Contains(4));
-            Assert.IsTrue(caseClauseCounts.Contains(5));
-            Assert.IsTrue(caseClauseCounts.Contains(6));
+            return new Tuple<UnreachableCaseInspection, IParseTree>(inspection, parseTree);
         }
 
-        //private UnreachableCaseInspection GetInspection(string inputCode)
-        //{
-        //    var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-        //    //IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
-        //    using (var state = MockParser.CreateAndParse(vbe.Object))
-        //    {
-        //        var inspection = new UnreachableCaseInspection(state);
-        //        var inspector = InspectionsHelper.GetInspector(inspection);
-        //        return inspector.FindIssuesAsync(state, CancellationToken.None).Result.ToList();
-        //    }
-        //}
-
-        //        [Test]
-        //        [Category("Inspections")]
-        //        public void UnreachableCaseInspection_AAACaseElseLong()
-        //        {
-        //            const string inputCode =
-        //@"
-        //Sub Foo(z As Long, k As Long, j As Long)
-
-        //Select Case z * k * j * z
-        //  Case z >= 2
-        //    'OK
-        //  Case 0,1
-        //    'OK
-        //  Case Else
-        //    'Unreachable
-        //End Select
-
-        //End Sub";
-        //            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
-        //        }
+        private T GetDescendent<T>(IParseTree pt)
+        {
+            for(var idx = 0; idx < pt.ChildCount; idx++)
+            {
+                var child = pt.GetChild(idx);
+                if(child is T)
+                {
+                    return (T)child;
+                }
+                if(child.ChildCount > 0)
+                {
+                    var result =  GetDescendent<T>(child);
+                    if(result is T)
+                    {
+                        return result;
+                    }
+                }
+            }
+            return default;
+        }
 
         //        [TestCase("String", @"""Foo""", @"""Bar""")]
         //        [TestCase("Long", "450000", "850000")]

@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -152,22 +153,37 @@ namespace Rubberduck.Inspections.Concrete
             [Tokens.Currency] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsCurrency().Value + RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); }
         };
 
-        public UnreachableCaseInspectionValue(string valueToken, string ctorTypeName)
+        public UnreachableCaseInspectionValue(string valueToken, string ctorTypeName = "")
         {
+            var inputTypeName = ctorTypeName ?? string.Empty;
             _useageTypeName = string.Empty;
             _inputString = valueToken;
             _valueAsString = _inputString.Replace("\"", "");
-            var endingCharacter = _valueAsString.Last().ToString();
-            if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !ctorTypeName.Equals(Tokens.String))
+            if(_valueAsString != string.Empty)
             {
-                _valueAsString = _valueAsString.Replace(endingCharacter, ".00");
+                var endingCharacter = _valueAsString.Last().ToString();
+                if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !inputTypeName.Equals(Tokens.String))
+                {
+                    var regex = new Regex(@"^-*[0-9,\.]+$");
+                    if (!_valueAsString.Contains(".") && regex.IsMatch(_valueAsString.Replace(endingCharacter, "")))
+                    {
+                        _valueAsString = _valueAsString.Replace(endingCharacter, ".00");
+                    }
+                    else
+                    {
+                        _valueAsString = _valueAsString.Replace(endingCharacter, "");
+                    }
+                }
             }
-            UseageTypeName = ctorTypeName;
             _derivedTypeName = string.Empty;
 
-            if (!HasValueTests.ContainsKey(UseageTypeName))
+            if (!HasValueTests.ContainsKey(inputTypeName))
             {
                 UseageTypeName = DerivedTypeName;
+            }
+            else
+            {
+                UseageTypeName = inputTypeName;
             }
         }
 
@@ -184,6 +200,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
+        public static UnreachableCaseInspectionValue Null => new UnreachableCaseInspectionValue(string.Empty);
         public static UnreachableCaseInspectionValue Zero => new UnreachableCaseInspectionValue(0, Tokens.Long);
         public static UnreachableCaseInspectionValue Unity => new UnreachableCaseInspectionValue(1, Tokens.Long);
         public static UnreachableCaseInspectionValue False => Zero;
@@ -195,12 +212,17 @@ namespace Rubberduck.Inspections.Concrete
 
         private string DeriveTypeName(string defaultType = "String")
         {
+            if(_inputString.Length == 0)
+            {
+                return "Null";
+            }
+
             if (SymbolList.TypeHintToTypeName.TryGetValue(_inputString.Last().ToString(), out string typeName))
             {
                 return typeName;
             }
 
-            if (IsStringConstant)
+            if (InputStringIsStringConstant)
             {
                 return Tokens.String;
             }
@@ -222,6 +244,41 @@ namespace Rubberduck.Inspections.Concrete
                 return Tokens.Boolean;
             }
             else if (long.TryParse(_inputString, out _))
+            {
+                return Tokens.Long;
+            }
+            return defaultType;
+        }
+
+        public static string DeriveTypeName(string inputValue, string defaultType = "String")
+        {
+            if (SymbolList.TypeHintToTypeName.TryGetValue(inputValue.Last().ToString(), out string typeName))
+            {
+                return typeName;
+            }
+
+            if (IsStringConstant(inputValue))
+            {
+                return Tokens.String;
+            }
+            else if (inputValue.Contains("."))
+            {
+                if (double.TryParse(inputValue, out _))
+                {
+                    return Tokens.Double;
+                }
+
+                if (decimal.TryParse(inputValue, out _))
+                {
+                    return Tokens.Currency;
+                }
+                return defaultType;
+            }
+            else if (inputValue.Equals(Tokens.True) || inputValue.Equals(Tokens.False))
+            {
+                return Tokens.Boolean;
+            }
+            else if (long.TryParse(inputValue, out _))
             {
                 return Tokens.Long;
             }
@@ -259,7 +316,8 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public bool IsStringConstant => _inputString.StartsWith("\"") && _inputString.EndsWith("\"");
+        public static bool IsStringConstant(string input) => input.StartsWith("\"") && input.EndsWith("\"");
+        private bool InputStringIsStringConstant => IsStringConstant(_inputString); 
 
         public bool HasValue
             => HasValueTests.ContainsKey(UseageTypeName) ? HasValueTests[UseageTypeName](this) : false;
@@ -271,6 +329,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public bool ExceedsMaxMin()
               => MaxMinTests.ContainsKey(UseageTypeName) ? MaxMinTests[UseageTypeName](this) : false;
+
 
         public static bool operator >(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
         {
@@ -340,10 +399,17 @@ namespace Rubberduck.Inspections.Concrete
             return thisValue._opPlus != null ? thisValue._opPlus(thisValue, compValue) : null;
         }
 
-        public static UnreachableCaseInspectionValue operator ^(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static UnreachableCaseInspectionValue Pow(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
         {
             return (thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue)
                 ? new UnreachableCaseInspectionValue((Math.Pow(thisValue.AsDouble().Value, compValue.AsDouble().Value)).ToString(), thisValue.UseageTypeName)
+                : null;
+        }
+
+        public static UnreachableCaseInspectionValue operator !(UnreachableCaseInspectionValue thisValue)
+        {
+            return (thisValue.AsBoolean().HasValue)
+                ? new UnreachableCaseInspectionValue((!thisValue.AsBoolean().Value).ToString(), thisValue.UseageTypeName)
                 : null;
         }
 
@@ -365,7 +431,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public string AsString()
         {
-            return IsStringConstant ? _inputString : _valueAsString;
+            return InputStringIsStringConstant ? _inputString : _valueAsString;
         }
 
         public override string ToString()
