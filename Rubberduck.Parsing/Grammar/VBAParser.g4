@@ -286,19 +286,19 @@ defType :
         DEFSTR | DEFOBJ | DEFVAR
 ;
 // universalLetterRange must appear before letterRange because they both match the same amount in the case of A-Z but we prefer the universalLetterRange.
-letterSpec : singleLetter | universalLetterRange | letterRange;
-singleLetter : unrestrictedIdentifier;
+// singleLetter must appear at the end to prevent premature bailout
+letterSpec : universalLetterRange | letterRange | singleLetter;
+
+// we're purpusefully not actually making sure this is an ASCII letter
+// that'd be too much of a hassle with the lexer to get working
+singleLetter : {_input.Lt(1).Text.Length == 1}? IDENTIFIER;
 // We make a separate universalLetterRange rule because it is treated specially in VBA. This makes it easy for users of the parser
 // to identify this case. Quoting MS VBAL:
 // "A <universal-letter-range> defines a single implicit declared type for every <IDENTIFIER> within 
 // a module, even those with a first character that would otherwise fall outside this range if it was 
 // interpreted as a <letter-range> from A-Z.""
-universalLetterRange : upperCaseA whiteSpace? MINUS whiteSpace? upperCaseZ;
-upperCaseA : {_input.Lt(1).Text.Equals("A")}? unrestrictedIdentifier;
-upperCaseZ : {_input.Lt(1).Text.Equals("Z")}? unrestrictedIdentifier;
-letterRange : firstLetter whiteSpace? MINUS whiteSpace? lastLetter;
-firstLetter : unrestrictedIdentifier;
-lastLetter : unrestrictedIdentifier;
+universalLetterRange : {_input.Lt(1).Text.StartsWith("A") && _input.Lt(1).Text.EndsWith("Z")}? LETTER_RANGE;
+letterRange : LETTER_RANGE;
 
 doLoopStmt :
     DO endOfStatement 
@@ -534,7 +534,7 @@ lineSpecialForm : expression whiteSpace (STEP whiteSpace?)? tuple MINUS (STEP wh
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
-lineSpecialFormOption: (B_CHAR | BF);
+lineSpecialFormOption : {_input.Lt(1).Text.ToLower().Equals("b") || _input.Lt(1).Text.ToLower().Equals("bf")}? unrestrictedIdentifier;
 
 subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
@@ -544,7 +544,7 @@ unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
-identifierValue : IDENTIFIER | keyword | foreignName | BF;
+identifierValue : IDENTIFIER | keyword | foreignName;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
 foreignIdentifier : ~(L_SQUARE_BRACKET | R_SQUARE_BRACKET) | foreignName;
 
@@ -679,7 +679,6 @@ keyword :
      | ANY
      | ARRAY
      | ATTRIBUTE
-	 | B_CHAR
      | BEGIN
      | BOOLEAN
      | BYREF

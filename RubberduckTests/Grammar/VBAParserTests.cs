@@ -4,6 +4,7 @@ using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Tree.Xpath;
 using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -382,7 +383,7 @@ _
         [Test]
         public void TestDefDirectiveLetterRange()
         {
-            string code = @"DefBool B-C: DefByte Y-X: DefInt I-J: DefLng L-M: DefLngLng N-O: DefLngPtr P-Q: DefCur C-D: DefSng G-H: DefDbl D-E: DefDate T-U: DefStr E-F: DefObj O-P: DefVar V-W";
+            string code = @"DefBool A-C: DefByte Y-X: DefInt I-J: DefLng L-M: DefLngLng N-O: DefLngPtr P-Q: DefCur C-D: DefSng G-H: DefDbl D-E: DefDate T-U: DefStr E-F: DefObj O-P: DefVar V-W";
             var parseResult = Parse(code, PredictionMode.Sll);
             AssertTree(parseResult.Item1, parseResult.Item2, "//letterRange", matches => matches.Count == 13);
         }
