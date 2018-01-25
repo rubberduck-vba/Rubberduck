@@ -42,7 +42,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return CompileProject(typeLibs.FindTypeLib(projectName));
+                return CompileProject(typeLibs.Get(projectName));
             }
         }
         public static bool CompileProject(IVBProject project)
@@ -63,7 +63,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return CompileComponent(typeLibs.FindTypeLib(projectName), componentName);
+                return CompileComponent(typeLibs.Get(projectName), componentName);
             }
         }
         public static bool CompileComponent(IVBProject project, string componentName)
@@ -75,22 +75,22 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static bool CompileComponent(TypeLibWrapper projectTypeLib, string componentName)
         {
-            return CompileComponent(projectTypeLib.FindTypeInfo(componentName));
-        }
-        public static bool CompileComponent(TypeInfoWrapper componentTypeInfo)
-        {
-            return componentTypeInfo.CompileComponent();
+            return CompileComponent(projectTypeLib.TypeInfos.Get(componentName));
         }
         public static bool CompileComponent(IVBComponent component)
         {
             return CompileComponent(component.ParentProject, component.Name);
         }
-
+        public static bool CompileComponent(TypeInfoWrapper componentTypeInfo)
+        {
+            return componentTypeInfo.CompileComponent();
+        }
+        
         public static object ExecuteCode(IVBE ide, string projectName, string standardModuleName, string procName, object[] args = null)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return ExecuteCode(typeLibs.FindTypeLib(projectName), standardModuleName, procName, args);
+                return ExecuteCode(typeLibs.Get(projectName), standardModuleName, procName, args);
             }
         }
         public static object ExecuteCode(IVBProject project, string standardModuleName, string procName, object[] args = null)
@@ -102,7 +102,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static object ExecuteCode(TypeLibWrapper projectTypeLib, string standardModuleName, string procName, object[] args = null)
         {
-            return ExecuteCode(projectTypeLib.FindTypeInfo(standardModuleName), procName, args);
+            return ExecuteCode(projectTypeLib.TypeInfos.Get(standardModuleName), procName, args);
         }
         public static object ExecuteCode(IVBComponent component, string procName, object[] args = null)
         {
@@ -118,7 +118,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return GetProjectConditionalCompilationArgsRaw(typeLibs.FindTypeLib(projectName));
+                return GetProjectConditionalCompilationArgsRaw(typeLibs.Get(projectName));
             }
         }
         public static string GetProjectConditionalCompilationArgsRaw(IVBProject project)
@@ -138,7 +138,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return GetProjectConditionalCompilationArgs(typeLibs.FindTypeLib(projectName));
+                return GetProjectConditionalCompilationArgs(typeLibs.Get(projectName));
             }
         }
         public static Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBProject project)
@@ -150,6 +150,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static Dictionary<string, string> GetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib)
         {
+            // FIXME move dictionary stuff into the lower API here
             string args = GetProjectConditionalCompilationArgsRaw(projectTypeLib);
 
             if (args.Length > 0)
@@ -168,7 +169,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                SetProjectConditionalCompilationArgsRaw(typeLibs.FindTypeLib(projectName), newConditionalArgs);
+                SetProjectConditionalCompilationArgsRaw(typeLibs.Get(projectName), newConditionalArgs);
             }
         }
         public static void SetProjectConditionalCompilationArgsRaw(IVBProject project, string newConditionalArgs)
@@ -188,7 +189,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                SetProjectConditionalCompilationArgs(typeLibs.FindTypeLib(projectName), newConditionalArgs);
+                SetProjectConditionalCompilationArgs(typeLibs.Get(projectName), newConditionalArgs);
             }
         }
         public static void SetProjectConditionalCompilationArgs(IVBProject project, Dictionary<string, string> newConditionalArgs)
@@ -200,6 +201,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static void SetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib, Dictionary<string, string> newConditionalArgs)
         {
+            // FIXME move dictionary stuff into the lower API here
             var rawArgsString = string.Join(" : ", newConditionalArgs.Select(x => x.Key + " = " + x.Value));
             SetProjectConditionalCompilationArgsRaw(projectTypeLib, rawArgsString);
         }
@@ -208,7 +210,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return IsExcelWorkbook(typeLibs.FindTypeLib(projectName), className);
+                return IsExcelWorkbook(typeLibs.Get(projectName), className);
             }
         }
         public static bool IsExcelWorkbook(IVBProject project, string className)
@@ -231,7 +233,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return IsExcelWorksheet(typeLibs.FindTypeLib(projectName), className);
+                return IsExcelWorksheet(typeLibs.Get(projectName), className);
             }
         }
         public static bool IsExcelWorksheet(IVBProject project, string className)
@@ -249,24 +251,24 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             return DoesClassImplementInterface(projectTypeLib, className, "Excel", "_Worksheet");
         }
-
+        
         public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string typeLibName, string interfaceName)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return DoesClassImplementInterface(typeLibs.FindTypeLib(projectName), className, typeLibName, interfaceName);
+                return DoesClassImplementInterface(typeLibs.Get(projectName), className, typeLibName, interfaceName);
             }
         }
         public static bool DoesClassImplementInterface(IVBProject project, string className, string typeLibName, string interfaceName)
         {
             using (var typeLib = TypeLibWrapper.FromVBProject(project))
             {
-                return DoesClassImplementInterface(typeLib.FindTypeInfo(className), typeLibName, interfaceName);
+                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), typeLibName, interfaceName);
             }
         }
         public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string typeLibName, string interfaceName)
         {
-            return DoesClassImplementInterface(projectTypeLib.FindTypeInfo(className), typeLibName, interfaceName);
+            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), typeLibName, interfaceName);
         }
         public static bool DoesClassImplementInterface(IVBComponent component, string typeLibName, string interfaceName)
         {
@@ -274,26 +276,26 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string typeLibName, string interfaceName)
         {
-            return classTypeInfo.DoesImplement(typeLibName, interfaceName);
+            return classTypeInfo.ImplementedInterfaces.DoesImplement(typeLibName, interfaceName);
         }        
 
         public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid interfaceIID)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return DoesClassImplementInterface(typeLibs.FindTypeLib(projectName), className, interfaceIID);
+                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceIID);
             }
         }
         public static bool DoesClassImplementInterface(IVBProject project, string className, Guid interfaceIID)
         {
             using (var typeLib = TypeLibWrapper.FromVBProject(project))
             {
-                return DoesClassImplementInterface(typeLib.FindTypeInfo(className), interfaceIID);
+                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceIID);
             }
         }
         public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid interfaceIID)
         {
-            return DoesClassImplementInterface(projectTypeLib.FindTypeInfo(className), interfaceIID);
+            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceIID);
         }
         public static bool DoesClassImplementInterface(IVBComponent component, Guid interfaceIID)
         {
@@ -301,14 +303,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid interfaceIID)
         {
-            return classTypeInfo.DoesImplement(interfaceIID);
+            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIID);
         }
 
         public static string GetUserFormControlType(IVBE ide, string projectName, string userFormName, string controlName)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return GetUserFormControlType(typeLibs.FindTypeLib(projectName), userFormName, controlName);
+                return GetUserFormControlType(typeLibs.Get(projectName), userFormName, controlName);
             }
         }
         public static string GetUserFormControlType(IVBProject project, string userFormName, string controlName)
@@ -320,7 +322,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static string GetUserFormControlType(TypeLibWrapper projectTypeLib, string userFormName, string controlName)
         {
-            return GetUserFormControlType(projectTypeLib.FindTypeInfo(userFormName), controlName);
+            return GetUserFormControlType(projectTypeLib.TypeInfos.Get(userFormName), controlName);
         }
         public static string GetUserFormControlType(IVBComponent component, string controlName)
         {
@@ -328,21 +330,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static string GetUserFormControlType(TypeInfoWrapper userFormTypeInfo, string controlName)
         {
-            return userFormTypeInfo.GetImplementedTypeInfo("FormItf").GetControlType(controlName).Name;
+            return userFormTypeInfo.ImplementedInterfaces.Get("FormItf").GetControlType(controlName).Name;
         }
 
         public static string DocumentAll(IVBE ide)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                var documenter = new TypeLibDocumenter();
+                var output = new StringLineBuilder();
 
                 foreach (var typeLib in typeLibs)
                 {
-                    documenter.AddTypeLib(typeLib);
+                    typeLib.Document(output);
                 }
-
-                return documenter.ToString();
+                return output.ToString();
             }
         }
         public static string DocumentAll(IVBProject project)
@@ -354,9 +355,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
         public static string DocumentAll(TypeLibWrapper projectTypeLib)
         {
-            var documenter = new TypeLibDocumenter();
-            documenter.AddTypeLib(projectTypeLib);
-            return documenter.ToString();
+            var output = new StringLineBuilder();
+            projectTypeLib.Document(output);
+            return output.ToString();
         }
     }
 }

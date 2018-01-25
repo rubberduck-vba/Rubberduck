@@ -2,10 +2,22 @@
 using System.Runtime.InteropServices;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAbstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 using Reflection = System.Reflection;
+
+
+
+
+// TODO expose references collection
+// TODO comments/XML doc
+// TODO a few FIXMEs
+// TODO add DoesImplement() support for "typeLibName.interfaceName" format, and arrays
+
+
+
 
 // USAGE GUIDE:   see class VBETypeLibsAPI for demonstrations of usage.
 //
@@ -37,6 +49,19 @@ using Reflection = System.Reflection;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
+    public class StringLineBuilder
+    {
+        StringBuilder _document = new StringBuilder();
+
+        public override string ToString() => _document.ToString();
+
+        public void AppendLine(string value = "")
+            => _document.Append(value + "\r\n");
+
+        public void AppendLineNoNullChars(string value)
+            => AppendLine(value.Replace("\0", string.Empty));
+    }
+
     public class StructHelper
     {
         public static T ReadComObjectStructure<T>(object comObj)
@@ -57,13 +82,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public static T ReadStructure<T>(IntPtr memAddress)
         {
-            if (memAddress == IntPtr.Zero) return default(T);
+            if (memAddress == IntPtr.Zero) return default;
             return (T)Marshal.PtrToStructure(memAddress, typeof(T));
         }
 
         public static T ReadStructureSafe<T>(IntPtr memAddress)
         {
-            if (memAddress == IntPtr.Zero) return default(T);
+            if (memAddress == IntPtr.Zero) return default;
 
             // FIXME add memory address validation here, using VirtualQueryEx
             return (T)Marshal.PtrToStructure(memAddress, typeof(T));
@@ -170,50 +195,247 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    public class TypeInfoFunc : IDisposable
+    {
+        private TypeInfoWrapper _typeInfo;
+        public ComTypes.FUNCDESC _funcDesc;
+        private IntPtr _funcDescPtr;
+        public string[] _names = new string[255];   // includes argument names
+        public int _cNames = 0;
+
+        public TypeInfoFunc(TypeInfoWrapper typeInfo, int funcIndex)
+        {
+            _typeInfo = typeInfo;
+
+            ((ComTypes.ITypeInfo)_typeInfo).GetFuncDesc(funcIndex, out _funcDescPtr);
+            _funcDesc = StructHelper.ReadStructure<ComTypes.FUNCDESC>(_funcDescPtr);
+
+            ((ComTypes.ITypeInfo)_typeInfo).GetNames(_funcDesc.memid, _names, _names.Length, out _cNames);
+            if (_cNames == 0) _names[0] = "[unnamed]";
+        }
+
+        public void Dispose()
+        {
+            if (_funcDescPtr != IntPtr.Zero) ((ComTypes.ITypeInfo)_typeInfo).ReleaseFuncDesc(_funcDescPtr);
+            _funcDescPtr = IntPtr.Zero;
+        }
+
+        public string Name { get => _names[0]; }
+        public bool IsPropertyGet { get => _funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYGET); }
+        public int ParamCount { get => _funcDesc.cParams;  }
+
+        public void Document(StringLineBuilder output) 
+        {
+            string namesInfo = _names[0] + "(";
+
+            int argIndex = 1;
+            while (argIndex < _cNames)
+            {
+                if (argIndex > 1) namesInfo += ", ";
+                namesInfo += _names[argIndex].Length > 0 ? _names[argIndex] : "retVal";
+                argIndex++;
+            }
+
+            namesInfo += ")";
+
+            output.AppendLine("- member: " + namesInfo + " [id 0x" + _funcDesc.memid.ToString("X") + ", " + _funcDesc.invkind + "]");
+        }
+    }
+
+    public class TypeInfoVar : IDisposable
+    { 
+        private TypeInfoWrapper _typeInfo;
+        public ComTypes.VARDESC _varDesc;
+        private IntPtr _varDescPtr;
+        public string _name;
+
+        public TypeInfoVar(TypeInfoWrapper typeInfo, int index)
+        {
+            _typeInfo = typeInfo;
+
+            ((ComTypes.ITypeInfo)_typeInfo).GetVarDesc(index, out _varDescPtr);
+            _varDesc = StructHelper.ReadStructure<ComTypes.VARDESC>(_varDescPtr);
+            
+            int _cNames = 0;
+            var _names = new string[1];
+            if (_varDesc.memid != (int)TypeLibConsts.MEMBERID_NIL)
+            {
+                _cNames = 0;
+                ((ComTypes.ITypeInfo)_typeInfo).GetNames(_varDesc.memid, _names, _names.Length, out _cNames);
+                _name = _names[0];
+            }
+            else
+            {
+                _name = "{unknown}";     // VBA Constants appear in the typelib with no name
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_varDescPtr != IntPtr.Zero) ((ComTypes.ITypeInfo)_typeInfo).ReleaseVarDesc(_varDescPtr);
+            _varDescPtr = IntPtr.Zero;
+        }
+
+        public void Document(StringLineBuilder output) 
+        {
+            output.AppendLine("- field: " + _name + " [id 0x" + _varDesc.memid.ToString("X") + "]");
+        }
+    }
+    
+    public class IIndexedCollection<TItem> : IEnumerable<TItem>
+        where TItem : IDisposable
+    {
+        IEnumerator IEnumerable.GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollection<TItem>, TItem>(this);
+        public IEnumerator<TItem> GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollection<TItem>, TItem>(this);
+
+        virtual public int Count { get => throw new NotImplementedException(); }
+        virtual public TItem GetItemByIndex(int index) => throw new NotImplementedException();
+    }
+    
+    public class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>, IDisposable
+        where TCollection : IIndexedCollection<TItem>
+        where TItem : IDisposable
+    {
+        private TCollection _collection;
+        private int _collectionCount;
+        private int _index = -1;
+        TItem _current;
+        
+        public IIndexedCollectionEnumerator(TCollection collection)
+        {
+            _collection = collection;
+            _collectionCount = _collection.Count;
+        }
+
+        public void Dispose()
+        {
+            // nothing to do here.
+        }
+
+        TItem IEnumerator<TItem>.Current => _current;
+        object IEnumerator.Current => _current;
+
+        public void Reset() => _index = -1;
+
+        public bool MoveNext()
+        {
+            _current = default;
+            _index++;
+            if (_index >= _collectionCount) return false;
+            _current = _collection.GetItemByIndex(_index);
+            return true;
+        }
+    }
+
     // A wrapper for ITypeInfo provided by VBE, allowing safe managed consumption, plus adds StdModExecute functionality
     public class TypeInfoWrapper : ComTypes.ITypeInfo, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private TypeLibWrapper _containerTypeLib;
+        public TypeLibWrapper Container { get => _containerTypeLib; }
         private int _containerTypeLibIndex;
         private bool _isUserFormBaseClass = false;
-        private ComTypes.TYPEATTR _cachedAttributes;
         private IntPtr _rawObjectPtr;
-
-        private string _name;
-        private string _docString;
-        private int _helpContext;
-        private string _helpFile;
-
-        public string Name { get => _name; }
-        public string DocString { get => _docString; }
-        public int HelpContext { get => _helpContext; }
-        public string HelpFile { get => _helpFile; }
-
         private ComTypes.ITypeInfo _wrappedObjectRCW;
 
-        private RestrictComInterfaceByAggregation<ComTypes.ITypeInfo>   _ITypeInfo_Aggregator;
-        private ComTypes.ITypeInfo  target_ITypeInfo        { get => _ITypeInfo_Aggregator?.WrappedObject ?? _wrappedObjectRCW; }
-        
-        private RestrictComInterfaceByAggregation<IVBEComponent>        _IVBEComponent_Aggregator;
-        private IVBEComponent       target_IVBEComponent    { get => _IVBEComponent_Aggregator?.WrappedObject; }
+        private ComTypes.TYPEATTR _cachedAttributes;
+        public ComTypes.TYPEATTR Attributes { get => _cachedAttributes; }
 
-        private RestrictComInterfaceByAggregation<IVBETypeInfo>         _IVBETypeInfo_Aggregator;
-        private IVBETypeInfo        target_IVBETypeInfo     { get => _IVBETypeInfo_Aggregator?.WrappedObject; }
+        private RestrictComInterfaceByAggregation<ComTypes.ITypeInfo> _ITypeInfo_Aggregator;
+        private ComTypes.ITypeInfo target_ITypeInfo { get => _ITypeInfo_Aggregator?.WrappedObject ?? _wrappedObjectRCW; }
 
-        public bool HasVBEExtensions() => _IVBETypeInfo_Aggregator?.WrappedObject != null;
+        private RestrictComInterfaceByAggregation<IVBEComponent> _IVBEComponent_Aggregator;
+        private IVBEComponent target_IVBEComponent { get => _IVBEComponent_Aggregator?.WrappedObject; }
+
+        private RestrictComInterfaceByAggregation<IVBETypeInfo> _IVBETypeInfo_Aggregator;
+        private IVBETypeInfo target_IVBETypeInfo { get => _IVBETypeInfo_Aggregator?.WrappedObject; }
+
+        public bool HasVBEExtensions { get => _IVBETypeInfo_Aggregator?.WrappedObject != null; }
 
         private bool _hasModuleScopeCompilationErrors;
         public bool HasModuleScopeCompilationErrors => _hasModuleScopeCompilationErrors;
 
+        public class FuncsCollection : IIndexedCollection<TypeInfoFunc>
+        {
+            TypeInfoWrapper _parent;
+            public FuncsCollection(TypeInfoWrapper parent) => _parent = parent;
+            override public int Count { get => _parent.Attributes.cFuncs; }
+            override public TypeInfoFunc GetItemByIndex(int index) => new TypeInfoFunc(_parent, index);
+        }
+        public FuncsCollection Funcs;
+
+        public class VarsCollection : IIndexedCollection<TypeInfoVar>
+        {
+            TypeInfoWrapper _parent;
+            public VarsCollection(TypeInfoWrapper parent) => _parent = parent;
+            override public int Count { get => _parent.Attributes.cVars; }
+            override public TypeInfoVar GetItemByIndex(int index) => new TypeInfoVar(_parent, index);
+        }
+        public VarsCollection Vars;
+
+        public class ImplementedInterfacesCollection : IIndexedCollection<TypeInfoWrapper>
+        {
+            TypeInfoWrapper _parent;
+            public ImplementedInterfacesCollection(TypeInfoWrapper parent) => _parent = parent;
+            override public int Count { get => _parent.Attributes.cImplTypes; }
+            override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeImplementedTypeInfo(index);
+
+            public bool DoesImplement(string containerName, string interfaceName)
+            {
+                // check we are not runtime generated with no container
+                if (_parent.HasNoContainer()) return false;
+
+                foreach (var typeInfo in this)
+                {
+                    using (typeInfo)
+                    {
+                        if ((typeInfo.Container.Name == containerName) && (typeInfo.Name == interfaceName)) return true;
+                        if (typeInfo.ImplementedInterfaces.DoesImplement(containerName, interfaceName)) return true;
+                    }
+                }
+                
+                return false;
+            }
+
+            public bool DoesImplement(Guid interfaceIID)
+            {
+                foreach (var typeInfo in this)
+                {
+                    using (typeInfo)
+                    {
+                        if (typeInfo.GUID == interfaceIID) return true;
+                        if (typeInfo.ImplementedInterfaces.DoesImplement(interfaceIID)) return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public TypeInfoWrapper Get(string searchTypeName)
+            {
+                foreach (var typeInfo in this)
+                {
+                    if (typeInfo.Name == searchTypeName) return typeInfo;
+                    typeInfo.Dispose();
+                }
+
+                throw new ArgumentException($"TypeInfoWrapper::Get failed. '{searchTypeName}' component not found.");
+            }
+        }
+        public ImplementedInterfacesCollection ImplementedInterfaces;
+        
         private void InitCommon()
         {
+            Funcs = new FuncsCollection(this);
+            Vars = new VarsCollection(this);
+            ImplementedInterfaces = new ImplementedInterfacesCollection(this);
+
             IntPtr typeAttrPtr = IntPtr.Zero;
             try
             {
-                GetTypeAttr(out typeAttrPtr);
+                target_ITypeInfo.GetTypeAttr(out typeAttrPtr);
                 _cachedAttributes = StructHelper.ReadStructure<ComTypes.TYPEATTR>(typeAttrPtr);
-                ReleaseTypeAttr(typeAttrPtr);      // don't need to keep a hold of it, as _cachedAttributes is a copy
+                target_ITypeInfo.ReleaseTypeAttr(typeAttrPtr);      // don't need to keep a hold of it, as _cachedAttributes is a copy
             }
             catch (Exception e)
             {
@@ -225,7 +447,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // just mute the erorr and expose an empty type
                 _cachedAttributes = new ComTypes.TYPEATTR();
             }
-            
+
             // cache the container type library if it is available
             try
             {
@@ -239,8 +461,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // it is acceptable for a type to not have a container, as types can be runtime generated.
             }
-
-            if (Name == null) target_ITypeInfo.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out _name, out _docString, out _helpContext, out _helpFile);
         }
 
         public TypeInfoWrapper(ComTypes.ITypeInfo rawTypeInfo)
@@ -261,20 +481,56 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // so we have to detect UserForm parents, and ensure GetDocumentation(MEMBERID_NIL) never gets through
             if (parentUserFormUniqueId.HasValue)
             {
-                _name = "_UserFormBase{unnamed}#" + parentUserFormUniqueId;
+                _cachedTextFields = new TypeLibTextFields { _name = "_UserFormBase{unnamed}#" + parentUserFormUniqueId };
             }
 
             InitCommon();
             DetectUserFormClass();
         }
 
-        public bool HasPredeclaredId { get => _cachedAttributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID); }
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+
+            _typeInfosWrapped?.Dispose();
+            _containerTypeLib?.Dispose();
+            _ITypeInfo_Aggregator?.Dispose();
+            _IVBEComponent_Aggregator?.Dispose();
+            _IVBETypeInfo_Aggregator?.Dispose();
+        }
+
+        private TypeLibTextFields? _cachedTextFields;
+        TypeLibTextFields CachedTextFields
+        {
+            get
+            {
+                if (!_cachedTextFields.HasValue)
+                {
+                    var cache = new TypeLibTextFields();
+                    target_ITypeInfo.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
+                    _cachedTextFields = cache;
+                }
+                return _cachedTextFields.Value;
+            }
+        }
+
+        public string Name { get => CachedTextFields._name; }
+        public string DocString { get => CachedTextFields._docString; }
+        public int HelpContext { get => CachedTextFields._helpContext; }
+        public string HelpFile { get => CachedTextFields._helpFile; }
+
+        public Guid GUID { get => Attributes.guid; }
+        public TYPEKIND_VBE TypeKind { get => (TYPEKIND_VBE)Attributes.typekind; }
+        
+        public bool HasPredeclaredId { get => Attributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID); }
 
         private bool HasNoContainer() => _containerTypeLib == null;
 
         public bool CompileComponent()
         {
-            if (HasVBEExtensions())
+            if (HasVBEExtensions)
             {
                 try
                 {
@@ -304,9 +560,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             // Determine if this is a UserForm base class, that requires special handling to workaround a VBE bug in its implemented classes
             // the guids are dynamic, so we can't use them for detection.
-            if ((_cachedAttributes.typekind == ComTypes.TYPEKIND.TKIND_COCLASS) &&
+            if ((TypeKind == TYPEKIND_VBE.TKIND_COCLASS) &&
                     HasNoContainer() &&
-                    (_cachedAttributes.cImplTypes == 2) && 
+                    (ImplementedInterfaces.Count == 2) && 
                     (Name == "Form"))
             {
                 // we can be 99.999999% sure it IS the runtime generated UserForm base class
@@ -314,58 +570,156 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        private bool _isDisposed;
-        public void Dispose()
+        // caller is responsible for calling ReleaseComObject
+        public IDispatch GetStdModInstance()
         {
-            if (_isDisposed) return;
-            _isDisposed = true;
-
-            _typeInfosWrapped?.Dispose();
-            _containerTypeLib?.Dispose();
-            _ITypeInfo_Aggregator?.Dispose();
-            _IVBEComponent_Aggregator?.Dispose();
-            _IVBETypeInfo_Aggregator?.Dispose();
+            if (HasVBEExtensions)
+            {
+                return target_IVBETypeInfo.GetStdModInstance();
+            }
+            else
+            {
+                throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support GetStdModInstance");
+            }
         }
 
-        // We have to wrap the ITypeInfo returned by GetRefTypeInfo
-        // so we cast to our ITypeInfo_Ptrs interface in order to work with the raw IntPtr for aggregation
-        public void /* ITypeInfo:: */ GetRefTypeInfo(int hRef, out ComTypes.ITypeInfo ppTI)
+        public object StdModExecute(string name, Reflection.BindingFlags invokeAttr, object[] args = null)
+        {
+            if (HasVBEExtensions)
+            {
+                var StaticModule = GetStdModInstance();
+                var retVal = StaticModule.GetType().InvokeMember(name, invokeAttr, null, StaticModule, args);
+                Marshal.ReleaseComObject(StaticModule);
+                return retVal;
+            }
+            else
+            {
+                throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support StdModExecute");
+            }
+        }
+
+        // FIXME this needs work
+        // Gets the control ITypeInfo by looking for the corresponding getter on the form interface and returning its retval type
+        // Supports UserForms.  what about Access forms etc
+        public TypeInfoWrapper GetControlType(string controlName)
+        {
+            // FIXME should encapsulate handling of raw datatypes
+            foreach (var func in Funcs)
+            {
+                using (func)
+                {
+                    if ((func.Name == controlName) &&
+                        func.IsPropertyGet &&
+                        (func.ParamCount == 0) &&
+                        (func._funcDesc.elemdescFunc.tdesc.vt == (short)VarEnum.VT_PTR))
+                    {
+                        var retValElement = StructHelper.ReadStructure<ComTypes.ELEMDESC>(func._funcDesc.elemdescFunc.tdesc.lpValue);
+                        if (retValElement.tdesc.vt == (short)VarEnum.VT_USERDEFINED)
+                        {
+                            return GetSafeRefTypeInfo((int)retValElement.tdesc.lpValue);
+                        }
+                    }
+                }
+            }
+
+            throw new ArgumentException($"TypeInfoWrapper::GetControlType failed. '{controlName}' control not found.");
+        }
+
+        public TypeInfoWrapper GetSafeRefTypeInfo(int hRef)
         {
             IntPtr typeInfoPtr = IntPtr.Zero;
+            // we cast to our ITypeInfo_Ptrs interface in order to work with the raw IntPtr for aggregation
             ((ITypeInfo_Ptrs)target_ITypeInfo).GetRefTypeInfo(hRef, out typeInfoPtr);
             var outVal = new TypeInfoWrapper(typeInfoPtr, _isUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
-            ppTI = outVal;
-
             _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
+            return outVal;
         }
 
-        public void /* ITypeInfo:: */ GetContainingTypeLib(out ComTypes.ITypeLib ppTLB, out int pIndex)
+        public TypeInfoWrapper GetSafeImplementedTypeInfo(int index)
+        {
+            target_ITypeInfo.GetRefTypeOfImplType(index, out int href);
+            return GetSafeRefTypeInfo(href);
+        }
+
+        public void Document(StringLineBuilder output, string qualifiedName, int implementsLevel)
+        {
+            output.AppendLine();
+            if (implementsLevel == 0)
+            {
+                output.AppendLine("-------------------------------------------------------------------------------");
+                output.AppendLine();
+            }
+            implementsLevel++;
+
+            qualifiedName += "::" + (Name ?? "[unnamed]");     
+            output.AppendLineNoNullChars(qualifiedName);
+            output.AppendLineNoNullChars("- Documentation: " + DocString);
+            output.AppendLineNoNullChars("- HelpContext: " + HelpContext);
+            output.AppendLineNoNullChars("- HelpFile: " + HelpFile);
+
+            output.AppendLine("- HasVBEExtensions: " + HasVBEExtensions);
+            if (HasVBEExtensions) output.AppendLine("- HasModuleScopeCompilationErrors: " + HasModuleScopeCompilationErrors);
+
+            output.AppendLine("- Type: " + TypeKind);        
+            output.AppendLine("- Guid: {" + GUID + "}");
+
+            output.AppendLine("- cImplTypes (implemented interfaces count): " + ImplementedInterfaces.Count);
+            output.AppendLine("- cFuncs (function count): " + Funcs.Count);
+            output.AppendLine("- cVars (fields count): " + Vars.Count);
+
+            foreach (var func in Funcs)
+            {
+                using (func)
+                {
+                    func.Document(output);
+                }
+            }
+            foreach (var var in Vars)
+            {
+                using (var)
+                {
+                    var.Document(output);
+                }
+            }
+            foreach (var typeInfoImpl in ImplementedInterfaces)
+            {
+                using (typeInfoImpl)
+                {
+                    output.AppendLine("implements...");
+                    typeInfoImpl.Document(output, qualifiedName, implementsLevel);
+                }
+            }
+        }
+
+        // And finally we act as a safe pass-through to the raw ITypeInfo interface
+        // We have to wrap all ITypeInfos
+        void ComTypes.ITypeInfo.GetRefTypeInfo(int hRef, out ComTypes.ITypeInfo ppTI)
+            => ppTI = GetSafeRefTypeInfo(hRef);
+        void ComTypes.ITypeInfo.GetContainingTypeLib(out ComTypes.ITypeLib ppTLB, out int pIndex)
         {
             ppTLB = _containerTypeLib;
             pIndex = _containerTypeLibIndex;
         }
-
-        // All other members just pass through to the wrappedObject
-        public void /* ITypeInfo:: */ GetTypeAttr(out IntPtr ppTypeAttr)
+        void ComTypes.ITypeInfo.GetTypeAttr(out IntPtr ppTypeAttr)
             => target_ITypeInfo.GetTypeAttr(out ppTypeAttr);
-        public void /* ITypeInfo:: */ GetTypeComp(out ComTypes.ITypeComp ppTComp)
+        void ComTypes.ITypeInfo.GetTypeComp(out ComTypes.ITypeComp ppTComp)
             => target_ITypeInfo.GetTypeComp(out ppTComp);
-        public void /* ITypeInfo:: */ GetFuncDesc(int index, out IntPtr ppFuncDesc)
+        void ComTypes.ITypeInfo.GetFuncDesc(int index, out IntPtr ppFuncDesc)
             => target_ITypeInfo.GetFuncDesc(index, out ppFuncDesc);
-        public void /* ITypeInfo:: */ GetVarDesc(int index, out IntPtr ppVarDesc)
+        void ComTypes.ITypeInfo.GetVarDesc(int index, out IntPtr ppVarDesc)
             => target_ITypeInfo.GetVarDesc(index, out ppVarDesc);
-        public void /* ITypeInfo:: */ GetNames(int memid, string[] rgBstrNames, int cMaxNames, out int pcNames)
+        void ComTypes.ITypeInfo.GetNames(int memid, string[] rgBstrNames, int cMaxNames, out int pcNames)
             => target_ITypeInfo.GetNames(memid, rgBstrNames, cMaxNames, out pcNames);
-        public void /* ITypeInfo:: */ GetRefTypeOfImplType(int index, out int href)
+        void ComTypes.ITypeInfo.GetRefTypeOfImplType(int index, out int href)
             => target_ITypeInfo.GetRefTypeOfImplType(index, out href);
-        public void /* ITypeInfo:: */ GetImplTypeFlags(int index, out ComTypes.IMPLTYPEFLAGS pImplTypeFlags)
+        void ComTypes.ITypeInfo.GetImplTypeFlags(int index, out ComTypes.IMPLTYPEFLAGS pImplTypeFlags)
             => target_ITypeInfo.GetImplTypeFlags(index, out pImplTypeFlags);
-        public void /* ITypeInfo:: */ GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId)
+        void ComTypes.ITypeInfo.GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId)
             => target_ITypeInfo.GetIDsOfNames(rgszNames, cNames, pMemId);
-        public void /* ITypeInfo:: */ Invoke(object pvInstance, int memid, short wFlags, ref ComTypes.DISPPARAMS pDispParams, IntPtr pVarResult, IntPtr pExcepInfo, out int puArgErr)
+        void ComTypes.ITypeInfo.Invoke(object pvInstance, int memid, short wFlags, ref ComTypes.DISPPARAMS pDispParams, IntPtr pVarResult, IntPtr pExcepInfo, out int puArgErr)
             => target_ITypeInfo.Invoke(pvInstance, memid, wFlags, ref pDispParams, pVarResult, pExcepInfo, out puArgErr);
-        public void /* ITypeInfo:: */ GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile)
+        void ComTypes.ITypeInfo.GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile)
         {
             if (index == (int)TypeLibConsts.MEMBERID_NIL)
             {
@@ -380,154 +734,28 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 target_ITypeInfo.GetDocumentation(index, out strName, out strDocString, out dwHelpContext, out strHelpFile);
             }
         }
-        public void /* ITypeInfo:: */ GetDllEntry(int memid, ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal)
+        void ComTypes.ITypeInfo.GetDllEntry(int memid, ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal)
             => target_ITypeInfo.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
-        public void /* ITypeInfo:: */ AddressOfMember(int memid, ComTypes.INVOKEKIND invKind, out IntPtr ppv)
+        void ComTypes.ITypeInfo.AddressOfMember(int memid, ComTypes.INVOKEKIND invKind, out IntPtr ppv)
             => target_ITypeInfo.AddressOfMember(memid, invKind, out ppv);
-        public void /* ITypeInfo:: */ CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj)
+        void ComTypes.ITypeInfo.CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj)
             => target_ITypeInfo.CreateInstance(pUnkOuter, riid, out ppvObj);
-        public void /* ITypeInfo:: */ GetMops(int memid, out string pBstrMops)
+        void ComTypes.ITypeInfo.GetMops(int memid, out string pBstrMops)
             => target_ITypeInfo.GetMops(memid, out pBstrMops);
-        public void /* ITypeInfo:: */ ReleaseTypeAttr(IntPtr pTypeAttr)
+        void ComTypes.ITypeInfo.ReleaseTypeAttr(IntPtr pTypeAttr)
             => target_ITypeInfo.ReleaseTypeAttr(pTypeAttr);
-        public void /* ITypeInfo:: */ ReleaseFuncDesc(IntPtr pFuncDesc)
+        void ComTypes.ITypeInfo.ReleaseFuncDesc(IntPtr pFuncDesc)
             => target_ITypeInfo.ReleaseFuncDesc(pFuncDesc);
-        public void /* ITypeInfo:: */ ReleaseVarDesc(IntPtr pVarDesc)
+        void ComTypes.ITypeInfo.ReleaseVarDesc(IntPtr pVarDesc)
             => target_ITypeInfo.ReleaseVarDesc(pVarDesc);
-
-        public IDispatch GetStdModInstance()
-        {
-            if (HasVBEExtensions())
-            {
-                return target_IVBETypeInfo.GetStdModInstance();
-            }
-            else
-            {
-                throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support GetStdModInstance");
-            }
-        }
-
-        public object StdModExecute(string name, Reflection.BindingFlags invokeAttr, object[] args = null)
-        {
-            if (HasVBEExtensions())
-            {
-                var StaticModule = GetStdModInstance();
-                var retVal = StaticModule.GetType().InvokeMember(name, invokeAttr, null, StaticModule, args);
-                Marshal.ReleaseComObject(StaticModule);
-                return retVal;
-            }
-            else
-            {
-                throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support StdModExecute");
-            }
-        }
-
-        public TypeInfoWrapper GetImplementedTypeInfoByIndex(int implIndex)
-        {
-            ComTypes.ITypeInfo typeInfoImpl = null;
-            int href = 0;
-            GetRefTypeOfImplType(implIndex, out href);
-            GetRefTypeInfo(href, out typeInfoImpl);
-            return (TypeInfoWrapper)typeInfoImpl;
-        }
-
-        public bool DoesImplement(string containerName, string interfaceName)
-        {
-            // check we are not runtime generated with no container
-            if (HasNoContainer()) return false;
-
-            if ((containerName == _containerTypeLib.Name) && (Name == interfaceName)) return true;
-
-            for (int implIndex = 0; implIndex < _cachedAttributes.cImplTypes; implIndex++)
-            {
-                using (var typeInfoImplEx = GetImplementedTypeInfoByIndex(implIndex))
-                {
-                    if (typeInfoImplEx.DoesImplement(containerName, interfaceName))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public bool DoesImplement(Guid interfaceIID)
-        {
-            if (_cachedAttributes.guid == interfaceIID) return true;
-
-            for (int implIndex = 0; implIndex < _cachedAttributes.cImplTypes; implIndex++)
-            {
-                using (var typeInfoImplEx = GetImplementedTypeInfoByIndex(implIndex))
-                {
-                    if (typeInfoImplEx.DoesImplement(interfaceIID))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public TypeInfoWrapper GetImplementedTypeInfo(string searchTypeName)
-        {
-            for (int implIndex = 0; implIndex < _cachedAttributes.cImplTypes; implIndex++)
-            {
-                var typeInfoImplEx = GetImplementedTypeInfoByIndex(implIndex);
-                if (typeInfoImplEx.Name == searchTypeName)
-                {
-                    return typeInfoImplEx;
-                }
-                typeInfoImplEx.Dispose();
-            }
-
-            throw new ArgumentException($"TypeLibWrapper::GetImplementedTypeInfo failed. '{searchTypeName}' module not found.");
-        }
-
-        // FIXME this needs work
-        // Gets the control ITypeInfo by looking for the corresponding getter on the form interface and returning its retval type
-        // Supports UserForms.  what about Access forms etc
-        public TypeInfoWrapper GetControlType(string controlName)
-        {
-            for (int funcIndex = 0; funcIndex < _cachedAttributes.cFuncs; funcIndex++)
-            {
-                IntPtr funcDescPtr = IntPtr.Zero;
-                GetFuncDesc(funcIndex, out funcDescPtr);
-                var funcDesc = StructHelper.ReadStructure<ComTypes.FUNCDESC>(funcDescPtr);
-
-                try
-                {
-                    var names = new string[1];
-                    int cNames = 0;
-                    GetNames(funcDesc.memid, names, names.Length, out cNames);
-
-                    if ((names[0] == controlName) &&
-                            ((funcDesc.invkind & ComTypes.INVOKEKIND.INVOKE_PROPERTYGET) != 0) &&
-                            (funcDesc.cParams == 0) &&
-                            (funcDesc.elemdescFunc.tdesc.vt == (short)VarEnum.VT_PTR))
-                    {
-                        var retValElement = StructHelper.ReadStructure<ComTypes.ELEMDESC>(funcDesc.elemdescFunc.tdesc.lpValue);
-                        if (retValElement.tdesc.vt == (short)VarEnum.VT_USERDEFINED)
-                        {
-                            ComTypes.ITypeInfo referenceType;
-                            GetRefTypeInfo((int)retValElement.tdesc.lpValue, out referenceType);
-                            return (TypeInfoWrapper)referenceType;
-                        }                        
-                    }
-                }
-                catch (Exception)
-                {
-                    // it's fine if GetNames() or GetRefTypeInfo() throws here, we just ignore and move on.
-                }                   
-                finally
-                {
-                    ReleaseFuncDesc(funcDescPtr);
-                }
-            }
-
-            throw new ArgumentException($"TypeInfoWrapper::GetControlType failed. '{controlName}' control not found.");
-        }
+    }
+    
+    public struct TypeLibTextFields
+    {
+        public string _name;
+        public string _docString;
+        public int _helpContext;
+        public string _helpFile;
     }
 
     // A wrapper for ITypeLib that exposes VBE ITypeInfos safely for managed consumption, plus adds ConditionalCompilationArguments property
@@ -535,21 +763,60 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly bool _wrappedObjectIsWeakReference;
-        
-        private string _name;
-        private string _docString;
-        private int _helpContext;
-        private string _helpFile;
 
-        public string Name { get => _name; }
-        public string DocString { get => _docString; }
-        public int HelpContext { get => _helpContext; }
-        public string HelpFile { get => _helpFile; }
+        public class TypeInfosCollection : IIndexedCollection<TypeInfoWrapper>
+        {
+            TypeLibWrapper _parent;
+            public TypeInfosCollection(TypeLibWrapper parent) => _parent = parent;
+            override public int Count { get => _parent.TypesCount; }
+            override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeTypeInfoByIndex(index);
+
+            public TypeInfoWrapper Find(string searchTypeName)
+            {
+                foreach (var typeInfo in this)
+                {
+                    if (typeInfo.Name == searchTypeName) return typeInfo;
+                    typeInfo.Dispose();
+                }
+                return null;
+            }
+
+            public TypeInfoWrapper Get(string searchTypeName)
+            {
+                var retVal = Find(searchTypeName);
+                if (retVal == null)
+                {
+                    throw new ArgumentException($"TypeInfosCollection::Get failed. '{searchTypeName}' component not found.");
+                }
+                return retVal;
+            }
+        }
+        public TypeInfosCollection TypeInfos;
+
+        private TypeLibTextFields? _cachedTextFields;
+        TypeLibTextFields CachedTextFields
+        {
+            get
+            {
+                if (!_cachedTextFields.HasValue)
+                {
+                    var cache = new TypeLibTextFields();
+                    target_ITypeLib.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
+                    _cachedTextFields = cache;
+                }
+                return _cachedTextFields.Value; 
+            }
+        }
+
+        public string Name      { get => CachedTextFields._name; }
+        public string DocString { get => CachedTextFields._docString; }
+        public int HelpContext  { get => CachedTextFields._helpContext; }
+        public string HelpFile  { get => CachedTextFields._helpFile; }
 
         private ComTypes.ITypeLib target_ITypeLib;
         private IVBEProject target_IVBEProject;
 
-        public bool HasVBEExtensions() => target_IVBEProject != null;
+        public bool HasVBEExtensions { get => target_IVBEProject != null; }
 
         /*
          This is not yet used, but here in case we want to use this interface at some point.
@@ -560,7 +827,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (_cachedIVBProjectEx2 == null)
                 {
-                    if (HasVBEExtensions())
+                    if (HasVBEExtensions)
                     {
                         // This internal VBE interface doesn't have a queryable IID.  
                         // The vtable for this interface directly preceeds the _IVBProjectEx, and we can access it through an aggregation helper
@@ -590,8 +857,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         private void InitCommon()
         {
+            TypeInfos = new TypeInfosCollection(this);
             target_IVBEProject = target_ITypeLib as IVBEProject;
-            target_ITypeLib.GetDocumentation((int)TypeLibConsts.MEMBERID_NIL, out _name, out _docString, out _helpContext, out _helpFile);
         }
 
         public TypeLibWrapper(IntPtr rawObjectPtr)
@@ -618,55 +885,40 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (!_wrappedObjectIsWeakReference) Marshal.ReleaseComObject(target_ITypeLib);
         }
 
-        // We have to wrap the ITypeInfo returned by GetTypeInfo
-        // so we cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
-        public void /* ITypeLib:: */ GetTypeInfo(int index, out ComTypes.ITypeInfo ppTI)
+        public TypeInfoWrapper GetSafeTypeInfoByIndex(int index)
         {
             IntPtr typeInfoPtr = IntPtr.Zero;
+            // We cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
             ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfo(index, out typeInfoPtr);
             var outVal = new TypeInfoWrapper(typeInfoPtr);
-            ppTI = outVal;     // takes ownership of the COM reference
-
             _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
+            return outVal;
         }
 
-        // We have to wrap the ITypeInfo returned by GetTypeInfoOfGuid
-        // so we cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
-        public void /* ITypeLib:: */ GetTypeInfoOfGuid(ref Guid guid, out ComTypes.ITypeInfo ppTInfo)
+        public int TypesCount
         {
-            IntPtr typeInfoPtr = IntPtr.Zero;
-            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out typeInfoPtr);
-            var outVal = new TypeInfoWrapper(typeInfoPtr);  // takes ownership of the COM reference
-            ppTInfo = outVal;
-
-            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
-            _typeInfosWrapped.Add(outVal);
+            get => target_ITypeLib.GetTypeInfoCount();
         }
 
-        // All other members just pass through to the wrappedObject
-        public int /* ITypeLib:: */ GetTypeInfoCount()
-            => target_ITypeLib.GetTypeInfoCount();
-        public void /* ITypeLib:: */ GetTypeInfoType(int index, out ComTypes.TYPEKIND pTKind)
-            => target_ITypeLib.GetTypeInfoType(index, out pTKind);
-        public void /* ITypeLib:: */ GetLibAttr(out IntPtr ppTLibAttr)
-            => target_ITypeLib.GetLibAttr(out ppTLibAttr);
-        public void /* ITypeLib:: */ GetTypeComp(out ComTypes.ITypeComp ppTComp)
-            => target_ITypeLib.GetTypeComp(out ppTComp);
-        public void /* ITypeLib:: */ GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile)
-            => target_ITypeLib.GetDocumentation(index, out strName, out strDocString, out dwHelpContext, out strHelpFile);
-        public bool /* ITypeLib:: */ IsName(string szNameBuf, int lHashVal)
-            => target_ITypeLib.IsName(szNameBuf, lHashVal);
-
-        // FIXME need to wrap the elements of ITypeInfos returned in FindName here.  RD never calls ITypeInfo::FindName() though, so low priority.
-        public void /* ITypeLib:: */ FindName(string szNameBuf, int lHashVal, ComTypes.ITypeInfo[] ppTInfo, int[] rgMemId, ref short pcFound)
-            => target_ITypeLib.FindName(szNameBuf, lHashVal, ppTInfo, rgMemId, pcFound);
-        public void /* ITypeLib:: */ ReleaseTLibAttr(IntPtr pTLibAttr)
-            => target_ITypeLib.ReleaseTLibAttr(pTLibAttr);
+        private ComTypes.TYPELIBATTR? _cachedLibAttribs;
+        public ComTypes.TYPELIBATTR Attributes
+        {
+            get
+            {
+                if (!_cachedLibAttribs.HasValue)
+                {
+                    target_ITypeLib.GetLibAttr(out IntPtr typeLibAttributesPtr);
+                    _cachedLibAttribs = StructHelper.ReadStructure<ComTypes.TYPELIBATTR>(typeLibAttributesPtr);
+                    target_ITypeLib.ReleaseTLibAttr(typeLibAttributesPtr);          // no need to keep open.  copied above
+                }
+                return _cachedLibAttribs.Value;
+            }
+        }
 
         public bool CompileProject()
         {
-            if (HasVBEExtensions())
+            if (HasVBEExtensions)
             {
                 try
                 {
@@ -696,9 +948,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             get
             {
-                if (HasVBEExtensions())
+                if (HasVBEExtensions)
                 {
-                    return target_IVBEProject.get_ConditionalCompilationArgs();
+                    return target_IVBEProject.GetConditionalCompilationArgs();
                 }
                 else
                 {
@@ -708,9 +960,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             set
             {
-                if (HasVBEExtensions())
+                if (HasVBEExtensions)
                 {
-                    target_IVBEProject.set_ConditionalCompilationArgs(value);
+                    target_IVBEProject.SetConditionalCompilationArgs(value);
                 }
                 else
                 {
@@ -719,26 +971,71 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        public TypeInfoWrapper FindTypeInfo(string searchTypeName)
+        public void Document(StringLineBuilder output)
         {
-            int countOfTypes = GetTypeInfoCount();
+            output.AppendLine();
+            output.AppendLine("================================================================================");
+            output.AppendLine();
 
-            for (int typeIdx = 0; typeIdx < countOfTypes; typeIdx++)
+            var libName = Name ?? "[VBA.Immediate.Window]";     
+
+            output.AppendLine("ITypeLib: " + Name);
+            output.AppendLineNoNullChars("- Documentation: " + DocString);
+            output.AppendLineNoNullChars("- HelpContext: " + HelpContext);
+            output.AppendLineNoNullChars("- HelpFile: " + HelpFile);
+            output.AppendLine("- Guid: " + Attributes.guid);
+            output.AppendLine("- Lcid: " + Attributes.lcid);
+            output.AppendLine("- SysKind: " + Attributes.syskind);
+            output.AppendLine("- LibFlags: " + Attributes.wLibFlags);
+            output.AppendLine("- MajorVer: " + Attributes.wMajorVerNum);
+            output.AppendLine("- MinorVer: " + Attributes.wMinorVerNum);
+            output.AppendLine("- HasVBEExtensions: " + HasVBEExtensions);
+            if (HasVBEExtensions)
             {
-                ComTypes.ITypeInfo typeInfo;
-                GetTypeInfo(typeIdx, out typeInfo);
-
-                var typeInfoEx = (TypeInfoWrapper)typeInfo;
-                if (typeInfoEx.Name == searchTypeName)
-                {
-                    return typeInfoEx;
-                }
-
-                typeInfoEx.Dispose();
+                output.AppendLine("- VBE Conditional Compilation Arguments: " + ConditionalCompilationArguments);
             }
 
-            throw new ArgumentException($"TypeLibWrapper::FindTypeInfo failed. '{searchTypeName}' module not found.");
+            output.AppendLine("- TypeCount: " + TypesCount);
+
+            foreach (var typeInfo in TypeInfos)
+            {
+                using (typeInfo)
+                {
+                    typeInfo.Document(output, libName, 0);
+                }
+            }
         }
+
+        // We have to wrap the ITypeInfo returned by GetTypeInfoOfGuid
+        // so we cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
+        void ComTypes.ITypeLib.GetTypeInfoOfGuid(ref Guid guid, out ComTypes.ITypeInfo ppTInfo)
+        {
+            IntPtr typeInfoPtr = IntPtr.Zero;
+            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out typeInfoPtr);
+            var outVal = new TypeInfoWrapper(typeInfoPtr);  // takes ownership of the COM reference
+            ppTInfo = outVal;
+
+            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
+            _typeInfosWrapped.Add(outVal);
+        }
+        void ComTypes.ITypeLib.GetTypeInfo(int index, out ComTypes.ITypeInfo ppTI)
+            => ppTI = GetSafeTypeInfoByIndex(index);   // We have to wrap the ITypeInfo returned by GetTypeInfo
+        int ComTypes.ITypeLib.GetTypeInfoCount()
+            => target_ITypeLib.GetTypeInfoCount();
+        void ComTypes.ITypeLib.GetTypeInfoType(int index, out ComTypes.TYPEKIND pTKind)
+            => target_ITypeLib.GetTypeInfoType(index, out pTKind);
+        void ComTypes.ITypeLib.GetLibAttr(out IntPtr ppTLibAttr)
+            => target_ITypeLib.GetLibAttr(out ppTLibAttr);
+        void ComTypes.ITypeLib.GetTypeComp(out ComTypes.ITypeComp ppTComp)
+            => target_ITypeLib.GetTypeComp(out ppTComp);
+        void ComTypes.ITypeLib.GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile)
+            => target_ITypeLib.GetDocumentation(index, out strName, out strDocString, out dwHelpContext, out strHelpFile);
+        bool ComTypes.ITypeLib.IsName(string szNameBuf, int lHashVal)
+            => target_ITypeLib.IsName(szNameBuf, lHashVal);
+        void ComTypes.ITypeLib.FindName(string szNameBuf, int lHashVal, ComTypes.ITypeInfo[] ppTInfo, int[] rgMemId, ref short pcFound)
+            => target_ITypeLib.FindName(szNameBuf, lHashVal, ppTInfo, rgMemId, pcFound);
+        void ComTypes.ITypeLib.ReleaseTLibAttr(IntPtr pTLibAttr)
+            => target_ITypeLib.ReleaseTLibAttr(pTLibAttr);
     }
 
     // class for iterating over the double linked list of ITypeLibs provided by the VBE
@@ -840,7 +1137,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // return an empty list on error
         }
 
-        public TypeLibWrapper FindTypeLib(string searchLibName)
+        public TypeLibWrapper Find(string searchLibName)
         {
             foreach (var typeLib in this)
             {
@@ -849,8 +1146,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     return typeLib;
                 }
             }
-
             return null;
+        }
+
+        public TypeLibWrapper Get(string searchLibName)
+        {
+            var retVal = Find(searchLibName);
+            if (retVal == null)
+            {
+                throw new ArgumentException($"TypeLibWrapper::Get failed. '{searchLibName}' component not found.");
+            }
+            return retVal;
         }
     }
 }

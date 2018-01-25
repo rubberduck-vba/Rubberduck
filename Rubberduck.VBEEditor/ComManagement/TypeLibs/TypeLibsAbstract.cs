@@ -154,16 +154,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     interface IVBEProject
     {
-        string get_ProjectName();                 // same as calling ITypeLib::GetDocumentation(-1)                   
-        void set_ProjectName(string value);       // same as IVBEProject2::set_ProjectName()
-        int get_VBE_LCID();
+        string GetProjectName();                 // same as calling ITypeLib::GetDocumentation(-1)                   
+        void SetProjectName(string value);       // same as IVBEProject2::set_ProjectName()
+        int GetVbeLCID();
         void Placeholder3();                      // calls IVBEProject2::Placeholder8
         void Placeholder4();                      
         void Placeholder5();                    
         void Placeholder6();
         void Placeholder7();
-        string get_ConditionalCompilationArgs();
-        void set_ConditionalCompilationArgs(string args);
+        string GetConditionalCompilationArgs();
+        void SetConditionalCompilationArgs(string args);
         void Placeholder8();
         void Placeholder9();
         void Placeholder10();
@@ -174,7 +174,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void Placeholder15();
         void Placeholder16();
         void Placeholder17();
-        string get_ReferenceString(int ReferenceIndex); // the raw reference string
+        string GetReferenceString(int ReferenceIndex); // the raw reference string
         void CompileProject();                            // throws COM exception 0x800A9C64 if error occurred during compile.
     }
 
@@ -184,12 +184,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     interface IVBEProject2
     {
         void Placeholder1();                    // returns E_NOTIMPL
-        void set_ProjectName(string value);
-        void set_ProjectVersion(ushort wMajorVerNum, ushort wMinorVerNum);
-        void set_ProjectGUID(ref Guid value);
-        void set_ProjectDescription(string value);
-        void set_ProjectHelpFileName(string value);
-        void set_ProjectHelpContext(int value);
+        void SetProjectName(string value);
+        void SetProjectVersion(ushort wMajorVerNum, ushort wMinorVerNum);
+        void SetProjectGUID(ref Guid value);
+        void SetProjectDescription(string value);
+        void SetProjectHelpFileName(string value);
+        void SetProjectHelpContext(int value);
     }
 
     public enum TYPEKIND_VBE
