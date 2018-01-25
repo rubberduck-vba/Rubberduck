@@ -14,7 +14,7 @@ using Reflection = System.Reflection;
 // TODO expose references collection
 // TODO comments/XML doc
 // TODO a few FIXMEs
-// TODO add DoesImplement() support for "typeLibName.interfaceName" format, and arrays
+// TODO add DoesImplement() support for arrays
 
 
 
@@ -380,16 +380,23 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             override public int Count { get => _parent.Attributes.cImplTypes; }
             override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeImplementedTypeInfo(index);
 
+            public bool DoesImplement(string interfaceProgId)
+            {
+                var progIdSplit = interfaceProgId.Split(new char[] { '.' }, 2);
+                if (progIdSplit.Length != 2)
+                {
+                    throw new ArgumentException($"Expected a progid in the form of 'LibraryName.InterfaceName', got {interfaceProgId}");
+                }
+                return DoesImplement(progIdSplit[0], progIdSplit[1]);
+            }
+
             public bool DoesImplement(string containerName, string interfaceName)
             {
-                // check we are not runtime generated with no container
-                if (_parent.HasNoContainer()) return false;
-
                 foreach (var typeInfo in this)
                 {
                     using (typeInfo)
                     {
-                        if ((typeInfo.Container.Name == containerName) && (typeInfo.Name == interfaceName)) return true;
+                        if ((typeInfo.Container?.Name == containerName) && (typeInfo.Name == interfaceName)) return true;
                         if (typeInfo.ImplementedInterfaces.DoesImplement(containerName, interfaceName)) return true;
                     }
                 }
@@ -520,6 +527,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public string DocString { get => CachedTextFields._docString; }
         public int HelpContext { get => CachedTextFields._helpContext; }
         public string HelpFile { get => CachedTextFields._helpFile; }
+
+        public string GetProgID() => (Container?.Name ?? "") + "." + CachedTextFields._name;
 
         public Guid GUID { get => Attributes.guid; }
         public TYPEKIND_VBE TypeKind { get => (TYPEKIND_VBE)Attributes.typekind; }
