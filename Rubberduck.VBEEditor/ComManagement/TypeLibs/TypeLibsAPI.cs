@@ -565,6 +565,71 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string[] interfaceProgIDs)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceProgIDs);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements a specific interface
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBE project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(IVBProject project, string className, string[] interfaceProgIDs)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceProgIDs);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements a specific interface
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string[] interfaceProgIDs)
+        {
+            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceProgIDs);
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements a specific interface
+        /// </summary>
+        /// <param name="component">Safe-com wrapper representing the VBA component</param>
+        /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(IVBComponent component, string[] interfaceProgIDs)
+        {
+            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceProgIDs);
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements a specific interface
+        /// </summary>
+        /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
+        /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string[] interfaceProgIDs)
+        {
+            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceProgIDs);
+        }
+        
+        /// <summary>
+        /// Determines whether the specified VBA class implements a specific interface
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceIID">The interface IID</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
         public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid interfaceIID)
@@ -622,6 +687,71 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid interfaceIID)
         {
             return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIID);
+        }
+        
+        /// <summary>
+        /// Determines whether the specified VBA class implements one of several possible interfaces
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid[] interfaceIIDs)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceIIDs);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements one of several possible interfaces
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(IVBProject project, string className, Guid[] interfaceIIDs)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceIIDs);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements one of several possible interfaces
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid[] interfaceIIDs)
+        {
+            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceIIDs);
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements one of several possible interfaces
+        /// </summary>
+        /// <param name="component">Safe-com wrapper representing the VBA component</param>
+        /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(IVBComponent component, Guid[] interfaceIIDs)
+        {
+            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceIIDs);
+        }
+
+        /// <summary>
+        /// Determines whether the specified VBA class implements one of several possible interfaces
+        /// </summary>
+        /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
+        /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
+        public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid[] interfaceIIDs)
+        {
+            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIIDs);
         }
 
         /// <summary>

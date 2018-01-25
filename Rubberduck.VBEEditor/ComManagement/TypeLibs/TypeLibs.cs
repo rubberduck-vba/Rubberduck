@@ -380,6 +380,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             override public int Count { get => _parent.Attributes.cImplTypes; }
             override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeImplementedTypeInfo(index);
 
+            public bool DoesImplement(string[] interfaceProgIds)
+            {
+                foreach (var interfaceProgId in interfaceProgIds)
+                {
+                    if (DoesImplement(interfaceProgId))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             public bool DoesImplement(string interfaceProgId)
             {
                 var progIdSplit = interfaceProgId.Split(new char[] { '.' }, 2);
@@ -401,6 +413,19 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     }
                 }
                 
+                return false;
+            }
+
+            public bool DoesImplement(Guid[] interfaceIIDs)
+            {
+                foreach (var interfaceIID in interfaceIIDs)
+                {
+                    if (DoesImplement(interfaceIID))
+                    {
+                        return true;
+                    }
+                }
+
                 return false;
             }
 
