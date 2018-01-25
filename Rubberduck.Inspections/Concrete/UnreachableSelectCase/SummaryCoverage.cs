@@ -244,40 +244,32 @@ namespace Rubberduck.Inspections.Concrete
             return _constantContexts.Keys.Contains(context) || _variableContexts.Keys.Contains(context);
         }
 
-        public void Visit(VBAParser.SelectCaseStmtContext selectStmt)
+        private void VisitImpl<T>(T context) where T: ParserRuleContext
         {
-            if (ContextHasResult(selectStmt))
+            if (ContextHasResult(context))
             {
                 return;
             }
 
-            var contextsOfInterest = selectStmt.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach (var context in contextsOfInterest)
+            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
+            foreach (var ctxt in contextsOfInterest)
             {
-                if (context is ParserRuleContext)
+                if (ctxt is ParserRuleContext)
                 {
-                    var selectContext = new SelectContext((ParserRuleContext)context);
+                    var selectContext = new SelectContext((ParserRuleContext)ctxt);
                     selectContext.Accept(this);
                 }
             }
         }
 
+        public void Visit(VBAParser.SelectCaseStmtContext selectStmt)
+        {
+            VisitImpl(selectStmt);
+        }
+
         public void Visit(VBAParser.SelectExpressionContext selectStmt)
         {
-            if (ContextHasResult(selectStmt))
-            {
-                return;
-            }
-
-            var contextsOfInterest = selectStmt.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach (var context in contextsOfInterest)
-            {
-                if (context is ParserRuleContext)
-                {
-                    var selectContext = new SelectContext((ParserRuleContext)context);
-                    selectContext.Accept(this);
-                }
-            }
+            VisitImpl(selectStmt);
         }
 
         public void Visit(VBAParser.CaseClauseContext caseClause)
@@ -287,20 +279,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public void Visit(VBAParser.RangeClauseContext rangeClause)
         {
-            if (ContextHasResult(rangeClause))
-            {
-                return;
-            }
-
-            var contextsOfInterest = rangeClause.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach ( var context in contextsOfInterest)
-            {
-                if(context is ParserRuleContext)
-                {
-                    var selectContext = new SelectContext((ParserRuleContext)context);
-                    selectContext.Accept(this);
-                }
-            }
+            VisitImpl(rangeClause);
 
             //Range of values 35 To 70
             if (rangeClause.HasChildToken(Tokens.To))
@@ -479,21 +458,9 @@ namespace Rubberduck.Inspections.Concrete
 
         public void Visit(VBAParser.UnaryMinusOpContext context)
         {
-            if (ContextHasResult(context))
-            {
-                return;
-            }
+            VisitImpl(context);
 
             var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach (var ctxt in contextsOfInterest)
-            {
-                if (ctxt is ParserRuleContext)
-                {
-                    var next = new SelectContext((ParserRuleContext)ctxt);
-                    next.Accept(this);
-                }
-            }
-
             for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
             {
                 var ctxt = contextsOfInterest[idx];
@@ -506,24 +473,11 @@ namespace Rubberduck.Inspections.Concrete
 
         public void VisitMathOpBinary(ParserRuleContext context)
         {
-            if (ContextHasResult(context))
-            {
-                return;
-            }
-
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            Debug.Assert(contextsOfInterest.Count() == 3);
-            foreach (var ctxt in contextsOfInterest)
-            {
-                if (ctxt is ParserRuleContext)
-                {
-                    var next = new SelectContext((ParserRuleContext)ctxt);
-                    next.Accept(this);
-                }
-            }
+            VisitImpl(context);
 
             UnreachableCaseInspectionValue LHS = null;
             UnreachableCaseInspectionValue RHS = null;
+            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
             for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
             {
                 var ctxt = contextsOfInterest[idx];
@@ -542,7 +496,6 @@ namespace Rubberduck.Inspections.Concrete
 
             if (LHS != null && LHS.HasValue && RHS != null && RHS.HasValue)
             {
-                //var opSymbol = context.children.Where(ch => MathOperations.Keys.Contains(ch.GetText())).First().GetText();
                 var opSymbol = context.children.Where(ch => BinaryMathOps.Keys.Contains(ch.GetText())).First().GetText();
                 if (BinaryMathOps.ContainsKey(opSymbol))
                 {
@@ -586,54 +539,11 @@ namespace Rubberduck.Inspections.Concrete
             VisitLogicalOperation(context, false);
         }
 
-        public void Visit(VBAParser.ParenthesizedExprContext context)
-        {
-            if (ContextHasResult(context))
-            {
-                return;
-            }
-
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach (var ctxt in contextsOfInterest)
-            {
-                if (ctxt is ParserRuleContext)
-                {
-                    var next = new SelectContext((ParserRuleContext)ctxt);
-                    next.Accept(this);
-                }
-            }
-
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
-            {
-                var ctxt = contextsOfInterest[idx];
-                if (_constantContexts.Keys.Contains(ctxt) && _constantContexts[(ParserRuleContext)ctxt].HasValue)
-                {
-                    StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt]);
-                }
-            }
-        }
-
         public void VisitLogicalOperation(ParserRuleContext context, bool isBinaryOp = true)
         {
-            if (ContextHasResult(context))
-            {
-                return;
-            }
+            VisitImpl(context);
 
             var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            if (isBinaryOp)
-            {
-                Debug.Assert(contextsOfInterest.Count() == 3);
-            }
-            foreach (var ctxt in contextsOfInterest)
-            {
-                if (ctxt is ParserRuleContext)
-                {
-                    var next = new SelectContext((ParserRuleContext)ctxt);
-                    next.Accept(this);
-                }
-            }
-
             UnreachableCaseInspectionValue LHS = null;
             UnreachableCaseInspectionValue RHS = null;
             for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
@@ -678,55 +588,43 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public void Visit(VBAParser.SelectEndValueContext context)
+        public void Visit(VBAParser.ParenthesizedExprContext context)
         {
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach (var ctxt in contextsOfInterest)
-            {
-                if (ctxt is ParserRuleContext)
-                {
-                    var next = new SelectContext((ParserRuleContext)ctxt);
-                    next.Accept(this);
-                }
-            }
+            VisitImpl(context);
 
-            foreach (var ctxt in contextsOfInterest)
+            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
+            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
             {
-                if (ctxt is ParserRuleContext)
+                var ctxt = contextsOfInterest[idx];
+                if (_constantContexts.Keys.Contains(ctxt) && _constantContexts[(ParserRuleContext)ctxt].HasValue)
                 {
-                    if (_constantContexts.Keys.Contains(ctxt))
-                    {
-                        if (!_constantContexts.Keys.Contains(context))
-                        {
-                            StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt]);
-                        }
-                    }
+                    StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt]);
                 }
             }
         }
 
+        public void Visit(VBAParser.SelectEndValueContext context)
+        {
+            VisitImpl(context);
+            StartEndContextResult(context);
+        }
+
         public void Visit(VBAParser.SelectStartValueContext context)
+        {
+            VisitImpl(context);
+            StartEndContextResult(context);
+        }
+
+        private void StartEndContextResult(ParserRuleContext context)
         {
             var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
             foreach (var ctxt in contextsOfInterest)
             {
-                if (ctxt is ParserRuleContext)
+                if (_constantContexts.Keys.Contains(ctxt))
                 {
-                    var next = new SelectContext((ParserRuleContext)ctxt);
-                    next.Accept(this);
-                }
-            }
-
-            foreach (var ctxt in contextsOfInterest)
-            {
-                if (ctxt is ParserRuleContext)
-                {
-                    if (_constantContexts.Keys.Contains(ctxt))
+                    if (!_constantContexts.Keys.Contains(context))
                     {
-                        if (!_constantContexts.Keys.Contains(context))
-                        {
-                            StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt]);
-                        }
+                        StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt]);
                     }
                 }
             }
