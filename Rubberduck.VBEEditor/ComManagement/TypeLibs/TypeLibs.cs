@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
+using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAbstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
@@ -13,7 +14,14 @@ using Reflection = System.Reflection;
 // TODO comments/XML doc
 // TODO a few FIXMEs
 
+// make GetControlType support Access forms etc
+// IsAccessForm example
+// split into TypeInfos.cs
 
+/*VBETypeLibsAPI::GetModuleFlags(ide, projectName, moduleName) to get the TYPEFLAGS
+VBETypeLibsAPI::GetMemberId(ide, projectName, moduleName, memberName)
+VBETypeLibsAPI::GetMemberHelpString(ide, projectName, moduleName, memberName)
+*/
 
 
 // USAGE GUIDE:   see class VBETypeLibsAPI for demonstrations of usage.
@@ -662,6 +670,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public TYPEKIND_VBE TypeKind { get => (TYPEKIND_VBE)Attributes.typekind; }
         
         public bool HasPredeclaredId { get => Attributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID); }
+        public ComTypes.TYPEFLAGS Flags { get => Attributes.wTypeFlags; }
 
         private bool HasNoContainer() => _containerTypeLib == null;
 
@@ -735,12 +744,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        // FIXME this needs work
         // Gets the control ITypeInfo by looking for the corresponding getter on the form interface and returning its retval type
         // Supports UserForms.  what about Access forms etc
         public TypeInfoWrapper GetControlType(string controlName)
         {
-            // FIXME should encapsulate handling of raw datatypes
+            // TODO should encapsulate handling of raw datatypes
             foreach (var func in Funcs)
             {
                 using (func)
@@ -1142,7 +1150,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        public string ConditionalCompilationArguments
+        public string ConditionalCompilationArgumentsRaw
         {
             get
             {
@@ -1169,6 +1177,44 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        public Dictionary<string, string> ConditionalCompilationArguments
+        {
+            get
+            {
+                if (HasVBEExtensions)
+                {
+                    string args = target_IVBEProject.GetConditionalCompilationArgs();
+
+                    if (args.Length > 0)
+                    {
+                        string[] argsArray = args.Split(new[] { ':' });
+                        return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0], s => s[1]);
+                    }
+                    else
+                    {
+                        return new Dictionary<string, string>();
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                }
+            }
+
+            set
+            {
+                if (HasVBEExtensions)
+                {
+                    var rawArgsString = string.Join(" : ", value.Select(x => x.Key + " = " + x.Value));
+                    ConditionalCompilationArgumentsRaw = rawArgsString;
+                }
+                else
+                {
+                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                }
+            }
+        }
+        
         public void Document(StringLineBuilder output)
         {
             output.AppendLine();

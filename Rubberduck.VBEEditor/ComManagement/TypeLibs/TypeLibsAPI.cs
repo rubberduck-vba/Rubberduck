@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Reflection = System.Reflection;
-using System.Linq;
+using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
@@ -258,7 +257,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>returns the raw unparsed conditional arguments string, e.g. "foo = 1 : bar = 2"</returns>
         public static string GetProjectConditionalCompilationArgsRaw(TypeLibWrapper projectTypeLib)
         {
-            return projectTypeLib.ConditionalCompilationArguments;
+            return projectTypeLib.ConditionalCompilationArgumentsRaw;
         }
 
         /// <summary>
@@ -298,18 +297,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>returns a Dictionary<string, string>, parsed from the conditional arguments string</returns>
         public static Dictionary<string, string> GetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib)
         {
-            // FIXME move dictionary stuff into the lower API here
-            string args = GetProjectConditionalCompilationArgsRaw(projectTypeLib);
-
-            if (args.Length > 0)
-            {
-                string[] argsArray = args.Split(new[] { ':' });
-                return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0], s => s[1]);
-            }
-            else
-            {
-                return new Dictionary<string, string>();
-            }
+            return projectTypeLib.ConditionalCompilationArguments;
         }
 
         /// <summary>
@@ -349,7 +337,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="newConditionalArgs">Raw string representing the arguments, e.g. "foo = 1 : bar = 2"</param>
         public static void SetProjectConditionalCompilationArgsRaw(TypeLibWrapper projectTypeLib, string newConditionalArgs)
         {
-            projectTypeLib.ConditionalCompilationArguments = newConditionalArgs;
+            projectTypeLib.ConditionalCompilationArgumentsRaw = newConditionalArgs;
         }
 
         /// <summary>
@@ -389,9 +377,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="newConditionalArgs">Dictionary<string, string> representing the argument name-value pairs</param>
         public static void SetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib, Dictionary<string, string> newConditionalArgs)
         {
-            // FIXME move dictionary stuff into the lower API here
-            var rawArgsString = string.Join(" : ", newConditionalArgs.Select(x => x.Key + " = " + x.Value));
-            SetProjectConditionalCompilationArgsRaw(projectTypeLib, rawArgsString);
+            projectTypeLib.ConditionalCompilationArguments = newConditionalArgs;
         }
 
         /// <summary>
@@ -827,6 +813,66 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         public static string GetUserFormControlType(TypeInfoWrapper userFormTypeInfo, string controlName)
         {
             return userFormTypeInfo.ImplementedInterfaces.Get("FormItf").GetControlType(controlName).GetProgID();
+        }
+
+        /// <summary>
+        /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <param name="projectName">The VBA project name</param>
+        /// <param name="componentName">The name of the component (module/class etc) to get flags for</param>
+        /// <returns>bool indicating success/failure.</returns>
+        public static ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBE ide, string projectName, string componentName)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return GetComponentTypeFlags(typeLibs.Get(projectName), componentName);
+            }
+        }
+
+        /// <summary>
+        /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA project</param>
+        /// <param name="componentName">The name of the component (module/class etc) to get flags for</param>
+        /// <returns>bool indicating success/failure.</returns>
+        public static ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBProject project, string componentName)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return GetComponentTypeFlags(typeLib, componentName);
+            }
+        }
+
+        /// <summary>
+        /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="componentName">The name of the component (module/class etc) to get flags for</param>
+        /// <returns>bool indicating success/failure.</returns>
+        public static ComTypes.TYPEFLAGS GetComponentTypeFlags(TypeLibWrapper projectTypeLib, string componentName)
+        {
+            return GetComponentTypeFlags(projectTypeLib.TypeInfos.Get(componentName));
+        }
+
+        /// <summary>
+        /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
+        /// </summary>
+        /// <param name="component">Safe-com wrapper representing the VBA component to get flags for</param>
+        /// <returns>bool indicating success/failure.</returns>
+        public static ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBComponent component)
+        {
+            return GetComponentTypeFlags(component.ParentProject, component.Name);
+        }
+
+        /// <summary>
+        /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
+        /// </summary>
+        /// <param name="componentTypeInfo">Low-level ITypeInfo wrapper representing the VBA component to get flags for</param>
+        /// <returns>bool indicating success/failure.</returns>
+        public static ComTypes.TYPEFLAGS GetComponentTypeFlags(TypeInfoWrapper componentTypeInfo)
+        {
+            return componentTypeInfo.Flags;
         }
 
         /// <summary>
