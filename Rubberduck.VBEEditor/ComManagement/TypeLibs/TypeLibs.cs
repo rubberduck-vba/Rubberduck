@@ -10,8 +10,6 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 using Reflection = System.Reflection;
 
 
-// narrow scope of catch blocks
-// IsPropertyGet to enum of funckind
 // TODO comments/XML doc
 // TODO a few FIXMEs
 
@@ -81,13 +79,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public static T ReadStructure<T>(IntPtr memAddress)
         {
-            if (memAddress == IntPtr.Zero) return default;
+            if (memAddress == IntPtr.Zero) return default(T);
             return (T)Marshal.PtrToStructure(memAddress, typeof(T));
         }
 
         public static T ReadStructureSafe<T>(IntPtr memAddress)
         {
-            if (memAddress == IntPtr.Zero) return default;
+            if (memAddress == IntPtr.Zero) return default(T);
 
             // FIXME add memory address validation here, using VirtualQueryEx
             return (T)Marshal.PtrToStructure(memAddress, typeof(T));
@@ -227,8 +225,39 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         public string Name { get => _names[0]; }
-        public bool IsPropertyGet { get => _funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYGET); }
         public int ParamCount { get => _funcDesc.cParams;  }
+        
+        public enum PROCKIND
+        {
+            PROCKIND_PROC,
+            PROCKIND_LET,
+            PROCKIND_SET,
+            PROCKIND_GET
+        }
+        
+        public PROCKIND ProcKind
+        {
+            get
+            {
+                // _funcDesc.invkind is a set of flags, and as such we convert into PROCKIND for simplicity
+                if (_funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYPUTREF))
+                {
+                    return PROCKIND.PROCKIND_SET;
+                }
+                else if (_funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYPUT))
+                {
+                    return PROCKIND.PROCKIND_LET;
+                }
+                else if (_funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYGET))
+                {
+                    return PROCKIND.PROCKIND_GET;
+                }
+                else
+                {
+                    return PROCKIND.PROCKIND_PROC;
+                }
+            }
+        }
 
         public void Document(StringLineBuilder output) 
         {
@@ -378,7 +407,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public bool MoveNext()
         {
-            _current = default;
+            _current = default(TItem);
             _index++;
             if (_index >= _collectionCount) return false;
             _current = _collection.GetItemByIndex(_index);
@@ -535,7 +564,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             catch (Exception e)
             {
-                if (e.HResult == (int)VBECompilerConsts.E_VBA_COMPILEERROR)
+                if (e.HResult == (int)KnownComHResults.E_VBA_COMPILEERROR)
                 {
                     _hasModuleScopeCompilationErrors = true;
                 }
@@ -553,9 +582,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 ((ITypeInfo_Ptrs)target_ITypeInfo).GetContainingTypeLib(out typeLibPtr, out _containerTypeLibIndex);
                 _containerTypeLib = new TypeLibWrapper(typeLibPtr);  // takes ownership of the COM reference
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // it is acceptable for a type to not have a container, as types can be runtime generated.
+                if (e.HResult == (int)KnownComHResults.E_NOTIMPL)
+                {
+                    // it is acceptable for a type to not have a container, as types can be runtime generated (e.g. UserForm base classes)
+                    // When that is the case, the ITypeInfo responds with E_NOTIMPL
+                }
+                else
+                {
+                    throw new ArgumentException("Unrecognised error when getting ITypeInfo container: \n" + e.ToString());
+                }
             }
         }
 
@@ -637,7 +674,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 }
                 catch (Exception e)
                 {
-                    if (e.HResult == (int)VBECompilerConsts.E_VBA_COMPILEERROR)
+                    if (e.HResult == (int)KnownComHResults.E_VBA_COMPILEERROR)
                     {
                         return false;
                     }
@@ -707,7 +744,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 using (func)
                 {
                     if ((func.Name == controlName) &&
-                        func.IsPropertyGet &&
+                        (func.ProcKind == TypeInfoFunc.PROCKIND.PROCKIND_GET) &&
                         (func.ParamCount == 0) &&
                         (func.FuncDesc.elemdescFunc.tdesc.vt == (short)VarEnum.VT_PTR))
                     {
@@ -1086,7 +1123,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 }
                 catch (Exception e)
                 {
-                    if (e.HResult == (int)VBECompilerConsts.E_VBA_COMPILEERROR)
+                    if (e.HResult == (int)KnownComHResults.E_VBA_COMPILEERROR)
                     {
                         return false;
                     }

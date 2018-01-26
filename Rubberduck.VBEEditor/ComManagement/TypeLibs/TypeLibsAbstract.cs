@@ -211,8 +211,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         MEMBERID_NIL = -1,
     }
 
-    public enum VBECompilerConsts : int
+    public enum KnownComHResults : int
     {
         E_VBA_COMPILEERROR = unchecked((int)0x800A9C64),
+        E_NOTIMPL = unchecked((int)0x80004001),
     }
 }
