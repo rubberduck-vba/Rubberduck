@@ -10,8 +10,6 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 using Reflection = System.Reflection;
 
 
-
-// make DoesImplement return matched index
 // TODO comments/XML doc
 // TODO a few FIXMEs
 
@@ -432,15 +430,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             override public int Count { get => _parent.Attributes.cImplTypes; }
             override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeImplementedTypeInfo(index);
 
-            public bool DoesImplement(string[] interfaceProgIds)
+            public bool DoesImplement(string[] interfaceProgIds, out int matchedIndex)
             {
+                matchedIndex = 0;
                 foreach (var interfaceProgId in interfaceProgIds)
                 {
                     if (DoesImplement(interfaceProgId))
                     {
                         return true;
                     }
+                    matchedIndex++;
                 }
+                matchedIndex = -1;
                 return false;
             }
 
@@ -468,16 +469,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return false;
             }
 
-            public bool DoesImplement(Guid[] interfaceIIDs)
+            public bool DoesImplement(Guid[] interfaceIIDs, out int matchedIndex)
             {
+                matchedIndex = 0;
                 foreach (var interfaceIID in interfaceIIDs)
                 {
                     if (DoesImplement(interfaceIID))
                     {
                         return true;
                     }
+                    matchedIndex++;
                 }
-
+                matchedIndex = -1;
                 return false;
             }
 

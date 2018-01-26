@@ -566,12 +566,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string[] interfaceProgIDs)
+        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string[] interfaceProgIDs, out int matchedIndex)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceProgIDs);
+                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceProgIDs, out matchedIndex);
             }
         }
 
@@ -581,12 +582,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBE project</param>
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(IVBProject project, string className, string[] interfaceProgIDs)
+        public static bool DoesClassImplementInterface(IVBProject project, string className, string[] interfaceProgIDs, out int matchedIndex)
         {
             using (var typeLib = TypeLibWrapper.FromVBProject(project))
             {
-                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceProgIDs);
+                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceProgIDs, out matchedIndex);
             }
         }
 
@@ -596,10 +598,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string[] interfaceProgIDs)
+        public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string[] interfaceProgIDs, out int matchedIndex)
         {
-            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceProgIDs);
+            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceProgIDs, out matchedIndex);
         }
 
         /// <summary>
@@ -607,10 +610,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// </summary>
         /// <param name="component">Safe-com wrapper representing the VBA component</param>
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(IVBComponent component, string[] interfaceProgIDs)
+        public static bool DoesClassImplementInterface(IVBComponent component, string[] interfaceProgIDs, out int matchedIndex)
         {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceProgIDs);
+            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceProgIDs, out matchedIndex);
         }
 
         /// <summary>
@@ -618,10 +622,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// </summary>
         /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string[] interfaceProgIDs)
+        public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string[] interfaceProgIDs, out int matchedIndex)
         {
-            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceProgIDs);
+            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceProgIDs, out matchedIndex);
         }
         
         /// <summary>
@@ -688,7 +693,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIID);
         }
-        
+
         /// <summary>
         /// Determines whether the specified VBA class implements one of several possible interfaces
         /// </summary>
@@ -696,12 +701,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid[] interfaceIIDs)
+        public static bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid[] interfaceIIDs, out int matchedIndex)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceIIDs);
+                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceIIDs, out matchedIndex);
             }
         }
 
@@ -711,12 +717,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(IVBProject project, string className, Guid[] interfaceIIDs)
+        public static bool DoesClassImplementInterface(IVBProject project, string className, Guid[] interfaceIIDs, out int matchedIndex)
         {
             using (var typeLib = TypeLibWrapper.FromVBProject(project))
             {
-                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceIIDs);
+                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceIIDs, out matchedIndex);
             }
         }
 
@@ -726,10 +733,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid[] interfaceIIDs)
+        public static bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid[] interfaceIIDs, out int matchedIndex)
         {
-            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceIIDs);
+            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceIIDs, out matchedIndex);
         }
 
         /// <summary>
@@ -737,10 +745,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// </summary>
         /// <param name="component">Safe-com wrapper representing the VBA component</param>
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(IVBComponent component, Guid[] interfaceIIDs)
+        public static bool DoesClassImplementInterface(IVBComponent component, Guid[] interfaceIIDs, out int matchedIndex)
         {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceIIDs);
+            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceIIDs, out matchedIndex);
         }
 
         /// <summary>
@@ -748,10 +757,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// </summary>
         /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
+        /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid[] interfaceIIDs)
+        public static bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid[] interfaceIIDs, out int matchedIndex)
         {
-            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIIDs);
+            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIIDs, out matchedIndex);
         }
 
         /// <summary>
