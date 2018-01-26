@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Mathieu\Documents\GitHub\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\velcheva\GitHub\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -1482,6 +1482,13 @@ public interface IVBAParserVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitStatementLabelDefinition([NotNull] VBAParser.StatementLabelDefinitionContext context);
+
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="VBAParser.stepStmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStepStmt([NotNull] VBAParser.StepStmtContext context);
 
 	/// <summary>
 	/// Visit a parse tree produced by the <c>multOp</c>
