@@ -60,6 +60,7 @@
     <Compile Include="Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Concrete\AssignedByValParameterInspection.cs" />
+    <Compile Include="Concrete\DefTypeStatementInspection.cs" />
     <Compile Include="Concrete\EmptyModuleInspection.cs" />
     <Compile Include="Concrete\EmptyBlockInspectionListenerBase.cs" />
     <Compile Include="Concrete\EmptyCaseBlockInspection.cs" />
@@ -69,6 +70,8 @@
     <Compile Include="Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Concrete\EmptyWhileWendBlockInspection.cs" />
     <Compile Include="Concrete\ObsoleteErrorSyntaxInspection.cs" />
+    <Compile Include="Concrete\StepIsNotSpecifiedInspection.cs" />
+    <Compile Include="Concrete\StepOneIsRedundantInspection.cs" />
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
@@ -118,11 +121,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFix.cs" />
     <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
+    <Compile Include="QuickFixes\AddStepOneQuickFix.cs" />
     <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
     <Compile Include="QuickFixes\ChangeIntegerToLongQuickFix.cs" />
     <Compile Include="Abstract\QuickFixBase.cs" />
+    <Compile Include="QuickFixes\RemoveStepOneQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFix.cs" />
     <Compile Include="QuickFixes\RestoreErrorHandlingQuickFix.cs" />

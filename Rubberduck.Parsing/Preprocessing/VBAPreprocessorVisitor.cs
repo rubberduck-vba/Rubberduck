@@ -58,7 +58,7 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IExpression VisitPhysicalLine([NotNull] VBAConditionalCompilationParser.PhysicalLineContext context)
         {
-            return new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context, _tokenStream)));
+            return new ConstantExpression(new TokensValue(context.GetTokens(_tokenStream)));
         }
 
         public override IExpression VisitCcBlock([NotNull] VBAConditionalCompilationParser.CcBlockContext context)
@@ -73,7 +73,7 @@ namespace Rubberduck.Parsing.PreProcessing
         public override IExpression VisitCcConst([NotNull] VBAConditionalCompilationParser.CcConstContext context)
         {
             return new ConditionalCompilationConstantExpression(
-                    new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context, _tokenStream))),
+                    new ConstantExpression(new TokensValue(context.GetTokens(_tokenStream))),
                     new ConstantExpression(new StringValue(Identifier.GetName(context.ccVarLhs().name()))),
                     Visit(context.ccExpression()),
                     _symbolTable);
@@ -81,14 +81,14 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public override IExpression VisitCcIfBlock([NotNull] VBAConditionalCompilationParser.CcIfBlockContext context)
         {
-            var ifCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccIf(), _tokenStream)));
+            var ifCondTokens = new ConstantExpression(new TokensValue(context.ccIf().GetTokens( _tokenStream)));
             var ifCond = Visit(context.ccIf().ccExpression());
             var ifBlock = Visit(context.ccBlock());
             var elseIfCodeCondBlocks = context
                 .ccElseIfBlock()
                 .Select(elseIf =>
                         Tuple.Create<IExpression, IExpression, IExpression>(
-                            new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(elseIf.ccElseIf(), _tokenStream))),
+                            new ConstantExpression(new TokensValue(elseIf.ccElseIf().GetTokens(_tokenStream))),
                             Visit(elseIf.ccElseIf().ccExpression()),
                             Visit(elseIf.ccBlock())))
                 .ToList();
@@ -97,10 +97,10 @@ namespace Rubberduck.Parsing.PreProcessing
             IExpression elseBlock = null;
             if (context.ccElseBlock() != null)
             {
-                elseCondTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccElseBlock().ccElse(), _tokenStream)));
+                elseCondTokens = new ConstantExpression(new TokensValue(context.ccElseBlock().ccElse().GetTokens(_tokenStream)));
                 elseBlock = Visit(context.ccElseBlock().ccBlock());
             }
-            var endIfTokens = new ConstantExpression(new TokensValue(ParserRuleContextHelper.GetTokens(context.ccEndIf(), _tokenStream)));
+            var endIfTokens = new ConstantExpression(new TokensValue(context.ccEndIf().GetTokens(_tokenStream)));
             return new ConditionalCompilationIfExpression(
                     ifCondTokens,
                     ifCond,
@@ -253,7 +253,7 @@ namespace Rubberduck.Parsing.PreProcessing
         private IExpression VisitLibraryFunction(VBAConditionalCompilationParser.CcExpressionContext context)
         {
             var intrinsicFunction = context.intrinsicFunction();
-            var functionName = ParserRuleContextHelper.GetText(intrinsicFunction.intrinsicFunctionName(), _stream);
+            var functionName = intrinsicFunction.intrinsicFunctionName().GetText(_stream);
             var argument = Visit(intrinsicFunction.ccExpression());
             return VBALibrary.CreateLibraryFunction(functionName, argument);
         }
@@ -433,7 +433,7 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return new ConstantExpression(EmptyValue.Value);
             }
-            throw new Exception(string.Format("Unexpected literal encountered: {0}", ParserRuleContextHelper.GetText(context, _stream)));
+            throw new Exception(string.Format("Unexpected literal encountered: {0}", context.GetText(_stream)));
         }
 
         private IExpression VisitStringLiteral(VBAConditionalCompilationParser.LiteralContext context)

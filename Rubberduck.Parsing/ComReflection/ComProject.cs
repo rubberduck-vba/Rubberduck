@@ -93,6 +93,8 @@ namespace Rubberduck.Parsing.ComReflection
                 MinorVersion = typeAttr.wMinorVerNum;
                 _flags = (TypeLibTypeFlags)typeAttr.wLibFlags;
                 Guid = typeAttr.guid;
+
+                typeLibrary.ReleaseTLibAttr(attribPtr);
             }
             catch (COMException) { }
         }
