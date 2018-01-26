@@ -820,6 +820,60 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
 
         /// <summary>
+        /// Returns a TypeInfoReference object containing information about the specified VBA project reference
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
+        /// <param name="referenceIdx">Index into the references collection</param>
+        /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
+        public static TypeInfoReference GetReferenceInfo(IVBE ide, string projectName, int referenceIdx)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return GetReferenceInfo(typeLibs.Get(projectName), referenceIdx);
+            }
+        }
+
+        /// <summary>
+        /// Returns a TypeInfoReference object containing information about the specified VBA project reference
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA project</param>
+        /// <param name="referenceIdx">Index into the references collection</param>
+        /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
+        public static TypeInfoReference GetReferenceInfo(IVBProject project, int referenceIdx)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return GetReferenceInfo(typeLib, referenceIdx);
+            }
+        }
+
+        /// <summary>
+        /// Returns a TypeInfoReference object containing information about the specified VBA project reference
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="referenceIdx">Index into the references collection</param>
+        /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
+        public static TypeInfoReference GetReferenceInfo(TypeLibWrapper projectTypeLib, int referenceIdx)
+        {
+            return projectTypeLib.GetVBEReferenceByIndex(referenceIdx);
+        }
+
+        /// <summary>
+        /// Returns a TypeInfoReference object containing information about the specified VBA project reference
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA project</param>
+        /// <param name="vbeReference">Safe-com wrapper representing the VBA project reference</param>
+        /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
+        public static TypeInfoReference GetReferenceInfo(IVBProject project, IReference vbeReference)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return typeLib.GetVBEReferenceByGuid(Guid.Parse(vbeReference.Guid));
+            }
+        }
+
+        /// <summary>
         /// Documents the type libaries of all loaded VBA projects
         /// </summary>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>

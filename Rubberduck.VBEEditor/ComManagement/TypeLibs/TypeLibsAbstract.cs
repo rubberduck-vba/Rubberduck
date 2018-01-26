@@ -170,7 +170,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void Placeholder11();
         void Placeholder12();
         void Placeholder13();
-        void Placeholder14();
+        int GetReferencesCount();
         void Placeholder15();
         void Placeholder16();
         void Placeholder17();
@@ -213,6 +213,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
 
     public enum VBECompilerConsts : int
     {
-        E_VBA_COMPILEERROR = unchecked((int)0x800A9C64)
+        E_VBA_COMPILEERROR = unchecked((int)0x800A9C64),
     }
 }

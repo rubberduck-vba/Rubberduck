@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAbstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
@@ -10,11 +11,9 @@ using Reflection = System.Reflection;
 
 
 
-
-// TODO expose references collection
+// make DoesImplement return matched index
 // TODO comments/XML doc
 // TODO a few FIXMEs
-// TODO add DoesImplement() support for arrays
 
 
 
@@ -242,6 +241,59 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    public class TypeInfoReference
+    {
+        readonly string _rawString;
+        readonly Guid _guid;
+        readonly uint _majorVersion;
+        readonly uint _minorVersion;
+        readonly uint _lcid;
+        readonly string _path;
+        readonly string _name;
+
+        public string RawString { get => _rawString; }
+        public Guid GUID { get => _guid; }
+        public uint MajorVersion { get => _majorVersion; }
+        public uint MinorVersion { get => _minorVersion; }
+        public uint LCID { get => _lcid; }
+        public string Path { get => _path; }
+        public string Name { get => _name; }
+
+        public TypeInfoReference(string referenceStringRaw)
+        {
+            // Example: "*\G{000204EF-0000-0000-C000-000000000046}#4.1#9#C:\PROGRA~2\COMMON~1\MICROS~1\VBA\VBA7\VBE7.DLL#Visual Basic For Applications"
+            // LibidReference defined at https://msdn.microsoft.com/en-us/library/dd922767(v=office.12).aspx
+            // The string is split into 5 parts, delimited by #
+
+            _rawString = referenceStringRaw;
+
+            var referenceStringParts = referenceStringRaw.Split(new char[] { '#' }, 5);
+            if (referenceStringParts.Length != 5)        
+            {
+                throw new ArgumentException($"Invalid reference string got {referenceStringRaw}.  Expected 5 parts.");
+            }
+
+            _guid = Guid.Parse(referenceStringParts[0].Substring(3));
+            var versionSplit = referenceStringParts[1].Split(new char[] { '.' }, 2);
+            if (versionSplit.Length != 2)
+            {
+                throw new ArgumentException($"Invalid reference string got {referenceStringRaw}.  Invalid version string.");
+            }
+            _majorVersion = uint.Parse(versionSplit[0], NumberStyles.AllowHexSpecifier);
+            _minorVersion = uint.Parse(versionSplit[1], NumberStyles.AllowHexSpecifier);
+
+            _lcid = uint.Parse(referenceStringParts[2], NumberStyles.AllowHexSpecifier);
+            _path = referenceStringParts[3];
+            _name = referenceStringParts[4];
+        }
+
+        public void Document(StringLineBuilder output)
+        {
+            output.AppendLine("- VBE Reference: " + Name + " [path: " + Path + ", majorVersion: " + MajorVersion +
+                                ", minorVersion: " + MinorVersion + ", guid: " + GUID + ", lcid: " + LCID + "]");
+        }
+    }
+
     public class TypeInfoVar : IDisposable
     { 
         private TypeInfoWrapper _typeInfo;
@@ -283,7 +335,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
     
     public class IIndexedCollection<TItem> : IEnumerable<TItem>
-        where TItem : IDisposable
+        where TItem : class
     {
         IEnumerator IEnumerable.GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollection<TItem>, TItem>(this);
         public IEnumerator<TItem> GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollection<TItem>, TItem>(this);
@@ -294,17 +346,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     
     public class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>, IDisposable
         where TCollection : IIndexedCollection<TItem>
-        where TItem : IDisposable
+        where TItem : class
     {
         private TCollection _collection;
         private int _collectionCount;
         private int _index = -1;
         TItem _current;
-        
+
         public IIndexedCollectionEnumerator(TCollection collection)
         {
             _collection = collection;
-            _collectionCount = _collection.Count;
+            _collectionCount = _collection.Count;       
         }
 
         public void Dispose()
@@ -826,6 +878,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
         public TypeInfosCollection TypeInfos;
+        
+        public class ReferencesCollection : IIndexedCollection<TypeInfoReference>
+        {
+            TypeLibWrapper _parent;
+            public ReferencesCollection(TypeLibWrapper parent) => _parent = parent;
+            override public int Count { get => _parent.GetVBEReferencesCount(); }
+            override public TypeInfoReference GetItemByIndex(int index) => _parent.GetVBEReferenceByIndex(index);
+        }
+        public ReferencesCollection VBEReferences;
 
         private TypeLibTextFields? _cachedTextFields;
         TypeLibTextFields CachedTextFields
@@ -851,6 +912,57 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private IVBEProject target_IVBEProject;
 
         public bool HasVBEExtensions { get => target_IVBEProject != null; }
+
+        public int GetVBEReferencesCount()
+        {
+            if (HasVBEExtensions)
+            {
+                return target_IVBEProject.GetReferencesCount();
+            }
+            else
+            {
+                throw new ArgumentException("This TypeLib does not represent a VBE project, so we cannot get reference strings from it");
+            }
+        }
+
+        public TypeInfoReference GetVBEReferenceByIndex(int index)
+        {
+            if (HasVBEExtensions)
+            {
+                if (index < target_IVBEProject.GetReferencesCount())
+                {
+                    return new TypeInfoReference(target_IVBEProject.GetReferenceString(index));
+                }
+
+                throw new ArgumentException($"Specified index not valid for the references collection {index}.");
+            }
+            else
+            {
+                throw new ArgumentException("This TypeLib does not represent a VBE project, so we cannot get reference strings from it");
+            }
+        }
+
+        public TypeInfoReference GetVBEReferenceByGuid(Guid referenceGuid)
+        {
+            if (HasVBEExtensions)
+            {
+                foreach (var reference in VBEReferences)
+                {
+                    if (reference.GUID == referenceGuid)
+                    {
+                        return reference;
+                    }
+                }
+
+                throw new ArgumentException($"Specified GUID not found in references collection {referenceGuid}.");
+            }
+            else
+            {
+                throw new ArgumentException("This TypeLib does not represent a VBE project, so we cannot get reference strings from it");
+            }
+        }
+
+        
 
         /*
          This is not yet used, but here in case we want to use this interface at some point.
@@ -893,6 +1005,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             TypeInfos = new TypeInfosCollection(this);
             target_IVBEProject = target_ITypeLib as IVBEProject;
+            if (HasVBEExtensions) VBEReferences = new ReferencesCollection(this);
         }
 
         public TypeLibWrapper(IntPtr rawObjectPtr)
@@ -1027,6 +1140,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (HasVBEExtensions)
             {
                 output.AppendLine("- VBE Conditional Compilation Arguments: " + ConditionalCompilationArguments);
+
+                foreach (var reference in VBEReferences)
+                {
+                    reference.Document(output);
+                }
             }
 
             output.AppendLine("- TypeCount: " + TypesCount);
