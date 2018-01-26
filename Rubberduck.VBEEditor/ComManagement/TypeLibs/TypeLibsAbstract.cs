@@ -76,7 +76,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void GetSomeRelatedTypeInfoPtrs(out IntPtr A, out IntPtr B);        // returns 2 TypeInfos, seemingly related to this ITypeInfo, but slightly different.
     }
 
-    // An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModInstance
+    // An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModAccessor
     [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IVBETypeInfo
@@ -102,7 +102,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void ReleaseVarDesc(IntPtr pVarDesc);
 
         void Placeholder1();
-        IDispatch GetStdModInstance();            // a handy extra vtable entry we can use to invoke members in standard modules.
+        IDispatch GetStdModAccessor();            // a handy extra vtable entry we can use to invoke members in standard modules.
     }
 
     // A compatible version of ITypeLib, where COM objects are outputted as IntPtrs instead of objects

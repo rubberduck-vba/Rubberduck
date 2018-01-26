@@ -28,8 +28,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             => VBETypeLibsAPI.SetProjectConditionalCompilationArgsRaw(_ide, projectName, newConditionalArgs);
         public bool DoesClassImplementInterface(string projectName, string className, string interfaceProgId) 
             => VBETypeLibsAPI.DoesClassImplementInterface(_ide, projectName, className, interfaceProgId);
-        public string GetUserFormControlType(string projectName, string userFormName, string controlName) 
+        public string GetUserFormControlType(string projectName, string userFormName, string controlName)
             => VBETypeLibsAPI.GetUserFormControlType(_ide, projectName, userFormName, controlName);
+        public string GetDocumentClassControlType(string projectName, string documentClassName, string controlName)
+            => VBETypeLibsAPI.GetDocumentClassControlType(_ide, projectName, documentClassName, controlName);
+        public bool IsExcelWorksheet(string projectName, string className)
+            => VBETypeLibsAPI.IsExcelWorksheet(_ide, projectName, className);
+        public bool IsExcelWorkbook(string projectName, string className)
+            => VBETypeLibsAPI.IsExcelWorkbook(_ide, projectName, className);
+        public bool IsAccessForm(string projectName, string className)
+            => VBETypeLibsAPI.IsAccessForm(_ide, projectName, className);
+        public bool IsAccessReport(string projectName, string className)
+            => VBETypeLibsAPI.IsAccessReport(_ide, projectName, className);
         public string DocumentAll() 
             => VBETypeLibsAPI.DocumentAll(_ide);
     }
@@ -481,6 +491,112 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
 
         /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessForm(IVBE ide, string projectName, string className)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return IsAccessForm(typeLibs.Get(projectName), className);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessForm(IVBProject project, string className)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return IsAccessForm(typeLib, className);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA component</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessForm(IVBComponent component)
+        {
+            return IsAccessForm(component.ParentProject, component.Name);
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessForm(TypeLibWrapper projectTypeLib, string className)
+        {
+            // The interface used by an Access form depends on the version of Access hosting the form
+            // so we have to check for the current known interface prog-ids
+            return DoesClassImplementInterface(projectTypeLib, className,
+                    new string[] { "Access._Form", "Access._Form2", "Access._Form3" }, out int matchIndex);
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessReport(IVBE ide, string projectName, string className)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return IsAccessReport(typeLibs.Get(projectName), className);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessReport(IVBProject project, string className)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return IsAccessReport(typeLib, className);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA component</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessReport(IVBComponent component)
+        {
+            return IsAccessReport(component.ParentProject, component.Name);
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is an Excel Workbook
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="className">Document class name, as declared in the VBA project</param>
+        /// <returns>bool indicating whether the class is an Access Form</returns>
+        public static bool IsAccessReport(TypeLibWrapper projectTypeLib, string className)
+        {
+            // The interface used by an Access form depends on the version of Access hosting the form
+            // so we have to check for the current known interface prog-ids
+            return DoesClassImplementInterface(projectTypeLib, className,
+                    new string[] { "Access._Report", "Access._Report2", "Access._Report3" }, out int matchIndex);
+        }
+
+        /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
         /// </summary>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
@@ -814,7 +930,72 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         {
             return userFormTypeInfo.ImplementedInterfaces.Get("FormItf").GetControlType(controlName).GetProgID();
         }
+        
+        /// <summary>
+        /// Returns the class progID of a control on a UserForm
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the VBE</param>
+        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
+        /// <param name="documentClassName">Document class name, as declared in the VBA project</param>
+        /// <param name="controlName">Control name, as declared on the UserForm</param>
+        /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
+        public static string GetDocumentClassControlType(IVBE ide, string projectName, string documentClassName, string controlName)
+        {
+            using (var typeLibs = new VBETypeLibsAccessor(ide))
+            {
+                return GetDocumentClassControlType(typeLibs.Get(projectName), documentClassName, controlName);
+            }
+        }
 
+        /// <summary>
+        /// Returns the class progID of a control on a UserForm
+        /// </summary>
+        /// <param name="project">Safe-com wrapper representing the VBA project</param>
+        /// <param name="documentClassName">Document class name, as declared in the VBA project</param>
+        /// <param name="controlName">Control name, as declared on the UserForm</param>
+        /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
+        public static string GetDocumentClassControlType(IVBProject project, string documentClassName, string controlName)
+        {
+            using (var typeLib = TypeLibWrapper.FromVBProject(project))
+            {
+                return GetDocumentClassControlType(typeLib, documentClassName, controlName);
+            }
+        }
+
+        /// <summary>
+        /// Returns the class progID of a control on a UserForm
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="documentClassName">Document class name, as declared in the VBA project</param>
+        /// <param name="controlName">Control name, as declared on the UserForm</param>
+        /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
+        public static string GetDocumentClassControlType(TypeLibWrapper projectTypeLib, string documentClassName, string controlName)
+        {
+            return GetDocumentClassControlType(projectTypeLib.TypeInfos.Get(documentClassName), controlName);
+        }
+
+        /// <summary>
+        /// Returns the class progID of a control on a UserForm
+        /// </summary>
+        /// <param name="ide">Safe-com wrapper representing the UserForm VBA component</param>
+        /// <param name="controlName">Control name, as declared on the UserForm</param>
+        /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
+        public static string GetDocumentClassControlType(IVBComponent component, string controlName)
+        {
+            return GetDocumentClassControlType(component.ParentProject, component.Name, controlName);
+        }
+
+        /// <summary>
+        /// Returns the class progID of a control on a UserForm
+        /// </summary>
+        /// <param name="documentClass">Low-level ITypeLib wrapper representing the UserForm VBA component</param>
+        /// <param name="controlName">Control name, as declared on the UserForm</param>
+        /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
+        public static string GetDocumentClassControlType(TypeInfoWrapper documentClass, string controlName)
+        {
+            return documentClass.GetSafeImplementedTypeInfo(0).GetControlType(controlName).GetProgID();
+        }
+        
         /// <summary>
         /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
         /// </summary>
@@ -944,6 +1125,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
                 {
                     typeLib.Document(output);
                 }
+
                 return output.ToString();
             }
         }

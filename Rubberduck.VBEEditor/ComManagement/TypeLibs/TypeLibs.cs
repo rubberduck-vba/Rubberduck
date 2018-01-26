@@ -12,16 +12,8 @@ using Reflection = System.Reflection;
 
 
 // TODO comments/XML doc
-// TODO a few FIXMEs
-
-// make GetControlType support Access forms etc
-// IsAccessForm example
-// split into TypeInfos.cs
-
-/*VBETypeLibsAPI::GetModuleFlags(ide, projectName, moduleName) to get the TYPEFLAGS
-VBETypeLibsAPI::GetMemberId(ide, projectName, moduleName, memberName)
-VBETypeLibsAPI::GetMemberHelpString(ide, projectName, moduleName, memberName)
-*/
+// TODO add memory address validation in ReadStructureSafe
+// TODO split into TypeInfos.cs
 
 
 // USAGE GUIDE:   see class VBETypeLibsAPI for demonstrations of usage.
@@ -94,8 +86,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public static T ReadStructureSafe<T>(IntPtr memAddress)
         {
             if (memAddress == IntPtr.Zero) return default(T);
-
-            // FIXME add memory address validation here, using VirtualQueryEx
             return (T)Marshal.PtrToStructure(memAddress, typeof(T));
         }
     }
@@ -717,15 +707,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         // caller is responsible for calling ReleaseComObject
-        public IDispatch GetStdModInstance()
+        public IDispatch GetStdModAccessor()
         {
             if (HasVBEExtensions)
             {
-                return target_IVBETypeInfo.GetStdModInstance();
+                return target_IVBETypeInfo.GetStdModAccessor();
             }
             else
             {
-                throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support GetStdModInstance");
+                throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support GetStdModAccessor");
             }
         }
 
@@ -733,7 +723,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             if (HasVBEExtensions)
             {
-                var StaticModule = GetStdModInstance();
+                var StaticModule = GetStdModAccessor();
                 var retVal = StaticModule.GetType().InvokeMember(name, invokeAttr, null, StaticModule, args);
                 Marshal.ReleaseComObject(StaticModule);
                 return retVal;
@@ -753,6 +743,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 using (func)
                 {
+                    // Controls are exposed as getters on the interface.
+                    //     can either be    ControlType* get_ControlName()       
+                    //     or               HRESULT get_ControlName(ControlType** Out) 
+
                     if ((func.Name == controlName) &&
                         (func.ProcKind == TypeInfoFunc.PROCKIND.PROCKIND_GET) &&
                         (func.ParamCount == 0) &&
@@ -762,6 +756,27 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         if (retValElement.tdesc.vt == (short)VarEnum.VT_USERDEFINED)
                         {
                             return GetSafeRefTypeInfo((int)retValElement.tdesc.lpValue);
+                        }
+                    }
+                    else if ((func.Name == controlName) &&
+                        (func.ProcKind == TypeInfoFunc.PROCKIND.PROCKIND_GET) &&
+                        (func.ParamCount == 1) &&
+                        (func.FuncDesc.elemdescFunc.tdesc.vt == (short)VarEnum.VT_HRESULT))
+                    {
+                        // Get details of the first argument
+                        var retValElementOuterPtr = StructHelper.ReadStructure<ComTypes.ELEMDESC>(func.FuncDesc.lprgelemdescParam);
+                        if (retValElementOuterPtr.tdesc.vt == (short)VarEnum.VT_PTR)
+                        {
+                            var retValElementInnerPtr = StructHelper.ReadStructure<ComTypes.ELEMDESC>(retValElementOuterPtr.tdesc.lpValue);
+                            if (retValElementInnerPtr.tdesc.vt == (short)VarEnum.VT_PTR)
+                            {
+                                var retValElement = StructHelper.ReadStructure<ComTypes.ELEMDESC>(retValElementInnerPtr.tdesc.lpValue);
+
+                                if (retValElement.tdesc.vt == (short)VarEnum.VT_USERDEFINED)
+                                {
+                                    return GetSafeRefTypeInfo((int)retValElement.tdesc.lpValue);
+                                }
+                            }
                         }
                     }
                 }
