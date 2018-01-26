@@ -42,7 +42,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
     /// This class provides a selection of static methods built on top the low-level wrappers [TypLibWrapper/TypeInfoWrapper],
     /// designed for easy access and to encapsulate proper disposal where necessary
     /// </remarks>
-    public class VBETypeLibsAPI
+    public static class VBETypeLibsAPI
     {
         /// <summary>
         /// Compile an entire VBE project

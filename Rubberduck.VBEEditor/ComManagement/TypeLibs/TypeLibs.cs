@@ -10,6 +10,8 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 using Reflection = System.Reflection;
 
 
+// narrow scope of catch blocks
+// IsPropertyGet to enum of funckind
 // TODO comments/XML doc
 // TODO a few FIXMEs
 
@@ -59,7 +61,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => AppendLine(value.Replace("\0", string.Empty));
     }
 
-    public class StructHelper
+    public static class StructHelper
     {
         public static T ReadComObjectStructure<T>(object comObj)
         {
@@ -92,6 +94,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    public static class ComHelper
+    {
+        public static bool HRESULT_FAILED(int hr) => hr < 0;
+    }
+
     // RestrictComInterfaceByAggregation is used to ensure that a wrapped COM object only responds to a specific interface
     // In particular, we don't want them to respond to IProvideClassInfo, which is broken in the VBE for some ITypeInfo implementations 
     public class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
@@ -105,9 +112,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 var ppv = IntPtr.Zero;
                 var IID = typeof(T).GUID;
-                if (Marshal.QueryInterface(outerObject, ref IID, out _outerObject) < 0)
+                if (ComHelper.HRESULT_FAILED(Marshal.QueryInterface(outerObject, ref IID, out _outerObject)))
                 {
-                    // allow a null wrapper here
+                    // allow null wrapping here
                     return;
                 }
             }
@@ -195,10 +202,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     public class TypeInfoFunc : IDisposable
     {
         private TypeInfoWrapper _typeInfo;
-        public ComTypes.FUNCDESC _funcDesc;
+        private ComTypes.FUNCDESC _funcDesc;
         private IntPtr _funcDescPtr;
-        public string[] _names = new string[255];   // includes argument names
-        public int _cNames = 0;
+        private string[] _names = new string[255];   // includes argument names
+        private int _cNames = 0;
+
+        public ComTypes.FUNCDESC FuncDesc { get => _funcDesc; }
 
         public TypeInfoFunc(TypeInfoWrapper typeInfo, int funcIndex)
         {
@@ -700,9 +709,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     if ((func.Name == controlName) &&
                         func.IsPropertyGet &&
                         (func.ParamCount == 0) &&
-                        (func._funcDesc.elemdescFunc.tdesc.vt == (short)VarEnum.VT_PTR))
+                        (func.FuncDesc.elemdescFunc.tdesc.vt == (short)VarEnum.VT_PTR))
                     {
-                        var retValElement = StructHelper.ReadStructure<ComTypes.ELEMDESC>(func._funcDesc.elemdescFunc.tdesc.lpValue);
+                        var retValElement = StructHelper.ReadStructure<ComTypes.ELEMDESC>(func.FuncDesc.elemdescFunc.tdesc.lpValue);
                         if (retValElement.tdesc.vt == (short)VarEnum.VT_USERDEFINED)
                         {
                             return GetSafeRefTypeInfo((int)retValElement.tdesc.lpValue);
