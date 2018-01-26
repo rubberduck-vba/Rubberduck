@@ -32,14 +32,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             => VBETypeLibsAPI.GetUserFormControlType(_ide, projectName, userFormName, controlName);
         public string GetDocumentClassControlType(string projectName, string documentClassName, string controlName)
             => VBETypeLibsAPI.GetDocumentClassControlType(_ide, projectName, documentClassName, controlName);
-        public bool IsExcelWorksheet(string projectName, string className)
-            => VBETypeLibsAPI.IsExcelWorksheet(_ide, projectName, className);
-        public bool IsExcelWorkbook(string projectName, string className)
-            => VBETypeLibsAPI.IsExcelWorkbook(_ide, projectName, className);
-        public bool IsAccessForm(string projectName, string className)
-            => VBETypeLibsAPI.IsAccessForm(_ide, projectName, className);
-        public bool IsAccessReport(string projectName, string className)
-            => VBETypeLibsAPI.IsAccessReport(_ide, projectName, className);
+        public DocClassType DetermineDocumentClassType(string projectName, string className)
+            => VBETypeLibsAPI.DetermineDocumentClassType(_ide, projectName, className);
         public string DocumentAll() 
             => VBETypeLibsAPI.DocumentAll(_ide);
     }
@@ -391,209 +385,63 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         }
 
         /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
+        /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Excel Workbook</returns>
-        public static bool IsExcelWorkbook(IVBE ide, string projectName, string className)
+        /// <param name="className">The name of the class document, as defined in the VBA project</param>
+        /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
+        public static DocClassType DetermineDocumentClassType(IVBE ide, string projectName, string className)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
-                return IsExcelWorkbook(typeLibs.Get(projectName), className);
+                return DetermineDocumentClassType(typeLibs.Get(projectName), className);
             }
         }
 
         /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
+        /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="className">The name of the class document, as defined in the VBA project</param>
+        /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
+        public static DocClassType DetermineDocumentClassType(TypeLibWrapper projectTypeLib, string className)
+        {
+            return DetermineDocumentClassType(projectTypeLib.TypeInfos.Get(className));
+        }
+
+        /// <summary>
+        /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Excel Workbook</returns>
-        public static bool IsExcelWorkbook(IVBProject project, string className)
+        /// <param name="className">The name of the class document, as defined in the VBA project</param>
+        /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
+        public static DocClassType DetermineDocumentClassType(IVBProject project, string className)
         {
             using (var typeLib = TypeLibWrapper.FromVBProject(project))
             {
-                return IsExcelWorkbook(typeLib, className);
+                return DetermineDocumentClassType(typeLib.TypeInfos.Get(className));
             }
         }
 
         /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
+        /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
         /// <param name="project">Safe-com wrapper representing the VBA component</param>
-        /// <returns>bool indicating whether the class is an Excel Workbook</returns>
-        public static bool IsExcelWorkbook(IVBComponent component)
+        /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
+        public static DocClassType DetermineDocumentClassType(IVBComponent component)
         {
-            return IsExcelWorkbook(component.ParentProject, component.Name);
+            return DetermineDocumentClassType(component.ParentProject, component.Name);
         }
 
         /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
+        /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
-        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Excel Workbook</returns>
-        public static bool IsExcelWorkbook(TypeLibWrapper projectTypeLib, string className)
+        /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
+        /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
+        public static DocClassType DetermineDocumentClassType(TypeInfoWrapper classTypeInfo)
         {
-            return DoesClassImplementInterface(projectTypeLib, className, "Excel._Workbook");
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Worksheet
-        /// </summary>
-        /// <param name="ide">Safe-com wrapper representing the VBE</param>
-        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Excel Worksheet</returns>
-        public static bool IsExcelWorksheet(IVBE ide, string projectName, string className)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return IsExcelWorksheet(typeLibs.Get(projectName), className);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Worksheet
-        /// </summary>
-        /// <param name="project">Safe-com wrapper representing the VBA project</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Excel Worksheet</returns>
-        public static bool IsExcelWorksheet(IVBProject project, string className)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return IsExcelWorksheet(typeLib, className);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Worksheet
-        /// </summary>
-        /// <param name="project">Safe-com wrapper representing the VBA component</param>
-        /// <returns>bool indicating whether the class is an Excel Worksheet</returns>
-        public static bool IsExcelWorksheet(IVBComponent component)
-        {
-            return IsExcelWorksheet(component.ParentProject, component.Name);
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Worksheet
-        /// </summary>
-        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
-        /// <param name="className">VBA Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Excel Worksheet</returns>
-        public static bool IsExcelWorksheet(TypeLibWrapper projectTypeLib, string className)
-        {
-            return DoesClassImplementInterface(projectTypeLib, className, "Excel._Worksheet");
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="ide">Safe-com wrapper representing the VBE</param>
-        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessForm(IVBE ide, string projectName, string className)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return IsAccessForm(typeLibs.Get(projectName), className);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="project">Safe-com wrapper representing the VBA project</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessForm(IVBProject project, string className)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return IsAccessForm(typeLib, className);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="project">Safe-com wrapper representing the VBA component</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessForm(IVBComponent component)
-        {
-            return IsAccessForm(component.ParentProject, component.Name);
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessForm(TypeLibWrapper projectTypeLib, string className)
-        {
-            // The interface used by an Access form depends on the version of Access hosting the form
-            // so we have to check for the current known interface prog-ids
-            return DoesClassImplementInterface(projectTypeLib, className,
-                    new string[] { "Access._Form", "Access._Form2", "Access._Form3" }, out int matchIndex);
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="ide">Safe-com wrapper representing the VBE</param>
-        /// <param name="projectName">VBA Project name, as declared in the VBE</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessReport(IVBE ide, string projectName, string className)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return IsAccessReport(typeLibs.Get(projectName), className);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="project">Safe-com wrapper representing the VBA project</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessReport(IVBProject project, string className)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return IsAccessReport(typeLib, className);
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="project">Safe-com wrapper representing the VBA component</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessReport(IVBComponent component)
-        {
-            return IsAccessReport(component.ParentProject, component.Name);
-        }
-
-        /// <summary>
-        /// Determines whether the specified document class is an Excel Workbook
-        /// </summary>
-        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
-        /// <param name="className">Document class name, as declared in the VBA project</param>
-        /// <returns>bool indicating whether the class is an Access Form</returns>
-        public static bool IsAccessReport(TypeLibWrapper projectTypeLib, string className)
-        {
-            // The interface used by an Access form depends on the version of Access hosting the form
-            // so we have to check for the current known interface prog-ids
-            return DoesClassImplementInterface(projectTypeLib, className,
-                    new string[] { "Access._Report", "Access._Report2", "Access._Report3" }, out int matchIndex);
+            return classTypeInfo.DetermineDocumentClassType();
         }
 
         /// <summary>
