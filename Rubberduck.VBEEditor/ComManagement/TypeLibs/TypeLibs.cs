@@ -101,7 +101,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     // In particular, we don't want them to respond to IProvideClassInfo, which is broken in the VBE for some ITypeInfo implementations 
     public class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
     {
-        public IntPtr _outerObject;
+        private IntPtr _outerObject;
         private T _wrappedObject;
 
         public RestrictComInterfaceByAggregation(IntPtr outerObject, bool queryForType = true)
@@ -333,9 +333,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     public class TypeInfoVar : IDisposable
     { 
         private TypeInfoWrapper _typeInfo;
-        public ComTypes.VARDESC _varDesc;
+        private ComTypes.VARDESC _varDesc;
         private IntPtr _varDescPtr;
-        public string _name;
+        private string _name;
+
+        public string Name { get => _name; }
 
         public TypeInfoVar(TypeInfoWrapper typeInfo, int index)
         {
