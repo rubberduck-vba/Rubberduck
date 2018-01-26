@@ -63,6 +63,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Antlr4 Include="Grammar\VBALexer.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <Visitor>false</Visitor>
+      <Listener>false</Listener>
+    </Antlr4>
+    <Antlr4 Include="Grammar\VBAParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="PreProcessing\*.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
+    </Antlr4>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
     <Compile Include="Annotations\AnnotationListener.cs" />
     <Compile Include="Annotations\AnnotationService.cs" />
@@ -407,17 +420,6 @@
     <Compile Include="VBA\VBAModuleParser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="Grammar\VBALexer.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-      <Visitor>false</Visitor>
-      <Listener>false</Listener>
-    </Antlr4>
-    <Antlr4 Include="Grammar\VBAParser.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-    </Antlr4>
-    <Antlr4 Include="PreProcessing\*.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
-    </Antlr4>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
