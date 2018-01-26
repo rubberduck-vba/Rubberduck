@@ -341,10 +341,12 @@ forEachStmt :
 
 // expression EQ expression refactored to expression to allow SLL
 forNextStmt : 
-    FOR whiteSpace expression whiteSpace TO whiteSpace expression (whiteSpace STEP whiteSpace expression)? endOfStatement 
+    FOR whiteSpace expression whiteSpace TO whiteSpace expression stepStmt? whiteSpace* endOfStatement 
     block
     statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
 ; 
+
+stepStmt : whiteSpace STEP whiteSpace expression;
 
 functionStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? functionName (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
@@ -588,6 +590,8 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 expression :
 	// Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
 	whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN									# parenthesizedExpr
+	| TYPEOF whiteSpace expression																	# typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
+	| HASH expression																				# markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
 	| NEW whiteSpace expression																		# newExpr
 	| expression whiteSpace? POW whiteSpace? expression												# powOp
 	| MINUS whiteSpace? expression																	# unaryMinusOp
@@ -606,8 +610,6 @@ expression :
 	| literalExpression																				# literalExpr
 	| lExpression																					# lExpr
 	| builtInType																					# builtInTypeExpr
-	| TYPEOF whiteSpace expression																	# typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
-	| HASH expression																				# markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
 ;
 
 // 5.6.5 Literal Expressions
