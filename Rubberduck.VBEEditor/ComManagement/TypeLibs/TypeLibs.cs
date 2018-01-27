@@ -11,6 +11,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 // TODO add memory address validation in ReadStructureSafe
 // TODO split into TypeInfos.cs
+// references expose the raw ITypeLibs
 
 /// <summary>
 /// For usage examples, please see VBETypeLibsAPI
@@ -106,6 +107,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// </summary>
         /// <param name="outerObject">The object that needs interface requests filtered</param>
         /// <param name="queryForType">determines whether we call QueryInterface for the interface or not</param>
+        /// <remarks>if the passed in outerObject is known to point to the correct vtable for the interface, then queryForType can be false</remarks>
+        /// <returns>if outerObject is IntPtr.Zero, then a null wrapper, else an aggregated wrapper</returns>
         public RestrictComInterfaceByAggregation(IntPtr outerObject, bool queryForType = true)
         {
             if (queryForType)
@@ -391,23 +394,23 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// A base class for exposing an enumerable collection through an index based accessor
     /// </summary>
     /// <typeparam name="TItem">the collection element type</typeparam>
-    public class IIndexedCollection<TItem> : IEnumerable<TItem>
+    public abstract class IIndexedCollectionBase<TItem> : IEnumerable<TItem>
         where TItem : class
     {
-        IEnumerator IEnumerable.GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollection<TItem>, TItem>(this);
-        public IEnumerator<TItem> GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollection<TItem>, TItem>(this);
+        IEnumerator IEnumerable.GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollectionBase<TItem>, TItem>(this);
+        public IEnumerator<TItem> GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollectionBase<TItem>, TItem>(this);
 
-        virtual public int Count { get => throw new NotImplementedException(); }
-        virtual public TItem GetItemByIndex(int index) => throw new NotImplementedException();
+        abstract public int Count { get; }
+        abstract public TItem GetItemByIndex(int index);
     }
 
     /// <summary>
-    /// The enumerator implementation for IIndexedCollection
+    /// The enumerator implementation for IIndexedCollectionBase
     /// </summary>
-    /// <typeparam name="TCollection">the IIndexedCollection<> type</typeparam>
+    /// <typeparam name="TCollection">the IIndexedCollectionBase<> type</typeparam>
     /// <typeparam name="TItem">the collection element type</typeparam>
-    public class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>, IDisposable
-        where TCollection : IIndexedCollection<TItem>
+    public class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>
+        where TCollection : IIndexedCollectionBase<TItem>
         where TItem : class
     {
         private TCollection _collection;
@@ -545,7 +548,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <summary>
         /// Exposes an enumerable collection of functions provided by the ITypeInfo
         /// </summary>
-        public class FuncsCollection : IIndexedCollection<TypeInfoFunc>
+        public class FuncsCollection : IIndexedCollectionBase<TypeInfoFunc>
         {
             TypeInfoWrapper _parent;
             public FuncsCollection(TypeInfoWrapper parent) => _parent = parent;
@@ -566,7 +569,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <summary>
         /// Exposes an enumerable collection of variables/fields provided by the ITypeInfo
         /// </summary>
-        public class VarsCollection : IIndexedCollection<TypeInfoVar>
+        public class VarsCollection : IIndexedCollectionBase<TypeInfoVar>
         {
             TypeInfoWrapper _parent;
             public VarsCollection(TypeInfoWrapper parent) => _parent = parent;
@@ -578,7 +581,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <summary>
         /// Exposes an enumerable collection of implemented interfaces provided by the ITypeInfo
         /// </summary>
-        public class ImplementedInterfacesCollection : IIndexedCollection<TypeInfoWrapper>
+        public class ImplementedInterfacesCollection : IIndexedCollectionBase<TypeInfoWrapper>
         {
             TypeInfoWrapper _parent;
             public ImplementedInterfacesCollection(TypeInfoWrapper parent) => _parent = parent;
@@ -757,9 +760,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public TypeInfoWrapper(IntPtr rawObjectPtr, int? parentUserFormUniqueId = null)
         {
             _rawObjectPtr = rawObjectPtr;
-            
+
             // We have to restrict interface requests to VBE hosted ITypeInfos due to a bug in their implementation.
             // See TypeInfoWrapper class XML doc for details.
+
+            // queryForType is passed as false for ITypeInfo here, as rawObjectPtr is known to point to the ITypeInfo vtable
+            // additionally allowing it to query for ITypeInfo gives a _different_, and more prohibitive implementation of ITypeInfo
             _ITypeInfo_Aggregator       = new RestrictComInterfaceByAggregation<ComTypes.ITypeInfo>(rawObjectPtr, queryForType: false);
             _IVBEComponent_Aggregator   = new RestrictComInterfaceByAggregation<IVBEComponent>(rawObjectPtr);
             _IVBETypeInfo_Aggregator    = new RestrictComInterfaceByAggregation<IVBETypeInfo>(rawObjectPtr);
@@ -808,7 +814,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public int HelpContext { get => CachedTextFields._helpContext; }
         public string HelpFile { get => CachedTextFields._helpFile; }
 
-        public string GetProgID() => (Container?.Name ?? "") + "." + CachedTextFields._name;
+        public string GetProgID() => (Container?.Name ?? "{unnamedlibrary}") + "." + CachedTextFields._name;
 
         public Guid GUID { get => Attributes.guid; }
         public TYPEKIND_VBE TypeKind { get => (TYPEKIND_VBE)Attributes.typekind; }
@@ -928,7 +934,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// Gets the control ITypeInfo by looking for the corresponding getter on the form interface and returning its retval type
         /// </summary>
         /// <param name="controlName">the name of the control</param>
-        /// <returns>TypeInfoWrapper representing the type of control</returns>
+        /// <returns>TypeInfoWrapper representing the type of control, typically the coclass, but this is host dependent</returns>
         public TypeInfoWrapper GetControlType(string controlName)
         {
             // TODO should encapsulate handling of raw datatypes
@@ -1140,7 +1146,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <summary>
         /// Exposes an enumerable collection of TypeInfo objects exposed by this ITypeLib
         /// </summary>
-        public class TypeInfosCollection : IIndexedCollection<TypeInfoWrapper>
+        public class TypeInfosCollection : IIndexedCollectionBase<TypeInfoWrapper>
         {
             TypeLibWrapper _parent;
             public TypeInfosCollection(TypeLibWrapper parent) => _parent = parent;
@@ -1172,7 +1178,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <summary>
         /// Exposes an enumerable collection of references used by the VBE type library
         /// </summary>
-        public class ReferencesCollection : IIndexedCollection<TypeInfoReference>
+        public class ReferencesCollection : IIndexedCollectionBase<TypeInfoReference>
         {
             TypeLibWrapper _parent;
             public ReferencesCollection(TypeLibWrapper parent) => _parent = parent;
