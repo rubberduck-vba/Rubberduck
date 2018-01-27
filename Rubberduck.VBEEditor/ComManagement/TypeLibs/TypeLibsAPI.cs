@@ -221,7 +221,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>object representing the VBA return value, if one was provided, or null otherwise.</returns>
         public static object ExecuteCode(TypeInfoWrapper standardModuleTypeInfo, string procName, object[] args = null)
         {
-            return standardModuleTypeInfo.StdModExecute(procName, Reflection.BindingFlags.InvokeMethod, args);
+            return standardModuleTypeInfo.StdModExecute(procName, args);
         }
 
         /// <summary>

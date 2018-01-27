@@ -5,9 +5,121 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
 {
     [ComImport(), Guid("00020400-0000-0000-C000-000000000046")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IDispatch
     {
+        [PreserveSig] int GetTypeInfoCount([Out] out uint pctinfo);
+        [PreserveSig] int GetTypeInfo([In] uint iTInfo, [In] uint lcid, [Out] out ComTypes.ITypeInfo pTypeInfo);
+        [PreserveSig] int GetIDsOfNames([In] ref Guid riid, [In] string[] rgszNames, [In] uint cNames, [In] uint lcid, [Out] out int[] rgDispId);
+
+        [PreserveSig]
+        int Invoke([In] int dispIdMember,
+            [In] ref Guid riid,
+            [In] uint lcid,
+            [In] uint dwFlags,
+            [In, Out] ref ComTypes.DISPPARAMS pDispParams,
+            [Out] out Object pVarResult,
+            [In, Out] ref ComTypes.EXCEPINFO pExcepInfo,
+            [Out] out uint pArgErr);
+    }
+
+    public static class ComHelper
+    {
+        public static bool HRESULT_FAILED(int hr) => hr < 0;
+    }
+
+    public static class IDispatchHelper
+    {
+        static Guid GUID_NULL = new Guid();
+
+        public enum InvokeKind : int
+        {
+            DISPATCH_METHOD = 1,
+            DISPATCH_PROPERTYGET = 2,
+            DISPATCH_PROPERTYPUT = 4,
+            DISPATCH_PROPERTYPUTREF = 8,
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct VARIANT
+        {
+            short vt;
+            short reserved1;
+            short reserved2;
+            short reserved3;
+            IntPtr data1;
+            IntPtr data2;
+        }
+
+        // Convert input args into a contigious array of real COM VARIANTs for the DISPPARAMS struct
+        private static ComTypes.DISPPARAMS PrepareDispatchArgs(object[] args)
+        {
+            var pDispParams = new ComTypes.DISPPARAMS();
+
+            if ((args != null) && (args.Length != 0))
+            {
+                var variantStructSize = Marshal.SizeOf(typeof(VARIANT));
+                pDispParams.cArgs = args.Length;
+
+                var argsVariantLength = variantStructSize * pDispParams.cArgs;
+                var variantArgsArray = Marshal.AllocHGlobal(argsVariantLength);
+
+                // In IDispatch::Invoke, arguments are passed in reverse order
+                IntPtr variantArgsArrayOffset = variantArgsArray + argsVariantLength;
+                foreach (var arg in args)
+                {
+                    variantArgsArrayOffset -= variantStructSize;
+                    Marshal.GetNativeVariantForObject(arg, variantArgsArrayOffset);
+                }
+                pDispParams.rgvarg = variantArgsArray;
+            }
+            return pDispParams;
+        }
+
+        [DllImport("oleaut32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        static extern Int32 VariantClear(IntPtr pvarg);
+
+        // frees all unmanaged memory assoicated with the DISPPARAMS
+        private static void UnprepareDispatchArgs(ComTypes.DISPPARAMS pDispParams)
+        {
+            if (pDispParams.rgvarg != IntPtr.Zero)
+            {
+                // free the array of COM VARIANTs
+                var variantStructSize = Marshal.SizeOf(typeof(VARIANT));
+                var variantArgsArrayOffset = pDispParams.rgvarg;
+                int argIndex = 0;
+                while (argIndex < pDispParams.cArgs)
+                {
+                    VariantClear(variantArgsArrayOffset);
+                    variantArgsArrayOffset += variantStructSize;
+                    argIndex++;
+                }
+                Marshal.FreeHGlobal(pDispParams.rgvarg);
+            }
+        }
+
+        // TODO support DISPATCH_PROPERTYPUTREF (property-set) which requires special handling
+        public static object Invoke(IDispatch obj, int memberId, InvokeKind invokeKind, object[] args = null)
+        {
+            var pDispParams = PrepareDispatchArgs(args);
+            var pExcepInfo = new ComTypes.EXCEPINFO();
+            
+            int hr = obj.Invoke(memberId, ref GUID_NULL, 0, (uint)invokeKind,
+                                    ref pDispParams, out object pVarResult, ref pExcepInfo, out uint pErrArg);
+
+            UnprepareDispatchArgs(pDispParams);
+
+            if (ComHelper.HRESULT_FAILED(hr))
+            {
+                if ((hr == (int)KnownComHResults.DISP_E_EXCEPTION) && (ComHelper.HRESULT_FAILED(pExcepInfo.scode)))
+                {
+                    throw Marshal.GetExceptionForHR(pExcepInfo.scode);
+                }
+                throw Marshal.GetExceptionForHR(hr);
+            }
+
+            return pVarResult;
+        }
     }
 
     // A compatible version of ITypeInfo, where COM objects are outputted as IntPtrs instead of objects
@@ -215,5 +327,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     {
         E_VBA_COMPILEERROR = unchecked((int)0x800A9C64),
         E_NOTIMPL = unchecked((int)0x80004001),
+        DISP_E_EXCEPTION = unchecked((int)0x80020009),
     }
 }

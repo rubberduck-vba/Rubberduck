@@ -90,11 +90,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    public static class ComHelper
-    {
-        public static bool HRESULT_FAILED(int hr) => hr < 0;
-    }
-
     // RestrictComInterfaceByAggregation is used to ensure that a wrapped COM object only responds to a specific interface
     // In particular, we don't want them to respond to IProvideClassInfo, which is broken in the VBE for some ITypeInfo implementations 
     public class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
@@ -498,6 +493,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             public FuncsCollection(TypeInfoWrapper parent) => _parent = parent;
             override public int Count { get => _parent.Attributes.cFuncs; }
             override public TypeInfoFunc GetItemByIndex(int index) => new TypeInfoFunc(_parent, index);
+
+            public TypeInfoFunc Find(string name, TypeInfoFunc.PROCKIND procKind)
+            {
+                foreach (var func in this)
+                {
+                    if ((func.Name == name) && (func.ProcKind == procKind)) return func;
+                }
+                return null;
+            }
         }
         public FuncsCollection Funcs;
 
@@ -597,7 +601,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
         public ImplementedInterfacesCollection ImplementedInterfaces;
-        
+
         private void InitCommon()
         {
             Funcs = new FuncsCollection(this);
@@ -767,15 +771,33 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support GetStdModAccessor");
             }
         }
-
-        public object StdModExecute(string name, Reflection.BindingFlags invokeAttr, object[] args = null)
+        
+        public object StdModExecute(string name, object[] args = null)
         {
             if (HasVBEExtensions)
             {
-                var StaticModule = GetStdModAccessor();
-                var retVal = StaticModule.GetType().InvokeMember(name, invokeAttr, null, StaticModule, args);
-                Marshal.ReleaseComObject(StaticModule);
-                return retVal;
+                // We search for the dispId using the real type info rather than using staticModule.GetIdsOfNames, 
+                // as we can then also include PRIVATE scoped procedures.
+                var func = Funcs.Find(name, TypeInfoFunc.PROCKIND.PROCKIND_PROC);
+                if (func == null)
+                {
+                    throw new ArgumentException($"StdModExecute failed.  Couldn't find procedure named '{name}'");
+                }
+                
+                var staticModule = GetStdModAccessor();
+                
+                try
+                {
+                    return IDispatchHelper.Invoke(staticModule, func.FuncDesc.memid, IDispatchHelper.InvokeKind.DISPATCH_METHOD, args);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    Marshal.ReleaseComObject(staticModule);
+                }
             }
             else
             {
