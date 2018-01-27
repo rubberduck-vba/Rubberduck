@@ -8,44 +8,24 @@ using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAbstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
-using Reflection = System.Reflection;
 
-
-// TODO comments/XML doc
 // TODO add memory address validation in ReadStructureSafe
 // TODO split into TypeInfos.cs
 
-
-// USAGE GUIDE:   see class VBETypeLibsAPI for demonstrations of usage.
-//
-// The root object for exposure of the type libraries is VBETypeLibsAccessor.  It takes the VBE in its construtor.
-// The main wrappers (TypeLibWrapper and TypeInfoWrapper) can be used as regular ITypeLib and ITypeInfo objects through casting.
-//
-// THIS IS A WORK IN PROGRESS.  ERROR HANDLING NEEDS WORK, AS DOES A FEW OF THE HELPER ROUTINES.
-//
-// WARNING: when using VBETypeLibsAccessor directly, do not cache it  
-//   The type library is LIVE information, so consider it a snapshot at that very moment when you are dealing with it
-//   Make sure you call VBETypeLibsAccessor.Dispose() as soon as you have done what you need to do with it.
-//   Once control returns back to the VBE, you must assume that all the ITypeLib/ITypeInfo pointers are now invalid.
-//
-// CURRENT LIMITATIONS:
-// At the moment, enums and UDTs are not exposed through the type libraries
-// Constants names are not available
-
-// IMPLEMENTATION DETAILS:
-// There are two significant bugs in the VBE typeinfos implementations that we have to work around.
-// 1)  Some implementations of ITypeInfo provided by the VBE will crash with an AV if you call IProvideClassInfo::GetClassInfo on them.
-//      And guess what method the CLR calls on all COM interop objects when creating a RCW?  You guessed it.
-//      So, we use an aggregation object, plus ITypeInfo and ITypeLib wrappers to circumvent this VBE bug.
-//
-// 2)  The ITypeInfo for base classes of UserForms crash with an AV if you call ITypeInfo::GetDocumentation(MEMBERID_NIL) to get the type name
-//     We've got to remember that the VBE didn't ever intend for us to get hold of these objects, so there will be little bugs.
-//     This bug is also resolved in the provided wrappers.
-//
-// All the extended functionality is exposed through the wrappers.
+/// <summary>
+/// For usage examples, please see VBETypeLibsAPI
+/// </summary>
+/// <remarks>
+/// CURRENT LIMITATIONS:
+/// At the moment, enums and UDTs are not exposed through the type libraries
+/// In addition, constants names are not available
+/// </remarks>
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
+    /// <summary>
+    /// Extension to StringBuilder to allow adding text line by line.
+    /// </summary>
     public class StringLineBuilder
     {
         StringBuilder _document = new StringBuilder();
@@ -59,8 +39,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => AppendLine(value.Replace("\0", string.Empty));
     }
 
+    /// <summary>
+    /// Encapsulates reading unmanaged memory into managed structures
+    /// </summary>
     public static class StructHelper
     {
+        /// <summary>
+        /// Takes a COM object, and reads the unmanaged memory given by its pointer, allowing us to read internal fields
+        /// </summary>
+        /// <typeparam name="T">the type of structure to return</typeparam>
+        /// <param name="comObj">the COM object</param>
+        /// <returns>the requested structure T</returns>
         public static T ReadComObjectStructure<T>(object comObj)
         {
             // Reads a COM object as a structure to copy its internal fields
@@ -77,12 +66,25 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        /// <summary>
+        /// Takes an unmanaged memory address and reads the unmanaged memory given by its pointer
+        /// </summary>
+        /// <typeparam name="T">the type of structure to return</typeparam>
+        /// <param name="memAddress">the unamanaged memory address to read</param>
+        /// <returns>the requested structure T</returns>
         public static T ReadStructure<T>(IntPtr memAddress)
         {
             if (memAddress == IntPtr.Zero) return default(T);
             return (T)Marshal.PtrToStructure(memAddress, typeof(T));
         }
 
+        /// <summary>
+        /// Takes an unmanaged memory address and reads the unmanaged memory given by its pointer, 
+        /// with memory address validation for added protection
+        /// </summary>
+        /// <typeparam name="T">the type of structure to return</typeparam>
+        /// <param name="memAddress">the unamanaged memory address to read</param>
+        /// <returns>the requested structure T</returns>
         public static T ReadStructureSafe<T>(IntPtr memAddress)
         {
             if (memAddress == IntPtr.Zero) return default(T);
@@ -90,13 +92,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // RestrictComInterfaceByAggregation is used to ensure that a wrapped COM object only responds to a specific interface
-    // In particular, we don't want them to respond to IProvideClassInfo, which is broken in the VBE for some ITypeInfo implementations 
+    /// <summary>
+    /// Ensures that a wrapped COM object only responds to a specific COM interface.
+    /// </summary>
+    /// <typeparam name="T">The COM interface for restriction</typeparam>
     public class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
     {
         private IntPtr _outerObject;
         private T _wrappedObject;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="outerObject">The object that needs interface requests filtered</param>
+        /// <param name="queryForType">determines whether we call QueryInterface for the interface or not</param>
         public RestrictComInterfaceByAggregation(IntPtr outerObject, bool queryForType = true)
         {
             if (queryForType)
@@ -150,6 +159,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    /// <summary>
+    /// A disposable list that encapsulates the disposing of its elements
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class DisposableList<T> : IList<T>, IDisposable
         where T : IDisposable
     {
@@ -189,7 +202,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             set => _list[index] = value;
         }
     }
-
+    
+    /// <summary>
+    /// A class that represents a function definition within a typeinfo
+    /// </summary>
     public class TypeInfoFunc : IDisposable
     {
         private TypeInfoWrapper _typeInfo;
@@ -270,6 +286,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    /// <summary>
+    /// A class that represents a reference within a VBA project
+    /// </summary>
     public class TypeInfoReference
     {
         readonly string _rawString;
@@ -323,6 +342,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    /// <summary>
+    /// A class that represents a variable or field within a typeinfo
+    /// </summary>
     public class TypeInfoVar : IDisposable
     { 
         private TypeInfoWrapper _typeInfo;
@@ -365,6 +387,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
     
+    /// <summary>
+    /// A base class for exposing an enumerable collection through an index based accessor
+    /// </summary>
+    /// <typeparam name="TItem">the collection element type</typeparam>
     public class IIndexedCollection<TItem> : IEnumerable<TItem>
         where TItem : class
     {
@@ -374,7 +400,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         virtual public int Count { get => throw new NotImplementedException(); }
         virtual public TItem GetItemByIndex(int index) => throw new NotImplementedException();
     }
-    
+
+    /// <summary>
+    /// The enumerator implementation for IIndexedCollection
+    /// </summary>
+    /// <typeparam name="TCollection">the IIndexedCollection<> type</typeparam>
+    /// <typeparam name="TItem">the collection element type</typeparam>
     public class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>, IDisposable
         where TCollection : IIndexedCollection<TItem>
         where TItem : class
@@ -410,6 +441,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    /// <summary>
+    /// An enumeration used for identifying the type of a VBA document class
+    /// </summary>
     public enum DocClassType
     {
         Unrecognized,
@@ -419,6 +453,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         AccessReport,
     }
 
+    /// <summary>
+    /// A class for holding known document class types used in VBA hosts, and their corresponding interface progIds
+    /// </summary>
     public struct KnownDocType
     {
         public string DocTypeInterfaceProgId;
@@ -431,6 +468,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    /// <summary>
+    /// A helper class for providing a static array of known VBA document class types
+    /// </summary>
     public static class DocClassHelper
     {
         public static KnownDocType[] KnownDocumentInterfaces =
@@ -459,7 +499,22 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // A wrapper for ITypeInfo provided by VBE, allowing safe managed consumption, plus adds StdModExecute functionality
+    /// <summary>
+    /// A wrapper for ITypeInfo objects, with specific extensions for VBE hosted ITypeInfos
+    /// </summary>
+    /// <remarks>
+    /// There are two significant bugs in the VBE implementations for ITypeInfo that we have to work around.
+    /// 1)  Some implementations of ITypeInfo provided by the VBE will crash with an AV if you call 
+    ///      IProvideClassInfo::GetClassInfo on them.  And guess what method the CLR calls on all COM interop objects 
+    ///      when creating a RCW?  You guessed it.  So, we use an aggregation object, plus ITypeInfo and ITypeLib wrappers 
+    ///      to circumvent this VBE bug.
+    ///
+    /// 2)  The ITypeInfo for base classes of UserForms crash with an AV if you call ITypeInfo::GetDocumentation(MEMBERID_NIL) 
+    ///     to get the type name.  We've got to remember that the VBE didn't ever intend for us to get hold of these objects, 
+    ///     so there will be little bugs.  This bug is also resolved in the provided wrappers.
+    ///
+    /// This class can also be cast to ComTypes.ITypeInfo for raw access to the underlying type information
+    /// </remarks>
     public class TypeInfoWrapper : ComTypes.ITypeInfo, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
@@ -487,6 +542,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private bool _hasModuleScopeCompilationErrors;
         public bool HasModuleScopeCompilationErrors => _hasModuleScopeCompilationErrors;
 
+        /// <summary>
+        /// Exposes an enumerable collection of functions provided by the ITypeInfo
+        /// </summary>
         public class FuncsCollection : IIndexedCollection<TypeInfoFunc>
         {
             TypeInfoWrapper _parent;
@@ -505,6 +563,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
         public FuncsCollection Funcs;
 
+        /// <summary>
+        /// Exposes an enumerable collection of variables/fields provided by the ITypeInfo
+        /// </summary>
         public class VarsCollection : IIndexedCollection<TypeInfoVar>
         {
             TypeInfoWrapper _parent;
@@ -514,6 +575,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
         public VarsCollection Vars;
 
+        /// <summary>
+        /// Exposes an enumerable collection of implemented interfaces provided by the ITypeInfo
+        /// </summary>
         public class ImplementedInterfacesCollection : IIndexedCollection<TypeInfoWrapper>
         {
             TypeInfoWrapper _parent;
@@ -521,6 +585,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             override public int Count { get => _parent.Attributes.cImplTypes; }
             override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeImplementedTypeInfo(index);
 
+            /// <summary>
+            /// Determines whether the type implements one of the specified interfaces
+            /// </summary>
+            /// <param name="interfaceProgIds">Array of interface identifiers in the format "LibName.InterfaceName"</param>
+            /// <param name="matchedIndex">on return, contains the index into interfaceProgIds that matched, or -1 </param>
+            /// <returns>true if the type does implement one of the specified interfaces</returns>
             public bool DoesImplement(string[] interfaceProgIds, out int matchedIndex)
             {
                 matchedIndex = 0;
@@ -536,6 +606,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return false;
             }
 
+            /// <summary>
+            /// Determines whether the type implements the specified interface
+            /// </summary>
+            /// <param name="interfaceProgId">Interface identifier in the format "LibName.InterfaceName"</param>
+            /// <returns>true if the type does implement the specified interface</returns>
             public bool DoesImplement(string interfaceProgId)
             {
                 var progIdSplit = interfaceProgId.Split(new char[] { '.' }, 2);
@@ -546,6 +621,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return DoesImplement(progIdSplit[0], progIdSplit[1]);
             }
 
+            /// <summary>
+            /// Determines whether the type implements the specified interface
+            /// </summary>
+            /// <param name="containerName">The library container name</param>
+            /// <param name="interfaceName">The interface name</param>
+            /// <returns>true if the type does implement the specified interface</returns>
             public bool DoesImplement(string containerName, string interfaceName)
             {
                 foreach (var typeInfo in this)
@@ -560,6 +641,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return false;
             }
 
+            /// <summary>
+            /// Determines whether the type implements one of the specified interfaces
+            /// </summary>
+            /// <param name="interfaceIIDs">Array of interface IIDs to match</param>
+            /// <param name="matchedIndex">on return, contains the index into interfaceIIDs that matched, or -1 </param>
+            /// <returns>true if the type does implement one of the specified interfaces</returns>
             public bool DoesImplement(Guid[] interfaceIIDs, out int matchedIndex)
             {
                 matchedIndex = 0;
@@ -575,6 +662,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return false;
             }
 
+            /// <summary>
+            /// Determines whether the type implements the specified interface
+            /// </summary>
+            /// <param name="interfaceIID">The interface IID to match</param>
+            /// <returns>true if the type does implement the specified interface</returns>
             public bool DoesImplement(Guid interfaceIID)
             {
                 foreach (var typeInfo in this)
@@ -617,6 +709,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             catch (Exception e)
             {
+                // If there is a compilation error outside of a procedure code block, the type information is not available for that component.
+                // We detect this, via the E_VBA_COMPILEERROR error 
                 if (e.HResult == (int)KnownComHResults.E_VBA_COMPILEERROR)
                 {
                     _hasModuleScopeCompilationErrors = true;
@@ -655,10 +749,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             InitCommon();
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="rawObjectPtr">The raw unmanaged pointer to the ITypeInfo</param>
+        /// <param name="parentUserFormUniqueId">used internally for providing a name for UserForm base classes</param>
         public TypeInfoWrapper(IntPtr rawObjectPtr, int? parentUserFormUniqueId = null)
         {
             _rawObjectPtr = rawObjectPtr;
             
+            // We have to restrict interface requests to VBE hosted ITypeInfos due to a bug in their implementation.
+            // See TypeInfoWrapper class XML doc for details.
             _ITypeInfo_Aggregator       = new RestrictComInterfaceByAggregation<ComTypes.ITypeInfo>(rawObjectPtr, queryForType: false);
             _IVBEComponent_Aggregator   = new RestrictComInterfaceByAggregation<IVBEComponent>(rawObjectPtr);
             _IVBETypeInfo_Aggregator    = new RestrictComInterfaceByAggregation<IVBETypeInfo>(rawObjectPtr);
@@ -717,6 +818,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         private bool HasNoContainer() => _containerTypeLib == null;
 
+        /// <summary>
+        /// Silently compiles the individual VBE component (class/module etc)
+        /// </summary>
+        /// <returns>true if this module, plus any direct dependent modules compile successfully</returns>
         public bool CompileComponent()
         {
             if (HasVBEExtensions)
@@ -745,6 +850,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        /// <summary>
+        /// Used to detect UserForm classes, needed to workaround a VBE bug.  See TypeInfoWrapper XML doc for details. 
+        /// </summary>
         private void DetectUserFormClass()
         {
             // Determine if this is a UserForm base class, that requires special handling to workaround a VBE bug in its implemented classes
@@ -759,7 +867,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        // caller is responsible for calling ReleaseComObject
+        /// <summary>
+        /// Provides an accessor object for invoking methods on a standard module in a VBA project
+        /// </summary>
+        /// <remarks>caller is responsible for calling ReleaseComObject</remarks>
+        /// <returns>the accessor object</returns>
         public IDispatch GetStdModAccessor()
         {
             if (HasVBEExtensions)
@@ -772,6 +884,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
         
+        /// <summary>
+        /// Executes a procedure inside a standard module in a VBA project
+        /// </summary>
+        /// <param name="name">the name of the procedure to invoke</param>
+        /// <param name="args">arguments to pass to the procedure</param>
+        /// <remarks>the returned object can be a COM object, and the callee is responsible for releasing it appropriately</remarks>
+        /// <returns>an object representing the return value from the procedure, or null if none.</returns>
         public object StdModExecute(string name, object[] args = null)
         {
             if (HasVBEExtensions)
@@ -805,8 +924,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        // Gets the control ITypeInfo by looking for the corresponding getter on the form interface and returning its retval type
-        // Supports UserForms.  what about Access forms etc
+        /// <summary>
+        /// Gets the control ITypeInfo by looking for the corresponding getter on the form interface and returning its retval type
+        /// </summary>
+        /// <param name="controlName">the name of the control</param>
+        /// <returns>TypeInfoWrapper representing the type of control</returns>
         public TypeInfoWrapper GetControlType(string controlName)
         {
             // TODO should encapsulate handling of raw datatypes
@@ -873,6 +995,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return GetSafeRefTypeInfo(href);
         }
 
+        /// <summary>
+        /// Determines the document class type of a VBA class.  See DocClassHelper
+        /// </summary>
+        /// <returns>the identified document class type, or DocClassType.Unrecognized</returns>
         public DocClassType DetermineDocumentClassType()
         {
             if (ImplementedInterfaces.DoesImplement(DocClassHelper.KnownDocumentInterfaceProgIds, out int matchId))
@@ -998,12 +1124,22 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public string _helpFile;
     }
 
-    // A wrapper for ITypeLib that exposes VBE ITypeInfos safely for managed consumption, plus adds ConditionalCompilationArguments property
+    /// <summary>
+    /// A wrapper for ITypeLib objects, with specific extensions for VBE hosted ITypeLibs
+    /// </summary>
+    /// <remarks>
+    /// allow safe managed consumption, plus adds ConditionalCompilationArguments property, 
+    /// VBEReferences collection, and CompileProject method.
+    /// Can also be cast to ComTypes.ITypeLib for raw access to the underlying type library
+    /// </remarks>
     public class TypeLibWrapper : ComTypes.ITypeLib, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly bool _wrappedObjectIsWeakReference;
 
+        /// <summary>
+        /// Exposes an enumerable collection of TypeInfo objects exposed by this ITypeLib
+        /// </summary>
         public class TypeInfosCollection : IIndexedCollection<TypeInfoWrapper>
         {
             TypeLibWrapper _parent;
@@ -1033,6 +1169,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
         public TypeInfosCollection TypeInfos;
         
+        /// <summary>
+        /// Exposes an enumerable collection of references used by the VBE type library
+        /// </summary>
         public class ReferencesCollection : IIndexedCollection<TypeInfoReference>
         {
             TypeLibWrapper _parent;
@@ -1115,9 +1254,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException("This TypeLib does not represent a VBE project, so we cannot get reference strings from it");
             }
         }
-
         
-
         /*
          This is not yet used, but here in case we want to use this interface at some point.
         private RestrictComInterfaceByAggregation<IVBEProject2> _cachedIVBEProject2;   NEEDS DISPOSING
@@ -1162,6 +1299,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (HasVBEExtensions) VBEReferences = new ReferencesCollection(this);
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="rawObjectPtr">The raw unamanaged ITypeLib pointer</param>
         public TypeLibWrapper(IntPtr rawObjectPtr)
         {
             target_ITypeLib = (ComTypes.ITypeLib)Marshal.GetObjectForIUnknown(rawObjectPtr);
@@ -1217,6 +1358,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        /// <summary>
+        /// Silently compiles the whole VBA project represented by this ITypeLib
+        /// </summary>
+        /// <returns>true if the compilation succeeds</returns>
         public bool CompileProject()
         {
             if (HasVBEExtensions)
@@ -1245,6 +1390,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        /// <summary>
+        /// Exposes the raw conditional compilation arguments defined in the BA project represented by this ITypeLib
+        /// format:  "foo = 1 : bar = 2"
+        /// </summary>
         public string ConditionalCompilationArgumentsRaw
         {
             get
@@ -1272,6 +1421,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        /// <summary>
+        /// Exposes the conditional compilation arguments defined in the BA project represented by this ITypeLib
+        /// as a dictionary of key/value pairs
+        /// </summary>
         public Dictionary<string, string> ConditionalCompilationArguments
         {
             get
@@ -1382,7 +1535,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => target_ITypeLib.ReleaseTLibAttr(pTLibAttr);
     }
 
-    // class for iterating over the double linked list of ITypeLibs provided by the VBE
+    /// <summary>
+    /// An enumerable class for iterating over the double linked list of ITypeLibs provided by the VBE 
+    /// </summary>
     public class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>, IDisposable
     {
         private IntPtr _currentTypeLibPtr;
@@ -1439,7 +1594,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // the main class for hooking into the live ITypeLibs provided by the VBE
+    /// <summary>
+    /// The root class for hooking into the live ITypeLibs provided by the VBE
+    /// </summary>
+    /// <remarks>
+    /// WARNING: when using VBETypeLibsAccessor directly, do not cache it
+    ///   The VBE provides LIVE type library information, so consider it a snapshot at that very moment when you are dealing with it
+    ///   Make sure you call VBETypeLibsAccessor.Dispose() as soon as you have done what you need to do with it.
+    ///   Once control returns back to the VBE, you must assume that all the ITypeLib/ITypeInfo pointers are now invalid.
+    /// </remarks>
     public class VBETypeLibsAccessor : DisposableList<TypeLibWrapper>, IDisposable
     {
         public VBETypeLibsAccessor(IVBE ide)
