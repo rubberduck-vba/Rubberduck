@@ -17,9 +17,17 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 /// For usage examples, please see VBETypeLibsAPI
 /// </summary>
 /// <remarks>
-/// CURRENT LIMITATIONS:
-/// At the moment, enums and UDTs are not exposed through the type libraries
-/// In addition, constants names are not available
+/// TypeInfos from a VBA hosted project, and obtained through VBETypeLibsAccessor will have the following behaviours:
+/// 
+///   will expose both public and private prcoedures and fields
+///   will expose constants values, but they are unnamed (their member IDs will be MEMBERID_NIL)
+///   enumerations are not exposed directly in the type library
+///   enumerations may be referenced by field/argument datatypes, and the ITypeInfos for them are then accessible that way
+///   UDTs are not exposed directly in the type library
+///   UDTs may be referenced by field/argument datatypes, and as such the ITypeInfos for them are then accessible that way
+///   
+/// TypeInfos obtained by other means (such as the IDispatch::GetTypeInfo method) usually expose more restricted
+/// versions of ITypeInfo which may not expose private members
 /// </remarks>
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
@@ -1544,7 +1552,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// An enumerable class for iterating over the double linked list of ITypeLibs provided by the VBE 
     /// </summary>
-    public class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>, IDisposable
+    public class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>
     {
         private IntPtr _currentTypeLibPtr;
         private VBETypeLibObj _currentTypeLibStruct;
