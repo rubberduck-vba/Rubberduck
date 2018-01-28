@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections
             var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
             return setStmtContext == null && RequiresSetAssignment(reference, state);
         }
-
+        
         /// <summary>
         /// Determines whether the 'Set' keyword is required (whether it's present or not) for the specified identifier reference.
         /// </summary>
@@ -116,14 +116,11 @@ namespace Rubberduck.Inspections
 
             var memberRefs = state.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
             var lastRef = memberRefs.LastOrDefault(r => !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
-            if (lastRef?.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
+            if (lastRef?.Declaration.IsObject ?? false)
             {
                 // the last reference in the expression is referring to an object type
-                return true;
-            }
-            if (lastRef?.Declaration.AsTypeName == Tokens.Object)
-            {
-                return true;
+                // return true *if* the object doesn't have a default member
+                return !lastRef.Declaration.AsTypeDeclaration?.Attributes.HasDefaultMemberAttribute() ?? false;
             }
 
             var accessibleDeclarations = state.DeclarationFinder.GetAccessibleDeclarations(reference.ParentScoping);
