@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections
         public static bool NeedsSetKeywordAdded(IdentifierReference reference, RubberduckParserState state)
         {
             var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
-            return RequiresSetAssignment(reference, state) && setStmtContext == null;
+            return setStmtContext == null && RequiresSetAssignment(reference, state);
         }
 
         /// <summary>
