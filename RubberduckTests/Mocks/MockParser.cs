@@ -133,7 +133,7 @@ namespace RubberduckTests.Mocks
         public static void AddTestLibrary(this RubberduckParserState state, string serialized)
         {
             var reader = new XmlPersistableDeclarations();
-            var deserialized = reader.Load(Path.Combine("Testfiles//Resolver", serialized));
+            var deserialized = reader.Load(Path.Combine("Testfiles\\Resolver", serialized));
             AddTestLibrary(state, deserialized);
         }
 

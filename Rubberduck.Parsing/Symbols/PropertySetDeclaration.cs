@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public sealed class PropertySetDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
     {
-        private readonly List<Declaration> _parameters;
+        private readonly List<ParameterDeclaration> _parameters;
 
         public PropertySetDeclaration(
             QualifiedMemberName name,
@@ -41,7 +41,7 @@ namespace Rubberduck.Parsing.Symbols
                   annotations,
                   attributes)
         {
-            _parameters = new List<Declaration>();
+            _parameters = new List<ParameterDeclaration>();
         }
 
         public PropertySetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
@@ -59,13 +59,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             _parameters =
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .Cast<Declaration>()
                     .ToList();
         }
 
-        public IEnumerable<Declaration> Parameters => _parameters.ToList();
+        public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
 
-        public void AddParameter(Declaration parameter)
+        public void AddParameter(ParameterDeclaration parameter)
         {
             _parameters.Add(parameter);
         }
@@ -76,5 +75,8 @@ namespace Rubberduck.Parsing.Symbols
         /// should count as a member call to this member.
         /// </summary>
         public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
+
+        public override bool IsObject =>
+            base.IsObject || (Parameters.OrderBy(p => p.Selection).LastOrDefault()?.IsObject ?? false);
     }
 }
