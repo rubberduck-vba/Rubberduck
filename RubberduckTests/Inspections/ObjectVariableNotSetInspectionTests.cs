@@ -19,6 +19,20 @@ namespace RubberduckTests.Inspections
             var expectResultCount = 0;
             var input =
                 @"
+Private Function TestFunction(ByVal target As Range) As String
+    Dim myArray As Variant
+    myArray = target    ' read range values into an array
+End Function";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_DefaultMemberAssignment_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
 Private Sub DoSomething()
     Dim target As Object
     Set target = New Object
