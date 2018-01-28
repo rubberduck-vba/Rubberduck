@@ -9,7 +9,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAbstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-// TODO add memory address validation in ReadStructureSafe
 // TODO split into TypeInfos.cs
 
 /// <summary>
