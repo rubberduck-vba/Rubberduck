@@ -14,7 +14,7 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
+        public void ObjectVariableNotSet_DefaultMemberAssignment_ReturnsNoResult()
         {
             var expectResultCount = 0;
             var input =
@@ -28,7 +28,7 @@ End Function";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_DefaultMemberAssignment_ReturnsNoResult()
+        public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
         {
             var expectResultCount = 0;
             var input =
