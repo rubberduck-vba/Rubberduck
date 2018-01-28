@@ -341,7 +341,7 @@ forEachStmt :
 
 // expression EQ expression refactored to expression to allow SLL
 forNextStmt : 
-    FOR whiteSpace expression whiteSpace TO whiteSpace expression (whiteSpace STEP whiteSpace expression)? endOfStatement 
+    FOR whiteSpace expression whiteSpace TO whiteSpace expression (whiteSpace stepStmt)? endOfStatement 
     block
     statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
 ; 
@@ -485,6 +485,10 @@ selectStartValue : expression;
 selectEndValue : expression;
 
 setStmt : SET whiteSpace lExpression whiteSpace? EQ whiteSpace? expression;
+
+stepStmt :
+	STEP whiteSpace expression
+;
 
 subStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? subroutineName (whiteSpace? argList)? endOfStatement

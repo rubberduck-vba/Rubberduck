@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\Mathieu\Documents\GitHub\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
+// Generated from C:\Users\velcheva\GitHub\Rubberduck\Rubberduck.Parsing\Grammar\VBAParser.g4 by ANTLR 4.3
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -2671,6 +2671,19 @@ public partial class VBAParserBaseListener : IVBAParserListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStatementLabelDefinition([NotNull] VBAParser.StatementLabelDefinitionContext context) { }
+
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VBAParser.stepStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStepStmt([NotNull] VBAParser.StepStmtContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VBAParser.stepStmt"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStepStmt([NotNull] VBAParser.StepStmtContext context) { }
 
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VBAParser.multOp"/>.

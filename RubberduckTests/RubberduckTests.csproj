@@ -104,6 +104,7 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
     <Compile Include="VBEditor\ComSafeTests.cs" />
@@ -132,6 +133,8 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteErrorSyntaxInspectionTests.cs" />
     <Compile Include="Inspections\ShadowedDeclarationInspectionTests.cs" />
+    <Compile Include="Inspections\StepNotSpecifiedInspectionTests.cs" />
+    <Compile Include="Inspections\StepOneIsRedundantInspectionTests.cs" />
     <Compile Include="Inspections\StopKeywordInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\EmptyModuleInspectionTests.cs" />
@@ -142,6 +145,8 @@
     <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
+    <Compile Include="QuickFixes\AddStepOneQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveStepOneQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
