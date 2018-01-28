@@ -63,8 +63,10 @@ namespace Rubberduck
                     var addin = (AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
 
-                    // DEBUG TEMPORARY TO ALLOW ACCESS TO TypeLibsAPI from VBA
-                    _addin.Object = new Rubberduck.VBEditor.ComManagement.TypeLibsAPI.TypeLibsAPI_Object(_ide);
+#if DEBUG
+                    // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+                    _addin.Object = new Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI_Object(_ide);
+#endif
                 }
                 else if (Application is Microsoft.VB6.Interop.VBIDE.VBE vbe2)
                 {

@@ -8,12 +8,20 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
-    // TEMPORARY DEBUG CLASS TO ALLOW ACCESS TO TypeLibsAPI from VBA
+#if DEBUG
+    // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+    /* 
+        VBA Usage example:
+
+            With Application.VBE.Addins("Rubberduck.Extension").Object
+                .ExecuteCode("ProjectName", "ModuleName", "ProcedureName")
+            End With
+    */
     [System.Runtime.InteropServices.ComVisible(true)]
-    public class TypeLibsAPI_Object
+    public class VBETypeLibsAPI_Object
     {
         IVBE _ide;
-        public TypeLibsAPI_Object(IVBE ide) 
+        public VBETypeLibsAPI_Object(IVBE ide) 
             => _ide = ide;
 
         public bool CompileProject(string projectName) 
@@ -37,6 +45,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         public string DocumentAll() 
             => VBETypeLibsAPI.DocumentAll(_ide);
     }
+#endif
 
     /// <summary>
     /// Top level API for accessing live type information from the VBE
