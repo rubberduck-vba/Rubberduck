@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
@@ -34,6 +35,12 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             foreach (var project in _projectsCollection)
             {
+                if (project.Protection == ProjectProtection.Locked)
+                {
+                    project.Dispose();
+                    continue;
+                }
+
                 EnsureValidProjectId(project);
                 _projects.Add(project.ProjectId, project);
             }
