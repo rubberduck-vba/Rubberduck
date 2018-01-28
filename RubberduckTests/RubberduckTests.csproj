@@ -435,42 +435,42 @@
     <Content Include="Testfiles\Preprocessor\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Testfiles\Resolver\ADODB.6.1.xml">
+    <EmbeddedResource Include="Testfiles\Resolver\ADODB.6.1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\ADOR.6.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\ADOR.6.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Excel.1.8.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Excel.1.8.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\MSForms.2.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\MSForms.2.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\MSXML2.6.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\MSXML2.6.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Office.2.7.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Office.2.7.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Scripting.1.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Scripting.1.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\SHDocVw.1.1.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\SHDocVw.1.1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\stdole.2.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\stdole.2.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBA.4.2.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBA.4.2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBIDE.5.3.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBIDE.5.3.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBScript_RegExp_55.5.5.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBScript_RegExp_55.5.5.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Choose>

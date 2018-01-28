@@ -209,7 +209,7 @@ namespace Rubberduck.Parsing.Symbols
                     isParamArray);
                 if (_parentDeclaration is IParameterizedDeclaration)
                 {
-                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter(result);
+                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter((ParameterDeclaration) result);
                 }
             }
             else

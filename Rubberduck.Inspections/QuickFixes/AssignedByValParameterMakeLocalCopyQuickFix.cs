@@ -116,21 +116,17 @@ namespace Rubberduck.Inspections.QuickFixes
             var requiresAssignmentUsingSet =
                 target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState));
 
-            var localVariableAssignment = string.Format("{0}{1}",
-                                                        requiresAssignmentUsingSet ? $"{Tokens.Set} " : string.Empty,
-                                                        $"{localIdentifier} = {target.IdentifierName}");
+            var localVariableAssignment =
+                $"{(requiresAssignmentUsingSet ? $"{Tokens.Set} " : string.Empty)}{localIdentifier} = {target.IdentifierName}";
 
             var endOfStmtCtxt = ((ParserRuleContext)target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>();
             var eosContent = endOfStmtCtxt.GetText();
-            var idxLastNewLine = eosContent.LastIndexOf(Environment.NewLine);
+            var idxLastNewLine = eosContent.LastIndexOf(Environment.NewLine, StringComparison.InvariantCultureIgnoreCase);
             var endOfStmtCtxtComment = eosContent.Substring(0, idxLastNewLine);
             var endOfStmtCtxtEndFormat = eosContent.Substring(idxLastNewLine);
 
-            var insertCtxt = (ParserRuleContext)((ParserRuleContext)target.Context.Parent.Parent).GetChild<VBAParser.AsTypeClauseContext>();
-            if (insertCtxt == null)
-            {
-                insertCtxt = (ParserRuleContext)target.Context.Parent;
-            }
+            var insertCtxt = ((ParserRuleContext) target.Context.Parent.Parent).GetChild<VBAParser.AsTypeClauseContext>()
+                ?? (ParserRuleContext) target.Context.Parent;
 
             rewriter.Remove(endOfStmtCtxt);
             rewriter.InsertAfter(insertCtxt.Stop.TokenIndex, $"{endOfStmtCtxtComment}{endOfStmtCtxtEndFormat}{localVariableDeclaration}" + $"{endOfStmtCtxtEndFormat}{localVariableAssignment}{endOfStmtCtxtEndFormat}");
