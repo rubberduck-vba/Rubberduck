@@ -74,17 +74,9 @@ namespace Rubberduck.Inspections
 
             if (isObjectVariable)
             {
-                // get the members of the returning type, a default member could make us lie otherwise
                 var classModule = declaration.AsTypeDeclaration as ClassModuleDeclaration;
-                if (HasParameterlessDefaultMember(classModule))
-                {
-                    // assigned declaration has a default parameterless member, which is legally being assigned here.
-                    // might be a good idea to flag that default member assignment though...
-                    return false;
-                }
-
-                // assign declaration is an object without a default parameterless (or with all parameters optional) member - LHS needs a 'Set' keyword.
-                return true;
+                // if assigned declaration is an object without a default parameterless (or with all parameters optional) member, LHS needs a 'Set' keyword.
+                return !HasParameterlessDefaultMember(classModule);
             }
 
             // assigned declaration is a variant. we need to know about the RHS of the assignment.
@@ -115,7 +107,7 @@ namespace Rubberduck.Inspections
             if (lastRef?.Declaration.IsObject ?? false)
             {
                 // the last reference in the expression is referring to an object type
-                // return true *if* the object doesn't have a default member
+                // return true *if* the object doesn't have a parameterless default member
                 var typeDeclaration = lastRef.Declaration.AsTypeDeclaration as ClassModuleDeclaration;
                 return !HasParameterlessDefaultMember(typeDeclaration);
             }
