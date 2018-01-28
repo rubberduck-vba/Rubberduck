@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -58,11 +59,7 @@ namespace Rubberduck.UI.Command
                 {
                     using( var activePaneCodeModule = activeCodePane.CodeModule)
                     {
-                        return testModules.Any(a =>
-                        {
-                            var module = _state.ProjectsProvider.CodeModule(a.QualifiedName.QualifiedModuleName);
-                            return module.Equals(activePaneCodeModule);
-                        });
+                        return testModules.Any(a => HasEqualCodeModule(a.QualifiedName.QualifiedModuleName, activePaneCodeModule));
                     }
                 }
             }
@@ -84,7 +81,7 @@ namespace Rubberduck.UI.Command
                 using (var module = pane.CodeModule)
                 {
                     var declaration = _state.GetTestModules()
-                        .FirstOrDefault(f => _state.ProjectsProvider.CodeModule(f.QualifiedName.QualifiedModuleName).Equals(module));
+                        .FirstOrDefault(f => HasEqualCodeModule(f.QualifiedName.QualifiedModuleName, module));
 
                     if (declaration != null)
                     {
@@ -99,6 +96,14 @@ namespace Rubberduck.UI.Command
                 }
             }
             _state.OnParseRequested(this);
+        }
+
+        private bool HasEqualCodeModule(QualifiedModuleName module, ICodeModule otherCodeModule)
+        {
+            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            {
+                return codeModule.Equals(otherCodeModule);
+            }
         }
 
         private string GetNextTestMethodName(IVBComponent component)

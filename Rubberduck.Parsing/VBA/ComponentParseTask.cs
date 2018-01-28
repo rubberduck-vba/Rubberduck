@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var rewriter = new MemberAttributesRewriter(_exporter, _projectsProvider.CodeModule(_module), new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
+                var rewriter = new MemberAttributesRewriter(_exporter, _projectsProvider.Component(_module).CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
@@ -169,7 +169,16 @@ namespace Rubberduck.Parsing.VBA
 
         private CommonTokenStream RewriteAndPreprocess(CancellationToken cancellationToken)
         {
-            var code = _rewriter?.GetText() ?? string.Join(Environment.NewLine, GetCode(_projectsProvider.CodeModule(_module)));
+            var code = _rewriter?.GetText();
+            if (code == null)
+            {
+                var component = _projectsProvider.Component(_module);
+                using (var codeModule = component.CodeModule)
+                {
+                    code = string.Join(Environment.NewLine, GetCode(codeModule));
+                }
+            }
+ 
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             _preprocessor.PreprocessTokenStream(_module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);

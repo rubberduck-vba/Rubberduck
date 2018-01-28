@@ -140,7 +140,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                var module = _projectsProvider.CodeModule(reference.QualifiedModuleName);
+                using (var module = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
                 {
                     RemoveCallArguments(argumentList, module);
                 }

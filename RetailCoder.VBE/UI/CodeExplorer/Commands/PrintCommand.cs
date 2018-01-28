@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
@@ -33,7 +34,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             try
             {
-                return _projectsProvider.CodeModule(node.Declaration.QualifiedName.QualifiedModuleName).CountOfLines != 0;
+                using (var codeModule = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName).CodeModule)
+                {
+                    return codeModule.CountOfLines != 0;
+                }
             }
             catch (COMException)
             {
@@ -50,9 +54,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
                 qualifiedComponentName.ComponentName + ".txt");
 
-            var codeModule = _projectsProvider.CodeModule(qualifiedComponentName);
-            var text = codeModule.GetLines(1, codeModule.CountOfLines)
-                .Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
+            List<string> text;
+            using (var codeModule = _projectsProvider.Component(qualifiedComponentName).CodeModule)
+            {
+                text = codeModule.GetLines(1, codeModule.CountOfLines)
+                    .Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
+            }
 
             var printDoc = new PrintDocument { DocumentName = path };
             using (var pd = new PrintDialog

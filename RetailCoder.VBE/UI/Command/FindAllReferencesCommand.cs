@@ -152,13 +152,21 @@ namespace Rubberduck.UI.Command
             var results = declaration.References.Distinct().Select(reference =>
                 new SearchResultItem(
                     reference.ParentNonScoping,
-                    new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
-                    _state.ProjectsProvider.CodeModule(reference.QualifiedModuleName).GetLines(reference.Selection.StartLine, 1).Trim()));
+                    new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
+                    GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)));
             
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
 
             return viewModel;
+        }
+
+        private string GetModuleLine(QualifiedModuleName module, int line)
+        {
+            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            {
+                return codeModule.GetLines(line, 1).Trim();
+            }
         }
 
         private Declaration FindTarget(object parameter)

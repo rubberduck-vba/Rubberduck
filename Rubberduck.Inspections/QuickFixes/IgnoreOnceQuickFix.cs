@@ -33,13 +33,16 @@ namespace Rubberduck.Inspections.QuickFixes
 
             int annotationLine;
             string codeLine;
-            var module = _state.ProjectsProvider.CodeModule(result.QualifiedSelection.QualifiedName);
-            annotationLine = result.QualifiedSelection.Selection.StartLine;
-            while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
+            using (var module = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName).CodeModule)
             {
-                annotationLine--;
+                annotationLine = result.QualifiedSelection.Selection.StartLine;
+                while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
+                {
+                    annotationLine--;
+                }
+
+                codeLine = annotationLine == 1 ? string.Empty : module.GetLines(annotationLine - 1, 1);
             }
-            codeLine = annotationLine == 1 ? string.Empty : module.GetLines(annotationLine - 1, 1);
 
             RuleContext treeRoot = result.Context;
             while (treeRoot.Parent != null)

@@ -149,11 +149,14 @@ namespace Rubberduck.UI.ToDoItems
                         return;
                     }
 
-                    var module = _state.ProjectsProvider.CodeModule(_selectedItem.Selection.QualifiedName);
-                    var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
-                    var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
+                    using (var module = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName).CodeModule)
+                    {
+                        var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
+                        var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
 
-                    module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
+                        module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
+                    }
+
                     RefreshCommand.Execute(null);
                 }
                 );

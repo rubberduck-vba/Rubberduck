@@ -26,7 +26,7 @@ namespace RubberduckTests.Mocks
 
         public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
-            var code = _projectsProvider.CodeModule(module).Content();
+            var code = _projectsProvider.Component(module).CodeModule.Content();
             var type = module.ComponentType == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;

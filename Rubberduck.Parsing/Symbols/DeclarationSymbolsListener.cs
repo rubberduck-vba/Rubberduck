@@ -93,8 +93,12 @@ namespace Rubberduck.Parsing.Symbols
                 return null;
             }
 
-            var codeModule = _state.ProjectsProvider.CodeModule(_qualifiedModuleName);
-            var lastDeclarationsSectionLine = codeModule.CountOfDeclarationLines;
+            int lastDeclarationsSectionLine;
+
+            using (var codeModule = _state.ProjectsProvider.Component(_qualifiedModuleName).CodeModule)
+            {
+                lastDeclarationsSectionLine = codeModule.CountOfDeclarationLines;
+            }
 
             var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.QualifiedName.Equals(_qualifiedModuleName)
                 && annotation.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine);

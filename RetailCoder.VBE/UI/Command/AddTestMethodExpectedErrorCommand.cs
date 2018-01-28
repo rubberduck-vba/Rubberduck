@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -68,7 +69,7 @@ namespace Rubberduck.UI.Command
                     {
                         using(var selectedModule = component.CodeModule)
                         {
-                            return testModules.Any(a => _state.ProjectsProvider.CodeModule(a.QualifiedName.QualifiedModuleName).Equals(selectedModule));
+                            return testModules.Any(a => HasEqualCodeModule(a.QualifiedName.QualifiedModuleName, selectedModule));
                         }
                     }
                 }
@@ -76,6 +77,14 @@ namespace Rubberduck.UI.Command
                 {
                     return false;
                 }
+            }
+        }
+
+        private bool HasEqualCodeModule(QualifiedModuleName module, ICodeModule otherCodeModule)
+        {
+            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            {
+                return codeModule.Equals(otherCodeModule);
             }
         }
 
@@ -92,8 +101,10 @@ namespace Rubberduck.UI.Command
                 {
                     var declaration = _state.GetTestModules().FirstOrDefault(f =>
                     {
-                        var thisModule = _state.ProjectsProvider.CodeModule(f.QualifiedName.QualifiedModuleName);
-                        return thisModule.Equals(activeModule);
+                        using (var thisModule = _state.ProjectsProvider.Component(f.QualifiedName.QualifiedModuleName).CodeModule)
+                        {
+                            return thisModule.Equals(activeModule);
+                        }
                     });
 
                     if (declaration != null)

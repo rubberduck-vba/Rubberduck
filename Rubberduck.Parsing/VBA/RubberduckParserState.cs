@@ -738,7 +738,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
         {
-            _moduleStates[module].SetTokenStream(ProjectsProvider.CodeModule(module), stream);
+            _moduleStates[module].SetTokenStream(ProjectsProvider.Component(module).CodeModule, stream);
             _moduleStates[module].SetModuleContentHashCode(GetModuleContentHash(module));
         }
 
@@ -898,10 +898,12 @@ namespace Rubberduck.Parsing.VBA
 
         private int GetModuleContentHash(QualifiedModuleName module)
         {
-            var codeModule = ProjectsProvider.CodeModule(module);
-            return codeModule != null && codeModule.CountOfLines > 0
-                    ? codeModule.GetLines(1, codeModule.CountOfLines).GetHashCode()
-                    : 0;
+            using (var codeModule = ProjectsProvider.Component(module).CodeModule)
+            {
+                return codeModule != null && codeModule.CountOfLines > 0
+                        ? codeModule.GetLines(1, codeModule.CountOfLines).GetHashCode()
+                        : 0;
+            }
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)

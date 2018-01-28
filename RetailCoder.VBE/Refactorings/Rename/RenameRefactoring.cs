@@ -226,7 +226,7 @@ namespace Rubberduck.Refactorings.Rename
             }
             else if (target.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                var module = _state.ProjectsProvider.CodeModule(target.QualifiedName.QualifiedModuleName);
+                using (var module = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName).CodeModule)
                 {
                     if (module.IsWrappingNullReference)
                     {
@@ -566,12 +566,14 @@ namespace Rubberduck.Refactorings.Rename
 
         private void CacheInitialSelection(QualifiedSelection qSelection)
         {
-            var codeModule = _state.ProjectsProvider.CodeModule(qSelection.QualifiedName);
-            using (var codePane = codeModule.CodePane)
+            using (var codeModule = _state.ProjectsProvider.Component(qSelection.QualifiedName).CodeModule)
             {
-                if (!codePane.IsWrappingNullReference)
+                using (var codePane = codeModule.CodePane)
                 {
-                    _initialSelection = new Tuple<ICodePane, Selection>(codePane, codePane.Selection);
+                    if (!codePane.IsWrappingNullReference)
+                    {
+                        _initialSelection = new Tuple<ICodePane, Selection>(codePane, codePane.Selection);
+                    }
                 }
             }
         }

@@ -125,7 +125,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             foreach (var reference in references.Where(item => item.Context != _model.TargetDeclaration.Context))
             {
-                var module = _projectsProvider.CodeModule(reference.QualifiedModuleName);
                 VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
@@ -142,8 +141,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
                     }
                 }
 
-                if (argumentList == null) { continue; }
-                RewriteCall(argumentList, module);
+                if (argumentList == null)
+                {
+                    continue; 
+                }
+
+                using (var module = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
+                {
+                    RewriteCall(argumentList, module);
+                }
             }
         }
 

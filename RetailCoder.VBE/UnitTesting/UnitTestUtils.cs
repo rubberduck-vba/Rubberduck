@@ -27,14 +27,15 @@ namespace Rubberduck.UnitTesting
             // apparently, sometimes it thinks the components are different but knows the modules are the same
             // if the modules are the same, then the component is the same as far as we are concerned
             return GetAllTests(vbe, state)
-                    .Where(test => TestCodeModuleEqualsComponentCodeModule(state.ProjectsProvider.CodeModule(test.Declaration.QualifiedName.QualifiedModuleName), component));
+                    .Where(test => HaveEqualCodeModules(state.ProjectsProvider.Component(test.Declaration.QualifiedName.QualifiedModuleName), component));
         }
 
-        private static bool TestCodeModuleEqualsComponentCodeModule(ICodeModule testCodeModule, IVBComponent component)
+        private static bool HaveEqualCodeModules(IVBComponent component, IVBComponent otherComponent)
         {
-            using (var componentCodeModule = component.CodeModule)
+            using (var codeModule = component.CodeModule)
+            using(var otherCodeModule = otherComponent.CodeModule)
             {
-                return testCodeModule.Equals(componentCodeModule);
+                return codeModule.Equals(otherCodeModule);
             }
         }
 
