@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Common;
 using RubberduckTests.Mocks;
@@ -13,22 +12,6 @@ namespace RubberduckTests.Inspections
     [DeploymentItem(@"TestFiles\")]
     public class ObjectVariableNotSetInspectionTests
     {
-        [Test]
-        [Category("Inspections")]
-        public void ObjectVariableNotSet_OnlyAssignedToNothing_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-                @"
-Private Sub DoSomething()
-    Dim target As Object
-    target.DoSomething ' error 91
-    Set target = Nothing
-End Sub
-";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
-        }
-
         [Test]
         [Category("Inspections")]
         public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()

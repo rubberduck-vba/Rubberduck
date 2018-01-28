@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -33,19 +29,19 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<IdentifierReference> InterestingReferences()
         {
             var result = new List<IdentifierReference>();
-            foreach (var qmn in State.DeclarationFinder.AllModules.Where(m => m.ComponentType != ComponentType.Undefined && m.ComponentType != ComponentType.ComComponent))
+            foreach (var moduleReferences in State.DeclarationFinder.IdentifierReferences())
             {
-                var module = State.DeclarationFinder.ModuleDeclaration(qmn);
+                var module = State.DeclarationFinder.ModuleDeclaration(moduleReferences.Key);
                 if (module == null || !module.IsUserDefined || IsIgnoringInspectionResultFor(module, AnnotationName))
                 {
-                    // module isn't user code, or this inspection is ignored at module-level
+                    // module isn't user code (?), or this inspection is ignored at module-level
                     continue;
                 }
 
-                foreach (var reference in State.DeclarationFinder.IdentifierReferences(qmn))
+                foreach (var reference in moduleReferences.Value)
                 {
                     if (!IsIgnoringInspectionResultFor(reference, AnnotationName) 
-                        && VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State))
+                        && VariableRequiresSetAssignmentEvaluator.NeedsSetKeywordAdded(reference, State))
                     {
                         result.Add(reference);
                     }

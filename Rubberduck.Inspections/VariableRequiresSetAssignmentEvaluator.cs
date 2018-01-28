@@ -20,6 +20,22 @@ namespace Rubberduck.Inspections
             return relevantDeclarations;
         }
 
+        /// <summary>
+        /// Determines whether the 'Set' keyword needs to be added in the context of the specified identifier reference.
+        /// </summary>
+        /// <param name="reference">The identifier reference to analyze</param>
+        /// <param name="state">The parser state</param>
+        public static bool NeedsSetKeywordAdded(IdentifierReference reference, RubberduckParserState state)
+        {
+            var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
+            return RequiresSetAssignment(reference, state) && setStmtContext == null;
+        }
+
+        /// <summary>
+        /// Determines whether the 'Set' keyword is required (whether it's present or not) for the specified identifier reference.
+        /// </summary>
+        /// <param name="reference">The identifier reference to analyze</param>
+        /// <param name="state">The parser state</param>
         public static bool RequiresSetAssignment(IdentifierReference reference, RubberduckParserState state)
         {
             if (!reference.IsAssignment)
@@ -31,21 +47,14 @@ namespace Rubberduck.Inspections
             var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
             if (setStmtContext != null)
             {
-                // assignment already has a Set keyword
-                return true;
-                // (but is it misplaced? ...hmmm... beyond the scope of *this* inspection though)
-                // if we're only ever assigning to 'Nothing', might as well flag it though
-                if (reference.Declaration.References.Where(r => r.IsAssignment).All(r =>
-                    r.Context.GetAncestor<VBAParser.SetStmtContext>().expression().GetText() == Tokens.Nothing))
-                {
-                    return true;
-                }
+                // don't assume Set keyword is legit...
+                return reference.Declaration.IsObject;
             }
 
             var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
             if (letStmtContext == null)
             {
-                // we're probably in a For Each loop
+                // not an assignment
                 return false;
             }
 

@@ -5,6 +5,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
@@ -1059,6 +1060,18 @@ namespace Rubberduck.Parsing.Symbols
                 || declaration.DeclarationType == DeclarationType.Procedure;
         }
 
+        /// <summary>
+        /// Creates a dictionary of identifier references, keyed by module.
+        /// </summary>
+        public IReadOnlyDictionary<QualifiedModuleName,IEnumerable<IdentifierReference>> IdentifierReferences()
+        {
+            return new ReadOnlyDictionary<QualifiedModuleName, IEnumerable<IdentifierReference>>(
+                _referencesByModule.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.AsEnumerable()));
+        }
+
+        /// <summary>
+        /// Gets all identifier references in the specified module.
+        /// </summary>
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedModuleName module)
         {
             return _referencesByModule.TryGetValue(module, out List<IdentifierReference> value)
@@ -1066,6 +1079,9 @@ namespace Rubberduck.Parsing.Symbols
                 : Enumerable.Empty<IdentifierReference>();
         }
 
+        /// <summary>
+        /// Gets all identifier references in the specified member.
+        /// </summary>
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedMemberName member)
         {
             return _referencesByMember.TryGetValue(member, out List<IdentifierReference> value)
