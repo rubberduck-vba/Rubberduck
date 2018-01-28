@@ -283,7 +283,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void Placeholder12();
         void Placeholder13();
         int GetReferencesCount();
-        void Placeholder15();
+        IntPtr GetReferenceTypeLib(int ReferenceIndex);
         void Placeholder16();
         void Placeholder17();
         string GetReferenceString(int ReferenceIndex); // the raw reference string

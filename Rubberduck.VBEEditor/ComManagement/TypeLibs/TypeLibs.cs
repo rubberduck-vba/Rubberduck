@@ -11,7 +11,6 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 // TODO add memory address validation in ReadStructureSafe
 // TODO split into TypeInfos.cs
-// references expose the raw ITypeLibs
 
 /// <summary>
 /// For usage examples, please see VBETypeLibsAPI
@@ -302,6 +301,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     public class TypeInfoReference
     {
+        TypeLibWrapper _vbeTypeLib;
+        int _typeLibIndex;
+
         readonly string _rawString;
         readonly Guid _guid;
         readonly uint _majorVersion;
@@ -318,8 +320,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public string Path { get => _path; }
         public string Name { get => _name; }
 
-        public TypeInfoReference(string referenceStringRaw)
+        public TypeInfoReference(TypeLibWrapper vbeTypeLib, int typeLibIndex, string referenceStringRaw)
         {
+            _vbeTypeLib = vbeTypeLib;
+            _typeLibIndex = typeLibIndex;
+
             // Example: "*\G{000204EF-0000-0000-C000-000000000046}#4.1#9#C:\PROGRA~2\COMMON~1\MICROS~1\VBA\VBA7\VBE7.DLL#Visual Basic For Applications"
             // LibidReference defined at https://msdn.microsoft.com/en-us/library/dd922767(v=office.12).aspx
             // The string is split into 5 parts, delimited by #
@@ -346,6 +351,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _name = referenceStringParts[4];
         }
 
+        public TypeLibWrapper TypeLib { get => _vbeTypeLib.GetVBEReferenceTypeLibByIndex(_typeLibIndex); }
+       
         public void Document(StringLineBuilder output)
         {
             output.AppendLine("- VBE Reference: " + Name + " [path: " + Path + ", majorVersion: " + MajorVersion +
@@ -1238,7 +1245,29 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (index < target_IVBEProject.GetReferencesCount())
                 {
-                    return new TypeInfoReference(target_IVBEProject.GetReferenceString(index));
+                    return new TypeInfoReference(this, index, target_IVBEProject.GetReferenceString(index));
+                }
+
+                throw new ArgumentException($"Specified index not valid for the references collection {index}.");
+            }
+            else
+            {
+                throw new ArgumentException("This TypeLib does not represent a VBE project, so we cannot get reference strings from it");
+            }
+        }
+
+        public TypeLibWrapper GetVBEReferenceTypeLibByIndex(int index)
+        {
+            if (HasVBEExtensions)
+            {
+                if (index < target_IVBEProject.GetReferencesCount())
+                {
+                    IntPtr referenceTypeLibPtr = target_IVBEProject.GetReferenceTypeLib(index);
+                    if (referenceTypeLibPtr == IntPtr.Zero)
+                    {
+                        throw new ArgumentException("$Reference TypeLib not available - probably a missing reference.");
+                    }
+                    return new TypeLibWrapper(referenceTypeLibPtr);
                 }
 
                 throw new ArgumentException($"Specified index not valid for the references collection {index}.");
@@ -1320,7 +1349,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public TypeLibWrapper(IntPtr rawObjectPtr)
         {
             target_ITypeLib = (ComTypes.ITypeLib)Marshal.GetObjectForIUnknown(rawObjectPtr);
-            Marshal.Release(rawObjectPtr);         // _wrappedObject holds a reference to this now
+            Marshal.Release(rawObjectPtr);         // target_ITypeLib holds a reference to this now
             InitCommon();
         }
 
