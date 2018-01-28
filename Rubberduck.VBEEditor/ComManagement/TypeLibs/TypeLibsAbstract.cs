@@ -4,6 +4,9 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
 {
+    /// <summary>
+    /// Windows API structure used by VirtualQuery, see https://msdn.microsoft.com/en-us/library/windows/desktop/aa366775.aspx
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct MEMORY_BASIC_INFORMATION
     {
@@ -16,6 +19,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         public uint Type;
     }
 
+    /// <summary>
+    /// Windows API constants used by VirtualQuery, see https://msdn.microsoft.com/en-us/library/windows/desktop/aa366786.aspx
+    /// </summary>
     public enum ALLOCATION_PROTECTION : uint
     {
         PAGE_EXECUTE = 0x00000010,
@@ -30,7 +36,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         PAGE_NOCACHE = 0x00000200,
         PAGE_WRITECOMBINE = 0x00000400
     }
-    
+
+    /// <summary>
+    /// A version of IDispatch that allows us to call its members explicitly
+    /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221608(v=vs.85).aspx
+    /// </summary>
     [ComImport(), Guid("00020400-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IDispatch
@@ -52,6 +62,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
 
     public static class ComHelper
     {
+        /// <summary>
+        /// Equivalent of the Windows FAILED() macro in C
+        /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms693474(v=vs.85).aspx
+        /// </summary>
+        /// <param name="hr">HRESULT from a COM API call</param>
+        /// <returns>true if the HRESULT indicated failure</returns>
         public static bool HRESULT_FAILED(int hr) => hr < 0;
     }
 
@@ -59,6 +75,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
     {
         static Guid GUID_NULL = new Guid();
 
+        /// <summary>
+        /// IDispatch::Invoke flags
+        /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221479(v=vs.85).aspx
+        /// </summary>
         public enum InvokeKind : int
         {
             DISPATCH_METHOD = 1,
@@ -67,6 +87,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
             DISPATCH_PROPERTYPUTREF = 8,
         }
 
+        /// <summary>
+        /// Simplified equivalent of VARIANT structure often used in COM
+        /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221627(v=vs.85).aspx
+        /// </summary>
         [StructLayout(LayoutKind.Sequential)]
         public struct VARIANT
         {
@@ -78,7 +102,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
             IntPtr data2;
         }
 
-        // Convert input args into a contigious array of real COM VARIANTs for the DISPPARAMS struct
+        /// <summary>
+        /// Convert input args into a contigious array of real COM VARIANTs for the DISPPARAMS struct used by IDispatch::Invoke
+        /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221416(v=vs.85).aspx
+        /// </summary>
+        /// <param name="args">An array of arguments to wrap</param>
+        /// <returns>DISPPARAMS structure ready to pass to IDispatch::Invoke</returns>
         private static ComTypes.DISPPARAMS PrepareDispatchArgs(object[] args)
         {
             var pDispParams = new ComTypes.DISPPARAMS();
@@ -106,7 +135,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         [DllImport("oleaut32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
         static extern Int32 VariantClear(IntPtr pvarg);
 
-        // frees all unmanaged memory assoicated with the DISPPARAMS
+        /// <summary>
+        /// frees all unmanaged memory assoicated with a DISPPARAMS structure
+        /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221416(v=vs.85).aspx
+        /// </summary>
+        /// <param name="pDispParams"></param>
         private static void UnprepareDispatchArgs(ComTypes.DISPPARAMS pDispParams)
         {
             if (pDispParams.rgvarg != IntPtr.Zero)
@@ -125,7 +158,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
             }
         }
 
-        // TODO support DISPATCH_PROPERTYPUTREF (property-set) which requires special handling
+        /// <summary>
+        /// A basic helper for IDispatch::Invoke
+        /// </summary>
+        /// <param name="obj">The IDispatch object of which you want to invoke a member on</param>
+        /// <param name="memberId">The dispatch ID of the member to invoke</param>
+        /// <param name="invokeKind">See InvokeKind enumeration</param>
+        /// <param name="args">Array of arguments to pass to the call, or null for no args</param>
+        /// <remarks>TODO support DISPATCH_PROPERTYPUTREF (property-set) which requires special handling</remarks>
+        /// <returns>An object representing the return value from the called routine</returns>
         public static object Invoke(IDispatch obj, int memberId, InvokeKind invokeKind, object[] args = null)
         {
             var pDispParams = PrepareDispatchArgs(args);
@@ -149,7 +190,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         }
     }
 
-    // A compatible version of ITypeInfo, where COM objects are outputted as IntPtrs instead of objects
+    /// <summary>
+    /// A compatible version of ITypeInfo, where COM objects are outputted as IntPtrs instead of objects
+    /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221696(v=vs.85).aspx
+    /// </summary>
     [ComImport(), Guid("00020401-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface ITypeInfo_Ptrs
@@ -175,6 +219,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void ReleaseVarDesc(IntPtr pVarDesc);
     }
 
+    /// <summary>
+    /// An internal interface exposed by VBA for all components (modules, class modules, etc)
+    /// </summary>
+    /// <remarks>This internal interface is known to be supported since the very earliest version of VBA6</remarks>
     [ComImport(), Guid("DDD557E1-D96F-11CD-9570-00AA0051E5D4")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IVBEComponent
@@ -214,8 +262,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void Placeholder33();
         void GetSomeRelatedTypeInfoPtrs(out IntPtr A, out IntPtr B);        // returns 2 TypeInfos, seemingly related to this ITypeInfo, but slightly different.
     }
-
-    // An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModAccessor
+    
+    /// <summary>
+    /// An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModAccessor
+    /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221696(v=vs.85).aspx
+    /// </summary>
+    /// <remarks>This extended interface is known to be supported since the very earliest version of VBA6</remarks>
     [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IVBETypeInfo
@@ -244,7 +296,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         IDispatch GetStdModAccessor();            // a handy extra vtable entry we can use to invoke members in standard modules.
     }
 
-    // A compatible version of ITypeLib, where COM objects are outputted as IntPtrs instead of objects
+    /// <summary>
+    /// A compatible version of ITypeLib, where COM objects are outputted as IntPtrs instead of objects
+    /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221549(v=vs.85).aspx
+    /// </summary>
     [ComImport(), Guid("00020402-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface ITypeLib_Ptrs
@@ -261,8 +316,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void ReleaseTLibAttr(IntPtr pTLibAttr);
     }
 
-    // An internal representation of the VBE References collection object, as returned from the VBE.ActiveVBProject.References, or similar
-    // These offsets are known to be valid across 32-bit and 64-bit versions of VBA and VB6, right back from when VBA6 was first released.
+    /// <summary>
+    /// An internal representation of the VBE References collection object, as returned from VBE.ActiveVBProject.References, or similar
+    /// These offsets are known to be valid across 32-bit and 64-bit versions of VBA and VB6, right back from when VBA6 was first released.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     struct VBEReferencesObj
     {
@@ -276,8 +333,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         IntPtr Placeholder2;
         IntPtr RefCount;
     }
-
-    // A ITypeLib object hosted by the VBE, also providing Prev/Next pointers for a double linked list of all loaded project ITypeLibs
+    
+    /// <summary>
+    /// An internal representation of the ITypeLib object hosted by the VBE.
+    /// Also provides Prev/Next pointers, exposing a double linked list of all loaded project ITypeLibs
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     struct VBETypeLibObj
     {
@@ -288,7 +348,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         public IntPtr Next;
     }
 
-    // IVBEProject, obtainable from a VBE hosted ITypeLib in order to access a few extra features...
+    /// <summary>
+    /// An internal interface supported by VBA for all projects. Obtainable from a VBE hosted ITypeLib 
+    /// in order to access a few extra features...
+    /// </summary>
+    /// <remarks>This internal interface is known to be supported since the very earliest version of VBA6</remarks>
     [ComImport(), Guid("DDD557E0-D96F-11CD-9570-00AA0051E5D4")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     interface IVBEProject
@@ -317,6 +381,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void CompileProject();                            // throws COM exception 0x800A9C64 if error occurred during compile.
     }
 
+    /*
+     Not currently used.
     // IVBEProject2, vtable position just before the IVBEProject, not queryable, so needs aggregation
     [ComImport(), Guid("FFFFFFFF-0000-0000-C000-000000000046")]  // 
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -330,7 +396,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         void SetProjectHelpFileName(string value);
         void SetProjectHelpContext(int value);
     }
+    */
 
+    /// <summary>
+    /// An extended version of TYPEKIND, which VBA uses internally to identify VBA classes as a seperate type
+    /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221643(v=vs.85).aspx
+    /// </summary>
     public enum TYPEKIND_VBE
     {
         TKIND_ENUM = 0,
@@ -342,14 +413,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAbstract
         TKIND_ALIAS = 6,
         TKIND_UNION = 7,
 
-        TKIND_VBACLASS = 8,                 // extended by VBA, this is used for the outermost interface
+        TKIND_VBACLASS = 8,               
     }
 
+    /// <summary>
+    /// Used by methods in the ITypeInfo and ITypeLib interfaces.  Usually used to get the root type or library name.
+    /// </summary>
     public enum TypeLibConsts : int
     {
         MEMBERID_NIL = -1,
     }
 
+    /// <summary>
+    /// Some known COM HRESULTs used in our code
+    /// </summary>
     public enum KnownComHResults : int
     {
         E_VBA_COMPILEERROR = unchecked((int)0x800A9C64),
