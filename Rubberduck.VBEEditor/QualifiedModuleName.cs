@@ -7,7 +7,7 @@ namespace Rubberduck.VBEditor
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    public struct QualifiedModuleName
+    public readonly struct QualifiedModuleName
     {
         public static string GetProjectId(IVBProject project)
         {

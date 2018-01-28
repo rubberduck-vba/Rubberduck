@@ -2,7 +2,7 @@ using System;
 
 namespace Rubberduck.VBEditor
 {
-    public struct QualifiedMemberName
+    public readonly struct QualifiedMemberName
     {
         public QualifiedMemberName(QualifiedModuleName qualifiedModuleName, string memberName)
         {
