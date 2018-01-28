@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             foreach (var component in componentsCollection)
             {
-                var qmn = new QualifiedModuleName(component);
+                var qmn = component.QualifiedModuleName;
                 _components.Add(qmn, component);
                 _codeModules.Add(qmn, component.CodeModule);
             }

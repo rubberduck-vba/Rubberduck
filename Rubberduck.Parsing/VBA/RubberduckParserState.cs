@@ -62,6 +62,7 @@ namespace Rubberduck.Parsing.VBA
 
         public DeclarationFinder DeclarationFinder { get; private set; }
 
+        private readonly IVBE _vbe;
         private readonly IProjectsRepository _projectRepository;   
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
@@ -76,7 +77,13 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(declarationFinderFactory));
             }
+            if (projectRepository == null)
+            {
+                throw new ArgumentException(nameof(projectRepository));
+            }
 
+
+            _vbe = vbe;
             _projectRepository = projectRepository;
             _declarationFinderFactory = declarationFinderFactory;
 
@@ -86,7 +93,7 @@ namespace Rubberduck.Parsing.VBA
                 States.Add((ParserState)value);
             }
 
-            _hostApp = vbe.HostApplication();
+            _hostApp = _vbe.HostApplication();
             AddEventHandlers();
             IsEnabled = true;
             RefreshFinder(_hostApp);
@@ -128,7 +135,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectAdded(object sender, ProjectEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode)
+            if (!_vbe.IsInDesignMode)
             {
                 return;
             }
@@ -139,7 +146,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectRemoved(object sender, ProjectEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode)
+            if (!_vbe.IsInDesignMode)
             {
                 return;
             }
@@ -150,12 +157,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ProjectRenamed(object sender, ProjectRenamedEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode)
-            {
-                return;
-            }
-
-            if (!ThereAreDeclarations())
+            if (!_vbe.IsInDesignMode || !ThereAreDeclarations())
             {
                 return;
             }
@@ -167,9 +169,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ComponentAdded(object sender, ComponentEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode) { return; }
-
-            if (!ThereAreDeclarations())
+            if (!_vbe.IsInDesignMode || !ThereAreDeclarations())
             {
                 return;
             }
@@ -180,9 +180,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ComponentRemoved(object sender, ComponentEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode) { return; }
-
-            if (!ThereAreDeclarations())
+            if (!_vbe.IsInDesignMode || !ThereAreDeclarations())
             {
                 return;
             }
@@ -193,12 +191,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void Sinks_ComponentRenamed(object sender, ComponentRenamedEventArgs e)
         {
-            if (!e.Project.VBE.IsInDesignMode)
-            {
-                return;
-            }
-
-            if (!ThereAreDeclarations())
+            if (!_vbe.IsInDesignMode || !ThereAreDeclarations())
             {
                 return;
             }
