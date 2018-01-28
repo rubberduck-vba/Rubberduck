@@ -23,7 +23,7 @@ Private Function TestFunction(ByVal target As Range) As String
     Dim myArray As Variant
     myArray = target    ' read range values into an array
 End Function";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
