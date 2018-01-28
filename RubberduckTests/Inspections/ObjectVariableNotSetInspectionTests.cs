@@ -295,12 +295,32 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_EnumVariable_ReturnsNoResult()
+        public void ObjectVariableNotSet_UDT_ReturnsNoResult()
         {
 
             var expectResultCount = 0;
             var input =
 @"
+Private Type TTest
+    Foo As Long
+    Bar As String
+End Type
+
+Private Sub TestUDT()
+    Dim tt As TTest
+    tt.Foo = 42
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_EnumVariable_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
 Enum TestEnum
     EnumOne
     EnumTwo
