@@ -47,6 +47,88 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => AppendLine(value.Replace("\0", string.Empty));
     }
 
+    public static class UnmanagedMemHelper
+    {
+        /// <summary>
+        /// Windows API call used for memory range validation
+        /// </summary>
+        [DllImport("kernel32.dll")]
+        public static extern int VirtualQuery(IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, int dwLength);
+        
+        /// <summary>
+        /// Do our best to validate that the input memory address is actually a COM object
+        /// </summary>
+        /// <param name="comObjectPtr">the input memory address to check</param>
+        /// <returns>false means definitely not a valid COM object.  true means _probably_ a valid COM object</returns>
+        public static bool ValidateComObject(IntPtr comObjectPtr)
+        {
+            // Is it a valid memory address, with at least one accessible vTable ptr
+            if (IsValidMemoryRange(comObjectPtr, IntPtr.Size))
+            {
+                IntPtr vTablePtr = Marshal.ReadIntPtr(comObjectPtr);
+
+                // And for a COM object, we need a valid vtable, with at least 3 vTable entries (for IUnknown)
+                if (IsValidMemoryRange(vTablePtr, IntPtr.Size * 3)) 
+                {
+                    IntPtr firstvTableEntry = Marshal.ReadIntPtr(vTablePtr);
+
+                    // And lets check the first vTable entry actually points to EXECUTABLE memory
+                    // (we could check all 3 initial IUnknown entries, but we want to be reasonably  
+                    // efficient and we can never 100% guarantee our result anyway.)
+                    if (IsValidMemoryRange(firstvTableEntry, 1, checkIsExecutable: true))      
+                    {
+                        // As best as we can tell, it looks to be a valid COM object
+                        return true;
+                    }
+                }
+            }
+
+            // One of the validation checks failed.  The COM object is definitely not a valid COM object.
+            return false;
+        }
+
+        /// <summary>
+        /// Validate a memory address range
+        /// </summary>
+        /// <param name="memOffset">the input memory address to check</param>
+        /// <param name="size">the minimum size of data we are expecting to be available next to memOffset</param>
+        /// <param name="checkIsExecutable">optionally check if the memory address points to EXECUTABLE memory</param>
+        public static bool IsValidMemoryRange(IntPtr memOffset, int size, bool checkIsExecutable = false)
+        {
+            if (memOffset != IntPtr.Zero)
+            {
+                var memInfo = new MEMORY_BASIC_INFORMATION();
+                var sizeOfMemInfo = Marshal.SizeOf(memInfo);
+
+                if (VirtualQuery(memOffset, out memInfo, sizeOfMemInfo) == sizeOfMemInfo)
+                {
+                    if ((!memInfo.Protect.HasFlag(ALLOCATION_PROTECTION.PAGE_NOACCESS)) &&
+                        (!memInfo.Protect.HasFlag(ALLOCATION_PROTECTION.PAGE_GUARD)))
+                    {
+                        // We've confirmed the base memory address is valid, and is accessible.
+                        // Finally just check the full address RANGE is also valid (i.e. the end point of the structure we're reading)
+                        var validMemAddressEnd = memInfo.BaseAddress.ToInt64() + memInfo.RegionSize.ToInt64();
+                        var endOfStructPtr = memOffset.ToInt64() + size;
+                        if (endOfStructPtr <= validMemAddressEnd)
+                        {
+                            if (checkIsExecutable)
+                            {
+                                // We've been asked to check if the memory address is marked as containing executable code
+                                return memInfo.Protect.HasFlag(ALLOCATION_PROTECTION.PAGE_EXECUTE) ||
+                                        memInfo.Protect.HasFlag(ALLOCATION_PROTECTION.PAGE_EXECUTE_READ) ||
+                                        memInfo.Protect.HasFlag(ALLOCATION_PROTECTION.PAGE_EXECUTE_READWRITE) ||
+                                        memInfo.Protect.HasFlag(ALLOCATION_PROTECTION.PAGE_EXECUTE_WRITECOPY);
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;            
+        }
+    }
+
     /// <summary>
     /// Encapsulates reading unmanaged memory into managed structures
     /// </summary>
@@ -64,7 +146,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (Marshal.IsComObject(comObj))
             {
                 var referencesPtr = Marshal.GetIUnknownForObject(comObj);
-                var retVal = StructHelper.ReadStructure<T>(referencesPtr);
+                var retVal = StructHelper.ReadStructureSafe<T>(referencesPtr);
                 Marshal.Release(referencesPtr);
                 return retVal;
             }
@@ -86,6 +168,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return (T)Marshal.PtrToStructure(memAddress, typeof(T));
         }
 
+        
         /// <summary>
         /// Takes an unmanaged memory address and reads the unmanaged memory given by its pointer, 
         /// with memory address validation for added protection
@@ -95,8 +178,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <returns>the requested structure T</returns>
         public static T ReadStructureSafe<T>(IntPtr memAddress)
         {
-            if (memAddress == IntPtr.Zero) return default(T);
-            return (T)Marshal.PtrToStructure(memAddress, typeof(T));
+            if (UnmanagedMemHelper.IsValidMemoryRange(memAddress, Marshal.SizeOf(typeof(T))))
+            {
+                return (T)Marshal.PtrToStructure(memAddress, typeof(T));
+            }
+            
+            return default(T);
         }
     }
 
@@ -1330,7 +1417,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
                 var internalReferencesObj = StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
-
                 return new TypeLibWrapper(internalReferencesObj.TypeLib);
             }
         }
@@ -1348,6 +1434,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <param name="rawObjectPtr">The raw unamanaged ITypeLib pointer</param>
         public TypeLibWrapper(IntPtr rawObjectPtr)
         {
+            if (!UnmanagedMemHelper.ValidateComObject(rawObjectPtr))
+            {
+                throw new ArgumentException("Expected COM object, but validation failed.");
+            };
             target_ITypeLib = (ComTypes.ITypeLib)Marshal.GetObjectForIUnknown(rawObjectPtr);
             Marshal.Release(rawObjectPtr);         // target_ITypeLib holds a reference to this now
             InitCommon();
@@ -1663,7 +1753,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         {
                             // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
                             var internalReferencesObj = StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
-
+                            
                             // Now we've got this one internalReferencesObj.typeLib, we can iterate through ALL loaded project TypeLibs
                             using (var typeLibIterator = new VBETypeLibsIterator(internalReferencesObj.TypeLib))
                             {
