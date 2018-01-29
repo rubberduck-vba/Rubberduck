@@ -710,7 +710,6 @@ End Sub : 'Lame comment!
             const string inputCode = @"
 
 
-
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
@@ -736,8 +735,7 @@ End Sub : 'Lame comment!
         {
             const string inputCode = @"
 
-   
-";
+   ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
@@ -762,8 +760,7 @@ End Sub : 'Lame comment!
         {
             const string inputCode = @"
 
-   
-";
+   ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
