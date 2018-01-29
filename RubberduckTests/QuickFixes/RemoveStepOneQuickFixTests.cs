@@ -24,11 +24,11 @@ End Sub";
 
             var expectedCode =
 @"Sub Foo()
-    For value = 0 To 5 
+    For value = 0 To 5
     Next
 End Sub";
 
-            this.TestStepOneQuickFix(expectedCode, inputCode);
+            TestStepOneQuickFix(expectedCode, inputCode);
         }
 
         [Test]
@@ -46,12 +46,12 @@ End Sub";
             var expectedCode =
 @"Sub Foo()
     For value = 0 To 5
-        For value = 0 To 5 
+        For value = 0 To 5
         Next
     Next
 End Sub";
 
-            this.TestStepOneQuickFix(expectedCode, inputCode);
+            TestStepOneQuickFix(expectedCode, inputCode);
         }
 
         private void TestStepOneQuickFix(string expectedCode, string inputCode)
