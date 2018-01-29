@@ -900,9 +900,10 @@ namespace Rubberduck.Parsing.VBA
         {
             using (var codeModule = ProjectsProvider.Component(module).CodeModule)
             {
-                return codeModule != null && codeModule.CountOfLines > 0
-                        ? codeModule.GetLines(1, codeModule.CountOfLines).GetHashCode()
-                        : 0;
+                var code = codeModule?.Content();
+                return string.IsNullOrEmpty(code)
+                        ? 0
+                        : code.GetHashCode();
             }
         }
 
