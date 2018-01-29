@@ -167,14 +167,14 @@ End Sub";
     On Error GoTo ErrorHandler1
 
     Exit Sub
-ErrorHandler:
+ErrorHandler1:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next
     End If
 
     Exit Sub
-ErrorHandler1:
+ErrorHandler:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next
@@ -217,14 +217,14 @@ End Sub";
 ErrorHandler1:
 
     Exit Sub
-ErrorHandler:
+ErrorHandler2:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next
     End If
 
     Exit Sub
-ErrorHandler2:
+ErrorHandler:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next

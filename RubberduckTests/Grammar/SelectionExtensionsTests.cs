@@ -2,11 +2,11 @@
 using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime;
 using System.Collections.Generic;
 
 namespace RubberduckTests.Grammar
@@ -692,7 +692,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 
@@ -710,7 +710,6 @@ End Sub : 'Lame comment!
             const string inputCode = @"
 
 
-
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
@@ -719,7 +718,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 
@@ -736,8 +735,7 @@ End Sub : 'Lame comment!
         {
             const string inputCode = @"
 
-   
-";
+   ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
@@ -745,7 +743,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 
@@ -762,8 +760,7 @@ End Sub : 'Lame comment!
         {
             const string inputCode = @"
 
-   
-";
+   ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
@@ -771,7 +768,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 
