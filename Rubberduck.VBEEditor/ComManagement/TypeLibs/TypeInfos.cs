@@ -484,7 +484,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // so we cast to our ITypeInfo_Ptrs interface in order to work with the raw IntPtrs
                 IntPtr typeLibPtr = IntPtr.Zero;
                 ((ITypeInfo_Ptrs)target_ITypeInfo).GetContainingTypeLib(out typeLibPtr, out _containerTypeLibIndex);
-                _containerTypeLib = new TypeLibWrapper(typeLibPtr);  // takes ownership of the COM reference
+                _containerTypeLib = new TypeLibWrapper(typeLibPtr, true);  
             }
             catch (Exception e)
             {
@@ -514,6 +514,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public TypeInfoWrapper(IntPtr rawObjectPtr, int? parentUserFormUniqueId = null)
         {
             _rawObjectPtr = rawObjectPtr;
+            if (_rawObjectPtr == IntPtr.Zero)
+            {
+                throw new ArgumentException("Unepectedly received a null pointer.");
+            }
 
             // We have to restrict interface requests to VBE hosted ITypeInfos due to a bug in their implementation.
             // See TypeInfoWrapper class XML doc for details.
@@ -546,6 +550,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _ITypeInfo_Aggregator?.Dispose();
             _IVBEComponent_Aggregator?.Dispose();
             _IVBETypeInfo_Aggregator?.Dispose();
+
+            Marshal.Release(_rawObjectPtr);
         }
 
         private TypeLibTextFields? _cachedTextFields;

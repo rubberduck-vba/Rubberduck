@@ -147,9 +147,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             IntPtr referenceTypeLibPtr = target_IVBEProject.GetReferenceTypeLib(index);
             if (referenceTypeLibPtr == IntPtr.Zero)
             {
-                throw new ArgumentException("$Reference TypeLib not available - probably a missing reference.");
+                throw new ArgumentException("Reference TypeLib not available - probably a missing reference.");
             }
-            return new TypeLibWrapper(referenceTypeLibPtr);
+            return new TypeLibWrapper(referenceTypeLibPtr, isRefCountedInput: true);
         }
 
         public TypeInfoReference GetVBEReferenceByGuid(Guid referenceGuid)
@@ -202,7 +202,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
                 var internalReferencesObj = StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
-                return new TypeLibWrapper(internalReferencesObj.TypeLib);
+                return new TypeLibWrapper(internalReferencesObj.TypeLib, isRefCountedInput: false);
             }
         }
 
@@ -217,14 +217,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// Constructor
         /// </summary>
         /// <param name="rawObjectPtr">The raw unamanaged ITypeLib pointer</param>
-        public TypeLibWrapper(IntPtr rawObjectPtr)
+        public TypeLibWrapper(IntPtr rawObjectPtr, bool isRefCountedInput)
         {
             if (!UnmanagedMemHelper.ValidateComObject(rawObjectPtr))
             {
                 throw new ArgumentException("Expected COM object, but validation failed.");
             };
             target_ITypeLib = (ComTypes.ITypeLib)Marshal.GetObjectForIUnknown(rawObjectPtr);
-            Marshal.Release(rawObjectPtr);         // target_ITypeLib holds a reference to this now
+            if (isRefCountedInput) Marshal.Release(rawObjectPtr);         
             InitCommon();
         }
 
@@ -297,7 +297,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG
                 if (e.HResult != (int)KnownComHResults.E_VBA_COMPILEERROR)
                 {
-                    // this is more for debug purposes, as we can probably just return false in future.
+                    // this is for debug purposes, to see if the compiler ever returns other errors on failure
                     throw new ArgumentException("Unrecognised VBE compiler error: \n" + e.ToString());
                 }
 #endif
@@ -466,14 +466,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         IEnumerator IEnumerable.GetEnumerator() => this;
         public IEnumerator<TypeLibWrapper> GetEnumerator() => this;
 
-        public IntPtr GetCurrentReference()
-        {
-            Marshal.AddRef(_currentTypeLibPtr);
-            return _currentTypeLibPtr;
-        }
-
-        TypeLibWrapper IEnumerator<TypeLibWrapper>.Current => new TypeLibWrapper(GetCurrentReference());
-        object IEnumerator.Current => new TypeLibWrapper(GetCurrentReference());
+        TypeLibWrapper IEnumerator<TypeLibWrapper>.Current => new TypeLibWrapper(_currentTypeLibPtr, isRefCountedInput: false);
+        object IEnumerator.Current => new TypeLibWrapper(_currentTypeLibPtr, isRefCountedInput: false);
 
         public void Reset()  // walk back to the first project in the chain
         {
