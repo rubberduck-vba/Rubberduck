@@ -104,7 +104,10 @@ namespace Rubberduck.Parsing.VBA
                 lock (_state)
                 {
                     token.ThrowIfCancellationRequested();
-                    _state.SetModuleAttributes(module, result.Attributes);  //This has to come first because it creates the module state if not present.
+
+                    //This has to come first because it creates the module state if not present.
+                    _state.SetModuleAttributes(module, result.Attributes);
+
                     _state.AddTokenStream(module, result.Tokens);
                     _state.AddParseTree(module, result.ParseTree);
                     _state.AddParseTree(module, result.AttributesTree, ParsePass.AttributesPass);

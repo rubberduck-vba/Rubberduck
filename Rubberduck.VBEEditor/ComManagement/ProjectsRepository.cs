@@ -86,7 +86,7 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             if (_disposed)
             {
-                return; //The lock has already been diposed.
+                return; //The lock has already been disposed.
             }
 
             var writeLockTaken = false;
@@ -113,11 +113,16 @@ namespace Rubberduck.VBEditor.ComManagement
             var componentCollections = ClearComWrapperDictionary(_componentsCollections);
             var components = ClearComWrapperDictionary(_components);
 
-            LoadCollections();
-
-            DisposeWrapperEnumerable(projects);
-            DisposeWrapperEnumerable(componentCollections);
-            DisposeWrapperEnumerable(components);
+            try
+            {
+                LoadCollections();
+            }
+            finally
+            {
+                DisposeWrapperEnumerable(projects);
+                DisposeWrapperEnumerable(componentCollections);
+                DisposeWrapperEnumerable(components);
+            }
         }
 
         private IEnumerable<TWrapper> ClearComWrapperDictionary<TKey, TWrapper>(IDictionary<TKey, TWrapper> dictionary)
@@ -152,11 +157,16 @@ namespace Rubberduck.VBEditor.ComManagement
                 _components.Remove(qmn);
             }
 
-            _componentsCollections[projectId] = project.VBComponents;
-            LoadComponents(_componentsCollections[projectId]);
-
-            componentsCollection.Dispose();
-            DisposeWrapperEnumerable(components.Select(kvp => kvp.Value));
+            try
+            {
+                _componentsCollections[projectId] = project.VBComponents;
+                LoadComponents(_componentsCollections[projectId]);
+            }
+            finally
+            {
+                componentsCollection.Dispose();
+                DisposeWrapperEnumerable(components.Select(kvp => kvp.Value));
+            } 
         }
 
         public void Refresh(string projectId)
@@ -178,7 +188,7 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             if (_disposed)
             {
-                return default(T); //The lock has already been diposed.
+                return default(T); //The lock has already been disposed.
             }
 
             var readLockTaken = false;

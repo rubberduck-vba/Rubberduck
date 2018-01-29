@@ -94,7 +94,6 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             int lastDeclarationsSectionLine;
-
             using (var codeModule = _state.ProjectsProvider.Component(_qualifiedModuleName).CodeModule)
             {
                 lastDeclarationsSectionLine = codeModule.CountOfDeclarationLines;

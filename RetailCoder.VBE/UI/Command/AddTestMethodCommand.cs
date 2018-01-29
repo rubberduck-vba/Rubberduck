@@ -84,16 +84,18 @@ namespace Rubberduck.UI.Command
                     var declaration = _state.GetTestModules()
                         .FirstOrDefault(f => _state.ProjectsProvider.Component(f.QualifiedModuleName).HasEqualCodeModule(module));
 
-                    if (declaration != null)
+                    if (declaration == null)
                     {
-                        string name;
-                        using (var component = module.Parent)
-                        {
-                            name = GetNextTestMethodName(component);
-                        }
-                        var body = TestMethodTemplate.Replace(NamePlaceholder, name);
-                        module.InsertLines(module.CountOfLines, body);
+                        return;
                     }
+
+                    string name;
+                    using (var component = module.Parent)
+                    {
+                        name = GetNextTestMethodName(component);
+                    }
+                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, body);
                 }
             }
             _state.OnParseRequested(this);

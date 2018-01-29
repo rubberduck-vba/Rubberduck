@@ -173,7 +173,7 @@ namespace Rubberduck.Parsing.VBA
                         var allNamesMatch = true;
                         for (var i = 0; i < coclass.Key.Count; i++)
                         {
-                            using(var property = properties[i+1])
+                            using (var property = properties[i+1])
                             {
                                 if (coclass.Key[i] != property?.Name)
                                 {
