@@ -131,6 +131,10 @@
     <Compile Include="ComManagement\IProjectsProvider.cs" />
     <Compile Include="ComManagement\IProjectsRepository.cs" />
     <Compile Include="ComManagement\ProjectsRepository.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeInfos.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsSupport.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
     <Compile Include="ComManagement\ComSafe.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
