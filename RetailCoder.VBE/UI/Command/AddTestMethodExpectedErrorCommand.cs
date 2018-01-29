@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -69,7 +70,7 @@ namespace Rubberduck.UI.Command
                     {
                         using(var selectedModule = component.CodeModule)
                         {
-                            return testModules.Any(a => HasEqualCodeModule(a.QualifiedName.QualifiedModuleName, selectedModule));
+                            return testModules.Any(a => _state.ProjectsProvider.Component(a.QualifiedModuleName).HasEqualCodeModule(selectedModule));
                         }
                     }
                 }
@@ -77,14 +78,6 @@ namespace Rubberduck.UI.Command
                 {
                     return false;
                 }
-            }
-        }
-
-        private bool HasEqualCodeModule(QualifiedModuleName module, ICodeModule otherCodeModule)
-        {
-            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
-            {
-                return codeModule.Equals(otherCodeModule);
             }
         }
 
