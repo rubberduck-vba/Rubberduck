@@ -14,6 +14,34 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
+        public void ObjectVariableNotSet_ArrayOfObjects_ReturnsResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Dim foo(0 To 9) As Object
+Private Function TestFunction(ByVal target As Range) As String
+    foo(1) = target
+End Function";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_ArrayOfStrings_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Dim foo(0 To 9) As String
+Private Function TestFunction(ByVal target As Range) As String
+    foo(1) = target 'implicit default member call here (target._Default -> target.Value)
+End Function";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_DefaultMemberAssignment_ReturnsNoResult()
         {
             var expectResultCount = 0;

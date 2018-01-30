@@ -38,87 +38,61 @@ namespace Rubberduck.Inspections
         /// <param name="state">The parser state</param>
         public static bool RequiresSetAssignment(IdentifierReference reference, RubberduckParserState state)
         {
-            if (!reference.IsAssignment)
-            {
-                // reference isn't assigning its declaration; not interesting
-                return false;
-            }
+            // reference isn't assigning its declaration
+            if (!reference.IsAssignment) { return false; }
 
+            // Set keyword is already there.
+            // Returning reference.Declaration.IsObject allows flagging redundant Set keyword!
             var setStmtContext = reference.Context.GetAncestor<VBAParser.SetStmtContext>();
-            if (setStmtContext != null)
-            {
-                // don't assume Set keyword is legit...
-                return reference.Declaration.IsObject;
-            }
+            if (setStmtContext != null) { return reference.Declaration.IsObject; }
 
+            // Temporal coupling: LetStmtContext wouldn't be present given a SetStmtContext.
+            // If both SetStmtContext and LetStmtContext are missing, we're not looking at an assignment expression.
             var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
-            if (letStmtContext == null)
-            {
-                // not an assignment
-                return false;
-            }
+            if (letStmtContext == null) { return false; }
 
             var declaration = reference.Declaration;
+            var isObjectVariable = declaration.IsObject;
             if (declaration.IsArray)
             {
-                // arrays don't need a Set statement... todo figure out if array items are objects
-                return false;
+                // this is an array of object types (explicitly declared as such)
+                return isObjectVariable;
             }
 
-            var isObjectVariable = declaration.IsObject;
-            var isVariant = declaration.IsUndeclared || declaration.AsTypeName == Tokens.Variant;
-            if (!isObjectVariable && !isVariant)
-            {
-                return false;
-            }
-
+            // at this point we need to know if what we're looking at is an object or a variant.
+            // if it's neither, we're done here.
+            // if assigned declaration is an object with no default parameterless member, Set keyword is required (and missing!).
             if (isObjectVariable)
             {
                 var classModule = declaration.AsTypeDeclaration as ClassModuleDeclaration;
-                // if assigned declaration is an object without a default parameterless (or with all parameters optional) member, LHS needs a 'Set' keyword.
                 return !HasParameterlessDefaultMember(classModule);
             }
 
-            // assigned declaration is a variant. we need to know about the RHS of the assignment.
+            // at this point if we're not looking at a variant, we can't say Set keyword is required/missing.
+            var isVariant = declaration.IsUndeclared || declaration.AsTypeName == Tokens.Variant;
+            if (!isVariant) { return false; }
+
+            // the fun begins: we need to infer as much type information as we can from the RHS expression.
 
             var expression = letStmtContext.expression();
-            if (expression == null)
-            {
-                Debug.Assert(false, "RHS expression is empty? What's going on here?");
-            }
+            if (expression == null) { Debug.Assert(false, "RHS expression is empty? What's going on here?"); }
 
-            if (expression is VBAParser.NewExprContext)
-            {
-                // RHS expression is newing up an object reference - LHS needs a 'Set' keyword:
-                return true;
-            }
+            // If RHS is New-ing up an object instance, Set keyword is required & missing.
+            if (expression is VBAParser.NewExprContext) { return true; }
 
+            // If RHS is assigning to Nothing (i.e. an "object literal" identifier), Set keyword is required & missing.
             var literalExpression = expression as VBAParser.LiteralExprContext;
-            if (literalExpression?.literalExpression()?.literalIdentifier()?.objectLiteralIdentifier() != null)
-            {
-                // RHS is a 'Nothing' token - LHS needs a 'Set' keyword:
-                return true;
-            }
+            if (literalExpression?.literalExpression()?.literalIdentifier()?.objectLiteralIdentifier() != null) { return true; }
 
-            // todo resolve expression return type
-
-            var memberRefs = state.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
-            var lastRef = memberRefs.LastOrDefault(r => !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
+            // note: rhsRefs is correct, but the type of rhsRefs.LastOrDefault may not *necessarily* be the type of the expression.
+            // todo: try to *actually* resolve the RHS expression.
+            var rhsRefs = state.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName)
+                .Where(r => !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
+            var lastRef = rhsRefs.LastOrDefault();
             if (lastRef?.Declaration.IsObject ?? false)
             {
-                // the last reference in the expression is referring to an object type
-                // return true *if* the object doesn't have a parameterless default member
                 var typeDeclaration = lastRef.Declaration.AsTypeDeclaration as ClassModuleDeclaration;
                 return !HasParameterlessDefaultMember(typeDeclaration);
-            }
-
-            var accessibleDeclarations = state.DeclarationFinder.GetAccessibleDeclarations(reference.ParentScoping);
-            foreach (var accessibleDeclaration in accessibleDeclarations.Where(d => d.IdentifierName == expression.GetText()))
-            {
-                if (accessibleDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule) || accessibleDeclaration.AsTypeName == Tokens.Object)
-                {
-                    return true;
-                }
             }
 
             return false;
