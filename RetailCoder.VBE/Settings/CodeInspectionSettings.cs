@@ -154,9 +154,7 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            return obj is CodeInspectionSetting inspectionSetting &&
-                   inspectionSetting.InspectionType == InspectionType &&
-                   inspectionSetting.Name == Name;
+            return obj is CodeInspectionSetting inspectionSetting && inspectionSetting.Name == Name;
         }
 
         public override int GetHashCode()
