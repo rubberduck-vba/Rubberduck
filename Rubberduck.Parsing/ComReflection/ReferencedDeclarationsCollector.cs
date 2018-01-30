@@ -142,7 +142,7 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 var moduleName = new QualifiedModuleName(_referenceName, _path,
                     module.Type == DeclarationType.Enumeration || module.Type == DeclarationType.UserDefinedType
-                        ? string.Format("_{0}", module.Name)
+                        ? $"_{module.Name}"
                         : module.Name);
 
                 var declaration = CreateModuleDeclaration(module, moduleName, project, GetModuleAttributes(module));
@@ -235,8 +235,9 @@ namespace Rubberduck.Parsing.ComReflection
                     _declarations.AddRange(hasParams.Parameters);
                     memberTree.AddChildren(hasParams.Parameters);
                 }
-                var coClass = memberDeclaration as ClassModuleDeclaration;
-                if (coClass != null && item == defaultMember)
+
+                var coClass = declaration as ClassModuleDeclaration;
+                if (coClass != null && item.IsDefault)
                 {
                     coClass.DefaultMember = memberDeclaration;
                 }
@@ -292,7 +293,7 @@ namespace Rubberduck.Parsing.ComReflection
                 case DeclarationType.PropertyLet:
                     return new PropertyLetDeclaration(member, parent, module, attributes);
                 default:
-                    throw new InvalidEnumArgumentException(string.Format("Unexpected DeclarationType {0} encountered.", member.Type));
+                    throw new InvalidEnumArgumentException($"Unexpected DeclarationType {member.Type} encountered.");
             }
         }
 
