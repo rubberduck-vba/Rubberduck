@@ -38,7 +38,5 @@ namespace Rubberduck.Inspections.Concrete
                                                                                   State,
                                                                                   reference));
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
     }
 }

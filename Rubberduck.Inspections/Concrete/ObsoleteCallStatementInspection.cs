@@ -20,7 +20,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new ObsoleteCallStatementListener();
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

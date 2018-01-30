@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public ObsoleteGlobalInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var issues = from item in UserDeclarations

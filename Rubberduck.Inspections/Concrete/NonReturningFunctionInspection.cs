@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public NonReturningFunctionInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         private static readonly DeclarationType[] ReturningMemberTypes =
         {
             DeclarationType.Function,

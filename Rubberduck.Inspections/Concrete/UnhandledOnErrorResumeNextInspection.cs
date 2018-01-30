@@ -25,8 +25,6 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new OnErrorStatementListener(_errorHandlerLabelsMap, _bodyElementContextsMap);
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

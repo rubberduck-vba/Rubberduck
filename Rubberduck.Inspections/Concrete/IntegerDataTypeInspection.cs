@@ -19,8 +19,6 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var interfaceImplementationMembers = UserDeclarations.FindInterfaceImplementationMembers().ToHashSet();

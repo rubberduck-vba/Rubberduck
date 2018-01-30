@@ -17,8 +17,6 @@ namespace Rubberduck.Inspections.Concrete
         public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");

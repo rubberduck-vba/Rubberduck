@@ -14,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
         public UntypedFunctionUsageInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
         private readonly string[] _tokens = {
             Tokens.Error,
             Tokens.Hex,

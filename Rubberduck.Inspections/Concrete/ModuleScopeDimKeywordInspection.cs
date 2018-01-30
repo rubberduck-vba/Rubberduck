@@ -18,8 +18,6 @@ namespace Rubberduck.Inspections.Concrete
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
         public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

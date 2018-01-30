@@ -19,8 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new OptionBaseStatementListener();
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+        
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

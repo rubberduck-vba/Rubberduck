@@ -1,5 +1,4 @@
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Abstract
@@ -9,7 +8,6 @@ namespace Rubberduck.Inspections.Abstract
         protected ParseTreeInspectionBase(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
         public abstract IInspectionListener Listener { get; }
         public virtual ParsePass Pass => ParsePass.CodePanePass;
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -21,8 +20,6 @@ namespace Rubberduck.Inspections.Concrete
         {
             Listener = new MissingOptionExplicitListener();
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; }
 

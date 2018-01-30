@@ -13,8 +13,6 @@ namespace Rubberduck.Inspections.Concrete
         public ObsoleteTypeHintInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var results = UserDeclarations.ToList();

@@ -20,8 +20,6 @@ namespace Rubberduck.Inspections.Concrete
         {
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         public override IInspectionListener Listener { get; } = new ImplicitByRefModifierListener();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

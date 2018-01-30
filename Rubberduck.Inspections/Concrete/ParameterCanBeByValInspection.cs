@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
         public ParameterCanBeByValInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = UserDeclarations.ToArray();

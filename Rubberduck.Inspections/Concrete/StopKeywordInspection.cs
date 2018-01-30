@@ -18,8 +18,6 @@ namespace Rubberduck.Inspections.Concrete
         public StopKeywordInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         public override IInspectionListener Listener { get; } =
             new StopKeywordListener();
 

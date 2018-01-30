@@ -14,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
         public WriteOnlyPropertyInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var setters = State.DeclarationFinder.UserDeclarations(DeclarationType.Property | DeclarationType.Procedure)

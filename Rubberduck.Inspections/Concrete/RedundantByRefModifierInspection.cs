@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Common;
@@ -20,8 +19,6 @@ namespace Rubberduck.Inspections.Concrete
             : base(state)
         {
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; } = new RedundantByRefModifierListener();
 

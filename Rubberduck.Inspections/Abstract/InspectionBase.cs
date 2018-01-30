@@ -22,7 +22,6 @@ namespace Rubberduck.Inspections.Abstract
         protected InspectionBase(RubberduckParserState state)
         {
             State = state;
-            Severity = CodeInspectionSeverity.Warning;
             Name = GetType().Name;
         }
 
@@ -34,7 +33,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.
         /// </summary>
-        public abstract CodeInspectionType InspectionType { get; }
+        public CodeInspectionType InspectionType { get; set; } = CodeInspectionType.CodeQualityIssues;
 
         /// <summary>
         /// The inspection type name, obtained by reflection.
@@ -44,7 +43,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Inspection severity level. Can control whether an inspection is enabled.
         /// </summary>
-        public CodeInspectionSeverity Severity { get; set; }
+        public CodeInspectionSeverity Severity { get; set; } = CodeInspectionSeverity.Warning;
 
         /// <summary>
         /// Meta-information about why an inspection exists.

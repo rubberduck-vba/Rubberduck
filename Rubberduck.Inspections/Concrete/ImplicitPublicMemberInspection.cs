@@ -14,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitPublicMemberInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
         private static readonly DeclarationType[] ProcedureTypes = 
         {
             DeclarationType.Function,

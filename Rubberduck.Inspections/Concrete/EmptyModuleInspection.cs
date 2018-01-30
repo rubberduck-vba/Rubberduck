@@ -22,8 +22,6 @@ namespace Rubberduck.Inspections.Concrete
             _emptyModuleVisitor = new EmptyModuleVisitor();
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var modulesToInspect = State.DeclarationFinder.AllModules

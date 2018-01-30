@@ -26,8 +26,6 @@ namespace Rubberduck.Inspections.Concrete
             _settings = settings;
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 
         {
             DeclarationType.BracketedExpression, 
