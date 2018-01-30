@@ -1,8 +1,8 @@
-#define BuildDir SourcePath + "RetailCoder.VBE\bin\Release"
+#define BuildDir SourcePath + "Rubberduck.VBE\bin\Release"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
 #define InspectionsDLL "Rubberduck.Inspections.dll"
-#define AppVersion GetFileVersion(SourcePath + "RetailCoder.VBE\bin\Release\Rubberduck.dll")
+#define AppVersion GetFileVersion(SourcePath + "Rubberduck.VBE\bin\Release\Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
 #define License SourcePath + "\License.rtf"

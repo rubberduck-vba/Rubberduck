@@ -38,7 +38,7 @@ install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
 assembly_info:
   patch: true
-  file: RetailCoder.VBE\Properties\AssemblyInfo.cs
+  file: Rubberduck.VBE\Properties\AssemblyInfo.cs
   assembly_version: '{version}'
 
 before_build:
@@ -56,7 +56,7 @@ test_script:
   - codecov -f "Rubberduck_Coverage.xml"
 
 before_package:
-  - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
+  - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll Rubberduck.VBE\bin\Release\Rubberduck.Inspections.dll
 
 for:
   - branches:
