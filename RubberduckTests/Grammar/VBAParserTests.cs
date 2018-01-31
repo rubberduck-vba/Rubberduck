@@ -2136,6 +2136,26 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
+        [Category("Parser")]
+        [Test]
+        public void SubtractionExpressionsAreNoLetterRanges()
+        {
+            const string code = @"
+Public Sub Foo()
+    Dim a As Long
+    Dim b As Long
+    Dim z As Long
+    a = 1
+    b = 2
+    z = a-b
+    b = a-z
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//letterRange", matches => matches.Count == 0);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//universalLetterRange", matches => matches.Count == 0);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);
