@@ -345,6 +345,8 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="Inspections\IInspectionProvider.cs" />
+    <Compile Include="Inspections\InspectionProvider.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
     <Compile Include="Navigation\CodeMetrics\CodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\CodeMetrics\CodeMetricsResult.cs" />

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections;
 using Rubberduck.SettingsProvider;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Settings
@@ -12,21 +12,14 @@ namespace Rubberduck.Settings
         private readonly CodeInspectionSettings _defaultSettings;
         private readonly HashSet<string> _foundInspectionNames;
 
-        public CodeInspectionConfigProvider(IPersistanceService<CodeInspectionSettings> persister, IEnumerable<IInspection> foundInspections)
+        public CodeInspectionConfigProvider(IPersistanceService<CodeInspectionSettings> persister, IInspectionProvider inspectionProvider)
         {
             _persister = persister;
-            _foundInspectionNames = foundInspections.Select(inspection => inspection.Name).ToHashSet();
+            _foundInspectionNames = inspectionProvider.Inspections.Select(inspection => inspection.Name).ToHashSet();
             _defaultSettings = new DefaultSettings<CodeInspectionSettings>().Default;
 
-            var defaultNames = _defaultSettings.CodeInspections.Select(x => x.Name).ToHashSet();
-
-            var defaultInspections = foundInspections.Where(inspection => defaultNames.Contains(inspection.Name));
-            var nonDefaultInspections = foundInspections.Except(defaultInspections);
-
-            foreach (var inspection in defaultInspections)
-            {
-                inspection.InspectionType = _defaultSettings.CodeInspections.First(setting => setting.Name == inspection.Name).InspectionType;
-            }
+            var defaultNames = _defaultSettings.CodeInspections.Select(x => x.Name);
+            var nonDefaultInspections = inspectionProvider.Inspections.Where(inspection => !defaultNames.Contains(inspection.Name));
 
             _defaultSettings.CodeInspections.UnionWith(nonDefaultInspections.Select(inspection => new CodeInspectionSetting(inspection)));
         }
@@ -40,10 +33,10 @@ namespace Rubberduck.Settings
                 return _defaultSettings;
             }
 
+            // Loaded settings don't contain defaults, so we need to combine user settings with defaults.
             var settings = new HashSet<CodeInspectionSetting>();
 
-            // Loaded settings don't contain defaults, so we need to combine user settings with defaults.
-            foreach (var loadedSetting in loaded.CodeInspections.Where(inspection => _foundInspectionNames.Contains(inspection.Name)).Distinct())
+            foreach (var loadedSetting in loaded.CodeInspections.Where(inspection => _foundInspectionNames.Contains(inspection.Name)))
             {
                 var matchingDefaultSetting = _defaultSettings.CodeInspections.FirstOrDefault(inspection => inspection.Equals(loadedSetting));
                 if (matchingDefaultSetting != null)

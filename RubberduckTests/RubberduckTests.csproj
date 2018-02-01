@@ -106,6 +106,7 @@
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
+    <Compile Include="Inspections\InspectionProviderTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
     <Compile Include="VBEditor\ComSafeTests.cs" />
