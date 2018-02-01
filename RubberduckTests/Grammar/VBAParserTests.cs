@@ -4,7 +4,6 @@ using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Tree.Xpath;
 using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -392,7 +391,7 @@ _
         [Test]
         public void TestDefDirectiveUniversalLetterRange()
         {
-            string code = @"DefBool A - Z";
+            string code = @"DefBool A-Z";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//universalLetterRange");
         }
@@ -2177,6 +2176,7 @@ End Sub
                 {
                     // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
                     // If LL mode fails, we're done.
+
                     throw;
                 }
 
