@@ -21,6 +21,8 @@ parser grammar VBAParser;
 
 options { tokenVocab = VBALexer; }
 
+@header { using System.Text.RegularExpressions; }
+
 startRule : module EOF;
 
 module :
@@ -289,16 +291,17 @@ defType :
 // singleLetter must appear at the end to prevent premature bailout
 letterSpec : universalLetterRange | letterRange | singleLetter;
 
-// we're purpusefully not actually making sure this is an ASCII letter
-// that'd be too much of a hassle with the lexer to get working
-singleLetter : {_input.Lt(1).Text.Length == 1}? IDENTIFIER;
+singleLetter : {_input.Lt(1).Text.Length == 1 && Regex.Match(_input.Lt(1).Text, @"[a-zA-Z]").Success}? IDENTIFIER;
+
 // We make a separate universalLetterRange rule because it is treated specially in VBA. This makes it easy for users of the parser
 // to identify this case. Quoting MS VBAL:
 // "A <universal-letter-range> defines a single implicit declared type for every <IDENTIFIER> within 
 // a module, even those with a first character that would otherwise fall outside this range if it was 
 // interpreted as a <letter-range> from A-Z.""
-universalLetterRange : {_input.Lt(1).Text.StartsWith("A") && _input.Lt(1).Text.EndsWith("Z")}? LETTER_RANGE;
-letterRange : LETTER_RANGE;
+universalLetterRange : {_input.Lt(1).Text.Equals("A") && _input.Lt(3).Text.Equals("Z")}? IDENTIFIER MINUS IDENTIFIER;
+ 
+letterRange : singleLetter MINUS singleLetter;
+
 
 doLoopStmt :
     DO endOfStatement 
