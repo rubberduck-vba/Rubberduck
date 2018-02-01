@@ -216,12 +216,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(Configuration)" == "Debug" (
-   copy "$(TargetPath)" "$(SolutionDir)Rubberduck.Main\bin\Debug" /Y
-)
-if "$(Configuration)" == "Release" (
-   copy "$(TargetPath)" "$(SolutionDir)Rubberduck.Main\bin\Release" /Y
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
