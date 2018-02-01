@@ -205,14 +205,6 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new RedundantByRefModifierInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "RedundantByRefModifierInspection";

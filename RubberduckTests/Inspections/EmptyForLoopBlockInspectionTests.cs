@@ -3,23 +3,12 @@ using System.Threading;
 using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
     public class EmptyForLoopBlockInspectionTests
     {
-        [Test]
-        [Category("Inspections")]
-        public void EmptyForLoopBlock_InspectionType()
-        {
-            var inspection = new EmptyForLoopBlockInspection(null);
-            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
-            Assert.AreEqual(expectedInspection, inspection.InspectionType);
-        }
-
         [Test]
         [Category("Inspections")]
         public void EmptyForLoopBlock_InspectionName()

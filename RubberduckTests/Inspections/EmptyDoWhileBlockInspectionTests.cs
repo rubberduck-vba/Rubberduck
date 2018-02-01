@@ -4,23 +4,12 @@ using NUnit.Framework;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
     public class EmptyDoWhileBlockInspectionTests
     {
-        [Test]
-        [Category("Inspections")]
-        public void EmptyDoWhileBlock_InspectionType()
-        {
-            var inspection = new EmptyDoWhileBlockInspection(null);
-            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
-            Assert.AreEqual(expectedInspection, inspection.InspectionType);
-        }
-
         [Test]
         [Category("Inspections")]
         public void EmptyDoWhileBlock_InspectionName()
