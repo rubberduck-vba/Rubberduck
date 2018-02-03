@@ -93,7 +93,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<ISourceControlProvider>()
                 .ImplementedBy<GitProvider>()
-                .LifestyleSingleton());
+                .LifestyleTransient());
             //container.Register(Component.For<GitProvider>()
             //    .LifestyleSingleton());
             container.Register(Component.For<IOperatingSystem>()
