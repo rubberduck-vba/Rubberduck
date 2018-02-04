@@ -30,14 +30,28 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public void AddComponent(CodeExplorerItemViewModel node, ComponentType type)
         {
-            var components = node != null
+            using (var components = node != null
                 ? GetDeclaration(node).Project.VBComponents
-                : _vbe.ActiveVBProject.VBComponents;
+                : ComponentsCollectionFromActiveProject())
+            {
+                var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
 
-            var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
+                using (var newComponent = components.Add(type))
+                {
+                    using (var codeModule = newComponent.CodeModule)
+                    {
+                        codeModule.InsertLines(1, folderAnnotation);
+                    }
+                }
+            }
+        }
 
-            var newComponent = components.Add(type);
-            newComponent.CodeModule.InsertLines(1, folderAnnotation);
+        private IVBComponents ComponentsCollectionFromActiveProject()
+        {
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                return activeProject.VBComponents;
+            }
         }
 
         private Declaration GetDeclaration(CodeExplorerItemViewModel node)

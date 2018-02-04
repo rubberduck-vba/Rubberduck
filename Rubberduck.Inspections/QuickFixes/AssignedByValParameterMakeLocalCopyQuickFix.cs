@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
@@ -13,6 +14,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using System.Diagnostics;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -30,6 +32,9 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
+            Debug.Assert(result.Target.Context.Parent is VBAParser.ArgListContext);
+            Debug.Assert(null != ((ParserRuleContext)result.Target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>());
+
             var forbiddenNames = _parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(result.Target).Select(n => n.IdentifierName);
 
             var localIdentifier = PromptForLocalVariableName(result.Target, forbiddenNames.ToList());
@@ -106,16 +111,25 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, Declaration target, string localIdentifier)
         {
-            var localVariableDeclaration = $"{Environment.NewLine}{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}{Environment.NewLine}";
-            
+            var localVariableDeclaration = $"{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}";
+
             var requiresAssignmentUsingSet =
                 target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState));
 
-            var localVariableAssignment = string.Format("{0}{1}",
-                                                        requiresAssignmentUsingSet ? "Set " : string.Empty,
-                                                        $"{localIdentifier} = {target.IdentifierName}");
+            var localVariableAssignment =
+                $"{(requiresAssignmentUsingSet ? $"{Tokens.Set} " : string.Empty)}{localIdentifier} = {target.IdentifierName}";
 
-            rewriter.InsertBefore(((ParserRuleContext)target.Context.Parent).Stop.TokenIndex + 1, localVariableDeclaration + localVariableAssignment);
+            var endOfStmtCtxt = ((ParserRuleContext)target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>();
+            var eosContent = endOfStmtCtxt.GetText();
+            var idxLastNewLine = eosContent.LastIndexOf(Environment.NewLine, StringComparison.InvariantCultureIgnoreCase);
+            var endOfStmtCtxtComment = eosContent.Substring(0, idxLastNewLine);
+            var endOfStmtCtxtEndFormat = eosContent.Substring(idxLastNewLine);
+
+            var insertCtxt = ((ParserRuleContext) target.Context.Parent.Parent).GetChild<VBAParser.AsTypeClauseContext>()
+                ?? (ParserRuleContext) target.Context.Parent;
+
+            rewriter.Remove(endOfStmtCtxt);
+            rewriter.InsertAfter(insertCtxt.Stop.TokenIndex, $"{endOfStmtCtxtComment}{endOfStmtCtxtEndFormat}{localVariableDeclaration}" + $"{endOfStmtCtxtEndFormat}{localVariableAssignment}{endOfStmtCtxtEndFormat}");
         }
     }
 }

@@ -372,7 +372,7 @@ End Sub";
                 .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
                 .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -412,7 +412,7 @@ End Sub";
                 .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
                 .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {

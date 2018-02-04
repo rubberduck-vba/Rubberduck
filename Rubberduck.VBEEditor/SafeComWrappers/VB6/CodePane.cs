@@ -37,7 +37,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             if (endLine > startLine && endColumn == 1)
             {
                 endLine -= 1;
-                endColumn = CodeModule.GetLines(endLine, 1).Length;
+                using (var codeModule = CodeModule)
+                {
+                    endColumn = codeModule.GetLines(endLine, 1).Length;
+                }
             }
 
             return new Selection(startLine, startColumn, endLine, endColumn);
@@ -62,9 +65,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 return null;
             }
 
-            var component = CodeModule.Parent;
-            var moduleName = new QualifiedModuleName(component);
+            var moduleName = QualifiedModuleName;
             return new QualifiedSelection(moduleName, selection);
+        }
+
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get
+            {
+                using (var codeModule = CodeModule)
+                {
+                    return codeModule.QualifiedModuleName;
+                }
+            }
         }
 
         private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)

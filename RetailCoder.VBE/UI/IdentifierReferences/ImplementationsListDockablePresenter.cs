@@ -2,15 +2,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class ImplementationsListDockablePresenter : DockableToolwindowPresenter
     {
-        public ImplementationsListDockablePresenter(IVBE vbe, IAddIn addin, IDockableUserControl control, IEnumerable<Declaration> implementations)
+        private readonly IProjectsProvider _projectsProvider;
+
+        public ImplementationsListDockablePresenter(IVBE vbe, IAddIn addin, IDockableUserControl control, IProjectsProvider projectsProvider, IEnumerable<Declaration> implementations)
             : base(vbe, addin, control, null)
         {
+            _projectsProvider = projectsProvider;
+
             BindTarget(implementations);
         }
 
@@ -26,9 +31,15 @@ namespace Rubberduck.UI.IdentifierReferences
             control.Navigate += ControlNavigate;
         }
 
-        public static void OnNavigateImplementation(Declaration implementation)
+        private void OnNavigateImplementation(Declaration implementation)
         {
-            implementation.QualifiedName.QualifiedModuleName.Component.CodeModule.CodePane.Selection = implementation.Selection;
+            using (var codeModule = _projectsProvider.Component(implementation.QualifiedName.QualifiedModuleName).CodeModule)
+            {
+                using (var codePane = codeModule.CodePane)
+                {
+                    codePane.Selection = implementation.Selection;
+                }
+            }
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)

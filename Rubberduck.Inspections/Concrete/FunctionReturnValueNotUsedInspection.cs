@@ -4,7 +4,9 @@ using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -40,21 +42,19 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<IInspectionResult> GetInterfaceMemberIssues(IEnumerable<Declaration> interfaceMembers)
         {
             return from interfaceMember in interfaceMembers
-                   let implementationMembers =
-                       UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
-                   where interfaceMember.DeclarationType == DeclarationType.Function &&
-                       !IsReturnValueUsed(interfaceMember) &&
-                       implementationMembers.All(member => !IsReturnValueUsed(member))
-                   let implementationMemberIssues =
-                       implementationMembers.Select(
-                           implementationMember =>
-                               Tuple.Create(implementationMember.Context,
-                                   new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
-                                       implementationMember.Selection), implementationMember))
-                   select
-                       new DeclarationInspectionResult(this,
-                                            string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, interfaceMember.IdentifierName),
-                                            interfaceMember, properties: new Dictionary<string, string> { { "DisableFixes", nameof(QuickFixes.ConvertToProcedureQuickFix) } });
+                let implementationMembers =
+                    UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
+                where interfaceMember.DeclarationType == DeclarationType.Function &&
+                      !IsReturnValueUsed(interfaceMember) &&
+                      implementationMembers.All(member => !IsReturnValueUsed(member))
+                let implementationMemberIssues =
+                    implementationMembers.Select(
+                        implementationMember =>
+                            Tuple.Create(implementationMember.Context,
+                                new QualifiedSelection(implementationMember.QualifiedName.QualifiedModuleName,
+                                    implementationMember.Selection), implementationMember))
+                select CreateInspectionResult(this, interfaceMember);
+
         }
 
         private IEnumerable<IInspectionResult> GetNonInterfaceIssues(IEnumerable<Declaration> nonInterfaceFunctions)
@@ -88,12 +88,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
+            return usage.Context.IsDescendentOf<VBAParser.AddressOfExpressionContext>();
         }
 
         private bool IsTypeOfExpression(IdentifierReference usage)
         {
-            return ParserRuleContextHelper.HasParent<VBAParser.TypeofexprContext>(usage.Context);
+            return usage.Context.IsDescendentOf<VBAParser.TypeofexprContext>();
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
@@ -108,7 +108,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsCallStmt(IdentifierReference usage)
         {
-            var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
+            var callStmt = usage.Context.GetAncestor<VBAParser.CallStmtContext>();
             if (callStmt == null)
             {
                 return false;
@@ -118,12 +118,12 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !usage.Context.IsDescendentOf(argumentList);
         }
 
         private bool IsIndexExprContext(IdentifierReference usage)
         {
-            var indexExpr = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(usage.Context);
+            var indexExpr = usage.Context.GetAncestor<VBAParser.IndexExprContext>();
             if (indexExpr == null)
             {
                 return false;
@@ -133,21 +133,32 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !usage.Context.IsDescendentOf(argumentList);
         }
 
         private bool IsLet(IdentifierReference usage)
         {
-            var letStmt = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(usage.Context);
+            var letStmt = usage.Context.GetAncestor<VBAParser.LetStmtContext>();
 
             return letStmt != null && letStmt == usage.Context;
         }
 
         private bool IsSet(IdentifierReference usage)
         {
-            var setStmt = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(usage.Context);
+            var setStmt = usage.Context.GetAncestor<VBAParser.SetStmtContext>();
 
             return setStmt != null && setStmt == usage.Context;
+        }
+
+        private DeclarationInspectionResult CreateInspectionResult(IInspection inspection, Declaration interfaceMember)
+        {
+            dynamic properties = new PropertyBag();
+            properties.DisableFixes = nameof(QuickFixes.ConvertToProcedureQuickFix);
+
+            return new DeclarationInspectionResult(inspection,
+                string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat,
+                    interfaceMember.IdentifierName),
+                interfaceMember, properties: properties);
         }
     }
 }

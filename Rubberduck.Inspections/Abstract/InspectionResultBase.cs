@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Abstract
             Declaration target,
             QualifiedSelection qualifiedSelection,
             QualifiedMemberName? qualifiedMemberName,
-            Dictionary<string, string> properties)
+            dynamic properties)
         {
             Inspection = inspection;
             Description = description?.Capitalize();
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Abstract
             Target = target;
             QualifiedSelection = qualifiedSelection;
             QualifiedMemberName = qualifiedMemberName;
-            Properties = properties ?? new Dictionary<string, string>();
+            Properties = properties ?? new PropertyBag();
         }
 
         public IInspection Inspection { get; }
@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections.Abstract
         public QualifiedMemberName? QualifiedMemberName { get; }
         public ParserRuleContext Context { get; }
         public Declaration Target { get; }
-        public IDictionary<string, string> Properties { get; }
+        public dynamic Properties { get; }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
@@ -60,13 +60,14 @@ namespace Rubberduck.Inspections.Abstract
             var documentName = Target != null 
                 ? Target.ProjectDisplayName 
                 : string.Empty;
-            if (string.IsNullOrEmpty(documentName))
-            {
-                var component = module.Component;
-                documentName = component != null 
-                    ? component.ParentProject.ProjectDisplayName 
-                    : string.Empty;
-            }
+            //todo: Find a sane way to reimplement this.
+            //if (string.IsNullOrEmpty(documentName))
+            //{
+            //    var component = module.Component;
+            //    documentName = component != null 
+            //        ? component.ParentProject.ProjectDisplayName 
+            //        : string.Empty;
+            //}
             if (string.IsNullOrEmpty(documentName))
             {
                 documentName = Path.GetFileName(module.ProjectPath);

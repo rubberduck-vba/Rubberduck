@@ -2436,7 +2436,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
 

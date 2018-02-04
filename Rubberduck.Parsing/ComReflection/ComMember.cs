@@ -85,7 +85,7 @@ namespace Rubberduck.Parsing.ComReflection
             Parameters = new List<ComParameter>();
             var names = new string[255];
             int count;
-            info.GetNames(Index, names, 255, out count);
+            info.GetNames(Index, names, names.Length, out count);
 
             for (var index = 0; index < count - 1; index++)
             {

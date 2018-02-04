@@ -32,7 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,11 +41,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.net45">
-      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
@@ -104,7 +104,10 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Mocks\MockExtentions.cs" />
+    <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
+    <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
     <Compile Include="VBEditor\ComSafeTests.cs" />
     <Compile Include="Commands\ExportAllCommandTests.cs" />
@@ -132,15 +135,20 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteErrorSyntaxInspectionTests.cs" />
     <Compile Include="Inspections\ShadowedDeclarationInspectionTests.cs" />
+    <Compile Include="Inspections\StepNotSpecifiedInspectionTests.cs" />
+    <Compile Include="Inspections\StepOneIsRedundantInspectionTests.cs" />
     <Compile Include="Inspections\StopKeywordInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
     <Compile Include="Inspections\EmptyModuleInspectionTests.cs" />
+    <Compile Include="Inspections\UnhandledOnErrorResumeNextInspectionTest.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
+    <Compile Include="QuickFixes\AddStepOneQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveStepOneQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
@@ -176,6 +184,7 @@
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RestoreErrorHandlingQuickFixTests.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFixTests.cs" />
@@ -428,42 +437,42 @@
     <Content Include="Testfiles\Preprocessor\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Testfiles\Resolver\ADODB.6.1.xml">
+    <EmbeddedResource Include="Testfiles\Resolver\ADODB.6.1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\ADOR.6.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\ADOR.6.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Excel.1.8.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Excel.1.8.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\MSForms.2.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\MSForms.2.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\MSXML2.6.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\MSXML2.6.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Office.2.7.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Office.2.7.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Scripting.1.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Scripting.1.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\SHDocVw.1.1.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\SHDocVw.1.1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\stdole.2.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\stdole.2.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBA.4.2.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBA.4.2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBIDE.5.3.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBIDE.5.3.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBScript_RegExp_55.5.5.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBScript_RegExp_55.5.5.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Choose>

@@ -119,11 +119,12 @@ namespace Rubberduck.UI
             _isDisposed = true;
         }
 
-
+#if DEBUG
         ~DockableToolwindowPresenter()
         {
             // destructor for tracking purposes only - do not suppress unless 
             Debug.WriteLine($"DockableToolwindowPresenter of type {this.GetType()} finalized.");
         }
+#endif
     }
 }

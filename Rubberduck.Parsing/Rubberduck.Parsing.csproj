@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
+  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,7 +12,8 @@
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>5f9fbe2b</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -23,9 +24,9 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,9 +35,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
+    <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
     <ApplicationIcon>
     </ApplicationIcon>
   </PropertyGroup>
@@ -44,9 +46,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.net45, Version=4.3.0.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -60,6 +61,19 @@
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Antlr4 Include="Grammar\VBALexer.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+      <Visitor>false</Visitor>
+      <Listener>false</Listener>
+    </Antlr4>
+    <Antlr4 Include="Grammar\VBAParser.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="PreProcessing\*.g4">
+      <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
+    </Antlr4>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\AnnotationBase.cs" />
@@ -92,37 +106,39 @@
     <Compile Include="Binding\ArgumentList.cs" />
     <Compile Include="Binding\ArgumentListArgument.cs" />
     <Compile Include="Binding\ArgumentListArgumentType.cs" />
-    <Compile Include="Binding\ResolutionFailedExpression.cs" />
-    <Compile Include="Binding\LiteralDefaultBinding.cs" />
-    <Compile Include="Binding\InstanceDefaultBinding.cs" />
+    <Compile Include="Binding\Expressions\ResolutionFailedExpression.cs" />
+    <Compile Include="Binding\Bindings\LiteralDefaultBinding.cs" />
+    <Compile Include="Binding\Bindings\InstanceDefaultBinding.cs" />
     <Compile Include="Binding\StatementResolutionContext.cs" />
     <Compile Include="Binding\StatementContext.cs" />
-    <Compile Include="Binding\UnaryOpDefaultBinding.cs" />
-    <Compile Include="Binding\LiteralExpression.cs" />
-    <Compile Include="Binding\InstanceExpression.cs" />
-    <Compile Include="Binding\UnaryOpExpression.cs" />
+    <Compile Include="Binding\Bindings\UnaryOpDefaultBinding.cs" />
+    <Compile Include="Binding\Expressions\LiteralExpression.cs" />
+    <Compile Include="Binding\Expressions\InstanceExpression.cs" />
+    <Compile Include="Binding\Expressions\UnaryOpExpression.cs" />
     <Compile Include="Binding\BindingService.cs" />
-    <Compile Include="Binding\BoundExpression.cs" />
-    <Compile Include="Binding\IndexDefaultBinding.cs" />
-    <Compile Include="Binding\IndexExpression.cs" />
-    <Compile Include="Binding\MemberAccessExpression.cs" />
-    <Compile Include="Binding\MemberAccessProcedurePointerBinding.cs" />
-    <Compile Include="Binding\MemberAccessTypeBinding.cs" />
-    <Compile Include="Binding\NewExpression.cs" />
-    <Compile Include="Binding\BinaryOpDefaultBinding.cs" />
-    <Compile Include="Binding\TypeOfIsDefaultBinding.cs" />
-    <Compile Include="Binding\BinaryOpExpression.cs" />
-    <Compile Include="Binding\TypeOfIsExpression.cs" />
+    <Compile Include="Binding\Expressions\BoundExpression.cs" />
+    <Compile Include="Binding\Bindings\IndexDefaultBinding.cs" />
+    <Compile Include="Binding\Expressions\IndexExpression.cs" />
+    <Compile Include="Binding\Expressions\MemberAccessExpression.cs" />
+    <Compile Include="Binding\Bindings\MemberAccessProcedurePointerBinding.cs" />
+    <Compile Include="Binding\Bindings\MemberAccessTypeBinding.cs" />
+    <Compile Include="Binding\Expressions\NewExpression.cs" />
+    <Compile Include="Binding\Bindings\BinaryOpDefaultBinding.cs" />
+    <Compile Include="Binding\Bindings\TypeOfIsDefaultBinding.cs" />
+    <Compile Include="Binding\Expressions\BinaryOpExpression.cs" />
+    <Compile Include="Binding\Expressions\TypeOfIsExpression.cs" />
     <Compile Include="Binding\ProcedurePointerBindingContext.cs" />
-    <Compile Include="Binding\MemberAccessDefaultBinding.cs" />
-    <Compile Include="Binding\SimpleNameDefaultBinding.cs" />
-    <Compile Include="Binding\ParenthesizedExpression.cs" />
-    <Compile Include="Binding\SimpleNameProcedurePointerBinding.cs" />
-    <Compile Include="Binding\NewTypeBinding.cs" />
+    <Compile Include="Binding\Bindings\MemberAccessDefaultBinding.cs" />
+    <Compile Include="Binding\Bindings\SimpleNameDefaultBinding.cs" />
+    <Compile Include="Binding\Expressions\ParenthesizedExpression.cs" />
+    <Compile Include="Binding\Bindings\SimpleNameProcedurePointerBinding.cs" />
+    <Compile Include="Binding\Bindings\NewTypeBinding.cs" />
     <Compile Include="Binding\DefaultBindingContext.cs" />
-    <Compile Include="Binding\ParenthesizedDefaultBinding.cs" />
+    <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="ProjectsProviderExtensions.cs" />
+    <Compile Include="Common\ExperimentalAttribute.cs" />
     <Compile Include="ComReflection\ComAlias.cs" />
     <Compile Include="ComReflection\ComBase.cs" />
     <Compile Include="ComReflection\ComCoClass.cs" />
@@ -138,13 +154,7 @@
     <Compile Include="Grammar\PartialExtensions\IIdentifierContext.cs" />
     <Compile Include="Grammar\PartialExtensions\IAnnotatedContext.cs" />
     <Compile Include="Grammar\Tokens.cs" />
-    <Compile Include="Grammar\VBALexer.cs" />
     <Compile Include="Grammar\PartialExtensions\VBAParserPartialExtensions.cs" />
-    <Compile Include="Grammar\VBAParser.cs" />
-    <Compile Include="Grammar\VBAParserBaseListener.cs" />
-    <Compile Include="Grammar\VBAParserBaseVisitor.cs" />
-    <Compile Include="Grammar\VBAParserListener.cs" />
-    <Compile Include="Grammar\VBAParserVisitor.cs" />
     <Compile Include="Inspections\Abstract\IInpsectionListener.cs" />
     <Compile Include="Inspections\Abstract\IQuickFixProvider.cs" />
     <Compile Include="Inspections\Abstract\IInspection.cs" />
@@ -153,6 +163,12 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
+    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Inspections\PropertyBag.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprocessorExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\ParsePassExceptionErrorListener.cs" />
@@ -160,6 +176,7 @@
     <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorInfo.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseSyntaxErrorException.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
+    <Compile Include="VBA\RepositoryProjectManager.cs" />
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
@@ -175,11 +192,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\Resources\InspectionsUI1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="Rewriter\MemberAttributesRewriter.cs" />
     <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
@@ -194,17 +206,6 @@
     <Compile Include="PreProcessing\ConditionalCompilationConstantExpression.cs" />
     <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
     <Compile Include="PreProcessing\LivelinessExpression.cs" />
-    <Compile Include="PreProcessing\VBAConditionalCompilationParser.cs" />
-    <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseListener.cs" />
-    <Compile Include="PreProcessing\VBAConditionalCompilationParserBaseVisitor.cs" />
-    <Compile Include="PreProcessing\VBAConditionalCompilationParserListener.cs" />
-    <Compile Include="PreProcessing\VBAConditionalCompilationParserVisitor.cs" />
-    <Compile Include="PreProcessing\VBADateBaseListener.cs" />
-    <Compile Include="PreProcessing\VBADateBaseVisitor.cs" />
-    <Compile Include="PreProcessing\VBADateLexer.cs" />
-    <Compile Include="PreProcessing\VBADateListener.cs" />
-    <Compile Include="PreProcessing\VBADateParser.cs" />
-    <Compile Include="PreProcessing\VBADateVisitor.cs" />
     <Compile Include="ComReflection\ComField.cs" />
     <Compile Include="ComReflection\ComMember.cs" />
     <Compile Include="ComReflection\ComModule.cs" />
@@ -227,10 +228,10 @@
     <Compile Include="Symbols\EventDeclaration.cs" />
     <Compile Include="Symbols\Identifier.cs" />
     <Compile Include="Binding\IBindingContext.cs" />
-    <Compile Include="Binding\IBoundExpression.cs" />
-    <Compile Include="Binding\IExpressionBinding.cs" />
-    <Compile Include="Binding\SimpleNameExpression.cs" />
-    <Compile Include="Binding\SimpleNameTypeBinding.cs" />
+    <Compile Include="Binding\Expressions\IBoundExpression.cs" />
+    <Compile Include="Binding\Bindings\IExpressionBinding.cs" />
+    <Compile Include="Binding\Expressions\SimpleNameExpression.cs" />
+    <Compile Include="Binding\Bindings\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
     <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IParseCoordinator.cs" />
@@ -299,12 +300,6 @@
     <Compile Include="PreProcessing\UnaryNotExpression.cs" />
     <Compile Include="PreProcessing\ValueType.cs" />
     <Compile Include="PreProcessing\VBALibrary.cs" />
-    <Compile Include="PreProcessing\VBALikeBaseListener.cs" />
-    <Compile Include="PreProcessing\VBALikeBaseVisitor.cs" />
-    <Compile Include="PreProcessing\VBALikeLexer.cs" />
-    <Compile Include="PreProcessing\VBALikeListener.cs" />
-    <Compile Include="PreProcessing\VBALikeParser.cs" />
-    <Compile Include="PreProcessing\VBALikeVisitor.cs" />
     <Compile Include="PreProcessing\VBAPrecompilationParser.cs" />
     <Compile Include="PreProcessing\VBADateConstants.cs" />
     <Compile Include="PreProcessing\SymbolTable.cs" />
@@ -316,7 +311,6 @@
     <Compile Include="Symbols\ExternalProcedureDeclaration.cs" />
     <Compile Include="Symbols\ICompilationPass.cs" />
     <Compile Include="Symbols\IDeclarationFinderFactory.cs" />
-    <Compile Include="Symbols\ParserRuleContextHelper.cs" />
     <Compile Include="Symbols\BoundExpressionVisitor.cs" />
     <Compile Include="Symbols\ClassModuleDeclaration.cs" />
     <Compile Include="Symbols\CommentExtensions.cs" />
@@ -379,12 +373,12 @@
     <Compile Include="VBA\CollectionExtensions.cs" />
     <Compile Include="VBA\IParsingStageService.cs" />
     <Compile Include="VBA\IProjectReferencesProvider.cs" />
-    <Compile Include="VBA\ProjectManagerBase.cs" />
-    <Compile Include="VBA\ProjectManager.cs" />
+    <Compile Include="VBA\StateProjectManagerBase.cs" />
+    <Compile Include="VBA\StateProjectManager.cs" />
     <Compile Include="VBA\SynchronousReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemover.cs" />
     <Compile Include="VBA\ReferenceRemoverBase.cs" />
-    <Compile Include="VBA\SynchronousProjectManager.cs" />
+    <Compile Include="VBA\SynchronousStateProjectManager.cs" />
     <Compile Include="VBA\SynchronousReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunner.cs" />
     <Compile Include="VBA\ReferenceResolveRunnerBase.cs" />
@@ -428,25 +422,10 @@
     <Compile Include="VBA\VBAModuleParser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Grammar\VBAParser.g4">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Grammar\VBALexer.g4">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="PreProcessing\VBAConditionalCompilationParser.g4" />
-    <None Include="PreProcessing\VBADate.g4">
-      <CustomToolNamespace>Rubberduck.Parsing.Date</CustomToolNamespace>
-    </None>
-    <None Include="PreProcessing\VBALike.g4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
@@ -472,7 +451,7 @@
     <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>InspectionsUI1.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ParsingText.de.resx" />
     <EmbeddedResource Include="ParsingText.fr.resx" />
@@ -487,16 +466,16 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
-    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets'))" />
   </Target>
-  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

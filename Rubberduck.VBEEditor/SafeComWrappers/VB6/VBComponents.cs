@@ -69,9 +69,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent)comObject));
+            return new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -114,8 +112,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {
                     throw new IndexOutOfRangeException($"Could not find document component named '{name}'.");
                 }
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(codeString);
+                using (var codeModule = component.CodeModule)
+                {
+                    codeModule.Clear();
+                    codeModule.AddFromString(codeString);
+                }
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
@@ -132,8 +133,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 var declarationsStartLine = nonAttributeLines + attributeLines + 1;
                 var correctCodeString = string.Join(Environment.NewLine, codeLines.Skip(declarationsStartLine - 1).ToArray());
 
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(correctCodeString);
+                using (var codeModule = component.CodeModule)
+                {
+                    codeModule.Clear();
+                    codeModule.AddFromString(correctCodeString);
+                }
             }
             else if (ext != ComponentTypeExtensions.FormBinaryExtension)
             {
@@ -159,7 +163,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     break;
                 case ComponentType.ActiveXDesigner:
                 case ComponentType.Document:
-                    component.CodeModule.Clear();
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                    }
                     break;
                 default:
                     break;

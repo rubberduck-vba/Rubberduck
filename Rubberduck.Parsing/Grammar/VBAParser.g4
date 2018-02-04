@@ -21,6 +21,8 @@ parser grammar VBAParser;
 
 options { tokenVocab = VBALexer; }
 
+@header { using System.Text.RegularExpressions; }
+
 startRule : module EOF;
 
 module :
@@ -286,19 +288,20 @@ defType :
         DEFSTR | DEFOBJ | DEFVAR
 ;
 // universalLetterRange must appear before letterRange because they both match the same amount in the case of A-Z but we prefer the universalLetterRange.
-letterSpec : singleLetter | universalLetterRange | letterRange;
-singleLetter : unrestrictedIdentifier;
+// singleLetter must appear at the end to prevent premature bailout
+letterSpec : universalLetterRange | letterRange | singleLetter;
+
+singleLetter : {_input.Lt(1).Text.Length == 1 && Regex.Match(_input.Lt(1).Text, @"[a-zA-Z]").Success}? IDENTIFIER;
+
 // We make a separate universalLetterRange rule because it is treated specially in VBA. This makes it easy for users of the parser
 // to identify this case. Quoting MS VBAL:
 // "A <universal-letter-range> defines a single implicit declared type for every <IDENTIFIER> within 
 // a module, even those with a first character that would otherwise fall outside this range if it was 
 // interpreted as a <letter-range> from A-Z.""
-universalLetterRange : upperCaseA whiteSpace? MINUS whiteSpace? upperCaseZ;
-upperCaseA : {_input.Lt(1).Text.Equals("A")}? unrestrictedIdentifier;
-upperCaseZ : {_input.Lt(1).Text.Equals("Z")}? unrestrictedIdentifier;
-letterRange : firstLetter whiteSpace? MINUS whiteSpace? lastLetter;
-firstLetter : unrestrictedIdentifier;
-lastLetter : unrestrictedIdentifier;
+universalLetterRange : {_input.Lt(1).Text.Equals("A") && _input.Lt(3).Text.Equals("Z")}? IDENTIFIER MINUS IDENTIFIER;
+ 
+letterRange : singleLetter MINUS singleLetter;
+
 
 doLoopStmt :
     DO endOfStatement 
@@ -341,10 +344,12 @@ forEachStmt :
 
 // expression EQ expression refactored to expression to allow SLL
 forNextStmt : 
-    FOR whiteSpace expression whiteSpace TO whiteSpace expression (whiteSpace STEP whiteSpace expression)? endOfStatement 
+    FOR whiteSpace expression whiteSpace TO whiteSpace expression stepStmt? whiteSpace* endOfStatement 
     block
     statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
 ; 
+
+stepStmt : whiteSpace STEP whiteSpace expression;
 
 functionStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? functionName (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
@@ -534,7 +539,7 @@ lineSpecialForm : expression whiteSpace (STEP whiteSpace?)? tuple MINUS (STEP wh
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
-lineSpecialFormOption: (B_CHAR | BF);
+lineSpecialFormOption : {_input.Lt(1).Text.ToLower().Equals("b") || _input.Lt(1).Text.ToLower().Equals("bf")}? unrestrictedIdentifier;
 
 subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
@@ -544,7 +549,7 @@ unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
-identifierValue : IDENTIFIER | keyword | foreignName | BF;
+identifierValue : IDENTIFIER | keyword | foreignName;
 foreignName : L_SQUARE_BRACKET foreignIdentifier* R_SQUARE_BRACKET;
 foreignIdentifier : ~(L_SQUARE_BRACKET | R_SQUARE_BRACKET) | foreignName;
 
@@ -586,28 +591,28 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 // 5.6 Expressions
 expression :
-    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.	
-	whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
-	| literalExpression                                                                             # literalExpr
-	| lExpression                                                                                   # lExpr
-	| builtInType                                                                                   # builtInTypeExpr
-	| TYPEOF whiteSpace expression                                                                  # typeofexpr        // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
-	| NEW whiteSpace expression                                                                     # newExpr
-	| expression whiteSpace? POW whiteSpace? expression                                             # powOp
-	| MINUS whiteSpace? expression                                                                  # unaryMinusOp
-	| expression whiteSpace? (MULT | DIV) whiteSpace? expression                                    # multOp
-	| expression whiteSpace? INTDIV whiteSpace? expression                                          # intDivOp
-	| expression whiteSpace? MOD whiteSpace? expression                                             # modOp
-	| expression whiteSpace? (PLUS | MINUS) whiteSpace? expression                                  # addOp
-	| expression whiteSpace? AMPERSAND whiteSpace? expression                                       # concatOp
-	| expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression    # relationalOp
-	| NOT whiteSpace? expression                                                                    # logicalNotOp
-	| expression whiteSpace? AND whiteSpace? expression                                             # logicalAndOp
-	| expression whiteSpace? OR whiteSpace? expression                                              # logicalOrOp
-	| expression whiteSpace? XOR whiteSpace? expression                                             # logicalXorOp
-	| expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
-	| expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
-	| HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
+	// Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
+	whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN									# parenthesizedExpr
+	| TYPEOF whiteSpace expression																	# typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
+	| HASH expression																				# markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
+	| NEW whiteSpace expression																		# newExpr
+	| expression whiteSpace? POW whiteSpace? expression												# powOp
+	| MINUS whiteSpace? expression																	# unaryMinusOp
+	| expression whiteSpace? (MULT | DIV) whiteSpace? expression									# multOp
+	| expression whiteSpace? INTDIV whiteSpace? expression											# intDivOp
+	| expression whiteSpace? MOD whiteSpace? expression												# modOp
+	| expression whiteSpace? (PLUS | MINUS) whiteSpace? expression									# addOp
+	| expression whiteSpace? AMPERSAND whiteSpace? expression										# concatOp
+	| expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression	# relationalOp
+	| NOT whiteSpace? expression																	# logicalNotOp
+	| expression whiteSpace? AND whiteSpace? expression												# logicalAndOp
+	| expression whiteSpace? OR whiteSpace? expression												# logicalOrOp
+	| expression whiteSpace? XOR whiteSpace? expression												# logicalXorOp
+	| expression whiteSpace? EQV whiteSpace? expression												# logicalEqvOp
+	| expression whiteSpace? IMP whiteSpace? expression												# logicalImpOp
+	| literalExpression																				# literalExpr
+	| lExpression																					# lExpr
+	| builtInType																					# builtInTypeExpr
 ;
 
 // 5.6.5 Literal Expressions
@@ -679,7 +684,6 @@ keyword :
      | ANY
      | ARRAY
      | ATTRIBUTE
-	 | B_CHAR
      | BEGIN
      | BOOLEAN
      | BYREF

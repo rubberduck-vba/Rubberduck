@@ -23,28 +23,35 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         public void IndentCurrentProcedure()
         {
-            var pane = _vbe.ActiveCodePane;
-
-            if (pane == null)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                return;
+                if (pane == null)
+                {
+                    return;
+                }
+
+                using (var module = pane.CodeModule)
+                {
+                    var selection = GetSelection(pane);
+
+                    var procName = module.GetProcOfLine(selection.StartLine);
+                    var procKind = module.GetProcKindOfLine(selection.StartLine);
+
+                    if (string.IsNullOrEmpty(procName))
+                    {
+                        return;
+                    }
+
+                    var startLine = module.GetProcStartLine(procName, procKind);
+                    var endLine = startLine + module.GetProcCountLines(procName, procKind);
+
+                    selection = new Selection(startLine, 1, endLine, 1);
+                    using (var component = module.Parent)
+                    {
+                        Indent(component, selection);
+                    }
+                }
             }
-            var module = pane.CodeModule;
-            var selection = GetSelection(pane);
-
-            var procName = module.GetProcOfLine(selection.StartLine);
-            var procKind = module.GetProcKindOfLine(selection.StartLine);
-
-            if (string.IsNullOrEmpty(procName))
-            {
-                return;
-            }
-
-            var startLine = module.GetProcStartLine(procName, procKind);
-            var endLine = startLine + module.GetProcCountLines(procName, procKind);
-
-            selection = new Selection(startLine, 1, endLine, 1);
-            Indent(module.Parent, selection);
         }
 
         /// <summary>
@@ -87,18 +94,20 @@ namespace Rubberduck.SmartIndenter
         /// <param name="component">The VBComponent to indent</param>
         public void Indent(IVBComponent component)
         {
-            var module = component.CodeModule;
-            var lineCount = module.CountOfLines;
-            if (lineCount == 0)
+            using (var module = component.CodeModule)
             {
-                return;
+                var lineCount = module.CountOfLines;
+                if (lineCount == 0)
+                {
+                    return;
+                }
+
+                var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
+                var indented = Indent(codeLines, true);
+
+                module.DeleteLines(1, lineCount);
+                module.InsertLines(1, string.Join("\r\n", indented));
             }
-
-            var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            var indented = Indent(codeLines, true);
-
-            module.DeleteLines(1, lineCount);
-            module.InsertLines(1, string.Join("\r\n", indented));
         }
 
         /// <summary>
@@ -108,23 +117,26 @@ namespace Rubberduck.SmartIndenter
         /// <param name="selection">The selection to indent</param>
         public void Indent(IVBComponent component, Selection selection)
         {
-            var module = component.CodeModule;
-            var lineCount = module.CountOfLines;
-            if (lineCount == 0)
+            using (var module = component.CodeModule)
             {
-                return;
+                var lineCount = module.CountOfLines;
+                if (lineCount == 0)
+                {
+                    return;
+                }
+
+                var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty)
+                    .Split('\n');
+
+                var indented = Indent(codeLines);
+
+                var start = selection.StartLine;
+                var lines = selection.LineCount;
+
+                //Deletelines fails if the the last line of the procedure is the last line of the module.
+                module.DeleteLines(start, start + lines < lineCount ? lines : lines - 1);
+                module.InsertLines(start, string.Join("\r\n", indented));
             }
-
-            var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
-
-            var indented = Indent(codeLines);
-
-            var start = selection.StartLine;
-            var lines = selection.LineCount;
-
-            //Deletelines fails if the the last line of the procedure is the last line of the module.
-            module.DeleteLines(start, start + lines < lineCount ? lines : lines - 1);
-            module.InsertLines(start, string.Join("\r\n", indented));
         }
 
         private IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines)

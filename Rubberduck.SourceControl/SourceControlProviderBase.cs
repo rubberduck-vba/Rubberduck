@@ -110,10 +110,8 @@ namespace Rubberduck.SourceControl
             Refresh();
 
             var handler = BranchChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void Undo(string filePath)
@@ -158,43 +156,68 @@ namespace Rubberduck.SourceControl
             {
                 return;
             }
-            var vbe = Project.VBE;
-            var components = Project.VBComponents;
-            var pane = vbe.ActiveCodePane;
+            using (var vbe = Project.VBE)
             {
-                var item = components.SingleOrDefault(f => moduleName.Equals(f.Name, StringComparison.InvariantCultureIgnoreCase));
-                if (item == null)
+                using (var components = Project.VBComponents)
                 {
-                    return;
-                }
-                if (!pane.IsWrappingNullReference)
-                {
-                    var module = pane.CodeModule;
-                    var component = module.Parent;
+                    using (var pane = vbe.ActiveCodePane)
                     {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
-                        var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName) ? null : selection.QualifiedName.ComponentName;
+                        using (var item = components.SingleOrDefault(component => ComponentHasModuleName(moduleName, component)))
+                        {
+                            if (item == null)
+                            {
+                                return;
+                            }
 
-                        components.RemoveSafely(item);
+                            if (!pane.IsWrappingNullReference)
+                            {
+                                using (var module = pane.CodeModule)
+                                {
+                                    using (var component = module.Parent)
+                                    {
+                                        var selection =
+                                            new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
+                                        var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName)
+                                            ? null
+                                            : selection.QualifiedName.ComponentName;
 
-                        var directory = CurrentRepository.LocalLocation;
-                        directory += directory.EndsWith("\\") ? string.Empty : "\\";
-                        components.Import(directory + filePath);
+                                        components.RemoveSafely(item);
 
-                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
+                                        var directory = CurrentRepository.LocalLocation;
+                                        directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                                        components.Import(directory + filePath);
+
+                                        using (var project = components.Parent)
+                                        {
+                                            VBE.SetSelection(project, selection.Selection, name);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                components.RemoveSafely(item);
+
+                                var directory = CurrentRepository.LocalLocation;
+                                directory += directory.EndsWith("\\") ? string.Empty : "\\";
+                                components.Import(directory + filePath);
+                            }
+                        }
                     }
-                }
-                else
-                {
-                    components.RemoveSafely(item);
-
-                    var directory = CurrentRepository.LocalLocation;
-                    directory += directory.EndsWith("\\") ? string.Empty : "\\";
-                    components.Import(directory + filePath);
                 }
             }
 
             HandleVbeSinkEvents = true;
+        }
+
+        private static bool ComponentHasModuleName(string moduleName, IVBComponent component)
+        {
+            var sameName = moduleName.Equals(component.Name, StringComparison.InvariantCultureIgnoreCase);
+            if (!sameName)
+            {
+                component.Dispose();
+            }
+            return sameName;
         }
 
         private void Refresh()
@@ -204,16 +227,42 @@ namespace Rubberduck.SourceControl
 
             HandleVbeSinkEvents = false;
 
-            var vbe = Project.VBE;
-            var pane = vbe.ActiveCodePane;
+            using (var vbe = Project.VBE)
             {
-                if (!pane.IsWrappingNullReference)
+                using (var pane = vbe.ActiveCodePane)
                 {
-                    var module = pane.CodeModule;
-                    var component = module.Parent;
+                    if (!pane.IsWrappingNullReference)
                     {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
-                        var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName) ? null : selection.QualifiedName.ComponentName;
+                        using (var module = pane.CodeModule)
+                        {
+                            using (var component = module.Parent)
+                            {
+                                var selection =
+                                    new QualifiedSelection(new QualifiedModuleName(component), pane.Selection);
+                                var name = string.IsNullOrEmpty(selection.QualifiedName.ComponentName)
+                                    ? null
+                                    : selection.QualifiedName.ComponentName;
+                                try
+                                {
+                                    Project.LoadAllComponents(CurrentRepository.LocalLocation);
+                                }
+                                catch (AggregateException ex)
+                                {
+                                    HandleVbeSinkEvents = true;
+                                    throw new SourceControlException("Unknown exception.", ex);
+                                }
+                                using (var components = component.Collection)
+                                {
+                                    using (var project = components.Parent)
+                                    {
+                                        VBE.SetSelection(project, selection.Selection, name);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
                         try
                         {
                             Project.LoadAllComponents(CurrentRepository.LocalLocation);
@@ -223,20 +272,6 @@ namespace Rubberduck.SourceControl
                             HandleVbeSinkEvents = true;
                             throw new SourceControlException("Unknown exception.", ex);
                         }
-
-                        VBE.SetSelection(component.Collection.Parent, selection.Selection, name);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        Project.LoadAllComponents(CurrentRepository.LocalLocation);
-                    }
-                    catch (AggregateException ex)
-                    {
-                        HandleVbeSinkEvents = true;
-                        throw new SourceControlException("Unknown exception.", ex);
                     }
                 }
             }

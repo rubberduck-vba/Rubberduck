@@ -79,7 +79,7 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
             AddDeclaration(_moduleDeclaration);
 
-            var component = _qualifiedModuleName.Component;
+            var component = _state.ProjectsProvider.Component(_qualifiedModuleName);
             if (component != null && (componentType == ComponentType.UserForm || component.HasDesigner))
             {
                 DeclareControlsAsMembers(component);
@@ -92,7 +92,13 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            var lastDeclarationsSectionLine = _qualifiedModuleName.Component.CodeModule.CountOfDeclarationLines;
+
+            int lastDeclarationsSectionLine;
+            using (var codeModule = _state.ProjectsProvider.Component(_qualifiedModuleName).CodeModule)
+            {
+                lastDeclarationsSectionLine = codeModule.CountOfDeclarationLines;
+            }
+
             var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.QualifiedName.Equals(_qualifiedModuleName)
                 && annotation.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine);
             return annotations.ToList();
@@ -205,7 +211,7 @@ namespace Rubberduck.Parsing.Symbols
                     isParamArray);
                 if (_parentDeclaration is IParameterizedDeclaration)
                 {
-                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter(result);
+                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter((ParameterDeclaration) result);
                 }
             }
             else

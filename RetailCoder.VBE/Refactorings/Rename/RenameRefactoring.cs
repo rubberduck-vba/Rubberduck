@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -210,21 +211,28 @@ namespace Rubberduck.Refactorings.Rename
 
             if (target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = module.Parent.Controls.FirstOrDefault(item => item.Name == target.IdentifierName);
-                if (control == null)
+                var component = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName);
+                using (var controls = component.Controls)
                 {
-                    PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null control reference");
-                    return false;
+                    using (var control = controls.FirstOrDefault(item => item.Name == target.IdentifierName))
+                    {
+                        if (control == null)
+                        {
+                            PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null control reference");
+                            return false;
+                        }
+                    }
                 }
             }
             else if (target.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                if (module.IsWrappingNullReference)
+                using (var module = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName).CodeModule)
                 {
-                    PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null Module reference");
-                    return false;
+                    if (module.IsWrappingNullReference)
+                    {
+                        PresentRenameErrorMessage($"{BuildDefaultErrorMessage(target)} - Null Module reference");
+                        return false;
+                    }
                 }
             }
             return true;
@@ -381,13 +389,18 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                var module = _model.Target.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                var control = module.Parent.Controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName);
-                Debug.Assert(control != null, $"input validation fail: unable to locate '{_model.Target.IdentifierName}' in Controls collection");
+                var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
+                using (var controls = component.Controls)
+                {
+                    using (var control = controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName))
+                    {
+                        Debug.Assert(control != null,
+                            $"input validation fail: unable to locate '{_model.Target.IdentifierName}' in Controls collection");
 
-                control.Name = _model.NewName;
+                        control.Name = _model.NewName;
+                    }
+                }
                 RenameReferences(_model.Target, _model.NewName);
-
                 var controlEventHandlers = FindEventHandlersForControl(_model.Target);
                 RenameDefinedFormatMembers(controlEventHandlers, _appendUnderscoreFormat);
             }
@@ -412,7 +425,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 foreach (var reference in _model.Target.References)
                 {
-                    var ctxt = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context);
+                    var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
                         RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), _appendUnderscoreFormat);
@@ -420,7 +433,7 @@ namespace Rubberduck.Refactorings.Rename
                 }
             }
 
-            var component = _model.Target.QualifiedName.QualifiedModuleName.Component;
+            var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
             if (component.Type == ComponentType.Document)
             {
                 var properties = component.Properties;
@@ -443,8 +456,11 @@ namespace Rubberduck.Refactorings.Rename
             }
             else
             {
-                Debug.Assert(!component.CodeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
-                component.CodeModule.Name = _model.NewName;
+                using (var codeModule = component.CodeModule)
+                {
+                    Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
+                    codeModule.Name = _model.NewName;
+                }
             }
         }
 
@@ -550,9 +566,15 @@ namespace Rubberduck.Refactorings.Rename
 
         private void CacheInitialSelection(QualifiedSelection qSelection)
         {
-            if (!qSelection.QualifiedName.Component.CodeModule.CodePane.IsWrappingNullReference)
+            using (var codeModule = _state.ProjectsProvider.Component(qSelection.QualifiedName).CodeModule)
             {
-                _initialSelection = new Tuple<ICodePane, Selection>(qSelection.QualifiedName.Component.CodeModule.CodePane, qSelection.QualifiedName.Component.CodeModule.CodePane.Selection);
+                using (var codePane = codeModule.CodePane)
+                {
+                    if (!codePane.IsWrappingNullReference)
+                    {
+                        _initialSelection = new Tuple<ICodePane, Selection>(codePane, codePane.Selection);
+                    }
+                }
             }
         }
 

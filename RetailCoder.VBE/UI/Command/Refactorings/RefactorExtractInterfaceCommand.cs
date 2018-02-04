@@ -61,7 +61,7 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var parseTree = _state.GetParseTree(interfaceClass.QualifiedName.QualifiedModuleName);
-            var context = ((ParserRuleContext)parseTree).FindChildren<VBAParser.ImplementsStmtContext>();
+            var context = ((ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
 
             // true if active code pane is for a class/document/form module
             return !context.Any();
