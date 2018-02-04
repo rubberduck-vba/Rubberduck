@@ -586,21 +586,21 @@ End Function";
         {
             var inputCode =
                 @"
-Private Sub Workbook_Open()
+Private Sub DoSomething()
     
-    Dim target As Range
-    target = Range(""A1"")
+    Dim target As Object
+    target = New Object
     
     target.Value = ""forgot something?""
 
 End Sub";
             var expectedCode =
                 @"
-Private Sub Workbook_Open()
+Private Sub DoSomething()
     
-    Dim target As Range
+    Dim target As Object
 '@Ignore ObjectVariableNotSet
-    target = Range(""A1"")
+    target = New Object
     
     target.Value = ""forgot something?""
 

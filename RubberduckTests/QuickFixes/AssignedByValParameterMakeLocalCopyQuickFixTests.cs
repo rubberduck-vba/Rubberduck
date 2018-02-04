@@ -360,7 +360,6 @@ End Sub"
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var inspection = new AssignedByValParameterInspection(state);
                 var inspectionResults = inspection.GetInspectionResults();
                 var result = inspectionResults.FirstOrDefault();

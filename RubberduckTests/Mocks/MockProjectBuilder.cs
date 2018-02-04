@@ -138,7 +138,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Gets the mock <see cref="VBProject"/> instance.
+        /// Gets the mock <see cref="IVBProject"/> instance.
         /// </summary>
         public Mock<IVBProject> Build()
         {

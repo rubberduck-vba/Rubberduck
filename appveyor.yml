@@ -14,7 +14,8 @@ skip_commits:
   files:
   - docs/*
   - '**/*.md'
-  - '**/*.yml'
+  # intermediately enable yml changes to trigger builds, because codecov changes only changes the codecov yml ...
+#  - '**/*.yml'
   - license
   - License.rtf
 branches:
@@ -53,7 +54,7 @@ test_script:
   - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
 
 after_test:
-  - codecov -f "Rubberduck_Coverage.xml"
+  - codecov -f "Rubberduck_Coverage.xml" -F core -F ui -F inspections -F tools
 
 before_package:
   - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll

@@ -13,8 +13,8 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnassignedVariableUsage_ReturnsResult()
         {
-            const string inputCode =
-                @"Sub Foo()
+            const string inputCode = @"
+Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
     bb = b

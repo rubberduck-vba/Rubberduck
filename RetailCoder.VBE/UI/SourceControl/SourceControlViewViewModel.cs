@@ -576,9 +576,9 @@ namespace Rubberduck.UI.SourceControl
         private void HandleViewModelError(object sender, ErrorEventArgs e)
         {
             // smell: relies on implementation detail of 3rd-party library
-            const string unauthorizedMessage = "Request failed with status code: 401"; 
+            const string unauthorizedMessage = "request failed with status code: 401"; 
 
-            if (e.InnerMessage == unauthorizedMessage)
+            if (e.InnerMessage.ToLower() == unauthorizedMessage)
             {
                 Logger.Trace("Requesting login");
                 DisplayLoginGrid = true;

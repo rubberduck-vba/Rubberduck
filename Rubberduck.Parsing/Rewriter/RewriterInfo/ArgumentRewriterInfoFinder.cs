@@ -21,9 +21,8 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 
             var items = argList.argument();
             var itemIndex = items.ToList().IndexOf(arg);
-            var count = items.Count;
 
-            if (count == 1)
+            if (items.Length == 1)
             {
                 return new RewriterInfo(argList.Start.TokenIndex, argList.Stop.TokenIndex);
             }
