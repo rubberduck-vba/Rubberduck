@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Mocks
@@ -15,14 +16,17 @@ namespace RubberduckTests.Mocks
     public class TestAttributeParser : IAttributeParser
     {
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-        public TestAttributeParser(Func<IVBAPreprocessor> preprocessorFactory)
+        private readonly IProjectsProvider _projectsProvider;
+
+        public TestAttributeParser(Func<IVBAPreprocessor> preprocessorFactory, IProjectsProvider projectsProvider)
         {
             _preprocessorFactory = preprocessorFactory;
+            _projectsProvider = projectsProvider;
         }
 
         public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
-            var code = module.Component.CodeModule.Content();
+            var code = _projectsProvider.Component(module).CodeModule.Content();
             var type = module.ComponentType == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;

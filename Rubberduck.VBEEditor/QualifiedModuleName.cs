@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -8,7 +7,7 @@ namespace Rubberduck.VBEditor
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    public struct QualifiedModuleName
+    public readonly struct QualifiedModuleName
     {
         public static string GetProjectId(IVBProject project)
         {
@@ -17,12 +16,15 @@ namespace Rubberduck.VBEditor
                 return string.Empty;
             }
 
-            if (string.IsNullOrEmpty(project.HelpFile))
+            var projectId = project.ProjectId;
+
+            if (string.IsNullOrEmpty(projectId))
             {
-                project.HelpFile = project.GetHashCode().ToString(CultureInfo.InvariantCulture);
+                project.AssignProjectId();
+                projectId = project.ProjectId;
             }
 
-            return project.HelpFile;
+            return projectId;
         }
 
         public static string GetProjectId(IReference reference)
@@ -33,40 +35,27 @@ namespace Rubberduck.VBEditor
 
         public QualifiedModuleName(IVBProject project)
         {
-            Component = null;
             _componentName = null;
             ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
             ProjectPath = string.Empty;
             ProjectId = GetProjectId(project);           
-            ContentHashCode = 0;
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
             ComponentType = component.Type;
-            Component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            ContentHashCode = 0;
-            if (!Component.IsWrappingNullReference)
-            {
-                using (var module = Component.CodeModule)
-                {
-                    ContentHashCode = module.CountOfLines > 0
-                        ? module.GetLines(1, module.CountOfLines).GetHashCode()
-                        : 0;
-                }
-            }
-
-            IVBProject project;
             using (var components = component.Collection)
             {
-                project = components.Parent;
+                using (var project = components.Parent)
+                {
+                    _projectName = project == null ? string.Empty : project.Name;
+                    ProjectPath = string.Empty;
+                    ProjectId = GetProjectId(project);
+                }
             }
-            _projectName = project == null ? string.Empty : project.Name;
-            ProjectPath = string.Empty;
-            ProjectId = GetProjectId(project);
         }
 
         /// <summary>
@@ -79,9 +68,7 @@ namespace Rubberduck.VBEditor
             ProjectPath = projectPath;
             ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
-            Component = null;
             ComponentType = ComponentType.ComComponent;
-            ContentHashCode = 0;
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -89,11 +76,7 @@ namespace Rubberduck.VBEditor
             return new QualifiedMemberName(this, member);
         }
 
-        public IVBComponent Component { get; }
-
         public ComponentType ComponentType { get; }
-
-        public int ContentHashCode { get; }
 
         public string ProjectId { get; }
 
@@ -122,18 +105,19 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
-            if (obj == null) { return false; }
-
-            try
-            {
-                var other = (QualifiedModuleName)obj;
-                var result = other.ProjectId == ProjectId && other.ComponentName == ComponentName;
-                return result;
-            }
-            catch (InvalidCastException)
+            if (obj == null)
             {
                 return false;
             }
+
+            var other = obj as QualifiedModuleName?;
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.Value.ProjectId == ProjectId && other.Value.ComponentName == ComponentName;
         }
 
         public static bool operator ==(QualifiedModuleName a, QualifiedModuleName b)

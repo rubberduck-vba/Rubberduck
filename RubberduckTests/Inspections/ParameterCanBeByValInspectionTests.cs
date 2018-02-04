@@ -67,7 +67,7 @@ End Sub
                 .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
                 .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {

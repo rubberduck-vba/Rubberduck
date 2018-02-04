@@ -300,7 +300,7 @@ End Sub
 ";
             var mockVbe = new MockVbeBuilder();
             var projectBuilder = mockVbe.ProjectBuilder("testproject", ProjectProtection.Unprotected);
-            projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).MockProjectBuilder()
+            projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
                 //.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
                 .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms);

@@ -24,7 +24,7 @@ End Sub";
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
-                .MockVbeBuilder();
+                .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
 

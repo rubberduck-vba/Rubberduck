@@ -15,6 +15,7 @@ using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
@@ -27,6 +28,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IModuleExporter _exporter;
         private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
+        private readonly IProjectsProvider _projectsProvider;
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
         public event EventHandler<ParseFailureArgs> ParseFailure;
@@ -34,7 +36,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, IProjectsProvider projectsProvider, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
@@ -43,6 +45,7 @@ namespace Rubberduck.Parsing.VBA
             _preprocessor = preprocessor;
             _module = module;
             _rewriter = rewriter;
+            _projectsProvider = projectsProvider;
             _parser = new VBAModuleParser();
         }
         
@@ -69,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var rewriter = new MemberAttributesRewriter(_exporter, _module.Component.CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
+                var rewriter = new MemberAttributesRewriter(_exporter, _projectsProvider.Component(_module).CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
@@ -150,19 +153,15 @@ namespace Rubberduck.Parsing.VBA
             return attributesParseResults;
         }
 
-        private static string GetCode(IVBComponent component)
+        private static string GetCode(ICodeModule codeModule)
         {
-            string codeLines;
-            using (var module = component.CodeModule)
+            var lines = codeModule.CountOfLines;
+            if (lines == 0)
             {
-                var lines = module.CountOfLines;
-                if (lines == 0)
-                {
-                    return string.Empty;
-                }
-
-                codeLines = module.GetLines(1, lines);
+                return string.Empty;
             }
+
+            var codeLines = codeModule.GetLines(1, lines);
             var code = string.Concat(codeLines);
 
             return code;
@@ -170,7 +169,16 @@ namespace Rubberduck.Parsing.VBA
 
         private CommonTokenStream RewriteAndPreprocess(CancellationToken cancellationToken)
         {
-            var code = _rewriter?.GetText() ?? string.Join(Environment.NewLine, GetCode(_module.Component));
+            var code = _rewriter?.GetText();
+            if (code == null)
+            {
+                var component = _projectsProvider.Component(_module);
+                using (var codeModule = component.CodeModule)
+                {
+                    code = string.Join(Environment.NewLine, GetCode(codeModule));
+                }
+            }
+ 
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             _preprocessor.PreprocessTokenStream(_module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
