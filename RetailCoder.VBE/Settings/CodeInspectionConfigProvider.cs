@@ -17,6 +17,8 @@ namespace Rubberduck.Settings
             _persister = persister;
             _foundInspectionNames = inspectionProvider.Inspections.Select(inspection => inspection.Name).ToHashSet();
             _defaultSettings = new DefaultSettings<CodeInspectionSettings>().Default;
+            // Ignore settings for unknown inpections, for example when using the Experimental attribute
+            _defaultSettings.CodeInspections = _defaultSettings.CodeInspections.Where(setting => _foundInspectionNames.Contains(setting.Name)).ToHashSet();
 
             var defaultNames = _defaultSettings.CodeInspections.Select(x => x.Name);
             var nonDefaultInspections = inspectionProvider.Inspections.Where(inspection => !defaultNames.Contains(inspection.Name));

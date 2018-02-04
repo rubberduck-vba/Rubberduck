@@ -60,13 +60,12 @@ namespace RubberduckTests.Settings
         [Test]
         public void UserSettingsAreNotDuplicatedWithDefaultSettings()
         {
+            var inspectionMock = new Mock<IInspection>();
+            inspectionMock.Setup(inspection => inspection.Name).Returns("Foo");
             var inspectionProviderMock = new Mock<IInspectionProvider>();
-            inspectionProviderMock.Setup(provider => provider.Inspections).Returns(Enumerable.Empty<IInspection>());
+            inspectionProviderMock.Setup(provider => provider.Inspections).Returns(new[] { inspectionMock.Object });
 
-            var defaultSettings = new CodeInspectionConfigProvider(null, inspectionProviderMock.Object).CreateDefaults().CodeInspections;
-            var defaultSetting = defaultSettings.First();
-
-            var userSetting = new CodeInspectionSetting(defaultSetting.Name, defaultSetting.InspectionType);
+            var userSetting = new CodeInspectionSetting(inspectionMock.Object.Name, inspectionMock.Object.InspectionType);
             var userSettings = new CodeInspectionSettings
             {
                 CodeInspections = new HashSet<CodeInspectionSetting>(new[] { userSetting })
@@ -76,11 +75,9 @@ namespace RubberduckTests.Settings
             persisterMock.Setup(persister => persister.Load(It.IsAny<CodeInspectionSettings>())).Returns(userSettings);
 
             var configProvider = new CodeInspectionConfigProvider(persisterMock.Object, inspectionProviderMock.Object);
-
             var settings = configProvider.Create().CodeInspections;
 
-            Assert.AreEqual(defaultSettings.Count, settings.Count);
-            Assert.Contains(userSetting, settings.ToArray());
+            Assert.AreEqual(configProvider.CreateDefaults().CodeInspections.Count, settings.Count);
         }
 
 
