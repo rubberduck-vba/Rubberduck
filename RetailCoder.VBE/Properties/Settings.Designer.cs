@@ -431,9 +431,12 @@ namespace Rubberduck.Properties {
             "ty=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name" +
             "=\"WriteOnlyPropertyInspection\" Severity=\"Suggestion\" InspectionType=\"CodeQuality" +
             "Issues\" />\r\n    <CodeInspection Name=\"DefTypeStatementInspection\" Severity=\"Sugg" +
-            "estion\" InspectionType=\"LanguageOpportunities\" />\r\n  </CodeInspections>\r\n  <Whit" +
-            "elistedIdentifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</RunInspectionsOn" +
-            "SuccessfulParse>\r\n</CodeInspectionSettings>")]
+            "estion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"Ste" +
+            "pIsNotSpecifiedInspection\" Severity=\"DoNotShow\" InspectionType=\"LanguageOpportun" +
+            "ities\" />\r\n    <CodeInspection Name=\"StepOneIsRedundantInspection\" Severity=\"Hin" +
+            "t\" InspectionType=\"LanguageOpportunities\" />\r\n  </CodeInspections>\r\n  <Whitelist" +
+            "edIdentifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</RunInspectionsOnSucce" +
+            "ssfulParse>\r\n</CodeInspectionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));

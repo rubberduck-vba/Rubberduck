@@ -260,6 +260,8 @@
     &lt;CodeInspection Name="VariableTypeNotDeclaredInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="WriteOnlyPropertyInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="DefTypeStatementInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="StepIsNotSpecifiedInspection" Severity="DoNotShow" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="StepOneIsRedundantInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
   &lt;/CodeInspections&gt;
   &lt;WhitelistedIdentifiers /&gt;
   &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
