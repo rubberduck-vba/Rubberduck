@@ -14,8 +14,8 @@ using System.Reflection;
 using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace RubberduckTests.Mocks
 {
@@ -41,23 +41,24 @@ namespace RubberduckTests.Mocks
         public static ParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
         {
             var declarationFinderFactory = new DeclarationFinderFactory();
-            var state = new RubberduckParserState(vbe, declarationFinderFactory);
-            return Create(vbe, state, serializedDeclarationsPath);
+            var projectRepository = new ProjectsRepository(vbe);
+            var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory);
+            return Create(vbe, state, projectRepository, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, string serializedDeclarationsPath = null)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)));
+            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state.ProjectsProvider);
             var exporter = new Mock<IModuleExporter>().Object;
-            return Create(vbe, state, attributeParser, exporter, serializedDeclarationsPath);
+            return Create(vbe, state, attributeParser, exporter, projectRepository, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, IModuleExporter exporter, string serializedDeclarationsPath = null)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, IModuleExporter exporter, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
-            var projectManager = new SynchronousProjectManager(state, vbe);
+            var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);

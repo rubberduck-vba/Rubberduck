@@ -13,6 +13,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         CodePaneView CodePaneView { get; }
         Selection Selection { get; set; }
         QualifiedSelection? GetQualifiedSelection();
+        QualifiedModuleName QualifiedModuleName { get; }
         void Show();
     }
 }

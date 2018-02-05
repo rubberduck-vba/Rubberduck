@@ -15,6 +15,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         void DeleteLines(Selection selection);
         void DeleteLines(int startLine, int count = 1);
         QualifiedSelection? GetQualifiedSelection();
+        QualifiedModuleName QualifiedModuleName { get; }
         string Content();
         void Clear();
         string ContentHash();
@@ -30,6 +31,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         int GetProcBodyStartLine(string procName, ProcKind procKind);
         int GetProcCountLines(string procName, ProcKind procKind);
         string GetProcOfLine(int line);
-        ProcKind GetProcKindOfLine(int line);
+        ProcKind GetProcKindOfLine(int line);      
     }
 }

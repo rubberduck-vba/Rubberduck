@@ -7,11 +7,11 @@ using System.Collections.Concurrent;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class ProjectManager : ProjectManagerBase
+    public class StateProjectManager : StateProjectManagerBase
     {
         private const int _maxDegreeOfQMNCreationParallelism = -1;
 
-        public ProjectManager(
+        public StateProjectManager(
             RubberduckParserState state,
             IVBE vbe)
         :base(state, 

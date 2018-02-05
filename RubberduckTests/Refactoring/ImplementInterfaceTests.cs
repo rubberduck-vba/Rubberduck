@@ -730,7 +730,7 @@ End Sub
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Sheet1", ComponentType.Document, initialCode, Selection.Home)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var project = vbe.Object.VBProjects[0];
@@ -770,7 +770,7 @@ End Sub
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Form1", ComponentType.UserForm, initialCode, Selection.Home)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var project = vbe.Object.VBProjects[0];
