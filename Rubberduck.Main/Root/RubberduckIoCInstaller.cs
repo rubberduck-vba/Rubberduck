@@ -46,6 +46,7 @@ using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
+using Rubberduck.Inspections.Rubberduck.Inspections;
 
 
 namespace Rubberduck.Root
@@ -147,7 +148,7 @@ namespace Rubberduck.Root
 
             RegisterSpecialFactories(container);
             RegisterFactories(container, assembliesToRegister);
-            
+
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
         }
 
@@ -156,10 +157,9 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = GetIoCRegisteredTypes(assembly);
-
-                container.Register(Classes.From(assemblyTypes)
-                    .InSameNamespaceAs<Configuration>()
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .Where(type => type.NotDisabledExperimental(_initialSettings) && type.Namespace == typeof(Configuration).Namespace)
                     .WithService.AllInterfaces()
                     .LifestyleSingleton());
             }
@@ -167,11 +167,10 @@ namespace Rubberduck.Root
             container.Register(Component.For<IPersistable<SerializableProject>>()
                 .ImplementedBy<XmlPersistableDeclarations>()
                 .LifestyleTransient());
-
             container.Register(Component.For(typeof(IPersistanceService<>), typeof(IFilePersistanceService<>))
                 .ImplementedBy(typeof(XmlPersistanceService<>))
                 .LifestyleSingleton());
-            
+
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());
@@ -181,17 +180,15 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = GetIoCRegisteredTypes(assembly);
-
-                assemblyTypes.Any(t => t.Name == nameof(IMessageBox));
-                
-                container.Register(Classes.From(assemblyTypes)
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
                     .Where(type => type.Namespace != null
-                                   && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
-                                   && !type.Name.Equals("SelectionChangeService")
-                                   && !type.Name.EndsWith("Factory")
-                                   && !type.Name.EndsWith("ConfigProvider")
-                                   && !type.GetInterfaces().Contains(typeof(IInspection)))
+                            && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
+                            && !type.Name.Equals("SelectionChangeService")
+                            && !type.Name.EndsWith("Factory")
+                            && !type.Name.EndsWith("ConfigProvider")
+                            && !type.GetInterfaces().Contains(typeof(IInspection))
+                            && type.NotDisabledExperimental(_initialSettings))
                     .WithService.DefaultInterfaces()
                     .LifestyleTransient()
                 );
@@ -202,10 +199,10 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = GetIoCRegisteredTypes(assembly);
-
-                container.Register(Types.From(assemblyTypes)
-                    .Where(type => type.IsInterface && type.Name.EndsWith("Factory"))
+                container.Register(Types.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .Where(type => type.IsInterface && type.Name.EndsWith("Factory") && type.NotDisabledExperimental(_initialSettings))
+                    .WithService.Self()
                     .Configure(c => c.AsFactory())
                     .LifestyleSingleton());
             }
@@ -213,11 +210,14 @@ namespace Rubberduck.Root
 
         private static void RegisterSpecialFactories(IWindsorContainer container)
         {
-            container.Register(Component.For<IFolderBrowserFactory>()
-                .ImplementedBy<DialogFactory>()
-                .LifestyleSingleton());
+            //container.Register(Component.For<IDeclarationFinderFactory>()
+            //    .ImplementedBy<DeclarationFinderFactory>()
+            //    .LifestyleSingleton());
             container.Register(Component.For<IFakesProviderFactory>()
                 .ImplementedBy<FakesProviderFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IFolderBrowserFactory>()
+                .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());
         }
 
@@ -225,10 +225,9 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = GetIoCRegisteredTypes(assembly);
-
-                container.Register(Classes.From(assemblyTypes)
-                    .BasedOn<IQuickFix>()
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .Where(type => type.IsBasedOn(typeof(IQuickFix)) && type.NotDisabledExperimental(_initialSettings))
                     .WithService.Base()
                     .WithService.Self()
                     .LifestyleSingleton());
@@ -239,10 +238,9 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = GetIoCRegisteredTypes(assembly);
-
-                container.Register(Classes.From(assemblyTypes)
-                    .BasedOn<IInspection>()
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .Where(type => type.IsBasedOn(typeof(IInspection)) && type.NotDisabledExperimental(_initialSettings))
                     .WithService.Base()
                     .LifestyleTransient());
             }
@@ -252,12 +250,11 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                var assemblyTypes = GetIoCRegisteredTypes(assembly);
-
-                container.Register(Classes.From(assemblyTypes)
-                    .BasedOn<IParseTreeInspection>()
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .Where(type => type.IsBasedOn(typeof(IParseTreeInspection)) && type.NotDisabledExperimental(_initialSettings))
                     .WithService.Base()
-                    .WithService.Select(new[]{typeof(IInspection)})
+                    .WithService.Select(new[] { typeof(IInspection) })
                     .LifestyleTransient());
             }
         }
@@ -522,11 +519,12 @@ namespace Rubberduck.Root
                 .LifestyleTransient());
         }
 
-        private static void RegisterCommandMenuItems(IWindsorContainer container)
+        private void RegisterCommandMenuItems(IWindsorContainer container)
         {
             //note: The name of a registration is the full name of the implementation if not specified otherwise.
-            container.Register(Classes.FromThisAssembly()
-                .BasedOn<ICommandMenuItem>()
+            container.Register(Classes.FromAssemblyContaining<ICommandMenuItem>()
+                .IncludeNonPublicTypes()
+                .Where(type => type.IsBasedOn(typeof(ICommandMenuItem)) && type.NotDisabledExperimental(_initialSettings))
                 .WithService.AllInterfaces()
                 .Configure(item => item.DependsOn(Dependency.OnComponent(typeof(CommandBase),
                     CommandNameFromCommandMenuName(item.Implementation.Name))))
@@ -545,18 +543,19 @@ namespace Rubberduck.Root
             //note: convention: the registration name for commands is the type name, not the full type name.
             //Otherwise, namespaces would get in the way when binding to the menu items.
             RegisterCommandsWithPresenters(container);
+            
+            //var commandsForCommandMenuItems = Assembly.GetExecutingAssembly().GetTypes()
+            //    .Where(type => type.IsClass && typeof(ICommandMenuItem).IsAssignableFrom(type))
+            //    .Select(type => CommandNameFromCommandMenuName(type.Name))
+            //    .ToHashSet();
 
-            var commandsForCommandMenuItems = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => type.IsClass && typeof(ICommandMenuItem).IsAssignableFrom(type))
-                .Select(type => CommandNameFromCommandMenuName(type.Name))
-                .ToHashSet();
-
-            container.Register(Classes.FromThisAssembly()
+            container.Register(Classes.FromAssemblyContaining<CommandBase>()
                 .Where(type => type.Namespace != null
                             && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty)
                             && (type.BaseType == typeof(CommandBase) || type.BaseType == typeof(RefactorCommandBase))
                             && type.Name.EndsWith("Command")
-                            && commandsForCommandMenuItems.Contains(type.Name))
+                            // FIXME something something commandsForCommandMenuItems ...
+                            && type.Assembly.GetTypes().Any(menuItemType => menuItemType.Name == (type.Name + "MenuItem")))
                 .WithService.Self()
                 .WithService.Select(new[] { typeof(CommandBase) })
                 .LifestyleTransient()
@@ -575,7 +574,7 @@ namespace Rubberduck.Root
                 .DependsOn(Dependency.OnComponent<IDockablePresenter, TestExplorerDockablePresenter>())
                 .LifestyleTransient()
                 .Named(typeof(TestExplorerCommand).Name));
-                
+
             container.Register(Component.For<CommandBase>()
                 .ImplementedBy<InspectionResultsCommand>()
                 .DependsOn(Dependency.OnComponent<IDockablePresenter, InspectionResultsDockablePresenter>())
@@ -610,15 +609,15 @@ namespace Rubberduck.Root
                 .ImplementedBy<IndenterSettings>()
                 .LifestyleSingleton());
             container.Register(Component.For<Func<IIndenterSettings>>()
-                .UsingFactoryMethod(kernel => (Func<IIndenterSettings>) (() => kernel.Resolve<IGeneralConfigService>()
-                    .LoadConfiguration().UserSettings.IndenterSettings))
+                .UsingFactoryMethod(kernel => (Func<IIndenterSettings>)(() => kernel.Resolve<IGeneralConfigService>()
+                   .LoadConfiguration().UserSettings.IndenterSettings))
                 .LifestyleTransient()); //todo: clean up this registration
         }
 
         private void RegisterWindowsHooks(IWindsorContainer container)
         {
-            var mainWindowHwnd = (IntPtr) _vbe.MainWindow.HWnd;
-            
+            var mainWindowHwnd = (IntPtr)_vbe.MainWindow.HWnd;
+
             container.Register(Component.For<IRubberduckHooks>()
                 .ImplementedBy<RubberduckHooks>()
                 .DependsOn(Dependency.OnValue<IntPtr>(mainWindowHwnd))
@@ -627,7 +626,8 @@ namespace Rubberduck.Root
         
         private static void RegisterDockableUserControls(IWindsorContainer container)
         {
-            container.Register(Classes.FromThisAssembly()
+            container.Register(Classes.FromAssemblyContaining<IDockableUserControl>()
+                .IncludeNonPublicTypes()
                 .BasedOn<IDockableUserControl>()
                 .LifestyleSingleton());
         }
@@ -735,15 +735,13 @@ namespace Rubberduck.Root
 
         public static IEnumerable<Assembly> AssembliesToRegister()
         {
-            var assemblies = new[]
-                {
-                    Assembly.GetExecutingAssembly(),
-                    Assembly.GetAssembly(typeof(IHostApplication)),
-                    Assembly.GetAssembly(typeof(IParseCoordinator)),
-                    Assembly.GetAssembly(typeof(IIndenter))
-                }
-                .Concat(FindPlugins());
-            return assemblies;
+            return Assembly.GetExecutingAssembly()
+                .GetReferencedAssemblies()
+                .Where(name => name.FullName.StartsWith("Rubberduck"))
+                .Select(Assembly.Load)
+                .Concat(FindPlugins())
+                // theoretically we shouldn't have anything to register here, but better safe than sorry
+                .Concat(new[] { Assembly.GetExecutingAssembly() });
         }
 
         private static IEnumerable<Assembly> FindPlugins()
@@ -751,6 +749,7 @@ namespace Rubberduck.Root
             var assemblies = new List<Assembly>();
             var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
+            // should be loaded already...
             var inspectionsAssembly = Path.Combine(basePath, "Rubberduck.Inspections.dll");
             if (File.Exists(inspectionsAssembly))
             {
@@ -793,25 +792,13 @@ namespace Rubberduck.Root
         {
             container.Register(Component.For<IVBE>().Instance(_vbe));
             container.Register(Component.For<IAddIn>().Instance(_addin));
-            container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars)); //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
+            //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
+            container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars)); 
         }
 
         private static void RegisterHotkeyFactory(IWindsorContainer container)
         {
             container.Register(Component.For<HotkeyFactory>().LifestyleSingleton());
-        }
-
-        private IEnumerable<TypeInfo> GetIoCRegisteredTypes(Assembly assembly)
-        {
-            return assembly.DefinedTypes
-                .Where(w =>
-                {
-                    var attribute = w.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-                    var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
-
-                    return attribute == null ||
-                           _initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
-                });
         }
     }
 }

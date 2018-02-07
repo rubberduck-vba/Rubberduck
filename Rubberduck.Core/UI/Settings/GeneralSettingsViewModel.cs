@@ -24,10 +24,10 @@ namespace Rubberduck.UI.Settings
         private bool _indenterPrompted;
         private readonly ReadOnlyCollection<Type> _experimentalFeatureTypes;
 
-        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, ReadOnlyCollection<Type> experimentalFeatureTypes)
+        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IEnumerable<Type> experimentalFeatureTypes)
         {
             _operatingSystem = operatingSystem;
-            _experimentalFeatureTypes = experimentalFeatureTypes;
+            _experimentalFeatureTypes = new ReadOnlyCollection<Type>(experimentalFeatureTypes.ToList());
             Languages = new ObservableCollection<DisplayLanguageSetting>(
                 new[] 
             {
