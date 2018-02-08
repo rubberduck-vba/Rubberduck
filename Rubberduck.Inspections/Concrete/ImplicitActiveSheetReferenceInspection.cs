@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
         private static readonly string[] Targets = 
         {
             "Cells", "Range", "Columns", "Rows"

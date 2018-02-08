@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public VariableNotUsedInspection(RubberduckParserState state) : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)

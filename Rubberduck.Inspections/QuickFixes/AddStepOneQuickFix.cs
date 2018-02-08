@@ -1,16 +1,10 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -25,11 +19,11 @@ namespace Rubberduck.Inspections.QuickFixes
             _state = state;
         }
 
-        public override bool CanFixInProcedure => false;
+        public override bool CanFixInProcedure => true;
 
-        public override bool CanFixInModule => false;
+        public override bool CanFixInModule => true;
 
-        public override bool CanFixInProject => false;
+        public override bool CanFixInProject => true;
 
         public override string Description(IInspectionResult result)
         {

@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Inspections.Abstract;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -17,9 +16,7 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase
     {
-        public StepOneIsRedundantInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Hint) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
+        public StepOneIsRedundantInspection(RubberduckParserState state) : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -50,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
             _contexts.Clear();
         }
 
-        public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
+        public override void EnterForNextStmt([NotNull] ForNextStmtContext context)
         {
             StepStmtContext stepStatement = context.stepStmt();
 

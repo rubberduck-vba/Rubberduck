@@ -16,12 +16,11 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
     {
         public DefTypeStatementInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new DefTypeStatementInspectionListener();
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
+        
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

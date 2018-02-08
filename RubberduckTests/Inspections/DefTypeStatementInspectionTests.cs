@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
 using System.Threading;
@@ -10,16 +9,6 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class DefTypeStatementInspectionTests
     {
-        [Test]
-        [Category("Inspections")]
-        public void DefType_InspectionType()
-        {
-            var inspection = new DefTypeStatementInspection(null);
-            const CodeInspectionType expectedInspection = CodeInspectionType.LanguageOpportunities;
-
-            Assert.AreEqual(expectedInspection, inspection.InspectionType);
-        }
-
         [Test]
         [TestCase("Bool")]
         [TestCase("Byte")]
@@ -144,5 +133,14 @@ End Function";
             }
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "DefTypeStatementInspection";
+            var inspection = new DefTypeStatementInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
     }
 }

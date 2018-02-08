@@ -5140,6 +5140,15 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            var inspection = new ShadowedDeclarationInspection(null);
+
+            Assert.AreEqual("ShadowedDeclarationInspection", inspection.Name);
+        }
+
         private void AssertResultCountsEqualForThoseWithExpectation(Dictionary<string, int> expectedResultCounts,
             Dictionary<string, int> actualResultCounts)
         {

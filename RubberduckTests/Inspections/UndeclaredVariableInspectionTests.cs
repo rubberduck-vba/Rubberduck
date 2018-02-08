@@ -1,8 +1,6 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -114,6 +112,16 @@ End Sub";
 
                 Assert.IsFalse(inspectionResults.Any());
             }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "UndeclaredVariableInspection";
+            var inspection = new UndeclaredVariableInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
         }
     }
 }

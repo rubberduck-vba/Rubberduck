@@ -142,14 +142,7 @@ namespace Rubberduck.UI.Settings
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
                 var service = new XmlPersistanceService<Rubberduck.Settings.UnitTestSettings> { FilePath = dialog.FileName };
-                service.Save(new Rubberduck.Settings.UnitTestSettings
-                {
-                    BindingMode = BindingMode,
-                    AssertMode = AssertMode,
-                    ModuleInit = ModuleInit,
-                    MethodInit = MethodInit,
-                    DefaultTestStubInNewModule = DefaultTestStubInNewModule
-                });
+                service.Save(new Rubberduck.Settings.UnitTestSettings(BindingMode, AssertMode, ModuleInit, MethodInit, DefaultTestStubInNewModule));
             }
         }
     }

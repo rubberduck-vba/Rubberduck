@@ -328,5 +328,15 @@ End Sub
             }
 
         }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "MemberNotOnInterfaceInspection";
+            var inspection = new MemberNotOnInterfaceInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
     }
 }

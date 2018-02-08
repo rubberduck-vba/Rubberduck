@@ -3,7 +3,6 @@ using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
@@ -100,14 +99,6 @@ End Sub";
                 Assert.AreEqual(1, inspectionResults.Count());
                 Assert.AreEqual(4, inspectionResults.First().QualifiedSelection.Selection.StartLine);
             }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new StopKeywordInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
         [Test]
