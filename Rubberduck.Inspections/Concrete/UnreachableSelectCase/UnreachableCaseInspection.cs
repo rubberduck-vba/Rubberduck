@@ -28,13 +28,10 @@ namespace Rubberduck.Inspections.Concrete
             [ClauseEvaluationResult.CaseElse] = InspectionsUI.UnreachableCaseInspection_CaseElse
         };
 
-        public UnreachableCaseInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+        public UnreachableCaseInspection(RubberduckParserState state) : base(state) { }
 
         public override IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
