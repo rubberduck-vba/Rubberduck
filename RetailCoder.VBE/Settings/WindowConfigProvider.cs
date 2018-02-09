@@ -5,21 +5,22 @@ namespace Rubberduck.Settings
     public class WindowConfigProvider : IConfigProvider<WindowSettings>
     {
         private readonly IPersistanceService<WindowSettings> _persister;
+        private readonly WindowSettings _defaultSettings;
 
         public WindowConfigProvider(IPersistanceService<WindowSettings> persister)
         {
             _persister = persister;
+            _defaultSettings = new DefaultSettings<WindowSettings>().Default;
         }
 
         public WindowSettings Create()
         {
-            var prototype = new WindowSettings();
-            return _persister.Load(prototype) ?? prototype;
+            return _persister.Load(_defaultSettings) ?? _defaultSettings;
         }
 
         public WindowSettings CreateDefaults()
         {
-            return new WindowSettings();
+            return _defaultSettings;
         }
 
         public void Save(WindowSettings settings)

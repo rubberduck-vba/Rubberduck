@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using resx = Rubberduck.Properties.Resources;
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -18,9 +19,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerCustomFolderViewModel(CodeExplorerItemViewModel parent, string name, string fullPath)
+        private readonly IProjectsProvider _projectsProvider;
+
+        public CodeExplorerCustomFolderViewModel(CodeExplorerItemViewModel parent, string name, string fullPath, IProjectsProvider projectsProvider)
         {
             _parent = parent;
+            _projectsProvider = projectsProvider;
             FullPath = fullPath;
             Name = name.Replace("\"", string.Empty);
             FolderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
@@ -42,7 +46,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     var members = declarations.Where(item =>
                         !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 
-                    AddChild(new CodeExplorerComponentViewModel(this, parent, members));
+                    AddChild(new CodeExplorerComponentViewModel(this, parent, members, _projectsProvider));
                 }
                 catch (InvalidOperationException exception)
                 {

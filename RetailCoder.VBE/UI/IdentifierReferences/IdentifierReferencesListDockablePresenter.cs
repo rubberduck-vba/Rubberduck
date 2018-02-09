@@ -1,14 +1,19 @@
 ﻿using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class IdentifierReferencesListDockablePresenter : DockableToolwindowPresenter
     {
-        public IdentifierReferencesListDockablePresenter(IVBE vbe, IAddIn addin, SimpleListControl control, Declaration target)
+        private readonly IProjectsProvider _projectsProvider;
+
+        public IdentifierReferencesListDockablePresenter(IVBE vbe, IAddIn addin, SimpleListControl control, IProjectsProvider projectsProvider, Declaration target)
             : base(vbe, addin, control, null)
         {
+            _projectsProvider = projectsProvider;
+
             BindTarget(target);
         }
 
@@ -24,9 +29,9 @@ namespace Rubberduck.UI.IdentifierReferences
             control.Navigate += ControlNavigate;
         }
 
-        public static void OnNavigateIdentifierReference(IdentifierReference reference)
+        private void OnNavigateIdentifierReference(IdentifierReference reference)
         {
-            using (var codeModule = reference.QualifiedModuleName.Component.CodeModule)
+            using (var codeModule = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
             {
                 using (var codePane = codeModule.CodePane)
                 {

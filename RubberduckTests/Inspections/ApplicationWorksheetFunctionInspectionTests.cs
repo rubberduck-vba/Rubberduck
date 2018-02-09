@@ -230,5 +230,15 @@ End Sub
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "ApplicationWorksheetFunctionInspection";
+            var inspection = new ApplicationWorksheetFunctionInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
     }
 }

@@ -9,6 +9,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
+#if DEBUG
+        private const bool LogSuccessfulComRelease = false;
+#endif
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private IComSafe _comSafe;
@@ -65,17 +68,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 else
                 {
                     _rcwReferenceCount = Marshal.ReleaseComObject(Target);
-                    if (_rcwReferenceCount >= 0)
-                    {
-#if DEBUG
-                        _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
-#endif
-                    }
-                    else
+                    if (_rcwReferenceCount < 0)
                     {
                         _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper. New reference count is {_rcwReferenceCount}.");
                     }
-                } 
+#if DEBUG
+                    else if(LogSuccessfulComRelease)
+                    {
+                        _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+                    }
+#endif
+                }
             }
             catch(COMException exception)
             {

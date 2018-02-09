@@ -340,14 +340,7 @@ End Property";
 
         private Configuration GetUnitTestConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.EarlyBinding,
-                AssertMode = AssertMode.StrictAssert,
-                ModuleInit = false,
-                MethodInit = false,
-                DefaultTestStubInNewModule = false
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.EarlyBinding, AssertMode.StrictAssert, false, false, false);
 
             var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);

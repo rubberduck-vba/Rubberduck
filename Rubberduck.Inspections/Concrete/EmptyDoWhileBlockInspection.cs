@@ -15,9 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyDoWhileBlockInspection : ParseTreeInspectionBase
     {
         public EmptyDoWhileBlockInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

@@ -17,6 +17,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -56,11 +57,12 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -85,11 +87,12 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<CommandBase> { new AddClassModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -114,11 +117,12 @@ namespace RubberduckTests.CodeExplorer
 
             var commands = new List<CommandBase> { new AddUserFormCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -144,7 +148,8 @@ namespace RubberduckTests.CodeExplorer
             var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vbeWrapper = vbe.Object;
                 var commands = new List<CommandBase>
@@ -155,7 +160,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -181,7 +186,8 @@ namespace RubberduckTests.CodeExplorer
             var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vbeWrapper = vbe.Object;
                 var commands = new List<CommandBase>
@@ -191,7 +197,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -215,7 +221,8 @@ namespace RubberduckTests.CodeExplorer
             var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vbeWrapper = vbe.Object;
                 var commands = new List<CommandBase>
@@ -225,7 +232,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -248,7 +255,8 @@ namespace RubberduckTests.CodeExplorer
             var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vbeWrapper = vbe.Object;
                 var commands = new List<CommandBase>
@@ -258,7 +266,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -281,7 +289,8 @@ namespace RubberduckTests.CodeExplorer
             var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vbeWrapper = vbe.Object;
                 var commands = new List<CommandBase>
@@ -291,7 +300,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -324,7 +333,8 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.FileNames).Returns(new[] { "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas" });
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -333,7 +343,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -367,7 +377,8 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.FileNames).Returns(new[] { "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas", "C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls" });
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -376,7 +387,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -411,7 +422,8 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -420,7 +432,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -448,17 +460,18 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
-                    new ExportCommand(saveFileDialog.Object)
+                    new ExportCommand(saveFileDialog.Object, state.ProjectsProvider)
                 };
 
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -486,16 +499,17 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.FileName).Returns("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas");
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
-                    new ExportCommand(saveFileDialog.Object)
+                    new ExportCommand(saveFileDialog.Object, state.ProjectsProvider)
                 };
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -525,7 +539,8 @@ namespace RubberduckTests.CodeExplorer
             var mockFolderBrowser = new Mock<IFolderBrowser>();
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -534,7 +549,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -579,7 +594,8 @@ namespace RubberduckTests.CodeExplorer
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, projectPath)).Returns(mockFolderBrowser.Object);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -588,7 +604,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -633,7 +649,8 @@ namespace RubberduckTests.CodeExplorer
             var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, projectPath)).Returns(mockFolderBrowser.Object);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -642,7 +659,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -659,22 +676,23 @@ namespace RubberduckTests.CodeExplorer
         {
             var builder = new MockVbeBuilder();
             var projectMock = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
-            projectMock.AddComponent(projectMock.MockUserFormBuilder("UserForm1", "").Build());
+            projectMock.MockUserFormBuilder("UserForm1", "").AddFormToProjectBuilder();
 
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
             var component = projectMock.MockComponents.First();
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
-                    new OpenDesignerCommand()
+                    new OpenDesignerCommand(state.ProjectsProvider)
                 };
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -712,16 +730,17 @@ namespace RubberduckTests.CodeExplorer
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                 .Returns(DialogResult.Yes);
 
-            var commands = new List<CommandBase>
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
-            {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -756,16 +775,17 @@ namespace RubberduckTests.CodeExplorer
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                 .Returns(DialogResult.Yes);
 
-            var commands = new List<CommandBase>
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
-            {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -799,16 +819,17 @@ namespace RubberduckTests.CodeExplorer
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
                 .Returns(DialogResult.No);
 
-            var commands = new List<CommandBase>
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
-            {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -841,16 +862,17 @@ namespace RubberduckTests.CodeExplorer
                 m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
                     It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>())).Returns(DialogResult.Cancel);
 
-            var commands = new List<CommandBase>
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
-                new RemoveCommand(saveFileDialog.Object, messageBox.Object)
-            };
+                var commands = new List<CommandBase>
+                {
+                    new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider)
+                };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
-            {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -881,7 +903,8 @@ End Sub
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -890,7 +913,7 @@ End Sub
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -916,7 +939,8 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -925,7 +949,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -965,7 +989,8 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -974,7 +999,7 @@ End Sub
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1024,7 +1049,8 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -1033,7 +1059,7 @@ End Sub
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1065,7 +1091,8 @@ End Sub";
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -1074,7 +1101,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1119,7 +1146,8 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -1128,7 +1156,7 @@ End Sub
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1183,7 +1211,8 @@ End Sub
             var component2 = project.Object.VBComponents[1];
             var module2 = component2.CodeModule;
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -1192,7 +1221,7 @@ End Sub
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1225,7 +1254,8 @@ End Sub";
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var commands = new List<CommandBase>
                 {
@@ -1234,7 +1264,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1254,11 +1284,12 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1283,11 +1314,12 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1312,11 +1344,12 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1341,11 +1374,12 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1373,7 +1407,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1385,7 +1420,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1411,7 +1446,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1423,7 +1459,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1449,7 +1485,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1461,7 +1498,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1487,7 +1524,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1499,7 +1537,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1525,7 +1563,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1537,7 +1576,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1563,7 +1602,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1575,7 +1615,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1601,7 +1641,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1613,7 +1654,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1639,7 +1680,8 @@ End Sub";
 
             var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
 
                 var windowSettings = new WindowSettings
@@ -1651,7 +1693,7 @@ End Sub";
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -1667,7 +1709,7 @@ End Sub";
         [Test]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
-            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name");
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null);
             Assert.AreEqual(0, new CompareByName().Compare(folderNode, folderNode));
         }
 
@@ -1676,8 +1718,8 @@ End Sub";
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name");
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name");
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null);
 
             Assert.AreEqual(0, new CompareByName().Compare(folderNode1, folderNode2));
         }
@@ -1687,8 +1729,8 @@ End Sub";
         public void CompareByName_ReturnsCorrectOrdering()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1");
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2");
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1", null);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2", null);
 
             Assert.IsTrue(new CompareByName().Compare(folderNode1, folderNode2) < 0);
         }
@@ -1697,7 +1739,7 @@ End Sub";
         [Test]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2");
+            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2", null);
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
@@ -1712,11 +1754,12 @@ Public Const Bar = 0";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var eventNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
@@ -1737,11 +1780,12 @@ Public Bar As Boolean";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var constNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo = 0");
@@ -1765,11 +1809,12 @@ End Property
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var fieldNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Bar");
@@ -1794,11 +1839,12 @@ End Property
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var propertyGetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Get)");
@@ -1823,11 +1869,12 @@ End Property
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var propertyGetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Get)");
@@ -1852,11 +1899,12 @@ End Property
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Let)");
@@ -1881,11 +1929,12 @@ End Property
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var propertyLetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Let)");
@@ -1910,11 +1959,12 @@ End Function
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var propertySetNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo (Set)");
@@ -1939,11 +1989,12 @@ End Sub
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var functionNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
@@ -1968,11 +2019,12 @@ End Sub
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var privateNode = vm.Projects.First().Items.First().Items.First().Items.Single(s => s.Name == "Foo");
@@ -1994,11 +2046,12 @@ End Sub
             var project = projectMock.Build();
             var vbe = builder.AddProject(project).Build();
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var docNode = vm.Projects.First().Items.First().Items.Single(s => s.Name == "Sheet1");
@@ -2027,11 +2080,12 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -2056,11 +2110,12 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
 
                 var memberNode1 = vm.Projects.First().Items.First().Items.First().Items.OfType<CodeExplorerMemberViewModel>().Single(s => s.Name == "Foo");
@@ -2085,11 +2140,12 @@ End Sub";
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
 
-            using (var state = new RubberduckParserState(vbe.Object, new DeclarationFinderFactory()))
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory()))
             {
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, new List<CommandBase>(), _generalSettingsProvider.Object, _windowSettingsProvider.Object);
 
-                var parser = MockParser.Create(vbe.Object, state);
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
@@ -2103,8 +2159,8 @@ End Sub";
         [Test]
         public void CompareByNodeType_FoldersAreSortedByName()
         {
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty);
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "zzz", string.Empty);
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty, null);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "zzz", string.Empty, null);
 
             Assert.IsTrue(new CompareByNodeType().Compare(folderNode1, folderNode2) < 0);
         }
@@ -2112,14 +2168,7 @@ End Sub";
         #region Helpers
         private Configuration GetDefaultUnitTestConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.LateBinding,
-                AssertMode = AssertMode.StrictAssert,
-                ModuleInit = true,
-                MethodInit = true,
-                DefaultTestStubInNewModule = false
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false);
 
             var generalSettings = new GeneralSettings
             {

@@ -1,7 +1,6 @@
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -67,7 +66,7 @@ End Sub
                 .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
                 .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -611,14 +610,6 @@ End Sub";
 
                 Assert.AreEqual("arg2", inspectionResults.Single().Target.IdentifierName);
             }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ParameterCanBeByValInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
         }
 
         [Test]

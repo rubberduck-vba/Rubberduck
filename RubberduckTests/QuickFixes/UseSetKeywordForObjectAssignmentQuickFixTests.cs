@@ -57,16 +57,16 @@ End Function";
         {
             var expectedResultCount = 1;
             var input = @"
-Private example As MyObject
+Private m_example As MyObject
 Public Property Get Example() As MyObject
-    Example = example
+    Example = m_example
 End Property
 ";
             var expectedCode =
                 @"
-Private example As MyObject
+Private m_example As MyObject
 Public Property Get Example() As MyObject
-    Set Example = example
+    Set Example = m_example
 End Property
 ";
 

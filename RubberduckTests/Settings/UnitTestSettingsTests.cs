@@ -10,14 +10,7 @@ namespace RubberduckTests.Settings
     {
         private Configuration GetDefaultConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.LateBinding,
-                AssertMode = AssertMode.StrictAssert,
-                ModuleInit = true,
-                MethodInit = true,
-                DefaultTestStubInNewModule = false
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false);
 
             var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
@@ -25,14 +18,7 @@ namespace RubberduckTests.Settings
 
         private Configuration GetNondefaultConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.EarlyBinding,
-                AssertMode = AssertMode.PermissiveAssert,
-                ModuleInit = false,
-                MethodInit = false,
-                DefaultTestStubInNewModule = true
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.EarlyBinding, AssertMode.PermissiveAssert, false, false, true);
 
             var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);

@@ -15,12 +15,10 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyCaseBlockInspection : ParseTreeInspectionBase
     {
         public EmptyCaseBlockInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Warning) { }
+            : base(state) { }
 
         public override IInspectionListener Listener { get; } =
             new EmptyCaseBlockListener();
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

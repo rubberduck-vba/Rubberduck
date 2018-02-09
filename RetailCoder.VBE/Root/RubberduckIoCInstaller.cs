@@ -45,7 +45,9 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.UI.CodeMetrics;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
+
 
 namespace Rubberduck.Root
 {
@@ -85,6 +87,9 @@ namespace Rubberduck.Root
             RegisterConstantVbeAndAddIn(container);
             RegisterAppWithSpecialDependencies(container);
 
+            container.Register(Component.For<IProjectsProvider, IProjectsRepository>()
+                .ImplementedBy<ProjectsRepository>()
+                .LifestyleSingleton());
             container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider>()
                 .ImplementedBy<RubberduckParserState>()
                 .LifestyleSingleton());
@@ -93,7 +98,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<ISourceControlProvider>()
                 .ImplementedBy<GitProvider>()
-                .LifestyleSingleton());
+                .LifestyleTransient());
             //container.Register(Component.For<GitProvider>()
             //    .LifestyleSingleton());
             container.Register(Component.For<IOperatingSystem>()
@@ -779,7 +784,7 @@ namespace Rubberduck.Root
                 .ImplementedBy<ParsingCacheService>()
                 .LifestyleSingleton());
             container.Register(Component.For<IProjectManager>()
-                .ImplementedBy<ProjectManager>()
+                .ImplementedBy<RepositoryProjectManager>()
                 .LifestyleSingleton());
             container.Register(Component.For<IReferenceRemover>()
                 .ImplementedBy<ReferenceRemover>()

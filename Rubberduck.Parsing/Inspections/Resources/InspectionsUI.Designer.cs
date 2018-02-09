@@ -61,6 +61,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add step.
+        /// </summary>
+        public static string AddStepOneQuickFix {
+            get {
+                return ResourceManager.GetString("AddStepOneQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1} results).
         /// </summary>
         public static string AggregateInspectionResultFormat {
@@ -327,6 +336,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string DefaultProjectNameInspectionResultFormat {
             get {
                 return ResourceManager.GetString("DefaultProjectNameInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using the &apos;Def[Type]&apos; statement leads to specifying types by using a prefix. This style of naming is heavily discouraged and should be avoided..
+        /// </summary>
+        public static string DefTypeStatementInspectionMeta {
+            get {
+                return ResourceManager.GetString("DefTypeStatementInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage of &apos;Def[Type]&apos; statement.
+        /// </summary>
+        public static string DefTypeStatementInspectionName {
+            get {
+                return ResourceManager.GetString("DefTypeStatementInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consider the explicit use of &apos;as {0}&apos; instead of &apos;{1}&apos;.
+        /// </summary>
+        public static string DefTypeStatementInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("DefTypeStatementInspectionResultFormat", resourceCulture);
             }
         }
         
@@ -1915,6 +1951,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove step.
+        /// </summary>
+        public static string RemoveStepOneQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveStepOneQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove usage of the &apos;Stop&apos; keyword.
         /// </summary>
         public static string RemoveStopKeywordQuickFix {
@@ -2082,6 +2127,60 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string SplitMultipleDeclarationsQuickFix {
             get {
                 return ResourceManager.GetString("SplitMultipleDeclarationsQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step of the for-next loop is not specified. This might be unintentional..
+        /// </summary>
+        public static string StepIsNotSpecifiedInspectionMeta {
+            get {
+                return ResourceManager.GetString("StepIsNotSpecifiedInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;For...Next&apos; loop step is not specified.
+        /// </summary>
+        public static string StepIsNotSpecifiedInspectionName {
+            get {
+                return ResourceManager.GetString("StepIsNotSpecifiedInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step not specified.
+        /// </summary>
+        public static string StepIsNotSpecifiedInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("StepIsNotSpecifiedInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 is the default step in a for-next loop and therefore is redundant..
+        /// </summary>
+        public static string StepOneIsRedundantInspectionMeta {
+            get {
+                return ResourceManager.GetString("StepOneIsRedundantInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;For...Next&apos; loop step 1 is redundant.
+        /// </summary>
+        public static string StepOneIsRedundantInspectionName {
+            get {
+                return ResourceManager.GetString("StepOneIsRedundantInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 is the default step in a for-next loop and therefore is redundant..
+        /// </summary>
+        public static string StepOneIsRedundantInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("StepOneIsRedundantInspectionResultFormat", resourceCulture);
             }
         }
         

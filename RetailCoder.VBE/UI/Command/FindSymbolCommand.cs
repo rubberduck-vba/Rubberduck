@@ -16,13 +16,15 @@ namespace Rubberduck.UI.Command
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly DeclarationIconCache _iconCache;
-        private readonly NavigateCommand _navigateCommand = new NavigateCommand();
+        private readonly NavigateCommand _navigateCommand;
 
         public FindSymbolCommand(IVBE vbe, RubberduckParserState state, DeclarationIconCache iconCache) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
             _iconCache = iconCache;
+
+            _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
         }
 
         protected override void OnExecute(object parameter)

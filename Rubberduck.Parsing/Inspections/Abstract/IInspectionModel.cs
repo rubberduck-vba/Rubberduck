@@ -25,12 +25,7 @@ namespace Rubberduck.Parsing.Inspections.Abstract
         /// <summary>
         /// Gets a value indicating the type of the code inspection.
         /// </summary>
-        CodeInspectionType InspectionType { get; }
-
-        /// <summary>
-        /// Gets a value indicating the default severity level of the code inspection.
-        /// </summary>
-        CodeInspectionSeverity DefaultSeverity { get; }
+        CodeInspectionType InspectionType { get; set; }
 
         /// <summary>
         /// Gets a value indicating the severity level of the code inspection.

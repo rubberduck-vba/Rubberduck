@@ -5,9 +5,9 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class SynchronousProjectManager : ProjectManagerBase
+    public class SynchronousStateProjectManager : StateProjectManagerBase
     {
-        public SynchronousProjectManager(
+        public SynchronousStateProjectManager(
             RubberduckParserState state,
             IVBE vbe)
         :base(state, 

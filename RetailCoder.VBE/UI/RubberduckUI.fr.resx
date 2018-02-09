@@ -1266,7 +1266,7 @@ Support localisation WPF par Grant Frisken</value>
     <value>Clé invalide</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>cette procédure s'exécute une seule fois par module</value>

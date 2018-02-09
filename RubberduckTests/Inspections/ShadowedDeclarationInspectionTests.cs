@@ -257,10 +257,11 @@ End Property";
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -400,10 +401,11 @@ End Property";
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -495,10 +497,11 @@ End Property";
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -5135,6 +5138,15 @@ End Sub";
             }
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            var inspection = new ShadowedDeclarationInspection(null);
+
+            Assert.AreEqual("ShadowedDeclarationInspection", inspection.Name);
         }
 
         private void AssertResultCountsEqualForThoseWithExpectation(Dictionary<string, int> expectedResultCounts,
