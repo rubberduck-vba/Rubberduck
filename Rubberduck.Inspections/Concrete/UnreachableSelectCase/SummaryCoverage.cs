@@ -33,159 +33,268 @@ namespace Rubberduck.Inspections.Concrete
         public static readonly string MOD = Tokens.Mod;
     }
 
-    public struct SummaryCaseCoverage
+    public class SummaryCoverage<T> where T : System.IComparable<T>
     {
-        public UnreachableCaseInspectionValue IsLT;
-        public UnreachableCaseInspectionValue IsGT;
-        public HashSet<UnreachableCaseInspectionValue> SingleValues;
-        public List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> Ranges;
-        public bool CaseElseIsUnreachable;
-        public List<string> RangeClausesAsText;
-    }
+        private ContextExtents<T> _extents;
+        private bool _coversAllValues;
 
-    public class SelectContext : ISelectStmtClause
-    {
-        private ParserRuleContext _context;
-        private List<IParseTree> _contextsOfInterest;
-
-        public SelectContext(ParserRuleContext context)
+        public SummaryCoverage()
         {
-            _context = context;
-            _contextsOfInterest = _context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
+            _coversAllValues = false;
+            ApplyExtents(new ContextExtents<T>());
         }
 
-        public List<IParseTree> ContextsOfInterest => _contextsOfInterest;
-
-        public void Accept(ISelectStmtClauseVisitor visitor)
+        public SummaryCoverage(ContextExtents<T> extents)
         {
-            if (_context is VBAParser.LExprContext)
+            _coversAllValues = false;
+            ApplyExtents(extents);
+        }
+
+        private ContextExtents<T> Extents => _extents;
+        public SummaryClauseRanges<T> Ranges { set; get; } = new SummaryClauseRanges<T>();
+        public SummaryClauseSingleValues<T> SingleValues { set; get; } = new SummaryClauseSingleValues<T>();
+        public SummaryClauseIsLT<T> IsLT { set; get; } = new SummaryClauseIsLT<T>();
+        public SummaryClauseIsGT<T> IsGT { set; get; } = new SummaryClauseIsGT<T>();
+        public bool CoversAllValues
+        {
+            get
             {
-                visitor.Visit((VBAParser.LExprContext)_context);
+                if (!_coversAllValues)
+                {
+                    _coversAllValues = CoversAll(); 
+                }
+                return _coversAllValues;
             }
-            else if (_context is VBAParser.LiteralExprContext)
+        }
+
+        public bool HasCoverage => SingleValues.Any()  || Ranges.Any()
+            || IsLT.HasCoverage || IsGT.HasCoverage;
+
+        public bool Empty => !HasCoverage;
+        public bool HasExtents => _extents.HasValues;
+
+        private bool ContainsBooleans => typeof(T) == typeof(bool);
+        private bool ContainsIntegerNumbers => typeof(T) == typeof(long) || typeof(T) == typeof(Int32) || typeof(T) == typeof(byte);
+
+        private void ApplyExtents( ContextExtents<T> extents)
+        {
+            _extents = extents;
+            if (extents.HasValues)
             {
-                visitor.Visit((VBAParser.LiteralExprContext)_context);
+                ApplyExtents(extents.Min, extents.Max);
+                return;
             }
-            else if (_context is VBAParser.SelectCaseStmtContext)
+        }
+
+        public void ApplyExtents(T min, T max)
+        {
+            _extents.MinMax(min, max);
+            IsLT.ApplyExtents(min, max);
+            IsGT.ApplyExtents(min, max);
+        }
+
+        public override bool Equals(Object o)
+        {
+            if (!(o is SummaryCoverage<T>))
             {
-                visitor.Visit((VBAParser.SelectCaseStmtContext)_context);
+                return false;
             }
-            else if (_context is VBAParser.SelectExpressionContext)
+            var comp = (SummaryCoverage<T>)o;
+
+            if (HasCoverage != comp.HasCoverage)
             {
-                visitor.Visit((VBAParser.SelectExpressionContext)_context);
+                return false;
             }
-            else if (_context is VBAParser.CaseClauseContext)
+
+            if (Empty && comp.Empty)
             {
-                visitor.Visit((VBAParser.CaseClauseContext)_context);
+                return true;
             }
-            else if (_context is VBAParser.RangeClauseContext)
+
+            var ltIsEqual = !IsLT.HasCoverage && !comp.IsLT.HasCoverage;
+            if (IsLT.HasCoverage && comp.IsLT.HasCoverage)
             {
-                visitor.Visit((VBAParser.RangeClauseContext)_context);
+                ltIsEqual = IsLT.Value.CompareTo(comp.IsLT.Value) == 0;
             }
-            else if (_context is VBAParser.SelectStartValueContext)
+            var gtIsEqual = !IsGT.HasCoverage && !comp.IsGT.HasCoverage;
+            if (IsGT.HasCoverage && comp.IsGT.HasCoverage)
             {
-                visitor.Visit((VBAParser.SelectStartValueContext)_context);
+                gtIsEqual = IsGT.Value.CompareTo(comp.IsGT.Value) == 0;
             }
-            else if (_context is VBAParser.SelectEndValueContext)
+            var rangesAreEqual = !Ranges.HasCoverage && !comp.Ranges.HasCoverage;
+            if (Ranges.HasCoverage && comp.Ranges.HasCoverage)
             {
-                visitor.Visit((VBAParser.SelectEndValueContext)_context);
+                rangesAreEqual = Ranges.RangeClauses.Count == comp.Ranges.RangeClauses.Count
+                && Ranges.RangeClauses.All(rgs => comp.Ranges.RangeClauses.Contains(rgs));
             }
-            else if (_context is VBAParser.RelationalOpContext)
+            var singleValuesAreEqual = !SingleValues.HasCoverage && !comp.SingleValues.HasCoverage;
+            if (SingleValues.HasCoverage && comp.SingleValues.HasCoverage)
             {
-                visitor.Visit((VBAParser.RelationalOpContext)_context);
+                singleValuesAreEqual = SingleValues.Values.All(sv => comp.SingleValues.Values.Contains(sv));
             }
-            else if (_context is VBAParser.MultOpContext)
+
+            return ltIsEqual && gtIsEqual && rangesAreEqual && singleValuesAreEqual; // && boolsAreEqual;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashString = IsLT.ToString();
+            hashString = hashString + IsGT.ToString();
+            hashString = hashString + Ranges.ToString();
+            hashString = hashString + SingleValues.ToString();
+            return hashString.GetHashCode();
+        }
+
+        public SummaryCoverage<T> RemoveCoverageRedundantTo(SummaryCoverage<T> toRemove)
+        {
+            if (toRemove.CoversAllValues || this.Empty)
             {
-                visitor.Visit((VBAParser.MultOpContext)_context);
+                return new SummaryCoverage<T>();
             }
-            else if (_context is VBAParser.AddOpContext)
+            if (toRemove.Empty)
             {
-                visitor.Visit((VBAParser.AddOpContext)_context);
+                return this;
             }
-            else if (_context is VBAParser.PowOpContext)
+
+            return RemoveClausesCoveredBy(this, toRemove);
+        }
+
+        public void SetIsLT(T newVal)
+        {
+            if (!ContainsBooleans)
             {
-                visitor.Visit((VBAParser.PowOpContext)_context);
+                IsLT.Value = newVal;
             }
-            else if (_context is VBAParser.ModOpContext)
+        }
+
+        public void SetIsGT(T newVal)
+        {
+            if (!ContainsBooleans)
             {
-                visitor.Visit((VBAParser.ModOpContext)_context);
+                IsGT.Value = newVal;
             }
-            else if (_context is VBAParser.UnaryMinusOpContext)
+        }
+
+        public void AddRange(T start, T end)
+        {
+            var candidate = new SummaryClauseRange<T>(start, end);
+            AddRange(candidate);
+        }
+
+        private void AddRange(SummaryClauseRange<T> range)
+        {
+            if (ContainsBooleans)
             {
-                visitor.Visit((VBAParser.UnaryMinusOpContext)_context);
+                SingleValues.Add(range.Start);
+                SingleValues.Add(range.End);
             }
-            else if (_context is VBAParser.LogicalAndOpContext)
+            else if (IsLT.Covers(range.Start) && IsLT.Covers(range.End)
+                || IsGT.Covers(range.Start) && IsGT.Covers(range.End))
             {
-                visitor.Visit((VBAParser.LogicalAndOpContext)_context);
+                return;
             }
-            else if (_context is VBAParser.LogicalOrOpContext)
+            Ranges.Add(range);
+        }
+
+        private void Add(bool value)
+        {
+            SingleValues.Add(value);
+        }
+
+        public void Add(T value)
+        {
+            if(!(IsLT.Covers(value) || IsGT.Covers(value)))
             {
-                visitor.Visit((VBAParser.LogicalOrOpContext)_context);
+                SingleValues.Add(value);
             }
-            else if (_context is VBAParser.LogicalXorOpContext)
+        }
+
+        public void Add(SummaryCoverage<T> newSummary)
+        {
+            if (!HasExtents && newSummary.HasExtents)
             {
-                visitor.Visit((VBAParser.LogicalXorOpContext)_context);
+                ApplyExtents(newSummary.Extents.Min, newSummary.Extents.Max);
             }
-            else if (_context is VBAParser.LogicalEqvOpContext)
+
+            if (newSummary.Empty)
             {
-                visitor.Visit((VBAParser.LogicalEqvOpContext)_context);
+                return;
             }
-            //else if (_context is VBAParser.LogicalImpOpContext)
+
+            foreach (var val in newSummary.SingleValues.Values)
+            {
+                Add(val);
+            }
+
+            foreach (var val in newSummary.SingleValues.ValuesBoolean)
+            {
+                Add(val);
+            }
+
+            //if (!ContainsBooleans)
             //{
-            //    visitor.Visit((VBAParser.LogicalImpOpContext)_context);
+            //    if (newSummary.BooleanValues.Any())
+            //    {
+            //        foreach (var boolVal in newSummary.BooleanValues)
+            //        {
+            //            BooleanValues.Add(boolVal);
+            //        }
+            //    }
             //}
-            else if (_context is VBAParser.LogicalNotOpContext)
+            //else
             {
-                visitor.Visit((VBAParser.LogicalNotOpContext)_context);
+                IsLT.Add(newSummary.IsLT);
+                IsGT.Add(newSummary.IsGT);
             }
-            else if (_context is VBAParser.ParenthesizedExprContext)
+
+            foreach (var range in newSummary.Ranges.RangeClauses)
             {
-                visitor.Visit((VBAParser.ParenthesizedExprContext)_context);
+                //if (ContainsBooleans)
+                //{
+                //    SingleValues.Add(range.Start);
+                //    SingleValues.Add(range.End);
+                //}
+                //else
+                {
+                    AddRange(range);
+                }
             }
         }
 
-        public ParserRuleContext Context => _context;
-
-        public IEnumerable<TContext> GetDescendents<TContext>() where TContext : ParserRuleContext
+        private bool CoversAll()
         {
-            return Context.GetDescendents<TContext>();
-        }
-
-        public IEnumerable<IParseTree> Children()
-        {
-            return Context.children;
-        }
-    }
-
-    public class SummaryCoverage : ISelectStmtClauseVisitor
-    {
-        private SummaryCaseCoverage _summaryCaseCoverage;
-        private Dictionary<ParserRuleContext, UnreachableCaseInspectionValue> _constantContexts;
-        private Dictionary<ParserRuleContext, UnreachableCaseInspectionValue> _variableContexts;
-        private RubberduckParserState _state;
-        public SummaryCoverage(RubberduckParserState state)
-        {
-            _state = state;
-            _constantContexts = new Dictionary<ParserRuleContext, UnreachableCaseInspectionValue>(); ;
-            _variableContexts = new Dictionary<ParserRuleContext, UnreachableCaseInspectionValue>(); ;
-            _summaryCaseCoverage = new SummaryCaseCoverage
+            var coversAll = false;
+            if (IsLT.HasCoverage && IsGT.HasCoverage)
             {
-                IsGT = null,
-                IsLT = null,
-                SingleValues = new HashSet<UnreachableCaseInspectionValue>(),
-                Ranges = new List<Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>(),
-                RangeClausesAsText = new List<string>(),
-            };
-        }
+                coversAll = IsLT.Value.CompareTo(IsGT.Value) > 0
+                    || IsLT.Value.CompareTo(IsGT.Value) == 0 && SingleValues.Covers(IsLT.Value)
+                    || Ranges.Covers(new SummaryClauseRange<T>(IsLT.Value, IsGT.Value));
+            }
 
-        public SummaryCaseCoverage Summary => _summaryCaseCoverage;
-        public string EvaluationTypeName { set; get; } = string.Empty;
-        public RubberduckParserState State => _state;
-        public Dictionary<ParserRuleContext, UnreachableCaseInspectionValue> ConstantCtxts => _constantContexts;
-        public Dictionary<ParserRuleContext, UnreachableCaseInspectionValue> VariableCtxts => _variableContexts;
+            if (ContainsBooleans && !coversAll)
+            {
+                coversAll = SingleValues.Count == 2;
+            }
+
+            if (ContainsIntegerNumbers && !coversAll)
+            {
+                var allDiscreetValues = Ranges.AsIntegerNumbers;
+                allDiscreetValues.AddRange(SingleValues.AsIntegerValues);
+
+                long? isLTValue = IsLT.AsIntegerNumber;
+                long? isGTValue = IsGT.AsIntegerNumber;
+
+                if (isLTValue + allDiscreetValues.Count > isGTValue)
+                {
+                    var tempRange = new SummaryClauseRange<long>(isLTValue.Value + 1, isGTValue.Value - 1);
+                    coversAll = tempRange.AsIntegerNumbers.All(tv => allDiscreetValues.Contains(tv));
+                }
+            }
+            return coversAll;
+        }
 
         //Used to modify logic operators to convert LHS and RHS for expressions like '5 > x' (= 'x < 5')
-        private static Dictionary<string, string> AlgebraicLogicalInversions = new Dictionary<string, string>()
+        public static Dictionary<string, string> AlgebraicLogicalInversions = new Dictionary<string, string>()
         {
             [CompareTokens.EQ] = CompareTokens.EQ,
             [CompareTokens.NEQ] = CompareTokens.NEQ,
@@ -195,240 +304,138 @@ namespace Rubberduck.Inspections.Concrete
             [CompareTokens.GTE] = CompareTokens.LTE
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>
-            BinaryMathOps = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
+        public static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>
+            BinaryMathOps = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
             {
                 [MathTokens.ADD] = (LHS, RHS) => LHS + RHS,
                 [MathTokens.SUBTRACT] = (LHS, RHS) => LHS - RHS,
                 [MathTokens.MULT] = (LHS, RHS) => LHS * RHS,
                 [MathTokens.DIV] = (LHS, RHS) => LHS / RHS,
-                [MathTokens.POW] = (LHS, RHS) => UnreachableCaseInspectionValue.Pow(LHS,RHS),
+                [MathTokens.POW] = (LHS, RHS) => ParseTreeValue.Pow(LHS, RHS),
                 [MathTokens.MOD] = (LHS, RHS) => LHS % RHS
             };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>
-            BinaryLogicalOps = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
+        public static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>
+            BinaryLogicalOps = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
             {
-                [CompareTokens.GT] = (LHS, RHS) => LHS > RHS ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
-                [CompareTokens.GTE] = (LHS, RHS) => LHS >= RHS ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
-                [CompareTokens.LT] = (LHS, RHS) => LHS < RHS ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
-                [CompareTokens.LTE] = (LHS, RHS) => LHS <= RHS ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
-                [Tokens.And] = (LHS, RHS) => LHS.AsBoolean().Value && RHS.AsBoolean().Value ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
-                [Tokens.Or] = (LHS, RHS) => LHS.AsBoolean().Value || RHS.AsBoolean().Value ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
-                [Tokens.XOr] = (LHS, RHS) => LHS.AsBoolean().Value ^ RHS.AsBoolean().Value ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
-                [Tokens.Not] = (LHS, RHS) => LHS.AsBoolean().Value || RHS.AsBoolean().Value ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False
+                [CompareTokens.GT] = (LHS, RHS) => LHS > RHS ? ParseTreeValue.True : ParseTreeValue.False,
+                [CompareTokens.GTE] = (LHS, RHS) => LHS >= RHS ? ParseTreeValue.True : ParseTreeValue.False,
+                [CompareTokens.LT] = (LHS, RHS) => LHS < RHS ? ParseTreeValue.True : ParseTreeValue.False,
+                [CompareTokens.LTE] = (LHS, RHS) => LHS <= RHS ? ParseTreeValue.True : ParseTreeValue.False,
+                [CompareTokens.EQ] = (LHS, RHS) => LHS == RHS ? ParseTreeValue.True : ParseTreeValue.False,
+                [CompareTokens.NEQ] = (LHS, RHS) => LHS != RHS ? ParseTreeValue.True : ParseTreeValue.False,
+                [Tokens.And] = (LHS, RHS) => LHS.AsBoolean().Value && RHS.AsBoolean().Value ? ParseTreeValue.True : ParseTreeValue.False,
+                [Tokens.Or] = (LHS, RHS) => LHS.AsBoolean().Value || RHS.AsBoolean().Value ? ParseTreeValue.True : ParseTreeValue.False,
+                [Tokens.XOr] = (LHS, RHS) => LHS.AsBoolean().Value ^ RHS.AsBoolean().Value ? ParseTreeValue.True : ParseTreeValue.False,
+                [Tokens.Not] = (LHS, RHS) => LHS.AsBoolean().Value || RHS.AsBoolean().Value ? ParseTreeValue.True : ParseTreeValue.False
                 //["Eqv"] = (LHS, RHS) => LHS.AsBoolean().Value ^ RHS.AsBoolean().Value ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False
                 //["Imp"] = (LHS, RHS) => LHS.AsBoolean().Value ^ RHS.AsBoolean().Value ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
             };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>
-            UnaryLogicalOps = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue>>
+            UnaryLogicalOps = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue>>()
             {
-                [Tokens.Not] = (LHS) => !(LHS.AsBoolean().Value) ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False
+                [Tokens.Not] = (LHS) => !(LHS.AsBoolean().Value) ? ParseTreeValue.True : ParseTreeValue.False
             };
 
-        private void StoreVisitResult(ParserRuleContext context, UnreachableCaseInspectionValue result)
+        public void LoadCoverage(VBAParser.CaseClauseContext caseClause, ContextValueResults<T> ctxtValueResults)
         {
-            if (result.HasValue)
+            if (ctxtValueResults.Extents.HasValues)
             {
-                _constantContexts.Add(context, result);
-            }
-            else
-            {
-                _variableContexts.Add(context, result);
-            }
-        }
-
-        private bool ContextHasResult(ParserRuleContext context)
-        {
-            return _constantContexts.Keys.Contains(context) || _variableContexts.Keys.Contains(context);
-        }
-
-        private void VisitImpl<T>(T context) where T: ParserRuleContext
-        {
-            if (ContextHasResult(context))
-            {
-                return;
+                ApplyExtents(ctxtValueResults.Extents.Min, ctxtValueResults.Extents.Max);
             }
 
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach (var ctxt in contextsOfInterest)
+            var rgClauses = caseClause.children.Where(ch => ch is VBAParser.RangeClauseContext);
+            foreach (ParserRuleContext rangeClause in rgClauses)
             {
-                if (ctxt is ParserRuleContext)
+                if (rangeClause.HasChildToken(Tokens.To))
                 {
-                    var selectContext = new SelectContext((ParserRuleContext)ctxt);
-                    selectContext.Accept(this);
-                }
-            }
-        }
-
-        public void Visit(VBAParser.SelectCaseStmtContext selectStmt)
-        {
-            VisitImpl(selectStmt);
-        }
-
-        public void Visit(VBAParser.SelectExpressionContext selectStmt)
-        {
-            VisitImpl(selectStmt);
-        }
-
-        public void Visit(VBAParser.CaseClauseContext caseClause)
-        {
-
-        }
-
-        public void Visit(VBAParser.RangeClauseContext rangeClause)
-        {
-            VisitImpl(rangeClause);
-
-            //Range of values 35 To 70
-            if (rangeClause.HasChildToken(Tokens.To))
-            {
-                var startContext = rangeClause.GetChild<VBAParser.SelectStartValueContext>();
-                var endContext = rangeClause.GetChild<VBAParser.SelectEndValueContext>();
-                if (_constantContexts.TryGetValue(startContext, out UnreachableCaseInspectionValue startVal) &&
-                 _constantContexts.TryGetValue(endContext, out UnreachableCaseInspectionValue endVal))
-                {
-                    if (startVal <= endVal)
+                    var startContext = rangeClause.GetChild<VBAParser.SelectStartValueContext>();
+                    var endContext = rangeClause.GetChild<VBAParser.SelectEndValueContext>();
+                    if (ctxtValueResults.ValueResolvedContexts.TryGetValue(startContext, out T startVal) &&
+                            ctxtValueResults.ValueResolvedContexts.TryGetValue(endContext, out T endVal))
                     {
-                        Summary.Ranges.Add(new Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>(startVal, endVal));
-                    }
-                    else
-                    {
-                        Summary.Ranges.Add(new Tuple<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>(endVal, startVal));
+                        AddRange(startVal, endVal);
                     }
                 }
-            }
-            else //single value
-            {
-                var ctxts = rangeClause.children.Where(ch => ch is ParserRuleContext
-                                && _constantContexts.Keys.Contains((ParserRuleContext)ch)
-                                && _constantContexts[(ParserRuleContext)ch].HasValue);
+                else //single value
+                {
+                    var ctxts = rangeClause.children.Where(ch => ch is ParserRuleContext
+                                    && ctxtValueResults.ValueResolvedContexts.Keys.Contains((ParserRuleContext)ch));
 
-                if (ctxts.Any() && ctxts.Count() == 1 && rangeClause.HasChildToken(Tokens.Is) )
-                {
-                    var compOpContext = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>();
-                    AddIsClauseResult(compOpContext.GetText(), _constantContexts[(ParserRuleContext)ctxts.First()]);
-                }
-                else if(rangeClause.children.Any() && rangeClause.children.Count() == 1 && rangeClause.children.First() is VBAParser.RelationalOpContext)
-                {
-                    var relOpCtxt = (ParserRuleContext)rangeClause.children.First();
-                    if(!_constantContexts.Keys.Contains(relOpCtxt))
+                    //Is Statements
+                    if (ctxts.Any() && ctxts.Count() == 1 && rangeClause.HasChildToken(Tokens.Is))
                     {
-                        var relOpContexts = relOpCtxt.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-                        UnreachableCaseInspectionValue LHS = null;
-                        UnreachableCaseInspectionValue RHS = null;
-                        for (var idx = 0; idx < relOpContexts.Count(); idx++)
+                        var compOpContext = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>();
+                        AddIsClauseResult(compOpContext.GetText(), ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxts.First()]);
+                    }
+                    //RelationalOp statements like x < 100, 100 < x
+                    else if (rangeClause.TryGetChildContext(out VBAParser.RelationalOpContext relOpCtxt))
+                    {
+                        if (!ctxtValueResults.ValueResolvedContexts.Keys.Contains(relOpCtxt))
                         {
-                            var ctxt = relOpContexts[idx];
-                            if (_constantContexts.Keys.Contains(ctxt) || _variableContexts.Keys.Contains(ctxt))
+                            var relOpContexts = relOpCtxt.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
+                            for (var idx = 0; idx < relOpContexts.Count(); idx++)
                             {
-                                if (LHS is null)
+                                var ctxt = relOpContexts[idx];
+                                if (ctxtValueResults.ValueResolvedContexts.Keys.Contains(ctxt) )
                                 {
-                                    LHS = _constantContexts.Keys.Contains(ctxt) ?
-                                                _constantContexts[(ParserRuleContext)ctxt]
-                                                : _variableContexts[(ParserRuleContext)ctxt];
-                                }
-                                else if (RHS is null)
-                                {
-                                    RHS = _constantContexts.Keys.Contains(ctxt) ?
-                                                _constantContexts[(ParserRuleContext)ctxt]
-                                                : _variableContexts[(ParserRuleContext)ctxt];
-                                }
-                            }
-                        }
-                        if (LHS != null && RHS != null)
-                        {
-                            var opSymbol = relOpCtxt.children.Where(ch => BinaryLogicalOps.Keys.Contains(ch.GetText())).First().GetText();
-                            if (BinaryLogicalOps.ContainsKey(opSymbol))
-                            {
-                                if (LHS.HasValue)
-                                {
-                                    opSymbol = AlgebraicLogicalInversions[opSymbol];
-                                }
-                                var result = LHS.HasValue ? LHS : RHS;
-
-                                if (result.HasValue)
-                                {
-                                    AddIsClauseResult(opSymbol, result);
+                                    var opSymbol = relOpCtxt.children.Where(ch => BinaryLogicalOps.Keys.Contains(ch.GetText())).First().GetText();
+                                    if (idx == 0)
+                                    {
+                                        //100 < x: when the value is the first child, the expression's opSymbol
+                                        //needs to be converted to represent x < 100
+                                        AddIsClauseResult(AlgebraicLogicalInversions[opSymbol], ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxt]);
+                                    }
+                                    else
+                                    {
+                                        AddIsClauseResult(opSymbol, ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxt]);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                else if (ctxts.Any() && ctxts.Count() == 1)
-                {
-                    AddSingleValue(_constantContexts[(ParserRuleContext)ctxts.First()]);
+                    else if (ctxts.Any() && ctxts.Count() == 1)
+                    {
+                        Add(ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxts.First()]);
+                    }
                 }
             }
         }
 
-        public void Visit(VBAParser.LExprContext context)
-        {
-            if (ContextHasResult(context))
-            {
-                return;
-            }
-
-            UnreachableCaseInspectionValue result = null;
-            var lexprTypeName = this.EvaluationTypeName;
-            if (TryGetTheLExprValue(context, out string lexprValue, ref lexprTypeName))
-            {
-                result = this.EvaluationTypeName.Length > 0 ? new UnreachableCaseInspectionValue(lexprValue, this.EvaluationTypeName) : new UnreachableCaseInspectionValue(lexprValue, lexprTypeName);
-            }
-            else
-            {
-                var smplName = context.GetDescendent<VBAParser.SimpleNameExprContext>();
-                if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference idRef))
-                {
-                    var theTypeName = GetBaseTypeForDeclaration(idRef.Declaration);
-                    result = new UnreachableCaseInspectionValue(context.GetText(), theTypeName);
-                }
-            }
-
-            if (result != null)
-            {
-                StoreVisitResult(context, result);
-            }
-        }
-
-        public void Visit(VBAParser.LiteralExprContext context)
-        {
-            if (!ContextHasResult(context))
-            {
-                var result = new UnreachableCaseInspectionValue(context.GetText(), this.EvaluationTypeName);
-                StoreVisitResult(context, result);
-            }
-        }
-
-        private void AddIsClauseResult(string compareOperator, UnreachableCaseInspectionValue result)
+        public void AddIsClauseResult(string compareOperator, T result)
         {
             if (compareOperator.Equals(CompareTokens.LT))
             {
-                AddIsLT(result);
+                SetIsLT(result);
+
             }
             else if (compareOperator.Equals(CompareTokens.LTE))
             {
-                AddIsLT(result);
-                AddSingleValue(result);
+                SetIsLT(result);
+                Add(result);
             }
             else if (compareOperator.Equals(CompareTokens.GT))
             {
-                AddIsGT(result);
+                SetIsGT(result);
             }
             else if (compareOperator.Equals(CompareTokens.GTE))
             {
-                AddIsGT(result);
-                AddSingleValue(result);
+                SetIsGT(result);
+                Add(result);
             }
             else if (compareOperator.Equals(CompareTokens.EQ))
             {
-                AddSingleValue(result);
+                Add(result);
             }
             else if (compareOperator.Equals(CompareTokens.NEQ))
             {
-                AddIsLT(result);
-                AddIsGT(result);
+                if (ContainsBooleans)
+                {
+                    SingleValues.Add(!result.Equals(true));
+                }
+                SetIsLT(result);
+                SetIsGT(result);
             }
             else
             {
@@ -436,398 +443,77 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public void Visit(VBAParser.MultOpContext context)
+        public override string ToString()
         {
-            VisitMathOpBinary(context);
+            var result = string.Empty;
+            result = $"{result}{IsLT.ToString()}";
+            result = IsLT.ToString().Length > 0 ? $"{result}," : string.Empty;
+            result = $"{result}{IsGT.ToString()}";
+            result = IsGT.ToString().Length > 0 ? $"{result}," : string.Empty;
+            result = $"{result}{Ranges.ToString()}";
+            result = Ranges.ToString().Length > 0 ? $"{result}," : string.Empty;
+            result = $"{result}{SingleValues.ToString()}";
+            result = SingleValues.ToString().Length > 0 ? $"{result}," : string.Empty;
+            return result.Length > 0 ? result.Remove(result.Length - 1) : string.Empty;
         }
 
-        public void Visit(VBAParser.AddOpContext context)
+        private static SummaryCoverage<T> RemoveClausesCoveredBy(SummaryCoverage<T> removeFrom, SummaryCoverage<T> removalSpec)
         {
-            VisitMathOpBinary(context);
+            var newSummary = RemoveIsClausesCoveredBy(removeFrom, removalSpec);
+            newSummary = RemoveRangesCoveredBy(removeFrom, removalSpec);
+            return RemoveSingleValuesCoveredBy(removeFrom, removalSpec);
         }
 
-        public void Visit(VBAParser.PowOpContext context)
+        private static SummaryCoverage<T> RemoveIsClausesCoveredBy(SummaryCoverage<T> removeFrom, SummaryCoverage<T> removalSpec)
         {
-            VisitMathOpBinary(context);
-        }
-
-        public void Visit(VBAParser.ModOpContext context)
-        {
-            VisitMathOpBinary(context);
-        }
-
-        public void Visit(VBAParser.UnaryMinusOpContext context)
-        {
-            VisitImpl(context);
-
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
+            if (!removeFrom.ContainsBooleans)
             {
-                var ctxt = contextsOfInterest[idx];
-                if (_constantContexts.Keys.Contains(ctxt) && _constantContexts[(ParserRuleContext)ctxt].HasValue)
+                if (removalSpec.IsLT.HasCoverage && removalSpec.IsLT.Covers(removeFrom.IsLT))
                 {
-                    StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt].AdditiveInverse);
+                    removeFrom.IsLT.Reset();
+                }
+                if (removalSpec.IsGT.HasCoverage && removalSpec.IsGT.Covers(removeFrom.IsGT))
+                {
+                    removeFrom.IsGT.Reset();
                 }
             }
+            return removeFrom;
         }
 
-        public void VisitMathOpBinary(ParserRuleContext context)
+        private static SummaryCoverage<T> RemoveRangesCoveredBy(SummaryCoverage<T> removeFrom, SummaryCoverage<T> removalSpec)
         {
-            VisitImpl(context);
+            var toRemove = removeFrom.Ranges.RangeClauses.Where(rg => removalSpec.IsLT.Covers(rg.Start) && removalSpec.IsLT.Covers(rg.End)
+                    || removalSpec.IsGT.Covers(rg.Start) && removalSpec.IsGT.Covers(rg.End)).ToList();
 
-            UnreachableCaseInspectionValue LHS = null;
-            UnreachableCaseInspectionValue RHS = null;
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
+            for (var idx = 0; idx < removeFrom.Ranges.RangeClauses.Count; idx++)
             {
-                var ctxt = contextsOfInterest[idx];
-                if (_constantContexts.Keys.Contains(ctxt) && _constantContexts[(ParserRuleContext)ctxt].HasValue)
+                var rangeClause = removeFrom.Ranges.RangeClauses[idx];
+                if (removalSpec.Ranges.RangeClauses.Any(rg => rg.Covers(rangeClause)))
                 {
-                    if (LHS is null)
-                    {
-                        LHS = _constantContexts[(ParserRuleContext)ctxt];
-                    }
-                    else if (RHS is null)
-                    {
-                        RHS = _constantContexts[(ParserRuleContext)ctxt];
-                    }
+                    toRemove.Add(rangeClause);
                 }
             }
 
-            if (LHS != null && LHS.HasValue && RHS != null && RHS.HasValue)
+            removeFrom.Ranges.Remove(toRemove);
+            return removeFrom;
+        }
+
+        private static SummaryCoverage<T> RemoveSingleValuesCoveredBy(SummaryCoverage<T> removeFrom, SummaryCoverage<T> removalSpec)
+        {
+            List<T> toRemove = new List<T>();
+            List<bool> toRemoveBools = new List<bool>();
+            toRemove = removeFrom.SingleValues.Values.Where(sv => removalSpec.SingleValues.Covers(sv)).ToList();
+            toRemoveBools = removeFrom.SingleValues.ValuesBoolean.Where(sv => removalSpec.SingleValues.Covers(sv)).ToList();
+            toRemove.AddRange(removeFrom.SingleValues.Values.Where(sv => removalSpec.IsLT.Covers(sv) || removalSpec.IsGT.Covers(sv)).ToList());
+            foreach (var range in removalSpec.Ranges.RangeClauses)
             {
-                var opSymbol = context.children.Where(ch => BinaryMathOps.Keys.Contains(ch.GetText())).First().GetText();
-                if (BinaryMathOps.ContainsKey(opSymbol))
-                {
-                    StoreVisitResult(context, BinaryMathOps[opSymbol](LHS, RHS));
-                }
+                toRemove.AddRange(removeFrom.SingleValues.Values.Where(sv => range.Covers(sv)));
             }
-        }
+            toRemove.AddRange(removeFrom.SingleValues.Values.Where(sv => removalSpec.SingleValues.Covers(sv)));
 
-        public void Visit(VBAParser.LogicalAndOpContext context)
-        {
-            VisitLogicalOperation(context);
-        }
-
-        public void Visit(VBAParser.LogicalOrOpContext context)
-        {
-            VisitLogicalOperation(context);
-        }
-
-        public void Visit(VBAParser.RelationalOpContext context)
-        {
-            VisitLogicalOperation(context);
-        }
-
-        public void Visit(VBAParser.LogicalXorOpContext context)
-        {
-            VisitLogicalOperation(context);
-        }
-
-        public void Visit(VBAParser.LogicalEqvOpContext context)
-        {
-            VisitLogicalOperation(context);
-        }
-
-        //public void Visit(VBAParser.LogicalImpOpContext context)
-        //{
-        //    //VisitLogicalOpBinary(context);
-        //}
-
-        public void Visit(VBAParser.LogicalNotOpContext context)
-        {
-            VisitLogicalOperation(context, false);
-        }
-
-        public void VisitLogicalOperation(ParserRuleContext context, bool isBinaryOp = true)
-        {
-            VisitImpl(context);
-
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            UnreachableCaseInspectionValue LHS = null;
-            UnreachableCaseInspectionValue RHS = null;
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
-            {
-                var ctxt = contextsOfInterest[idx];
-                if (_constantContexts.Keys.Contains(ctxt) && _constantContexts[(ParserRuleContext)ctxt].HasValue)
-                {
-                    if (LHS is null)
-                    {
-                        LHS = _constantContexts[(ParserRuleContext)ctxt];
-                    }
-                    else if (RHS is null && isBinaryOp)
-                    {
-                        RHS = _constantContexts[(ParserRuleContext)ctxt];
-                    }
-                }
-            }
-
-            if (isBinaryOp)
-            {
-                if (LHS != null && LHS.HasValue && RHS != null && RHS.HasValue)
-                {
-                    var opSymbol = context.children.Where(ch => BinaryLogicalOps.Keys.Contains(ch.GetText())).First().GetText();
-                    if (BinaryLogicalOps.ContainsKey(opSymbol))
-                    {
-                        var result = new UnreachableCaseInspectionValue(BinaryLogicalOps[opSymbol](LHS, RHS).ToString(), EvaluationTypeName);
-                        StoreVisitResult(context, result);
-                    }
-                }
-            }
-            else
-            {
-                if (LHS != null && LHS.HasValue)
-                {
-                    var opSymbol = context.children.Where(ch => BinaryLogicalOps.Keys.Contains(ch.GetText())).First().GetText();
-                    if (UnaryLogicalOps.ContainsKey(opSymbol))
-                    {
-                        var result = new UnreachableCaseInspectionValue(UnaryLogicalOps[opSymbol](LHS).ToString(), EvaluationTypeName);
-                        StoreVisitResult(context, result);
-                    }
-                }
-            }
-        }
-
-        public void Visit(VBAParser.ParenthesizedExprContext context)
-        {
-            VisitImpl(context);
-
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
-            {
-                var ctxt = contextsOfInterest[idx];
-                if (_constantContexts.Keys.Contains(ctxt) && _constantContexts[(ParserRuleContext)ctxt].HasValue)
-                {
-                    StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt]);
-                }
-            }
-        }
-
-        public void Visit(VBAParser.SelectEndValueContext context)
-        {
-            VisitImpl(context);
-            StartEndContextResult(context);
-        }
-
-        public void Visit(VBAParser.SelectStartValueContext context)
-        {
-            VisitImpl(context);
-            StartEndContextResult(context);
-        }
-
-        private void StartEndContextResult(ParserRuleContext context)
-        {
-            var contextsOfInterest = context.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-            foreach (var ctxt in contextsOfInterest)
-            {
-                if (_constantContexts.Keys.Contains(ctxt))
-                {
-                    if (!_constantContexts.Keys.Contains(context))
-                    {
-                        StoreVisitResult(context, _constantContexts[(ParserRuleContext)ctxt]);
-                    }
-                }
-            }
-        }
-
-        private bool TryGetTheLExprValue(VBAParser.LExprContext ctxt, out string expressionValue, ref string typeName)
-        {
-            expressionValue = string.Empty;
-            if (ctxt.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess))
-            {
-                var member = memberAccess.GetChild<VBAParser.UnrestrictedIdentifierContext>();
-
-                if (TryGetIdentifierReferenceForContext(member, out IdentifierReference idRef))
-                {
-                    var dec = idRef.Declaration;
-                    if (dec.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                    {
-                        var theCtxt = dec.Context;
-                        if (theCtxt is VBAParser.EnumerationStmt_ConstantContext)
-                        {
-                            expressionValue = GetConstantDeclarationValue(dec);
-                            typeName = dec.AsTypeIsBaseType ? dec.AsTypeName : dec.AsTypeDeclaration.AsTypeName;
-                            return true;
-                        }
-                    }
-                }
-                //var memberDeclarations = State.DeclarationFinder.AllUserDeclarations.Where(dec => dec.IdentifierName.Equals(member.GetText()));
-
-                //foreach (var dec in memberDeclarations)
-                //{
-                //    if (dec.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                //    {
-                //        var theCtxt = dec.Context;
-                //        if (theCtxt is EnumerationStmt_ConstantContext)
-                //        {
-                //            expressionValue = GetConstantDeclarationValue(dec);
-                //            typeName = dec.AsTypeIsBaseType ? dec.AsTypeName : dec.AsTypeDeclaration.AsTypeName;
-                //            return true;
-                //        }
-                //    }
-                //}
-                return false;
-            }
-
-            if (ctxt.TryGetChildContext(out VBAParser.SimpleNameExprContext smplName))
-            {
-                if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference rangeClauseIdentifierReference))
-                {
-                    var declaration = rangeClauseIdentifierReference.Declaration;
-                    if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
-                        || declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                    {
-                        expressionValue = GetConstantDeclarationValue(declaration);
-                        typeName = declaration.AsTypeName;
-                        return true;
-                    }
-                }
-                //var identifierReferences = (State.DeclarationFinder.MatchName(smplName.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
-                //var rangeClauseReferences = identifierReferences.Where(rf => rf.Context.Parent == smplName);
-
-                //var rangeClauseIdentifierReference = rangeClauseReferences.Any() ? rangeClauseReferences.First() : null;
-                //if (rangeClauseIdentifierReference != null)
-                //{
-                //    var declaration = rangeClauseIdentifierReference.Declaration;
-                //    if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
-                //        || declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                //    {
-                //        expressionValue = GetConstantDeclarationValue(declaration);
-                //        typeName = declaration.AsTypeName;
-                //        return true;
-                //    }
-                //}
-            }
-            return false;
-        }
-
-        private bool TryGetIdentifierReferenceForContext<T>(T context, out IdentifierReference idRef) where T : ParserRuleContext
-        {
-            idRef = null;
-            var identifierReferences = (State.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
-            if (identifierReferences.Any())
-            {
-                idRef = identifierReferences.First(rf => rf.Context == context);
-                return true;
-            }
-            return false;
-        }
-
-        private string GetConstantDeclarationValue(Declaration valueDeclaration)
-        {
-            var contextsOfInterest = GetRHSContexts(valueDeclaration.Context.children.ToList());
-            foreach (var child in contextsOfInterest)
-            {
-                //if (IsMathOperation(child))
-                //{
-                //    var parentData = new Dictionary<IParseTree, ExpressionEvaluationDataObject>();
-                //    var exprEval = new ExpressionEvaluationDataObject
-                //    {
-                //        IsUnaryOperation = IsUnaryMathOperation(child),
-                //        Operator = CompareTokens.EQ,
-                //        CanBeInspected = true,
-                //        TypeNameTarget = valueDeclaration.AsTypeName,
-                //        SelectCaseRefName = valueDeclaration.IdentifierName
-                //    };
-
-                //    parentData = AddEvaluationData(parentData, child, exprEval);
-                //    return ResolveContextValue(parentData, child).First().Value.Result.AsString();
-                //}
-
-                if (child is VBAParser.LiteralExprContext)
-                {
-                    if (child.Parent is VBAParser.EnumerationStmt_ConstantContext)
-                    {
-                        return child.GetText();
-                    }
-                    else if (valueDeclaration is ConstantDeclaration)
-                    {
-                        return ((ConstantDeclaration)valueDeclaration).Expression;
-                    }
-                    else
-                    {
-                        return string.Empty;
-                    }
-                }
-            }
-            return string.Empty;
-        }
-
-        private static List<ParserRuleContext> GetRHSContexts(List<IParseTree> contexts)
-        {
-            var contextsOfInterest = new List<ParserRuleContext>();
-            var eqIndex = contexts.FindIndex(ch => ch.GetText().Equals(CompareTokens.EQ));
-            if (eqIndex == contexts.Count)
-            {
-                return contextsOfInterest;
-            }
-            for (int idx = eqIndex + 1; idx < contexts.Count(); idx++)
-            {
-                var childCtxt = contexts[idx];
-                if (!(childCtxt is VBAParser.WhiteSpaceContext))
-                {
-                    contextsOfInterest.Add((ParserRuleContext)childCtxt);
-                }
-            }
-            return contextsOfInterest;
-        }
-
-        private static string GetBaseTypeForDeclaration(Declaration declaration)
-        {
-            if (!declaration.AsTypeIsBaseType)
-            {
-                return GetBaseTypeForDeclaration(declaration.AsTypeDeclaration);
-            }
-            return declaration.AsTypeName;
-        }
-
-        private void AddIsLT(UnreachableCaseInspectionValue isLT)
-        {
-            if(this.Summary.IsLT == null)
-            {
-                _summaryCaseCoverage.IsLT = isLT;
-            }
-            else if(_summaryCaseCoverage.IsLT < isLT)
-            {
-                _summaryCaseCoverage.IsLT = isLT;
-            }
-        }
-
-        private void AddIsGT(UnreachableCaseInspectionValue isGT)
-        {
-            if (Summary.IsGT == null)
-            {
-                _summaryCaseCoverage.IsGT = isGT;
-            }
-            else if (_summaryCaseCoverage.IsGT > isGT)
-            {
-                _summaryCaseCoverage.IsGT = isGT;
-            }
-        }
-
-        private void AddSingleValue(UnreachableCaseInspectionValue singleValue)
-        {
-            this.Summary.SingleValues.Add(singleValue);
-        }
-
-        private void AddRange(HashSet<UnreachableCaseInspectionValue> singleValues)
-        {
-
-        }
-
-        private void AddRangeClauseText(string rangeClausesAsText)
-        {
-
-        }
-
-        private void AddRange(IEnumerable<string> rangeClausesAsText)
-        {
-
-        }
-
-        private void AddValueRange(List<Tuple<UnreachableCaseInspectionValue,UnreachableCaseInspectionValue>> valueRange)
-        {
-
+            removeFrom.SingleValues.Remove(toRemove);
+            removeFrom.SingleValues.Remove(toRemoveBools);
+            return removeFrom;
         }
     }
 }

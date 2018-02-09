@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    internal static class CompareExtents
+    public static class CompareExtents
     {
         public static long LONGMIN = Int32.MinValue; //- 2147486648;
         public static long LONGMAX = Int32.MaxValue; //2147486647
@@ -21,19 +21,20 @@ namespace Rubberduck.Inspections.Concrete
         public static double SINGLEMAX = 3402823E38;
     }
 
-    public class UnreachableCaseInspectionValue
+    public class ParseTreeValue
     {
         private readonly string _valueAsString;
         private readonly string _inputString;
         private string _useageTypeName;
+        private string _declaredTypeName;
         private string _derivedTypeName;
-        private  Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool> _operatorIsGT;
-        private  Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool> _operatorIsLT;
-        private  Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool> _operatorIsEQ;
-        private  Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue> _opMult;
-        private  Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue> _opDiv;
-        private  Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue> _opMinus;
-        private  Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue> _opPlus;
+        private  Func<ParseTreeValue, ParseTreeValue, bool> _operatorIsGT;
+        private  Func<ParseTreeValue, ParseTreeValue, bool> _operatorIsLT;
+        private  Func<ParseTreeValue, ParseTreeValue, bool> _operatorIsEQ;
+        private  Func<ParseTreeValue, ParseTreeValue, ParseTreeValue> _opMult;
+        private  Func<ParseTreeValue, ParseTreeValue, ParseTreeValue> _opDiv;
+        private  Func<ParseTreeValue, ParseTreeValue, ParseTreeValue> _opMinus;
+        private  Func<ParseTreeValue, ParseTreeValue, ParseTreeValue> _opPlus;
 
         private long? _valueAsLong;
         private long? _intValueAsLong;
@@ -42,170 +43,183 @@ namespace Rubberduck.Inspections.Concrete
         private decimal? _valueAsDecimal;
         private long? _boolValueAsLong;
 
-        private static Dictionary<string, Tuple<string, string>> TypeBoundaries = new Dictionary<string, Tuple<string, string>>()
+        //private static Dictionary<string, Tuple<string, string>> TypeBoundaries = new Dictionary<string, Tuple<string, string>>()
+        //{
+        //    [Tokens.Integer] = new Tuple<string,string>(CompareExtents.INTEGERMIN.ToString(), CompareExtents.INTEGERMAX.ToString()),
+        //    [Tokens.Long] = new Tuple<string,string>(CompareExtents.LONGMIN.ToString(), CompareExtents.LONGMAX.ToString()),
+        //    [Tokens.Byte] = new Tuple<string,string>(CompareExtents.BYTEMIN.ToString(), CompareExtents.BYTEMAX.ToString()),
+        //    [Tokens.Currency] = new Tuple<string,string>(CompareExtents.CURRENCYMIN.ToString(), CompareExtents.CURRENCYMAX.ToString()),
+        //    [Tokens.Single] = new Tuple<string,string>(CompareExtents.SINGLEMIN.ToString(), CompareExtents.SINGLEMAX.ToString())
+        //};
+
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>> OperatorsIsGT = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>>()
         {
-            [Tokens.Integer] = new Tuple<string,string>(CompareExtents.INTEGERMIN.ToString(), CompareExtents.INTEGERMAX.ToString()),
-            [Tokens.Long] = new Tuple<string,string>(CompareExtents.LONGMIN.ToString(), CompareExtents.LONGMAX.ToString()),
-            [Tokens.Byte] = new Tuple<string,string>(CompareExtents.BYTEMIN.ToString(), CompareExtents.BYTEMAX.ToString()),
-            [Tokens.Currency] = new Tuple<string,string>(CompareExtents.CURRENCYMIN.ToString(), CompareExtents.CURRENCYMAX.ToString()),
-            [Tokens.Single] = new Tuple<string,string>(CompareExtents.SINGLEMIN.ToString(), CompareExtents.SINGLEMAX.ToString())
+            [Tokens.Integer] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
+            [Tokens.Long] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
+            [Tokens.Byte] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
+            [Tokens.Double] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; },
+            [Tokens.Single] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; },
+            [Tokens.Currency] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsCurrency().Value > compValue.AsCurrency().Value; },
+            [Tokens.Boolean] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
+            [Tokens.String] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) > 0; }
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool>> OperatorsIsGT = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool>>()
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>> OperatorsIsLT = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>>()
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
-            [Tokens.Long] = delegate (UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
-            [Tokens.Byte] = delegate (UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
-            [Tokens.Double] = delegate (UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; },
-            [Tokens.Single] = delegate (UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; },
-            [Tokens.Currency] = delegate (UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsCurrency().Value > compValue.AsCurrency().Value; },
-            [Tokens.Boolean] = delegate (UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
-            [Tokens.String] = delegate (UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) > 0; }
+            [Tokens.Integer] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
+            [Tokens.Long] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
+            [Tokens.Byte] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
+            [Tokens.Double] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; },
+            [Tokens.Single] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; },
+            [Tokens.Currency] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsCurrency().Value < compValue.AsCurrency().Value; },
+            [Tokens.Boolean] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
+            [Tokens.String] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) < 0; }
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool>> OperatorsIsLT = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool>>()
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>> OperatorsIsEQ = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>>()
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
-            [Tokens.Long] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
-            [Tokens.Byte] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
-            [Tokens.Double] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; },
-            [Tokens.Single] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; },
-            [Tokens.Currency] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsCurrency().Value < compValue.AsCurrency().Value; },
-            [Tokens.Boolean] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
-            [Tokens.String] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) < 0; }
+            [Tokens.Integer] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().HasValue && compValue.AsInt().HasValue ? thisValue.AsLong().Value == compValue.AsInt().Value : false; },
+            [Tokens.Long] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().HasValue && compValue.AsLong().HasValue ? thisValue.AsLong().Value == compValue.AsLong().Value : false; },
+            [Tokens.Byte] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().HasValue && compValue.AsByte().HasValue ? thisValue.AsLong().Value == compValue.AsByte().Value : false; },
+            [Tokens.Double] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue ? thisValue.AsDouble().Value == compValue.AsDouble().Value : false; },
+            [Tokens.Single] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue ? thisValue.AsDouble().Value == compValue.AsDouble().Value : false; },
+            [Tokens.Currency] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsCurrency().HasValue && compValue.AsCurrency().HasValue ? thisValue.AsCurrency().Value == compValue.AsCurrency().Value : false; },
+            [Tokens.Boolean] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsBoolean().HasValue && compValue.AsBoolean().HasValue ? thisValue.AsBoolean().Value == compValue.AsBoolean().Value : false; },
+            [Tokens.String] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) == 0; }
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool>> OperatorsIsEQ = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, bool>>()
+        private static Dictionary<string, Func<ParseTreeValue, bool>> HasValueTests = new Dictionary<string, Func<ParseTreeValue, bool>>()
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().HasValue && compValue.AsInt().HasValue ? thisValue.AsLong().Value == compValue.AsInt().Value : false; },
-            [Tokens.Long] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().HasValue && compValue.AsLong().HasValue ? thisValue.AsLong().Value == compValue.AsLong().Value : false; },
-            [Tokens.Byte] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsLong().HasValue && compValue.AsByte().HasValue ? thisValue.AsLong().Value == compValue.AsByte().Value : false; },
-            [Tokens.Double] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue ? thisValue.AsDouble().Value == compValue.AsDouble().Value : false; },
-            [Tokens.Single] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue ? thisValue.AsDouble().Value == compValue.AsDouble().Value : false; },
-            [Tokens.Currency] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsCurrency().HasValue && compValue.AsCurrency().HasValue ? thisValue.AsCurrency().Value == compValue.AsCurrency().Value : false; },
-            [Tokens.Boolean] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsBoolean().HasValue && compValue.AsBoolean().HasValue ? thisValue.AsBoolean().Value == compValue.AsBoolean().Value : false; },
-            [Tokens.String] = delegate(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) == 0; }
+            [Tokens.Integer] = delegate(ParseTreeValue thisValue){ return thisValue.AsLong().HasValue; },
+            [Tokens.Long] = delegate(ParseTreeValue thisValue){ return thisValue.AsLong().HasValue; },
+            [Tokens.Byte] = delegate(ParseTreeValue thisValue){ return thisValue.AsLong().HasValue; },
+            [Tokens.Double] = delegate(ParseTreeValue thisValue){ return thisValue.AsDouble().HasValue; },
+            [Tokens.Single] = delegate(ParseTreeValue thisValue){ return thisValue.AsDouble().HasValue; },
+            [Tokens.Currency] = delegate(ParseTreeValue thisValue){ return thisValue.AsCurrency().HasValue; },
+            [Tokens.Boolean] = delegate(ParseTreeValue thisValue){ return thisValue.AsBoolean().HasValue; },
+            //[Tokens.String] = delegate (ParseTreeValue thisValue) { return true; }
+            [Tokens.String] = delegate (ParseTreeValue thisValue) { return thisValue.InputStringIsStringConstant; }
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, bool>> HasValueTests = new Dictionary<string, Func<UnreachableCaseInspectionValue, bool>>()
+        private static Dictionary<string, Func<ParseTreeValue, bool>> MaxMinTests = new Dictionary<string, Func<ParseTreeValue, bool>>()
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue thisValue){ return thisValue.AsLong().HasValue; },
-            [Tokens.Long] = delegate(UnreachableCaseInspectionValue thisValue){ return thisValue.AsLong().HasValue; },
-            [Tokens.Byte] = delegate(UnreachableCaseInspectionValue thisValue){ return thisValue.AsLong().HasValue; },
-            [Tokens.Double] = delegate(UnreachableCaseInspectionValue thisValue){ return thisValue.AsDouble().HasValue; },
-            [Tokens.Single] = delegate(UnreachableCaseInspectionValue thisValue){ return thisValue.AsDouble().HasValue; },
-            [Tokens.Currency] = delegate(UnreachableCaseInspectionValue thisValue){ return thisValue.AsCurrency().HasValue; },
-            [Tokens.Boolean] = delegate(UnreachableCaseInspectionValue thisValue){ return thisValue.AsBoolean().HasValue; },
-            [Tokens.String] = delegate(UnreachableCaseInspectionValue thisValue){ return true; }
+            [Tokens.Integer] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.INTEGERMAX) || (thisValue.AsLong() < CompareExtents.INTEGERMIN) : false; },
+            [Tokens.Long] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.LONGMAX) || (thisValue.AsLong() < CompareExtents.LONGMIN) : false; },
+            [Tokens.Byte] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.BYTEMAX) || (thisValue.AsLong() < CompareExtents.BYTEMIN) : false; },
+            [Tokens.Double] = delegate (ParseTreeValue thisValue) { return false; },
+            [Tokens.Single] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Single](thisValue) ? (thisValue.AsDouble() > CompareExtents.SINGLEMAX) || (thisValue.AsDouble() < CompareExtents.SINGLEMIN) : false; },
+            [Tokens.Currency] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Currency](thisValue) ? (thisValue.AsCurrency() > CompareExtents.CURRENCYMAX) || (thisValue.AsCurrency() < CompareExtents.CURRENCYMIN) : false; },
+            [Tokens.Boolean] = delegate (ParseTreeValue thisValue) { return false; },
+            [Tokens.String] = delegate (ParseTreeValue thisValue) { return false; }
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, bool>> MaxMinTests = new Dictionary<string, Func<UnreachableCaseInspectionValue, bool>>()
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>> OperatorsMult = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
         {
-            [Tokens.Integer] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.INTEGERMAX) || (thisValue.AsLong() < CompareExtents.INTEGERMIN) : false; },
-            [Tokens.Long] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.LONGMAX) || (thisValue.AsLong() < CompareExtents.LONGMIN) : false; },
-            [Tokens.Byte] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.BYTEMAX) || (thisValue.AsLong() < CompareExtents.BYTEMIN) : false; },
-            [Tokens.Double] = delegate (UnreachableCaseInspectionValue thisValue) { return false; },
-            [Tokens.Single] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Single](thisValue) ? (thisValue.AsDouble() > CompareExtents.SINGLEMAX) || (thisValue.AsDouble() < CompareExtents.SINGLEMIN) : false; },
-            [Tokens.Currency] = delegate (UnreachableCaseInspectionValue thisValue) { return HasValueTests[Tokens.Currency](thisValue) ? (thisValue.AsCurrency() > CompareExtents.CURRENCYMAX) || (thisValue.AsCurrency() < CompareExtents.CURRENCYMIN) : false; },
-            [Tokens.Boolean] = delegate (UnreachableCaseInspectionValue thisValue) { return false; },
-            [Tokens.String] = delegate (UnreachableCaseInspectionValue thisValue) { return false; }
+            [Tokens.Integer] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Long] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Byte] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Double] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
+            [Tokens.Single] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
+            [Tokens.Currency] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsCurrency().Value * RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); },
+            [Tokens.Boolean] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> OperatorsMult = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>> OperatorsDiv = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Long] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Byte] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Double] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
-            [Tokens.Single] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value * RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
-            [Tokens.Currency] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsCurrency().Value * RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); },
-            [Tokens.Boolean] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value * RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Integer] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsInt().Value / RHS.AsInt().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Long] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Byte] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsByte().Value / RHS.AsByte().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Double] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Single] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Currency] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsCurrency().Value / RHS.AsCurrency().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Boolean] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> OperatorsDiv = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>> OperatorsMinus = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsInt().Value / RHS.AsInt().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Long] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Byte] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsByte().Value / RHS.AsByte().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Double] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Single] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value / RHS.AsDouble().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Currency] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsCurrency().Value / RHS.AsCurrency().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Boolean] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value / RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
+            { Tokens.Integer, delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsInt().Value - RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Long, delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value - RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Byte, delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsByte().Value - RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
+            { Tokens.Double, delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Single, delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
+            { Tokens.Currency, delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsCurrency().Value - RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } }
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> OperatorsMinus = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
+        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>> OperatorsPlus = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
         {
-            { Tokens.Integer, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsInt().Value - RHS.AsInt().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Long, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value - RHS.AsLong().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Byte, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsByte().Value - RHS.AsByte().Value).ToString(), LHS.UseageTypeName); } },
-            { Tokens.Double, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Single, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value - RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); } },
-            { Tokens.Currency, delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsCurrency().Value - RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); } }
+            [Tokens.Integer] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsInt().Value + RHS.AsInt().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Long] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsLong().Value + RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Byte] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsByte().Value + RHS.AsByte().Value).ToString(), LHS.UseageTypeName); },
+            [Tokens.Double] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
+            [Tokens.Single] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
+            [Tokens.Currency] = delegate(ParseTreeValue LHS, ParseTreeValue RHS){ return new ParseTreeValue((LHS.AsCurrency().Value + RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); }
         };
 
-        private static Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>> OperatorsPlus = new Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, UnreachableCaseInspectionValue>>()
+        public ParseTreeValue(string valueToken, string declaredTypeName = "")
         {
-            [Tokens.Integer] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsInt().Value + RHS.AsInt().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Long] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsLong().Value + RHS.AsLong().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Byte] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsByte().Value + RHS.AsByte().Value).ToString(), LHS.UseageTypeName); },
-            [Tokens.Double] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
-            [Tokens.Single] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsDouble().Value + RHS.AsDouble()).Value.ToString(), LHS.UseageTypeName); },
-            [Tokens.Currency] = delegate(UnreachableCaseInspectionValue LHS, UnreachableCaseInspectionValue RHS){ return new UnreachableCaseInspectionValue((LHS.AsCurrency().Value + RHS.AsCurrency()).Value.ToString(), LHS.UseageTypeName); }
-        };
-
-        public UnreachableCaseInspectionValue(string valueToken, string ctorTypeName = "")
-        {
-            var inputTypeName = ctorTypeName ?? string.Empty;
+            _declaredTypeName = declaredTypeName ?? string.Empty;
             _useageTypeName = string.Empty;
             _inputString = valueToken;
             _valueAsString = _inputString.Replace("\"", "");
             if(_valueAsString != string.Empty)
             {
                 var endingCharacter = _valueAsString.Last().ToString();
-                if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !inputTypeName.Equals(Tokens.String))
+                if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !declaredTypeName.Equals(Tokens.String))
                 {
                     var regex = new Regex(@"^-*[0-9,\.]+$");
-                    if (!_valueAsString.Contains(".") && regex.IsMatch(_valueAsString.Replace(endingCharacter, "")))
+                    if (regex.IsMatch(_valueAsString.Replace(endingCharacter, "")))
                     {
-                        _valueAsString = _valueAsString.Replace(endingCharacter, ".00");
-                    }
-                    else
-                    {
-                        _valueAsString = _valueAsString.Replace(endingCharacter, "");
+                        if (!_valueAsString.Contains("."))
+                        {
+                            _valueAsString = _valueAsString.Replace(endingCharacter, ".00");
+                        }
+                        else
+                        {
+                            _valueAsString = _valueAsString.Replace(endingCharacter, "");
+                        }
                     }
                 }
             }
             _derivedTypeName = string.Empty;
 
-            if (!HasValueTests.ContainsKey(inputTypeName))
+            if (HasValueTests.ContainsKey(declaredTypeName))
             {
-                UseageTypeName = DerivedTypeName;
+                UseageTypeName = declaredTypeName;
             }
             else
             {
-                UseageTypeName = inputTypeName;
-            }
-        }
-
-        public UnreachableCaseInspectionValue(long value, string ctorTypeName = "")
-        {
-            _useageTypeName = string.Empty;
-            _inputString = value.ToString();
-            _valueAsString = _inputString;
-            UseageTypeName = ctorTypeName;
-            _derivedTypeName = string.Empty;
-            if (!HasValueTests.ContainsKey(UseageTypeName))
-            {
                 UseageTypeName = DerivedTypeName;
             }
         }
 
-        public static UnreachableCaseInspectionValue Null => new UnreachableCaseInspectionValue(string.Empty);
-        public static UnreachableCaseInspectionValue Zero => new UnreachableCaseInspectionValue(0, Tokens.Long);
-        public static UnreachableCaseInspectionValue Unity => new UnreachableCaseInspectionValue(1, Tokens.Long);
-        public static UnreachableCaseInspectionValue False => Zero;
-        public static UnreachableCaseInspectionValue True => new UnreachableCaseInspectionValue(-1, Tokens.Long);
-        public UnreachableCaseInspectionValue AdditiveInverse => HasValue ? this * new UnreachableCaseInspectionValue(-1, UseageTypeName) : this;
+        public ParseTreeValue(long value, string declaredTypeName = "")
+        {
+            _declaredTypeName = declaredTypeName ?? string.Empty;
+            //_useageTypeName = string.Empty;
+            _inputString = value.ToString();
+            _valueAsString = _inputString;
+            //UseageTypeName = declaredTypeName;
+            _derivedTypeName = string.Empty;
+            if (HasValueTests.ContainsKey(declaredTypeName))
+            {
+                UseageTypeName = declaredTypeName;
+            }
+            else
+            {
+                UseageTypeName = DerivedTypeName;
+            }
+            //if (!HasValueTests.ContainsKey(UseageTypeName))
+            //{
+            //    UseageTypeName = DerivedTypeName;
+            //}
+        }
+
+        public static ParseTreeValue Null => new ParseTreeValue(string.Empty);
+        public static ParseTreeValue Zero => new ParseTreeValue(0, Tokens.Long);
+        public static ParseTreeValue Unity => new ParseTreeValue(1, Tokens.Long);
+        public static ParseTreeValue False => Zero;
+        public static ParseTreeValue True => new ParseTreeValue(-1, Tokens.Long);
+        public ParseTreeValue AdditiveInverse => HasValue ? this * new ParseTreeValue(-1, UseageTypeName) : this;
         public static bool IsSupportedVBAType(string typeName) => OperatorsIsEQ.Keys.Contains(typeName);
         public static Byte MinValueByte => (Byte)CompareExtents.BYTEMIN;
         public static Byte MaxValueByte => (Byte)CompareExtents.BYTEMAX;
@@ -214,7 +228,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             if(_inputString.Length == 0)
             {
-                return "Null";
+                return Tokens.String;
             }
 
             if (SymbolList.TypeHintToTypeName.TryGetValue(_inputString.Last().ToString(), out string typeName))
@@ -250,40 +264,42 @@ namespace Rubberduck.Inspections.Concrete
             return defaultType;
         }
 
-        public static string DeriveTypeName(string inputValue, string defaultType = "String")
-        {
-            if (SymbolList.TypeHintToTypeName.TryGetValue(inputValue.Last().ToString(), out string typeName))
-            {
-                return typeName;
-            }
+        //public static string DeriveTypeName(string inputValue, string defaultType = "String")
+        //{
+        //    if (SymbolList.TypeHintToTypeName.TryGetValue(inputValue.Last().ToString(), out string typeName))
+        //    {
+        //        return typeName;
+        //    }
 
-            if (IsStringConstant(inputValue))
-            {
-                return Tokens.String;
-            }
-            else if (inputValue.Contains("."))
-            {
-                if (double.TryParse(inputValue, out _))
-                {
-                    return Tokens.Double;
-                }
+        //    if (IsStringConstant(inputValue))
+        //    {
+        //        return Tokens.String;
+        //    }
+        //    else if (inputValue.Contains("."))
+        //    {
+        //        if (double.TryParse(inputValue, out _))
+        //        {
+        //            return Tokens.Double;
+        //        }
 
-                if (decimal.TryParse(inputValue, out _))
-                {
-                    return Tokens.Currency;
-                }
-                return defaultType;
-            }
-            else if (inputValue.Equals(Tokens.True) || inputValue.Equals(Tokens.False))
-            {
-                return Tokens.Boolean;
-            }
-            else if (long.TryParse(inputValue, out _))
-            {
-                return Tokens.Long;
-            }
-            return defaultType;
-        }
+        //        if (decimal.TryParse(inputValue, out _))
+        //        {
+        //            return Tokens.Currency;
+        //        }
+        //        return defaultType;
+        //    }
+        //    else if (inputValue.Equals(Tokens.True) || inputValue.Equals(Tokens.False))
+        //    {
+        //        return Tokens.Boolean;
+        //    }
+        //    else if (long.TryParse(inputValue, out _))
+        //    {
+        //        return Tokens.Long;
+        //    }
+        //    return defaultType;
+        //}
+        public string DeclaredTypeName => _declaredTypeName;
+        public bool HasDeclaredTypeName => !(_declaredTypeName is null) && !(_declaredTypeName.Equals(string.Empty));
 
         public string UseageTypeName
         {
@@ -308,7 +324,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             get
             {
-                if (_derivedTypeName.Equals(string.Empty))
+                if (_derivedTypeName is null || _derivedTypeName.Equals(string.Empty))
                 {
                     _derivedTypeName = DeriveTypeName(UseageTypeName);
                 }
@@ -317,12 +333,15 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public static bool IsStringConstant(string input) => input.StartsWith("\"") && input.EndsWith("\"");
-        private bool InputStringIsStringConstant => IsStringConstant(_inputString); 
+        private bool InputStringIsStringConstant => IsStringConstant(_inputString);
 
         public bool HasValue
-            => HasValueTests.ContainsKey(UseageTypeName) ? HasValueTests[UseageTypeName](this) : false;
+            => HasValueAs(UseageTypeName); // HasValueTests.ContainsKey(UseageTypeName) ? HasValueTests[UseageTypeName](this) : false;
 
-        public bool IsWithin(UnreachableCaseInspectionValue start, UnreachableCaseInspectionValue end, bool isInclusive = true) 
+        public bool HasValueAs(string typeName)
+            => HasValueTests.ContainsKey(typeName) ? HasValueTests[typeName](this) : false;
+
+        public bool IsWithin(ParseTreeValue start, ParseTreeValue end, bool isInclusive = true) 
             => isInclusive ?
                 start > end ? this >= end && this <= start : this >= start && this <= end
                 : start > end ? this > end && this < start : this > start && this < end;
@@ -331,92 +350,100 @@ namespace Rubberduck.Inspections.Concrete
               => MaxMinTests.ContainsKey(UseageTypeName) ? MaxMinTests[UseageTypeName](this) : false;
 
 
-        public static bool operator >(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static bool operator >(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue._operatorIsGT(thisValue, compValue);
         }
 
-        public static bool operator <(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static bool operator <(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue._operatorIsLT(thisValue, compValue);
         }
 
-        public static bool operator ==(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static bool operator ==(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
-            if (ReferenceEquals(null, thisValue))
+            if (thisValue is null)
             {
-                return ReferenceEquals(null, compValue);
+                return (compValue is null);
             }
-            return ReferenceEquals(null, compValue) ? false : thisValue._operatorIsEQ(thisValue, compValue);
+            if (!thisValue.UseageTypeName.Equals(Tokens.String) && thisValue.AsDouble().HasValue)
+            {
+                if (compValue.AsDouble().HasValue)
+                {
+                    return thisValue.AsDouble().Value.CompareTo(compValue.AsDouble().Value) == 0;
+                }
+                return false;
+            }
+            return thisValue.AsString().Equals(compValue.AsString());
         }
 
-        public static bool operator !=(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static bool operator !=(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
-            if (ReferenceEquals(null, thisValue))
+            if (thisValue is null)
             {
-                return !ReferenceEquals(null, compValue);
+                return !(compValue is null);
             }
-            return ReferenceEquals(null, compValue) ? true : !(thisValue == compValue);
+            return compValue is null ? true : !(thisValue == compValue);
         }
 
-        public static bool operator >=(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static bool operator >=(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue == compValue || thisValue > compValue;
         }
 
-        public static bool operator <=(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static bool operator <=(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue == compValue || thisValue < compValue;
         }
 
         public override bool Equals(Object obj)
         {
-            if (ReferenceEquals(null, obj) || !(obj is UnreachableCaseInspectionValue))
+            if (obj is null || !(obj is ParseTreeValue))
             {
                 return false;
             }
-            var asValue = (UnreachableCaseInspectionValue)obj;
+            var asValue = (ParseTreeValue)obj;
             return asValue == this;
         }
 
-        public static UnreachableCaseInspectionValue operator *(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static ParseTreeValue operator *(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue._opMult != null ? thisValue._opMult(thisValue, compValue) : null;
         }
 
-        public static UnreachableCaseInspectionValue operator /(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static ParseTreeValue operator /(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue._opDiv != null ? thisValue._opDiv(thisValue, compValue) : null;
         }
 
-        public static UnreachableCaseInspectionValue operator -(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static ParseTreeValue operator -(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue._opMinus != null ? thisValue._opMinus(thisValue, compValue) : null;
         }
 
-        public static UnreachableCaseInspectionValue operator +(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static ParseTreeValue operator +(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return thisValue._opPlus != null ? thisValue._opPlus(thisValue, compValue) : null;
         }
 
-        public static UnreachableCaseInspectionValue Pow(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static ParseTreeValue Pow(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return (thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue)
-                ? new UnreachableCaseInspectionValue((Math.Pow(thisValue.AsDouble().Value, compValue.AsDouble().Value)).ToString(), thisValue.UseageTypeName)
+                ? new ParseTreeValue((Math.Pow(thisValue.AsDouble().Value, compValue.AsDouble().Value)).ToString(), thisValue.UseageTypeName)
                 : null;
         }
 
-        public static UnreachableCaseInspectionValue operator !(UnreachableCaseInspectionValue thisValue)
+        public static ParseTreeValue operator !(ParseTreeValue thisValue)
         {
             return (thisValue.AsBoolean().HasValue)
-                ? new UnreachableCaseInspectionValue((!thisValue.AsBoolean().Value).ToString(), thisValue.UseageTypeName)
+                ? new ParseTreeValue((!thisValue.AsBoolean().Value).ToString(), thisValue.UseageTypeName)
                 : null;
         }
 
-        public static UnreachableCaseInspectionValue operator %(UnreachableCaseInspectionValue thisValue, UnreachableCaseInspectionValue compValue)
+        public static ParseTreeValue operator %(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
             return (thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue)
-                ? new UnreachableCaseInspectionValue((thisValue.AsDouble().Value % compValue.AsDouble().Value).ToString(), thisValue.UseageTypeName)
+                ? new ParseTreeValue((thisValue.AsDouble().Value % compValue.AsDouble().Value).ToString(), thisValue.UseageTypeName)
                 : null;
         }
 
@@ -437,6 +464,26 @@ namespace Rubberduck.Inspections.Concrete
         public override string ToString()
         {
             return AsString();
+        }
+
+        public static explicit operator long(ParseTreeValue thisVal)
+        {
+            if(thisVal.TryGetValue(out long v))
+            {
+                return v;
+            }
+            return default;
+        }
+
+        public bool TryGetValue(out long v)
+        {
+            v = 0;
+            if (AsLong().HasValue)
+            {
+                v = AsLong().Value;
+                return true;
+            }
+            return false;
         }
 
         public long? AsLong()
@@ -465,6 +512,17 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
             return _valueAsLong;
+        }
+
+        public bool TryGetValue(out int v)
+        {
+            v = 0;
+            if (AsInt().HasValue)
+            {
+                v = AsInt().Value;
+                return true;
+            }
+            return false;
         }
 
         public int? AsInt()
@@ -501,6 +559,17 @@ namespace Rubberduck.Inspections.Concrete
             return intResult;
         }
 
+        public bool TryGetValue(out byte v)
+        {
+            v = 0;
+            if (AsByte().HasValue)
+            {
+                v = AsByte().Value;
+                return true;
+            }
+            return false;
+        }
+
         public byte? AsByte()
         {
             if (!_byteValueAsInt.HasValue)
@@ -535,6 +604,17 @@ namespace Rubberduck.Inspections.Concrete
             return byteResult;
         }
 
+        public bool TryGetValue(out decimal v)
+        {
+            v = 0.0M;
+            if (AsCurrency().HasValue)
+            {
+                v = AsCurrency().Value;
+                return true;
+            }
+            return false;
+        }
+
         public decimal? AsCurrency()
         {
             if (!_valueAsDecimal.HasValue)
@@ -563,6 +643,17 @@ namespace Rubberduck.Inspections.Concrete
             return _valueAsDecimal;
         }
 
+        public bool TryGetValue(out double v)
+        {
+            v = 0.0;
+            if (AsDouble().HasValue)
+            {
+                v = AsDouble().Value;
+                return true;
+            }
+            return false;
+        }
+
         public double? AsDouble()
         {
             if (!_valueAsDouble.HasValue)
@@ -589,6 +680,17 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
             return _valueAsDouble;
+        }
+
+        public bool TryGetValue(out bool v)
+        {
+            v = false;
+            if (AsBoolean().HasValue)
+            {
+                v = AsBoolean().Value;
+                return true;
+            }
+            return false;
         }
 
         public bool? AsBoolean()
@@ -621,6 +723,17 @@ namespace Rubberduck.Inspections.Concrete
                 return null;
             }
             return _boolValueAsLong != 0 ? true : false;
+        }
+
+        public bool TryGetValue(out string v)
+        {
+            v = string.Empty;
+            if (!AsString().Equals(string.Empty))
+            {
+                v = AsString();
+                return true;
+            }
+            return false;
         }
 
         private long? SafeConvertToLong<T>(T value)
@@ -671,7 +784,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        private Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, T> GetDelegate<T>(Dictionary<string, Func<UnreachableCaseInspectionValue, UnreachableCaseInspectionValue, T>> Operators, string targetTypeName)
+        private Func<ParseTreeValue, ParseTreeValue, T> GetDelegate<T>(Dictionary<string, Func<ParseTreeValue, ParseTreeValue, T>> Operators, string targetTypeName)
         {
             return Operators.ContainsKey(targetTypeName) ? Operators[targetTypeName] : null;
         }
