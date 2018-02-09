@@ -116,9 +116,15 @@ namespace Rubberduck.Parsing.VBA
 
         public bool HasDefaultMemberAttribute(string identifierName, out AttributeNode attribute)
         {
-            attribute = this.SingleOrDefault(a => a.HasValue("0") &&
-                a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+            attribute = this.SingleOrDefault(a => a.HasValue("0") 
+                && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
             return attribute != null;
+        }
+
+        public bool HasDefaultMemberAttribute()
+        {
+            return this.Any(a => a.HasValue("0") 
+                && a.Name.EndsWith(".VB_UserMemId", StringComparison.OrdinalIgnoreCase));
         }
 
         public void AddHiddenMemberAttribute(string identifierName)

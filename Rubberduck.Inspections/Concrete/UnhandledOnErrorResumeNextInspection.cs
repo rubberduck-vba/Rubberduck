@@ -20,13 +20,10 @@ namespace Rubberduck.Inspections.Concrete
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, VBAParser.ModuleBodyElementContext> _bodyElementContextsMap =
             new Dictionary<QualifiedContext<ParserRuleContext>, VBAParser.ModuleBodyElementContext>();
 
-        public UnhandledOnErrorResumeNextInspection(RubberduckParserState state,
-            CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning) : base(state, defaultSeverity)
+        public UnhandledOnErrorResumeNextInspection(RubberduckParserState state) : base(state)
         {
             Listener = new OnErrorStatementListener(_errorHandlerLabelsMap, _bodyElementContextsMap);
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; }
 

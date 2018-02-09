@@ -25,7 +25,6 @@ namespace Rubberduck.Inspections.Concrete
 
         public override ParsePass Pass => ParsePass.AttributesPass;
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

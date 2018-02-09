@@ -6,6 +6,7 @@ namespace Rubberduck.Settings
     public class DefaultSettings<T>
     {
         public IEnumerable<T> Defaults { get; }
+        public T Default => Defaults.First();
 
         public DefaultSettings()
         {

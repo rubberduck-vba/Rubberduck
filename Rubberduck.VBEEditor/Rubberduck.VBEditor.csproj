@@ -128,6 +128,13 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\IProjectsProvider.cs" />
+    <Compile Include="ComManagement\IProjectsRepository.cs" />
+    <Compile Include="ComManagement\ProjectsRepository.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeInfos.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsSupport.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
     <Compile Include="ComManagement\ComSafe.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
@@ -138,6 +145,8 @@
     <Compile Include="Events\SelectionChangedEventArgs.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
+    <Compile Include="Extensions\VBComponentExtensions.cs" />
+    <Compile Include="Extensions\KeyValuePairExtensions.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\IUserForm.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
@@ -273,7 +282,6 @@
     <Compile Include="Application\Visio.cs" />
     <Compile Include="Application\WordApp.cs" />
     <Compile Include="Application\AutoCADApp.cs" />
-    <Compile Include="Extensions\VBProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowsApi\SubclassingWindow.cs" />
     <Compile Include="WindowsApi\User32.cs" />

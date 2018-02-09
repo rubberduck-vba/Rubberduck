@@ -16,14 +16,11 @@ namespace Rubberduck.Inspections.Concrete
     {
         private readonly EmptyModuleVisitor _emptyModuleVisitor;
 
-        public EmptyModuleInspection(RubberduckParserState state,
-            CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Hint)
-            : base(state, defaultSeverity)
+        public EmptyModuleInspection(RubberduckParserState state)
+            : base(state)
         {
             _emptyModuleVisitor = new EmptyModuleVisitor();
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

@@ -67,7 +67,7 @@ namespace Rubberduck.Parsing.VBA
             var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
 
             var preprocessor = _preprocessorFactory();
-            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, _exporter, rewriter);
+            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, _exporter, _state.ProjectsProvider, rewriter);
 
             parser.ParseFailure += (sender, e) =>
             {
@@ -103,21 +103,22 @@ namespace Rubberduck.Parsing.VBA
                 var result = finishedParseTask.Result;
                 lock (_state)
                 {
-                    lock (module.Component)
-                    {
-                        _state.SetModuleAttributes(module, result.Attributes);
-                        _state.AddParseTree(module, result.ParseTree);
-                        _state.AddParseTree(module, result.AttributesTree, ParsePass.AttributesPass);
-                        _state.AddTokenStream(module, result.Tokens);
-                        _state.SetModuleComments(module, result.Comments);
-                        _state.SetModuleAnnotations(module, result.Annotations);
-                        _state.AddAttributesRewriter(module, result.AttributesRewriter);
+                    token.ThrowIfCancellationRequested();
 
-                        // This really needs to go last
-                        //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
-                        //The evaluation has to be triggered manually in the calling procedure.
-                        StateManager.SetModuleState(module, ParserState.Parsed, token, false); //Note that this is ok because locks allow re-entrancy.
-                    }
+                    //This has to come first because it creates the module state if not present.
+                    _state.SetModuleAttributes(module, result.Attributes);
+
+                    _state.AddTokenStream(module, result.Tokens);
+                    _state.AddParseTree(module, result.ParseTree);
+                    _state.AddParseTree(module, result.AttributesTree, ParsePass.AttributesPass);
+                    _state.SetModuleComments(module, result.Comments);
+                    _state.SetModuleAnnotations(module, result.Annotations);
+                    _state.AddAttributesRewriter(module, result.AttributesRewriter);
+
+                    // This really needs to go last
+                    //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
+                    //The evaluation has to be triggered manually in the calling procedure.
+                    StateManager.SetModuleState(module, ParserState.Parsed, token, false); //Note that this is ok because locks allow re-entrancy.
                 }
             }
         }

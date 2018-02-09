@@ -59,13 +59,30 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public QualifiedSelection? GetQualifiedSelection()
         {
-            if (IsWrappingNullReference || CodePane.IsWrappingNullReference)
+            if (IsWrappingNullReference)
             {
                 return null;
             }
+
             using (var codePane = CodePane)
             {
+                if (CodePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+            
                 return codePane.GetQualifiedSelection();
+            }
+        }
+
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get
+            {
+                using (var component = Parent)
+                {
+                    return component.QualifiedModuleName;
+                }
             }
         }
 

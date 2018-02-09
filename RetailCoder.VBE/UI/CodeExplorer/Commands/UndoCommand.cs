@@ -80,7 +80,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private string GetFileName(ICodeExplorerDeclarationViewModel node)
         {
-            var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
+            var module = node.Declaration.QualifiedName.QualifiedModuleName;
 
             var fileExtensions = new Dictionary<ComponentType, string>
             {
@@ -91,8 +91,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             };
 
             string ext;
-            fileExtensions.TryGetValue(component.Type, out ext);
-            return component.Name + ext;
+            fileExtensions.TryGetValue(module.ComponentType, out ext);
+            return module.Name + ext;
         }
     }
 }

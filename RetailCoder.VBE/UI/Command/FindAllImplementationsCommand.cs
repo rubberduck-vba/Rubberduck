@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -156,12 +157,20 @@ namespace Rubberduck.UI.Command
                 new SearchResultItem(
                     declaration.ParentScopeDeclaration,
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
-                    declaration.QualifiedName.QualifiedModuleName.Component.CodeModule.GetLines(declaration.Selection.StartLine, 1).Trim()));
+                    GetModuleLine(declaration.QualifiedName.QualifiedModuleName, declaration.Selection.StartLine)));
 
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, target.IdentifierName), target, results);
 
             return viewModel;
+        }
+
+        private string GetModuleLine(QualifiedModuleName module, int line)
+        {
+            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            {
+                return codeModule.GetLines(line, 1).Trim();
+            }
         }
 
         private Declaration FindTarget(object parameter)

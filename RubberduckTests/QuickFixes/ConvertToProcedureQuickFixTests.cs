@@ -121,7 +121,7 @@ End Function";
                 .AddComponent("Bar", ComponentType.ClassModule, inputImplementationCode1)
                 .AddComponent("Bar2", ComponentType.ClassModule, inputImplementationCode2)
                 .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {

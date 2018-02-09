@@ -22,11 +22,9 @@ namespace Rubberduck.Inspections.Concrete
             SameComponent = 3
         }
 
-        public ShadowedDeclarationInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.DoNotShow)
+        public ShadowedDeclarationInspection(RubberduckParserState state) : base(state)
         {
         }
-
-        public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

@@ -5,6 +5,8 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -54,11 +56,13 @@ namespace Rubberduck.UI.Command
             try
             {
                 // the code modules consistently match correctly, but the components don't
-                return testModules.Any(a =>
+                using( var activeCodePane = _vbe.ActiveCodePane)
                 {
-                    var module = a.QualifiedName.QualifiedModuleName.Component.CodeModule;
-                    return module.Equals(_vbe.ActiveCodePane.CodeModule);
-                });
+                    using( var activePaneCodeModule = activeCodePane.CodeModule)
+                    {
+                        return testModules.Any(a => _state.ProjectsProvider.Component(a.QualifiedModuleName).HasEqualCodeModule(activePaneCodeModule));
+                    }
+                }
             }
             catch (COMException)
             {
@@ -68,20 +72,32 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
-            var pane = _vbe.ActiveCodePane;
-            if (pane.IsWrappingNullReference) { return; }
-
-            var module = pane.CodeModule;
-            var declaration = _state.GetTestModules()
-                .FirstOrDefault(f => f.QualifiedName.QualifiedModuleName.Component.CodeModule.Equals(module));
-
-            if (declaration != null)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                var name = GetNextTestMethodName(module.Parent);
-                var body = TestMethodTemplate.Replace(NamePlaceholder, name);
-                module.InsertLines(module.CountOfLines, body);
-            }
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
 
+                using (var module = pane.CodeModule)
+                {
+                    var declaration = _state.GetTestModules()
+                        .FirstOrDefault(f => _state.ProjectsProvider.Component(f.QualifiedModuleName).HasEqualCodeModule(module));
+
+                    if (declaration == null)
+                    {
+                        return;
+                    }
+
+                    string name;
+                    using (var component = module.Parent)
+                    {
+                        name = GetNextTestMethodName(component);
+                    }
+                    var body = TestMethodTemplate.Replace(NamePlaceholder, name);
+                    module.InsertLines(module.CountOfLines, body);
+                }
+            }
             _state.OnParseRequested(this);
         }
 

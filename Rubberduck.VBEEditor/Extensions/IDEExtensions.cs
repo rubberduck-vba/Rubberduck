@@ -71,7 +71,7 @@ namespace Rubberduck.VBEditor.Extensions
                                     result = new WordApp();
                                     break;
                                 case "Microsoft PowerPoint":
-                                    result = new PowerPointApp();
+                                    result = new PowerPointApp(vbe);
                                     break;
                                 case "Microsoft Outlook":
                                     result = new OutlookApp();
@@ -117,7 +117,7 @@ namespace Rubberduck.VBEditor.Extensions
                             case "Word":
                                 return new WordApp(vbe);
                             case "PowerPoint":
-                                return new PowerPointApp();
+                                return new PowerPointApp(vbe);
                             case "Outlook":
                                 return new OutlookApp();
                             case "MSProject":

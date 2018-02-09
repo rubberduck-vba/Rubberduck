@@ -316,5 +316,15 @@ End Sub";
                 Assert.AreEqual(1, results.Count());
             }
         }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "BooleanAssignedInIfElseInspection";
+            var inspection = new BooleanAssignedInIfElseInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
     }
 }

@@ -152,7 +152,7 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return Visit(context.ccExpression()[0]);
             }
-            else if (context.MINUS() != null && context.ccExpression().Count == 1)
+            else if (context.MINUS() != null && context.ccExpression().Length == 1)
             {
                 return VisitUnaryMinus(context);
             }
@@ -164,7 +164,7 @@ namespace Rubberduck.Parsing.PreProcessing
             {
                 return VisitPlus(context);
             }
-            else if (context.MINUS() != null && context.ccExpression().Count == 2)
+            else if (context.MINUS() != null && context.ccExpression().Length == 2)
             {
                 return VisitMinus(context);
             }

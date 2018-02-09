@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -14,6 +15,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly ISaveFileDialog _saveFileDialog;
         private readonly IMessageBox _messageBox;
+        private readonly IProjectsProvider _projectsProvider;
 
         private readonly Dictionary<ComponentType, string> _exportableFileExtensions = new Dictionary<ComponentType, string>
         {
@@ -23,12 +25,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { ComponentType.UserForm, ".frm" }
         };
 
-        public RemoveCommand(ISaveFileDialog saveFileDialog, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public RemoveCommand(ISaveFileDialog saveFileDialog, IMessageBox messageBox, IProjectsProvider projectsProvider) : base(LogManager.GetCurrentClassLogger())
         {
             _saveFileDialog = saveFileDialog;
             _saveFileDialog.OverwritePrompt = true;
 
             _messageBox = messageBox;
+            _projectsProvider = projectsProvider;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -69,14 +72,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             // I know this will never be null because of the CanExecute
             var declaration = ((CodeExplorerComponentViewModel)parameter).Declaration;
-
-            var components = declaration.Project.VBComponents;
-            components.Remove(declaration.QualifiedName.QualifiedModuleName.Component);
+            var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
+            var components = _projectsProvider.ComponentsCollection(qualifiedModuleName.ProjectId);
+            components?.Remove(_projectsProvider.Component(qualifiedModuleName));
         }
 
         private bool ExportFile(CodeExplorerComponentViewModel node)
         {
-            var component = node.Declaration.QualifiedName.QualifiedModuleName.Component;
+            var component = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName);
 
             _exportableFileExtensions.TryGetValue(component.Type, out string ext);
 
