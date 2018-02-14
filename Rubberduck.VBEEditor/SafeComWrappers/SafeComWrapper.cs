@@ -22,7 +22,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             Target = target;
             _rewrapping = rewrapping;
 
-            if (!rewrapping && target != null)
+            if (!rewrapping && target != null && (this is IVBProject))
             {
                 _comSafe = ComSafeManager.GetCurrentComSafe();
                 _comSafe.Add(this);
