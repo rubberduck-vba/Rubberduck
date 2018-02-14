@@ -52,8 +52,7 @@ build:
 test_script:
   # we use -returntargetcode to fail the build if tests fail
   - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-
-after_test:
+  # when using test_script, after_test seems to not be executed
   - codecov -f "Rubberduck_Coverage.xml" -F core -F ui -F inspections -F tools
 
 before_package:
