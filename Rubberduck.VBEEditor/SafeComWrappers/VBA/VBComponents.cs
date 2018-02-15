@@ -272,9 +272,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return;
             }
 
-            handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
+            var eventArgs = new ComponentEventArgs(project.ProjectId, project, component);
+            handler.Invoke(component, eventArgs);
         }
-    
+
         #endregion
     }
 }

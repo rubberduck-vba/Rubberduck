@@ -131,6 +131,7 @@
   <ItemGroup>
     <Compile Include="ComManagement\IProjectsProvider.cs" />
     <Compile Include="ComManagement\IProjectsRepository.cs" />
+    <Compile Include="Events\IVbeEvents.cs" />
     <Compile Include="ComManagement\ProjectsRepository.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeInfos.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Events\ProjectEventArgs.cs" />
     <Compile Include="Events\ProjectRenamedEventArgs.cs" />
     <Compile Include="Events\SelectionChangedEventArgs.cs" />
+    <Compile Include="Events\VbeEvents.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\VBComponentExtensions.cs" />

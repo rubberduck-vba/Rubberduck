@@ -35,6 +35,7 @@ namespace Rubberduck.UI.SourceControl
     {
         private readonly IVBE _vbe;
         private readonly IVBProjects _vbProjects;
+        private readonly IVBEEvents _vbeEvents;
         private readonly RubberduckParserState _state;
         private readonly ISourceControlProviderFactory _providerFactory;
         private readonly IFolderBrowserFactory _folderBrowserFactory;
@@ -59,6 +60,7 @@ namespace Rubberduck.UI.SourceControl
         {
             _vbe = vbe;
             _vbProjects = vbe.VBProjects;
+            _vbeEvents = VBEEvents.Initialize(vbe);
             _state = state;
             _providerFactory = providerFactory;
             _folderBrowserFactory = folderBrowserFactory;
@@ -86,7 +88,7 @@ namespace Rubberduck.UI.SourceControl
 
             OpenCommandPromptCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => OpenCommandPrompt());
             
-            AddComponentEventHandlers();
+            SubscribeEvents();
 
             TabItems = new ObservableCollection<IControlView>(views);
             SetTab(SourceControlTab.Changes);
@@ -108,32 +110,20 @@ namespace Rubberduck.UI.SourceControl
 
         private bool _listening = true;
 
-        private void AddComponentEventHandlers()
+        private void SubscribeEvents()
         {
-            _vbProjects.AttachEvents();
-            _vbProjects.ProjectRemoved += ProjectRemoved;
-            foreach (var project in _vbProjects)
-            using(project)
-            {
-                project.VBComponents.AttachEvents();
-                project.VBComponents.ComponentAdded += ComponentAdded;
-                project.VBComponents.ComponentRemoved += ComponentRemoved;
-                project.VBComponents.ComponentRenamed += ComponentRenamed;
-            }
+            _vbeEvents.ProjectRemoved += ProjectRemoved;
+            _vbeEvents.ComponentAdded += ComponentAdded;
+            _vbeEvents.ComponentRemoved += ComponentRemoved;
+            _vbeEvents.ComponentRenamed += ComponentRenamed;
         }
 
-        private void RemoveComponentEventHandlers()
+        private void UnsubscribeEvents()
         {
-            _vbProjects.ProjectRemoved -= ProjectRemoved;
-            foreach (var project in _vbProjects)
-            using (project)
-            {
-                project.VBComponents.ComponentAdded -= ComponentAdded;
-                project.VBComponents.ComponentRemoved -= ComponentRemoved;
-                project.VBComponents.ComponentRenamed -= ComponentRenamed;
-                project.VBComponents.DetachEvents();
-            }
-            _vbProjects.DetachEvents();
+            _vbeEvents.ProjectRemoved -= ProjectRemoved;
+            _vbeEvents.ComponentAdded -= ComponentAdded;
+            _vbeEvents.ComponentRemoved -= ComponentRemoved;
+            _vbeEvents.ComponentRenamed -= ComponentRenamed;
         }
 
         private void ComponentAdded(object sender, ComponentEventArgs e)
@@ -1050,7 +1040,7 @@ namespace Rubberduck.UI.SourceControl
                 _fileSystemWatcher.Dispose();
             }
 
-            RemoveComponentEventHandlers();
+            UnsubscribeEvents();
         }
     }
 }
