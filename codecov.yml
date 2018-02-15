@@ -17,8 +17,6 @@ coverage:
   status:
     # don't check patch coverage
     patch: off
-    changes:
-      base: auto
     project:
       default:
         target: 0 # don't force a minimum coverage
@@ -26,8 +24,8 @@ coverage:
         threshold: 5
         base: auto
       core:
-        # restrict core decrease to 1.5%
-        threshold: 1.5
+        # restrict core decrease to 2%
+        threshold: 2
         flags: core
       ui:
         flags: ui
