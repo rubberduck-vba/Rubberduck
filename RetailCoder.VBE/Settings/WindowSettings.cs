@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Xml.Serialization;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
@@ -24,14 +25,15 @@ namespace Rubberduck.Settings
         bool IsWindowVisible(DockableToolwindowPresenter candidate);
     }
 
+    [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     [XmlType(AnonymousType = true)]
     public class WindowSettings : IWindowSettings, IEquatable<WindowSettings>
     {
+        /// <Summary>
+        /// Default constructor required for XML serialization. Initializes all settings to false.
+        /// </Summary>
         public WindowSettings()
-            : this(false, false, false, false, false, true, false, false)
-            // SortByName and SortByLocation are opposites; SortByName should start as True.
         {
-            //empty constructor needed for serialization
         }
 
         public WindowSettings(bool codeExplorerVisibleOnStartup, bool codeInspectionsVisibleOnStartup, 
@@ -63,28 +65,22 @@ namespace Rubberduck.Settings
         {
             //I'm sure there's a better way to do this, because this is a lazy-ass way to do it.
             //We're injecting into the base class, so check the derived class:
-            if (candidate is CodeExplorerDockablePresenter)
+            switch (candidate)
             {
-                return CodeExplorerVisibleOnStartup;
+                case CodeExplorerDockablePresenter _:
+                    return CodeExplorerVisibleOnStartup;
+                case InspectionResultsDockablePresenter _:
+                    return CodeInspectionsVisibleOnStartup;
+                case SourceControlDockablePresenter _:
+                    return SourceControlVisibleOnStartup;
+                case TestExplorerDockablePresenter _:
+                    return TestExplorerVisibleOnStartup;
+                case ToDoExplorerDockablePresenter _:
+                    return TodoExplorerVisibleOnStartup;
+                default:
+                    //Oh. Hello. I have no clue who you are...
+                    return false;
             }
-            if (candidate is InspectionResultsDockablePresenter)
-            {
-                return CodeInspectionsVisibleOnStartup;
-            }
-            if (candidate is SourceControlDockablePresenter)
-            {
-                return SourceControlVisibleOnStartup;
-            }
-            if (candidate is TestExplorerDockablePresenter)
-            {
-                return TestExplorerVisibleOnStartup;
-            }
-            if (candidate is ToDoExplorerDockablePresenter)
-            {
-                return TodoExplorerVisibleOnStartup;
-            }
-            //Oh. Hello. I have no clue who you are...
-            return false;
         }
 
         public bool Equals(WindowSettings other)

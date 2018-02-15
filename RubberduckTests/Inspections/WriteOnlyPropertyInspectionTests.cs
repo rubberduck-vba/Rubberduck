@@ -1,9 +1,6 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -158,14 +155,6 @@ End Property";
 
                 Assert.IsFalse(inspectionResults.Any());
             }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new WriteOnlyPropertyInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
         [Test]

@@ -456,6 +456,16 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "ObjectVariableNotSetInspection";
+            var inspection = new ObjectVariableNotSetInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected, params string[] testLibraries)
         {
             var builder = new MockVbeBuilder();

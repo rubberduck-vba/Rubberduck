@@ -18,8 +18,6 @@ namespace Rubberduck.Inspections.Concrete
         public MultipleDeclarationsInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts

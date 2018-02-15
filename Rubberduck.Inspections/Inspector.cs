@@ -27,9 +27,9 @@ namespace Rubberduck.Inspections
             private readonly List<IInspection> _inspections;
             private const int AGGREGATION_THRESHOLD = 128;
 
-            public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
+            public Inspector(IGeneralConfigService configService, IInspectionProvider inspectionProvider)
             {
-                _inspections = inspections.ToList();
+                _inspections = inspectionProvider.Inspections.ToList();
 
                 _configService = configService;
                 configService.SettingsChanged += ConfigServiceSettingsChanged;

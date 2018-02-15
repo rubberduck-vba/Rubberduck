@@ -4,7 +4,6 @@ using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -120,14 +119,6 @@ End Sub";
 
                 Assert.IsFalse(inspectionResults.Any());
             }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new UntypedFunctionUsageInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [Test]

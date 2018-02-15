@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using NLog;
 using System.Xml.Serialization;
 using Rubberduck.Common;
 
@@ -19,6 +19,7 @@ namespace Rubberduck.Settings
         List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
     }
 
+    [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     [XmlType(AnonymousType = true)]
     public class GeneralSettings : IGeneralSettings, IEquatable<GeneralSettings>
     {
@@ -50,19 +51,7 @@ namespace Rubberduck.Settings
             }
         }
 
-        public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
-
-        public GeneralSettings()
-        {
-            Language = new DisplayLanguageSetting("en-US");
-            CanShowSplash = true;
-            CanCheckVersion = true;
-            IsSmartIndenterPrompted = false;
-            IsAutoSaveEnabled = false;
-            AutoSavePeriod = 10;
-            MinimumLogLevel = LogLevel.Off.Ordinal;
-            EnableExperimentalFeatures = new List<ExperimentalFeatures>();
-        }
+        public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeatures>();
 
         public bool Equals(GeneralSettings other)
         {

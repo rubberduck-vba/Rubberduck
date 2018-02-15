@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ImplicitDefaultMemberAssignmentInspection : InspectionBase
     {
         public ImplicitDefaultMemberAssignmentInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -38,7 +38,5 @@ namespace Rubberduck.Inspections.Concrete
                                                                                   State,
                                                                                   reference));
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
     }
 }

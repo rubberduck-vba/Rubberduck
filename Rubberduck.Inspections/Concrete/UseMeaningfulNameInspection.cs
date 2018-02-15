@@ -21,12 +21,10 @@ namespace Rubberduck.Inspections.Concrete
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
         public UseMeaningfulNameInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             _settings = settings;
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         private static readonly DeclarationType[] IgnoreDeclarationTypes = 
         {

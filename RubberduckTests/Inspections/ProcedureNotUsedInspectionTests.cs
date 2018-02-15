@@ -1,7 +1,6 @@
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -258,14 +257,6 @@ End Sub";
 
                 Assert.IsFalse(inspectionResults.Any());
             }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ProcedureNotUsedInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
         }
 
         [Test]
