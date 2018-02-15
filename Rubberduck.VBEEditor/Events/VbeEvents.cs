@@ -27,6 +27,11 @@ namespace Rubberduck.VBEditor.Events
 
         public static void Terminate()
         {
+            if (_instance == null)
+            {
+                return;
+            }
+
             lock (Lock)
             {
                 _instance.Dispose();
