@@ -24,22 +24,12 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public override bool Covers(ISummaryClause<T> candidate)
-        {
-            if (!candidate.HasCoverage)
-            {
-                return true;
-            }
-
-            if (candidate is SummaryClauseIsLT<T> isClause)
-            {
-                return HasCoverage ? Value.CompareTo(isClause.Value) >= 0 : false;
-            }
-            return false;
-        }
-
         public override bool Covers(T candidate)
         {
+            if (ContainsBooleans)
+            {
+                return false;
+            }
             if (HasCoverage)
             {
                 return _value.CompareTo(candidate) > 0;
@@ -70,20 +60,6 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public override bool Covers(ISummaryClause<T> candidate)
-        {
-            if (!candidate.HasCoverage)
-            {
-                return true;
-            }
-
-            if (candidate is SummaryClauseIsGT<T> isClause)
-            {
-                return HasCoverage ? Value.CompareTo(isClause.Value) <= 0 : false;
-            }
-            return false;
-        }
-
         public override bool Covers(T candidate)
         {
             if (HasCoverage)
@@ -98,7 +74,7 @@ namespace Rubberduck.Inspections.Concrete
         }
     }
 
-    public class SummaryClauseIsBase<T> : SummaryClauseBase<T> where T : IComparable<T>
+    public class SummaryClauseIsBase<T> : SummaryClauseSingleValueBase<T> where T : IComparable<T>
     {
         protected T _value;
         protected bool _hasValue;
@@ -145,8 +121,6 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public override bool Covers(ISummaryClause<T> candidate) { return false; }
-
         public override bool Covers(T candidate) { return false; }
 
         public long? AsIntegerNumber
@@ -167,6 +141,11 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 return result;
             }
+        }
+
+        public override void Add(T value)
+        {
+            Value = value;
         }
 
         public override bool HasCoverage
@@ -190,7 +169,15 @@ namespace Rubberduck.Inspections.Concrete
 
         public bool IsLTClause { set; get; }
 
-        public void Reset()
+        public void ClearIfCoveredBy(SummaryClauseIsBase<T> isClause)
+        {
+            if (isClause.Covers(Value))
+            {
+                Clear();
+            }
+        }
+
+        public void Clear()
         {
             _value = default;
             _hasValue = false;
@@ -200,6 +187,12 @@ namespace Rubberduck.Inspections.Concrete
         {
             set
             {
+                if (ContainsBooleans)
+                {
+                    //TODO: introduce Truth table of observed behavior and write to SingleValues
+                    return;
+                }
+
                 if (IsLTClause)
                 {
                     if (HasValue)

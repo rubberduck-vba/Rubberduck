@@ -10,66 +10,23 @@ namespace Rubberduck.Inspections.Concrete
     {
         public SummaryClauseRanges()
         {
-            RangeClauses = new List<SummaryClauseRange<T>>();
+            RangeClauses = new List<ISummaryClauseRange<T>>();
         }
 
-        public List<SummaryClauseRange<T>> RangeClauses { set; get; }
-        public override bool HasCoverage => RangeClauses.Any();
-        public bool Any() => HasCoverage;
+        public List<ISummaryClauseRange<T>> RangeClauses { set; get; }
+        public override bool HasCoverage => Any();
+        public bool Any() => RangeClauses.Any();
 
-        //public void Add(SummaryClauseRanges<T> newVal)
-        //{
-        //    Add(newVal.RangeClauses);
-        //}
-
-        //public void Add(IEnumerable<SummaryClauseRange<T>> newVals)
-        //{
-        //    foreach (var rg in newVals)
-        //    {
-        //        Add(rg);
-        //    }
-        //}
-
-        public void Add(SummaryClauseRange<T> candidate)
+        public void Add(ISummaryClauseRange<T> candidate)
         {
             if (Covers(candidate))
             {
                 return;
             }
-
             AddRange(candidate);
         }
 
-        public override bool Covers(ISummaryClause<T> candidate)
-        {
-            if (!HasCoverage)
-            {
-                return false;
-            }
-
-            if (candidate is SummaryClauseSingleValues<T> singleValues)
-            {
-                return singleValues.Values.All(sv => Covers(sv));
-            }
-            else if (candidate is SummaryClauseRanges<T> cRanges)
-            {
-                foreach (var rgCandidate in cRanges.RangeClauses)
-                {
-                    if (!RangeClauses.Any(rg => Covers(rgCandidate)))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else if (candidate is SummaryClauseRange<T> rangeCandidate)
-            {
-                return Covers(rangeCandidate);
-            }
-            return false;
-        }
-
-        private bool Covers(SummaryClauseRange<T> candidate)
+        public bool Covers(ISummaryClauseRange<T> candidate)
         {
             if (!HasCoverage)
             {
@@ -87,7 +44,21 @@ namespace Rubberduck.Inspections.Concrete
             return RangeClauses.Any(rg => rg.Start.CompareTo(candidate) <= 0 && rg.End.CompareTo(candidate) >= 0);
         }
 
-        public void Remove(List<SummaryClauseRange<T>> rangesToRemove)
+        public void RemoveIfCoveredBy(SummaryClauseRanges<T> ranges)
+        {
+            var toRemove = new List<ISummaryClauseRange<T>>();
+            for (var idx = 0; idx < RangeClauses.Count; idx++)
+            {
+                var rangeClause = RangeClauses[idx];
+                if (ranges.RangeClauses.Any(rg => rg.Covers(rangeClause)))
+                {
+                    toRemove.Add(rangeClause);
+                }
+            }
+            Remove(toRemove);
+        }
+
+        public void Remove(List<ISummaryClauseRange<T>> rangesToRemove)
         {
             foreach( var range in rangesToRemove)
             {
@@ -95,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public void Remove(SummaryClauseRange<T> rangeToRemove)
+        public void Remove(ISummaryClauseRange<T> rangeToRemove)
         {
             RangeClauses.Remove(rangeToRemove);
         }
@@ -105,13 +76,9 @@ namespace Rubberduck.Inspections.Concrete
             var result = string.Empty;
             foreach(var range in RangeClauses)
             {
-                result = $"{result}Range={range.ToString()},";
+                result = result.Length > 0 ? $",{range.ToString()}" : $"{range.ToString()}";
             }
-            if (result.Length > 0)
-            {
-                return result.Remove(result.Length - 1);
-            }
-            return string.Empty;
+            return result;
         }
 
         public List<long> AsIntegerNumbers
@@ -129,29 +96,8 @@ namespace Rubberduck.Inspections.Concrete
                 return results;
             }
         }
-        //public void Add(Object o)
-        //{
-        //    if(o is SummaryClauseRanges<T> clauseRanges)
-        //    {
-        //        foreach(var range in clauseRanges.RangeClauses)
-        //        {
-        //            AddRange(range);
-        //        }
-        //    }
-        //    else if (o is SummaryClauseRange<T> range)
-        //    {
-        //        AddRange(range);
-        //    }
-        //    else if (o is List<SummaryClauseRange<T>> list)
-        //    {
-        //        foreach (var rangeClause in list)
-        //        {
-        //            AddRange(rangeClause);
-        //        }
-        //    }
-        //}
 
-        private void AddRange(SummaryClauseRange<T> rangeClause)
+        private void AddRange(ISummaryClauseRange<T> rangeClause)
         {
             if (!RangeClauses.Any())
             {

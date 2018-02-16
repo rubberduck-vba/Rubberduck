@@ -11,200 +11,157 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public class SelectExpressionContextVisitor : IParseTreeVisitor<string> //ContextValueVisitor
-    {
-        private readonly RubberduckParserState _state;
-        private ParseTreeValue _parseTreeValue;
-        private string _typeNameResult;
+    //public class SelectExpressionContextVisitor : IParseTreeVisitor<string>
+    //{
+    //    private string _typeNameResult;
+    //    private IParseTreeValueResults _parseTreeResults;
 
-        public SelectExpressionContextVisitor(RubberduckParserState state) //: base(state)
-        {
-            _state = state;
-            _parseTreeValue = new ParseTreeValue(string.Empty);
-            _typeNameResult = string.Empty;
-        }
+    //    public SelectExpressionContextVisitor(IParseTreeValueResults parseResults)
+    //    {
+    //        _typeNameResult = string.Empty;
+    //        _parseTreeResults = parseResults;
+    //    }
 
-        public string SelectCaseEvaluationType => _typeNameResult;
+    //    public string SelectCaseEvaluationType => _typeNameResult;
 
-        public string Visit(IParseTree tree)
-        {
-            return string.Empty;
-        }
+    //    public string Visit(IParseTree tree)
+    //    {
+    //        return string.Empty;
+    //    }
 
-        public string VisitChildren(IRuleNode node)
-        {
-            if (node is VBAParser.SelectCaseStmtContext selectStmt)
-            {
-                var theTypeName = string.Empty;
-                var prCtxt = selectStmt.selectExpression() as ParserRuleContext;
-                if (prCtxt.children.Any(child => IsLogicalContext(child) || IsTrueFalseLiteral(child)))
-                {
-                    _typeNameResult = Tokens.Boolean;
-                    return _typeNameResult;
-                }
+    //    public string VisitChildren(IRuleNode node)
+    //    {
+    //        if (node is VBAParser.SelectCaseStmtContext selectStmt)
+    //        {
+    //            var theTypeName = string.Empty;
+    //            //var selectStmtResults = _parseTreeResults; // selectStmt.Accept(_contextValuevisitor);
 
-                var smplName = prCtxt.GetDescendent<VBAParser.SimpleNameExprContext>();
-                if (SymbolList.TypeHintToTypeName.TryGetValue(smplName.GetText().Last().ToString(), out theTypeName))
-                {
-                    _typeNameResult = theTypeName;
-                    return _typeNameResult;
-                }
+    //            var selectExpression = selectStmt.selectExpression();
+    //            if (selectExpression.children.Any(child => IsLogicalContext(child) || IsTrueFalseLiteral(child)))
+    //            {
+    //                _typeNameResult = Tokens.Boolean;
+    //                return _typeNameResult;
+    //            }
 
-                var visitor = new ContextValueVisitor(_state);
-                Visit(prCtxt);
-                prCtxt.Accept(visitor);
+    //            if (selectExpression.children.Any(child => child is VBAParser.ConcatOpContext))
+    //            {
+    //                _typeNameResult = Tokens.String;
+    //                return _typeNameResult;
+    //            }
 
-                if (visitor.UnresolvedContexts.Any())
-                {
-                    var unresolvedContextTypeNames = visitor.UnresolvedContexts.Values.Where(val => val.HasDeclaredTypeName).Select(val => val.DeclaredTypeName);
-                    if (TryDetermineEvaluationTypeFromTypes(unresolvedContextTypeNames, out theTypeName))
-                    {
-                        _typeNameResult = theTypeName;
-                        return _typeNameResult;
-                    }
-                }
-                else
-                {
-                    var resolvedContextTypeNames = visitor.ValueResolvedContexts.Values.Where(val => val.HasDeclaredTypeName).Select(val => val.DeclaredTypeName);
+    //            var smplName = selectExpression.GetDescendent<VBAParser.SimpleNameExprContext>();
+    //            if (SymbolList.TypeHintToTypeName.TryGetValue(smplName.GetText().Last().ToString(), out theTypeName))
+    //            {
+    //                _typeNameResult = theTypeName;
+    //                return _typeNameResult;
+    //            }
 
-                    if (TryDetermineEvaluationTypeFromTypes(resolvedContextTypeNames, out theTypeName))
-                    {
-                        _typeNameResult = theTypeName;
-                        return _typeNameResult;
-                    }
-                }
+    //            var selectExpressionContexts = _parseTreeResults.AllContexts.Where(se => se.IsDescendentOf<VBAParser.SelectExpressionContext>());
 
-                var rgClauses = selectStmt.caseClause().SelectMany(cc => cc.rangeClause());
+    //            if (_parseTreeResults.AllContexts.Any(se => _parseTreeResults.Result(se).HasValue))
+    //            {
+    //                var unresolvedContextTypeNames = selectExpressionContexts.Where(val => _parseTreeResults.Result(val).HasDeclaredTypeName).Select(val => _parseTreeResults.Result(val).DeclaredTypeName);
+    //                if (TryDetermineEvaluationTypeFromTypes(unresolvedContextTypeNames, out theTypeName))
+    //                {
+    //                    _typeNameResult = theTypeName;
+    //                    return _typeNameResult;
+    //                }
+    //            }
+    //            else
+    //            {
+    //                var resolvedContextTypeNames = selectExpressionContexts.Where(val => _parseTreeResults.Result(val).HasDeclaredTypeName).Select(val => _parseTreeResults.Result(val).DeclaredTypeName);
 
-                var exprValues = new List<ParseTreeValue>();
-                var exprs = rgClauses.SelectMany(rg => rg.GetDescendents())
-                    .Where(expr => expr is VBAParser.LExprContext || expr is VBAParser.LiteralExprContext);
-                foreach (var expr in exprs)
-                {
-                    visitor = new ContextValueVisitor(_state);
-                    expr.Accept(visitor);
-                    exprValues.AddRange(visitor.UnresolvedContexts.Values);
-                    exprValues.AddRange(visitor.ValueResolvedContexts.Values);
-                }
+    //                if (TryDetermineEvaluationTypeFromTypes(resolvedContextTypeNames, out theTypeName))
+    //                {
+    //                    _typeNameResult = theTypeName;
+    //                    return _typeNameResult;
+    //                }
+    //            }
 
-                var typeNames = exprValues.Where(expr => expr.DeclaredTypeName != Tokens.Variant).Select(expr => expr.UseageTypeName);
-                if (TryDetermineEvaluationTypeFromTypes(typeNames, out string typeName))
-                {
-                    return typeName;
-                }
+    //            var typeNames = _parseTreeResults.RangeClauseResults().Select(res => res.UseageTypeName);
+    //            if (TryDetermineEvaluationTypeFromTypes(typeNames, out string typeName))
+    //            {
+    //                return typeName;
+    //            }
 
-                //If Strings are in the mix and prevent resolution to a type, we remove them
-                //here and see if a resolution becomes possible.  The strings will be converted to the
-                //final type during subsequent unreachable analysis.  If they cannot be converted to
-                //the "Evaluation Type", they will be flagged as mismatching e.g., "45" converts to a number
-                //but "foo" will not.
-                var modifiedNames = typeNames.ToList();
-                modifiedNames.RemoveAll(tn => tn.Equals(Tokens.String));
-                if (TryDetermineEvaluationTypeFromTypes(modifiedNames, out typeName))
-                {
-                    _typeNameResult =  typeName;
-                    return _typeNameResult;
-                }
-            }
+    //            //If Strings are in the mix and prevent resolution to a type, we remove them
+    //            //here and see if a resolution becomes possible.  The strings will be converted to the
+    //            //final type during subsequent unreachable analysis.  If they cannot be converted to
+    //            //the "Evaluation Type", they will be flagged as mismatching e.g., "45" converts to a number
+    //            //but "foo" will not.
+    //            var modifiedNames = typeNames.ToList();
+    //            modifiedNames.RemoveAll(tn => tn.Equals(Tokens.String));
+    //            if (TryDetermineEvaluationTypeFromTypes(modifiedNames, out typeName))
+    //            {
+    //                _typeNameResult =  typeName;
+    //                return _typeNameResult;
+    //            }
+    //        }
 
-            return string.Empty;
-        }
+    //        return string.Empty;
+    //    }
 
-        private bool TryDetermineEvaluationTypeFromTypes(IEnumerable<string> typeNames, out string typeName)
-        {
-            typeName = string.Empty;
-            var typeList = typeNames.ToList();
-            typeList.Remove(Tokens.Variant);
-            if (!typeList.Any())
-            {
-                return false;
-            }
-            //To select "String" or "Currency", all types in the typelist must match
-            if (typeList.All(tn => tn.Equals(typeList.First())))
-            {
-                typeName = typeList.First();
-                return true;
-            }
+    //    private bool TryDetermineEvaluationTypeFromTypes(IEnumerable<string> typeNames, out string typeName)
+    //    {
+    //        typeName = string.Empty;
+    //        var typeList = typeNames.ToList();
+    //        typeList.Remove(Tokens.Variant);
+    //        if (!typeList.Any())
+    //        {
+    //            return false;
+    //        }
+    //        //To select "String" or "Currency", all types in the typelist must match
+    //        if (typeList.All(tn => tn.Equals(typeList.First())))
+    //        {
+    //            typeName = typeList.First();
+    //            return true;
+    //        }
 
-            var nextType = new string[] { Tokens.Long, Tokens.LongLong, Tokens.Integer, Tokens.Byte };
-            var result = typeList.All(tn => nextType.Contains(tn));
-            if (result)
-            {
-                typeName = Tokens.Long;
-                return true;
-            }
+    //        var nextType = new string[] { Tokens.Long, Tokens.LongLong, Tokens.Integer, Tokens.Byte };
+    //        var result = typeList.All(tn => nextType.Contains(tn));
+    //        if (result)
+    //        {
+    //            typeName = Tokens.Long;
+    //            return true;
+    //        }
 
-            nextType = new string[] { Tokens.Long, Tokens.LongLong, Tokens.Integer, Tokens.Byte, Tokens.Single, Tokens.Double };
-            result = typeList.All(tn => nextType.Contains(tn));
-            if (result)
-            {
-                typeName = Tokens.Double;
-                return true;
-            }
-            return false;
-        }
+    //        nextType = new string[] { Tokens.Long, Tokens.LongLong, Tokens.Integer, Tokens.Byte, Tokens.Single, Tokens.Double };
+    //        result = typeList.All(tn => nextType.Contains(tn));
+    //        if (result)
+    //        {
+    //            typeName = Tokens.Double;
+    //            return true;
+    //        }
+    //        return false;
+    //    }
+    //    public string VisitErrorNode(IErrorNode node)
+    //    {
+    //        return string.Empty;
+    //    }
 
-        //public string GetSelectCaseEvaluationType(IEnumerable<VBAParser.RangeClauseContext> rgClauses, string selectCaseVariable = "")
-        //{
-        //    var exprValues = new List<ParseTreeValue>();
-        //    var exprs = rgClauses.SelectMany(rg => rg.GetDescendents())
-        //        .Where(expr => expr is VBAParser.LExprContext || expr is VBAParser.LiteralExprContext);
-        //    foreach (var expr in exprs)
-        //    {
-        //        var visitor = new ContextValueVisitor(_state);
-        //        expr.Accept(visitor);
-        //        exprValues.AddRange(visitor.UnresolvedContexts.Values);
-        //        exprValues.AddRange(visitor.ValueResolvedContexts.Values);
-        //    }
+    //    public string VisitTerminal(ITerminalNode node)
+    //    {
+    //        return string.Empty;
+    //    }
 
-        //    var typeNames = exprValues.Where(expr => expr.DeclaredTypeName != Tokens.Variant).Select(expr => expr.UseageTypeName);
-        //    if (TryDetermineEvaluationTypeFromTypes(typeNames, out string typeName))
-        //    {
-        //        return typeName;
-        //    }
+    //    private bool IsLogicalContext<T>(T child)
+    //    {
+    //        return child is VBAParser.RelationalOpContext
+    //            || child is VBAParser.LogicalXorOpContext
+    //            || child is VBAParser.LogicalAndOpContext
+    //            || child is VBAParser.LogicalOrOpContext
+    //            || child is VBAParser.LogicalEqvOpContext
+    //            || child is VBAParser.LogicalNotOpContext;
+    //    }
 
-        //    //If Strings are in the mix and prevent resolution to a type, we remove them
-        //    //here and see if a resolution becomes possible.  The strings will be converted to the
-        //    //final type during subsequent unreachable analysis.  If they cannot be converted to
-        //    //the "Evaluation Type", they will be flagged as mismatching e.g., "45" converts to a number
-        //    //but "foo" will not.
-        //    var modifiedNames = typeNames.ToList();
-        //    modifiedNames.RemoveAll(tn => tn.Equals(Tokens.String));
-        //    if (TryDetermineEvaluationTypeFromTypes(modifiedNames, out typeName))
-        //    {
-        //        return typeName;
-        //    }
-        //    return string.Empty;
-        //}
-
-        public string VisitErrorNode(IErrorNode node)
-        {
-            return string.Empty;
-        }
-
-        public string VisitTerminal(ITerminalNode node)
-        {
-            return string.Empty;
-        }
-
-        private bool IsLogicalContext<T>(T child)
-        {
-            return child is VBAParser.RelationalOpContext
-                || child is VBAParser.LogicalXorOpContext
-                || child is VBAParser.LogicalAndOpContext
-                || child is VBAParser.LogicalOrOpContext
-                || child is VBAParser.LogicalEqvOpContext
-                || child is VBAParser.LogicalNotOpContext;
-        }
-
-        private bool IsTrueFalseLiteral<T>(T child)
-        {
-            if (child is VBAParser.LiteralExprContext)
-            {
-                var litExpr = child as VBAParser.LiteralExprContext;
-                return litExpr.GetText().Equals(Tokens.True) || litExpr.GetText().Equals(Tokens.False);
-            }
-            return false;
-        }
-    }
+    //    private bool IsTrueFalseLiteral<T>(T child)
+    //    {
+    //        if (child is VBAParser.LiteralExprContext)
+    //        {
+    //            var litExpr = child as VBAParser.LiteralExprContext;
+    //            return litExpr.GetText().Equals(Tokens.True) || litExpr.GetText().Equals(Tokens.False);
+    //        }
+    //        return false;
+    //    }
+    //}
 }

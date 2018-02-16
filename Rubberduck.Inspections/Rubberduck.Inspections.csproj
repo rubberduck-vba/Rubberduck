@@ -86,12 +86,14 @@
     <Compile Include="Concrete\UnreachableSelectCase\SummaryClauseIs.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\SummaryClauseRange.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\SummaryClauseRanges.cs" />
+    <Compile Include="Concrete\UnreachableSelectCase\SummaryClauseRelationalOps.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\SummaryCoverageSingleValues.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\UnreachableCaseInspection.cs" />
     <Compile Include="Concrete\ShadowedDeclarationInspection.cs" />
     <Compile Include="Concrete\UnhandledOnErrorResumeNextInspection.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\SummaryCoverage.cs" />
     <Compile Include="Concrete\UnreachableSelectCase\UnreachableCaseInspectionValue.cs" />
+    <Compile Include="Concrete\UnreachableSelectCase\UnreachableSelectCaseFactory.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />

@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public class SummaryClauseRange<T> : SummaryClauseBase<T> where T : System.IComparable<T>
+    public interface ISummaryClauseRange<T> : ISummaryClause<T> where T : System.IComparable<T>
+    {
+        T Start { get; set; }
+        T End { get; set; }
+        bool Covers(ISummaryClauseRange<T> range);
+        List<long> AsIntegerNumbers { get; }
+        bool IsAdjacent(ISummaryClauseRange<T> range);
+        bool Overlaps(ISummaryClauseRange<T> range);
+        void AppendRange(ISummaryClauseRange<T> rangeToAppend);
+        void RemoveOverlap(ISummaryClauseRange<T> overlapRange);
+    }
+
+    public class SummaryClauseRange<T> : SummaryClauseBase<T>, ISummaryClauseRange<T> where T : System.IComparable<T>
     {
         private bool _hasStart;
         private bool _hasEnd;
@@ -57,22 +69,9 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public override bool Covers(ISummaryClause<T> candidate)
+        public bool Covers(ISummaryClauseRange<T> range)
         {
-            if (!(candidate.HasCoverage || HasCoverage))
-            {
-                return true;
-            }
-
-            else if (candidate is SummaryClauseRanges<T> cRanges)
-            {
-                return Covers(cRanges);
-            }
-            else if (candidate is SummaryClauseRange<T> cRange)
-            {
-                return Covers(cRange.Start) && Covers(cRange.End);
-            }
-            return false;
+            return Covers(range.Start) && Covers(range.End);
         }
 
         public List<long> AsIntegerNumbers
@@ -97,12 +96,18 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Start.CompareTo(candidate) <= 0 && End.CompareTo(candidate) >= 0;
         }
+
         public override string ToString()
         {
-            return $"{Start}:{End}";
+            if (HasCoverage)
+            {
+                return $"Range={Start}:{End}";
+
+            }
+            return string.Empty;
         }
 
-        public bool IsAdjacent(SummaryClauseRange<T> range)
+        public bool IsAdjacent(ISummaryClauseRange<T> range)
         {
             if (!ContainsIntegerNumbers)
             {
@@ -115,7 +120,20 @@ namespace Rubberduck.Inspections.Concrete
             return testEnd == thisStart - 1 || testStart == thisEnd + 1;
         }
 
-        public bool Overlaps(SummaryClauseRange<T> range)
+        //public bool IsAdjacent(SummaryClauseRange<T> range)
+        //{
+        //    if (!ContainsIntegerNumbers)
+        //    {
+        //        return false;
+        //    }
+        //    long thisStart = long.Parse(Start.ToString());
+        //    long thisEnd = long.Parse(End.ToString());
+        //    long testStart = long.Parse(range.Start.ToString());
+        //    long testEnd = long.Parse(range.End.ToString());
+        //    return testEnd == thisStart - 1 || testStart == thisEnd + 1;
+        //}
+
+        public bool Overlaps(ISummaryClauseRange<T> range)
         {
             if (Covers(range))
             {
@@ -126,7 +144,7 @@ namespace Rubberduck.Inspections.Concrete
                 || Start.CompareTo(range.Start) < 0 && End.CompareTo(range.End) <= 0 && End.CompareTo(range.Start) >= 0;
         }
 
-        public void AppendRange(SummaryClauseRange<T> rangeToAppend)
+        public void AppendRange(ISummaryClauseRange<T> rangeToAppend)
         {
             long thisStart = long.Parse(Start.ToString());
             long thisEnd = long.Parse(End.ToString());
@@ -142,7 +160,7 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public void RemoveOverlap(SummaryClauseRange<T> overlapRange)
+        public void RemoveOverlap(ISummaryClauseRange<T> overlapRange)
         {
             if(End.CompareTo(overlapRange.End) > 0 && Start.CompareTo(overlapRange.Start) >= 0 && Start.CompareTo(overlapRange.End) <= 0)
             {

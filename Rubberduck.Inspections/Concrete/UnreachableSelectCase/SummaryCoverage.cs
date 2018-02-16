@@ -23,31 +23,64 @@ namespace Rubberduck.Inspections.Concrete
         public static readonly string GTE = ">=";
     }
 
-    internal static class MathTokens
+    public interface ISummaryCoverage
     {
-        public static readonly string MULT = "*";
-        public static readonly string DIV = "/";
-        public static readonly string ADD = "+";
-        public static readonly string SUBTRACT = "-";
-        public static readonly string POW = "^";
-        public static readonly string MOD = Tokens.Mod;
+        bool CoversAllValues { get; }
+        bool CoversTrueFalse { get; }
+        void Add(ISummaryCoverage newSummary);
+        string TypeName { set; get; }
+        ISummaryCoverage CoverageFor(VBAParser.RangeClauseContext context);
+        ISummaryCoverage CoverageFor(VBAParser.CaseClauseContext context);
+        bool HasCoverage { get; }
+        bool HasExtents { get; }
+        bool CanBeInspected(IEnumerable<ParserRuleContext> ranges);
+        bool HasConditionsNotCoveredBy(ISummaryCoverage summaryCoverage, out ISummaryCoverage diff);
+        bool IsIncompatibleType(IEnumerable<ParserRuleContext> ranges);
+        IParseTreeValueResults ParseTreeValueResults { set; get; }
     }
 
-    public class SummaryCoverage<T> where T : System.IComparable<T>
+    public class SummaryCoverage<T> : ISummaryCoverage, ISummaryClause<T> where T : System.IComparable<T>
     {
         private ContextExtents<T> _extents;
         private bool _coversAllValues;
+        private T _trueValue;
+        private T _falseValue;
+
+        public string TypeName {set; get;}
+        public Dictionary<ParserRuleContext, T> TypedValueResults { set; get; } = new Dictionary<ParserRuleContext, T>();
+        public IParseTreeValueResults ParseTreeValueResults { set; get; } = null;
+
+        private Dictionary<ParserRuleContext, SummaryCoverage<T>> _rangeClauseSummaries;
+        private List<ParserRuleContext> IncompatibleTypeRangeContexts { set; get; } = new List<ParserRuleContext>();
+
+        private static Dictionary<string, Action<SummaryCoverage<T>, T>> IsClauseAdders = new Dictionary<string, Action<SummaryCoverage<T>, T>>()
+        {
+            [CompareTokens.LT] = delegate (SummaryCoverage<T> thisSum, T result) { thisSum.SetIsLT(result); },
+            [CompareTokens.LTE] = delegate (SummaryCoverage<T> thisSum, T result) { thisSum.SetIsLT(result); thisSum.Add(result); },
+            [CompareTokens.GT] = delegate (SummaryCoverage<T> thisSum, T result) { thisSum.SetIsGT(result); },
+            [CompareTokens.GTE] = delegate (SummaryCoverage<T> thisSum, T result) { thisSum.SetIsGT(result); thisSum.Add(result); },
+            [CompareTokens.EQ] = delegate (SummaryCoverage<T> thisSum, T result) { thisSum.Add(result); },
+            [CompareTokens.NEQ] = delegate (SummaryCoverage<T> thisSum, T result) { thisSum.AddIsClauseNEQ(result); }
+        };
 
         public SummaryCoverage()
         {
             _coversAllValues = false;
+            _rangeClauseSummaries = new Dictionary<ParserRuleContext, SummaryCoverage<T>>();
             ApplyExtents(new ContextExtents<T>());
+            RelationalOps = new SummaryClauseRelationalOps<T>(SingleValues);
+            _summaryElements = LoadSummaryElements();
         }
 
-        public SummaryCoverage(ContextExtents<T> extents)
+        public SummaryCoverage(ContextExtents<T> extents, T trueVal, T falseVal)
         {
             _coversAllValues = false;
+            _rangeClauseSummaries = new Dictionary<ParserRuleContext, SummaryCoverage<T>>();
             ApplyExtents(extents);
+            RelationalOps = new SummaryClauseRelationalOps<T>(SingleValues);
+            _summaryElements = LoadSummaryElements();
+            TrueValue = trueVal;
+            FalseValue = falseVal;
         }
 
         private ContextExtents<T> Extents => _extents;
@@ -55,20 +88,116 @@ namespace Rubberduck.Inspections.Concrete
         public SummaryClauseSingleValues<T> SingleValues { set; get; } = new SummaryClauseSingleValues<T>();
         public SummaryClauseIsLT<T> IsLT { set; get; } = new SummaryClauseIsLT<T>();
         public SummaryClauseIsGT<T> IsGT { set; get; } = new SummaryClauseIsGT<T>();
+        public SummaryClauseRelationalOps<T> RelationalOps { set; get; }
         public bool CoversAllValues
         {
             get
             {
                 if (!_coversAllValues)
                 {
-                    _coversAllValues = CoversAll(); 
+                    _coversAllValues = CoversAll();
                 }
                 return _coversAllValues;
             }
         }
+        
+        public bool IsIncompatibleType(IEnumerable<ParserRuleContext> ranges)
+        {
+            var results = new Dictionary<ParserRuleContext, bool>();
+            var summariesOfInterest = _rangeClauseSummaries.Where(rgs => ranges.Contains(rgs.Key)).Select(sum => sum);
+            foreach( var summary in summariesOfInterest)
+            {
+                var rangeIsIncompatible = IncompatibleTypeRangeContexts.Contains(summary.Key);
+                results = LoadResult(summary.Key, rangeIsIncompatible, results);
 
-        public bool HasCoverage => SingleValues.Any()  || Ranges.Any()
-            || IsLT.HasCoverage || IsGT.HasCoverage;
+                var valueIsIncompatible = false;
+                var valueResolvedContexts = ParseTreeValueResults.ValueResolvedContexts.Where(vrc => vrc.Key.IsDescendentOf(summary.Key)).Select(vrc => vrc.Value);
+                foreach(var value in valueResolvedContexts)
+                {
+                    valueIsIncompatible = !value.HasValueAs(value.UseageTypeName);
+                    results = LoadResult(summary.Key, valueIsIncompatible, results);
+                }
+                var variableIsIncompatible = false;
+                var variableContexts = ParseTreeValueResults.VariableContexts.Where(vrc => vrc.Key.IsDescendentOf(summary.Key)).Select(vrc => vrc.Value);
+                foreach (var value in variableContexts)
+                {
+                    variableIsIncompatible = value.DerivedTypeName != value.UseageTypeName;
+                    results = LoadResult(summary.Key, variableIsIncompatible, results);
+                }
+            }
+
+            return results.Values.All(v => v == true); 
+        }
+
+        private static Dictionary<ParserRuleContext, bool> LoadResult(ParserRuleContext ctxt, bool result, Dictionary<ParserRuleContext, bool> container)
+        {
+            if (container.ContainsKey(ctxt))
+            {
+                if(result && container[ctxt] != result)
+                {
+                    container[ctxt] = result;
+                }
+            }
+            else
+            {
+                container.Add(ctxt, result);
+            }
+            return container;
+        }
+
+        private bool RangeClauseIsIncompatibleType(ParserRuleContext rangeClause)
+        {
+            if (rangeClause.HasChildToken(Tokens.To))
+            {
+                return IncompatibleTypeRangeContexts.Contains(rangeClause);
+            }
+            var rangeConcrete = _rangeClauseSummaries[rangeClause];
+            return false;
+        }
+
+        public bool CanBeInspected(IEnumerable<ParserRuleContext> ranges)
+        {
+            var summariesOfInterest = _rangeClauseSummaries.Where(rgs => ranges.Contains(rgs.Key)).Select(sum => sum);
+            var coverage = summariesOfInterest.Any(sum => sum.Value.HasCoverage || sum.Value.HasExtents);
+            return coverage && !IsIncompatibleType(ranges);
+        }
+
+        public bool CoversTrueFalse => _summaryElements.Any(se => se.Covers(TrueValue)) && _summaryElements.Any(se => se.Covers(FalseValue));
+        private List<ISummaryClause<T>> _summaryElements;
+
+        //ISummaryClause
+        public T TrueValue
+        {
+            set
+            {
+                _trueValue = value;
+                _summaryElements.ForEach(se => se.TrueValue = _trueValue);
+            }
+            get
+            {
+                return _trueValue;
+            }
+        }
+
+        //ISummaryClause
+        public T FalseValue
+        {
+            set
+            {
+                _falseValue = value;
+                _summaryElements.ForEach(se => se.FalseValue = _falseValue);
+            }
+            get
+            {
+                return _falseValue;
+            }
+        }
+
+        //ISummaryClause
+        public bool HasCoverage => _summaryElements.Any(se => se.HasCoverage);
+
+        //ISummaryClause
+        public bool Covers(T value) => _summaryElements.Any(se => se.Covers(value));
 
         public bool Empty => !HasCoverage;
         public bool HasExtents => _extents.HasValues;
@@ -76,7 +205,19 @@ namespace Rubberduck.Inspections.Concrete
         private bool ContainsBooleans => typeof(T) == typeof(bool);
         private bool ContainsIntegerNumbers => typeof(T) == typeof(long) || typeof(T) == typeof(Int32) || typeof(T) == typeof(byte);
 
-        private void ApplyExtents( ContextExtents<T> extents)
+        private List<ISummaryClause<T>> LoadSummaryElements()
+        {
+            return new List<ISummaryClause<T>>()
+            {
+                IsLT,
+                IsGT,
+                Ranges,
+                SingleValues,
+                RelationalOps
+            };
+        }
+
+        private void ApplyExtents(ContextExtents<T> extents)
         {
             _extents = extents;
             if (extents.HasValues)
@@ -133,19 +274,21 @@ namespace Rubberduck.Inspections.Concrete
                 singleValuesAreEqual = SingleValues.Values.All(sv => comp.SingleValues.Values.Contains(sv));
             }
 
-            return ltIsEqual && gtIsEqual && rangesAreEqual && singleValuesAreEqual; // && boolsAreEqual;
+            return ltIsEqual && gtIsEqual && rangesAreEqual && singleValuesAreEqual;
         }
 
         public override int GetHashCode()
         {
-            var hashString = IsLT.ToString();
-            hashString = hashString + IsGT.ToString();
-            hashString = hashString + Ranges.ToString();
-            hashString = hashString + SingleValues.ToString();
-            return hashString.GetHashCode();
+            return ToString().GetHashCode();
         }
 
-        public SummaryCoverage<T> RemoveCoverageRedundantTo(SummaryCoverage<T> toRemove)
+        public bool HasConditionsNotCoveredBy(ISummaryCoverage summaryCoverage, out ISummaryCoverage diff)
+        {
+            diff =  CreateSummaryCoverageDifference((SummaryCoverage<T>) summaryCoverage);
+            return ((SummaryCoverage<T>)diff).HasCoverage;
+        }
+
+        public SummaryCoverage<T> CreateSummaryCoverageDifference(SummaryCoverage<T> toRemove)
         {
             if (toRemove.CoversAllValues || this.Empty)
             {
@@ -161,18 +304,12 @@ namespace Rubberduck.Inspections.Concrete
 
         public void SetIsLT(T newVal)
         {
-            if (!ContainsBooleans)
-            {
-                IsLT.Value = newVal;
-            }
+            IsLT.Value = newVal;
         }
 
         public void SetIsGT(T newVal)
         {
-            if (!ContainsBooleans)
-            {
-                IsGT.Value = newVal;
-            }
+            IsGT.Value = newVal;
         }
 
         public void AddRange(T start, T end)
@@ -181,7 +318,7 @@ namespace Rubberduck.Inspections.Concrete
             AddRange(candidate);
         }
 
-        private void AddRange(SummaryClauseRange<T> range)
+        private void AddRange(ISummaryClauseRange<T> range)
         {
             if (ContainsBooleans)
             {
@@ -196,17 +333,36 @@ namespace Rubberduck.Inspections.Concrete
             Ranges.Add(range);
         }
 
-        private void Add(bool value)
+        public ISummaryCoverage CoverageFor(VBAParser.CaseClauseContext caseClause)
         {
-            SingleValues.Add(value);
+            var caseClauseCoverage = UnreachableSelectCaseFactory.CreateSummaryCoverageShell(this.TypeName);
+            foreach (var range in caseClause.rangeClause())
+            {
+                caseClauseCoverage.Add(CoverageFor(range));
+            }
+            return caseClauseCoverage;
+        }
+
+        public ISummaryCoverage CoverageFor(VBAParser.RangeClauseContext context)
+        {
+            if (_rangeClauseSummaries.ContainsKey(context))
+            {
+                return _rangeClauseSummaries[context];
+            }
+            return UnreachableSelectCaseFactory.CreateSummaryCoverageShell(this.TypeName);
         }
 
         public void Add(T value)
         {
-            if(!(IsLT.Covers(value) || IsGT.Covers(value)))
+            if (!(IsLT.Covers(value) || IsGT.Covers(value)))
             {
                 SingleValues.Add(value);
             }
+        }
+
+        public  void Add(ISummaryCoverage newSummary)
+        {
+            Add((SummaryCoverage<T>)newSummary);
         }
 
         public void Add(SummaryCoverage<T> newSummary)
@@ -221,44 +377,24 @@ namespace Rubberduck.Inspections.Concrete
                 return;
             }
 
-            foreach (var val in newSummary.SingleValues.Values)
-            {
-                Add(val);
-            }
-
-            foreach (var val in newSummary.SingleValues.ValuesBoolean)
-            {
-                Add(val);
-            }
-
-            //if (!ContainsBooleans)
-            //{
-            //    if (newSummary.BooleanValues.Any())
-            //    {
-            //        foreach (var boolVal in newSummary.BooleanValues)
-            //        {
-            //            BooleanValues.Add(boolVal);
-            //        }
-            //    }
-            //}
-            //else
-            {
-                IsLT.Add(newSummary.IsLT);
-                IsGT.Add(newSummary.IsGT);
-            }
+            IsLT.Add(newSummary.IsLT);
+            IsGT.Add(newSummary.IsGT);
 
             foreach (var range in newSummary.Ranges.RangeClauses)
             {
-                //if (ContainsBooleans)
-                //{
-                //    SingleValues.Add(range.Start);
-                //    SingleValues.Add(range.End);
-                //}
-                //else
-                {
-                    AddRange(range);
-                }
+                AddRange(range);
             }
+
+            if (ContainsBooleans)
+            {
+                SingleValues.Add(newSummary.SingleValues);
+            }
+            else
+            {
+                SingleValues.Add(newSummary.SingleValues.Values.Where(sv => !(IsLT.Covers(sv) || IsGT.Covers(sv))));
+            }
+
+            RelationalOps.Add(newSummary.RelationalOps);
         }
 
         private bool CoversAll()
@@ -293,7 +429,7 @@ namespace Rubberduck.Inspections.Concrete
             return coversAll;
         }
 
-        //Used to modify logic operators to convert LHS and RHS for expressions like '5 > x' (= 'x < 5')
+        ////Used to modify logic operators to convert LHS and RHS for expressions like '5 > x' (= 'x < 5')
         public static Dictionary<string, string> AlgebraicLogicalInversions = new Dictionary<string, string>()
         {
             [CompareTokens.EQ] = CompareTokens.EQ,
@@ -303,17 +439,6 @@ namespace Rubberduck.Inspections.Concrete
             [CompareTokens.GT] = CompareTokens.LT,
             [CompareTokens.GTE] = CompareTokens.LTE
         };
-
-        public static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>
-            BinaryMathOps = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
-            {
-                [MathTokens.ADD] = (LHS, RHS) => LHS + RHS,
-                [MathTokens.SUBTRACT] = (LHS, RHS) => LHS - RHS,
-                [MathTokens.MULT] = (LHS, RHS) => LHS * RHS,
-                [MathTokens.DIV] = (LHS, RHS) => LHS / RHS,
-                [MathTokens.POW] = (LHS, RHS) => ParseTreeValue.Pow(LHS, RHS),
-                [MathTokens.MOD] = (LHS, RHS) => LHS % RHS
-            };
 
         public static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>
             BinaryLogicalOps = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
@@ -332,128 +457,130 @@ namespace Rubberduck.Inspections.Concrete
                 //["Imp"] = (LHS, RHS) => LHS.AsBoolean().Value ^ RHS.AsBoolean().Value ? UnreachableCaseInspectionValue.True : UnreachableCaseInspectionValue.False,
             };
 
-        private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue>>
-            UnaryLogicalOps = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue>>()
-            {
-                [Tokens.Not] = (LHS) => !(LHS.AsBoolean().Value) ? ParseTreeValue.True : ParseTreeValue.False
-            };
-
-        public void LoadCoverage(VBAParser.CaseClauseContext caseClause, ContextValueResults<T> ctxtValueResults)
+        private bool RangeStartOrEndHasMismatch(ParserRuleContext prCtxt)
         {
-            if (ctxtValueResults.Extents.HasValues)
+            bool mismatchFound = false;
+            foreach (var ctxt in prCtxt.GetChildren<ParserRuleContext>())
             {
-                ApplyExtents(ctxtValueResults.Extents.Min, ctxtValueResults.Extents.Max);
+                if (ParseTreeValueResults.VariableContexts.Keys.Contains(ctxt))
+                {
+                    var value = ParseTreeValueResults.VariableContexts[ctxt];
+                    if (!mismatchFound)
+                    {
+                        mismatchFound = !value.HasValueAs(TypeName);
+                    }
+                }
             }
+            return mismatchFound;
+        }
 
-            var rgClauses = caseClause.children.Where(ch => ch is VBAParser.RangeClauseContext);
-            foreach (ParserRuleContext rangeClause in rgClauses)
+        public void LoadRangeClauseCoverage(ParserRuleContext selectStmt, Dictionary<ParserRuleContext,T> valueResolvedContexts)
+        {
+            TypedValueResults = valueResolvedContexts;
+
+            var rangeClauses = ((VBAParser.SelectCaseStmtContext)selectStmt).caseClause().SelectMany(cc => cc.rangeClause());
+            foreach (ParserRuleContext rangeClause in rangeClauses)
             {
+                var rangeSummaryCoverage = (SummaryCoverage<T>)UnreachableSelectCaseFactory.CreateSummaryCoverageShell(this.TypeName);
                 if (rangeClause.HasChildToken(Tokens.To))
                 {
                     var startContext = rangeClause.GetChild<VBAParser.SelectStartValueContext>();
                     var endContext = rangeClause.GetChild<VBAParser.SelectEndValueContext>();
-                    if (ctxtValueResults.ValueResolvedContexts.TryGetValue(startContext, out T startVal) &&
-                            ctxtValueResults.ValueResolvedContexts.TryGetValue(endContext, out T endVal))
+
+                    var hasStart = TypedValueResults.TryGetValue(startContext, out T startVal);
+                    var hasEnd = TypedValueResults.TryGetValue(endContext, out T endVal);
+
+                    if (hasStart && hasEnd)
                     {
-                        AddRange(startVal, endVal);
+                        rangeSummaryCoverage.AddRange(startVal, endVal);
+                    }
+
+                    if (!hasStart)
+                    {
+                        if (RangeStartOrEndHasMismatch(startContext))
+                        {
+                            IncompatibleTypeRangeContexts.Add(rangeClause);
+                        }
+                    }
+                    if (!hasEnd && hasStart)
+                    {
+                        if (RangeStartOrEndHasMismatch(endContext))
+                        {
+                            IncompatibleTypeRangeContexts.Add(rangeClause);
+                        }
                     }
                 }
                 else //single value
                 {
                     var ctxts = rangeClause.children.Where(ch => ch is ParserRuleContext
-                                    && ctxtValueResults.ValueResolvedContexts.Keys.Contains((ParserRuleContext)ch));
+                                    && TypedValueResults.Keys.Contains((ParserRuleContext)ch));
 
                     //Is Statements
                     if (ctxts.Any() && ctxts.Count() == 1 && rangeClause.HasChildToken(Tokens.Is))
                     {
                         var compOpContext = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>();
-                        AddIsClauseResult(compOpContext.GetText(), ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxts.First()]);
+                        rangeSummaryCoverage.AddIsClauseResult(compOpContext.GetText(), TypedValueResults[(ParserRuleContext)ctxts.First()]);
                     }
                     //RelationalOp statements like x < 100, 100 < x
                     else if (rangeClause.TryGetChildContext(out VBAParser.RelationalOpContext relOpCtxt))
                     {
-                        if (!ctxtValueResults.ValueResolvedContexts.Keys.Contains(relOpCtxt))
+                        if (TypedValueResults.Keys.Contains(relOpCtxt))
                         {
-                            var relOpContexts = relOpCtxt.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext)).ToList();
-                            for (var idx = 0; idx < relOpContexts.Count(); idx++)
-                            {
-                                var ctxt = relOpContexts[idx];
-                                if (ctxtValueResults.ValueResolvedContexts.Keys.Contains(ctxt) )
-                                {
-                                    var opSymbol = relOpCtxt.children.Where(ch => BinaryLogicalOps.Keys.Contains(ch.GetText())).First().GetText();
-                                    if (idx == 0)
-                                    {
-                                        //100 < x: when the value is the first child, the expression's opSymbol
-                                        //needs to be converted to represent x < 100
-                                        AddIsClauseResult(AlgebraicLogicalInversions[opSymbol], ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxt]);
-                                    }
-                                    else
-                                    {
-                                        AddIsClauseResult(opSymbol, ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxt]);
-                                    }
-                                }
-                            }
+                            rangeSummaryCoverage.RelationalOps.Add(TypedValueResults[relOpCtxt]);
+                        }
+                        else
+                        {
+                            rangeSummaryCoverage.RelationalOps.Add(relOpCtxt.GetText());
                         }
                     }
                     else if (ctxts.Any() && ctxts.Count() == 1)
                     {
-                        Add(ctxtValueResults.ValueResolvedContexts[(ParserRuleContext)ctxts.First()]);
+                        rangeSummaryCoverage.Add(TypedValueResults[(ParserRuleContext)ctxts.First()]);
                     }
                 }
+                _rangeClauseSummaries.Add(rangeClause, rangeSummaryCoverage);
             }
         }
 
         public void AddIsClauseResult(string compareOperator, T result)
         {
-            if (compareOperator.Equals(CompareTokens.LT))
-            {
-                SetIsLT(result);
+            Debug.Assert(IsClauseAdders.ContainsKey(compareOperator), "Unrecognized comparison symbol for Is Clause");
+            IsClauseAdders[compareOperator](this, result);
+        }
 
-            }
-            else if (compareOperator.Equals(CompareTokens.LTE))
+        private void AddIsClauseNEQ(T result)
+        {
+            if (ContainsBooleans)
             {
-                SetIsLT(result);
-                Add(result);
-            }
-            else if (compareOperator.Equals(CompareTokens.GT))
-            {
-                SetIsGT(result);
-            }
-            else if (compareOperator.Equals(CompareTokens.GTE))
-            {
-                SetIsGT(result);
-                Add(result);
-            }
-            else if (compareOperator.Equals(CompareTokens.EQ))
-            {
-                Add(result);
-            }
-            else if (compareOperator.Equals(CompareTokens.NEQ))
-            {
-                if (ContainsBooleans)
+                if(result.ToString() == TrueValue.ToString())
                 {
-                    SingleValues.Add(!result.Equals(true));
+                    SingleValues.Add(FalseValue);
                 }
-                SetIsLT(result);
-                SetIsGT(result);
+                else
+                {
+                    SingleValues.Add(TrueValue);
+                }
             }
             else
             {
-                Debug.Assert(false, "Unrecognized comparison symbol for Is Clause");
+                SetIsLT(result);
+                SetIsGT(result);
             }
         }
 
         public override string ToString()
         {
             var result = string.Empty;
-            result = $"{result}{IsLT.ToString()}";
-            result = IsLT.ToString().Length > 0 ? $"{result}," : string.Empty;
+            result = $"{IsLT.ToString()}";
+            result = IsLT.ToString().Length > 0 ? $"{result}!" : string.Empty;
             result = $"{result}{IsGT.ToString()}";
-            result = IsGT.ToString().Length > 0 ? $"{result}," : string.Empty;
+            result = IsGT.ToString().Length > 0 ? $"{result}!" : string.Empty;
             result = $"{result}{Ranges.ToString()}";
-            result = Ranges.ToString().Length > 0 ? $"{result}," : string.Empty;
+            result = Ranges.ToString().Length > 0 ? $"{result}!" : string.Empty;
             result = $"{result}{SingleValues.ToString()}";
-            result = SingleValues.ToString().Length > 0 ? $"{result}," : string.Empty;
+            result = SingleValues.ToString().Length > 0 ? $"{result}!" : string.Empty;
+            result = $"{result}{RelationalOps.ToString()}";
+            result = RelationalOps.ToString().Length > 0 ? $"{result}!" : string.Empty;
             return result.Length > 0 ? result.Remove(result.Length - 1) : string.Empty;
         }
 
@@ -461,22 +588,14 @@ namespace Rubberduck.Inspections.Concrete
         {
             var newSummary = RemoveIsClausesCoveredBy(removeFrom, removalSpec);
             newSummary = RemoveRangesCoveredBy(removeFrom, removalSpec);
-            return RemoveSingleValuesCoveredBy(removeFrom, removalSpec);
+            newSummary = RemoveSingleValuesCoveredBy(removeFrom, removalSpec);
+            return RemoveRelationalOpsCoveredBy(removeFrom, removalSpec);
         }
 
         private static SummaryCoverage<T> RemoveIsClausesCoveredBy(SummaryCoverage<T> removeFrom, SummaryCoverage<T> removalSpec)
         {
-            if (!removeFrom.ContainsBooleans)
-            {
-                if (removalSpec.IsLT.HasCoverage && removalSpec.IsLT.Covers(removeFrom.IsLT))
-                {
-                    removeFrom.IsLT.Reset();
-                }
-                if (removalSpec.IsGT.HasCoverage && removalSpec.IsGT.Covers(removeFrom.IsGT))
-                {
-                    removeFrom.IsGT.Reset();
-                }
-            }
+            removeFrom.IsLT.ClearIfCoveredBy(removalSpec.IsLT);
+            removeFrom.IsGT.ClearIfCoveredBy(removalSpec.IsGT);
             return removeFrom;
         }
 
@@ -485,34 +604,34 @@ namespace Rubberduck.Inspections.Concrete
             var toRemove = removeFrom.Ranges.RangeClauses.Where(rg => removalSpec.IsLT.Covers(rg.Start) && removalSpec.IsLT.Covers(rg.End)
                     || removalSpec.IsGT.Covers(rg.Start) && removalSpec.IsGT.Covers(rg.End)).ToList();
 
-            for (var idx = 0; idx < removeFrom.Ranges.RangeClauses.Count; idx++)
-            {
-                var rangeClause = removeFrom.Ranges.RangeClauses[idx];
-                if (removalSpec.Ranges.RangeClauses.Any(rg => rg.Covers(rangeClause)))
-                {
-                    toRemove.Add(rangeClause);
-                }
-            }
-
             removeFrom.Ranges.Remove(toRemove);
+
+            removeFrom.Ranges.RemoveIfCoveredBy(removalSpec.Ranges);
             return removeFrom;
         }
 
         private static SummaryCoverage<T> RemoveSingleValuesCoveredBy(SummaryCoverage<T> removeFrom, SummaryCoverage<T> removalSpec)
         {
             List<T> toRemove = new List<T>();
-            List<bool> toRemoveBools = new List<bool>();
-            toRemove = removeFrom.SingleValues.Values.Where(sv => removalSpec.SingleValues.Covers(sv)).ToList();
-            toRemoveBools = removeFrom.SingleValues.ValuesBoolean.Where(sv => removalSpec.SingleValues.Covers(sv)).ToList();
             toRemove.AddRange(removeFrom.SingleValues.Values.Where(sv => removalSpec.IsLT.Covers(sv) || removalSpec.IsGT.Covers(sv)).ToList());
+
             foreach (var range in removalSpec.Ranges.RangeClauses)
             {
                 toRemove.AddRange(removeFrom.SingleValues.Values.Where(sv => range.Covers(sv)));
             }
-            toRemove.AddRange(removeFrom.SingleValues.Values.Where(sv => removalSpec.SingleValues.Covers(sv)));
-
             removeFrom.SingleValues.Remove(toRemove);
-            removeFrom.SingleValues.Remove(toRemoveBools);
+
+            removeFrom.SingleValues.RemoveIfCoveredBy(removalSpec.SingleValues);
+
+            return removeFrom;
+        }
+
+        private static SummaryCoverage<T> RemoveRelationalOpsCoveredBy(SummaryCoverage<T> removeFrom, SummaryCoverage<T> removalSpec)
+        {
+            if (removalSpec.CoversTrueFalse)
+            {
+                removeFrom.RelationalOps.Clear();
+            }
             return removeFrom;
         }
     }

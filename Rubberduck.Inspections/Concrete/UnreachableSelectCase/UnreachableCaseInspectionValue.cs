@@ -7,24 +7,10 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public static class CompareExtents
-    {
-        public static long LONGMIN = Int32.MinValue; //- 2147486648;
-        public static long LONGMAX = Int32.MaxValue; //2147486647
-        public static long INTEGERMIN = Int16.MinValue; //- 32768;
-        public static long INTEGERMAX = Int16.MaxValue; //32767
-        public static long BYTEMIN = byte.MinValue;  //0
-        public static long BYTEMAX = byte.MaxValue;    //255
-        public static decimal CURRENCYMIN = -922337203685477.5808M;
-        public static decimal CURRENCYMAX = 922337203685477.5807M;
-        public static double SINGLEMIN = -3402823E38;
-        public static double SINGLEMAX = 3402823E38;
-    }
-
     public class ParseTreeValue
     {
-        private readonly string _valueAsString;
         private readonly string _inputString;
+        private string _valueAsString;
         private string _useageTypeName;
         private string _declaredTypeName;
         private string _derivedTypeName;
@@ -43,15 +29,6 @@ namespace Rubberduck.Inspections.Concrete
         private decimal? _valueAsDecimal;
         private long? _boolValueAsLong;
 
-        //private static Dictionary<string, Tuple<string, string>> TypeBoundaries = new Dictionary<string, Tuple<string, string>>()
-        //{
-        //    [Tokens.Integer] = new Tuple<string,string>(CompareExtents.INTEGERMIN.ToString(), CompareExtents.INTEGERMAX.ToString()),
-        //    [Tokens.Long] = new Tuple<string,string>(CompareExtents.LONGMIN.ToString(), CompareExtents.LONGMAX.ToString()),
-        //    [Tokens.Byte] = new Tuple<string,string>(CompareExtents.BYTEMIN.ToString(), CompareExtents.BYTEMAX.ToString()),
-        //    [Tokens.Currency] = new Tuple<string,string>(CompareExtents.CURRENCYMIN.ToString(), CompareExtents.CURRENCYMAX.ToString()),
-        //    [Tokens.Single] = new Tuple<string,string>(CompareExtents.SINGLEMIN.ToString(), CompareExtents.SINGLEMAX.ToString())
-        //};
-
         private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>> OperatorsIsGT = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>>()
         {
             [Tokens.Integer] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
@@ -61,7 +38,7 @@ namespace Rubberduck.Inspections.Concrete
             [Tokens.Single] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().Value > compValue.AsDouble().Value; },
             [Tokens.Currency] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsCurrency().Value > compValue.AsCurrency().Value; },
             [Tokens.Boolean] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value > compValue.AsLong().Value; },
-            [Tokens.String] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) > 0; }
+            [Tokens.String] = delegate (ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.ToString().CompareTo(compValue.ToString()) > 0; }
         };
 
         private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>> OperatorsIsLT = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>>()
@@ -73,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
             [Tokens.Single] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().Value < compValue.AsDouble().Value; },
             [Tokens.Currency] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsCurrency().Value < compValue.AsCurrency().Value; },
             [Tokens.Boolean] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsLong().Value < compValue.AsLong().Value; },
-            [Tokens.String] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) < 0; }
+            [Tokens.String] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.ToString().CompareTo(compValue.ToString()) < 0; }
         };
 
         private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>> OperatorsIsEQ = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, bool>>()
@@ -85,7 +62,7 @@ namespace Rubberduck.Inspections.Concrete
             [Tokens.Single] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsDouble().HasValue && compValue.AsDouble().HasValue ? thisValue.AsDouble().Value == compValue.AsDouble().Value : false; },
             [Tokens.Currency] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsCurrency().HasValue && compValue.AsCurrency().HasValue ? thisValue.AsCurrency().Value == compValue.AsCurrency().Value : false; },
             [Tokens.Boolean] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsBoolean().HasValue && compValue.AsBoolean().HasValue ? thisValue.AsBoolean().Value == compValue.AsBoolean().Value : false; },
-            [Tokens.String] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.AsString().CompareTo(compValue.AsString()) == 0; }
+            [Tokens.String] = delegate(ParseTreeValue thisValue, ParseTreeValue compValue){ return thisValue.ToString().CompareTo(compValue.ToString()) == 0; }
         };
 
         private static Dictionary<string, Func<ParseTreeValue, bool>> HasValueTests = new Dictionary<string, Func<ParseTreeValue, bool>>()
@@ -97,20 +74,7 @@ namespace Rubberduck.Inspections.Concrete
             [Tokens.Single] = delegate(ParseTreeValue thisValue){ return thisValue.AsDouble().HasValue; },
             [Tokens.Currency] = delegate(ParseTreeValue thisValue){ return thisValue.AsCurrency().HasValue; },
             [Tokens.Boolean] = delegate(ParseTreeValue thisValue){ return thisValue.AsBoolean().HasValue; },
-            //[Tokens.String] = delegate (ParseTreeValue thisValue) { return true; }
             [Tokens.String] = delegate (ParseTreeValue thisValue) { return thisValue.InputStringIsStringConstant; }
-        };
-
-        private static Dictionary<string, Func<ParseTreeValue, bool>> MaxMinTests = new Dictionary<string, Func<ParseTreeValue, bool>>()
-        {
-            [Tokens.Integer] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.INTEGERMAX) || (thisValue.AsLong() < CompareExtents.INTEGERMIN) : false; },
-            [Tokens.Long] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.LONGMAX) || (thisValue.AsLong() < CompareExtents.LONGMIN) : false; },
-            [Tokens.Byte] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Long](thisValue) ? (thisValue.AsLong() > CompareExtents.BYTEMAX) || (thisValue.AsLong() < CompareExtents.BYTEMIN) : false; },
-            [Tokens.Double] = delegate (ParseTreeValue thisValue) { return false; },
-            [Tokens.Single] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Single](thisValue) ? (thisValue.AsDouble() > CompareExtents.SINGLEMAX) || (thisValue.AsDouble() < CompareExtents.SINGLEMIN) : false; },
-            [Tokens.Currency] = delegate (ParseTreeValue thisValue) { return HasValueTests[Tokens.Currency](thisValue) ? (thisValue.AsCurrency() > CompareExtents.CURRENCYMAX) || (thisValue.AsCurrency() < CompareExtents.CURRENCYMIN) : false; },
-            [Tokens.Boolean] = delegate (ParseTreeValue thisValue) { return false; },
-            [Tokens.String] = delegate (ParseTreeValue thisValue) { return false; }
         };
 
         private static Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>> OperatorsMult = new Dictionary<string, Func<ParseTreeValue, ParseTreeValue, ParseTreeValue>>()
@@ -161,143 +125,30 @@ namespace Rubberduck.Inspections.Concrete
             _useageTypeName = string.Empty;
             _inputString = valueToken;
             _valueAsString = _inputString.Replace("\"", "");
-            if(_valueAsString != string.Empty)
+            if (!declaredTypeName.Equals(Tokens.String))
             {
-                var endingCharacter = _valueAsString.Last().ToString();
-                if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !declaredTypeName.Equals(Tokens.String))
-                {
-                    var regex = new Regex(@"^-*[0-9,\.]+$");
-                    if (regex.IsMatch(_valueAsString.Replace(endingCharacter, "")))
-                    {
-                        if (!_valueAsString.Contains("."))
-                        {
-                            _valueAsString = _valueAsString.Replace(endingCharacter, ".00");
-                        }
-                        else
-                        {
-                            _valueAsString = _valueAsString.Replace(endingCharacter, "");
-                        }
-                    }
-                }
+                RemoveTypeHintChar();
             }
             _derivedTypeName = string.Empty;
-
-            if (HasValueTests.ContainsKey(declaredTypeName))
-            {
-                UseageTypeName = declaredTypeName;
-            }
-            else
-            {
-                UseageTypeName = DerivedTypeName;
-            }
+            LoadUseageTypeName();
         }
 
         public ParseTreeValue(long value, string declaredTypeName = "")
         {
             _declaredTypeName = declaredTypeName ?? string.Empty;
-            //_useageTypeName = string.Empty;
             _inputString = value.ToString();
             _valueAsString = _inputString;
-            //UseageTypeName = declaredTypeName;
             _derivedTypeName = string.Empty;
-            if (HasValueTests.ContainsKey(declaredTypeName))
-            {
-                UseageTypeName = declaredTypeName;
-            }
-            else
-            {
-                UseageTypeName = DerivedTypeName;
-            }
-            //if (!HasValueTests.ContainsKey(UseageTypeName))
-            //{
-            //    UseageTypeName = DerivedTypeName;
-            //}
+            LoadUseageTypeName();
         }
 
         public static ParseTreeValue Null => new ParseTreeValue(string.Empty);
         public static ParseTreeValue Zero => new ParseTreeValue(0, Tokens.Long);
         public static ParseTreeValue Unity => new ParseTreeValue(1, Tokens.Long);
         public static ParseTreeValue False => Zero;
-        public static ParseTreeValue True => new ParseTreeValue(-1, Tokens.Long);
+        public static ParseTreeValue True => Unity; // new ParseTreeValue(1, Tokens.Long);
         public ParseTreeValue AdditiveInverse => HasValue ? this * new ParseTreeValue(-1, UseageTypeName) : this;
-        public static bool IsSupportedVBAType(string typeName) => OperatorsIsEQ.Keys.Contains(typeName);
-        public static Byte MinValueByte => (Byte)CompareExtents.BYTEMIN;
-        public static Byte MaxValueByte => (Byte)CompareExtents.BYTEMAX;
 
-        private string DeriveTypeName(string defaultType = "String")
-        {
-            if(_inputString.Length == 0)
-            {
-                return Tokens.String;
-            }
-
-            if (SymbolList.TypeHintToTypeName.TryGetValue(_inputString.Last().ToString(), out string typeName))
-            {
-                return typeName;
-            }
-
-            if (InputStringIsStringConstant)
-            {
-                return Tokens.String;
-            }
-            else if (_inputString.Contains("."))
-            {
-                if (double.TryParse(_inputString, out _))
-                {
-                    return Tokens.Double;
-                }
-
-                if (decimal.TryParse(_inputString, out _))
-                {
-                    return Tokens.Currency;
-                }
-                return defaultType;
-            }
-            else if (_inputString.Equals(Tokens.True) || _inputString.Equals(Tokens.False))
-            {
-                return Tokens.Boolean;
-            }
-            else if (long.TryParse(_inputString, out _))
-            {
-                return Tokens.Long;
-            }
-            return defaultType;
-        }
-
-        //public static string DeriveTypeName(string inputValue, string defaultType = "String")
-        //{
-        //    if (SymbolList.TypeHintToTypeName.TryGetValue(inputValue.Last().ToString(), out string typeName))
-        //    {
-        //        return typeName;
-        //    }
-
-        //    if (IsStringConstant(inputValue))
-        //    {
-        //        return Tokens.String;
-        //    }
-        //    else if (inputValue.Contains("."))
-        //    {
-        //        if (double.TryParse(inputValue, out _))
-        //        {
-        //            return Tokens.Double;
-        //        }
-
-        //        if (decimal.TryParse(inputValue, out _))
-        //        {
-        //            return Tokens.Currency;
-        //        }
-        //        return defaultType;
-        //    }
-        //    else if (inputValue.Equals(Tokens.True) || inputValue.Equals(Tokens.False))
-        //    {
-        //        return Tokens.Boolean;
-        //    }
-        //    else if (long.TryParse(inputValue, out _))
-        //    {
-        //        return Tokens.Long;
-        //    }
-        //    return defaultType;
-        //}
         public string DeclaredTypeName => _declaredTypeName;
         public bool HasDeclaredTypeName => !(_declaredTypeName is null) && !(_declaredTypeName.Equals(string.Empty));
 
@@ -336,19 +187,10 @@ namespace Rubberduck.Inspections.Concrete
         private bool InputStringIsStringConstant => IsStringConstant(_inputString);
 
         public bool HasValue
-            => HasValueAs(UseageTypeName); // HasValueTests.ContainsKey(UseageTypeName) ? HasValueTests[UseageTypeName](this) : false;
+            => HasValueAs(UseageTypeName);
 
         public bool HasValueAs(string typeName)
             => HasValueTests.ContainsKey(typeName) ? HasValueTests[typeName](this) : false;
-
-        public bool IsWithin(ParseTreeValue start, ParseTreeValue end, bool isInclusive = true) 
-            => isInclusive ?
-                start > end ? this >= end && this <= start : this >= start && this <= end
-                : start > end ? this > end && this < start : this > start && this < end;
-
-        public bool ExceedsMaxMin()
-              => MaxMinTests.ContainsKey(UseageTypeName) ? MaxMinTests[UseageTypeName](this) : false;
-
 
         public static bool operator >(ParseTreeValue thisValue, ParseTreeValue compValue)
         {
@@ -374,7 +216,7 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 return false;
             }
-            return thisValue.AsString().Equals(compValue.AsString());
+            return thisValue.ToString().Equals(compValue.ToString());
         }
 
         public static bool operator !=(ParseTreeValue thisValue, ParseTreeValue compValue)
@@ -449,30 +291,16 @@ namespace Rubberduck.Inspections.Concrete
 
         public override int GetHashCode()
         {
-            if (!UseageTypeName.Equals(Tokens.String) && AsDouble().HasValue)
+            if (AsDouble().HasValue)
             {
                 return AsDouble().Value.GetHashCode();
             }
             return _valueAsString.GetHashCode();
         }
 
-        public string AsString()
-        {
-            return InputStringIsStringConstant ? _inputString : _valueAsString;
-        }
-
         public override string ToString()
         {
-            return AsString();
-        }
-
-        public static explicit operator long(ParseTreeValue thisVal)
-        {
-            if(thisVal.TryGetValue(out long v))
-            {
-                return v;
-            }
-            return default;
+            return InputStringIsStringConstant ? _inputString : _valueAsString;
         }
 
         public bool TryGetValue(out long v)
@@ -504,11 +332,11 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else if (_valueAsString.Equals(Tokens.True))
                 {
-                    _valueAsLong = -1;
+                    _valueAsLong =  Convert.ToInt64(true);
                 }
                 else if (_valueAsString.Equals(Tokens.False))
                 {
-                    _valueAsLong = 0;
+                    _valueAsLong =  Convert.ToInt64(false);
                 }
             }
             return _valueAsLong;
@@ -543,16 +371,17 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else if (_valueAsString.Equals(Tokens.True))
                 {
-                    _intValueAsLong = -1;
+                    _intValueAsLong = Convert.ToInt32(true);
                 }
                 else if (_valueAsString.Equals(Tokens.False))
                 {
-                    _intValueAsLong = 0;
+                    _intValueAsLong = Convert.ToInt32(false);
                 }
             }
 
             int? intResult = null;
-            if (_intValueAsLong.HasValue && (_intValueAsLong.Value <= CompareExtents.INTEGERMAX || _intValueAsLong.Value >= CompareExtents.INTEGERMIN))
+            //if (_intValueAsLong.HasValue && (_intValueAsLong.Value <= CompareExtents.INTEGERMAX || _intValueAsLong.Value >= CompareExtents.INTEGERMIN))
+            if (_intValueAsLong.HasValue && (_intValueAsLong.Value <= Int16.MaxValue || _intValueAsLong.Value >= Int16.MinValue))
             {
                 intResult = (int)_intValueAsLong.Value;
             }
@@ -588,16 +417,17 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else if (_valueAsString.Equals(Tokens.True))
                 {
-                    _byteValueAsInt = 1;
+                    _byteValueAsInt = Convert.ToInt32(true);
                 }
                 else if (_valueAsString.Equals(Tokens.False))
                 {
-                    _byteValueAsInt = 0;
+                    _byteValueAsInt = Convert.ToInt32(false);
                 }
             }
 
             byte? byteResult = null;
-            if (_byteValueAsInt.HasValue && (_byteValueAsInt.Value <= CompareExtents.BYTEMAX && _byteValueAsInt.Value >= CompareExtents.BYTEMIN))
+            //if (_byteValueAsInt.HasValue && (_byteValueAsInt.Value <= CompareExtents.BYTEMAX && _byteValueAsInt.Value >= CompareExtents.BYTEMIN))
+            if (_byteValueAsInt.HasValue && (_byteValueAsInt.Value <= byte.MaxValue && _byteValueAsInt.Value >= byte.MinValue))
             {
                 byteResult = (byte)_byteValueAsInt.Value;
             }
@@ -633,11 +463,11 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else if (_valueAsString.Equals(Tokens.True))
                 {
-                    _valueAsDecimal = -1.0M;
+                    _valueAsDecimal = Convert.ToDecimal(true);
                 }
                 else if (_valueAsString.Equals(Tokens.False))
                 {
-                    _valueAsDecimal = 0.0M;
+                    _valueAsDecimal = Convert.ToDecimal(false);
                 }
             }
             return _valueAsDecimal;
@@ -672,11 +502,11 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else if (_valueAsString.Equals(Tokens.True))
                 {
-                    _valueAsDouble = -1.0;
+                    _valueAsDouble = Convert.ToDouble(true);
                 }
                 else if (_valueAsString.Equals(Tokens.False))
                 {
-                    _valueAsDouble = 0.0;
+                    _valueAsDouble = Convert.ToDouble(false);
                 }
             }
             return _valueAsDouble;
@@ -699,11 +529,11 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (_valueAsString.Equals(Tokens.True))
                 {
-                    _boolValueAsLong = -1;
+                    _boolValueAsLong = Convert.ToInt64(true);
                 }
                 else if (_valueAsString.Equals(Tokens.False))
                 {
-                    _boolValueAsLong = 0;
+                    _boolValueAsLong = Convert.ToInt64(false);
                 }
                 else if (long.TryParse(_valueAsString, out long resultLong))
                 {
@@ -711,11 +541,11 @@ namespace Rubberduck.Inspections.Concrete
                 }
                 else if (double.TryParse(_valueAsString, out double resultDouble))
                 {
-                    _boolValueAsLong = Math.Abs(resultDouble) > 0.00000001 ? -1 : 0;
+                    _boolValueAsLong = Convert.ToInt64(resultDouble);
                 }
                 else if (decimal.TryParse(_valueAsString, out decimal resultDecimal))
                 {
-                    _boolValueAsLong = Math.Abs(resultDecimal) > 0.0000001M ? -1 : 0;
+                    _boolValueAsLong = Convert.ToInt64(resultDecimal);
                 }
             }
             if (_boolValueAsLong == null)
@@ -728,12 +558,88 @@ namespace Rubberduck.Inspections.Concrete
         public bool TryGetValue(out string v)
         {
             v = string.Empty;
-            if (!AsString().Equals(string.Empty))
+            if (!ToString().Equals(string.Empty))
             {
-                v = AsString();
+                v = ToString();
                 return true;
             }
             return false;
+        }
+
+        private void RemoveTypeHintChar()
+        {
+            if (_valueAsString != string.Empty)
+            {
+                var endingCharacter = _valueAsString.Last().ToString();
+                if (new string[] { "#", "!", "@" }.Contains(endingCharacter) && !_declaredTypeName.Equals(Tokens.String))
+                {
+                    var regex = new Regex(@"^-*[0-9,\.]+$");
+                    if (regex.IsMatch(_valueAsString.Replace(endingCharacter, "")))
+                    {
+                        if (!_valueAsString.Contains("."))
+                        {
+                            _valueAsString = _valueAsString.Replace(endingCharacter, ".00");
+                        }
+                        else
+                        {
+                            _valueAsString = _valueAsString.Replace(endingCharacter, "");
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private void LoadUseageTypeName()
+        {
+            if (HasValueTests.ContainsKey(_declaredTypeName))
+            {
+                UseageTypeName = _declaredTypeName;
+            }
+            else
+            {
+                UseageTypeName = DerivedTypeName;
+            }
+        }
+
+        private string DeriveTypeName(string defaultType = "String")
+        {
+            if (_inputString.Length == 0)
+            {
+                return Tokens.String;
+            }
+
+            if (SymbolList.TypeHintToTypeName.TryGetValue(_inputString.Last().ToString(), out string typeName))
+            {
+                return typeName;
+            }
+
+            if (InputStringIsStringConstant)
+            {
+                return Tokens.String;
+            }
+            else if (_inputString.Contains("."))
+            {
+                if (double.TryParse(_inputString, out _))
+                {
+                    return Tokens.Double;
+                }
+
+                if (decimal.TryParse(_inputString, out _))
+                {
+                    return Tokens.Currency;
+                }
+                return defaultType;
+            }
+            else if (_inputString.Equals(Tokens.True) || _inputString.Equals(Tokens.False))
+            {
+                return Tokens.Boolean;
+            }
+            else if (long.TryParse(_inputString, out _))
+            {
+                return Tokens.Long;
+            }
+            return defaultType;
         }
 
         private long? SafeConvertToLong<T>(T value)
