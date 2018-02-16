@@ -4,7 +4,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
-    public class ComSafe: IComSafe
+    public class StrongComSafe: IComSafe
     {
         //We override the equality comparison and hash code because subclasses of SafeComWrapper<T> override the corresponding methods.
         //We need to distinguish between the individual wrapper instances no matter whether they are semantically equal.
@@ -41,21 +41,6 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             _comWrapperCache.Clear();
-        }
-    }
-
-    public static class ComSafeManager
-    {
-        private static Lazy<ComSafe> _comSafe = new Lazy<ComSafe>();
-
-        public static IComSafe GetCurrentComSafe()
-        {
-            return _comSafe.Value;
-        }
-
-        public static void ResetComSafe()
-        {
-            _comSafe = new Lazy<ComSafe>();
         }
     }
 }
