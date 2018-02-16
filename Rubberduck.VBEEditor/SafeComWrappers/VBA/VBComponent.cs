@@ -16,10 +16,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     {
         private const int MaxRetryCount = 10;
 
-        private enum ComErrorCodes : uint
+        private enum ComErrorCodes
         {
-            E_FAIL = 0x80004005, 
-
+            E_FAIL = unchecked((int)0x80004005) 
         }
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -33,9 +32,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
 
         //The retry approach is an attempt to deal with the problem that sometimes the code module is not yet ready to get accessed. 
-        public ICodeModule CodeModule => IsWrappingNullReference ? new CodeModule(null) : RetryOnComException(() => new CodeModule(Target.CodeModule), (uint)ComErrorCodes.E_FAIL);
+        public ICodeModule CodeModule => IsWrappingNullReference ? new CodeModule(null) : RetryOnComException(() => new CodeModule(Target.CodeModule), (int)ComErrorCodes.E_FAIL);
 
-        private T RetryOnComException<T>(Func<T> func, uint retryErrorCode, int maxRetries = MaxRetryCount)
+        private T RetryOnComException<T>(Func<T> func, int retryErrorCode, int maxRetries = MaxRetryCount)
         {
             var remainingRetries = maxRetries;
             while (true)
@@ -46,7 +45,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
                 catch (COMException exception)
                 {
-                    if ((uint)exception.ErrorCode != retryErrorCode || remainingRetries <= 0)
+                    if (exception.ErrorCode != retryErrorCode || remainingRetries <= 0)
                     {
                         throw;
                     }
