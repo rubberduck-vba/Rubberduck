@@ -886,10 +886,16 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(QualifiedModuleName key)
         {
+            //We are doing this up front instead skipping it whenever the module is new
+            //because of some issues with the CodeModule property of the VBComponents
+            //that sometimes surfaces later in the parsing process 
+            //in case they had not been accessed before.
+            var currentModuleContentHash = GetModuleContentHash(key);
+
             if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
-                return moduleState.IsNew || GetModuleContentHash(key) != moduleState.ModuleContentHashCode;
+                return moduleState.IsNew || currentModuleContentHash != moduleState.ModuleContentHashCode;
             }
 
             // new

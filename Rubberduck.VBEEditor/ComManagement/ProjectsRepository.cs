@@ -46,6 +46,11 @@ namespace Rubberduck.VBEditor.ComManagement
 
         private void EnsureValidProjectId(IVBProject project)
         {
+            if (project.IsWrappingNullReference)
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(project.ProjectId) || _projects.Keys.Contains(project.ProjectId))
             {
                 project.AssignProjectId();

@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using NLog;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -11,6 +14,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBComponent : SafeComWrapper<VB.VBComponent>, IVBComponent
     {
+        private const int MaxRetryCount = 10;
+
+        private enum ComErrorCodes
+        {
+            E_FAIL = unchecked((int)0x80004005) 
+        }
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public VBComponent(VB.VBComponent target, bool rewrapping = false) 
             : base(target, rewrapping)
         { }
@@ -18,7 +30,32 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public QualifiedModuleName QualifiedModuleName => new QualifiedModuleName(this);
 
         public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
-        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
+
+        //The retry approach is an attempt to deal with the problem that sometimes the code module is not yet ready to get accessed. 
+        public ICodeModule CodeModule => IsWrappingNullReference ? new CodeModule(null) : RetryOnComException(() => new CodeModule(Target.CodeModule), (int)ComErrorCodes.E_FAIL);
+
+        private T RetryOnComException<T>(Func<T> func, int retryErrorCode, int maxRetries = MaxRetryCount)
+        {
+            var remainingRetries = maxRetries;
+            while (true)
+            {
+                try
+                {
+                    return func();
+                }
+                catch (COMException exception)
+                {
+                    if (exception.ErrorCode != retryErrorCode || remainingRetries <= 0)
+                    {
+                        throw;
+                    }
+                    _logger.Debug(exception, "Failed with COM exception. Retrying.");
+                    remainingRetries--;
+                    Thread.Yield();
+                }
+            }
+        }
+
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
         public IVBComponents Collection => new VBComponents(IsWrappingNullReference ? null : Target.Collection);
         public IProperties Properties => new Properties(IsWrappingNullReference ? null : Target.Properties);

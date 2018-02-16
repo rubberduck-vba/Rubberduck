@@ -67,16 +67,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             Target.MakeCompiledFile();
         }
 
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        References.Release();
-        //        VBComponents.Release();
-        //        base.Release(final);
-        //    }
-        //}
-
         public override bool Equals(ISafeComWrapper<VB.VBProject> other)
         {
             return IsEqualIfNull(other) || (other != null && other.Target == Target);
@@ -98,8 +88,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             return VBComponents.Select(component => component.Name).ToArray();
         }
 
+        //Assigns a new project id in case none has been saved so far
+        //and the saved one does not exist already.
+        //Otherwise, the saved project id remains unchanged.
         public void AssignProjectId()
         {
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             //assign a hashcode if no helpfile is present
             if (string.IsNullOrEmpty(HelpFile))
             {
