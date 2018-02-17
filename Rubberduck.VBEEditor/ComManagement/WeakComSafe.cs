@@ -7,7 +7,7 @@ namespace Rubberduck.VBEditor.ComManagement
 {
     public class WeakComSafe : IComSafe
     {
-        //We use weak references to allow the GC to reclaim RCWs earlier is possible.
+        //We use weak references to allow the GC to reclaim RCWs earlier if possible.
         private readonly ConcurrentDictionary<int, WeakReference<ISafeComWrapper>> _comWrapperCache = new ConcurrentDictionary<int, WeakReference<ISafeComWrapper>>();
 
 
