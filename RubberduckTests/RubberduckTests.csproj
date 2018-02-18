@@ -111,7 +111,7 @@
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
-    <Compile Include="VBEditor\ComSafeTestBase.cs" />
+    <Compile Include="VBEditor\ComSafeTests.cs" />
     <Compile Include="Commands\ExportAllCommandTests.cs" />
     <Compile Include="Commands\RefactorCommandTests.cs" />
     <Compile Include="Commands\IndentCommandTests.cs" />
@@ -312,7 +312,6 @@
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
     <Compile Include="UnitTesting\ViewModelTests.cs" />
-    <Compile Include="VBEditor\DerivedComSafeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
