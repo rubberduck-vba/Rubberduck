@@ -33,19 +33,35 @@ namespace Rubberduck.VBEditor
             return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
         }
 
+        public static int GetModuleContentHash(IVBComponent component)
+        {
+            if (component == null || component.IsWrappingNullReference)
+            {
+                return 0;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                return codeModule?.SimpleContentHash() ?? 0;
+            }
+        }
+
+
         public QualifiedModuleName(IVBProject project)
         {
             _componentName = null;
             ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
             ProjectPath = string.Empty;
-            ProjectId = GetProjectId(project);           
+            ProjectId = GetProjectId(project);
+            ModuleContentHashOnCreation = GetModuleContentHash(null);
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
             ComponentType = component.Type;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
+            ModuleContentHashOnCreation = GetModuleContentHash(component);
 
             using (var components = component.Collection)
             {
@@ -58,6 +74,7 @@ namespace Rubberduck.VBEditor
             }
         }
 
+
         /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
@@ -69,6 +86,7 @@ namespace Rubberduck.VBEditor
             ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
+            ModuleContentHashOnCreation = GetModuleContentHash(null);
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -89,6 +107,7 @@ namespace Rubberduck.VBEditor
         public string ProjectName => _projectName ?? string.Empty;
 
         public string ProjectPath { get; }
+        public int ModuleContentHashOnCreation { get; }
 
         public override string ToString()
         {
