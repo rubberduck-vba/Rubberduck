@@ -320,7 +320,11 @@ namespace RubberduckTests.Mocks
                 lines.TakeWhile(line => line.Contains(Tokens.Declare + ' ') || !ModuleBodyTokens.Any(line.Contains)).Count());
 
             codeModule.Setup(m => m.Content()).Returns(() => string.Join(Environment.NewLine, lines));
-            
+
+            codeModule.Setup(m => m.SimpleContentHash()).Returns(() => string.IsNullOrEmpty(codeModule.Object.Content())
+                ? 0
+                : codeModule.Object.Content().GetHashCode());
+
             codeModule.Setup(m => m.GetLines(It.IsAny<Selection>()))
                 .Returns((Selection selection) => string.Join(Environment.NewLine, lines.Skip(selection.StartLine - 1).Take(selection.LineCount)));
             
