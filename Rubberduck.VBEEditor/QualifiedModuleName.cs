@@ -61,6 +61,13 @@ namespace Rubberduck.VBEditor
         {
             ComponentType = component.Type;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
+
+            //note: We set this property in order to stabelize the component.
+            //For some reason, components sometimes seem to get removed on the COM side although 
+            //an RCW is still holding a reference. For some reason, opening the CodeModule of a 
+            //component seems to prevent this. 
+            //This is a hack to open the code module on each component for which we get a QMN 
+            //in a way that does not get optimized away.
             ModuleContentHashOnCreation = GetModuleContentHash(component);
 
             using (var components = component.Collection)
