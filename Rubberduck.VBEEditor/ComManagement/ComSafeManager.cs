@@ -11,9 +11,11 @@ namespace Rubberduck.VBEditor.ComManagement
             return _comSafe.Value;
         }
 
-        public static void ResetComSafe()
+        public static void DisposeAndResetComSafe()
         {
+            var oldComSafe = _comSafe.Value;
             _comSafe = new Lazy<IComSafe>(NewComSafe);
+            oldComSafe.Dispose();
         }
 
         private static IComSafe NewComSafe()
