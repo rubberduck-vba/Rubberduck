@@ -9,7 +9,7 @@ namespace RubberduckTests.VBEditor
         [Test()]
         public void ComSafeReturnedOnSecondIvokationOfGetCurrentComSafeIsTheSame()
         {
-            ComSafeManager.ResetComSafe(); //Resetting to get a claen start.
+            ComSafeManager.DisposeAndResetComSafe(); //Resetting to get a claen start.
 
             var comSafe1 = ComSafeManager.GetCurrentComSafe();
             var comSafe2 = ComSafeManager.GetCurrentComSafe();
@@ -20,10 +20,10 @@ namespace RubberduckTests.VBEditor
         [Test()]
         public void AfterCallingResetComSafeGetCurrentComSafeReturnsDifferentSafe()
         {
-            ComSafeManager.ResetComSafe(); //Resetting to get a claen start.
+            ComSafeManager.DisposeAndResetComSafe(); //Resetting to get a claen start.
 
             var comSafe1 = ComSafeManager.GetCurrentComSafe();
-            ComSafeManager.ResetComSafe();
+            ComSafeManager.DisposeAndResetComSafe();
             var comSafe2 = ComSafeManager.GetCurrentComSafe();
 
             Assert.AreNotSame(comSafe1, comSafe2);
