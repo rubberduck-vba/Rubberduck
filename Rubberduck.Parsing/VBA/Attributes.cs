@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -41,7 +40,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddValue(string value)
         {
-            _values.Add(value);
+            _values?.Add(value);
         }
 
         public IReadOnlyList<string> Values
@@ -51,7 +50,7 @@ namespace Rubberduck.Parsing.VBA
 
         public bool HasValue(string value)
         {
-            return _values.Any(item => item.Equals(value, StringComparison.OrdinalIgnoreCase));
+            return Values.Any(item => item.Equals(value, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool Equals(AttributeNode other)
