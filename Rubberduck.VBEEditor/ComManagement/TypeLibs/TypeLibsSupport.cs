@@ -561,7 +561,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
                 throw new ArgumentException("Expected a COM object");
             }
 
-            var referencesPtr = Marshal.GetIUnknownForObject(comObj);
+            var referencesPtr = Marshal.GetIUnknownForObjectInContext(comObj);
+            if (referencesPtr == IntPtr.Zero)
+            {
+                throw new InvalidOperationException("Cannot access the TypeLib API from this thread.  TypeLib API must be accessed from the main thread.");
+            }
             var retVal = StructHelper.ReadStructureSafe<T>(referencesPtr);
             Marshal.Release(referencesPtr);
             return retVal;
