@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -56,7 +58,7 @@ End Function
 
                 _state.IsEnabled = false;
                 IVBComponent component = null;
-                object result;
+                object result = null;
                 try
                 {
                     using (var components = project.VBComponents)
@@ -66,17 +68,13 @@ End Function
                         {
                             codeModule.AddFromString(content);
                         }
-                        using (var vbe = project.VBE)
-                        {
-                            var host = vbe.HostApplication();
-                            result = host.Run(name, args);
-                        }
+                        result = VBETypeLibsAPI.ExecuteCode(component, name, args);
                     }
                 }
-                catch (COMException)
+                catch
                 {
-                    // IHostApplication.Run is supported, but the call failed.
-                    return default(TResult);
+                    // swallow any exceptions; we might not be able to run
+                    // the code due to threading issue or something else.
                 }
                 finally
                 {
