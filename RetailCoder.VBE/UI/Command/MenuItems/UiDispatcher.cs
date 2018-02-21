@@ -109,11 +109,11 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public static void Shutdown()
         {
-            Invoke(() =>
-            {
-                LogManager.GetCurrentClassLogger().Debug("Invoking shutdown on UI thread dispatcher.");
-                Dispatcher.CurrentDispatcher.InvokeShutdown();
-            });
+            //Invoke(() =>
+            //{
+            //    LogManager.GetCurrentClassLogger().Debug("Invoking shutdown on UI thread dispatcher.");
+            //    Dispatcher.CurrentDispatcher.InvokeShutdown();
+            //});
         }
     }
 }
