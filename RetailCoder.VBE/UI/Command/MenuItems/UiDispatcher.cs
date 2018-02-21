@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using NLog;
 
@@ -10,12 +11,14 @@ namespace Rubberduck.UI.Command.MenuItems
         // thanks to Pellared on http://stackoverflow.com/a/12909070/1188513
 
         private static SynchronizationContext UiContext { get; set; }
-        
+        private static TaskScheduler UiTaskScheduler { get; set; }
+
         public static void Initialize()
         {
             if (UiContext == null)
             {
                 UiContext = SynchronizationContext.Current;
+                UiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             }
         }
 
@@ -40,7 +43,7 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <see cref="UiContext" /></para>.
         /// </summary>
         /// <param name="action">The action that will be executed on the UI
-        /// thread.</param>
+        /// thread</param>
         public static void Invoke(Action action)
         {
             CheckInitialization();
@@ -54,6 +57,50 @@ namespace Rubberduck.UI.Command.MenuItems
                 InvokeAsync(action);
             }
         }
+
+        /// <summary>
+        /// Starts a task on the ui thread.
+        /// </summary>
+        /// <param name="action">The action that will be executed on the UI
+        /// thread.</param>
+        /// <param name="token">Optional cancellation token</param>
+        /// <param name="options">Oprional TaskCreationOptions</param>
+        /// <returns></returns>
+        public static Task StartTask(Action action, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
+        {
+            CheckInitialization();
+
+            return Task.Factory.StartNew(action, token, options, UiTaskScheduler);
+        }
+
+        //This separate overload is necessary because CancellationToken.None is not a compile-time constant and thus cannot be used as default value.
+        public static Task StartTask(Action action, TaskCreationOptions options = TaskCreationOptions.None)
+        {
+            return StartTask(action, CancellationToken.None, options);
+        }
+
+
+        /// <summary>
+        /// Starts a task returning a value on the ui thread.
+        /// </summary>
+        /// <param name="func">The function that will be executed on the UI
+        /// thread.</param>
+        /// <param name="token">Optional cancellation token</param>
+        /// <param name="options">Oprional TaskCreationOptions</param>
+        /// <returns></returns>
+        public static Task<T> StartTask<T>(Func<T> func, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
+        {
+            CheckInitialization();
+
+            return Task.Factory.StartNew(func, token, options, UiTaskScheduler);
+        }
+
+        //This separate overload is necessary because CancellationToken.None is not a compile-time constant and thus cannot be used as default value.
+        public static Task<T> StartTask<T>(Func<T> func, TaskCreationOptions options = TaskCreationOptions.None)
+        {
+            return StartTask(func, CancellationToken.None, options);
+        }
+
 
         private static void CheckInitialization()
         {
