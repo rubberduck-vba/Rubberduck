@@ -23,20 +23,10 @@ coverage:
         # allow decrease by up to 5 %
         threshold: 5
         base: auto
-      core:
-        # restrict core decrease to 2%
-        threshold: 2
-        flags: core
-      ui:
-        flags: ui
-      inspections:
-        flags: inspections
-      tools:
-        flags: tools
   
 comment:
   layout: "flags, diff, files"
-  behavior: new
+  behavior: once
   require_changes: yes
 
 flags:

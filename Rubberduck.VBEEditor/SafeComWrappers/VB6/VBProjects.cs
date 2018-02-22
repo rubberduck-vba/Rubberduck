@@ -8,7 +8,10 @@ using VB = Microsoft.VB6.Interop.VBIDE;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
+    //TODO: the event is UNTESTED, PRESUMED TO BE BROKEN
+    //if you wanna to enable vb6, please have the courtesy
+    //to fix it up right. 
+    public class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects
     {
         private static readonly Guid VBProjectsEventsGuid = new Guid("0002E190-0000-0000-C000-000000000046");
 

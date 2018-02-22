@@ -9,6 +9,7 @@ namespace Rubberduck.VBEditor.Application
         /// This should ONLY be passed a Declaration object.
         /// </summary>
         /// <param name="declaration">The Declaration object for the method to be executed.</param>
+        [Obsolete("Use ExecuteCode in TypeLibAPI instead", true)]
         void Run(dynamic declaration);
 
         /// <summary>
@@ -20,6 +21,7 @@ namespace Rubberduck.VBEditor.Application
         /// <remarks>
         /// May not be available in all host applications.
         /// </remarks>
+        [Obsolete("Use ExecuteCode in TypeLibAPI instead", true)]
         object Run(string name, params object[] args);
 
         /// <summary>

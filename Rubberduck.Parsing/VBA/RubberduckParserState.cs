@@ -18,7 +18,6 @@ using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -63,7 +62,8 @@ namespace Rubberduck.Parsing.VBA
         public DeclarationFinder DeclarationFinder { get; private set; }
 
         private readonly IVBE _vbe;
-        private readonly IProjectsRepository _projectRepository;   
+        private readonly IProjectsRepository _projectRepository;
+        private readonly IVBEEvents _vbeEvents;
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
@@ -82,9 +82,9 @@ namespace Rubberduck.Parsing.VBA
                 throw new ArgumentException(nameof(projectRepository));
             }
 
-
             _vbe = vbe;
             _projectRepository = projectRepository;
+            _vbeEvents = VBEEvents.Initialize(_vbe);
             _declarationFinderFactory = declarationFinderFactory;
 
             var values = Enum.GetValues(typeof(ParserState));
@@ -115,22 +115,22 @@ namespace Rubberduck.Parsing.VBA
 
         private void AddEventHandlers()
         {
-            VBProjects.ProjectAdded += Sinks_ProjectAdded;
-            VBProjects.ProjectRemoved += Sinks_ProjectRemoved;
-            VBProjects.ProjectRenamed += Sinks_ProjectRenamed;
-            VBComponents.ComponentAdded += Sinks_ComponentAdded;
-            VBComponents.ComponentRemoved += Sinks_ComponentRemoved;
-            VBComponents.ComponentRenamed += Sinks_ComponentRenamed;           
+            _vbeEvents.ProjectAdded += Sinks_ProjectAdded;
+            _vbeEvents.ProjectRemoved += Sinks_ProjectRemoved;
+            _vbeEvents.ProjectRenamed += Sinks_ProjectRenamed;
+            _vbeEvents.ComponentAdded += Sinks_ComponentAdded;
+            _vbeEvents.ComponentRemoved += Sinks_ComponentRemoved;
+            _vbeEvents.ComponentRenamed += Sinks_ComponentRenamed;
         }
 
         private void RemoveEventHandlers()
         {
-            VBProjects.ProjectAdded -= Sinks_ProjectAdded;
-            VBProjects.ProjectRemoved -= Sinks_ProjectRemoved;
-            VBProjects.ProjectRenamed -= Sinks_ProjectRenamed;
-            VBComponents.ComponentAdded -= Sinks_ComponentAdded;
-            VBComponents.ComponentRemoved -= Sinks_ComponentRemoved;
-            VBComponents.ComponentRenamed -= Sinks_ComponentRenamed;
+            _vbeEvents.ProjectAdded -= Sinks_ProjectAdded;
+            _vbeEvents.ProjectRemoved -= Sinks_ProjectRemoved;
+            _vbeEvents.ProjectRenamed -= Sinks_ProjectRenamed;
+            _vbeEvents.ComponentAdded -= Sinks_ComponentAdded;
+            _vbeEvents.ComponentRemoved -= Sinks_ComponentRemoved;
+            _vbeEvents.ComponentRenamed -= Sinks_ComponentRenamed;
         }
 
         private void Sinks_ProjectAdded(object sender, ProjectEventArgs e)
@@ -349,7 +349,7 @@ namespace Rubberduck.Parsing.VBA
         private IVBProject GetProject(string projectId)
         {
             return _projectRepository.Project(projectId);
-        }
+                        }
 
         public void EvaluateParserState()
         {
@@ -952,6 +952,7 @@ namespace Rubberduck.Parsing.VBA
 
             CoClasses?.Clear();
             RemoveEventHandlers();
+            VBEEvents.Terminate();
 
             _moduleStates.Clear();
 

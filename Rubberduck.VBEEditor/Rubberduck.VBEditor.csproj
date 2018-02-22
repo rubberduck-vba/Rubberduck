@@ -33,6 +33,7 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CustomMarshalers" />
     <Reference Include="Interop.SldWorks.Extensibility">
       <HintPath>..\libs\Interop.SldWorks.Extensibility.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -132,6 +133,7 @@
     <Compile Include="ComManagement\ComSafeManager.cs" />
     <Compile Include="ComManagement\IProjectsProvider.cs" />
     <Compile Include="ComManagement\IProjectsRepository.cs" />
+    <Compile Include="Events\IVbeEvents.cs" />
     <Compile Include="ComManagement\ProjectsRepository.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeInfos.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Events\ProjectEventArgs.cs" />
     <Compile Include="Events\ProjectRenamedEventArgs.cs" />
     <Compile Include="Events\SelectionChangedEventArgs.cs" />
+    <Compile Include="Events\VBEEvents.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\VBComponentExtensions.cs" />
@@ -152,6 +155,7 @@
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\IUserForm.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ISafeEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
     <Compile Include="SafeComWrappers\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\MSForms\ControlType.cs" />
@@ -185,6 +189,7 @@
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarControls.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarPopup.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBars.cs" />
+    <Compile Include="SafeComWrappers\SafeEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB6\AddIn.cs" />
     <Compile Include="SafeComWrappers\VB6\AddIns.cs" />
     <Compile Include="SafeComWrappers\VB6\Application.cs" />

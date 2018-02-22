@@ -10,6 +10,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
@@ -20,8 +22,6 @@ namespace Rubberduck.UnitTesting
         private readonly RubberduckParserState _state;
         private readonly IFakesProviderFactory _fakesFactory;
 
-        // can't be assigned from constructor because ActiveVBProject is null at startup:
-        private IHostApplication _hostApplication;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory)
@@ -118,20 +118,17 @@ namespace Rubberduck.UnitTesting
 
         private void Run(IEnumerable<Declaration> members)
         {
-            if (_hostApplication == null)
+            var groupedMembers = members.GroupBy(m=> m.ProjectName);
+            foreach (var group in groupedMembers)
             {
-                _hostApplication = _vbe.HostApplication();
-            }
-            
-            foreach (var member in members)
-            {
-                try
+                using (var project = _vbe.VBProjects[group.Key])
+                using (var typeLib = TypeLibWrapper.FromVBProject(project))
                 {
-                    _hostApplication.Run(member);
-                }
-                catch (COMException ex)
-                {
-                    Logger.Error(ex, "Unexpected COM exception while running tests.", member?.QualifiedName);
+                    foreach (var member in group)
+                    {
+                        VBETypeLibsAPI.ExecuteCode(typeLib, member.QualifiedModuleName.ComponentName,
+                            member.QualifiedName.MemberName);
+                    }
                 }
             }
         }
