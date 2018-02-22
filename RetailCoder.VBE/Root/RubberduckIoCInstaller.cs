@@ -169,10 +169,7 @@ namespace Rubberduck.Root
             container.Register(Component.For(typeof(IPersistanceService<>), typeof(IFilePersistanceService<>))
                 .ImplementedBy(typeof(XmlPersistanceService<>))
                 .LifestyleSingleton());
-
-            container.Register(Component.For<IConfigProvider<GeneralSettings>>()
-                .ImplementedBy<GeneralConfigProvider>()
-                .LifestyleSingleton());
+            
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());
