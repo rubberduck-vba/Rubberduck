@@ -2174,10 +2174,7 @@ End Sub";
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
                 {
-                    new ExperimentalFeatures
-                    {
-                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl)
-                    }
+                    new ExperimentalFeatures()
                 }
             };
 

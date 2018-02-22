@@ -11,7 +11,6 @@ namespace Rubberduck.UI.Settings
         {
             CodeExplorerVisibleOnStartup = config.UserSettings.WindowSettings.CodeExplorerVisibleOnStartup;
             CodeInspectionsVisibleOnStartup = config.UserSettings.WindowSettings.CodeInspectionsVisibleOnStartup;
-            SourceControlVisibleOnStartup = config.UserSettings.WindowSettings.SourceControlVisibleOnStartup;
             TestExplorerVisibleOnStartup = config.UserSettings.WindowSettings.TestExplorerVisibleOnStartup;
             TodoExplorerVisibleOnStartup = config.UserSettings.WindowSettings.TodoExplorerVisibleOnStartup;
 
@@ -48,21 +47,7 @@ namespace Rubberduck.UI.Settings
                 }
             }
         }
-
-        private bool _sourceControlVisibleOnStartup;
-        public bool SourceControlVisibleOnStartup
-        {
-            get => _sourceControlVisibleOnStartup;
-            set
-            {
-                if (_sourceControlVisibleOnStartup != value)
-                {
-                    _sourceControlVisibleOnStartup = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
+        
         private bool _testExplorerVisibleOnStartup;
         public bool TestExplorerVisibleOnStartup
         {
@@ -97,7 +82,6 @@ namespace Rubberduck.UI.Settings
         {
             config.UserSettings.WindowSettings.CodeExplorerVisibleOnStartup = CodeExplorerVisibleOnStartup;
             config.UserSettings.WindowSettings.CodeInspectionsVisibleOnStartup = CodeInspectionsVisibleOnStartup;
-            config.UserSettings.WindowSettings.SourceControlVisibleOnStartup = SourceControlVisibleOnStartup;
             config.UserSettings.WindowSettings.TestExplorerVisibleOnStartup = TestExplorerVisibleOnStartup;
             config.UserSettings.WindowSettings.TodoExplorerVisibleOnStartup = TodoExplorerVisibleOnStartup;
         }
@@ -111,7 +95,6 @@ namespace Rubberduck.UI.Settings
         {
             CodeExplorerVisibleOnStartup = toLoad.CodeExplorerVisibleOnStartup;
             CodeInspectionsVisibleOnStartup = toLoad.CodeInspectionsVisibleOnStartup;
-            SourceControlVisibleOnStartup = toLoad.SourceControlVisibleOnStartup;
             TestExplorerVisibleOnStartup = toLoad.TestExplorerVisibleOnStartup;
             TodoExplorerVisibleOnStartup = toLoad.TodoExplorerVisibleOnStartup;
         }
@@ -147,7 +130,6 @@ namespace Rubberduck.UI.Settings
                 {
                     CodeExplorerVisibleOnStartup = CodeExplorerVisibleOnStartup,
                     CodeInspectionsVisibleOnStartup = CodeInspectionsVisibleOnStartup,
-                    SourceControlVisibleOnStartup = SourceControlVisibleOnStartup,
                     TestExplorerVisibleOnStartup = TestExplorerVisibleOnStartup,
                     TodoExplorerVisibleOnStartup = TodoExplorerVisibleOnStartup
                 });

@@ -395,7 +395,6 @@
     </Compile>
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CommitCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsWindow.cs">
@@ -524,7 +523,6 @@
     </Compile>
     <Compile Include="UI\Converters\InvertBoolValueConverter.cs" />
     <Compile Include="UI\Converters\BoolToHiddenVisibilityConverter.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\UndoCommand.cs" />
     <Compile Include="UI\Command\MenuItems\NoIndentAnnotationCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\IndentCurrentModuleCommandMenuItem.cs" />
     <Compile Include="UI\Command\NoIndentAnnotationCommand.cs" />
@@ -667,8 +665,6 @@
     <Compile Include="UI\Command\RunAllTestsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
     <Compile Include="UI\Command\InspectionResultsCommand.cs" />
-    <Compile Include="UI\Command\SourceControlCommand.cs" />
-    <Compile Include="UI\Command\MenuItems\SourceControlCommandMenuItem.cs" />
     <Compile Include="UI\Command\TestExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\TestExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
@@ -844,21 +840,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="UI\SourceControl\BranchesView.xaml.cs">
-      <DependentUpon>BranchesView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\BranchesPanelViewModel.cs" />
-    <Compile Include="UI\SourceControl\ChangesView.xaml.cs">
-      <DependentUpon>ChangesView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\ChangesPanelViewModel.cs" />
-    <Compile Include="UI\SourceControl\CommitAction.cs" />
-    <Compile Include="UI\SourceControl\Converters\ChangeTypesToTextConverter.cs" />
-    <Compile Include="UI\SourceControl\Converters\CommitActionsToTextConverter.cs" />
-    <Compile Include="UI\SourceControl\Converters\CommitActionTextToEnum.cs" />
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
-    <Compile Include="UI\SourceControl\IControlView.cs" />
-    <Compile Include="UI\SourceControl\IControlViewModel.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -866,33 +848,7 @@
       <DependentUpon>RenameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
-    <Compile Include="UI\SourceControl\NotificationType.cs" />
-    <Compile Include="UI\SourceControl\SettingsView.xaml.cs">
-      <DependentUpon>SettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SettingsPanelViewModel.cs" />
-    <Compile Include="UI\SourceControl\SourceControl.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SourceControl.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SourceControlPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\SourceControl\SourceControlPanel.Designer.cs">
-      <DependentUpon>SourceControlPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SourceControlView.xaml.cs">
-      <DependentUpon>SourceControlView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\SourceControlProviderFactory.cs" />
-    <Compile Include="UI\SourceControl\SourceControlViewViewModel.cs" />
-    <Compile Include="UI\SourceControl\SourceControlDockablePresenter.cs" />
     <Compile Include="UI\Controls\INavigateSelection.cs" />
-    <Compile Include="UI\SourceControl\UnsyncedCommitsView.xaml.cs">
-      <DependentUpon>UnsyncedCommitsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\SourceControl\UnsyncedCommitsPanelViewModel.cs" />
     <Compile Include="UI\Splash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1046,13 +1002,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\SourceControl.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SourceControl.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SourceControl\SourceControlPanel.resx">
-      <DependentUpon>SourceControlPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Splash.resx">
       <DependentUpon>Splash.cs</DependentUpon>
@@ -1372,10 +1321,6 @@
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
-      <Project>{0040E129-1AA2-459F-A59A-129FA4035E01}</Project>
-      <Name>Rubberduck.SourceControl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
       <Name>Rubberduck.VBEditor</Name>
@@ -1479,26 +1424,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\WindowSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\SourceControl\BranchesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\SourceControl\ChangesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\SourceControl\SettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\SourceControl\SourceControlView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\SourceControl\UnsyncedCommitsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

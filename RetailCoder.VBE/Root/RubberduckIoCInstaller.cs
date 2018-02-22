@@ -23,7 +23,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
-using Rubberduck.SourceControl;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.CodeExplorer.Commands;
@@ -36,7 +35,6 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.Inspections;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
-using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
@@ -96,11 +94,6 @@ namespace Rubberduck.Root
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
                 .LifestyleSingleton());
-            container.Register(Component.For<ISourceControlProvider>()
-                .ImplementedBy<GitProvider>()
-                .LifestyleTransient());
-            //container.Register(Component.For<GitProvider>()
-            //    .LifestyleSingleton());
             container.Register(Component.For<IOperatingSystem>()
                 .ImplementedBy<WindowsOperatingSystem>()
                 .LifestyleSingleton());
@@ -122,9 +115,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<SearchResultPresenterInstanceManager>()
                 .LifestyleSingleton());
-
-            RegisterSourceControlControls(container);
-
+            
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
@@ -185,13 +176,6 @@ namespace Rubberduck.Root
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IConfigProvider<SourceControlSettings>>()
-                .ImplementedBy<SourceControlConfigProvider>()
-                .LifestyleSingleton());
-
-            container.Register(Component.For<ISourceControlSettings>()
-                .ImplementedBy<SourceControlSettings>()
-                .LifestyleTransient());
         }
 
         private void ApplyDefaultInterfaceConvention(IWindsorContainer container, Assembly[] assembliesToRegister)
@@ -518,11 +502,7 @@ namespace Rubberduck.Root
                 typeof(CodeMetricsCommandMenuItem),
                 typeof(ExportAllCommandMenuItem)
             };
-
-            if (_initialSettings.EnableExperimentalFeatures.Any(a => a.Key == nameof(RubberduckUI.GeneralSettings_EnableSourceControl) && a.IsEnabled))
-            {
-                items.Add(typeof(SourceControlCommandMenuItem));
-            }
+            
             return items.ToArray();
         }
 
@@ -586,25 +566,6 @@ namespace Rubberduck.Root
 
         private void RegisterCommandsWithPresenters(IWindsorContainer container)
         {
-            if (_initialSettings.EnableExperimentalFeatures.Any(a => a.Key == nameof(RubberduckUI.GeneralSettings_EnableSourceControl) && a.IsEnabled))
-            {
-                container.Register(Component.For<CommandBase>()
-                    .ImplementedBy<SourceControlCommand>()
-                    .DependsOn(Dependency.OnComponent<IDockablePresenter, SourceControlDockablePresenter>())
-                    .LifestyleTransient()
-                    .Named(typeof(SourceControlCommand).Name));
-                container.Register(Component.For<CommandBase>()
-                    .ImplementedBy<CommitCommand>()
-                    .DependsOn(Dependency.OnComponent<IDockablePresenter, SourceControlDockablePresenter>())
-                    .LifestyleTransient()
-                    .Named(typeof(CommitCommand).Name));
-                container.Register(Component.For<CommandBase>()
-                    .ImplementedBy<UndoCommand>()
-                    .DependsOn(Dependency.OnComponent<IDockablePresenter, SourceControlDockablePresenter>())
-                    .LifestyleTransient()
-                    .Named(typeof(UndoCommand).Name));
-            }
-
             container.Register(Component.For<CommandBase>()
                 .ImplementedBy<RunAllTestsCommand>()
                 .DependsOn(Dependency.OnComponent<IDockablePresenter, TestExplorerDockablePresenter>())
@@ -664,49 +625,7 @@ namespace Rubberduck.Root
                 .DependsOn(Dependency.OnValue<IntPtr>(mainWindowHwnd))
                 .LifestyleSingleton());
         }
-
-        private static void RegisterSourceControlControls(IWindsorContainer container)
-        {
-            container.Register(Component.For<SourceControlViewViewModel>()
-                .LifestyleSingleton());
-
-            container.Register(Component.For<IControlViewModel>()
-                .ImplementedBy<ChangesPanelViewModel>()
-                .Named(nameof(ChangesPanelViewModel))
-                .LifestyleTransient());
-            container.Register(Component.For<IControlView>()
-                .ImplementedBy<ChangesView>()
-                .DependsOn(Dependency.OnComponent<IControlViewModel, ChangesPanelViewModel>())
-                .LifestyleTransient());
-
-            container.Register(Component.For<IControlViewModel>()
-                .ImplementedBy<BranchesPanelViewModel>()
-                .Named(nameof(BranchesPanelViewModel))
-                .LifestyleTransient());
-            container.Register(Component.For<IControlView>()
-                .ImplementedBy<BranchesView>()
-                .DependsOn(Dependency.OnComponent<IControlViewModel, BranchesPanelViewModel>())
-                .LifestyleTransient());
-
-            container.Register(Component.For<IControlViewModel>()
-                .ImplementedBy<UnsyncedCommitsPanelViewModel>()
-                .Named(nameof(UnsyncedCommitsPanelViewModel))
-                .LifestyleTransient());
-            container.Register(Component.For<IControlView>()
-                .ImplementedBy<UnsyncedCommitsView>()
-                .DependsOn(Dependency.OnComponent<IControlViewModel, UnsyncedCommitsPanelViewModel>())
-                .LifestyleTransient());
-
-            container.Register(Component.For<IControlViewModel>()
-                .ImplementedBy<SettingsPanelViewModel>()
-                .Named(nameof(SettingsPanelViewModel))
-                .LifestyleTransient());
-            container.Register(Component.For<IControlView>()
-                .ImplementedBy<SettingsView>()
-                .DependsOn(Dependency.OnComponent<IControlViewModel, SettingsPanelViewModel>())
-                .LifestyleTransient());
-        }
-
+        
         private static void RegisterDockableUserControls(IWindsorContainer container)
         {
             container.Register(Classes.FromThisAssembly()
@@ -716,9 +635,6 @@ namespace Rubberduck.Root
 
         private static void RegisterDockablePresenters(IWindsorContainer container)
         {
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<SourceControlDockablePresenter>()
-                .LifestyleSingleton());
             container.Register(Component.For<IDockablePresenter>()
                 .ImplementedBy<TestExplorerDockablePresenter>()
                 .LifestyleSingleton());

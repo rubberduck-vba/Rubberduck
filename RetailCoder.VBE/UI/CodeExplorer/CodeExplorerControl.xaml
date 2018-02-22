@@ -271,18 +271,6 @@
                                     </Image>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}" Visibility="{Binding EnableSourceControl, Converter={StaticResource BoolToVisibility}}" >
-                                <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Commit}"
-                                      Command="{Binding CommitCommand}"
-                                      CommandParameter="{Binding SelectedItem}" />
-                                <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_Undo}"
-                                      Command="{Binding UndoCommand}"
-                                      CommandParameter="{Binding SelectedItem}">
-                                    <MenuItem.Icon>
-                                        <Image Source="{StaticResource UndoImage}" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </MenuItem>
                         </ContextMenu>
                     </Setter.Value>
                 </Setter>

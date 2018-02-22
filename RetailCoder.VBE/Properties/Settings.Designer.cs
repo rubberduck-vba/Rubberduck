@@ -214,23 +214,6 @@ namespace Rubberduck.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <Key1>D6</Key1>
-  <IsEnabled>true</IsEnabled>
-  <HasShiftModifier>true</HasShiftModifier>
-  <HasAltModifier>false</HasAltModifier>
-  <HasCtrlModifier>true</HasCtrlModifier>
-  <CommandTypeName>SourceControlCommand</CommandTypeName>
-</HotkeySetting>")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_SourceControlCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_SourceControlCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <Key1>T</Key1>
   <IsEnabled>true</IsEnabled>
   <HasShiftModifier>true</HasShiftModifier>

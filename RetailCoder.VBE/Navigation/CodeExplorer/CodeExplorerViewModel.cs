@@ -91,10 +91,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             PrintCommand = commands.OfType<PrintCommand>().SingleOrDefault();
-
-            CommitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
-            UndoCommand = commands.OfType<UndoCommand>().SingleOrDefault();
-
+            
             CopyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
@@ -533,9 +530,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase RemoveCommand { get; }
 
         public CommandBase PrintCommand { get; }
-
-        public CommandBase CommitCommand { get; }
-        public CommandBase UndoCommand { get; }
         
         private readonly CommandBase _externalRemoveCommand;
 
@@ -554,9 +548,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public Visibility ExportVisibility => CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
-
-        public bool EnableSourceControl => _generalSettings.EnableExperimentalFeatures.Any(a => a.Key == RubberduckUI.GeneralSettings_EnableSourceControl);
-
+        
         public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;
