@@ -8,7 +8,6 @@ using Antlr4.Runtime.Tree;
 using System.Diagnostics;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -145,6 +144,8 @@ namespace Rubberduck.Parsing.VBA
             }
 
             Declaration superType = null;
+            // TODO: Replace with TypeLibAPI call, require a solution regarding thread synchronization or caching
+            /*
             using (var properties = component.Properties)
             {
                 int documentPropertyCount = 0;
@@ -194,6 +195,7 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
+            */
 
             return superType;
         }
