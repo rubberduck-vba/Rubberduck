@@ -4,7 +4,6 @@ using System.Xml.Serialization;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.Inspections;
-using Rubberduck.UI.SourceControl;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 
@@ -14,7 +13,6 @@ namespace Rubberduck.Settings
     {
         bool CodeExplorerVisibleOnStartup { get; set; }
         bool CodeInspectionsVisibleOnStartup { get; set; }
-        bool SourceControlVisibleOnStartup { get; set; }
         bool TestExplorerVisibleOnStartup { get; set; }
         bool TodoExplorerVisibleOnStartup { get; set; }
 
@@ -37,12 +35,11 @@ namespace Rubberduck.Settings
         }
 
         public WindowSettings(bool codeExplorerVisibleOnStartup, bool codeInspectionsVisibleOnStartup, 
-            bool sourceControlVisibleOnStartup, bool testExplorerVisibleOnStartup, bool todoExplorerVisibleOnStartup, 
+            bool testExplorerVisibleOnStartup, bool todoExplorerVisibleOnStartup, 
             bool codeExplorer_SortByName, bool codeExplorer_SortByCodeOrder, bool codeExplorer_GroupByType)
         {
             CodeExplorerVisibleOnStartup = codeExplorerVisibleOnStartup;
             CodeInspectionsVisibleOnStartup = codeInspectionsVisibleOnStartup;
-            SourceControlVisibleOnStartup = sourceControlVisibleOnStartup;
             TestExplorerVisibleOnStartup = testExplorerVisibleOnStartup;
             TodoExplorerVisibleOnStartup = todoExplorerVisibleOnStartup;
 
@@ -53,7 +50,6 @@ namespace Rubberduck.Settings
 
         public bool CodeExplorerVisibleOnStartup { get; set; }
         public bool CodeInspectionsVisibleOnStartup { get; set; }
-        public bool SourceControlVisibleOnStartup { get; set; }
         public bool TestExplorerVisibleOnStartup { get; set; }
         public bool TodoExplorerVisibleOnStartup { get; set; }
 
@@ -71,8 +67,6 @@ namespace Rubberduck.Settings
                     return CodeExplorerVisibleOnStartup;
                 case InspectionResultsDockablePresenter _:
                     return CodeInspectionsVisibleOnStartup;
-                case SourceControlDockablePresenter _:
-                    return SourceControlVisibleOnStartup;
                 case TestExplorerDockablePresenter _:
                     return TestExplorerVisibleOnStartup;
                 case ToDoExplorerDockablePresenter _:
@@ -88,7 +82,6 @@ namespace Rubberduck.Settings
             return other != null &&
                    CodeExplorerVisibleOnStartup == other.CodeExplorerVisibleOnStartup &&
                    CodeInspectionsVisibleOnStartup == other.CodeInspectionsVisibleOnStartup &&
-                   SourceControlVisibleOnStartup == other.SourceControlVisibleOnStartup &&
                    TestExplorerVisibleOnStartup == other.TestExplorerVisibleOnStartup &&
                    TodoExplorerVisibleOnStartup == other.TodoExplorerVisibleOnStartup &&
                    CodeExplorer_SortByName == other.CodeExplorer_SortByName &&

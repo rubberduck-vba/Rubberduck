@@ -65,10 +65,6 @@
                       IsChecked="{Binding CodeInspectionsVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SourceControlPanel_Caption}"
-                      IsChecked="{Binding SourceControlVisibleOnStartup, Mode=TwoWay}"
-                      Margin="5,0,0,5"
-                      HorizontalAlignment="Left" />
             <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorerWindow_Caption}"
                       IsChecked="{Binding TestExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
