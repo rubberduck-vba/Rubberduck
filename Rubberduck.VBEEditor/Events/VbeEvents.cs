@@ -180,7 +180,12 @@ namespace Rubberduck.VBEditor.Events
         #region IDisposable
 
         private bool _disposed;
-
+        /// <remarks>
+        /// This is a not a true implementation of IDisposable pattern
+        /// because the method is made private and is available only
+        /// via the static method <see cref="Terminate"/> to provide
+        /// a single point of entry for disposing the singleton class
+        /// </remarks>
         private void Dispose(bool disposing)
         {
             if (!_disposed && _projects != null)
