@@ -27,11 +27,7 @@ namespace RubberduckTests.Settings
                 AutoSavePeriod = 10,
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
                 {
-                    new ExperimentalFeatures
-                    {
-                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl),
-                        IsEnabled = true
-                    }
+                    new ExperimentalFeatures()
                 }
                 //Delimiter = '.'
             };
@@ -145,17 +141,7 @@ namespace RubberduckTests.Settings
 
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
-
-        [Category("Settings")]
-        [Test]
-        public void SourceControlEnabledIsSetInCtor()
-        {
-            var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
-
-            Assert.IsTrue(defaultConfig.UserSettings.GeneralSettings.EnableExperimentalFeatures.SequenceEqual(viewModel.ExperimentalFeatures));
-        }
-
+        
         //[Category("Settings")]
         //[Test]
         //public void DelimiterIsSetInCtor()

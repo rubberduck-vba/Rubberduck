@@ -26,10 +26,7 @@ namespace RubberduckTests.IoCContainer
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
                 {
-                    new ExperimentalFeatures
-                    {
-                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl)
-                    }
+                    new ExperimentalFeatures()
                 }
             };
 
@@ -65,10 +62,7 @@ namespace RubberduckTests.IoCContainer
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
                 {
-                    new ExperimentalFeatures
-                    {
-                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl)
-                    }
+                    new ExperimentalFeatures()
                 }
             };
 
