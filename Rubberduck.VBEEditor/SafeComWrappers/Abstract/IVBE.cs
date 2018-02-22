@@ -19,7 +19,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         ICodePanes CodePanes { get; }
         ICommandBars CommandBars { get; }
         IWindows Windows { get; }
-
         IHostApplication HostApplication();
         IWindow ActiveMDIChild();
 

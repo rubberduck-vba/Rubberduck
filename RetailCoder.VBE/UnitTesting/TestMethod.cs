@@ -9,6 +9,7 @@ using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Application;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
@@ -17,12 +18,12 @@ namespace Rubberduck.UnitTesting
     public class TestMethod : ViewModelBase, IEquatable<TestMethod>, INavigateSource
     {
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
-        private readonly IHostApplication _hostApp;
+        private readonly IVBE _vbe;
 
         public TestMethod(Declaration declaration, IVBE vbe)
         {
             _declaration = declaration;
-            _hostApp = vbe.HostApplication();
+            _vbe = vbe;
         }
 
         private Declaration _declaration;
@@ -44,7 +45,8 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                _hostApp.Run(Declaration);
+                VBETypeLibsAPI.ExecuteCode(_vbe, Declaration.ProjectName, Declaration.QualifiedModuleName.ComponentName,
+                    Declaration.QualifiedName.MemberName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
                 result = EvaluateResults();
