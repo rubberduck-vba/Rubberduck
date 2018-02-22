@@ -84,7 +84,7 @@ namespace Rubberduck.Parsing.UIContext
         /// <param name="func">The function that will be executed on the UI
         /// thread.</param>
         /// <param name="token">Optional cancellation token</param>
-        /// <param name="options">Oprional TaskCreationOptions</param>
+        /// <param name="options">Optional TaskCreationOptions</param>
         /// <returns></returns>
         public static Task<T> StartTask<T>(Func<T> func, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
         {
