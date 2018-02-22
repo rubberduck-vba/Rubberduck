@@ -1142,7 +1142,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The following project(s) cannot be compiled, which wil likely will most likely result in parser errors. Continue anyway? {0}.
+        ///   Looks up a localized string similar to The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}.
         /// </summary>
         public static string Command_Reparse_CannotCompile {
             get {
