@@ -77,9 +77,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
-
-        public Guid EventsInterfaceId => throw new NotImplementedException();
-
+        
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {
             return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
@@ -133,17 +131,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 using (var component = components.SingleOrDefault(c => ComponentHasName(c, name))) 
                 {
-                    if (component == null || component.IsWrappingNullReference)
-                    {
-                        return;
-                    }
+            if (component == null || component.IsWrappingNullReference)
+            {
+                return;
+            }
 
                     using (var module = component.CodeModule)
                     {
                         using (var pane = module.CodePane)
                         {
-                            pane.Selection = selection;
-                        }
+            pane.Selection = selection;
+        }
                     }
                 }
             }
@@ -394,3 +392,4 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         }
     }
 }
+
