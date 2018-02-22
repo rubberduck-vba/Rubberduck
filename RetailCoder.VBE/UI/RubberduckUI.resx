@@ -2146,4 +2146,13 @@ Would you like to import them to Rubberduck?</value>
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Modifier Warning</value>
   </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>The following project(s) cannot be compiled, which wil likely will most likely result in parser errors. Continue anyway? {0}</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>Unable to compile for parsing</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
+    <value>Compile code before parsing</value>
+  </data>
 </root>

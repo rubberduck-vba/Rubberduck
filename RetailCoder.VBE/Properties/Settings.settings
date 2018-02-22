@@ -157,19 +157,6 @@
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ToDoMarker xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Text="BUG" /&gt;</Value>
     </Setting>
-    <Setting Name="WindowSettings" Type="Rubberduck.Settings.WindowSettings" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;WindowSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;CodeExplorerVisibleOnStartup&gt;false&lt;/CodeExplorerVisibleOnStartup&gt;
-  &lt;CodeInspectionsVisibleOnStartup&gt;false&lt;/CodeInspectionsVisibleOnStartup&gt;
-  &lt;SourceControlVisibleOnStartup&gt;false&lt;/SourceControlVisibleOnStartup&gt;
-  &lt;TestExplorerVisibleOnStartup&gt;false&lt;/TestExplorerVisibleOnStartup&gt;
-  &lt;TodoExplorerVisibleOnStartup&gt;false&lt;/TodoExplorerVisibleOnStartup&gt;
-  &lt;CodeExplorer_SortByName&gt;true&lt;/CodeExplorer_SortByName&gt;
-  &lt;CodeExplorer_SortByCodeOrder&gt;false&lt;/CodeExplorer_SortByCodeOrder&gt;
-  &lt;CodeExplorer_GroupByType&gt;false&lt;/CodeExplorer_GroupByType&gt;
-&lt;/WindowSettings&gt;</Value>
-    </Setting>
     <Setting Name="UnitTestSettings" Type="Rubberduck.Settings.UnitTestSettings" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;UnitTestSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
@@ -266,6 +253,18 @@
   &lt;WhitelistedIdentifiers /&gt;
   &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
 &lt;/CodeInspectionSettings&gt;</Value>
+    </Setting>
+    <Setting Name="WindowSettings" Type="Rubberduck.Settings.WindowSettings" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;WindowSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;CodeExplorerVisibleOnStartup&gt;false&lt;/CodeExplorerVisibleOnStartup&gt;
+  &lt;CodeInspectionsVisibleOnStartup&gt;false&lt;/CodeInspectionsVisibleOnStartup&gt;
+  &lt;TestExplorerVisibleOnStartup&gt;false&lt;/TestExplorerVisibleOnStartup&gt;
+  &lt;TodoExplorerVisibleOnStartup&gt;false&lt;/TodoExplorerVisibleOnStartup&gt;
+  &lt;CodeExplorer_SortByName&gt;true&lt;/CodeExplorer_SortByName&gt;
+  &lt;CodeExplorer_SortByCodeOrder&gt;false&lt;/CodeExplorer_SortByCodeOrder&gt;
+  &lt;CodeExplorer_GroupByType&gt;false&lt;/CodeExplorer_GroupByType&gt;
+&lt;/WindowSettings&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

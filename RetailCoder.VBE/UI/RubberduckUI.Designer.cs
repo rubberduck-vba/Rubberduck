@@ -121,7 +121,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan.
+        ///   Looks up a localized string similar to © Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan.
         /// </summary>
         public static string AboutWindow_Copyright {
             get {
@@ -1160,6 +1160,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following project(s) cannot be compiled, which wil likely will most likely result in parser errors. Continue anyway? {0}.
+        /// </summary>
+        public static string Command_Reparse_CannotCompile {
+            get {
+                return ResourceManager.GetString("Command_Reparse_CannotCompile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to compile for parsing.
+        /// </summary>
+        public static string Command_Reparse_CannotCompile_Caption {
+            get {
+                return ResourceManager.GetString("Command_Reparse_CannotCompile_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CommandDescription_CodeExplorerCommand {
@@ -1192,6 +1210,15 @@ namespace Rubberduck.UI {
         public static string CommandDescription_FindSymbolCommand {
             get {
                 return ResourceManager.GetString("CommandDescription_FindSymbolCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent Module.
+        /// </summary>
+        public static string CommandDescription_IndentCurrentModuleCommand {
+            get {
+                return ResourceManager.GetString("CommandDescription_IndentCurrentModuleCommand", resourceCulture);
             }
         }
         
@@ -1988,6 +2015,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compile code before parsing.
+        /// </summary>
+        public static string GeneralSettings_CompileBeforeParse {
+            get {
+                return ResourceManager.GetString("GeneralSettings_CompileBeforeParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debug.
         /// </summary>
         public static string GeneralSettings_DebugLogLevel {
@@ -2299,15 +2335,6 @@ namespace Rubberduck.UI {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Indent Module.
-        /// </summary>
-        public static string HotkeyDescription_IndentCurrentModuleCommand {
-            get {
-                return ResourceManager.GetString("HotkeyDescription_IndentCurrentModuleCommand", resourceCulture);
             }
         }
         
