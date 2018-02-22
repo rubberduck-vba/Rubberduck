@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -44,8 +45,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 var g = typeof(TEventInterface).GUID;
                 icpc.FindConnectionPoint(ref g, out _icp);
 
-                // Pass a pointer to the host to the connection point
-                _icp.Advise(this as TEventInterface, out _cookie);
+                var sink = this as TEventInterface;
+
+                if (sink == null)
+                {
+                    throw new InvalidOperationException($"The class {this.GetType()} does not implement the required event interface {typeof(TEventInterface)}");
+                }
+                
+                _icp.Advise(sink, out _cookie);
             }
         }
 
