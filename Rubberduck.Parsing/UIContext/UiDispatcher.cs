@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
-using NLog;
 
-namespace Rubberduck.UI.Command.MenuItems
+namespace Rubberduck.Parsing.UIContext
 {
     public static class UiDispatcher
     {
@@ -64,7 +62,7 @@ namespace Rubberduck.UI.Command.MenuItems
         /// <param name="action">The action that will be executed on the UI
         /// thread.</param>
         /// <param name="token">Optional cancellation token</param>
-        /// <param name="options">Oprional TaskCreationOptions</param>
+        /// <param name="options">Optional TaskCreationOptions</param>
         /// <returns></returns>
         public static Task StartTask(Action action, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
         {
