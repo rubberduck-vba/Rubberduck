@@ -25,18 +25,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         public void AttachEvents()
         {
-            if (IsWrappingNullReference)
-            {
-                return;
-            }
-
-            if (_cookie != NotAdvising)
-            {
-                return;
-            }
-
             lock (_lock)
             {
+                if (IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                if (_cookie != NotAdvising)
+                {
+                    return;
+                }
+
                 // Call QueryInterface for IConnectionPointContainer
                 var icpc = (IConnectionPointContainer) Target;
 

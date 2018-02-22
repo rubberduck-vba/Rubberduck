@@ -15,9 +15,9 @@ namespace Rubberduck.VBEditor.Events
 
         public static VBEEvents Initialize(IVBE vbe)
         {
-            if (_instance == null)
+            lock (Lock)
             {
-                lock (Lock)
+                if (_instance == null)
                 {
                     _instance = new VBEEvents(vbe);
                 }
@@ -28,13 +28,13 @@ namespace Rubberduck.VBEditor.Events
 
         public static void Terminate()
         {
-            if (_instance == null)
-            {
-                return;
-            }
-
             lock (Lock)
             {
+                if (_instance == null)
+                {
+                    return;
+                }
+
                 _instance.Dispose();
                 _instance = null;
             }
