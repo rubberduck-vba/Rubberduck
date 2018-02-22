@@ -187,10 +187,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
-            //This needs the VBE as a ctor argument.
-            if (host.Equals("SLDWORKS.EXE"))
+            //These need the VBE as a ctor argument.
+            if (host.Equals("SLDWORKS.EXE") || host.Equals("POWERPNT.EXE"))
             {
-                return new SolidWorksApp(this);
+                return (IHostApplication)Activator.CreateInstance(HostAppMap[host], this);
             }
             //The rest don't.
             if (HostAppMap.ContainsKey(host))
