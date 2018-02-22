@@ -129,6 +129,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\WeakComSafe.cs" />
+    <Compile Include="ComManagement\ComSafeManager.cs" />
     <Compile Include="ComManagement\IProjectsProvider.cs" />
     <Compile Include="ComManagement\IProjectsRepository.cs" />
     <Compile Include="Events\IVbeEvents.cs" />
@@ -138,7 +140,7 @@
     <Compile Include="ComManagement\TypeLibs\TypeLibsSupport.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
-    <Compile Include="ComManagement\ComSafe.cs" />
+    <Compile Include="ComManagement\StrongComSafe.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
     <Compile Include="Events\ComponentEventArgs.cs" />
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />

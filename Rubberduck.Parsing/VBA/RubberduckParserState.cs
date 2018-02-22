@@ -898,13 +898,8 @@ namespace Rubberduck.Parsing.VBA
 
         private int GetModuleContentHash(QualifiedModuleName module)
         {
-            using (var codeModule = ProjectsProvider.Component(module).CodeModule)
-            {
-                var code = codeModule?.Content();
-                return string.IsNullOrEmpty(code)
-                        ? 0
-                        : code.GetHashCode();
-            }
+            var component = ProjectsProvider.Component(module);
+            return QualifiedModuleName.GetModuleContentHash(component);
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
