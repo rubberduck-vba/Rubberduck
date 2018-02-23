@@ -124,6 +124,21 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _compileBeforeParse;
+
+        public bool CompileBeforeParse
+        {
+            get => _compileBeforeParse;
+            set
+            {
+                if (_compileBeforeParse != value)
+                {
+                    _compileBeforeParse = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private int _autoSavePeriod;
         public int AutoSavePeriod
         {
@@ -192,6 +207,7 @@ namespace Rubberduck.UI.Settings
                 Language = SelectedLanguage,
                 CanShowSplash = ShowSplashAtStartup,
                 CanCheckVersion = CheckVersionAtStartup,
+                CompileBeforeParse = CompileBeforeParse,
                 IsSmartIndenterPrompted = _indenterPrompted,
                 IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
@@ -206,6 +222,7 @@ namespace Rubberduck.UI.Settings
             Hotkeys = new ObservableCollection<HotkeySetting>(hottkey.Settings);
             ShowSplashAtStartup = general.CanShowSplash;
             CheckVersionAtStartup = general.CanCheckVersion;
+            CompileBeforeParse = general.CompileBeforeParse;
             _indenterPrompted = general.IsSmartIndenterPrompted;
             AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
