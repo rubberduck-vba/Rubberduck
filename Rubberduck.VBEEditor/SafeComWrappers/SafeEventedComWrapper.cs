@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         where TSource : class
         where TEventInterface : class
     {
-        private const int NotAdvising = -1;
+        private const int NotAdvising = 0;
         private readonly object _lock = new object();
         private IConnectionPoint _icp; // The connection point
         private int _cookie = NotAdvising;     // The cookie for the connection
