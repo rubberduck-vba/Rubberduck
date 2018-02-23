@@ -19,11 +19,13 @@ namespace Rubberduck.UnitTesting
     {
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IVBE _vbe;
+        private readonly IVBETypeLibsAPI _typeLibApi;
 
-        public TestMethod(Declaration declaration, IVBE vbe)
+        public TestMethod(Declaration declaration, IVBE vbe, IVBETypeLibsAPI typeLibApi)
         {
             _declaration = declaration;
             _vbe = vbe;
+            _typeLibApi = typeLibApi;
         }
 
         private Declaration _declaration;
@@ -45,7 +47,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                VBETypeLibsAPI.ExecuteCode(_vbe, Declaration.ProjectName, Declaration.QualifiedModuleName.ComponentName,
+                _typeLibApi.ExecuteCode(_vbe, Declaration.ProjectName, Declaration.QualifiedModuleName.ComponentName,
                     Declaration.QualifiedName.MemberName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 

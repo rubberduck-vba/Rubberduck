@@ -21,16 +21,18 @@ namespace Rubberduck.UnitTesting
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IFakesProviderFactory _fakesFactory;
+        private readonly IVBETypeLibsAPI _typeLibApi;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory)
+        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory, IVBETypeLibsAPI typeLibApi)
         {
             Debug.WriteLine("TestEngine created.");
             Model = model;
             _vbe = vbe;
             _state = state;
             _fakesFactory = fakesFactory;
+            _typeLibApi = typeLibApi;
         }
 
         public TestExplorerModel Model { get; }
@@ -126,7 +128,7 @@ namespace Rubberduck.UnitTesting
                 {
                     foreach (var member in group)
                     {
-                        VBETypeLibsAPI.ExecuteCode(typeLib, member.QualifiedModuleName.ComponentName,
+                        _typeLibApi.ExecuteCode(typeLib, member.QualifiedModuleName.ComponentName,
                             member.QualifiedName.MemberName);
                     }
                 }

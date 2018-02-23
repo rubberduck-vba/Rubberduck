@@ -19,14 +19,18 @@ namespace Rubberduck.UI.Command
     public class ReparseCommand : CommandBase
     {
         private readonly IVBE _vbe;
+        private readonly IVBETypeLibsAPI _typeLibApi;
+        private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
 
-        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
+            _typeLibApi = typeLibApi;
             _state = state;
             _settings = settingsProvider.Create();
+            _messageBox = messageBox;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -66,7 +70,7 @@ namespace Rubberduck.UI.Command
                             continue;
                         }
 
-                        if (!VBETypeLibsAPI.CompileProject(project))
+                        if (!_typeLibApi.CompileProject(project))
                         {
                             failedNames.Add(project.Name);
                         }
@@ -81,8 +85,7 @@ namespace Rubberduck.UI.Command
         {
             var formattedList = string.Concat(Environment.NewLine, Environment.NewLine,
                 string.Join(Environment.NewLine, failedNames));
-            var msgbox = new MessageBox();
-            var result = msgbox.Show(
+            var result = _messageBox.Show(
                 string.Format(RubberduckUI.Command_Reparse_CannotCompile,
                     formattedList),
                 RubberduckUI.Command_Reparse_CannotCompile_Caption, MessageBoxButtons.YesNo,

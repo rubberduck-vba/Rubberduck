@@ -129,6 +129,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
     <Compile Include="ComManagement\WeakComSafe.cs" />
     <Compile Include="ComManagement\ComSafeManager.cs" />
     <Compile Include="ComManagement\IProjectsProvider.cs" />
