@@ -42,12 +42,12 @@ using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
+using GeneralSettingsViewModel = Rubberduck.UI.Settings.GeneralSettingsViewModel;
 using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.Inspections.Rubberduck.Inspections;
-
 
 namespace Rubberduck.Root
 {
@@ -155,6 +155,7 @@ namespace Rubberduck.Root
         // note: settings namespace classes are injected in singleton scope
         private void RegisterConfiguration(IWindsorContainer container, Assembly[] assembliesToRegister)
         {
+            var experimentalTypes = new List<Type>();
             foreach (var assembly in assembliesToRegister)
             {
                 container.Register(Classes.FromAssembly(assembly)
@@ -162,7 +163,15 @@ namespace Rubberduck.Root
                     .Where(type => type.NotDisabledExperimental(_initialSettings) && type.Namespace == typeof(Configuration).Namespace)
                     .WithService.AllInterfaces()
                     .LifestyleSingleton());
+
+                experimentalTypes.AddRange(assembly.GetTypes()
+                    .Where(t => Attribute.IsDefined(t, typeof(ExperimentalAttribute))));
             }
+
+            container.Register(Component.For(typeof(IEnumerable<Type>))
+                .DependsOn(Dependency.OnComponent<ViewModelBase, GeneralSettingsViewModel>())
+                .LifestyleSingleton()
+                .Instance(experimentalTypes));
 
             container.Register(Component.For<IPersistable<SerializableProject>>()
                 .ImplementedBy<XmlPersistableDeclarations>()
