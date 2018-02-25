@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -33,10 +34,13 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.Variable, 
         };
 
-        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
+        private readonly IProjectsProvider _projectsProvider;
+
+        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider)
         {
             Parent = parent;
             Declaration = declaration;
+            _projectsProvider = projectsProvider;
             _icon = Icons[DeclarationType];
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
@@ -48,12 +52,17 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             _name = Declaration.IdentifierName;
 
-            var component = declaration.QualifiedName.QualifiedModuleName.Component;
+            var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
             try
             {
-                if (component.Type == ComponentType.Document)
+                if (qualifiedModuleName.ComponentType == ComponentType.Document)
                 {
-                    var parenthesizedName = component.Properties["Name"].Value.ToString();
+                    var component = _projectsProvider.Component(qualifiedModuleName);
+                    string parenthesizedName;
+                    using (var properties = component.Properties)
+                    {
+                        parenthesizedName = properties["Name"].Value.ToString() ?? String.Empty;
+                    }
 
                     if (ContainsBuiltinDocumentPropertiesProperty())
                     {
@@ -79,7 +88,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool ContainsBuiltinDocumentPropertiesProperty()
         {
-            var properties = Declaration.QualifiedName.QualifiedModuleName.Component.Properties;
+            using (var properties = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName).Properties)
             {
                 return properties.Any(item => item.Name == "BuiltinDocumentProperties");
             }

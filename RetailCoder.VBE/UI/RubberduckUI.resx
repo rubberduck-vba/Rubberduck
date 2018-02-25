@@ -332,9 +332,6 @@
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
     <value>&amp;Refactor</value>
   </data>
-  <data name="ToolsMenu_SourceControl" xml:space="preserve">
-    <value>&amp;Source Control</value>
-  </data>
   <data name="ToolsMenu_TodoItems" xml:space="preserve">
     <value>To&amp;Do Items</value>
   </data>
@@ -381,15 +378,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
     <value>Version {0}</value>
   </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementations of '{0}'</value>
   </data>
@@ -435,9 +423,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Severity" xml:space="preserve">
     <value>Severity</value>
-  </data>
-  <data name="SourceControl_CreateNewRepo" xml:space="preserve">
-    <value>Create New Repository</value>
   </data>
   <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
     <value>{0} Failed</value>
@@ -710,121 +695,10 @@ Are you sure you want to proceed with this rename?</value>
     <value>About Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Special Thanks</value>
-  </data>
-  <data name="SourceControlPanel_Caption" xml:space="preserve">
-    <value>Source Control</value>
-  </data>
-  <data name="SourceControl_AttributesFile" xml:space="preserve">
-    <value>'.gitattributes' File</value>
-    <comment>TC</comment>
-  </data>
-  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
-    <value>Default Repository Location</value>
-  </data>
-  <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
-    <value>Email Address</value>
-  </data>
-  <data name="SourceControl_GlobalSettings" xml:space="preserve">
-    <value>Global Settings</value>
-  </data>
-  <data name="SourceControl_IgnoreFile" xml:space="preserve">
-    <value>'.gitignore' File</value>
-    <comment>TC</comment>
-  </data>
-  <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
-    <value>Refreshes pending changes</value>
-  </data>
-  <data name="SourceControl_RespositorySettings" xml:space="preserve">
-    <value>Repository Settings</value>
-  </data>
-  <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
-    <value>Update</value>
-  </data>
-  <data name="SourceControl_UserNameLabel" xml:space="preserve">
-    <value>User Name:</value>
-    <comment>TC: added colon</comment>
-  </data>
-  <data name="SourceControl_Changes" xml:space="preserve">
-    <value>Changes</value>
-  </data>
-  <data name="SourceControl_Branches" xml:space="preserve">
-    <value>Branches</value>
-  </data>
-  <data name="SourceControl_Commit" xml:space="preserve">
-    <value>Commit</value>
-  </data>
-  <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
-    <value>Go</value>
-  </data>
-  <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
-    <value>Commit message:</value>
-  </data>
-  <data name="SourceControl_CommitAndPush" xml:space="preserve">
-    <value>Commit and Push</value>
-  </data>
-  <data name="SourceControl_CommitAndSync" xml:space="preserve">
-    <value>Commit and Sync</value>
-  </data>
-  <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
-    <value>Rubberduck - Create Branch</value>
-  </data>
-  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
-    <value>Branch:</value>
-  </data>
-  <data name="SourceControl_DestinationLabel" xml:space="preserve">
-    <value>Destination</value>
-  </data>
-  <data name="SourceControl_ExcludedChanges" xml:space="preserve">
-    <value>Excluded changes</value>
-  </data>
-  <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
-    <value>Fetch</value>
-  </data>
-  <data name="SourceControl_IncludedChanges" xml:space="preserve">
-    <value>Included changes</value>
-  </data>
-  <data name="SourceControl_IncomingCommits" xml:space="preserve">
-    <value>Incoming commits</value>
-  </data>
-  <data name="SourceControl_MergeBranch" xml:space="preserve">
-    <value>Merge</value>
-  </data>
-  <data name="SourceControl_MergeFormCaption" xml:space="preserve">
-    <value>Rubberduck - Merge</value>
-  </data>
-  <data name="SourceControl_NewBranch" xml:space="preserve">
-    <value>New Branch</value>
-  </data>
-  <data name="SourceControl_OutgoingCommits" xml:space="preserve">
-    <value>Outgoing commits</value>
-  </data>
-  <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
-    <value>Pull</value>
-  </data>
-  <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
-    <value>Push</value>
-  </data>
-  <data name="SourceControl_Settings" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="SourceControl_SourceLabel" xml:space="preserve">
-    <value>Source</value>
-  </data>
-  <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
-    <value>Sync</value>
-  </data>
-  <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
-    <value>Unsynced commits</value>
-  </data>
-  <data name="SourceControl_UntrackedFiles" xml:space="preserve">
-    <value>Untracked files</value>
   </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;vigate</value>
@@ -837,33 +711,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>Re&amp;name</value>
-  </data>
-  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
-    <value>Please specify branch name.</value>
-  </data>
-  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
-    <value>New branch</value>
-  </data>
-  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
-    <value>Please select source and destination branches.</value>
-  </data>
-  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
-    <value>Merge branches</value>
-  </data>
-  <data name="SourceControl_NoRepoFound" xml:space="preserve">
-    <value>No repository found.</value>
-  </data>
-  <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
-    <value>Successfully Merged {0} into {1}</value>
-  </data>
-  <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
-    <value>Rubberduck - Delete Branch</value>
-  </data>
-  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
-    <value>Please specify branch name.</value>
-  </data>
-  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
-    <value>Delete branch</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} issues)</value>
@@ -992,9 +839,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Parameter Name:</value>
-  </data>
-  <data name="SourceControl_DeleteBranch" xml:space="preserve">
-    <value>Delete branch</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
     <value>Move Closer To &amp;Usage</value>
@@ -1280,69 +1124,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="SourceControl_BranchName" xml:space="preserve">
-    <value>Branch Name:</value>
-  </data>
-  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
-    <value>Local Directory:</value>
-  </data>
-  <data name="SourceControl_RemotePathLabel" xml:space="preserve">
-    <value>Remote Path:</value>
-  </data>
-  <data name="SourceControl_FilePath" xml:space="preserve">
-    <value>File Path</value>
-  </data>
-  <data name="SourceControl_FileStatus" xml:space="preserve">
-    <value>File Status</value>
-  </data>
-  <data name="SourceControl_Author" xml:space="preserve">
-    <value>Author</value>
-  </data>
-  <data name="SourceControl_Id" xml:space="preserve">
-    <value>Id</value>
-  </data>
-  <data name="SourceControl_Message" xml:space="preserve">
-    <value>Message</value>
-  </data>
-  <data name="SourceControl_Dismiss" xml:space="preserve">
-    <value>Dismiss</value>
-  </data>
-  <data name="SourceControl_PasswordLabel" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="SourceControl_DeleteButton" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="SourceControl_PublishBranchButton" xml:space="preserve">
-    <value>Publish</value>
-  </data>
-  <data name="SourceControl_UnpublishBranchButton" xml:space="preserve">
-    <value>Unpublish</value>
-  </data>
-  <data name="SourceControl_SourceBranch" xml:space="preserve">
-    <value>Source Branch:</value>
-  </data>
-  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
-    <value>Published Branches</value>
-  </data>
-  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
-    <value>Unpublished Branches</value>
-  </data>
-  <data name="SourceControl_LoginInstructions" xml:space="preserve">
-    <value>Your last action failed because Rubberduck did not have your authorization credentials.  Please login and try again.</value>
-  </data>
-  <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
-    <value>Exclude</value>
-  </data>
-  <data name="SourceControl_IncludeFileButton" xml:space="preserve">
-    <value>Include</value>
-  </data>
-  <data name="SourceControl_UndoChangesButton" xml:space="preserve">
-    <value>Undo</value>
-  </data>
-  <data name="SourceControl_Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
   <data name="ParserState_Error" xml:space="preserve">
     <value>Parse Error</value>
   </data>
@@ -1375,21 +1156,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
     <value>Contributors &amp; supporters:</value>
-  </data>
-  <data name="SourceControl_MergeStatus" xml:space="preserve">
-    <value>Merge status.</value>
-  </data>
-  <data name="SourceControl_UpdateSettingsMessage" xml:space="preserve">
-    <value>Your user name, email address, and default repository location have been saved.</value>
-  </data>
-  <data name="SourceControl_UpdateSettingsTitle" xml:space="preserve">
-    <value>Settings updated</value>
-  </data>
-  <data name="SourceControl_NoBranchesMessage" xml:space="preserve">
-    <value>Repository does not contain any branches.</value>
-  </data>
-  <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
-    <value>No branches found</value>
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse all opened projects</value>
@@ -1496,33 +1262,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Slash (/)</value>
   </data>
-  <data name="CodeExplorer_Commit" xml:space="preserve">
-    <value>Commit...</value>
-  </data>
-  <data name="SourceControl_CommitStatus" xml:space="preserve">
-    <value>Commit status.</value>
-  </data>
-  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
-    <value>Commit and push succeeded.</value>
-  </data>
-  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
-    <value>Commit and sync succeeded.</value>
-  </data>
-  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
-    <value>Commit succeeded.</value>
-  </data>
-  <data name="SourceControl_MissingCredentials" xml:space="preserve">
-    <value>Missing credentials.</value>
-  </data>
-  <data name="CodeExplorer_Undo" xml:space="preserve">
-    <value>Undo...</value>
-  </data>
-  <data name="SourceControl_UndoPrompt" xml:space="preserve">
-    <value>Do you want to undo your changes to {0}?</value>
-  </data>
-  <data name="SourceControl_UndoTitle" xml:space="preserve">
-    <value>Source Control - Undo</value>
-  </data>
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>&amp;Add '@NoIndent</value>
   </data>
@@ -1574,119 +1313,11 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Show Log Folder</value>
   </data>
-  <data name="SourceControl_PublishRepo_FailureTitle" xml:space="preserve">
-    <value>Publish repository.</value>
-  </data>
-  <data name="SourceControl_PublishRepo_NoOpenRepo" xml:space="preserve">
-    <value>No open repository to push to specified remote location.</value>
-  </data>
-  <data name="SourceControl_ExternalModifications" xml:space="preserve">
-    <value>A source file was modified out of the editor; reload it?</value>
-  </data>
-  <data name="SourceControl_OpenCommandPromptButtonToolTip" xml:space="preserve">
-    <value>Open Command Prompt</value>
-  </data>
-  <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
-    <value>Command prompt executable location</value>
-  </data>
-  <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
-    <value>Command Prompt Executable</value>
-  </data>
-  <data name="SourceControl_FilePickerDefaultRepoHeader" xml:space="preserve">
-    <value>Default Repository Directory</value>
-  </data>
-  <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
-    <value>Failure opening command prompt</value>
-  </data>
-  <data name="SourceControl_ActivateProject" xml:space="preserve">
-    <value>Please open or activate a project and try again.</value>
-  </data>
-  <data name="SourceControl_NoActiveProject" xml:space="preserve">
-    <value>No active project</value>
-  </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolving references...</value>
   </data>
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
     <value>Project properties</value>
-  </data>
-  <data name="SourceControl_UnknownErrorMessage" xml:space="preserve">
-    <value>If logging is enabled, you may create an issue on our GitHub page with the contents of your log file in '%AppData%\Roaming\Rubberduck\Logs' for support.</value>
-  </data>
-  <data name="SourceControl_UnknownErrorTitle" xml:space="preserve">
-    <value>An unknown error occurred.</value>
-  </data>
-  <data name="SourceControl_FileStatus_Added" xml:space="preserve">
-    <value>Added</value>
-  </data>
-  <data name="SourceControl_FileStatus_Ignored" xml:space="preserve">
-    <value>Ignored</value>
-  </data>
-  <data name="SourceControl_FileStatus_Missing" xml:space="preserve">
-    <value>Missing</value>
-  </data>
-  <data name="SourceControl_FileStatus_Modified" xml:space="preserve">
-    <value>Modified</value>
-  </data>
-  <data name="SourceControl_FileStatus_Nonexistent" xml:space="preserve">
-    <value>Nonexistent</value>
-  </data>
-  <data name="SourceControl_FileStatus_Removed" xml:space="preserve">
-    <value>Removed</value>
-  </data>
-  <data name="SourceControl_FileStatus_RenamedInIndex" xml:space="preserve">
-    <value>Renamed in index</value>
-  </data>
-  <data name="SourceControl_FileStatus_RenamedInWorkDir" xml:space="preserve">
-    <value>Renamed in working directory</value>
-  </data>
-  <data name="SourceControl_FileStatus_Staged" xml:space="preserve">
-    <value>Staged</value>
-  </data>
-  <data name="SourceControl_FileStatus_StagedTypeChange" xml:space="preserve">
-    <value>Staged type change</value>
-  </data>
-  <data name="SourceControl_FileStatus_TypeChanged" xml:space="preserve">
-    <value>Type changed</value>
-  </data>
-  <data name="SourceControl_FileStatus_Unaltered" xml:space="preserve">
-    <value>Unaltered</value>
-  </data>
-  <data name="SourceControl_FileStatus_Unreadable" xml:space="preserve">
-    <value>Unreadable</value>
-  </data>
-  <data name="SourceControl_FileStatus_Untracked" xml:space="preserve">
-    <value>Untracked</value>
-  </data>
-  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Clone a remote repository from a provided URL to the local disk. The repository will then be loaded into the active project.</value>
-  </data>
-  <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
-    <value>Clone Remote Repository</value>
-  </data>
-  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Creates a new local repository from the active project.</value>
-  </data>
-  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Create New Local Repository</value>
-  </data>
-  <data name="SourceControl_ManageRepositories" xml:space="preserve">
-    <value>Manage</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Open local repository from disk. The active project will host the source code.</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Open Local Repository</value>
-  </data>
-  <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
-    <value>Open Working Directory</value>
-  </data>
-  <data name="SourceControl_PublishRepositoryDescription" xml:space="preserve">
-    <value>Publishes an existing repository to a remote location. The active project must be connected to a repository.</value>
-  </data>
-  <data name="SourceControl_PublishRepositoryTitle" xml:space="preserve">
-    <value>Publish Existing Repository</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' to a GitHub issue at 'https://github.com/rubberduck-vba/Rubberduck/issues/new' and report the bug.</value>
@@ -1702,9 +1333,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Indent</value>
-  </data>
-  <data name="CommandDescription_SourceControlCommand" xml:space="preserve">
-    <value>Source Control</value>
   </data>
   <data name="RegexAssistant_Caption" xml:space="preserve">
     <value>Rubberduck - Regex Analyzer</value>
@@ -2052,9 +1680,6 @@ Would you like to import them to Rubberduck?</value>
     <value>Method '{0}' is an implementation of event '{1}.{2}'.  Rename event '{2}' instead?</value>
     <comment>0: Selected target Identifier; 1: Event Parent; 2: Event name</comment>
   </data>
-  <data name="GeneralSettings_EnableSourceControl" xml:space="preserve">
-    <value>Enable Source Control.</value>
-  </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Only enable these if you know what you're doing. Enabling and/or using features from this section may result in things breaking unexpectedly and irrevocable data loss.</value>
   </data>
@@ -2154,5 +1779,14 @@ Would you like to import them to Rubberduck?</value>
   </data>
   <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
     <value>Modifier Warning</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>Unable to compile for parsing</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
+    <value>Compile code before parsing</value>
   </data>
 </root>

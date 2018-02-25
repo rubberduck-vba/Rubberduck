@@ -28,7 +28,6 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
-        private IConfigProvider<GeneralSettings> _generalSettingsProvider;
         private readonly IConfigProvider<WindowSettings> _windowSettingsProvider;
         private readonly GeneralSettings _generalSettings;
         private readonly WindowSettings _windowSettings;
@@ -42,7 +41,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state = state;
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
-            _generalSettingsProvider = generalSettingsProvider;
             _windowSettingsProvider = windowSettingsProvider;
 
             if (generalSettingsProvider != null)
@@ -93,10 +91,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             PrintCommand = commands.OfType<PrintCommand>().SingleOrDefault();
-
-            CommitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
-            UndoCommand = commands.OfType<UndoCommand>().SingleOrDefault();
-
+            
             CopyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
@@ -374,8 +369,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var components = e.Module.Component.Collection;
-            var componentProject = components.Parent;
+            var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
             {
                 var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
                     .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
@@ -399,13 +393,13 @@ namespace Rubberduck.Navigation.CodeExplorer
                     {
                         if (folderNode == null)
                         {
-                            folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName);
+                            folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName, _state.ProjectsProvider);
                             projectNode.AddChild(folderNode);
                         }
 
                         var declaration = CreateDeclaration(e.Module);
                         var newNode =
-                            new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>())
+                            new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>(), _state.ProjectsProvider)
                             {
                                 IsErrorState = true
                             };
@@ -427,7 +421,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             var projectDeclaration =
                 _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
-                    .FirstOrDefault(item => item.Project.VBComponents.Contains(module.Component));
+                    .FirstOrDefault(item => item.Project.ProjectId == module.ProjectId);
 
             if (module.ComponentType == ComponentType.StandardModule)
             {
@@ -536,9 +530,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase RemoveCommand { get; }
 
         public CommandBase PrintCommand { get; }
-
-        public CommandBase CommitCommand { get; }
-        public CommandBase UndoCommand { get; }
         
         private readonly CommandBase _externalRemoveCommand;
 
@@ -557,9 +548,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public Visibility ExportVisibility => CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
-
-        public bool EnableSourceControl => _generalSettings.EnableExperimentalFeatures.Any(a => a.Key == RubberduckUI.GeneralSettings_EnableSourceControl);
-
+        
         public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;

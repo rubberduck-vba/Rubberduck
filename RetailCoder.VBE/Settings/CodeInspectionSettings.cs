@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
@@ -15,6 +16,7 @@ namespace Rubberduck.Settings
         bool RunInspectionsOnSuccessfulParse { get; set; }
     }
 
+    [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     [XmlType(AnonymousType = true)]
     public class CodeInspectionSettings : ICodeInspectionSettings, IEquatable<CodeInspectionSettings>
     {
@@ -126,34 +128,33 @@ namespace Rubberduck.Settings
         [XmlAttribute]
         public CodeInspectionType InspectionType { get; set; }
 
+        /// <Summary>
+        /// Default constructor required for XML serialization.
+        /// </Summary>
         public CodeInspectionSetting()
         {
-            //default constructor required for serialization
         }
 
-        public CodeInspectionSetting(string name, CodeInspectionType type, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
-            : this(name, string.Empty, type, defaultSeverity, defaultSeverity)
+        public CodeInspectionSetting(string name, CodeInspectionType type)
+            : this(name, string.Empty, type)
         { }
 
-        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning, CodeInspectionSeverity severity = CodeInspectionSeverity.Warning)
+        public CodeInspectionSetting(string name, string description, CodeInspectionType type, CodeInspectionSeverity severity = CodeInspectionSeverity.Warning)
         {
             Name = name;
             Description = description;
             InspectionType = type;
             Severity = severity;
-            DefaultSeverity = defaultSeverity;
+            DefaultSeverity = CodeInspectionSeverity.Warning;
         }
 
         public CodeInspectionSetting(IInspectionModel inspection)
-            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.DefaultSeverity, inspection.Severity)
+            : this(inspection.Name, inspection.Description, inspection.InspectionType, inspection.Severity)
         { }
 
         public override bool Equals(object obj)
         {
-            return obj is CodeInspectionSetting inspectionSetting &&
-                   inspectionSetting.InspectionType == InspectionType &&
-                   inspectionSetting.Name == Name &&
-                   inspectionSetting.Severity == Severity;
+            return obj is CodeInspectionSetting inspectionSetting && inspectionSetting.Name == Name;
         }
 
         public override int GetHashCode()
@@ -161,7 +162,6 @@ namespace Rubberduck.Settings
             unchecked
             {
                 var hashCode = Name?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ (int)Severity;
                 hashCode = (hashCode * 397) ^ (int)InspectionType;
                 return hashCode;
             }

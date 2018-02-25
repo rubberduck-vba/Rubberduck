@@ -16,11 +16,9 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ImplicitByRefModifierInspection : ParseTreeInspectionBase
     {
         public ImplicitByRefModifierInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
+            : base(state)
         {
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         public override IInspectionListener Listener { get; } = new ImplicitByRefModifierListener();
 

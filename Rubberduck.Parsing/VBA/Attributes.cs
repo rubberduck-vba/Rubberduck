@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -21,33 +20,31 @@ namespace Rubberduck.Parsing.VBA
 
     public class AttributeNode : IEquatable<AttributeNode>
     {
-        private readonly string _name;
         private readonly IList<string> _values;
 
         public AttributeNode(VBAParser.AttributeStmtContext context)
         {
             Context = context;
+            Name = Context?.attributeName().GetText() ?? String.Empty;
+            _values = Context?.attributeValue().Select(a => a.GetText()).ToList() ?? new List<string>();
         }
 
         public AttributeNode(string name, IEnumerable<string> values)
         {
-            _name = name;
+            Name = name;
             _values = values.ToList();
         }
 
         public VBAParser.AttributeStmtContext Context { get; }
 
-        public string Name => Context?.attributeName().GetText() ?? _name;
-
+        public string Name { get; }
+    
         public void AddValue(string value)
         {
             _values.Add(value);
         }
 
-        public IReadOnlyList<string> Values
-        {
-            get { return Context?.attributeValue().Select(a => a.GetText()).ToArray() ?? _values.ToArray(); }
-        }
+        public IReadOnlyCollection<string> Values => _values.AsReadOnly();
 
         public bool HasValue(string value)
         {
@@ -116,9 +113,15 @@ namespace Rubberduck.Parsing.VBA
 
         public bool HasDefaultMemberAttribute(string identifierName, out AttributeNode attribute)
         {
-            attribute = this.SingleOrDefault(a => a.HasValue("0") &&
-                a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+            attribute = this.SingleOrDefault(a => a.HasValue("0") 
+                && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
             return attribute != null;
+        }
+
+        public bool HasDefaultMemberAttribute()
+        {
+            return this.Any(a => a.HasValue("0") 
+                && a.Name.EndsWith(".VB_UserMemId", StringComparison.OrdinalIgnoreCase));
         }
 
         public void AddHiddenMemberAttribute(string identifierName)

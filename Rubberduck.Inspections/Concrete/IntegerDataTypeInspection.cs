@@ -15,11 +15,9 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class IntegerDataTypeInspection : InspectionBase
     {
-        public IntegerDataTypeInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Hint)
+        public IntegerDataTypeInspection(RubberduckParserState state) : base(state)
         {
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

@@ -10,6 +10,8 @@ using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API.VBA
@@ -64,14 +66,15 @@ namespace Rubberduck.API.VBA
 
             _vbe = new VBE(vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
-            _state = new RubberduckParserState(null, declarationFinderFactory);
+            var projectRepository = new ProjectsRepository(_vbe);
+            _state = new RubberduckParserState(null, projectRepository, declarationFinderFactory);
             _state.StateChanged += _state_StateChanged;
 
             var exporter = new ModuleExporter();
 
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
-            _attributeParser = new AttributeParser(exporter, preprocessorFactory);
-            var projectManager = new ProjectManager(_state, _vbe);
+            _attributeParser = new AttributeParser(exporter, preprocessorFactory, _state.ProjectsProvider);
+            var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
             var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);

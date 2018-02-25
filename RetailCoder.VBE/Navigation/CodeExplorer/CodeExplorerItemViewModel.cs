@@ -85,13 +85,13 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             if (x.ExpandedIcon != y.ExpandedIcon)
             {
-                // ReSharper disable PossibleInvalidOperationException - this will have a component
-                var xComponent = x.QualifiedSelection.Value.QualifiedName.Component;
-                var yComponent = y.QualifiedSelection.Value.QualifiedName.Component;
+                // ReSharper disable PossibleInvalidOperationException - this will have a QualifiedSelection
+                var xQmn = x.QualifiedSelection.Value.QualifiedName;
+                var yQmn = y.QualifiedSelection.Value.QualifiedName;
 
-                if (xComponent.Type == ComponentType.Document ^ yComponent.Type == ComponentType.Document)
+                if (xQmn.ComponentType == ComponentType.Document ^ yQmn.ComponentType == ComponentType.Document)
                 {
-                    return xComponent.Type == ComponentType.Document ? -1 : 1;
+                    return xQmn.ComponentType == ComponentType.Document ? -1 : 1;
                 }
             }
 

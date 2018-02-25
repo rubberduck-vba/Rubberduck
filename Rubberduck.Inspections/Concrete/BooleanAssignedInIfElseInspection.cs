@@ -7,7 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -18,8 +17,6 @@ namespace Rubberduck.Inspections.Concrete
         public BooleanAssignedInIfElseInspection(RubberduckParserState state)
             : base(state) { }
         
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
         public override IInspectionListener Listener { get; } =
             new BooleanAssignedInIfElseListener();
 
@@ -29,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        string.Format(InspectionsUI.BooleanAssignedInIfElseInspectionResultFormat,
-                                                            ParserRuleContextHelper.GetDescendent<VBAParser.LetStmtContext>(((VBAParser.IfStmtContext)result.Context).block()).lExpression().GetText().Trim()),
+                                                            (((VBAParser.IfStmtContext)result.Context).block().GetDescendent<VBAParser.LetStmtContext>()).lExpression().GetText().Trim()),
                                                        result));
         }
 
@@ -65,14 +62,14 @@ namespace Rubberduck.Inspections.Concrete
 
                 // make sure the assignments are the opposite
 
-                if (!(ParserRuleContextHelper.GetDescendent<VBAParser.BooleanLiteralIdentifierContext>(context.block()).GetText() == Tokens.True ^
-                      ParserRuleContextHelper.GetDescendent<VBAParser.BooleanLiteralIdentifierContext>(context.elseBlock().block()).GetText() == Tokens.True))
+                if (!(context.block().GetDescendent<VBAParser.BooleanLiteralIdentifierContext>().GetText() == Tokens.True ^
+                      context.elseBlock().block().GetDescendent<VBAParser.BooleanLiteralIdentifierContext>().GetText() == Tokens.True))
                 {
                     return;
                 }
 
-                if (ParserRuleContextHelper.GetDescendent<VBAParser.LetStmtContext>(context.block()).lExpression().GetText().ToLowerInvariant() !=
-                    ParserRuleContextHelper.GetDescendent<VBAParser.LetStmtContext>(context.elseBlock().block()).lExpression().GetText().ToLowerInvariant())
+                if (context.block().GetDescendent<VBAParser.LetStmtContext>().lExpression().GetText().ToLowerInvariant() !=
+                    context.elseBlock().block().GetDescendent<VBAParser.LetStmtContext>().lExpression().GetText().ToLowerInvariant())
                 {
                     return;
                 }
@@ -87,12 +84,11 @@ namespace Rubberduck.Inspections.Concrete
                     return false;
                 }
 
-                var mainBlockStmtContext =
-                    ParserRuleContextHelper.GetDescendent<VBAParser.MainBlockStmtContext>(block);
+                var mainBlockStmtContext = block.GetDescendent<VBAParser.MainBlockStmtContext>();
 
                 return mainBlockStmtContext.children.FirstOrDefault() is VBAParser.LetStmtContext letStmt &&
                        letStmt.expression() is VBAParser.LiteralExprContext literal &&
-                       ParserRuleContextHelper.GetDescendent<VBAParser.BooleanLiteralIdentifierContext>(literal) != null;
+                       literal.GetDescendent<VBAParser.BooleanLiteralIdentifierContext>() != null;
             }
         }
     }

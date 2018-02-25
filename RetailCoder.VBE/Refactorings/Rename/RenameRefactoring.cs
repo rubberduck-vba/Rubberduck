@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -210,7 +211,8 @@ namespace Rubberduck.Refactorings.Rename
 
             if (target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                using (var controls = target.QualifiedName.QualifiedModuleName.Component.Controls)
+                var component = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName);
+                using (var controls = component.Controls)
                 {
                     using (var control = controls.FirstOrDefault(item => item.Name == target.IdentifierName))
                     {
@@ -224,7 +226,7 @@ namespace Rubberduck.Refactorings.Rename
             }
             else if (target.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                using (var module = target.QualifiedName.QualifiedModuleName.Component.CodeModule)
+                using (var module = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName).CodeModule)
                 {
                     if (module.IsWrappingNullReference)
                     {
@@ -387,7 +389,8 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                using (var controls = _model.Target.QualifiedName.QualifiedModuleName.Component.Controls)
+                var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
+                using (var controls = component.Controls)
                 {
                     using (var control = controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName))
                     {
@@ -422,7 +425,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 foreach (var reference in _model.Target.References)
                 {
-                    var ctxt = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context);
+                    var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
                         RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), _appendUnderscoreFormat);
@@ -430,7 +433,7 @@ namespace Rubberduck.Refactorings.Rename
                 }
             }
 
-            var component = _model.Target.QualifiedName.QualifiedModuleName.Component;
+            var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
             if (component.Type == ComponentType.Document)
             {
                 var properties = component.Properties;
@@ -563,9 +566,15 @@ namespace Rubberduck.Refactorings.Rename
 
         private void CacheInitialSelection(QualifiedSelection qSelection)
         {
-            if (!qSelection.QualifiedName.Component.CodeModule.CodePane.IsWrappingNullReference)
+            using (var codeModule = _state.ProjectsProvider.Component(qSelection.QualifiedName).CodeModule)
             {
-                _initialSelection = new Tuple<ICodePane, Selection>(qSelection.QualifiedName.Component.CodeModule.CodePane, qSelection.QualifiedName.Component.CodeModule.CodePane.Selection);
+                using (var codePane = codeModule.CodePane)
+                {
+                    if (!codePane.IsWrappingNullReference)
+                    {
+                        _initialSelection = new Tuple<ICodePane, Selection>(codePane, codePane.Selection);
+                    }
+                }
             }
         }
 

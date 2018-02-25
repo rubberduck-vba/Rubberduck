@@ -5,6 +5,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
@@ -59,10 +60,12 @@ namespace Rubberduck.Parsing.Symbols
         private ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
         private List<UnboundMemberDeclaration> _unresolved;
         private IDictionary<QualifiedModuleName, List<IAnnotation>> _annotations;
-        private IDictionary<Declaration, List<Declaration>> _parametersByParent;
+        private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
         private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
         private IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
+        private IDictionary<QualifiedModuleName, List<IdentifierReference>> _referencesByModule;
+        private IDictionary<QualifiedMemberName, List<IdentifierReference>> _referencesByMember;
 
         private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
         private Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
@@ -73,8 +76,6 @@ namespace Rubberduck.Parsing.Symbols
         private Lazy<List<Declaration>> _projects;
         private Lazy<List<Declaration>> _classes;
         
-        private readonly object threadLock = new object();
-
         private static QualifiedSelection GetGroupingKey(Declaration declaration)
         {
             // we want the procedures' whole body, not just their identifier:
@@ -144,6 +145,7 @@ namespace Rubberduck.Parsing.Symbols
             actions.Add(() =>
                 _parametersByParent = declarations
                     .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
+                    .Cast<ParameterDeclaration>()
                     .GroupBy(declaration => declaration.ParentDeclaration)
                     .ToDictionary()
                 );
@@ -153,7 +155,16 @@ namespace Rubberduck.Parsing.Symbols
                     .GroupBy(declaration => declaration.DeclarationType)
                     .ToDictionary()
                 );
-
+            actions.Add(() =>
+                _referencesByModule = declarations
+                    .SelectMany(declaration => declaration.References)
+                    .GroupBy(reference => Declaration.GetModuleParent(reference.ParentScoping).QualifiedName.QualifiedModuleName)
+                    .ToDictionary());
+            actions.Add(() =>
+                _referencesByMember = declarations
+                    .SelectMany(declaration => declaration.References)
+                    .GroupBy(reference => reference.ParentScoping.QualifiedName)
+                    .ToDictionary());
             return actions;
         }
 
@@ -180,23 +191,24 @@ namespace Rubberduck.Parsing.Symbols
             _eventHandlers = new Lazy<List<Declaration>>(() => FindAllEventHandlers(), true);
             _projects = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.Project).ToList(), true);
             _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
-            _handlersByWithEventsField = new Lazy<IDictionary<Declaration, List<Declaration>>>(() => FindAllHandlersByWithEventField(), true);
-            _interfaceMembers = new Lazy<IDictionary<Declaration, List<Declaration>>>(() => FindAllIinterfaceMembersByModule(), true);
-            _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>>(() =>
-                FindAllImplementingMembersByImplementsContext(),
-                true);
+            _handlersByWithEventsField = new Lazy<IDictionary<Declaration, List<Declaration>>>(FindAllHandlersByWithEventField, true);
+            _interfaceMembers = new Lazy<IDictionary<Declaration, List<Declaration>>>(FindAllIinterfaceMembersByModule, true);
+            _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>>>(FindAllImplementingMembersByImplementsContext, true);
         }
 
         private IDictionary<VBAParser.ImplementsStmtContext, List<Declaration>> FindAllImplementingMembersByImplementsContext()
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
-                    .Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
+                    .Where(reference => reference.Context is VBAParser.ImplementsStmtContext 
+                        || (reference.Context).IsDescendentOf<VBAParser.ImplementsStmtContext>())
                     .Select(reference =>
                         new
                         {
                             IdentifierReference = reference,
-                            Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)
+                            Context = reference.Context is VBAParser.ImplementsStmtContext ? 
+                                (VBAParser.ImplementsStmtContext)reference.Context 
+                                    : reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 ).ToList();
@@ -224,12 +236,14 @@ namespace Rubberduck.Parsing.Symbols
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
-                    .Where(reference => ParserRuleContextHelper.HasParent<VBAParser.ImplementsStmtContext>(reference.Context))
+                    .Where(reference => reference.Context is VBAParser.ImplementsStmtContext || reference.Context.IsDescendentOf<VBAParser.ImplementsStmtContext>())
                     .Select(reference =>
                         new
                         {
                             IdentifierReference = reference,
-                            Context = ParserRuleContextHelper.GetParent<VBAParser.ImplementsStmtContext>(reference.Context)
+                            Context = reference.Context is VBAParser.ImplementsStmtContext ?
+                                (VBAParser.ImplementsStmtContext)reference.Context
+                                : reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>()
                         }
                     )
                 );
@@ -379,8 +393,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> BuiltInDeclarations(DeclarationType type)
         {
-            List<Declaration> result;
-            return _builtInDeclarationsByType.Value.TryGetValue(type, out result)
+            return _builtInDeclarationsByType.Value.TryGetValue(type, out List<Declaration> result)
                 ? result
                 : _builtInDeclarationsByType.Value
                     .Where(item => item.Key.HasFlag(type))
@@ -420,12 +433,18 @@ namespace Rubberduck.Parsing.Symbols
             return _membersByImplementsContext.Value.AllValues();
         }
 
-        public Declaration FindParameter(Declaration procedure, string parameterName)
+        public ParameterDeclaration FindParameter(Declaration procedure, string parameterName)
         {
-            List<Declaration> parameters;
-            return _parametersByParent.TryGetValue(procedure, out parameters) 
+            return _parametersByParent.TryGetValue(procedure, out List<ParameterDeclaration> parameters) 
                 ? parameters.SingleOrDefault(parameter => parameter.IdentifierName == parameterName) 
                 : null;
+        }
+
+        public IEnumerable<ParameterDeclaration> Parameters(Declaration procedure)
+        {
+            return _parametersByParent.TryGetValue(procedure, out List<ParameterDeclaration> result)
+                ? result
+                : Enumerable.Empty<ParameterDeclaration>();
         }
 
         public IEnumerable<Declaration> FindMemberMatches(Declaration parent, string memberName)
@@ -1039,6 +1058,35 @@ namespace Rubberduck.Parsing.Symbols
             return declaration.DeclarationType.HasFlag(DeclarationType.Property)
                 || declaration.DeclarationType == DeclarationType.Function
                 || declaration.DeclarationType == DeclarationType.Procedure;
+        }
+
+        /// <summary>
+        /// Creates a dictionary of identifier references, keyed by module.
+        /// </summary>
+        public IReadOnlyDictionary<QualifiedModuleName,IEnumerable<IdentifierReference>> IdentifierReferences()
+        {
+            return new ReadOnlyDictionary<QualifiedModuleName, IEnumerable<IdentifierReference>>(
+                _referencesByModule.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.AsEnumerable()));
+        }
+
+        /// <summary>
+        /// Gets all identifier references in the specified module.
+        /// </summary>
+        public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedModuleName module)
+        {
+            return _referencesByModule.TryGetValue(module, out List<IdentifierReference> value)
+                ? value
+                : Enumerable.Empty<IdentifierReference>();
+        }
+
+        /// <summary>
+        /// Gets all identifier references in the specified member.
+        /// </summary>
+        public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedMemberName member)
+        {
+            return _referencesByMember.TryGetValue(member, out List<IdentifierReference> value)
+                ? value
+                : Enumerable.Empty<IdentifierReference>();
         }
     }
 }

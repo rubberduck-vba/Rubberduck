@@ -413,12 +413,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Severity" xml:space="preserve">
     <value>Sévérité</value>
   </data>
-  <data name="SourceControl_CreateNewRepo" xml:space="preserve">
-    <value>Créer un nouveau 'repository'</value>
-  </data>
-  <data name="SourceControl_OpenWorkingDirectory" xml:space="preserve">
-    <value>Ouvrir le dossier de travail</value>
-  </data>
   <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
     <value>{0} Échoués</value>
   </data>
@@ -668,111 +662,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Explorateur</value>
   </data>
-  <data name="SourceControlPanel_Caption" xml:space="preserve">
-    <value>Contrôle des sources</value>
-  </data>
-  <data name="SourceControl_AttributesFile" xml:space="preserve">
-    <value>Fichier d'attributs</value>
-  </data>
-  <data name="SourceControl_Branches" xml:space="preserve">
-    <value>Branches</value>
-  </data>
-  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
-    <value>Annuler</value>
-  </data>
-  <data name="SourceControl_Changes" xml:space="preserve">
-    <value>Modifications</value>
-  </data>
-  <data name="SourceControl_Commit" xml:space="preserve">
-    <value>Consigner</value>
-  </data>
-  <data name="SourceControl_CommitButtonLabel" xml:space="preserve">
-    <value>Procéder</value>
-  </data>
-  <data name="SourceControl_CommitMessageLabel" xml:space="preserve">
-    <value>Message consignation</value>
-  </data>
-  <data name="SourceControl_CurrentBranchLabel" xml:space="preserve">
-    <value>Branche:</value>
-  </data>
-  <data name="SourceControl_DefaultRepoLocationLabel" xml:space="preserve">
-    <value>Emplacement par défaut</value>
-  </data>
-  <data name="SourceControl_DestinationLabel" xml:space="preserve">
-    <value>Destination</value>
-  </data>
-  <data name="SourceControl_EmailAddressLabel" xml:space="preserve">
-    <value>Adresse courriel</value>
-  </data>
-  <data name="SourceControl_ExcludedChanges" xml:space="preserve">
-    <value>Modifications exclues</value>
-  </data>
-  <data name="SourceControl_FetchCommitsLabel" xml:space="preserve">
-    <value>Télécharger</value>
-  </data>
-  <data name="SourceControl_GlobalSettings" xml:space="preserve">
-    <value>Paramètres globaux</value>
-  </data>
-  <data name="SourceControl_IgnoreFile" xml:space="preserve">
-    <value>Ignorer le fichier</value>
-  </data>
-  <data name="SourceControl_IncludedChanges" xml:space="preserve">
-    <value>Modifications incluses</value>
-  </data>
-  <data name="SourceControl_IncomingCommits" xml:space="preserve">
-    <value>Consignations</value>
-  </data>
-  <data name="SourceControl_MergeBranch" xml:space="preserve">
-    <value>Fusionner</value>
-  </data>
-  <data name="SourceControl_MergeFormCaption" xml:space="preserve">
-    <value>Rubberduck - Fusionner</value>
-  </data>
-  <data name="SourceControl_NewBranch" xml:space="preserve">
-    <value>Nouvelle branche</value>
-  </data>
-  <data name="SourceControl_OutgoingCommits" xml:space="preserve">
-    <value>Consignations sortantes</value>
-  </data>
-  <data name="SourceControl_PublishedBranchesLabel" xml:space="preserve">
-    <value>Branches publiées</value>
-  </data>
-  <data name="SourceControl_PullCommitsLabel" xml:space="preserve">
-    <value>Tirer</value>
-  </data>
-  <data name="SourceControl_PushCommitsLabel" xml:space="preserve">
-    <value>Pousser</value>
-  </data>
-  <data name="SourceControl_RefreshButtonToolTip" xml:space="preserve">
-    <value>Rafraîchit les modifications non consignées</value>
-  </data>
-  <data name="SourceControl_RespositorySettings" xml:space="preserve">
-    <value>Paramètres du dépôt</value>
-  </data>
-  <data name="SourceControl_Settings" xml:space="preserve">
-    <value>Paramètres</value>
-  </data>
-  <data name="SourceControl_SourceLabel" xml:space="preserve">
-    <value>Source</value>
-  </data>
-  <data name="SourceControl_SyncCommitsLabel" xml:space="preserve">
-    <value>Synchroniser</value>
-  </data>
-  <data name="SourceControl_UnpublishedBranchesLabel" xml:space="preserve">
-    <value>Branches non publiées</value>
-  </data>
-  <data name="SourceControl_UnsyncedCommits" xml:space="preserve">
-    <value>Consignations non synchronisées</value>
-  </data>
-  <data name="SourceControl_UntrackedFiles" xml:space="preserve">
-    <value>Fichiers non-suivis</value>
-  </data>
-  <data name="SourceControl_UpdateGlobalSettings" xml:space="preserve">
-    <value>Mise à jour</value>
-  </data>
-  <data name="SourceControl_UserNameLabel" xml:space="preserve">
-    <value>Utilisateur</value>
-  </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>Re&amp;nommer</value>
   </data>
@@ -784,36 +673,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="CodeExplorer_Refresh" xml:space="preserve">
     <value>R&amp;afraîchir</value>
-  </data>
-  <data name="SourceControl_CreateNewBranchInstructions" xml:space="preserve">
-    <value>Veuillez spécifier un nom pour la nouvelle branche.</value>
-  </data>
-  <data name="SourceControl_CreateNewBranchTitle" xml:space="preserve">
-    <value>Nouvelle branche</value>
-  </data>
-  <data name="SourceControl_MergeFormInstructions" xml:space="preserve">
-    <value>Veuillez sélectionner la source et la destination.</value>
-  </data>
-  <data name="SourceControl_MergeFormTitle" xml:space="preserve">
-    <value>Fusionner les branches</value>
-  </data>
-  <data name="SourceControl_NoRepoFound" xml:space="preserve">
-    <value>Dépôt introuvable.</value>
-  </data>
-  <data name="SourceControl_SuccessfulMerge" xml:space="preserve">
-    <value>La branche {0} a été fusionnée dans {1} avec succès.</value>
-  </data>
-  <data name="SourceControl_DeleteBranchCaption" xml:space="preserve">
-    <value>Rubberduck - Supprimer branche</value>
-  </data>
-  <data name="SourceControl_CreateNewBranchCaption" xml:space="preserve">
-    <value>Rubberduck - Créer une branche</value>
-  </data>
-  <data name="SourceControl_DeleteBranchInstructionsLabel" xml:space="preserve">
-    <value>Veuillez spécifier le nom de la branche.</value>
-  </data>
-  <data name="SourceControl_DeleteBranchTitleLable" xml:space="preserve">
-    <value>Supprimer branche</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} problèmes)</value>
@@ -839,9 +698,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
     <value>Na&amp;viguer</value>
-  </data>
-  <data name="SourceControl_DeleteButton" xml:space="preserve">
-    <value>Supprimer branche</value>
   </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Nom du paramètre:</value>
@@ -996,17 +852,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
     <value>&amp;Implémenter l'interface</value>
   </data>
-  <data name="SourceControl_DeleteBranch" xml:space="preserve">
-    <value>Supprimer une branche</value>
-  </data>
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
     <value>Initialisation et nettoyage des méthodes de test</value>
-  </data>
-  <data name="SourceControl_Id" xml:space="preserve">
-    <value>Id</value>
   </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolut</value>
@@ -1020,17 +870,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ParserState_LoadingReference" xml:space="preserve">
     <value>Chargement des références</value>
   </data>
-  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
-    <value>Répertoire local:</value>
-  </data>
-  <data name="SourceControl_FilePath" xml:space="preserve">
-    <value>Emplacement</value>
-  </data>
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="SourceControl_PasswordLabel" xml:space="preserve">
-    <value>Mot de passe:</value>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
     <value>cette procédure s'exécute après chaque test dans le module</value>
@@ -1050,9 +891,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SearchResults_MemberName" xml:space="preserve">
     <value>Membre</value>
   </data>
-  <data name="SourceControl_LoginInstructions" xml:space="preserve">
-    <value>L'opération n'a pu être complétée parce que Rubberduck ne dispose pas des informations nécessaire à l'autorisation de cette opération.</value>
-  </data>
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Module de test</value>
   </data>
@@ -1070,9 +908,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Raccourcis:</value>
-  </data>
-  <data name="SourceControl_CommitAndSync" xml:space="preserve">
-    <value>Consigner et synchroniser</value>
   </data>
   <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
     <value>Regroupement</value>
@@ -1092,12 +927,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
     <value>Forcer les instructions Debug à la ligne 1</value>
   </data>
-  <data name="SourceControl_FileStatus" xml:space="preserve">
-    <value>Statut</value>
-  </data>
-  <data name="SourceControl_NoBranchesMessage" xml:space="preserve">
-    <value>Le repository ne contient aucune branche.</value>
-  </data>
   <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
     <value>Indenter le premier bloc de commentaires</value>
   </data>
@@ -1106,9 +935,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="CommonHotkey_HookDetached" xml:space="preserve">
     <value>L'attache est déjà désactivée.</value>
-  </data>
-  <data name="SourceControl_Dismiss" xml:space="preserve">
-    <value>Ok</value>
   </data>
   <data name="UnitTestSettings_BindingMode" xml:space="preserve">
     <value>Liaison par défaut:</value>
@@ -1134,17 +960,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
     <value>Attributions</value>
   </data>
-  <data name="SourceControl_Message" xml:space="preserve">
-    <value>Message</value>
-  </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rechercher/remplacer avec une RegE&amp;x</value>
   </data>
   <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
     <value>Ignorer les opérateurs</value>
-  </data>
-  <data name="SourceControl_CommitAndPush" xml:space="preserve">
-    <value>Consigner et pousser</value>
   </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Résultats de recherche</value>
@@ -1154,9 +974,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Module</value>
-  </data>
-  <data name="SourceControl_UpdateSettingsTitle" xml:space="preserve">
-    <value>Paramètres mis à jour</value>
   </data>
   <data name="HotkeyDescription_IndentModule" xml:space="preserve">
     <value>Indenter le module</value>
@@ -1200,17 +1017,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
     <value>Même espacement</value>
   </data>
-  <data name="SourceControl_SourceBranch" xml:space="preserve">
-    <value>Branche source:</value>
-  </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
     <value>Non concluant</value>
   </data>
   <data name="IndenterSettings_AlignDims" xml:space="preserve">
     <value>Aligner les déclarations (Dim)</value>
-  </data>
-  <data name="SourceControl_Delete" xml:space="preserve">
-    <value>Supprimer</value>
   </data>
   <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
     <value>Refactorer / extraire une méthode</value>
@@ -1221,17 +1032,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
     <value>Description</value>
   </data>
-  <data name="SourceControl_ExcludeFileButton" xml:space="preserve">
-    <value>Exclure</value>
-  </data>
   <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
     <value>Touche1</value>
   </data>
   <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
     <value>Touche2</value>
-  </data>
-  <data name="SourceControl_Author" xml:space="preserve">
-    <value>Auteur</value>
   </data>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Options spéciales</value>
@@ -1251,9 +1056,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
     <value>Nombre d'espaces:</value>
   </data>
-  <data name="SourceControl_MergeStatus" xml:space="preserve">
-    <value>Statut</value>
-  </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Analyse du code propulsée par ANTLR
 Intégration GitHub propulsée par LibGit2Sharp
@@ -1266,7 +1068,7 @@ Support localisation WPF par Grant Frisken</value>
     <value>Clé invalide</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2017 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>cette procédure s'exécute une seule fois par module</value>
@@ -1286,9 +1088,6 @@ Support localisation WPF par Grant Frisken</value>
   <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
     <value>Indenter le premier bloc de déclarations</value>
   </data>
-  <data name="SourceControl_RemotePathLabel" xml:space="preserve">
-    <value>Chemin d'accès distant:</value>
-  </data>
   <data name="CommonHotkey_HookAttached" xml:space="preserve">
     <value>L'attache est déjà active.</value>
   </data>
@@ -1297,9 +1096,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="HotkeyDescription_ParseAll" xml:space="preserve">
     <value>Rafraîchir l'analyseur</value>
-  </data>
-  <data name="SourceControl_NoBranchesTitle" xml:space="preserve">
-    <value>Aucune branche trouvée</value>
   </data>
   <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
     <value>Directe (early binding)</value>
@@ -1312,9 +1108,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
-  </data>
-  <data name="SourceControl_BranchName" xml:space="preserve">
-    <value>Nom de la branche:</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>la procédure externe</value>
@@ -1330,9 +1123,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
     <value>Assertions permissives</value>
-  </data>
-  <data name="SourceControl_UpdateSettingsMessage" xml:space="preserve">
-    <value>Votre nom d'utilisateur, addresse courriel et emplacement par défaut ont été sauvegardés.</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Par module</value>
@@ -1370,9 +1160,6 @@ Support localisation WPF par Grant Frisken</value>
   <data name="AboutWindow_BlogsHeader" xml:space="preserve">
     <value>Blogues:</value>
   </data>
-  <data name="SourceControl_UnpublishBranchButton" xml:space="preserve">
-    <value>Dépublier</value>
-  </data>
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>Par type d'inspection</value>
   </data>
@@ -1381,9 +1168,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="ParserState_Parsing" xml:space="preserve">
     <value>Analyse...</value>
-  </data>
-  <data name="SourceControl_UndoChangesButton" xml:space="preserve">
-    <value>Annuler</value>
   </data>
   <data name="CodeInspectionResults_Location" xml:space="preserve">
     <value>Emplacement</value>
@@ -1399,14 +1183,8 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Tests unitaires</value>
   </data>
-  <data name="SourceControl_IncludeFileButton" xml:space="preserve">
-    <value>Inclure</value>
-  </data>
   <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
     <value>Changer le numéro d'erreur</value>
-  </data>
-  <data name="SourceControl_PublishBranchButton" xml:space="preserve">
-    <value>Publier</value>
   </data>
   <data name="SearchResults_ModuleName" xml:space="preserve">
     <value>Module</value>
@@ -1420,9 +1198,6 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Langue d'affichage:</value>
   </data>
-  <data name="SourceControl_CommitStatus_CommitAndPushSuccess" xml:space="preserve">
-    <value>Opération complétée avec succès.</value>
-  </data>
   <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
     <value>Point (.)</value>
   </data>
@@ -1435,17 +1210,8 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Erreurs d'analyse</value>
   </data>
-  <data name="SourceControl_MissingCredentials" xml:space="preserve">
-    <value>Informations manquantes</value>
-  </data>
   <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
     <value>Copier au presse-papier</value>
-  </data>
-  <data name="CodeExplorer_Undo" xml:space="preserve">
-    <value>Annuler...</value>
-  </data>
-  <data name="CodeExplorer_Commit" xml:space="preserve">
-    <value>Consigner...</value>
   </data>
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Avertissement</value>
@@ -1462,14 +1228,8 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Annoter avec '@&amp;NoIndent</value>
   </data>
-  <data name="SourceControl_UndoPrompt" xml:space="preserve">
-    <value>Souhaitez-vous annuler les modifications effectuées à {0}?</value>
-  </data>
   <data name="CodeExplorer_Print" xml:space="preserve">
     <value>Imprimer...</value>
-  </data>
-  <data name="SourceControl_UndoTitle" xml:space="preserve">
-    <value>Contrôle des sources - annuler</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Chercher</value>
@@ -1483,14 +1243,8 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignoré</value>
   </data>
-  <data name="SourceControl_CommitStatus_CommitAndSyncSuccess" xml:space="preserve">
-    <value>Opération complétée avec succès.</value>
-  </data>
   <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
     <value>Fatal</value>
-  </data>
-  <data name="SourceControl_CommitStatus_CommitSuccess" xml:space="preserve">
-    <value>Opération complétée avec succès.</value>
   </data>
   <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
     <value>Trace</value>
@@ -1512,9 +1266,6 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   </data>
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Trier</value>
-  </data>
-  <data name="SourceControl_CommitStatus" xml:space="preserve">
-    <value>Consignation</value>
   </data>
   <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
     <value>Info</value>
@@ -1578,29 +1329,11 @@ End If      'Plus d'outils? Suggestions http://github.com/rubberduck-vba/Rubberd
 
 End Sub</value>
   </data>
-  <data name="SourceControl_OpenCommandPromptFailureTitle" xml:space="preserve">
-    <value>Échec de l'ouverture de l'invite de commande</value>
-  </data>
-  <data name="ToolsMenu_SourceControl" xml:space="preserve">
-    <value>Contrôle des &amp;sources</value>
-  </data>
-  <data name="SourceControl_PublishRepo_NoOpenRepo" xml:space="preserve">
-    <value>Aucun repository ouvert ne peut pousser à l'emplacement distant spécifié.</value>
-  </data>
-  <data name="SourceControl_FileStatus_Unaltered" xml:space="preserve">
-    <value>Inchangé</value>
-  </data>
-  <data name="SourceControl_FileStatus_Missing" xml:space="preserve">
-    <value>Manquant</value>
-  </data>
   <data name="RegexAssistant_NoPatternError" xml:space="preserve">
     <value>(pas d'expression)</value>
   </data>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck ne redémarre pas.</value>
-  </data>
-  <data name="SourceControl_FileStatus_RenamedInWorkDir" xml:space="preserve">
-    <value>Renommé dans le dossier de travail</value>
   </data>
   <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
     <value>M&amp;odule de tests</value>
@@ -1608,38 +1341,8 @@ End Sub</value>
   <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
     <value>Refactorer / Encapsuler le champ</value>
   </data>
-  <data name="SourceControl_PublishRepositoryDescription" xml:space="preserve">
-    <value>Publie un repository existant à un emplacement existant. Le projet actif doit être connecté à un repository.</value>
-  </data>
-  <data name="SourceControl_FilePickerDefaultRepoHeader" xml:space="preserve">
-    <value>Emplacement des repositories</value>
-  </data>
-  <data name="SourceControl_UnknownErrorMessage" xml:space="preserve">
-    <value>Si le journal est activé, vous pouvez créer un ticket sur notre page GitHub avec le contenu du journal situé dans '%AppData%\Roaming\Rubberduck\Logs'.</value>
-  </data>
-  <data name="SourceControl_FileStatus_Unreadable" xml:space="preserve">
-    <value>Illisible</value>
-  </data>
   <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
     <value>Global</value>
-  </data>
-  <data name="SourceControl_FileStatus_RenamedInIndex" xml:space="preserve">
-    <value>Renommé en index</value>
-  </data>
-  <data name="SourceControl_ExternalModifications" xml:space="preserve">
-    <value>Un fichier source a été modifié sans l'éditeur; recharger le fichier?</value>
-  </data>
-  <data name="SourceControl_FileStatus_Staged" xml:space="preserve">
-    <value>En attente</value>
-  </data>
-  <data name="SourceControl_FileStatus_Untracked" xml:space="preserve">
-    <value>Pas de suivi</value>
-  </data>
-  <data name="SourceControl_CommandPromptExeLabel" xml:space="preserve">
-    <value>Emplacement de l'exécutable de l'invite de commande</value>
-  </data>
-  <data name="SourceControl_CloneRepositoryTitle" xml:space="preserve">
-    <value>Cloner un repository distant</value>
   </data>
   <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
     <value>Réduire l'arborescence</value>
@@ -1650,41 +1353,20 @@ End Sub</value>
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
     <value>Propriétés du projet</value>
   </data>
-  <data name="SourceControl_NoActiveProject" xml:space="preserve">
-    <value>Pas de projet actif</value>
-  </data>
-  <data name="SourceControl_ActivateProject" xml:space="preserve">
-    <value>Veuillez ouvrir ou activer un projet et essayer de nouveau.</value>
-  </data>
   <data name="ToolsMenu" xml:space="preserve">
     <value>&amp;Outils</value>
   </data>
   <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>&amp;Assistant Regex</value>
   </data>
-  <data name="SourceControl_PublishRepo_FailureTitle" xml:space="preserve">
-    <value>Publier le repository</value>
-  </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyseur d'expressions Regex</value>
-  </data>
-  <data name="SourceControl_PublishRepositoryTitle" xml:space="preserve">
-    <value>Publier un repository existant</value>
-  </data>
-  <data name="SourceControl_FileStatus_Ignored" xml:space="preserve">
-    <value>Ignoré</value>
-  </data>
-  <data name="SourceControl_UnknownErrorTitle" xml:space="preserve">
-    <value>Une erreur inconnue s'est produite.</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Identifiants en liste blanche</value>
   </data>
   <data name="ToolsMenu_TodoItems" xml:space="preserve">
     <value>À &amp;faire ("TODO")</value>
-  </data>
-  <data name="SourceControl_OpenCommandPromptButtonToolTip" xml:space="preserve">
-    <value>Ouvrir l'invite de commande</value>
   </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
@@ -1710,23 +1392,11 @@ End Sub</value>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>L'inspection des noms ignorera ces identifiants</value>
   </data>
-  <data name="SourceControl_FileStatus_Removed" xml:space="preserve">
-    <value>Supprimé</value>
-  </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Résolution des références...</value>
   </data>
-  <data name="SourceControl_FileStatus_TypeChanged" xml:space="preserve">
-    <value>Type modifié</value>
-  </data>
-  <data name="SourceControl_FilePickerCommandPromptHeader" xml:space="preserve">
-    <value>Exécutable de l'invite de commande</value>
-  </data>
   <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
     <value>Niveau de sévérité</value>
-  </data>
-  <data name="SourceControl_FileStatus_Nonexistent" xml:space="preserve">
-    <value>Non-existent</value>
   </data>
   <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Description</value>
@@ -1734,23 +1404,11 @@ End Sub</value>
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Indenter</value>
   </data>
-  <data name="SourceControl_FileStatus_Modified" xml:space="preserve">
-    <value>Modifié</value>
-  </data>
-  <data name="SourceControl_ManageRepositories" xml:space="preserve">
-    <value>Administrer</value>
-  </data>
-  <data name="SourceControl_FileStatus_StagedTypeChange" xml:space="preserve">
-    <value>Changement de type en attente</value>
-  </data>
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Expression</value>
   </data>
   <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
     <value>Résolution des déclarations...</value>
-  </data>
-  <data name="SourceControl_FileStatus_Added" xml:space="preserve">
-    <value>Ajouté</value>
   </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck a rencontré un problème. Veuillez enregistrer votre travail et redémarrer l'application hôte. Si le journal est activé, vous pouvez téléverser le fichier journal '%AppData%\Roaming\Rubberduck\Logs\RubberduckLog.txt' dans un nouveau ticket sur GitHub, au 'https://github.com/rubberduck-vba/Rubberduck/issues/new'.</value>
@@ -1875,9 +1533,6 @@ End Sub</value>
   <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
     <value>Ouvrir le designer</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryTitle" xml:space="preserve">
-    <value>Créer un nouveau repository local</value>
-  </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>
   </data>
@@ -1924,9 +1579,6 @@ les projets dans le VBE.</value>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0}{1} ne peut être renommé.</value>
   </data>
-  <data name="SourceControl_InitializeRepositoryDescription" xml:space="preserve">
-    <value>Crée un nouveau repository à partir du projet actif.</value>
-  </data>
   <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
     <value>Tests inconclusifs</value>
   </data>
@@ -1938,9 +1590,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Tous les fichiers</value>
-  </data>
-  <data name="SourceControl_CloneRepositoryDescription" xml:space="preserve">
-    <value>Cloner sur le disque local un repository situé à l'URL spécifiée. Le repository sera ensuite chargé dans le projet actif.</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
     <value>Regrouper par type</value>
@@ -1971,9 +1620,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Importer fichiers source</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryTitle" xml:space="preserve">
-    <value>Ouvrir un repository local</value>
   </data>
   <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
     <value>Le paramètre {0} n'avait pas une valeur numérique lors de l'invocation {1}. {2}</value>
@@ -2031,9 +1677,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="Assert_ParameterResultFormat" xml:space="preserve">
     <value>Attendu: {0}; Réel: {1}. {2}</value>
-  </data>
-  <data name="SourceControl_OpenRepositoryDescription" xml:space="preserve">
-    <value>Ouvrir un repository local; le projet actif recevra le code source.</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Impossible de renommer {0}.</value>

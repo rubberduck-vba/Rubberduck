@@ -42,7 +42,6 @@ namespace Rubberduck
 
         private IWindsorContainer _container;
         private App _app;
-        private IComSafe _comSafe;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public void OnAddInsUpdate(ref Array custom) { }
@@ -52,9 +51,6 @@ namespace Rubberduck
         {
             try
             {
-                ComSafeManager.ResetComSafe();
-                _comSafe = ComSafeManager.GetCurrentComSafe();
-
                 if (Application is Microsoft.Vbe.Interop.VBE vbe1)
                 {
                     _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe1);
@@ -62,6 +58,11 @@ namespace Rubberduck
                     
                     var addin = (AddIn)AddInInst;
                     _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
+
+#if DEBUG
+                    // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+                    _addin.Object = new Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI_Object(_ide);
+#endif
                 }
                 else if (Application is Microsoft.VB6.Interop.VBIDE.VBE vbe2)
                 {
@@ -265,18 +266,6 @@ namespace Rubberduck
                     _container.Dispose();
                     _container = null;
                 }
-
-                if (_comSafe != null)
-                {
-                    _logger.Log(LogLevel.Trace, "Disposing COM safe...");
-                    _comSafe.Dispose();
-                    _comSafe = null;
-                    _addin = null;
-                    _ide = null;
-                }
-
-                _isInitialized = false;
-                _logger.Log(LogLevel.Info, "No exceptions were thrown.");
             }
             catch (Exception e)
             {
@@ -286,11 +275,30 @@ namespace Rubberduck
             }
             finally
             {
-                _logger.Log(LogLevel.Trace, "Unregistering AppDomain handlers....");
-                currentDomain.AssemblyResolve -= LoadFromSameFolder;
-                currentDomain.UnhandledException -= HandlAppDomainException;
-                _logger.Log(LogLevel.Trace, "Done. Main Shutdown completed. Toolwindows follow. Quack!");
-                _isInitialized = false;
+                try
+                {
+                    _logger.Log(LogLevel.Trace, "Disposing COM safe...");
+                    ComSafeManager.DisposeAndResetComSafe();
+                    _addin = null;
+                    _ide = null;
+
+                    _isInitialized = false;
+                    _logger.Log(LogLevel.Info, "No exceptions were thrown.");
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e);
+                    _logger.Log(LogLevel.Warn, "Exception disposing the ComSafe has been swallowed.");
+                    //throw; // <<~ uncomment to crash the process
+                }
+                finally
+                {
+                    _logger.Log(LogLevel.Trace, "Unregistering AppDomain handlers....");  
+                    currentDomain.AssemblyResolve -= LoadFromSameFolder;
+                    currentDomain.UnhandledException -= HandlAppDomainException;
+                    _logger.Log(LogLevel.Trace, "Done. Main Shutdown completed. Toolwindows follow. Quack!");
+                    _isInitialized = false;
+                }
             }
         }
     }

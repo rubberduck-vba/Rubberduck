@@ -7,16 +7,17 @@ namespace Rubberduck.Settings
     {
         private GeneralSettings _current;
         private readonly IPersistanceService<GeneralSettings> _persister;
+        private readonly GeneralSettings _defaultSettings;
 
         public GeneralConfigProvider(IPersistanceService<GeneralSettings> persister)
         {
             _persister = persister;
+            _defaultSettings = new DefaultSettings<GeneralSettings>().Default;
         }
 
         public GeneralSettings Create()
         {
-            var prototype = new GeneralSettings();
-            var updated = _persister.Load(prototype) ?? prototype;
+            var updated = _persister.Load(_defaultSettings) ?? _defaultSettings;
 
             CheckForEventsToRaise(updated);
             _current = updated;
@@ -26,7 +27,7 @@ namespace Rubberduck.Settings
 
         public GeneralSettings CreateDefaults()
         {
-            return new GeneralSettings();
+            return _defaultSettings;
         }
 
         public void Save(GeneralSettings settings)
@@ -59,12 +60,6 @@ namespace Rubberduck.Settings
         protected virtual void OnAutoSaveSettingsChanged(EventArgs e)
         {
             AutoSaveSettingsChanged?.Invoke(this, e);
-        }
-
-        public event EventHandler SourceControlEnabledChanged;
-        protected virtual void OnSourceControlEnabledChanged(EventArgs e)
-        {
-            SourceControlEnabledChanged?.Invoke(this, e);
         }
     }
 }

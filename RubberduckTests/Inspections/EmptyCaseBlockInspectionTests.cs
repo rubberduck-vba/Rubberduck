@@ -3,23 +3,12 @@ using System.Threading;
 using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
     public class EmptyCaseBlockInspectionTests
     {
-        [Test]
-        [Category("Inspections")]
-        public void EmptyCaseBlock_InspectionType()
-        {
-            var inspection = new EmptyCaseBlockInspection(null);
-            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
-            Assert.AreEqual(expectedInspection, inspection.InspectionType);
-        }
-
         [Test]
         [Category("Inspections")]
         public void EmptyCaseBlock_InspectionName()

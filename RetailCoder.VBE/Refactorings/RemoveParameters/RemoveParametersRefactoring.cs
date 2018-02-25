@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -19,11 +22,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
+        private readonly IProjectsProvider _projectsProvider;
 
-        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IProjectsProvider projectsProvider)
         {
             _vbe = vbe;
             _factory = factory;
+            _projectsProvider = projectsProvider;
         }
 
         public void Refactor()
@@ -40,16 +45,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
             using (var pane = _vbe.ActiveCodePane)
             {
-                using (var module = pane.CodeModule)
-                {
-                    if (!module.IsWrappingNullReference)
-                    {
-                        oldSelection = module.GetQualifiedSelection();
-                    }
-                }
+                var oldSelection = pane.GetQualifiedSelection();
 
                 RemoveParameters();
 
@@ -64,7 +62,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor(QualifiedSelection target)
         {
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -82,7 +80,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            var pane = _vbe.ActiveCodePane;
+            using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {
@@ -121,7 +119,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
                 VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
@@ -130,10 +128,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 if (argumentList == null)
                 {
                     var indexExpression =
-                        ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                        reference.Context.GetAncestor<VBAParser.IndexExprContext>();
                     if (indexExpression != null)
                     {
-                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                        argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();
                     }
                 }
 
@@ -142,7 +140,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                using (var module = reference.QualifiedModuleName.Component.CodeModule)
+                using (var module = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
                 {
                     RemoveCallArguments(argumentList, module);
                 }

@@ -6,7 +6,7 @@ using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class References : SafeComWrapper<VB.References>, IReferences
+    public class References : SafeEventedComWrapper<VB.References, VB._dispReferencesEvents>, IReferences, VB._dispReferencesEvents
     {
         public References(VB.References target, bool rewrapping = false) 
             : base(target, rewrapping)
@@ -15,46 +15,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public event EventHandler<ReferenceEventArgs> ItemAdded;
         public event EventHandler<ReferenceEventArgs> ItemRemoved;
-
-        public void HandleEvents(EventHandler<ReferenceEventArgs> handleItemAdded, EventHandler<ReferenceEventArgs> handleItemRemoved)
-        {
-            var addedHandler = ItemAdded;
-            var removedHandler = ItemRemoved;
-            if (addedHandler != null || removedHandler != null)
-            {
-                return;
-            }
-
-            Target.ItemAdded += Target_ItemAdded;
-            Target.ItemRemoved += Target_ItemRemoved;
-            ItemAdded += handleItemAdded;
-            ItemRemoved += handleItemRemoved;
-        }
-
-        public void UnregisterEvents(EventHandler<ReferenceEventArgs> handleItemAdded, EventHandler<ReferenceEventArgs> handleItemRemoved)
-        {
-            var addedHandler = ItemAdded;
-            var removedHandler = ItemRemoved;
-            if (addedHandler == null || removedHandler == null)
-            {
-                return;
-            }
-
-            Target.ItemAdded -= Target_ItemAdded;
-            Target.ItemRemoved -= Target_ItemRemoved;
-            ItemAdded -= handleItemAdded;
-            ItemRemoved -= handleItemRemoved;
-        }
-
+        
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
 
         public IVBProject Parent => new VBProject(IsWrappingNullReference ? null : Target.Parent);
 
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        private void Target_ItemRemoved(VB.Reference reference)
+        void VB._dispReferencesEvents.ItemRemoved(VB.Reference Reference)
         {
-            var referenceWrapper = new Reference(reference);
+            var referenceWrapper = new Reference(Reference);
             var handler = ItemRemoved;
             if (handler == null)
             {
@@ -64,9 +34,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
-        private void Target_ItemAdded(VB.Reference reference)
+        void VB._dispReferencesEvents.ItemAdded(VB.Reference Reference)
         {
-            var referenceWrapper = new Reference(reference);
+            var referenceWrapper = new Reference(Reference);
             var handler = ItemAdded;
             if (handler == null)
             {
@@ -96,9 +66,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IReference> IEnumerable<IReference>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IReference>(null, o => new Reference(null))
-                : new ComWrapperEnumerator<IReference>(Target, comObject => new Reference((VB.Reference) comObject));
+            return new ComWrapperEnumerator<IReference>(Target, comObject => new Reference((VB.Reference) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -107,21 +75,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IReference>) this).GetEnumerator();
         }
-
-        //private bool _isReleased;
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference && !_isReleased)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-
-        //        base.Release(final);
-        //        _isReleased = true;
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.References> other)
         {

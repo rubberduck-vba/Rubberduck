@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -19,8 +20,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public FunctionReturnValueNotUsedInspection(RubberduckParserState state)
             : base(state) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -87,12 +86,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsAddressOfCall(IdentifierReference usage)
         {
-            return ParserRuleContextHelper.HasParent<VBAParser.AddressOfExpressionContext>(usage.Context);
+            return usage.Context.IsDescendentOf<VBAParser.AddressOfExpressionContext>();
         }
 
         private bool IsTypeOfExpression(IdentifierReference usage)
         {
-            return ParserRuleContextHelper.HasParent<VBAParser.TypeofexprContext>(usage.Context);
+            return usage.Context.IsDescendentOf<VBAParser.TypeofexprContext>();
         }
 
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
@@ -107,7 +106,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsCallStmt(IdentifierReference usage)
         {
-            var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(usage.Context);
+            var callStmt = usage.Context.GetAncestor<VBAParser.CallStmtContext>();
             if (callStmt == null)
             {
                 return false;
@@ -117,12 +116,12 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !usage.Context.IsDescendentOf(argumentList);
         }
 
         private bool IsIndexExprContext(IdentifierReference usage)
         {
-            var indexExpr = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(usage.Context);
+            var indexExpr = usage.Context.GetAncestor<VBAParser.IndexExprContext>();
             if (indexExpr == null)
             {
                 return false;
@@ -132,19 +131,19 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return true;
             }
-            return !ParserRuleContextHelper.HasParent(usage.Context, argumentList);
+            return !usage.Context.IsDescendentOf(argumentList);
         }
 
         private bool IsLet(IdentifierReference usage)
         {
-            var letStmt = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(usage.Context);
+            var letStmt = usage.Context.GetAncestor<VBAParser.LetStmtContext>();
 
             return letStmt != null && letStmt == usage.Context;
         }
 
         private bool IsSet(IdentifierReference usage)
         {
-            var setStmt = ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(usage.Context);
+            var setStmt = usage.Context.GetAncestor<VBAParser.SetStmtContext>();
 
             return setStmt != null && setStmt == usage.Context;
         }

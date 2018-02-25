@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Xml.Serialization;
 
 namespace Rubberduck.Settings
@@ -25,13 +26,15 @@ namespace Rubberduck.Settings
         bool DefaultTestStubInNewModule { get; set; }
     }
 
+    [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     [XmlType(AnonymousType = true)]
     public class UnitTestSettings : IUnitTestSettings, IEquatable<UnitTestSettings>
     {
+        /// <Summary>
+        /// Default constructor required for XML serialization.
+        /// </Summary>
         public UnitTestSettings()
-            : this(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false)
         {
-            //empty constructor needed for serialization
         }
 
         public UnitTestSettings(BindingMode bindingMode, AssertMode assertMode, bool moduleInit, bool methodInit, bool defaultTestStub)

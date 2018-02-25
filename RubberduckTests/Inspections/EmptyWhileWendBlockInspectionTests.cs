@@ -3,23 +3,12 @@ using System.Threading;
 using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
     public class EmptyWhileWendBlockInspectionTests
     {
-        [Test]
-        [Category("Inspections")]
-        public void EmptyWhileWendBlock_InspectionType()
-        {
-            var inspection = new EmptyWhileWendBlockInspection(null);
-            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
-            Assert.AreEqual(expectedInspection, inspection.InspectionType);
-        }
-
         [Test]
         [Category("Inspections")]
         public void EmptyWhileWendBlock_InspectionName()

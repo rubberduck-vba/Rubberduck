@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor
 {
-    public struct QualifiedSelection : IComparable<QualifiedSelection>, IEquatable<QualifiedSelection>
+    public readonly struct QualifiedSelection : IComparable<QualifiedSelection>, IEquatable<QualifiedSelection>
     {
         public QualifiedSelection(QualifiedModuleName qualifiedName, Selection selection)
         {

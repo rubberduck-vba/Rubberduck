@@ -14,9 +14,9 @@ namespace RubberduckTests.Settings
             {
                 ToDoMarkers = new[]
                 {
-                    new ToDoMarker("NOTE "),
-                    new ToDoMarker("TODO "),
-                    new ToDoMarker("BUG ")
+                    new ToDoMarker("NOTE"),
+                    new ToDoMarker("TODO"),
+                    new ToDoMarker("BUG")
                 }
             };
 
@@ -30,7 +30,7 @@ namespace RubberduckTests.Settings
             {
                 ToDoMarkers = new[]
                 {
-                    new ToDoMarker("PLACEHOLDER ")
+                    new ToDoMarker("PLACEHOLDER")
                 }
             };
 
@@ -82,7 +82,7 @@ namespace RubberduckTests.Settings
 
             viewModel.AddTodoCommand.Execute(null);
             var todoMarkersList = defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
-            todoMarkersList.Add(new ToDoMarker("PLACEHOLDER "));
+            todoMarkersList.Add(new ToDoMarker("PLACEHOLDER"));
 
             Assert.IsTrue(todoMarkersList.SequenceEqual(viewModel.TodoSettings));
         }
@@ -130,11 +130,11 @@ namespace RubberduckTests.Settings
             {
                 ToDoMarkers = new[]
                 {
-                    new ToDoMarker("NOTE "),
-                    new ToDoMarker("TODO "),
-                    new ToDoMarker("BUG "),
-                    new ToDoMarker("PLACEHOLDER "),
-                    new ToDoMarker("PLACEHOLDER ")
+                    new ToDoMarker("NOTE"),
+                    new ToDoMarker("TODO"),
+                    new ToDoMarker("BUG"),
+                    new ToDoMarker("PLACEHOLDER"),
+                    new ToDoMarker("PLACEHOLDER")
                 }
             };
 
@@ -142,10 +142,10 @@ namespace RubberduckTests.Settings
             {
                 ToDoMarkers = new[]
                 {
-                    new ToDoMarker("NOTE "),
-                    new ToDoMarker("TODO "),
-                    new ToDoMarker("BUG "),
-                    new ToDoMarker("PLACEHOLDER ")
+                    new ToDoMarker("NOTE"),
+                    new ToDoMarker("TODO"),
+                    new ToDoMarker("BUG"),
+                    new ToDoMarker("PLACEHOLDER")
                 }
             };
 

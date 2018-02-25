@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Common;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ReorderParameters
@@ -19,12 +21,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
+        private readonly IProjectsProvider _projectsProvider;
 
-        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox)
+        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox, IProjectsProvider projectsProvider)
         {
             _vbe = vbe;
             _factory = factory;
             _messageBox = messageBox;
+            _projectsProvider = projectsProvider;
         }
 
         public void Refactor()
@@ -121,9 +125,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             foreach (var reference in references.Where(item => item.Context != _model.TargetDeclaration.Context))
             {
-                var module = reference.QualifiedModuleName.Component.CodeModule;
                 VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
+                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
                 if (callStmt != null)
                 {
                     argumentList = CallStatement.GetArgumentList(callStmt);
@@ -131,15 +134,22 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 
                 if (argumentList == null)
                 {
-                    var indexExpression = ParserRuleContextHelper.GetParent<VBAParser.IndexExprContext>(reference.Context);
+                    var indexExpression = reference.Context.GetAncestor<VBAParser.IndexExprContext>();
                     if (indexExpression != null)
                     {
-                        argumentList = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(indexExpression);
+                        argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();
                     }
                 }
 
-                if (argumentList == null) { continue; }
-                RewriteCall(argumentList, module);
+                if (argumentList == null)
+                {
+                    continue; 
+                }
+
+                using (var module = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
+                {
+                    RewriteCall(argumentList, module);
+                }
             }
         }
 
@@ -150,7 +160,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var args = argList.argument().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
             {
-                if (argList.argument().Count <= i)
+                if (argList.argument().Length <= i)
                 {
                     break;
                 }

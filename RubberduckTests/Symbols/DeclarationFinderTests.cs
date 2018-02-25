@@ -631,7 +631,7 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("foo", ProjectProtection.Unprotected)
                 .AddComponent("foo", ComponentType.StandardModule, code, new Selection(6, 6))
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var parser = MockParser.Create(vbe.Object);
@@ -661,7 +661,7 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 6))
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var parser = MockParser.Create(vbe.Object);

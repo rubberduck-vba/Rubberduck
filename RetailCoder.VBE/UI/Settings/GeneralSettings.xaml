@@ -124,6 +124,8 @@
 
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_CheckVersion}"
                               IsChecked="{Binding CheckVersionAtStartup}" />
+                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_CompileBeforeParse}"
+                              IsChecked="{Binding CompileBeforeParse}" />
                     <StackPanel Orientation="Horizontal"/>
 
                     <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GeneralSettings_MinimumLogLevelLabel}" FontWeight="SemiBold" />
