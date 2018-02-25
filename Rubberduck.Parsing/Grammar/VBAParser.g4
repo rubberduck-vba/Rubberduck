@@ -864,8 +864,9 @@ endOfLine :
     | whiteSpace? commentOrAnnotation
 ;
 
+// we expect endOfStatement to consume all trailing whitespace
 endOfStatement :
-    (endOfLine | (whiteSpace? COLON whiteSpace?))+
+    (endOfLine whiteSpace? | (whiteSpace? COLON whiteSpace?))+
 	| whiteSpace? EOF
 ;
 
@@ -877,7 +878,8 @@ commentOrAnnotation :
 ;
 remComment : REM whiteSpace? commentBody;
 comment : SINGLEQUOTE commentBody;
-commentBody : (LINE_CONTINUATION | ~NEWLINE)*;
+// commentBody must terminate with a NEWLINE, see VBA Language spec, section 3.3.1 and 3789
+commentBody : (LINE_CONTINUATION | ~NEWLINE)* (NEWLINE | EOF);
 annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (whiteSpace? COLON commentBody)?;
 annotation : annotationName annotationArgList?;
 annotationName : unrestrictedIdentifier;
