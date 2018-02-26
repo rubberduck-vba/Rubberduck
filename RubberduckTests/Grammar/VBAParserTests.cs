@@ -440,8 +440,7 @@ END";
         [Test]
         public void TestEmptyComment()
         {
-            string code = @"'
-";
+            string code = @"'";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
@@ -450,8 +449,7 @@ END";
         [Test]
         public void TestEmptyRemComment()
         {
-            string code = @"Rem
-";
+            string code = @"Rem";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
         }
@@ -460,8 +458,7 @@ END";
         [Test]
         public void TestOneCharRemComment()
         {
-            string code = @"Rem a
-";
+            string code = @"Rem a";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
         }
@@ -470,8 +467,7 @@ END";
         [Test]
         public void TestCommentThatLooksLikeAnnotation()
         {
-            string code = @"'@param foo; the value of something
-";
+            string code = @"'@param foo; the value of something";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
@@ -500,8 +496,7 @@ End Sub";
         [Test]
         public void TestOneCharComment()
         {
-            string code = @"'a
-";
+            string code = @"'a";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
@@ -2183,6 +2178,23 @@ End Sub
 ";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void UserDefinedType_TreatsFinalCommentAsComment()
+        {
+            // See Issue #3789
+            const string code = @"
+Private Type tX
+    foo As String
+    bar As Long
+    'foobar as shouldNotBeVisible
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//commentOrAnnotation", matches => matches.Count == 1);
         }
 
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
