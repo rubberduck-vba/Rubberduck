@@ -1,66 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
-using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
-#if DEBUG
-    // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-    /* 
-        VBA Usage example:
-
-            With Application.VBE.Addins("Rubberduck.Extension").Object
-                .ExecuteCode("ProjectName", "ModuleName", "ProcedureName")
-            End With
-    */
-    [System.Runtime.InteropServices.ComVisible(true)]
-    public class VBETypeLibsAPI_Object
-    {
-        private IVBE _ide;
-        private readonly VBETypeLibsAPI _api;
-
-        public VBETypeLibsAPI_Object()
-        {
-            _api = new VBETypeLibsAPI();
-        }
-
-        public VBETypeLibsAPI_Object(IVBE ide) 
-            => _ide = ide;
-
-        public bool CompileProject(string projectName) 
-            => _api.CompileProject(_ide, projectName);
-        public bool CompileComponent(string projectName, string componentName) 
-            => _api.CompileComponent(_ide, projectName, componentName);
-        public object ExecuteCode(string projectName, string standardModuleName, string procName) 
-            => _api.ExecuteCode(_ide, projectName, standardModuleName, procName);
-        public string GetProjectConditionalCompilationArgsRaw(string projectName)
-            => _api.GetProjectConditionalCompilationArgsRaw(_ide, projectName);
-        public void SetProjectConditionalCompilationArgsRaw(string projectName, string newConditionalArgs)
-            => _api.SetProjectConditionalCompilationArgsRaw(_ide, projectName, newConditionalArgs);
-        public bool DoesClassImplementInterface(string projectName, string className, string interfaceProgId) 
-            => _api.DoesClassImplementInterface(_ide, projectName, className, interfaceProgId);
-        public string GetUserFormControlType(string projectName, string userFormName, string controlName)
-            => _api.GetUserFormControlType(_ide, projectName, userFormName, controlName);
-        public string GetDocumentClassControlType(string projectName, string documentClassName, string controlName)
-            => _api.GetDocumentClassControlType(_ide, projectName, documentClassName, controlName);
-        public DocClassType DetermineDocumentClassType(string projectName, string className)
-            => _api.DetermineDocumentClassType(_ide, projectName, className);
-        public string DocumentAll() 
-            => _api.DocumentAll(_ide);
-    }
-#endif
-
-    /// <summary>
-    /// Top level API for accessing live type information from the VBE
-    /// </summary>
-    /// <remarks>
-    /// This class provides a selection of static methods built on top the low-level wrappers [TypLibWrapper/TypeInfoWrapper],
-    /// designed for easy access and to encapsulate proper disposal where necessary
-    /// </remarks>
-    public class VBETypeLibsAPI : IVBETypeLibsAPI
+    public interface IVBETypeLibsAPI
     {
         /// <summary>
         /// Compile an entire VBE project
@@ -68,36 +13,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">The VBA project name</param>
         /// <returns>bool indicating success/failure</returns>
-        public bool CompileProject(IVBE ide, string projectName)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return CompileProject(typeLibs.Get(projectName));
-            }
-        }
+        bool CompileProject(IVBE ide, string projectName);
 
         /// <summary>
         /// Compile an entire VBA project
         /// </summary>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <returns>bool indicating success/failure.</returns>
-        public bool CompileProject(IVBProject project)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return CompileProject(typeLib);
-            }
-        }
+        bool CompileProject(IVBProject project);
 
         /// <summary>
         /// Compile an entire VBA project
         /// </summary>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <returns>bool indicating success/failure</returns>
-        public bool CompileProject(TypeLibWrapper projectTypeLib)
-        {
-            return projectTypeLib.CompileProject();
-        }
+        bool CompileProject(TypeLibWrapper projectTypeLib);
 
         /// <summary>
         /// Compile a single VBA component (e.g. module/class)
@@ -107,13 +37,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">The VBA project name</param>
         /// <param name="componentName">The name of the component (module/class etc) to compile</param>
         /// <returns>bool indicating success/failure.</returns>
-        public bool CompileComponent(IVBE ide, string projectName, string componentName)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return CompileComponent(typeLibs.Get(projectName), componentName);
-            }
-        }
+        bool CompileComponent(IVBE ide, string projectName, string componentName);
 
         /// <summary>
         /// Compile a single VBA component (e.g. module/class)
@@ -122,13 +46,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="componentName">The name of the component (module/class etc) to compile</param>
         /// <returns>bool indicating success/failure.</returns>
-        public bool CompileComponent(IVBProject project, string componentName)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return CompileComponent(typeLib, componentName);
-            }
-        }
+        bool CompileComponent(IVBProject project, string componentName);
 
         /// <summary>
         /// Compile a single VBA component (e.g. module/class)
@@ -137,10 +55,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="componentName">The name of the component (module/class etc) to compile</param>
         /// <returns>bool indicating success/failure.</returns>
-        public bool CompileComponent(TypeLibWrapper projectTypeLib, string componentName)
-        {
-            return CompileComponent(projectTypeLib.TypeInfos.Get(componentName));
-        }
+        bool CompileComponent(TypeLibWrapper projectTypeLib, string componentName);
 
         /// <summary>
         /// Compile a single VBA component (e.g. module/class)
@@ -148,10 +63,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>NOTE: This will only return success if ALL components that this component depends on also compile successfully</remarks>
         /// <param name="component">Safe-com wrapper representing the VBA component to compile</param>
         /// <returns>bool indicating success/failure.</returns>
-        public bool CompileComponent(IVBComponent component)
-        {
-            return CompileComponent(component.ParentProject, component.Name);
-        }
+        bool CompileComponent(IVBComponent component);
 
         /// <summary>
         /// Compile a single VBA component (e.g. module/class)
@@ -159,10 +71,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>NOTE: This will only return success if ALL components that this component depends on also compile successfully</remarks>
         /// <param name="componentTypeInfo">Low-level ITypeInfo wrapper representing the VBA component to compile</param>
         /// <returns>bool indicating success/failure.</returns>
-        public bool CompileComponent(TypeInfoWrapper componentTypeInfo)
-        {
-            return componentTypeInfo.CompileComponent();
-        }
+        bool CompileComponent(TypeInfoWrapper componentTypeInfo);
 
         /// <summary>
         /// Execute a routine inside a standard VBA code module
@@ -174,13 +83,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="procName">Procedure name, as declared in the VBA module</param>
         /// <param name="args">optional array of arguments to pass to the VBA routine</param>
         /// <returns>object representing the VBA return value, if one was provided, or null otherwise.</returns>
-        public object ExecuteCode(IVBE ide, string projectName, string standardModuleName, string procName, object[] args = null)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return ExecuteCode(typeLibs.Get(projectName), standardModuleName, procName, args);
-            }
-        }
+        object ExecuteCode(IVBE ide, string projectName, string standardModuleName, string procName, object[] args = null);
 
         /// <summary>
         /// Execute a routine inside a standard VBA code module
@@ -191,13 +94,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="procName">Procedure name, as declared in the VBA module</param>
         /// <param name="args">optional array of arguments to pass to the VBA routine</param>
         /// <returns>object representing the VBA return value, if one was provided, or null otherwise.</returns>
-        public object ExecuteCode(IVBProject project, string standardModuleName, string procName, object[] args = null)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return ExecuteCode(typeLib, standardModuleName, procName, args);
-            }
-        }
+        object ExecuteCode(IVBProject project, string standardModuleName, string procName, object[] args = null);
 
         /// <summary>
         /// Execute a routine inside a standard VBA code module
@@ -208,10 +105,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="procName">Procedure name, as declared in the VBA module</param>
         /// <param name="args">optional array of arguments to pass to the VBA routine</param>
         /// <returns>object representing the VBA return value, if one was provided, or null otherwise.</returns>
-        public object ExecuteCode(TypeLibWrapper projectTypeLib, string standardModuleName, string procName, object[] args = null)
-        {
-            return ExecuteCode(projectTypeLib.TypeInfos.Get(standardModuleName), procName, args);
-        }
+        object ExecuteCode(TypeLibWrapper projectTypeLib, string standardModuleName, string procName, object[] args = null);
 
         /// <summary>
         /// Execute a routine inside a standard VBA code module
@@ -221,10 +115,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="procName">Procedure name, as declared in the VBA module</param>
         /// <param name="args">optional array of arguments to pass to the VBA routine</param>
         /// <returns>object representing the VBA return value, if one was provided, or null otherwise.</returns>
-        public object ExecuteCode(IVBComponent component, string procName, object[] args = null)
-        {
-            return ExecuteCode(component.ParentProject, component.Name, procName, args);
-        }
+        object ExecuteCode(IVBComponent component, string procName, object[] args = null);
 
         /// <summary>
         /// Execute a routine inside a standard VBA code module
@@ -234,10 +125,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="procName">Procedure name, as declared in the VBA module</param>
         /// <param name="args">optional array of arguments to pass to the VBA routine</param>
         /// <returns>object representing the VBA return value, if one was provided, or null otherwise.</returns>
-        public object ExecuteCode(TypeInfoWrapper standardModuleTypeInfo, string procName, object[] args = null)
-        {
-            return standardModuleTypeInfo.StdModExecute(procName, args);
-        }
+        object ExecuteCode(TypeInfoWrapper standardModuleTypeInfo, string procName, object[] args = null);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
@@ -246,13 +134,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <returns>returns the raw unparsed conditional arguments string, e.g. "foo = 1 : bar = 2"</returns>
-        public string GetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return GetProjectConditionalCompilationArgsRaw(typeLibs.Get(projectName));
-            }
-        }
+        string GetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
@@ -260,13 +142,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>does not expose compiler-defined arguments, such as WIN64, VBA7 etc, which must be determined via the running process</remarks>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <returns>returns the raw unparsed conditional arguments string, e.g. "foo = 1 : bar = 2"</returns>
-        public string GetProjectConditionalCompilationArgsRaw(IVBProject project)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return GetProjectConditionalCompilationArgsRaw(typeLib);
-            }
-        }
+        string GetProjectConditionalCompilationArgsRaw(IVBProject project);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
@@ -274,10 +150,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>does not expose compiler-defined arguments, such as WIN64, VBA7 etc, which must be determined via the running process</remarks>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <returns>returns the raw unparsed conditional arguments string, e.g. "foo = 1 : bar = 2"</returns>
-        public string GetProjectConditionalCompilationArgsRaw(TypeLibWrapper projectTypeLib)
-        {
-            return projectTypeLib.ConditionalCompilationArgumentsRaw;
-        }
+        string GetProjectConditionalCompilationArgsRaw(TypeLibWrapper projectTypeLib);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
@@ -286,13 +159,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <returns>returns a Dictionary<string, string>, parsed from the conditional arguments string</returns>
-        public Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBE ide, string projectName)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return GetProjectConditionalCompilationArgs(typeLibs.Get(projectName));
-            }
-        }
+        Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBE ide, string projectName);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
@@ -300,13 +167,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>does not expose compiler-defined arguments, such as WIN64, VBA7 etc, which must be determined via the running process</remarks>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <returns>returns a Dictionary<string, string>, parsed from the conditional arguments string</returns>
-        public Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBProject project)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return GetProjectConditionalCompilationArgs(typeLib);
-            }
-        }
+        Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBProject project);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
@@ -314,10 +175,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>does not expose compiler-defined arguments, such as WIN64, VBA7 etc, which must be determined via the running process</remarks>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <returns>returns a Dictionary<string, string>, parsed from the conditional arguments string</returns>
-        public Dictionary<string, string> GetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib)
-        {
-            return projectTypeLib.ConditionalCompilationArguments;
-        }
+        Dictionary<string, string> GetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
@@ -326,13 +184,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="newConditionalArgs">Raw string representing the arguments, e.g. "foo = 1 : bar = 2"</param>
-        public void SetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName, string newConditionalArgs)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                SetProjectConditionalCompilationArgsRaw(typeLibs.Get(projectName), newConditionalArgs);
-            }
-        }
+        void SetProjectConditionalCompilationArgsRaw(IVBE ide, string projectName, string newConditionalArgs);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
@@ -340,13 +192,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>don't set compiler-defined arguments, such as WIN64, VBA7 etc</remarks>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="newConditionalArgs">Raw string representing the arguments, e.g. "foo = 1 : bar = 2"</param>
-        public void SetProjectConditionalCompilationArgsRaw(IVBProject project, string newConditionalArgs)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                SetProjectConditionalCompilationArgsRaw(typeLib, newConditionalArgs);
-            }
-        }
+        void SetProjectConditionalCompilationArgsRaw(IVBProject project, string newConditionalArgs);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
@@ -354,10 +200,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>don't set compiler-defined arguments, such as WIN64, VBA7 etc</remarks>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="newConditionalArgs">Raw string representing the arguments, e.g. "foo = 1 : bar = 2"</param>
-        public void SetProjectConditionalCompilationArgsRaw(TypeLibWrapper projectTypeLib, string newConditionalArgs)
-        {
-            projectTypeLib.ConditionalCompilationArgumentsRaw = newConditionalArgs;
-        }
+        void SetProjectConditionalCompilationArgsRaw(TypeLibWrapper projectTypeLib, string newConditionalArgs);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
@@ -366,13 +209,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="newConditionalArgs">Dictionary<string, string> representing the argument name-value pairs</param>
-        public void SetProjectConditionalCompilationArgs(IVBE ide, string projectName, Dictionary<string, string> newConditionalArgs)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                SetProjectConditionalCompilationArgs(typeLibs.Get(projectName), newConditionalArgs);
-            }
-        }
+        void SetProjectConditionalCompilationArgs(IVBE ide, string projectName, Dictionary<string, string> newConditionalArgs);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
@@ -380,13 +217,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>don't set compiler-defined arguments, such as WIN64, VBA7 etc</remarks>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="newConditionalArgs">Dictionary<string, string> representing the argument name-value pairs</param>
-        public void SetProjectConditionalCompilationArgs(IVBProject project, Dictionary<string, string> newConditionalArgs)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                SetProjectConditionalCompilationArgs(typeLib, newConditionalArgs);
-            }
-        }
+        void SetProjectConditionalCompilationArgs(IVBProject project, Dictionary<string, string> newConditionalArgs);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
@@ -394,10 +225,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>don't set compiler-defined arguments, such as WIN64, VBA7 etc</remarks>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="newConditionalArgs">Dictionary<string, string> representing the argument name-value pairs</param>
-        public void SetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib, Dictionary<string, string> newConditionalArgs)
-        {
-            projectTypeLib.ConditionalCompilationArguments = newConditionalArgs;
-        }
+        void SetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib, Dictionary<string, string> newConditionalArgs);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
@@ -406,13 +234,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassType DetermineDocumentClassType(IVBE ide, string projectName, string className)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return DetermineDocumentClassType(typeLibs.Get(projectName), className);
-            }
-        }
+        DocClassType DetermineDocumentClassType(IVBE ide, string projectName, string className);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
@@ -420,10 +242,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassType DetermineDocumentClassType(TypeLibWrapper projectTypeLib, string className)
-        {
-            return DetermineDocumentClassType(projectTypeLib.TypeInfos.Get(className));
-        }
+        DocClassType DetermineDocumentClassType(TypeLibWrapper projectTypeLib, string className);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
@@ -431,33 +250,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassType DetermineDocumentClassType(IVBProject project, string className)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return DetermineDocumentClassType(typeLib.TypeInfos.Get(className));
-            }
-        }
+        DocClassType DetermineDocumentClassType(IVBProject project, string className);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
         /// <param name="project">Safe-com wrapper representing the VBA component</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassType DetermineDocumentClassType(IVBComponent component)
-        {
-            return DetermineDocumentClassType(component.ParentProject, component.Name);
-        }
+        DocClassType DetermineDocumentClassType(IVBComponent component);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
         /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassType DetermineDocumentClassType(TypeInfoWrapper classTypeInfo)
-        {
-            return classTypeInfo.DetermineDocumentClassType();
-        }
+        DocClassType DetermineDocumentClassType(TypeInfoWrapper classTypeInfo);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -467,13 +274,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceProgID">The interface name, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string interfaceProgID)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceProgID);
-            }
-        }
+        bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string interfaceProgID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -482,13 +283,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceProgID">The interface name, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(IVBProject project, string className, string interfaceProgID)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceProgID);
-            }
-        }
+        bool DoesClassImplementInterface(IVBProject project, string className, string interfaceProgID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -497,10 +292,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceProgID">The interface name, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string interfaceProgID)
-        {
-            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceProgID);
-        }
+        bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string interfaceProgID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -508,10 +300,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="component">Safe-com wrapper representing the VBA component</param>
         /// <param name="interfaceProgID">The interface name, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(IVBComponent component, string interfaceProgID)
-        {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceProgID);
-        }
+        bool DoesClassImplementInterface(IVBComponent component, string interfaceProgID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -519,10 +308,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
         /// <param name="interfaceProgID">The interface name, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string interfaceProgID)
-        {
-            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceProgID);
-        }
+        bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string interfaceProgID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -533,13 +319,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string[] interfaceProgIDs, out int matchedIndex)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceProgIDs, out matchedIndex);
-            }
-        }
+        bool DoesClassImplementInterface(IVBE ide, string projectName, string className, string[] interfaceProgIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -549,13 +329,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(IVBProject project, string className, string[] interfaceProgIDs, out int matchedIndex)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceProgIDs, out matchedIndex);
-            }
-        }
+        bool DoesClassImplementInterface(IVBProject project, string className, string[] interfaceProgIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -565,10 +339,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string[] interfaceProgIDs, out int matchedIndex)
-        {
-            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceProgIDs, out matchedIndex);
-        }
+        bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, string[] interfaceProgIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -577,10 +348,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(IVBComponent component, string[] interfaceProgIDs, out int matchedIndex)
-        {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceProgIDs, out matchedIndex);
-        }
+        bool DoesClassImplementInterface(IVBComponent component, string[] interfaceProgIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -589,11 +357,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceProgIDs">An array of interface names, preceeded by the library container name, e.g. "Excel._Worksheet"</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceProgIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string[] interfaceProgIDs, out int matchedIndex)
-        {
-            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceProgIDs, out matchedIndex);
-        }
-        
+        bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, string[] interfaceProgIDs, out int matchedIndex);
+
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
         /// </summary>
@@ -602,13 +367,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceIID">The interface IID</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid interfaceIID)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceIID);
-            }
-        }
+        bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid interfaceIID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -617,13 +376,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceIID">The interface IID</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(IVBProject project, string className, Guid interfaceIID)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceIID);
-            }
-        }
+        bool DoesClassImplementInterface(IVBProject project, string className, Guid interfaceIID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -632,10 +385,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="className">Document class name, as declared in the VBA project</param>
         /// <param name="interfaceIID">The interface IID</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid interfaceIID)
-        {
-            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceIID);
-        }
+        bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid interfaceIID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -643,10 +393,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="component">Safe-com wrapper representing the VBA component</param>
         /// <param name="interfaceIID">The interface IID</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(IVBComponent component, Guid interfaceIID)
-        {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceIID);
-        }
+        bool DoesClassImplementInterface(IVBComponent component, Guid interfaceIID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -654,10 +401,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
         /// <param name="interfaceIID">The interface IID</param>
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
-        public bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid interfaceIID)
-        {
-            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIID);
-        }
+        bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid interfaceIID);
 
         /// <summary>
         /// Determines whether the specified VBA class implements one of several possible interfaces
@@ -668,13 +412,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid[] interfaceIIDs, out int matchedIndex)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return DoesClassImplementInterface(typeLibs.Get(projectName), className, interfaceIIDs, out matchedIndex);
-            }
-        }
+        bool DoesClassImplementInterface(IVBE ide, string projectName, string className, Guid[] interfaceIIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements one of several possible interfaces
@@ -684,13 +422,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(IVBProject project, string className, Guid[] interfaceIIDs, out int matchedIndex)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return DoesClassImplementInterface(typeLib.TypeInfos.Get(className), interfaceIIDs, out matchedIndex);
-            }
-        }
+        bool DoesClassImplementInterface(IVBProject project, string className, Guid[] interfaceIIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements one of several possible interfaces
@@ -700,10 +432,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid[] interfaceIIDs, out int matchedIndex)
-        {
-            return DoesClassImplementInterface(projectTypeLib.TypeInfos.Get(className), interfaceIIDs, out matchedIndex);
-        }
+        bool DoesClassImplementInterface(TypeLibWrapper projectTypeLib, string className, Guid[] interfaceIIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements one of several possible interfaces
@@ -712,10 +441,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(IVBComponent component, Guid[] interfaceIIDs, out int matchedIndex)
-        {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceIIDs, out matchedIndex);
-        }
+        bool DoesClassImplementInterface(IVBComponent component, Guid[] interfaceIIDs, out int matchedIndex);
 
         /// <summary>
         /// Determines whether the specified VBA class implements one of several possible interfaces
@@ -724,10 +450,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="interfaceIIDs">An array of interface IIDs to check against</param>
         /// <param name="matchedIndex">on return indicates the index into interfaceIIDs that matched, or -1 if no match</param>
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
-        public bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid[] interfaceIIDs, out int matchedIndex)
-        {
-            return classTypeInfo.ImplementedInterfaces.DoesImplement(interfaceIIDs, out matchedIndex);
-        }
+        bool DoesClassImplementInterface(TypeInfoWrapper classTypeInfo, Guid[] interfaceIIDs, out int matchedIndex);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -737,13 +460,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="userFormName">UserForm class name, as declared in the VBA project</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetUserFormControlType(IVBE ide, string projectName, string userFormName, string controlName)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return GetUserFormControlType(typeLibs.Get(projectName), userFormName, controlName);
-            }
-        }
+        string GetUserFormControlType(IVBE ide, string projectName, string userFormName, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -752,13 +469,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="userFormName">UserForm class name, as declared in the VBA project</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetUserFormControlType(IVBProject project, string userFormName, string controlName)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return GetUserFormControlType(typeLib, userFormName, controlName);
-            }
-        }
+        string GetUserFormControlType(IVBProject project, string userFormName, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -767,10 +478,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="userFormName">UserForm class name, as declared in the VBA project</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetUserFormControlType(TypeLibWrapper projectTypeLib, string userFormName, string controlName)
-        {
-            return GetUserFormControlType(projectTypeLib.TypeInfos.Get(userFormName), controlName);
-        }
+        string GetUserFormControlType(TypeLibWrapper projectTypeLib, string userFormName, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -778,10 +486,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the UserForm VBA component</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetUserFormControlType(IVBComponent component, string controlName)
-        {
-            return GetUserFormControlType(component.ParentProject, component.Name, controlName);
-        }
+        string GetUserFormControlType(IVBComponent component, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -789,11 +494,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="userFormTypeInfo">Low-level ITypeLib wrapper representing the UserForm VBA component</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetUserFormControlType(TypeInfoWrapper userFormTypeInfo, string controlName)
-        {
-            return userFormTypeInfo.ImplementedInterfaces.Get("FormItf").GetControlType(controlName).GetProgID();
-        }
-        
+        string GetUserFormControlType(TypeInfoWrapper userFormTypeInfo, string controlName);
+
         /// <summary>
         /// Returns the class progID of a control on a UserForm
         /// </summary>
@@ -802,13 +504,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="documentClassName">Document class name, as declared in the VBA project</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetDocumentClassControlType(IVBE ide, string projectName, string documentClassName, string controlName)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return GetDocumentClassControlType(typeLibs.Get(projectName), documentClassName, controlName);
-            }
-        }
+        string GetDocumentClassControlType(IVBE ide, string projectName, string documentClassName, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -817,13 +513,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="documentClassName">Document class name, as declared in the VBA project</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetDocumentClassControlType(IVBProject project, string documentClassName, string controlName)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return GetDocumentClassControlType(typeLib, documentClassName, controlName);
-            }
-        }
+        string GetDocumentClassControlType(IVBProject project, string documentClassName, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -832,10 +522,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="documentClassName">Document class name, as declared in the VBA project</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetDocumentClassControlType(TypeLibWrapper projectTypeLib, string documentClassName, string controlName)
-        {
-            return GetDocumentClassControlType(projectTypeLib.TypeInfos.Get(documentClassName), controlName);
-        }
+        string GetDocumentClassControlType(TypeLibWrapper projectTypeLib, string documentClassName, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -843,10 +530,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="ide">Safe-com wrapper representing the UserForm VBA component</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetDocumentClassControlType(IVBComponent component, string controlName)
-        {
-            return GetDocumentClassControlType(component.ParentProject, component.Name, controlName);
-        }
+        string GetDocumentClassControlType(IVBComponent component, string controlName);
 
         /// <summary>
         /// Returns the class progID of a control on a UserForm
@@ -854,10 +538,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="documentClass">Low-level ITypeLib wrapper representing the UserForm VBA component</param>
         /// <param name="controlName">Control name, as declared on the UserForm</param>
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
-        public string GetDocumentClassControlType(TypeInfoWrapper documentClass, string controlName)
-        {
-            return documentClass.GetSafeImplementedTypeInfo(0).GetControlType(controlName).GetProgID();
-        }
+        string GetDocumentClassControlType(TypeInfoWrapper documentClass, string controlName);
 
         /// <summary>
         /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
@@ -866,13 +547,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">The VBA project name</param>
         /// <param name="componentName">The name of the component (module/class etc) to get flags for</param>
         /// <returns>ComTypes.TYPEFLAGS flags from the ITypeInfo</returns>
-        public ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBE ide, string projectName, string componentName)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return GetComponentTypeFlags(typeLibs.Get(projectName), componentName);
-            }
-        }
+        System.Runtime.InteropServices.ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBE ide, string projectName, string componentName);
 
         /// <summary>
         /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
@@ -880,13 +555,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="componentName">The name of the component (module/class etc) to get flags for</param>
         /// <returns>ComTypes.TYPEFLAGS flags from the ITypeInfo</returns>
-        public ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBProject project, string componentName)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return GetComponentTypeFlags(typeLib, componentName);
-            }
-        }
+        System.Runtime.InteropServices.ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBProject project, string componentName);
 
         /// <summary>
         /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
@@ -894,30 +563,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="componentName">The name of the component (module/class etc) to get flags for</param>
         /// <returns>ComTypes.TYPEFLAGS flags from the ITypeInfo</returns>
-        public ComTypes.TYPEFLAGS GetComponentTypeFlags(TypeLibWrapper projectTypeLib, string componentName)
-        {
-            return GetComponentTypeFlags(projectTypeLib.TypeInfos.Get(componentName));
-        }
+        System.Runtime.InteropServices.ComTypes.TYPEFLAGS GetComponentTypeFlags(TypeLibWrapper projectTypeLib, string componentName);
 
         /// <summary>
         /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
         /// </summary>
         /// <param name="component">Safe-com wrapper representing the VBA component to get flags for</param>
         /// <returns>ComTypes.TYPEFLAGS flags from the ITypeInfo</returns>
-        public ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBComponent component)
-        {
-            return GetComponentTypeFlags(component.ParentProject, component.Name);
-        }
+        System.Runtime.InteropServices.ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBComponent component);
 
         /// <summary>
         /// Retreives the TYPEFLAGS of a VBA component (e.g. module/class), providing flags like TYPEFLAG_FCANCREATE, TYPEFLAG_FPREDECLID
         /// </summary>
         /// <param name="componentTypeInfo">Low-level ITypeInfo wrapper representing the VBA component to get flags for</param>
         /// <returns>ComTypes.TYPEFLAGS flags from the ITypeInfo</returns>
-        public ComTypes.TYPEFLAGS GetComponentTypeFlags(TypeInfoWrapper componentTypeInfo)
-        {
-            return componentTypeInfo.Flags;
-        }
+        System.Runtime.InteropServices.ComTypes.TYPEFLAGS GetComponentTypeFlags(TypeInfoWrapper componentTypeInfo);
 
         /// <summary>
         /// Returns a TypeInfoReference object containing information about the specified VBA project reference
@@ -926,13 +586,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="referenceIdx">Index into the references collection</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        public TypeInfoReference GetReferenceInfo(IVBE ide, string projectName, int referenceIdx)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                return GetReferenceInfo(typeLibs.Get(projectName), referenceIdx);
-            }
-        }
+        TypeInfoReference GetReferenceInfo(IVBE ide, string projectName, int referenceIdx);
 
         /// <summary>
         /// Returns a TypeInfoReference object containing information about the specified VBA project reference
@@ -940,13 +594,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="referenceIdx">Index into the references collection</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        public TypeInfoReference GetReferenceInfo(IVBProject project, int referenceIdx)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return GetReferenceInfo(typeLib, referenceIdx);
-            }
-        }
+        TypeInfoReference GetReferenceInfo(IVBProject project, int referenceIdx);
 
         /// <summary>
         /// Returns a TypeInfoReference object containing information about the specified VBA project reference
@@ -954,10 +602,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="referenceIdx">Index into the references collection</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        public TypeInfoReference GetReferenceInfo(TypeLibWrapper projectTypeLib, int referenceIdx)
-        {
-            return projectTypeLib.GetVBEReferenceByIndex(referenceIdx);
-        }
+        TypeInfoReference GetReferenceInfo(TypeLibWrapper projectTypeLib, int referenceIdx);
 
         /// <summary>
         /// Returns a TypeInfoReference object containing information about the specified VBA project reference
@@ -965,57 +610,27 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="vbeReference">Safe-com wrapper representing the VBA project reference</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        public TypeInfoReference GetReferenceInfo(IVBProject project, IReference vbeReference)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return typeLib.GetVBEReferenceByGuid(Guid.Parse(vbeReference.Guid));
-            }
-        }
+        TypeInfoReference GetReferenceInfo(IVBProject project, IReference vbeReference);
 
         /// <summary>
         /// Documents the type libaries of all loaded VBA projects
         /// </summary>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <returns>text document, in a non-standard format, useful for debugging purposes</returns>
-        public string DocumentAll(IVBE ide)
-        {
-            using (var typeLibs = new VBETypeLibsAccessor(ide))
-            {
-                var output = new StringLineBuilder();
-
-                foreach (var typeLib in typeLibs)
-                {
-                    typeLib.Document(output);
-                }
-
-                return output.ToString();
-            }
-        }
+        string DocumentAll(IVBE ide);
 
         /// <summary>
         /// Documents the type libary of a single VBA project
         /// </summary>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <returns>text document, in a non-standard format, useful for debugging purposes</returns>
-        public string DocumentAll(IVBProject project)
-        {
-            using (var typeLib = TypeLibWrapper.FromVBProject(project))
-            {
-                return DocumentAll(typeLib);
-            }
-        }
+        string DocumentAll(IVBProject project);
 
         /// <summary>
         /// Documents the type libary of a single VBA project
         /// </summary>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <returns>text document, in a non-standard format, useful for debugging purposes</returns>
-        public string DocumentAll(TypeLibWrapper projectTypeLib)
-        {
-            var output = new StringLineBuilder();
-            projectTypeLib.Document(output);
-            return output.ToString();
-        }
+        string DocumentAll(TypeLibWrapper projectTypeLib);
     }
 }

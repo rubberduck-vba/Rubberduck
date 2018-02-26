@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -16,7 +17,7 @@ namespace Rubberduck.UnitTesting
         {
             return GetTestModuleProcedures(state)
                     .Where(item => IsTestMethod(state, item))
-                    .Select(item => new TestMethod(item, vbe));
+                    .Select(item => new TestMethod(item, vbe, new VBETypeLibsAPI()));
         }
 
         public static IEnumerable<TestMethod> GetTests(this IVBComponent component, IVBE vbe, RubberduckParserState state)

@@ -283,6 +283,7 @@ namespace Rubberduck.Properties {
   <Language Code=""en-US"" />
   <CanShowSplash>true</CanShowSplash>
   <CanCheckVersion>true</CanCheckVersion>
+  <CompileBeforeParse>true</CompileBeforeParse>
   <IsSmartIndenterPrompted>false</IsSmartIndenterPrompted>
   <IsAutoSaveEnabled>false</IsAutoSaveEnabled>
   <AutoSavePeriod>10</AutoSavePeriod>

@@ -45,6 +45,7 @@ using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 
 
 namespace Rubberduck.Root
@@ -104,6 +105,7 @@ namespace Rubberduck.Root
 
             RegisterSmartIndenter(container);
             RegisterParsingEngine(container);
+            RegisterTypeLibApi(container);
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
@@ -169,7 +171,7 @@ namespace Rubberduck.Root
             container.Register(Component.For(typeof(IPersistanceService<>), typeof(IFilePersistanceService<>))
                 .ImplementedBy(typeof(XmlPersistanceService<>))
                 .LifestyleSingleton());
-
+            
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());
@@ -714,6 +716,13 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<Func<IVBAPreprocessor>>()
                 .Instance(() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture))));
+        }
+
+        private void RegisterTypeLibApi(IWindsorContainer container)
+        {
+            container.Register(Component.For<IVBETypeLibsAPI>()
+                .ImplementedBy<VBETypeLibsAPI>()
+                .LifestyleSingleton());
         }
 
         private void RegisterCustomDeclarationLoadersToParser(IWindsorContainer container)

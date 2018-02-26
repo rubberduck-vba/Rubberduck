@@ -1142,6 +1142,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}.
+        /// </summary>
+        public static string Command_Reparse_CannotCompile {
+            get {
+                return ResourceManager.GetString("Command_Reparse_CannotCompile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to compile for parsing.
+        /// </summary>
+        public static string Command_Reparse_CannotCompile_Caption {
+            get {
+                return ResourceManager.GetString("Command_Reparse_CannotCompile_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CommandDescription_CodeExplorerCommand {
@@ -1966,6 +1984,15 @@ namespace Rubberduck.UI {
         public static string GeneralSettings_CheckVersion {
             get {
                 return ResourceManager.GetString("GeneralSettings_CheckVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compile code before parsing.
+        /// </summary>
+        public static string GeneralSettings_CompileBeforeParse {
+            get {
+                return ResourceManager.GetString("GeneralSettings_CompileBeforeParse", resourceCulture);
             }
         }
         

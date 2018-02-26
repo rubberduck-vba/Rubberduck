@@ -12,6 +12,7 @@ namespace Rubberduck.Settings
         DisplayLanguageSetting Language { get; set; }
         bool CanShowSplash { get; set; }
         bool CanCheckVersion { get; set; }
+        bool CompileBeforeParse { get; set; }
         bool IsSmartIndenterPrompted { get; set; }
         bool IsAutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
@@ -26,6 +27,7 @@ namespace Rubberduck.Settings
         public DisplayLanguageSetting Language { get; set; }
         public bool CanShowSplash { get; set; }
         public bool CanCheckVersion { get; set; }
+        public bool CompileBeforeParse { get; set; }
         public bool IsSmartIndenterPrompted { get; set; }
         public bool IsAutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
@@ -59,6 +61,7 @@ namespace Rubberduck.Settings
                    Language.Equals(other.Language) &&
                    CanShowSplash == other.CanShowSplash &&
                    CanCheckVersion == other.CanCheckVersion &&
+                   CompileBeforeParse == other.CompileBeforeParse &&
                    IsSmartIndenterPrompted == other.IsSmartIndenterPrompted &&
                    IsAutoSaveEnabled == other.IsAutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&

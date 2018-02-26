@@ -162,6 +162,7 @@
   &lt;Language Code="en-US" /&gt;
   &lt;CanShowSplash&gt;true&lt;/CanShowSplash&gt;
   &lt;CanCheckVersion&gt;true&lt;/CanCheckVersion&gt;
+  &lt;CompileBeforeParse&gt;true&lt;/CompileBeforeParse&gt;
   &lt;IsSmartIndenterPrompted&gt;false&lt;/IsSmartIndenterPrompted&gt;
   &lt;IsAutoSaveEnabled&gt;false&lt;/IsAutoSaveEnabled&gt;
   &lt;AutoSavePeriod&gt;10&lt;/AutoSavePeriod&gt;
