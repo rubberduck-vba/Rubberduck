@@ -3000,6 +3000,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Started.
+        /// </summary>
+        public static string ParserState_Started {
+            get {
+                return ResourceManager.GetString("ParserState_Started", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected Error.
+        /// </summary>
+        public static string ParserState_UnexpectedError {
+            get {
+                return ResourceManager.GetString("ParserState_UnexpectedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parsing project components....
         /// </summary>
         public static string ParseStarted {
