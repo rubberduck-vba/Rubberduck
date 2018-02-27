@@ -123,11 +123,23 @@ namespace Rubberduck.Parsing.UIContext
         /// <summary>
         /// Used to pump any pending COM messages. This should be used only as a part of
         /// synchronizing or to effect a block until all other threads has finished with 
-        /// their pending COM calls. 
+        /// their pending COM calls. This should be used by the UI thread **ONLY**.
         /// </summary>
-        public static void DoEvents()
+        /// <remarks>
+        /// Typical use would be within a event handler for an event belonging to a COM 
+        /// object which require some synchronization with COM accesses from other threads. 
+        /// Events raised by COM are on UI thread by definition. 
+        /// </remarks>
+        public static int DoEvents()
         {
-            Invoke(() => ExecuteDoEvents());
+            CheckInitialization();
+
+            if (UiContext != SynchronizationContext.Current)
+            {
+                throw new InvalidOperationException("DoEvents cannot be used in other threads");
+            }
+
+            return ExecuteDoEvents();
         }
 
         private static int ExecuteDoEvents()
