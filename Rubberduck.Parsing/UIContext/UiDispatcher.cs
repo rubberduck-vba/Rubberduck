@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,11 +6,6 @@ namespace Rubberduck.Parsing.UIContext
 {
     public static class UiDispatcher
     {
-        static UiDispatcher()
-        {
-            _version = DllVersion.Unknown;
-        }
-
         // thanks to Pellared on http://stackoverflow.com/a/12909070/1188513
 
         private static SynchronizationContext UiContext { get; set; }
@@ -104,8 +98,7 @@ namespace Rubberduck.Parsing.UIContext
         {
             return StartTask(func, CancellationToken.None, options);
         }
-
-
+        
         private static void CheckInitialization()
         {
             if (UiContext == null) throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");
@@ -118,82 +111,6 @@ namespace Rubberduck.Parsing.UIContext
             //    LogManager.GetCurrentClassLogger().Debug("Invoking shutdown on UI thread dispatcher.");
             //    Dispatcher.CurrentDispatcher.InvokeShutdown();
             //});
-        }
-
-        /// <summary>
-        /// Used to pump any pending COM messages. This should be used only as a part of
-        /// synchronizing or to effect a block until all other threads has finished with 
-        /// their pending COM calls. This should be used by the UI thread **ONLY**.
-        /// </summary>
-        /// <remarks>
-        /// Typical use would be within a event handler for an event belonging to a COM 
-        /// object which require some synchronization with COM accesses from other threads. 
-        /// Events raised by COM are on UI thread by definition. 
-        /// </remarks>
-        public static int DoEvents()
-        {
-            CheckInitialization();
-
-            if (UiContext != SynchronizationContext.Current)
-            {
-                throw new InvalidOperationException("DoEvents cannot be used in other threads");
-            }
-
-            return ExecuteDoEvents();
-        }
-
-        private static int ExecuteDoEvents()
-        {
-            switch (_version)
-            {
-                case DllVersion.Vbe7:
-                    return rtcDoEvents7();
-                case DllVersion.Vbe6:
-                    return rtcDoEvents6();
-                default:
-                    return DetermineVersionAndExecute();
-            }
-        }
-
-        private enum DllVersion
-        {
-            Unknown,
-            Vbe6,
-            Vbe7
-        }
-
-        private static DllVersion _version;
-        
-        [DllImport("vbe6.dll", EntryPoint = "rtcDoEvents")]
-        private static extern int rtcDoEvents6();
-
-        [DllImport("vbe7.dll", EntryPoint = "rtcDoEvents")]
-        private static extern int rtcDoEvents7();
-        
-        private static int DetermineVersionAndExecute()
-        {
-            int result;
-            try
-
-            {
-                result = rtcDoEvents7();
-                _version = DllVersion.Vbe7;
-            }
-            catch
-            {
-                try
-                {
-                    result = rtcDoEvents6();
-                    _version = DllVersion.Vbe6;
-                }
-                catch
-                {
-                    // we shouldn't be here....
-                    throw new InvalidOperationException("Cannot execute DoEvents; the VBE dll could not be located.");
-                }
-            }
-
-            return result;
         }
     }
 }

@@ -176,6 +176,7 @@
     <Compile Include="Symbols\ParsingExceptions\MainParseSyntaxErrorException.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
     <Compile Include="UIContext\UiDispatcher.cs" />
+    <Compile Include="UIContext\UiSynchronizer.cs" />
     <Compile Include="VBA\RepositoryProjectManager.cs" />
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />

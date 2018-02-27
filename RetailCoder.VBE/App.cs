@@ -50,6 +50,7 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             UiDispatcher.Initialize();
+            UiSynchronizer.Initialize();
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
