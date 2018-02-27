@@ -10,9 +10,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects, VB._dispVBProjectsEvents
     {
-        public VBProjects(VB.VBProjects target, bool rewrapping = false) 
+        public VBProjects(VB.VBProjects target, bool rewrapping = false)
         :base(target, rewrapping)
-        {        
+        {
         }
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
         public IVBE Parent => new VBE(IsWrappingNullReference ? null : Target.Parent);
-        
+
         public IVBProject Add(ProjectType type)
         {
             return new VBProject(IsWrappingNullReference ? null : Target.Add((VB.vbext_ProjectType)type));
@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 return;
             }
-            Target.Remove((VB.VBProject) project.Target);
+            Target.Remove((VB.VBProject)project.Target);
         }
 
         public IVBProject Open(string path)
@@ -66,28 +66,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 
+            return IsWrappingNullReference ? 0
                 : HashCode.Compute(Target);
         }
 
         #region Events
-        
+
         public event EventHandler<ProjectEventArgs> ProjectAdded;
         void VB._dispVBProjectsEvents.ItemAdded([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (IsInDesignMode() && VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
-            {
-                OnDispatch(ProjectAdded, VBProject, true);
-            }
+            OnDispatch(ProjectAdded, VBProject, true);
         }
 
         public event EventHandler<ProjectEventArgs> ProjectRemoved;
         void VB._dispVBProjectsEvents.ItemRemoved([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (IsInDesignMode() && VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
-            {
-                OnDispatch(ProjectRemoved, VBProject);
-            }
+            OnDispatch(ProjectRemoved, VBProject);
         }
 
         public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
@@ -116,17 +110,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public event EventHandler<ProjectEventArgs> ProjectActivated;
         void VB._dispVBProjectsEvents.ItemActivated([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (IsInDesignMode() && VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
-            {
-                OnDispatch(ProjectActivated, VBProject);
-            }
+            OnDispatch(ProjectActivated, VBProject);
         }
 
-        private static void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
+        private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
         {
             var project = new VBProject(vbProject);
             var handler = dispatched;
-            if (handler == null || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            if (handler == null || !IsInDesignMode() || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
             {
                 project.Dispose();
                 return;
@@ -149,13 +140,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private bool IsInDesignMode()
         {
             foreach (var project in this)
-            using(project)
-            {
-                if (project.Mode != EnvironmentMode.Design)
+                using(project)
                 {
-                    return false;
+                    if (project.Mode != EnvironmentMode.Design)
+                    {
+                        return false;
+                    }
                 }
-            }
             return true;
         }
 

@@ -118,7 +118,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private ItemAddedDelegate _projectAdded;
         private void OnProjectAdded(VB.VBProject vbProject)
         {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectAdded, vbProject, true);
+            OnDispatch(ProjectAdded, vbProject, true);
         }
 
         public event EventHandler<ProjectEventArgs> ProjectRemoved;
@@ -126,7 +126,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private ItemRemovedDelegate _projectRemoved;
         private void OnProjectRemoved(VB.VBProject vbProject)
         {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectRemoved, vbProject);
+            OnDispatch(ProjectRemoved, vbProject);
         }
 
         public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
@@ -141,7 +141,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 project.Dispose();
                 return;
             }
-            
+
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
@@ -159,7 +159,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private ItemActivatedDelegate _projectActivated;
         private void OnProjectActivated(VB.VBProject vbProject)
         {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectActivated, vbProject);
+            OnDispatch(ProjectActivated, vbProject);
         }
 
         private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
@@ -167,7 +167,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             var project = new VBProject(vbProject);
 
             var handler = dispatched;
-            if (handler == null)
+            if (handler == null || !VBE.IsInDesignMode)
             {
                 project.Dispose();
                 return;
