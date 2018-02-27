@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1727,5 +1727,11 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
     <value>Maximale Einrückung</value>
+  </data>
+  <data name="ParserState_Started" xml:space="preserve">
+    <value>Gestartet</value>
+  </data>
+  <data name="ParserState_UnexpectedError" xml:space="preserve">
+    <value>Unerwarteter Fehler</value>
   </data>
 </root>

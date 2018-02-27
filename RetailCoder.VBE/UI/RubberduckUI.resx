@@ -1789,4 +1789,10 @@ Would you like to import them to Rubberduck?</value>
   <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
     <value>Compile code before parsing</value>
   </data>
+  <data name="ParserState_Started" xml:space="preserve">
+    <value>Started</value>
+  </data>
+  <data name="ParserState_UnexpectedError" xml:space="preserve">
+    <value>Unexpected Error</value>
+  </data>
 </root>

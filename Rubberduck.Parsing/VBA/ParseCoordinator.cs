@@ -165,7 +165,7 @@ namespace Rubberduck.Parsing.VBA
             toReresolveReferences.UnionWith(toReresolveReferencesInput);
             token.ThrowIfCancellationRequested();
 
-            _parserStateManager.SetModuleStates(toParse, ParserState.Pending, token);
+            _parserStateManager.SetModuleStates(toParse, ParserState.Started, token);
             token.ThrowIfCancellationRequested();
 
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
@@ -320,9 +320,9 @@ namespace Rubberduck.Parsing.VBA
             catch (Exception exception)
             {
                 Logger.Error(exception, "Unexpected exception thrown in parsing run. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
-                if (!(_parserStateManager.OverallParserState >= ParserState.Error))
+                if (_parserStateManager.OverallParserState != ParserState.UnexpectedError)
                 {
-                    _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
+                    _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.UnexpectedError, token);
                 }
             }
             finally
@@ -337,7 +337,7 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
-            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.Pending, token);
+            _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.Started, token);
             token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();

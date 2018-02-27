@@ -402,6 +402,10 @@ namespace Rubberduck.Parsing.VBA
             }
 
             // error state takes precedence over every other state
+            if (stateCounts[(int)ParserState.UnexpectedError] > 0)
+            {
+                return ParserState.UnexpectedError;
+            }
             if (stateCounts[(int)ParserState.Error] > 0)
             {
                 return ParserState.Error;

@@ -38,7 +38,8 @@ namespace Rubberduck.UI.Command
             return _state.Status == ParserState.Pending
                    || _state.Status == ParserState.Ready
                    || _state.Status == ParserState.Error
-                   || _state.Status == ParserState.ResolverError;
+                   || _state.Status == ParserState.ResolverError
+                   || _state.Status == ParserState.UnexpectedError;
         }
 
         protected override void OnExecute(object parameter)
