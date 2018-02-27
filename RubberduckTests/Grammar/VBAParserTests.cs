@@ -2180,6 +2180,23 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == 1);
         }
 
+        [Category("Parser")]
+        [Test]
+        public void UserDefinedType_TreatsFinalCommentAsComment()
+        {
+            // See Issue #3789
+            const string code = @"
+Private Type tX
+    foo As String
+    bar As Long
+    'foobar as shouldNotBeVisible
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//commentOrAnnotation", matches => matches.Count == 1);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);

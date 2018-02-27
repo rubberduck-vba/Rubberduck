@@ -502,8 +502,9 @@ subroutineName : identifier;
 // 5.2.3.3 User Defined Type Declarations
 publicTypeDeclaration : ((GLOBAL | PUBLIC) whiteSpace)? udtDeclaration;
 privateTypeDeclaration : PRIVATE whiteSpace udtDeclaration;
-udtDeclaration : TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList endOfStatement END_TYPE;  
-udtMemberList : udtMember (endOfStatement udtMember)*; 
+// member list includes trailing endOfStatement
+udtDeclaration : TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList END_TYPE;  
+udtMemberList : (udtMember endOfStatement)+; 
 udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
 untypedNameMemberDeclaration : untypedIdentifier whiteSpace? optionalArrayClause;
 reservedNameMemberDeclaration : unrestrictedIdentifier whiteSpace asTypeClause;
@@ -864,21 +865,24 @@ endOfLine :
     | whiteSpace? commentOrAnnotation
 ;
 
+// we expect endOfStatement to consume all trailing whitespace
 endOfStatement :
-    (endOfLine | (whiteSpace? COLON whiteSpace?))+
+    (endOfLine whiteSpace? | (whiteSpace? COLON whiteSpace?))+
 	| whiteSpace? EOF
 ;
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
 commentOrAnnotation :
-    annotationList 
+    (annotationList 
     | remComment
-    | comment
+    | comment) 
+	// all comments must end with a logical line. See VBA Language Spec 3.3.1
+	(NEWLINE | EOF)
 ;
 remComment : REM whiteSpace? commentBody;
 comment : SINGLEQUOTE commentBody;
-commentBody : (LINE_CONTINUATION | ~NEWLINE)*;
-annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (whiteSpace? COLON commentBody)?;
+commentBody : (~NEWLINE)*;
+annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (COLON commentBody)?;
 annotation : annotationName annotationArgList?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
