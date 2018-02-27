@@ -101,15 +101,18 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (_vbe.ActiveCodePane == null || _state.Status != ParserState.Ready)
+            using (var codePane = _vbe.ActiveCodePane)
             {
-                return false;
+                if (codePane == null || codePane.IsWrappingNullReference || _state.Status != ParserState.Ready)
+                {
+                    return false;
+                }
+
+                var target = FindTarget(parameter);
+                var canExecute = target != null;
+
+                return canExecute;
             }
-
-            var target = FindTarget(parameter);
-            var canExecute = target != null;
-
-            return canExecute;
         }
 
         protected override void OnExecute(object parameter)
@@ -181,7 +184,10 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                return _state.FindSelectedDeclaration(activePane);
+            }
         }
 
         private IEnumerable<Declaration> FindImplementations(Declaration target)

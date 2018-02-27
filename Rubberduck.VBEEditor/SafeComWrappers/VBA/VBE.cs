@@ -390,6 +390,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
             return false;
         }
+
+        public QualifiedSelection? GetActiveSelection()
+        {
+            using (var activePane = ActiveCodePane)
+            {
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+
+                return activePane.GetQualifiedSelection();
+            }
+        }
     }
 }
 
