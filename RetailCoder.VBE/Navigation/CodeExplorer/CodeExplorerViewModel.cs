@@ -18,6 +18,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
+using Rubberduck.Parsing.UIContext;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 // ReSharper disable ExplicitCallerInfoArgument

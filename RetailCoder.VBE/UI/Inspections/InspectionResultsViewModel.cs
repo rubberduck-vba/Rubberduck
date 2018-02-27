@@ -11,6 +11,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 
