@@ -102,7 +102,7 @@ namespace Rubberduck.UI.Inspections
         {            
             if (e.InspectionSettingsChanged)
             {
-                RefreshInspections(CancellationToken.None);
+                RefreshCommand.Execute(null);
             }
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }

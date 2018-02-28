@@ -102,7 +102,7 @@ namespace Rubberduck.Inspections
 
                 try
                 {
-                    await Task.Run(() => RunInspectionsInParallel(inspectionsToRun, allIssues, token));
+                    await Task.Run(() => RunInspectionsInParallel(inspectionsToRun, allIssues, token), token);
                 }
                 catch (AggregateException exception)
                 {
@@ -111,10 +111,8 @@ namespace Rubberduck.Inspections
                         //This eliminates the stack trace, but for the cancellation, this is irrelevant.
                         throw exception.InnerException ?? exception;
                     }
-                    else
-                    {
-                        LogManager.GetCurrentClassLogger().Error(exception);
-                    }
+
+                    LogManager.GetCurrentClassLogger().Error(exception);
                 }
                 catch (OperationCanceledException)
                 {
