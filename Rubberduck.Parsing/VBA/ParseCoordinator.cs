@@ -239,7 +239,7 @@ namespace Rubberduck.Parsing.VBA
 
             //Explicitly setting the overall state here guarantees that the handlers attached 
             //to the state change to ResolvedDeclarations always run, provided there is no error. 
-            State.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, token);
+            _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, token);
 
             if (token.IsCancellationRequested || State.Status >= ParserState.Error)
             {
