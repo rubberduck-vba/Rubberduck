@@ -339,7 +339,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     // ghost component shouldn't even exist
                     ClearStateCache(module);
-                    EvaluateParserState();
+                    EvaluateParserState(token);
                     return;
                 }
             }
