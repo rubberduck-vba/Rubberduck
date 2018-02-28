@@ -257,6 +257,7 @@
     <Compile Include="SafeComWrappers\MSForms\WindowState.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\VBA\VBE.cs" />
+    <Compile Include="Utility\DisposalActionContainer.cs" />
     <Compile Include="WindowsApi\ChildWindowFinder.cs" />
     <Compile Include="WindowsApi\CodePaneSubclass.cs" />
     <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />

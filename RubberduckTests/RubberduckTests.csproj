@@ -108,6 +108,7 @@
     <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="Inspections\InspectionProviderTests.cs" />
+    <Compile Include="VBEditor\Utility\DisposalActionContainerTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
@@ -346,7 +347,9 @@
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Utility\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="IntegrationTests\FakeTests.bas" />
     <None Include="IntegrationTests\StubTests.bas" />
