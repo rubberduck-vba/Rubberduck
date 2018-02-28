@@ -156,7 +156,7 @@ namespace Rubberduck.Inspections
             {
                 try
                 {
-                    var inspectionResults = inspection.GetInspectionResults();
+                    var inspectionResults = inspection.GetInspectionResults(token);
 
                     token.ThrowIfCancellationRequested();
 

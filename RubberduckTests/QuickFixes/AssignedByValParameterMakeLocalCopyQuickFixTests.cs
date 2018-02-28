@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Rubberduck.Inspections.QuickFixes;
 using Moq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -361,7 +362,7 @@ End Sub"
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var result = inspectionResults.FirstOrDefault();
                 if (result == null)
                 {
