@@ -17,6 +17,7 @@ using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -697,20 +698,19 @@ namespace Rubberduck.Parsing.VBA
                 foreach (var moduleState in _moduleStates.Where(moduleState => moduleState.Key.ProjectId == projectId))
                 {
                     var qualifiedModuleName = moduleState.Key;
-                    var component = ProjectsProvider.Component(moduleState.Key);
-                    if (component != null)
+                    if (qualifiedModuleName.ComponentType == ComponentType.Undefined && qualifiedModuleName.ComponentType == ComponentType.ComComponent)
                     {
-                        while (!ClearStateCache(qualifiedModuleName))
+                        if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
                         {
-                            // until Hell freezes over?
+                            state.Dispose();
                         }
                     }
                     else
                     {
-                        // store project module name
-                        if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
+                        //This should be a user component.
+                        while (!ClearStateCache(qualifiedModuleName))
                         {
-                            state.Dispose();
+                            // until Hell freezes over?
                         }
                     }
                 }
