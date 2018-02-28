@@ -318,11 +318,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void SetModuleState(QualifiedModuleName module, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
-        {
-            SetModuleState(module, state, CancellationToken.None, parserError, evaluateOverallState);
-        }
-
         public void SetModuleState(QualifiedModuleName module, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
             if (token.IsCancellationRequested)
@@ -359,11 +354,6 @@ namespace Rubberduck.Parsing.VBA
         private IVBProject GetProject(string projectId)
         {
             return _projectRepository.Project(projectId);
-        }
-
-        public void EvaluateParserState()
-        {
-            EvaluateParserState(CancellationToken.None);
         }
 
         public void EvaluateParserState(CancellationToken token)
@@ -509,7 +499,6 @@ namespace Rubberduck.Parsing.VBA
         public ParserState Status
         {
             get => _status;
-            private set => SetStatusWithCancellation(value, CancellationToken.None);
         }
 
         private void SetStatusWithCancellation(ParserState value, CancellationToken token)
@@ -519,11 +508,6 @@ namespace Rubberduck.Parsing.VBA
                 _status = value;
                 OnStateChanged(this, token, _status);
             }
-        }
-
-        public void SetStatusAndFireStateChanged(object requestor, ParserState status)
-        {
-            SetStatusAndFireStateChanged(requestor, status, CancellationToken.None);
         }
 
         public void SetStatusAndFireStateChanged(object requestor, ParserState status, CancellationToken token)
