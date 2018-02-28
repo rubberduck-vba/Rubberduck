@@ -28,6 +28,7 @@ Branch     | Description | Build Status |
  * [About](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/About.md)
  * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md)
  * [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
+ * [User Testimonials](https://github.com/rubberduck-vba/Rubberduck/blob/next/thanks.md)
 
 ---
 
