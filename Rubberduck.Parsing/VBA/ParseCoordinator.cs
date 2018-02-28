@@ -361,6 +361,9 @@ namespace Rubberduck.Parsing.VBA
             removedModules.UnionWith(ModulesInProjects(removedProjects));
             token.ThrowIfCancellationRequested();
 
+            var notRemovedDisposedProjects = NotRemovedDisposedProjects(removedProjects);
+            toParse.UnionWith(ModulesInProjects(notRemovedDisposedProjects));
+
             var toReResolveReferences = OtherModulesReferencingAnyNotToBeParsed(removedModules.AsReadOnly(), toParse.AsReadOnly());
             token.ThrowIfCancellationRequested();
 
@@ -371,7 +374,10 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             //This must come after the component cleanup because of cache invalidation.
-            CleanUpRemovedProjects(removedProjects);
+            CleanUpProjects(removedProjects);
+            token.ThrowIfCancellationRequested();
+
+            CleanUpProjects(notRemovedDisposedProjects);
             token.ThrowIfCancellationRequested();
 
             ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, token);
@@ -384,10 +390,10 @@ namespace Rubberduck.Parsing.VBA
                         .ToHashSet().AsReadOnly();
         }
 
-        private IEnumerable<QualifiedModuleName> ModulesInProjects(IReadOnlyCollection<string> removedProjects)
+        private IEnumerable<QualifiedModuleName> ModulesInProjects(IReadOnlyCollection<string> projectIds)
         {
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                    .Where(declaration => removedProjects.Contains(declaration.ProjectId))
+                    .Where(declaration => projectIds.Contains(declaration.ProjectId))
                     .Select(declaration => declaration.QualifiedName.QualifiedModuleName);
         }
 
@@ -410,7 +416,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void CleanUpRemovedProjects(IReadOnlyCollection<string> removedProjectIds)
+        private void CleanUpProjects(IReadOnlyCollection<string> removedProjectIds)
         {
             ClearStateCache(removedProjectIds);
         }
@@ -439,6 +445,17 @@ namespace Rubberduck.Parsing.VBA
             return removedProjects.Select(tuple => tuple.Item1).ToHashSet().AsReadOnly();
         }
 
+        private IReadOnlyCollection<string> NotRemovedDisposedProjects(IEnumerable<string> removedProjects)
+        {
+            var disposedProjects = State.DeclarationFinder
+                                    .UserDeclarations(DeclarationType.Project)
+                                    .OfType<ProjectDeclaration>()
+                                    .Where(declaration => declaration.IsDisposed)
+                                    .Select(declaration => declaration.ProjectId)
+                                    .ToHashSet();
+            disposedProjects.ExceptWith(removedProjects);
+            return disposedProjects.AsReadOnly();
+        }
 
         public void Dispose()
         {
