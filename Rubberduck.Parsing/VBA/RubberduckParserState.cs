@@ -152,7 +152,20 @@ namespace Rubberduck.Parsing.VBA
             }
             
             Debug.Assert(e.ProjectId != null);
+            DisposeProjectDeclarations(e.ProjectId);
+
             OnParseRequested(sender);
+        }
+
+        private void DisposeProjectDeclarations(string projectId)
+        {
+            var projectDeclarations = DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                .Where(declaration => declaration.ProjectId == projectId)
+                .OfType<ProjectDeclaration>();
+            foreach (var projectDeclaration in projectDeclarations)
+            {
+                projectDeclaration.Dispose();
+            }
         }
 
         private void Sinks_ProjectRenamed(object sender, ProjectRenamedEventArgs e)
