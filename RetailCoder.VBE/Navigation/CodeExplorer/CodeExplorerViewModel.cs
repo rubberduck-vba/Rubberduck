@@ -422,7 +422,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             var projectDeclaration =
                 _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
-                    .FirstOrDefault(item => item.Project.ProjectId == module.ProjectId);
+                    .FirstOrDefault(item => item.ProjectId == module.ProjectId);
 
             if (module.ComponentType == ComponentType.StandardModule)
             {
