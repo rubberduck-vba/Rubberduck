@@ -1793,6 +1793,67 @@ End Sub"
             tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
         }
         #endregion
+        #region Property Tests
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RefactorProperties_UpdatesReferences()
+        {
+            var oldName = "Column";
+            var refactoredName = "Rank";
+
+            var tdo = new RenameTestsDataObject(oldName, refactoredName );
+            var classInputOutput = new RenameTestModuleDefinition("MyClass", ComponentType.ClassModule)
+            {
+                Input = $@"Option Explicit
+
+Private colValue As Long
+
+Public Property Get {oldName}() As Long
+    {oldName} = colValue
+End Property
+Public Property Let |{oldName}(value As Long)
+    colValue = value
+End Property
+",
+                Expected = $@"Option Explicit
+
+Private colValue As Long
+
+Public Property Get {refactoredName}() As Long
+    {refactoredName} = colValue
+End Property
+Public Property Let {refactoredName}(value As Long)
+    colValue = value
+End Property
+"
+            };
+            var usageInputOutput = new RenameTestModuleDefinition("Usage", ComponentType.StandardModule)
+            {
+                Input = $@"Option Explicit
+
+Public Sub useColValue()
+    Dim instance As MyClass
+    Set instance = New MyClass
+    instance.{oldName} = 97521
+    Debug.Print instance.{oldName};""is the value""
+End Sub
+", Expected = $@"Option Explicit
+
+Public Sub useColValue()
+    Dim instance As MyClass
+    Set instance = New MyClass
+    instance.{refactoredName} = 97521
+    Debug.Print instance.{refactoredName};""is the value""
+End Sub
+"
+            };
+            tdo.RefactorParamType = RefactorParams.Declaration;
+            PerformExpectedVersusActualRenameTests(tdo, classInputOutput, usageInputOutput);
+            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+        }
+        #endregion
+
         #region Other Tests
 
         [Test]
