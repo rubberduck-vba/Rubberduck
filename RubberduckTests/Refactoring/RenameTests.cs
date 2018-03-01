@@ -1814,7 +1814,6 @@ End Sub"
             var oldName = "Column";
             var refactoredName = "Rank";
 
-            var tdo = new RenameTestsDataObject(oldName, refactoredName );
             var classInputOutput = new RenameTestModuleDefinition("MyClass", ComponentType.ClassModule)
             {
                 Input = $@"Option Explicit
@@ -1824,7 +1823,7 @@ Private colValue As Long
 Public Property Get {oldName}() As Long
     {oldName} = colValue
 End Property
-Public Property Let |{oldName}(value As Long)
+Public Property Let {FAUX_CURSOR}{oldName}(value As Long)
     colValue = value
 End Property
 ",
@@ -1850,7 +1849,8 @@ Public Sub useColValue()
     instance.{oldName} = 97521
     Debug.Print instance.{oldName};""is the value""
 End Sub
-", Expected = $@"Option Explicit
+",
+                Expected = $@"Option Explicit
 
 Public Sub useColValue()
     Dim instance As MyClass
@@ -1860,8 +1860,24 @@ Public Sub useColValue()
 End Sub
 "
             };
-            tdo.RefactorParamType = RefactorParams.Declaration;
-            PerformExpectedVersusActualRenameTests(tdo, classInputOutput, usageInputOutput);
+
+            var builder = new MockVbeBuilder();
+            var projectName = "Test";
+            var vbe = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 1, isBuiltIn: true)
+                .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input.Replace(FAUX_CURSOR, ""))
+                .AddComponent("Usage", ComponentType.StandardModule, usageInputOutput.Input)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var tdo = new RenameTestsDataObject(oldName, refactoredName)
+            {
+                VBE = vbe.Object,
+                RefactorParamType = RefactorParams.Declaration,
+                SelectionModuleName = "MyClass",
+                ProjectName = projectName
+            };
+            PerformExpectedVersusActualRenameTests(tdo, classInputOutput, usageInputOutput, testLibraries: new[] { "VBA.4.2.xml" });
             tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
         }
         #endregion
@@ -2085,11 +2101,12 @@ End Property";
             , RenameTestModuleDefinition? inputOutput1
             , RenameTestModuleDefinition? inputOutput2 = null
             , RenameTestModuleDefinition? inputOutput3 = null
-            , RenameTestModuleDefinition? inputOutput4 = null)
+            , RenameTestModuleDefinition? inputOutput4 = null
+            , IEnumerable<string> testLibraries = null)
         {
             try
             {
-                InitializeTestDataObject(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4);
+                InitializeTestDataObject(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4, testLibraries);
                 RunRenameRefactorScenario(tdo);
                 CheckRenameRefactorTestResults(tdo);
             }
@@ -2103,7 +2120,8 @@ End Property";
             , RenameTestModuleDefinition? inputOutput1
             , RenameTestModuleDefinition? inputOutput2 = null
             , RenameTestModuleDefinition? inputOutput3 = null
-            , RenameTestModuleDefinition? inputOutput4 = null)
+            , RenameTestModuleDefinition? inputOutput4 = null
+            , IEnumerable<string> testLibraries = null)
         {
             var renameTMDs = new List<RenameTestModuleDefinition>();
             bool cursorFound = false;
@@ -2144,7 +2162,7 @@ End Property";
                 .Returns(tdo.MsgBoxReturn);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
-            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
+            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE, testLibraries: testLibraries);
 
             CreateQualifiedSelectionForTestCase(tdo);
             tdo.RenameModel = new RenameModel(tdo.VBE, tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };
@@ -2269,7 +2287,6 @@ End Property";
         {
             var builder = new MockVbeBuilder();
             var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
-
             foreach (var comp in testComponents)
             {
                 if (comp.ModuleType == ComponentType.UserForm)
