@@ -56,7 +56,7 @@ namespace Rubberduck.API.VBA
         public ParserState()
         {
             UiDispatcher.Initialize();
-            UiSynchronizer.Initialize();
+            ComMessagePumper.Initialize();
         }
 
         public void Initialize(Microsoft.Vbe.Interop.VBE vbe)

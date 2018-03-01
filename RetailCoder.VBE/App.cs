@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
@@ -50,7 +51,7 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             UiDispatcher.Initialize();
-            UiSynchronizer.Initialize();
+            ComMessagePumper.Initialize();
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
