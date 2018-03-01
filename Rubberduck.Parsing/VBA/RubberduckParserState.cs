@@ -17,20 +17,39 @@ using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
 namespace Rubberduck.Parsing.VBA
 {
+    public class ParseProgressEventArgs : EventArgs
+    {
+        public QualifiedModuleName Module { get; }
+        public ParserState State { get; }
+        public ParserState OldState { get; }
+        public CancellationToken Token { get; }
+
+        public ParseProgressEventArgs(QualifiedModuleName module, ParserState state, ParserState oldState, CancellationToken token)
+        {
+            Module = module;
+            State = state;
+            OldState = oldState;
+            Token = token;
+        }
+    }
+
     public class ParserStateEventArgs : EventArgs
     {
-        public ParserStateEventArgs(ParserState state)
+        public ParserStateEventArgs(ParserState state, CancellationToken token)
         {
             State = state;
+            Token = token;
         }
 
         public ParserState State { get; }
+        public CancellationToken Token { get; }
     }
 
     public class RubberduckStatusMessageEventArgs : EventArgs
@@ -256,11 +275,11 @@ namespace Rubberduck.Parsing.VBA
             _projectRepository.Refresh();
         }
 
-        private void RefreshProject(string projectId, bool notifyStateChanged = false)
+        private void RefreshProject(string projectId)
         {
             _projectRepository.Refresh(projectId);
 
-            ClearStateCache(projectId, notifyStateChanged);
+            ClearStateCache(projectId);
         }
 
         public List<IVBProject> Projects => _projectRepository.Projects().Select(tpl => tpl.Project).ToList();
@@ -289,37 +308,39 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
         private int _stateChangedInvocations;
-        private void OnStateChanged(object requestor, ParserState state = ParserState.Pending)
+        private void OnStateChanged(object requestor, CancellationToken token, ParserState state = ParserState.Pending)
         {
             Interlocked.Increment(ref _stateChangedInvocations);
 
             Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
-            StateChanged?.Invoke(requestor, new ParserStateEventArgs(state));
+            var handler = StateChanged;
+            if (handler != null && !token.IsCancellationRequested)
+            {
+                var args = new ParserStateEventArgs(state, token);
+                handler.Invoke(requestor, args);
+            }
         }
 
         public event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
 
         //Never spawn new threads changing module states in the handler! This will cause deadlocks. 
-        private void OnModuleStateChanged(QualifiedModuleName module, ParserState state, ParserState oldState)
+        private void OnModuleStateChanged(QualifiedModuleName module, ParserState state, ParserState oldState, CancellationToken token)
         {
             var handler = ModuleStateChanged;
-            if (handler != null)
+            if (handler != null && !token.IsCancellationRequested)
             {
-                var args = new ParseProgressEventArgs(module, state, oldState);
+                var args = new ParseProgressEventArgs(module, state, oldState, token);
                 handler.Invoke(this, args);
             }
         }
 
         public void SetModuleState(QualifiedModuleName module, ParserState state, CancellationToken token, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
         {
-            if (!token.IsCancellationRequested)
+            if (token.IsCancellationRequested)
             {
-                SetModuleState(module, state, parserError, evaluateOverallState);
+                return;
             }
-        }
 
-        public void SetModuleState(QualifiedModuleName module, ParserState state, SyntaxErrorException parserError = null, bool evaluateOverallState = true)
-        {
             if (AllUserDeclarations.Any())
             {
                 var projectId = module.ProjectId;
@@ -329,7 +350,7 @@ namespace Rubberduck.Parsing.VBA
                 {
                     // ghost component shouldn't even exist
                     ClearStateCache(module);
-                    EvaluateParserState();
+                    EvaluateParserState(token);
                     return;
                 }
             }
@@ -339,21 +360,25 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates.AddOrUpdate(module, new ModuleState(state), (c, e) => e.SetState(state));
             _moduleStates.AddOrUpdate(module, new ModuleState(parserError), (c, e) => e.SetModuleException(parserError));
             Logger.Debug("Module '{0}' state is changing to '{1}' (thread {2})", module.ComponentName, state, Thread.CurrentThread.ManagedThreadId);
-            OnModuleStateChanged(module, state, oldState);
+            OnModuleStateChanged(module, state, oldState, token);
             if (evaluateOverallState)
             {
-                EvaluateParserState();
+                EvaluateParserState(token);
             }
         }
 
         private IVBProject GetProject(string projectId)
         {
             return _projectRepository.Project(projectId);
-                        }
+        }
 
-        public void EvaluateParserState()
+        public void EvaluateParserState(CancellationToken token)
         {
-            lock (_statusLockObject) Status = OverallParserStateFromModuleStates();
+            lock (_statusLockObject)
+            {
+                var newState = OverallParserStateFromModuleStates();
+                SetStatusWithCancellation(newState, token);
+            }
         }
 
         private ParserState OverallParserStateFromModuleStates()
@@ -489,26 +514,27 @@ namespace Rubberduck.Parsing.VBA
         private ParserState _status;
         public ParserState Status
         {
-            get { return _status; }
-            private set
+            get => _status;
+        }
+
+        private void SetStatusWithCancellation(ParserState value, CancellationToken token)
+        {
+            if (_status != value)
             {
-                if (_status != value)
-                {
-                    _status = value;
-                    OnStateChanged(this, _status);
-                }
+                _status = value;
+                OnStateChanged(this, token, _status);
             }
         }
 
-        public void SetStatusAndFireStateChanged(object requestor, ParserState status)
+        public void SetStatusAndFireStateChanged(object requestor, ParserState status, CancellationToken token)
         {
             if (Status == status)
             {
-                OnStateChanged(requestor, status);
+                OnStateChanged(requestor, token, status);
             }
             else
             {
-                Status = status;
+                SetStatusWithCancellation(status, token);
             }
         }
 
@@ -654,8 +680,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (declarations.ContainsKey(declaration))
             {
-                byte _;
-                while (!declarations.TryRemove(declaration, out _))
+                while (!declarations.TryRemove(declaration, out var _))
                 {
                     Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
@@ -666,27 +691,26 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void ClearStateCache(string projectId, bool notifyStateChanged = false)
+        public void ClearStateCache(string projectId)
         {
             try
             {
                 foreach (var moduleState in _moduleStates.Where(moduleState => moduleState.Key.ProjectId == projectId))
                 {
                     var qualifiedModuleName = moduleState.Key;
-                    var component = ProjectsProvider.Component(moduleState.Key);
-                    if (component != null)
+                    if (qualifiedModuleName.ComponentType == ComponentType.Undefined || qualifiedModuleName.ComponentType == ComponentType.ComComponent)
                     {
-                        while (!ClearStateCache(qualifiedModuleName))
+                        if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
                         {
-                            // until Hell freezes over?
+                            state.Dispose();
                         }
                     }
                     else
                     {
-                        // store project module name
-                        if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
+                        //This should be a user component.
+                        while (!ClearStateCache(qualifiedModuleName))
                         {
-                            state.Dispose();
+                            // until Hell freezes over?
                         }
                     }
                 }
@@ -696,16 +720,10 @@ namespace Rubberduck.Parsing.VBA
                 Logger.Error(exception, $"Unexpected COMException while clearing the project with projectId {projectId}. Clearing all modules.");
                 _moduleStates.Clear();
             }
-
-            if (notifyStateChanged)
-            {
-                OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
-                OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates
-            }
         }
 
 
-        public bool ClearStateCache(QualifiedModuleName module, bool notifyStateChanged = false)
+        public bool ClearStateCache(QualifiedModuleName module)
         {
             var keys = new List<QualifiedModuleName> { module };
             foreach (var key in _moduleStates.Keys)
@@ -717,12 +735,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var success = RemoveKeysFromCollections(keys);
-
-            if (notifyStateChanged)
-            {
-                OnStateChanged(this, ParserState.ResolvedDeclarations);   // trigger test explorer and code explorer updates
-                OnStateChanged(this, ParserState.Ready);   // trigger find all references &c. updates
-            }
 
             return success;
         }

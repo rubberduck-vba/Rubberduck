@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -27,7 +28,7 @@ End Sub";
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
@@ -57,7 +58,7 @@ End Sub";
             {
 
                 var inspection = new LineLabelNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -89,7 +90,7 @@ End Sub"; ;
             {
 
                 var inspection = new LineLabelNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -111,7 +112,7 @@ End Sub";
             {
 
                 var inspection = new ProcedureNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
@@ -138,7 +139,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -166,7 +167,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -192,7 +193,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -224,7 +225,7 @@ End Function";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -253,7 +254,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -285,7 +286,7 @@ End Function";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -317,7 +318,7 @@ End Function";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());

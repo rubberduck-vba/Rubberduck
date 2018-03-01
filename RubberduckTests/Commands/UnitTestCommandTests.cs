@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Annotations;
@@ -80,7 +81,7 @@ Private Assert As Object
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences, CancellationToken.None);
 
                 var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));
@@ -161,7 +162,7 @@ Private Assert As Object
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences, CancellationToken.None);
 
                 var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));

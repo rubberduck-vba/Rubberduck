@@ -102,7 +102,7 @@ namespace Rubberduck.UI.Inspections
         {            
             if (e.InspectionSettingsChanged)
             {
-                RefreshInspections();
+                RefreshCommand.Execute(null);
             }
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
@@ -269,7 +269,7 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _runInspectionsOnReparse;
-        private void HandleStateChanged(object sender, EventArgs e)
+        private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
             if(!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
             {
@@ -284,16 +284,27 @@ namespace Rubberduck.UI.Inspections
 
             if (_runInspectionsOnReparse || IsRefreshing)
             {
-                RefreshInspections();
+                RefreshInspections(e.Token);
             }
         }
 
-        private async void RefreshInspections()
+        private async void RefreshInspections(CancellationToken token)
         {
             var stopwatch = Stopwatch.StartNew();
             IsBusy = true;
 
-            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
+            List<IInspectionResult> results;
+            try
+            {
+                var inspectionResults = await _inspector.FindIssuesAsync(_state, token);
+                results = inspectionResults.ToList();
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Debug("Inspections got canceled.");
+                return; //We throw away the partial results.
+            }
+
             if (GroupByInspectionType)
             {
                 results = results.OrderBy(o => o.Inspection.InspectionType)
