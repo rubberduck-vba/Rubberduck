@@ -1,111 +1,87 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Parsing.UIContext
 {
     public static class UiSynchronizer
     {
-        private enum DllVersion
-        {
-            Unknown,
-            Vbe6,
-            Vbe7
-        }
-
-        private static DllVersion _version;
-
-        private static SynchronizationContext UiContext { get; set; }
+        private static readonly ReaderWriterLockSlim Sync;
+        private const int NoTimeout = -1;
+        private const int DefaultTimeout = NoTimeout;
 
         static UiSynchronizer()
         {
-            _version = DllVersion.Unknown;
+            Sync = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         }
-
-        public static void Initialize()
+        
+        public static bool RequestComAccess(Func<bool> func, int timeout = DefaultTimeout)
         {
-            if (UiContext == null)
+            if (!Sync.TryEnterReadLock(timeout))
             {
-                UiContext = SynchronizationContext.Current;
-            }
-        }
-
-        /// <summary>
-        /// Used to pump any pending COM messages. This should be used only as a part of
-        /// synchronizing or to effect a block until all other threads has finished with 
-        /// their pending COM calls. This should be used by the UI thread **ONLY**; 
-        /// otherwise execptions will be thrown.
-        /// </summary>
-        /// <remarks>
-        /// Typical use would be within a event handler for an event belonging to a COM 
-        /// object which require some synchronization with COM accesses from other threads. 
-        /// Events raised by COM are on UI thread by definition so the call stack originating
-        /// from COM objects' events can use this method.
-        /// </remarks>
-        /// <returns>Count of open forms which is always zero for VBA hosts but may be nonzero for VB6 projects.</returns>
-        public static int DoEvents()
-        {
-            CheckContext();
-            
-            return ExecuteDoEvents();
-        }
-
-        private static int ExecuteDoEvents()
-        {
-            switch (_version)
-            {
-                case DllVersion.Vbe7:
-                    return rtcDoEvents7();
-                case DllVersion.Vbe6:
-                    return rtcDoEvents6();
-                default:
-                    return DetermineVersionAndExecute();
-            }
-        }
-
-        private static int DetermineVersionAndExecute()
-        {
-            int result;
-            try
-
-            {
-                result = rtcDoEvents7();
-                _version = DllVersion.Vbe7;
-            }
-            catch
-            {
-                try
-                {
-                    result = rtcDoEvents6();
-                    _version = DllVersion.Vbe6;
-                }
-                catch
-                {
-                    // we shouldn't be here.... Rubberduck is a VBA add-in, so how the heck could it have loaded without a VBE dll?!?
-                    throw new InvalidOperationException("Cannot execute DoEvents; the VBE dll could not be located.");
-                }
+                throw new TimeoutException("Timeout exceeded while waiting to acquire a read lock");
             }
 
+            var result = func.Invoke();
+            Sync.ExitReadLock();
             return result;
         }
 
-        private static void CheckContext()
+        public static void RequireExclusiveComAccess(Action func, int timeout = DefaultTimeout)
         {
-            if (UiContext == null)
+            for (var i = 0; i < timeout || timeout == NoTimeout; i++)
             {
-                throw new InvalidOperationException("UiSynchronizer is not initialized. Invoke Initialize() from UI thread first.");
+                ComMessagePumper.PumpMessages();
+
+                if (Sync.TryEnterWriteLock(1))
+                {
+                    break;
+                }
             }
-            
-            if (UiContext != SynchronizationContext.Current)
+
+            if (!Sync.IsWriteLockHeld)
             {
-                throw new InvalidOperationException("UiSynchronizer cannot be used in other threads. Only the UI thread can call methods on the UiSynchronizer");
+                throw new TimeoutException("Timeout exceeded while waiting to acquire a write lock");
             }
+
+            func.Invoke();
+            Sync.ExitWriteLock();
         }
 
-        [DllImport("vbe6.dll", EntryPoint = "rtcDoEvents")]
-        private static extern int rtcDoEvents6();
+        public static bool RequireExclusiveComAccess(Func<bool> func,  int timeout = DefaultTimeout, bool DeferToParse = true)
+        {
+            for (var i = 0; i < timeout || timeout == NoTimeout; i++)
+            {
+                ComMessagePumper.PumpMessages();
 
-        [DllImport("vbe7.dll", EntryPoint = "rtcDoEvents")]
-        private static extern int rtcDoEvents7();
+                if (Sync.TryEnterWriteLock(1))
+                {
+                    break;
+                }
+            }
+
+            if (!Sync.IsWriteLockHeld)
+            {
+                throw new TimeoutException("Timeout exceeded while waiting to acquire a write lock");
+            }
+
+            var result = func.Invoke();
+            if (!DeferToParse)
+            {
+                Sync.ExitWriteLock();
+            }
+            return result;
+        }
+
+        public static bool ReleaseExclusiveComAccess()
+        {
+            if (Sync.IsWriteLockHeld)
+            {
+                Sync.ExitWriteLock();
+                return true;
+            }
+
+            return false;
+        }
     }
 }
