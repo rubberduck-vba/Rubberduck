@@ -416,6 +416,8 @@ End Sub"
         //below can only be tested if implemented (and tested) within Excel.  
 
         [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlFromEventHandler()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -449,6 +451,8 @@ End Sub"
         }
 
         [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlFromEventHandlerNameCollision()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -484,6 +488,8 @@ End Sub"
         }
 
         [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlRenameInReference()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -519,6 +525,8 @@ End Sub"
         }
 
         [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlFromEventHandlerReference()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -554,6 +562,8 @@ End Sub"
         }
 
         [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlHandlesUnderscoresInNewName()
         {
             var tdo = new RenameTestsDataObject(selection: "bigButton_ClickAgain", newName: "bigButton_ClickAgain_AndAgain");
@@ -571,6 +581,8 @@ End Sub"
         }
 
         [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlSimilarNames()
         {
             var tdo = new RenameTestsDataObject(selection: "bigButton", newName: "smallButton");

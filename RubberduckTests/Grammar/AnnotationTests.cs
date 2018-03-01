@@ -106,6 +106,8 @@ namespace RubberduckTests.Grammar
             Assert.AreEqual(AnnotationType.Interface, annotation.AnnotationType);
         }
 
+        [Category("Grammar")]
+        [Category("Annotations")]
         [Test]
         public void DescriptionAnnotation_TypeIsDescription()
         {

@@ -6,7 +6,8 @@ namespace RubberduckTests.VBEditor
     [TestFixture()]
     public class ComSafeManagerTests
     {
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComSafeReturnedOnSecondIvokationOfGetCurrentComSafeIsTheSame()
         {
             ComSafeManager.DisposeAndResetComSafe(); //Resetting to get a claen start.
@@ -17,7 +18,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreSame(comSafe1, comSafe2);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AfterCallingResetComSafeGetCurrentComSafeReturnsDifferentSafe()
         {
             ComSafeManager.DisposeAndResetComSafe(); //Resetting to get a claen start.
