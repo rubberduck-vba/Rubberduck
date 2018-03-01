@@ -7,7 +7,7 @@ namespace Rubberduck.VBEditor.ComManagement
     public static class ComMessagePumper
     {
         private static SynchronizationContext UiContext { get; set; }
-        private static IVBERuntime Runtime { get; set; }
+        private static readonly Lazy<IVBERuntime> Runtime = new Lazy<IVBERuntime>(() => new VBERuntimeAccessor());
 
         public static void Initialize()
         {
@@ -15,8 +15,6 @@ namespace Rubberduck.VBEditor.ComManagement
             {
                 UiContext = SynchronizationContext.Current;
             }
-
-            Runtime = new VBERuntimeAccessor();
         }
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             CheckContext();
 
-            return Runtime.DoEvents();
+            return Runtime.Value.DoEvents();
         }
 
         private static void CheckContext()

@@ -35,7 +35,7 @@ namespace Rubberduck.VBEditor.ComManagement.VBERuntime
             }
         }
 
-        private IVBERuntime DetermineVersion()
+        private static IVBERuntime DetermineVersion()
         {
             IVBERuntime runtime;
             try
