@@ -102,7 +102,7 @@ namespace Rubberduck.Inspections
 
                 try
                 {
-                    await Task.Run(() => RunInspectionsInParallel(inspectionsToRun, allIssues, token), token);
+                    await Task.Run(() => RunInspectionsInParallel(inspectionsToRun, allIssues, token));
                 }
                 catch (AggregateException exception)
                 {

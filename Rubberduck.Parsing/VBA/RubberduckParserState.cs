@@ -24,6 +24,22 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
+    public class ParseProgressEventArgs : EventArgs
+    {
+        public QualifiedModuleName Module { get; }
+        public ParserState State { get; }
+        public ParserState OldState { get; }
+        public CancellationToken Token { get; }
+
+        public ParseProgressEventArgs(QualifiedModuleName module, ParserState state, ParserState oldState, CancellationToken token)
+        {
+            Module = module;
+            State = state;
+            OldState = oldState;
+            Token = token;
+        }
+    }
+
     public class ParserStateEventArgs : EventArgs
     {
         public ParserStateEventArgs(ParserState state, CancellationToken token)
@@ -682,7 +698,7 @@ namespace Rubberduck.Parsing.VBA
                 foreach (var moduleState in _moduleStates.Where(moduleState => moduleState.Key.ProjectId == projectId))
                 {
                     var qualifiedModuleName = moduleState.Key;
-                    if (qualifiedModuleName.ComponentType == ComponentType.Undefined && qualifiedModuleName.ComponentType == ComponentType.ComComponent)
+                    if (qualifiedModuleName.ComponentType == ComponentType.Undefined || qualifiedModuleName.ComponentType == ComponentType.ComComponent)
                     {
                         if (_moduleStates.TryRemove(qualifiedModuleName, out var state))
                         {
