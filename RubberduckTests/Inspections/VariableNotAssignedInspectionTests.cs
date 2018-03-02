@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
@@ -22,7 +23,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -43,7 +44,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
@@ -64,7 +65,7 @@ End Function";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -87,7 +88,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -108,7 +109,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }

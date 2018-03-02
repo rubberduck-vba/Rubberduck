@@ -233,7 +233,6 @@
     <Compile Include="Binding\Expressions\SimpleNameExpression.cs" />
     <Compile Include="Binding\Bindings\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
-    <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IParseCoordinator.cs" />
     <Compile Include="ParsingText.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
@@ -19,7 +20,7 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -37,7 +38,7 @@ Global var2 As String";
             {
 
                 var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
@@ -54,7 +55,7 @@ Global var2 As String";
             {
 
                 var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -72,7 +73,7 @@ Global var2 As Date";
             {
 
                 var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -90,7 +91,7 @@ Global var1 As Integer";
             {
 
                 var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
