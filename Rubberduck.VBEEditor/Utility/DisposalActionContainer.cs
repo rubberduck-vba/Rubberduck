@@ -2,7 +2,12 @@
 
 namespace Rubberduck.VBEditor.Utility
 {
-    public sealed class DisposalActionContainer<T>: IDisposable
+    public interface IDisposalActionContainer<out T>: IDisposable
+    {
+        T Value { get; }
+    }
+
+    internal sealed class DisposalActionContainer<T> : IDisposalActionContainer<T>
     {
         public T Value { get; }
         private readonly Action _disposalAction;
@@ -32,7 +37,7 @@ namespace Rubberduck.VBEditor.Utility
 
     public static class DisposalActionContainer
     {
-        public static DisposalActionContainer<T> Create<T>(T value, Action disposalAction)
+        public static IDisposalActionContainer<T> Create<T>(T value, Action disposalAction)
         {
             return new DisposalActionContainer<T>(value, disposalAction);
         }
