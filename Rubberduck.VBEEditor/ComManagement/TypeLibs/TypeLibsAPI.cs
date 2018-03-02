@@ -22,13 +22,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         private IVBE _ide;
         private readonly VBETypeLibsAPI _api;
 
-        public VBETypeLibsAPI_Object()
+        public VBETypeLibsAPI_Object(IVBE ide)
         {
+            _ide = ide;
             _api = new VBETypeLibsAPI();
         }
-
-        public VBETypeLibsAPI_Object(IVBE ide) 
-            => _ide = ide;
 
         public bool CompileProject(string projectName) 
             => _api.CompileProject(_ide, projectName);

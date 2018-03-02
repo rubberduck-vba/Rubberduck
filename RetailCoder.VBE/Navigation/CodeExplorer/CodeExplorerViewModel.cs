@@ -360,7 +360,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
+        private void ParserState_ModuleStateChanged(object sender, ParseProgressEventArgs e)
         {
             // if we are resolving references, we already have the declarations and don't need to display error
             if (!(e.State == ParserState.Error ||

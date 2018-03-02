@@ -52,7 +52,7 @@ End Sub
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
@@ -102,7 +102,7 @@ End Sub
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
@@ -148,7 +148,7 @@ End Sub
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());

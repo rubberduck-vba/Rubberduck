@@ -54,7 +54,7 @@ End Sub";
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
@@ -82,7 +82,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -109,7 +109,7 @@ End Sub";
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
@@ -161,7 +161,7 @@ Public fizz As Boolean";
             {
 
                 var inspection = new EncapsulatePublicFieldInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -195,7 +195,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -227,7 +227,7 @@ End Function
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -272,7 +272,7 @@ End Sub";
                 }
 
                 var inspection = new ImplicitActiveSheetReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -320,7 +320,7 @@ End Sub";
                 }
 
                 var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -379,7 +379,7 @@ End Sub";
             {
 
                 var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -404,7 +404,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -432,7 +432,7 @@ End Sub";
             {
 
                 var inspection = new LineLabelNotUsedInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -484,7 +484,7 @@ End Sub";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -572,7 +572,7 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -611,7 +611,7 @@ End Sub";
             {
 
                 var inspection = new ObjectVariableNotSetInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -729,7 +729,7 @@ Global var1 As Integer";
             {
 
                 var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -792,7 +792,7 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
                 foreach (var result in inspectionResults)
@@ -849,7 +849,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -874,7 +874,7 @@ End Sub";
             {
 
                 var inspection = new ParameterNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -900,7 +900,7 @@ End Sub";
             {
 
                 var inspection = new ProcedureNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -989,7 +989,7 @@ End Sub";
             {
 
                 var inspection = new SelfAssignedDeclarationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -1021,7 +1021,7 @@ End Sub";
             {
 
                 var inspection = new UnassignedVariableUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -1068,7 +1068,7 @@ End Sub";
                 }
 
                 var inspection = new UntypedFunctionUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -1098,7 +1098,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UseMeaningfulNameInspection(state, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -1126,7 +1126,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -1152,7 +1152,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -1177,7 +1177,7 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -1207,7 +1207,7 @@ End Property";
             {
 
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 

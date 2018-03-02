@@ -152,7 +152,7 @@
     <Compile Include="QuickFixes\AddStepOneQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveStepOneQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
-    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
