@@ -373,7 +373,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
             {
                 var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                    .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
+                    .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false);
 
                 if (projectNode == null)
                 {
