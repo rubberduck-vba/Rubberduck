@@ -1380,9 +1380,6 @@ End Sub</value>
   <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignorer la casse</value>
   </data>
-  <data name="HotkeyDescription_SourceControl" xml:space="preserve">
-    <value>Contrôle des sources</value>
-  </data>
   <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
     <value>Méthode de test (&amp;erreur attendue)</value>
   </data>

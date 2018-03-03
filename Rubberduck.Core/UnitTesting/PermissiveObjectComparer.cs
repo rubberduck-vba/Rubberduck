@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rubberduck.UnitTesting
 {
-    internal class PermissiveObjectComparer : IEqualityComparer<object>
+    public class PermissiveObjectComparer : IEqualityComparer<object>
     {
         /// <summary>
         /// Tests equity between 2 objects using VBA's type promotion rules.

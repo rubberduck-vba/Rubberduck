@@ -50,7 +50,6 @@ namespace Rubberduck.Settings
 
         public bool CodeExplorerVisibleOnStartup { get; set; }
         public bool CodeInspectionsVisibleOnStartup { get; set; }
-        public bool SourceControlVisibleOnStartup { get; set; }
         public bool TestExplorerVisibleOnStartup { get; set; }
         public bool TodoExplorerVisibleOnStartup { get; set; }
 

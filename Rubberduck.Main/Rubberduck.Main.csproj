@@ -245,7 +245,6 @@
     <Compile Include="ComInteraction\UnitTesting\IVerify.cs" />
     <Compile Include="ComInteraction\UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="ComUsers\UnitTesting\FakeBase.cs" />
-    <Compile Include="ComUsers\UnitTesting\FakesProviderFactory.cs" />
     <Compile Include="ComUsers\UnitTesting\Fakes\CurDir.cs" />
     <Compile Include="ComUsers\UnitTesting\Fakes\DoEvents.cs" />
     <Compile Include="ComUsers\UnitTesting\Fakes\Environ.cs" />

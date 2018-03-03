@@ -470,6 +470,7 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="UI\SelectionChangeService.cs" />
+    <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
@@ -635,7 +636,6 @@
     <Compile Include="UI\Command\RunAllTestsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\RunAllTestsCommandMenuItem.cs" />
     <Compile Include="UI\Command\InspectionResultsCommand.cs" />
-    <Compile Include="UI\Command\SourceControlCommand.cs" />
     <Compile Include="UI\Command\TestExplorerCommand.cs" />
     <Compile Include="UI\Command\MenuItems\TestExplorerCommandMenuItem.cs" />
     <Compile Include="UI\Command\ToDoExplorerCommand.cs" />
