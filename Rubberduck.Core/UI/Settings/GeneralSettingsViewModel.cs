@@ -5,8 +5,6 @@ using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.Common;
 using NLog;
-using Rubberduck.Parsing.Common;
-//using Rubberduck.Root;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 
@@ -27,7 +25,7 @@ namespace Rubberduck.UI.Settings
         public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IEnumerable<Type> experimentalFeatureTypes)
         {
             _operatingSystem = operatingSystem;
-            _experimentalFeatureTypes = new ReadOnlyCollection<Type>(experimentalFeatureTypes.ToList());
+            _experimentalFeatureTypes = experimentalFeatureTypes.ToList().AsReadOnly();
             Languages = new ObservableCollection<DisplayLanguageSetting>(
                 new[] 
             {
@@ -231,9 +229,6 @@ namespace Rubberduck.UI.Settings
             AutoSavePeriod = general.AutoSavePeriod;
             SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
 
-            //RubberduckIoCInstaller.AssembliesToRegister()
-            //    .SelectMany(s => s.DefinedTypes)
-            //    .Where(w => Attribute.IsDefined(w, typeof(ExperimentalAttribute)))
             ExperimentalFeatures = _experimentalFeatureTypes
                 .SelectMany(s => s.CustomAttributes.Where(a => a.ConstructorArguments.Any()).Select(a => (string)a.ConstructorArguments.First().Value))
                 .Distinct()

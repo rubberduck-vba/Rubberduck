@@ -22,7 +22,15 @@ namespace Rubberduck.UI.Settings
                 config,
                 new SettingsView
                 {
-                    Control = new GeneralSettings(new GeneralSettingsViewModel(config, operatingSystem, new ReadOnlyCollection<Type>(new List<Type>()))),
+                    // FIXME inject types marked as ExperimentalFeatures
+                    /* 
+                     * These ExperimentalFeatureTypes were originally obtained by directly calling into the IoC container 
+                     * (since only it knows, which Assemblies have been loaded as Plugins). The code is preserved here for easy access.
+                     * RubberduckIoCInstaller.AssembliesToRegister()
+                     *     .SelectMany(s => s.DefinedTypes)
+                     *     .Where(w => Attribute.IsDefined(w, typeof(ExperimentalAttribute)))
+                     */
+                    Control = new GeneralSettings(new GeneralSettingsViewModel(config, operatingSystem, new List<Type>())),
                     View = SettingsViews.GeneralSettings
                 },
                 new SettingsView
