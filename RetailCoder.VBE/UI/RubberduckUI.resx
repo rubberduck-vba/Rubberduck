@@ -1802,7 +1802,9 @@ Would you like to import them to Rubberduck?</value>
     <value>Compile On Demand Setting</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
-    <value>The VBE setting "Compile On Demand" is currently enabled. It is strongly recommended that you disable the setting via the VBE Properties dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?\r\n\r\nNOTE: Restart may be required for setting to take effect.</value>
+    <value>The VBE setting "Compile On Demand" is currently enabled. It is strongly recommended that you disable the setting via the VBE Options dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?
+
+NOTE: Restart may be required for setting to take effect.</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand currently enabled</value>
