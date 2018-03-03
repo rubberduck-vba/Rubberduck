@@ -2017,7 +2017,7 @@ namespace Rubberduck.UI {
         /// <summary>
         ///   Looks up a localized string similar to The VBE setting &quot;Compile On Demand&quot; is currently enabled. It is strongly recommended that you disable the setting via the VBE Options dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?
         ///
-        ///NOTE: Restart may be required for setting to take effect..
+        ///NOTE: Restart is required for the setting to take effect..
         /// </summary>
         public static string GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled {
             get {
