@@ -1160,6 +1160,24 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBEsetting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
+        /// </summary>
+        public static string Command_Reparse_CompileOnDemandEnabled {
+            get {
+                return ResourceManager.GetString("Command_Reparse_CompileOnDemandEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compile On Demand Setting.
+        /// </summary>
+        public static string Command_Reparse_CompileOnDemandEnabled_Caption {
+            get {
+                return ResourceManager.GetString("Command_Reparse_CompileOnDemandEnabled_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
         public static string CommandDescription_CodeExplorerCommand {
@@ -1993,6 +2011,24 @@ namespace Rubberduck.UI {
         public static string GeneralSettings_CompileBeforeParse {
             get {
                 return ResourceManager.GetString("GeneralSettings_CompileBeforeParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The VBE setting &quot;Compile On Demand&quot; is currently enabled. It is strongly recommended that you disable the setting via the VBE Properties dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?\r\n\r\nNOTE: Restart may be required for setting to take effect..
+        /// </summary>
+        public static string GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled {
+            get {
+                return ResourceManager.GetString("GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compile On Demand currently enabled.
+        /// </summary>
+        public static string GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption {
+            get {
+                return ResourceManager.GetString("GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption", resourceCulture);
             }
         }
         
