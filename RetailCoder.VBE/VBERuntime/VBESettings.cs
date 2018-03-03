@@ -16,7 +16,8 @@ namespace Rubberduck.VBERuntime
             Vbe7
         }
 
-        private readonly string _registryRootPath;
+        private readonly string _activeRegistryRootPath;
+        private readonly string[] _registryRootPaths = {Vbe7SettingPath, Vbe6SettingPath};
 
         public VBESettings(IVBE vbe)
         {
@@ -26,11 +27,11 @@ namespace Rubberduck.VBERuntime
                 {
                     case 6:
                         Version = DllVersion.Vbe6;
-                        _registryRootPath = Vbe6SettingPath;
+                        _activeRegistryRootPath = Vbe6SettingPath;
                         break;
                     case 7:
                         Version = DllVersion.Vbe7;
-                        _registryRootPath = Vbe7SettingPath;
+                        _activeRegistryRootPath = Vbe7SettingPath;
                         break;
                     default:
                         Version = DllVersion.Unknown;
@@ -40,7 +41,7 @@ namespace Rubberduck.VBERuntime
             catch
             {
                 Version = DllVersion.Unknown;
-                _registryRootPath = null;
+                _activeRegistryRootPath = null;
             }
         }
 
@@ -48,28 +49,45 @@ namespace Rubberduck.VBERuntime
 
         public bool CompileOnDemand
         {
-            get => DWordToBooleanConverter(nameof(CompileOnDemand));
-            set => BooleanToDWordConverter(nameof(CompileOnDemand), value);
+            get => ReadActiveRegistryPath(nameof(CompileOnDemand));
+            set => WriteAllRegistryPaths(nameof(CompileOnDemand), value);
         }
 
         public bool BackGroundCompile
         {
-            get => DWordToBooleanConverter(nameof(BackGroundCompile));
-            set => BooleanToDWordConverter(nameof(BackGroundCompile), value);
+            get => ReadActiveRegistryPath(nameof(BackGroundCompile));
+            set => WriteAllRegistryPaths(nameof(BackGroundCompile), value);
+        }
+
+        private bool ReadActiveRegistryPath(string keyName)
+        {
+            return DWordToBooleanConverter(_activeRegistryRootPath, keyName) ?? false;
+        }
+
+        private void WriteAllRegistryPaths(string keyName, bool value)
+        {
+            foreach (var path in _registryRootPaths)
+            {
+                if (DWordToBooleanConverter(path, keyName) != null)
+                {
+                    BooleanToDWordConverter(path, keyName, value);
+                }
+            }
         }
 
         private const int DWordTrueValue = 1;
         private const int DWordFalseValue = 0;
 
-        private bool DWordToBooleanConverter(string keyName)
+        private bool? DWordToBooleanConverter(string path, string keyName)
         {
-            var result = Registry.GetValue(_registryRootPath, keyName, DWordFalseValue) as int?;
-            return Convert.ToBoolean(result ?? DWordFalseValue);
+            return !(Registry.GetValue(path, keyName, DWordFalseValue) is int result)
+                ? (bool?) null
+                : Convert.ToBoolean(result);
         }
 
-        private void BooleanToDWordConverter(string keyName, bool value)
+        private void BooleanToDWordConverter(string path, string keyName, bool value)
         {
-            Registry.SetValue(_registryRootPath, keyName, value ? DWordTrueValue : DWordFalseValue, RegistryValueKind.DWord);
+            Registry.SetValue(path, keyName, value ? DWordTrueValue : DWordFalseValue, RegistryValueKind.DWord);
         }
     }
 }
