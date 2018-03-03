@@ -20,23 +20,7 @@ namespace Rubberduck.Root
 
         internal static bool IsBasedOn(this Type type, Type allegedBase)
         {
-            Queue<Type> candidates = new Queue<Type>();
-            candidates.Enqueue(type);
-            while (candidates.Any())
-            {
-                Type currentType = candidates.First();
-                if (currentType == allegedBase)
-                {
-                    return true;
-                }
-                candidates.Enqueue(currentType.BaseType);
-                foreach (var iface in currentType.GetInterfaces())
-                {
-                    candidates.Enqueue(iface);
-                }
-            }
-            return false;
+            return allegedBase.IsAssignableFrom(type);
         }
-
     }
 }

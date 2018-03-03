@@ -27,11 +27,9 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
 
             var initialized = false;
-            T first = default(T);
-            T last = default(T);
-            T next = default(T);
-            Tuple<T, T> tuple = null;
-
+            T first = default;
+            T last = default;
+            
             foreach (var input in inputs)
             {
                 if (!initialized)
