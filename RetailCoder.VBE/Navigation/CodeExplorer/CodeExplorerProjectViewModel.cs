@@ -36,7 +36,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 FillFolders(declarations.ToList());
                 Items = _folderTree.Items.ToList();
 
-                _icon = Declaration.Project.Protection == ProjectProtection.Locked
+                _icon = Declaration.Project?.Protection == ProjectProtection.Locked
                     ? GetImageSource(resx.lock__exclamation)
                     : GetImageSource(resx.ObjectLibrary);
             }

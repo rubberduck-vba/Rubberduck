@@ -147,7 +147,7 @@ namespace Rubberduck.UI.Command
             var project = parameter as IVBProject ??
                           (parameterIsModuleDeclaration ? ((Declaration) parameter).Project : GetProject());
 
-            if (project.IsWrappingNullReference)
+            if (project == null || project.IsWrappingNullReference)
             {
                 return;
             }

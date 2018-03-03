@@ -373,7 +373,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
             {
                 var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                    .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
+                    .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false);
 
                 if (projectNode == null)
                 {
@@ -422,7 +422,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             var projectDeclaration =
                 _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
-                    .FirstOrDefault(item => item.Project.ProjectId == module.ProjectId);
+                    .FirstOrDefault(item => item.ProjectId == module.ProjectId);
 
             if (module.ComponentType == ComponentType.StandardModule)
             {

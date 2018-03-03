@@ -5,26 +5,27 @@ using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class MoveFieldCloserToUsageQuickFix : QuickFixBase
     {
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public MoveFieldCloserToUsageQuickFix(RubberduckParserState state, IMessageBox messageBox)
+        public MoveFieldCloserToUsageQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(typeof(MoveFieldCloserToUsageInspection))
         {
+            _vbe = vbe;
             _state = state;
             _messageBox = messageBox;
         }
 
         public override void Fix(IInspectionResult result)
         {
-            var vbe = result.Target.Project.VBE;
-
-            var refactoring = new MoveCloserToUsageRefactoring(vbe, _state, _messageBox);
+            var refactoring = new MoveCloserToUsageRefactoring(_vbe, _state, _messageBox);
             refactoring.Refactor(result.Target);
         }
 

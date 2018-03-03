@@ -34,7 +34,7 @@ End Sub";
                 var inspection = new MoveFieldCloserToUsageInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                new MoveFieldCloserToUsageQuickFix(state, new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
+                new MoveFieldCloserToUsageQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }

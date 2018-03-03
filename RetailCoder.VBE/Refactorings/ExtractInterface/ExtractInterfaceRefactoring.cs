@@ -87,6 +87,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterface()
         {
+            var targetProject = _model.TargetDeclaration.Project;
+            if (targetProject == null)
+            {
+                return; //The target project is not available.
+            }
+
             var rewriter = _model.State.GetRewriter(_model.TargetDeclaration);
 
             var firstNonFieldMember = _model.State.DeclarationFinder.Members(_model.TargetDeclaration)
@@ -96,7 +102,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             AddInterfaceMembersToClass(rewriter);
 
-            using (var components = _model.TargetDeclaration.Project.VBComponents)
+            using (var components = targetProject.VBComponents)
             {
                 using (var interfaceComponent = components.Add(ComponentType.ClassModule))
                 {

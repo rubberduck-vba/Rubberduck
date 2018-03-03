@@ -51,7 +51,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return _state.AllUserDeclarations
                             .Any(c => c.DeclarationType.HasFlag(DeclarationType.Module) &&
                             c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
-                            c.Project == declaration.Project);
+                            c.ProjectId == declaration.ProjectId);
             }
 
             if (parameter is CodeExplorerCustomFolderViewModel)
