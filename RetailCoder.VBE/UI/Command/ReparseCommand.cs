@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Command
                     return;
                 }
 
-                if (CompileAllProjects(out var failedNames))
+                if (AreAllProjectsCompiled(out var failedNames))
                 {
                     if (!PromptUserToContinue(failedNames))
                     {
@@ -67,8 +67,6 @@ namespace Rubberduck.UI.Command
 
         private bool VerifyCompileOnDemand()
         {
-            //Command_Reparse_CompileOnDemandEnabled
-
             if (_vbeSettings.CompileOnDemand)
             {
                 return DialogResult.Yes == _messageBox.Show(RubberduckUI.Command_Reparse_CompileOnDemandEnabled,
@@ -79,7 +77,7 @@ namespace Rubberduck.UI.Command
             return true;
         }
 
-        private bool CompileAllProjects(out List<string> failedNames)
+        private bool AreAllProjectsCompiled(out List<string> failedNames)
         {
             failedNames = new List<string>();
             using (var projects = _vbe.VBProjects)
