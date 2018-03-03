@@ -129,7 +129,12 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\ComMessagePumper.cs" />
     <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
+    <Compile Include="ComManagement\VBERuntime\IVBERuntime.cs" />
+    <Compile Include="ComManagement\VBERuntime\VBERuntime6.cs" />
+    <Compile Include="ComManagement\VBERuntime\VBERuntime7.cs" />
+    <Compile Include="ComManagement\VBERuntime\VBERuntimeAccessor.cs" />
     <Compile Include="ComManagement\WeakComSafe.cs" />
     <Compile Include="ComManagement\ComSafeManager.cs" />
     <Compile Include="ComManagement\IProjectsProvider.cs" />
