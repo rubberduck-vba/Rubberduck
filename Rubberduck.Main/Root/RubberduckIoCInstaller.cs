@@ -177,10 +177,12 @@ namespace Rubberduck.Root
                     .Where(t => Attribute.IsDefined(t, typeof(ExperimentalAttribute))));
             }
 
-            container.Register(Component.For(typeof(IEnumerable<Type>))
-                .DependsOn(Dependency.OnComponent<ViewModelBase, GeneralSettingsViewModel>())
-                .LifestyleSingleton()
-                .Instance(experimentalTypes));
+            // FIXME correctly register experimentalFeatureTypes.
+            // This is probably blocked until GeneralSettingsViewModel is no more newed up in SettingsForm's code-behind
+            //container.Register(Component.For(typeof(IEnumerable<Type>))
+            //    .DependsOn(Dependency.OnComponent<ViewModelBase, GeneralSettingsViewModel>())
+            //    .LifestyleSingleton()
+            //    .Instance(experimentalTypes));
 
             container.Register(Component.For<IPersistable<SerializableProject>>()
                 .ImplementedBy<XmlPersistableDeclarations>()
