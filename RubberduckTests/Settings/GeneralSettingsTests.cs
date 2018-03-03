@@ -7,6 +7,7 @@ using GeneralSettings = Rubberduck.Settings.GeneralSettings;
 using Rubberduck.Common;
 using Moq;
 using Rubberduck.UI;
+using Rubberduck.VBERuntime;
 
 namespace RubberduckTests.Settings
 {
@@ -16,6 +17,16 @@ namespace RubberduckTests.Settings
         private Mock<IOperatingSystem> GetOperatingSystemMock()
         {
             return new Mock<IOperatingSystem>();
+        }
+
+        private Mock<IMessageBox> GetMessageBoxMock()
+        {
+            return new Mock<IMessageBox>();
+        }
+
+        private Mock<IVBESettings> GetVBESettingsMock()
+        {
+            return new Mock<IVBESettings>();
         }
 
         private Configuration GetDefaultConfig()
@@ -70,7 +81,7 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(customConfig, GetOperatingSystemMock().Object);
+            var viewModel = new GeneralSettingsViewModel(customConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVBESettingsMock().Object);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
@@ -88,7 +99,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new GeneralSettingsViewModel(GetNondefaultConfig(), GetOperatingSystemMock().Object);
+            var viewModel = new GeneralSettingsViewModel(GetNondefaultConfig(), GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVBESettingsMock().Object);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
@@ -107,7 +118,7 @@ namespace RubberduckTests.Settings
         public void LanguageIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVBESettingsMock().Object);
 
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage);
         }
@@ -117,7 +128,7 @@ namespace RubberduckTests.Settings
         public void HotkeysAreSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVBESettingsMock().Object);
 
             Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys));
         }
@@ -127,7 +138,7 @@ namespace RubberduckTests.Settings
         public void AutoSaveEnabledIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVBESettingsMock().Object);
 
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.IsAutoSaveEnabled, viewModel.AutoSaveEnabled);
         }
@@ -137,7 +148,7 @@ namespace RubberduckTests.Settings
         public void AutoSavePeriodIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVBESettingsMock().Object);
 
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
