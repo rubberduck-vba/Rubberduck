@@ -350,7 +350,7 @@ namespace Rubberduck.UI
             _userControl.Size = new Size(param.LowWord, param.HighWord);
         }
 
-        internal void AddUserControl(UserControl control, IntPtr vbeHwnd)
+        public void AddUserControl(UserControl control, IntPtr vbeHwnd)
         {
             _parentHandle = GetParent(_userControl.Handle);
             _subClassingWindow = new ParentWindow(vbeHwnd, new IntPtr(GetHashCode()), _parentHandle);
