@@ -207,10 +207,5 @@ namespace RubberduckTests.TodoExplorer
             var userSettings = new UserSettings(null, null, todoSettings, null, null, null, null);
             return new Configuration(userSettings);
         }
-
-        private Mock<IOperatingSystem> GetOperatingSystemMock()
-        {
-            return new Mock<IOperatingSystem>();
-        }
     }
 }
