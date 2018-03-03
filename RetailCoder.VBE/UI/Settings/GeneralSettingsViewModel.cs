@@ -133,7 +133,6 @@ namespace Rubberduck.UI.Settings
         }
 
         private bool _compileBeforeParse;
-
         public bool CompileBeforeParse
         {
             get => _compileBeforeParse;
@@ -146,20 +145,31 @@ namespace Rubberduck.UI.Settings
 
                 if (value && _vbeSettings.CompileOnDemand)
                 {
-                    var result = _messageBox.Show(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
-                        RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption, MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-                    if(result == DialogResult.No)
+                    if(!SynchronizeVBESettings())
                     {
                         return;
                     }
-
-                    _vbeSettings.CompileOnDemand = false;
                 }
 
                 _compileBeforeParse = value;
                 OnPropertyChanged();
             }
+        }
+
+        private bool SynchronizeVBESettings()
+        {
+            var result = _messageBox.Show(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
+                RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption, MessageBoxButtons.YesNo,
+                MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+
+            if (result == DialogResult.No)
+            {
+                return false;
+            }
+
+            _vbeSettings.CompileOnDemand = false;
+            _vbeSettings.BackGroundCompile = false;
+            return true;
         }
 
         private int _autoSavePeriod;
