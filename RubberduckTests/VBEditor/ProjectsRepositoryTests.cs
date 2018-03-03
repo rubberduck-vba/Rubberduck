@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Controls.Primitives;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.VBEditor;
@@ -24,7 +23,8 @@ namespace RubberduckTests.VBEditor
             return repository;
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsCollectionReturnsTheOneFromTheVbePassedIn()
         {
             var vbe = new MockVbeBuilder().Build().Object;
@@ -36,7 +36,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(vbePojects, repositoryProjects);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsCollectionGetsDisposedOnDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -49,7 +50,8 @@ namespace RubberduckTests.VBEditor
             projectsMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsCollectionReturnsNullAfterDisposal()
         {
             var vbe = new MockVbeBuilder().Build().Object;
@@ -60,7 +62,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(repository.ProjectsCollection());
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsReturnsProjectsOnVbe()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -83,7 +86,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((otherProject.ProjectId, otherProject), projects);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsGetDisposedOnDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -103,7 +107,8 @@ namespace RubberduckTests.VBEditor
             otherProjectMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsReturnsEmptyCollectionAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -123,7 +128,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsEmpty(projects);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsReturnsEmptyCollectionBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -142,7 +148,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsEmpty(projects);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsDoesNotReturnProjectsAddedToVbeWithoutRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -159,7 +166,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(projects.Contains((otherProject.ProjectId, otherProject)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsReturnsProjectsAddedToVbeAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -180,7 +188,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((otherProject.ProjectId, otherProject), projects);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsReturnsRemovedProjectsBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -204,7 +213,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((otherProject.ProjectId, otherProject), projects);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsDoesNotReturnRemovedProjectsAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -226,7 +236,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(projects.Contains((otherProject.ProjectId, otherProject)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -246,7 +257,8 @@ namespace RubberduckTests.VBEditor
             otherProjectMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void RemovedProjectsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -267,7 +279,8 @@ namespace RubberduckTests.VBEditor
             otherProjectMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsProjectWithMatchingProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -287,7 +300,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(otherProject, returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsNullForUnknownProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -306,7 +320,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsNullAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -327,7 +342,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsNullBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -347,7 +363,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsNullForProjectIdOfAddedProjectBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -364,7 +381,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsAddedProjectWithMatchingProjectIdAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -382,7 +400,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(otherProject, returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsRemovedProjectWithMatchingProjectIdBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -403,7 +422,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(otherProject, returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ProjectReturnsNullForProjectIdOfRemovedProjectAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -425,7 +445,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedProject);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionsOfProjectsGetDisposedOnDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -447,7 +468,8 @@ namespace RubberduckTests.VBEditor
             otherComponentsCollectionMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionsOfProjectsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -469,7 +491,8 @@ namespace RubberduckTests.VBEditor
             otherComponentsCollectionMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionsOfRemovedProjectsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -491,7 +514,8 @@ namespace RubberduckTests.VBEditor
             componentsCollectionMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionReturnsComponentsCollectionOfProjectWithMatchingProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -511,7 +535,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(project.VBComponents, returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionReturnsNullForUnknownProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -530,7 +555,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionReturnsNullAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -551,7 +577,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionReturnsNullBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -571,7 +598,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionReturnsNullForProjectIdOfAddedProjectBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -588,7 +616,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentCollectionReturnsComponentsCollectionOfAddedProjectWithMatchingProjectIdAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -606,7 +635,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(otherProject.VBComponents, returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionReturnsComponentsCollectionOfRemovedProjectWithMatchingProjectIdBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -627,7 +657,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(otherProject.VBComponents, returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionReturnsNullForProjectIdOfRemovedProjectAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -649,7 +680,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedCollection);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionOfProjectWithMatchingProjectIdGetsDisposedOnRefreshForProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -670,7 +702,8 @@ namespace RubberduckTests.VBEditor
             componentsCollectionMock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsCollectionsOfProjectsWithNonMatchingProjectIdDoNotGetDisposedOnRefreshForProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -691,7 +724,8 @@ namespace RubberduckTests.VBEditor
             otherComponentsCollectionMock.Verify(m => m.Dispose(), Times.Never);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsReturnsComponentsOnVbeWithQmns()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -721,7 +755,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((otherComponent.QualifiedModuleName, otherComponent), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsGetDisposedOnDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -748,7 +783,8 @@ namespace RubberduckTests.VBEditor
             }
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsReturnsEmptyCollectionAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -771,7 +807,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsEmpty(components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsReturnsEmptyCollectionBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -793,7 +830,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsEmpty(components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsDoesNotReturnComponentsAddedToVbeBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -816,7 +854,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((newComponent.QualifiedModuleName, newComponent)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsDoesNotReturnComponentsAddedToVbeAfterRefreshForOtherProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -841,7 +880,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((newComponent.QualifiedModuleName, newComponent)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsReturnsComponentsAddedToVbeAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -865,7 +905,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((newComponent.QualifiedModuleName, newComponent), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsReturnsComponentsAddedToVbeAfterRefreshWIthPojectIdOfContainingProject()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -889,7 +930,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((newComponent.QualifiedModuleName, newComponent), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsReturnsRemovedComponentsBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -916,7 +958,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((component2.QualifiedModuleName, component2), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsReturnsRemovedComponentsAfterRefreshForOtherProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -945,7 +988,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((component2.QualifiedModuleName, component2), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsDoesNotReturnRemovedComponentsAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -972,7 +1016,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((component2.QualifiedModuleName, component2)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsDoesNotReturnRemovedComponentsAfterRefreshForProjectIdOfContainingProject()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -999,7 +1044,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((component2.QualifiedModuleName, component2)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1026,7 +1072,8 @@ namespace RubberduckTests.VBEditor
             }
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsInProjectWithMatchingProjectIdGetDisposedOnRefreshForProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1053,7 +1100,8 @@ namespace RubberduckTests.VBEditor
             }
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsInProjectWithOtherProjectIdDoNotGetDisposedOnRefreshForProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1080,7 +1128,8 @@ namespace RubberduckTests.VBEditor
             }
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void RemovedComponentsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1107,7 +1156,8 @@ namespace RubberduckTests.VBEditor
             component2Mock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void RemovedComponentsGetDisposedOnRefreshFroProjectIdOfFormerlyContainingProject()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1134,7 +1184,8 @@ namespace RubberduckTests.VBEditor
             component2Mock.Verify(m => m.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void RemovedComponentsDoNotGetDisposedOnRefreshForOtherProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1162,7 +1213,8 @@ namespace RubberduckTests.VBEditor
             component2Mock.Verify(m => m.Dispose(), Times.Never);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdReturnsComponentsOnProjectWithMatchingProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1190,7 +1242,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((component2.QualifiedModuleName, component2), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdReturnsEmptyCollectionAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1214,7 +1267,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsEmpty(components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdReturnsEmptyCollectionBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1237,7 +1291,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsEmpty(components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsFroProjectIdDoesNotReturnComponentsAddedToVbeBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1260,7 +1315,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((newComponent.QualifiedModuleName, newComponent)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdDoesNotReturnComponentsAddedToVbeAfterRefreshForOtherProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1285,7 +1341,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((newComponent.QualifiedModuleName, newComponent)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdReturnsComponentsAddedToVbeAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1309,7 +1366,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((newComponent.QualifiedModuleName, newComponent), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdReturnsComponentsAddedToVbeAfterRefreshWIthPojectIdOfContainingProject()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1333,7 +1391,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((newComponent.QualifiedModuleName, newComponent), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdReturnsRemovedComponentsBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1360,7 +1419,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((component2.QualifiedModuleName, component2), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdReturnsRemovedComponentsAfterRefreshForOtherProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1389,7 +1449,8 @@ namespace RubberduckTests.VBEditor
             Assert.Contains((component2.QualifiedModuleName, component2), components);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdDoesNotReturnRemovedComponentsAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1416,7 +1477,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((component2.QualifiedModuleName, component2)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentsForProjectIdDoesNotReturnRemovedComponentsAfterRefreshForProjectIdOfContainingProject()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1443,7 +1505,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(components.Contains((component2.QualifiedModuleName, component2)));
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsComponentWithMatchingQmn()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1467,7 +1530,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(component2, returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsNullForUnknownQmn()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1490,7 +1554,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsNullAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1515,7 +1580,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsNullBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1539,7 +1605,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsNullForQmnOfAddedComponentBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1562,7 +1629,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsNullForQmnOfAddedComponentAfterRefreshForOtherProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1587,7 +1655,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsAddedComponentWithMatchingQmnAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1611,7 +1680,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(newComponent, returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsAddedComponentWithMatchingQmnAfterRefreshForProjectIdOfContaiingProject()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1635,7 +1705,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(newComponent, returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsRemovedComponentWithMatchingQmnBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1661,7 +1732,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(component2, returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsRemovedComponentWithMatchingQmnAfterRefreshFroOtherProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1689,7 +1761,8 @@ namespace RubberduckTests.VBEditor
             Assert.AreEqual(component2, returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsNullForQmnOfRemovedComponentAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -1716,7 +1789,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsNull(returnedComponent);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void ComponentReturnsNullForQmnOfRemovedComponentAfterRefreshForProjectIdOfContainingProject()
         {
             var vbeBuilder = new MockVbeBuilder();

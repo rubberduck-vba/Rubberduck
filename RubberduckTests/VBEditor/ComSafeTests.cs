@@ -10,7 +10,8 @@ namespace RubberduckTests.VBEditor
     {
         protected abstract IComSafe TestComSafe();
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void TryRemoveOnNewComSafe_ReturnsFalse()
         {
             var comSafe = TestComSafe();
@@ -20,7 +21,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void TryRemoveWithItemPreviouslyAddedToComSafe_ReturnsTrue()
         {
             var comSafe = TestComSafe();
@@ -31,7 +33,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsTrue(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void TryRemoveWithOtherItemPreviouslyAddedToComSafe_ReturnsFalse()
         {
             var comSafe = TestComSafe();
@@ -43,7 +46,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void TryRemoveWithItemAndOtherItemPreviouslyAddedToComSafe_ReturnsTrue()
         {
             var comSafe = TestComSafe();
@@ -56,7 +60,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsTrue(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SecondTryRemoveWithItemPreviouslyAddedToComSafe_ReturnsFalse()
         {
             var comSafe = TestComSafe();
@@ -68,7 +73,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SecondTryRemoveWithItemPreviouslyAddedToComSafeTwice_ReturnsFalse()
         {
             var comSafe = TestComSafe();
@@ -81,7 +87,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AddedSafeComWrapperGetsDisposedOnDisposalOfComSafe()
         {
             var comSafe = TestComSafe();
@@ -95,7 +102,8 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SafeComWrapperAddedTwiceGetsDisposedOnceOnDisposalOfComSafe()
         {
             var comSafe = TestComSafe();
@@ -110,7 +118,8 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void RemovedSafeComWrapperDoesNotGetDisposedOnDisposalOfComSafe()
         {
             var comSafe = TestComSafe();
@@ -125,7 +134,8 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Never);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SafeComWrapperRemovedAfterHavingBeenAddedTwiceDoesNotGetDisposedOnDisposalOfComSafe()
         {
             var comSafe = TestComSafe();
@@ -141,7 +151,8 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Never);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AddedSafeComWrapperGetsDisposedOnDisposalOfAfterOtherItemGotRemovedComSafe()
         {
             var comSafe = TestComSafe();
@@ -158,7 +169,8 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AddedSafeComWrapperDoesNotGetDisposedAgainOnSecondDisposalOfComSafe()
         {
             var comSafe = TestComSafe();
@@ -173,7 +185,8 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AfterDisposalTryRemoveReturnsFalseForAddedItem()
         {
             var comSafe = TestComSafe();
