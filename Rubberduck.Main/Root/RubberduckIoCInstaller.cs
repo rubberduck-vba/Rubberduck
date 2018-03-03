@@ -86,6 +86,7 @@ namespace Rubberduck.Root
 
             RegisterConstantVbeAndAddIn(container);
             RegisterAppWithSpecialDependencies(container);
+            RegisterUnitTestingComSide(container);
 
             container.Register(Component.For<IProjectsProvider, IProjectsRepository>()
                 .ImplementedBy<ProjectsRepository>()
@@ -150,6 +151,14 @@ namespace Rubberduck.Root
             RegisterFactories(container, assembliesToRegister);
 
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
+        }
+
+        private void RegisterUnitTestingComSide(IWindsorContainer container)
+        {
+            container.Register(Component.For<IFakesFactory>().AsFactory());
+            container.Register(Component.For<IFakes>()
+                .ImplementedBy<FakesProvider>()
+                .LifestyleTransient());
         }
 
         // note: settings namespace classes are injected in singleton scope
@@ -222,9 +231,6 @@ namespace Rubberduck.Root
             //container.Register(Component.For<IDeclarationFinderFactory>()
             //    .ImplementedBy<DeclarationFinderFactory>()
             //    .LifestyleSingleton());
-            container.Register(Component.For<IFakesProviderFactory>()
-                .ImplementedBy<FakesProviderFactory>()
-                .LifestyleSingleton());
             container.Register(Component.For<IFolderBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());

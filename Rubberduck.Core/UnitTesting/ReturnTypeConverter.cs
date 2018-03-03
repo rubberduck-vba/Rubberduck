@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UnitTesting
 {
-    internal class ValueTypeConverter<T> where T : struct
+    public class ValueTypeConverter<T> where T : struct
     {
         public bool IsValid => _value.HasValue;
 

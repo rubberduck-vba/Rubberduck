@@ -311,11 +311,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\VBA\Accessibility.cs" />
-    <Compile Include="API\VBA\Declaration.cs" />
-    <Compile Include="API\VBA\DeclarationType.cs" />
-    <Compile Include="API\VBA\IdentifierReference.cs" />
-    <Compile Include="API\VBA\ParserState.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
@@ -405,7 +400,6 @@
     <Compile Include="UI\CodeMetrics\CodeMetricsDockablePresenter.cs" />
     <Compile Include="UI\Command\CodeMetricsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CodeMetricsCommandMenuItem.cs" />
-    <Compile Include="UI\Command\MenuItems\UiDispatcher.cs" />
     <Compile Include="UI\Converters\StringHasNoValueToVisibilityConverter.cs" />
     <Compile Include="UI\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsControl.xaml.cs">
@@ -476,31 +470,8 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="UI\SelectionChangeService.cs" />
-    <Compile Include="UnitTesting\Fakes\CurDir.cs" />
-    <Compile Include="UnitTesting\Fakes\DoEvents.cs" />
-    <Compile Include="UnitTesting\Fakes\Environ.cs" />
-    <Compile Include="UnitTesting\FakeBase.cs" />
-    <Compile Include="UnitTesting\FakesProvider.cs" />
-    <Compile Include="UnitTesting\FakesProviderFactory.cs" />
-    <Compile Include="UnitTesting\Fakes\Shell.cs" />
-    <Compile Include="UnitTesting\IFake.cs" />
-    <Compile Include="UnitTesting\IFakesProvider.cs" />
-    <Compile Include="UnitTesting\Fakes\InputBox.cs" />
-    <Compile Include="UnitTesting\IVerify.cs" />
-    <Compile Include="UnitTesting\Fakes\MsgBox.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
-    <Compile Include="UnitTesting\Fakes\Timer.cs" />
-    <Compile Include="UnitTesting\Stubs\ChDir.cs" />
-    <Compile Include="UnitTesting\Stubs\ChDrive.cs" />
-    <Compile Include="UnitTesting\Stubs\Kill.cs" />
-    <Compile Include="UnitTesting\Stubs\MkDir.cs" />
-    <Compile Include="UnitTesting\Stubs\RmDir.cs" />
-    <Compile Include="UnitTesting\Stubs\SendKeys.cs" />
-    <Compile Include="UnitTesting\Verifier.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
-    <Compile Include="UnitTesting\Stubs\Beep.cs" />
-    <Compile Include="UnitTesting\IStub.cs" />
-    <Compile Include="UnitTesting\StubBase.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
@@ -900,7 +871,6 @@
     <Compile Include="UI\ToDoItems\ToDoExplorerWindow.Designer.cs">
       <DependentUpon>ToDoExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\DockableWindowHost.cs" />
     <Compile Include="UI\UnitTesting\TestExplorerWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -908,11 +878,9 @@
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ViewModelBase.cs" />
-    <Compile Include="UnitTesting\AssertClass.cs" />
     <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
     <Compile Include="UnitTesting\AssertHandler.cs" />
     <Compile Include="UnitTesting\UnitTestUtils.cs" />
-    <Compile Include="UnitTesting\IAssert.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
@@ -921,7 +889,6 @@
     <Compile Include="UI\UnitTesting\TestOutcomeImageSourceConverter.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
-    <Compile Include="UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorRemoveParametersCommand.cs" />
@@ -1043,7 +1010,6 @@
     <Resource Include="Resources\magnifier--arrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="API\Plugin\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>

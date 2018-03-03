@@ -11,7 +11,9 @@ namespace Rubberduck.UnitTesting
     [ProgId(RubberduckProgId.FakesProviderProgId)]
     [Guid(RubberduckGuid.FakesProviderClassGuid)]
     [EditorBrowsable(EditorBrowsableState.Always)]    
-    public class FakesProvider : IFakesProvider
+    public class FakesProvider : IFakesProvider, IFakes
+        // IFakesProvider is COM side, exposed to the VBA User
+        // IFakes is Rubberduck side and we inject the FakesProvider back into Core
     {
         internal const int AllInvocations = -1;
         // ReSharper disable once InconsistentNaming - respects COM naming conventions
@@ -22,7 +24,7 @@ namespace Rubberduck.UnitTesting
 
         internal bool CodeIsUnderTest { get; set; }
 
-        internal void StartTest()
+        public void StartTest()
         {
             if (CodeIsUnderTest)
             {
@@ -31,7 +33,7 @@ namespace Rubberduck.UnitTesting
             CodeIsUnderTest = true;
         }
 
-        internal void StopTest()
+        public void StopTest()
         {           
             foreach (var fake in ActiveFakes.Values)
             {

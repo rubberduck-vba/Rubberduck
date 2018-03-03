@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.UnitTesting;
-using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -20,12 +19,12 @@ namespace Rubberduck.UnitTesting
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IFakesProviderFactory _fakesFactory;
+        private readonly IFakesFactory _fakesFactory;
         private readonly IVBETypeLibsAPI _typeLibApi;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesProviderFactory fakesFactory, IVBETypeLibsAPI typeLibApi)
+        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi)
         {
             Debug.WriteLine("TestEngine created.");
             Model = model;
@@ -75,7 +74,7 @@ namespace Rubberduck.UnitTesting
                     .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
                                 && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
 
-                var fakes = _fakesFactory.GetFakesProvider();
+                var fakes = _fakesFactory.GetFakes();
 
                 Run(module.Key.FindModuleInitializeMethods(_state));
                 foreach (var test in moduleTestMethods)

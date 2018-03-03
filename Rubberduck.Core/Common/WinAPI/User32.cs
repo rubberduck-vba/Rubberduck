@@ -45,8 +45,9 @@ namespace Rubberduck.Common.WinAPI
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool UnregisterHotKey(IntPtr hWnd, IntPtr id);
         
+        // TODO used to be internal. InternalsVisibleTo should expose this, right?
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, WM msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, WM msg, IntPtr wParam, IntPtr lParam);
 
         public delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
         [DllImport("user32.dll")]

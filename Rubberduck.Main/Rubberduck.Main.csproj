@@ -235,6 +235,33 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AppMenu.cs" />
+    <Compile Include="ComInteraction\UI\DockableWindowHost.cs" />
+    <Compile Include="ComInteraction\UnitTesting\AssertClass.cs" />
+    <Compile Include="ComInteraction\UnitTesting\FakesProvider.cs" />
+    <Compile Include="ComInteraction\UnitTesting\IAssert.cs" />
+    <Compile Include="ComInteraction\UnitTesting\IFake.cs" />
+    <Compile Include="ComInteraction\UnitTesting\IFakesProvider.cs" />
+    <Compile Include="ComInteraction\UnitTesting\IStub.cs" />
+    <Compile Include="ComInteraction\UnitTesting\IVerify.cs" />
+    <Compile Include="ComInteraction\UnitTesting\PermissiveAssertClass.cs" />
+    <Compile Include="ComUsers\UnitTesting\FakeBase.cs" />
+    <Compile Include="ComUsers\UnitTesting\FakesProviderFactory.cs" />
+    <Compile Include="ComUsers\UnitTesting\Fakes\CurDir.cs" />
+    <Compile Include="ComUsers\UnitTesting\Fakes\DoEvents.cs" />
+    <Compile Include="ComUsers\UnitTesting\Fakes\Environ.cs" />
+    <Compile Include="ComUsers\UnitTesting\Fakes\InputBox.cs" />
+    <Compile Include="ComUsers\UnitTesting\Fakes\MsgBox.cs" />
+    <Compile Include="ComUsers\UnitTesting\Fakes\Shell.cs" />
+    <Compile Include="ComUsers\UnitTesting\Fakes\Timer.cs" />
+    <Compile Include="ComUsers\UnitTesting\StubBase.cs" />
+    <Compile Include="ComUsers\UnitTesting\Stubs\Beep.cs" />
+    <Compile Include="ComUsers\UnitTesting\Stubs\ChDir.cs" />
+    <Compile Include="ComUsers\UnitTesting\Stubs\ChDrive.cs" />
+    <Compile Include="ComUsers\UnitTesting\Stubs\Kill.cs" />
+    <Compile Include="ComUsers\UnitTesting\Stubs\MkDir.cs" />
+    <Compile Include="ComUsers\UnitTesting\Stubs\RmDir.cs" />
+    <Compile Include="ComUsers\UnitTesting\Stubs\SendKeys.cs" />
+    <Compile Include="ComUsers\UnitTesting\Verifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="Root\RubberduckIoCInstaller.cs" />
@@ -252,6 +279,24 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Ducky.ico" />
+    <Content Include="EasyHook32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook32Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyHook64Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EasyLoad64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resources\Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +308,9 @@
     </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyHook, Version=2.7.6578.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
+      <HintPath>..\packages\EasyHook.2.7.6578.1\lib\net40\EasyHook.dll</HintPath>
     </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -300,6 +348,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />

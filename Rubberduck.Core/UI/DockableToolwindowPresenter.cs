@@ -52,7 +52,7 @@ namespace Rubberduck.UI
             {
                 using (var windows = _vbe.Windows)
                 {
-                    var info = windows.CreateToolWindow(_addin, _DockableWindowHost.RegisteredProgId, control.Caption, control.ClassId);
+                    var info = windows.CreateToolWindow(_addin, RubberduckProgId.DockableWindowHostProgId, control.Caption, control.ClassId);
                     _userControlObject = info.UserControl;
                     toolWindow = info.ToolWindow;
                 }
@@ -68,7 +68,8 @@ namespace Rubberduck.UI
                 throw;
             }
 
-            var userControlHost = (_DockableWindowHost)_userControlObject;
+            // could cast to COM_IOleWindow for the first few, but AddUserControl is only on _DockableWindowHost
+            dynamic userControlHost = _userControlObject;
             toolWindow.IsVisible = true; //window resizing doesn't work without this
 
             EnsureMinimumWindowSize(toolWindow);
