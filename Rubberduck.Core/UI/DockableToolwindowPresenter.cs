@@ -67,16 +67,15 @@ namespace Rubberduck.UI
                 Logger.Error(exception);
                 throw;
             }
-
-            // could cast to COM_IOleWindow for the first few, but AddUserControl is only on _DockableWindowHost
-            dynamic userControlHost = _userControlObject;
+            
             toolWindow.IsVisible = true; //window resizing doesn't work without this
-
             EnsureMinimumWindowSize(toolWindow);
-
             toolWindow.IsVisible = _settings != null && _settings.IsWindowVisible(this);
 
-            userControlHost.AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
+            // currently we always inject _DockableToolWindowHost from Rubberduck.Main.
+            // that method is not exposed in any of the interfaces we know, though, so we need to invoke it blindly
+            ((dynamic)_userControlObject).AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
+
             return toolWindow;
         }
 
