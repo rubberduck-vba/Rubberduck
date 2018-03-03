@@ -40,13 +40,13 @@ namespace Rubberduck.UI.Inspections
         private readonly IQuickFixProvider _quickFixProvider;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
-        private readonly IOperatingSystem _operatingSystem;
+        private readonly ISettingsFormFactory _settingsFormFactory;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, IQuickFixProvider quickFixProvider,
             INavigateCommand navigateCommand, ReparseCommand reparseCommand,
-            IClipboardWriter clipboard, IGeneralConfigService configService, IOperatingSystem operatingSystem)
+            IClipboardWriter clipboard, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory)
         {
             _state = state;
             _inspector = inspector;
@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Inspections
             NavigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
-            _operatingSystem = operatingSystem;
+            _settingsFormFactory = settingsFormFactory;
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
                 o =>
                 {
@@ -238,9 +238,10 @@ namespace Rubberduck.UI.Inspections
 
         private void OpenSettings(object param)
         {
-            using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.InspectionSettings))
+            using (var window = _settingsFormFactory.Create())
             {
                 window.ShowDialog();
+                _settingsFormFactory.Release(window);
             }
         }
 

@@ -306,6 +306,7 @@
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
     <Compile Include="UnitTesting\ViewModelTests.cs" />
+    <Compile Include="VBE\VBESettingsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

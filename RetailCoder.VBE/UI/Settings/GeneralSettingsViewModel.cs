@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
 using NLog;
@@ -9,6 +10,7 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.Root;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.VBERuntime;
 
 namespace Rubberduck.UI.Settings
 {
@@ -21,11 +23,17 @@ namespace Rubberduck.UI.Settings
     public class GeneralSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
         private readonly IOperatingSystem _operatingSystem;
+        private readonly IMessageBox _messageBox;
+        private readonly IVBESettings _vbeSettings;
+
         private bool _indenterPrompted;
 
-        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem)
+        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IMessageBox messageBox, IVBESettings vbeSettings)
         {
             _operatingSystem = operatingSystem;
+            _messageBox = messageBox;
+            _vbeSettings = vbeSettings;
+
             Languages = new ObservableCollection<DisplayLanguageSetting>(
                 new[] 
             {
@@ -125,18 +133,43 @@ namespace Rubberduck.UI.Settings
         }
 
         private bool _compileBeforeParse;
-
         public bool CompileBeforeParse
         {
             get => _compileBeforeParse;
             set
             {
-                if (_compileBeforeParse != value)
+                if (_compileBeforeParse == value)
                 {
-                    _compileBeforeParse = value;
-                    OnPropertyChanged();
+                    return;
                 }
+
+                if (value && _vbeSettings.CompileOnDemand)
+                {
+                    if(!SynchronizeVBESettings())
+                    {
+                        return;
+                    }
+                }
+
+                _compileBeforeParse = value;
+                OnPropertyChanged();
             }
+        }
+
+        private bool SynchronizeVBESettings()
+        {
+            var result = _messageBox.Show(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
+                RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption, MessageBoxButtons.YesNo,
+                MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+
+            if (result == DialogResult.No)
+            {
+                return false;
+            }
+
+            _vbeSettings.CompileOnDemand = false;
+            _vbeSettings.BackGroundCompile = false;
+            return true;
         }
 
         private int _autoSavePeriod;

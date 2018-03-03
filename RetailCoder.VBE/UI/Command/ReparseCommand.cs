@@ -8,6 +8,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.VBERuntime;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -20,13 +21,15 @@ namespace Rubberduck.UI.Command
     {
         private readonly IVBE _vbe;
         private readonly IVBETypeLibsAPI _typeLibApi;
+        private readonly IVBESettings _vbeSettings;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
 
-        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVBESettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
+            _vbeSettings = vbeSettings;
             _typeLibApi = typeLibApi;
             _state = state;
             _settings = settingsProvider.Create();
@@ -46,7 +49,12 @@ namespace Rubberduck.UI.Command
         {
             if (_settings.CompileBeforeParse)
             {
-                if (CompileAllProjects(out var failedNames))
+                if (!VerifyCompileOnDemand())
+                {
+                    return;
+                }
+
+                if (AreAllProjectsCompiled(out var failedNames))
                 {
                     if (!PromptUserToContinue(failedNames))
                     {
@@ -57,7 +65,19 @@ namespace Rubberduck.UI.Command
             _state.OnParseRequested(this);
         }
 
-        private bool CompileAllProjects(out List<string> failedNames)
+        private bool VerifyCompileOnDemand()
+        {
+            if (_vbeSettings.CompileOnDemand)
+            {
+                return DialogResult.Yes == _messageBox.Show(RubberduckUI.Command_Reparse_CompileOnDemandEnabled,
+                           RubberduckUI.Command_Reparse_CompileOnDemandEnabled_Caption, MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+            }
+
+            return true;
+        }
+
+        private bool AreAllProjectsCompiled(out List<string> failedNames)
         {
             failedNames = new List<string>();
             using (var projects = _vbe.VBProjects)

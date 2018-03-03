@@ -1795,4 +1795,18 @@ Would you like to import them to Rubberduck?</value>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Unexpected Error</value>
   </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
+    <value>The VBEsetting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Compile On Demand Setting</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
+    <value>The VBE setting "Compile On Demand" is currently enabled. It is strongly recommended that you disable the setting via the VBE Options dialog under General tab in order to use the Compile Before Parse feature. Do you want to disable it now?
+
+NOTE: Restart is required for the setting to take effect.</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Compile On Demand currently enabled</value>
+  </data>
 </root>

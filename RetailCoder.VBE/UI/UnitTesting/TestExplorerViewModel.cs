@@ -22,8 +22,9 @@ namespace Rubberduck.UI.UnitTesting
         private readonly RubberduckParserState _state;
         private readonly ITestEngine _testEngine;
         private readonly IClipboardWriter _clipboard;
-        private readonly IGeneralConfigService _configService;
-        private readonly IOperatingSystem _operatingSystem;
+        private readonly ISettingsFormFactory _settingsFormFactory;
+        //private readonly IGeneralConfigService _configService;
+        //private readonly IOperatingSystem _operatingSystem;
 
         public TestExplorerViewModel(IVBE vbe,
              RubberduckParserState state,
@@ -31,7 +32,7 @@ namespace Rubberduck.UI.UnitTesting
              TestExplorerModel model,
              IClipboardWriter clipboard,
              IGeneralConfigService configService,
-             IOperatingSystem operatingSystem)
+             ISettingsFormFactory settingsFormFactory)
         {
             _vbe = vbe;
             _state = state;
@@ -39,8 +40,7 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.TestCompleted += TestEngineTestCompleted;
             Model = model;
             _clipboard = clipboard;
-            _configService = configService;
-            _operatingSystem = operatingSystem;
+            _settingsFormFactory = settingsFormFactory;
 
             _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
 
@@ -197,9 +197,10 @@ namespace Rubberduck.UI.UnitTesting
 
         private void OpenSettings(object param)
         {
-            using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.UnitTestSettings))
+            using (var window = _settingsFormFactory.Create())
             {
                 window.ShowDialog();
+                _settingsFormFactory.Release(window);
             }
         }
 
