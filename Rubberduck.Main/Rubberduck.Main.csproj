@@ -233,8 +233,6 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
-    <Compile Include="AppMenu.cs" />
     <Compile Include="ComInteraction\UI\DockableWindowHost.cs" />
     <Compile Include="ComInteraction\UnitTesting\AssertClass.cs" />
     <Compile Include="ComInteraction\UnitTesting\FakesProvider.cs" />
