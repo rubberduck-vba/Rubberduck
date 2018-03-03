@@ -228,9 +228,6 @@ namespace Rubberduck.Root
 
         private static void RegisterSpecialFactories(IWindsorContainer container)
         {
-            //container.Register(Component.For<IDeclarationFinderFactory>()
-            //    .ImplementedBy<DeclarationFinderFactory>()
-            //    .LifestyleSingleton());
             container.Register(Component.For<IFolderBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());
@@ -558,19 +555,19 @@ namespace Rubberduck.Root
             //note: convention: the registration name for commands is the type name, not the full type name.
             //Otherwise, namespaces would get in the way when binding to the menu items.
             RegisterCommandsWithPresenters(container);
-            
-            //var commandsForCommandMenuItems = Assembly.GetExecutingAssembly().GetTypes()
-            //    .Where(type => type.IsClass && typeof(ICommandMenuItem).IsAssignableFrom(type))
-            //    .Select(type => CommandNameFromCommandMenuName(type.Name))
-            //    .ToHashSet();
+
+            // assumption: All Commands (and CommandMenuItems by extension) are in the same assembly as CommandBase
+            var commandsForCommandMenuItems = Assembly.GetAssembly(typeof(CommandBase)).GetTypes()
+                .Where(type => type.IsClass && typeof(ICommandMenuItem).IsAssignableFrom(type))
+                .Select(type => CommandNameFromCommandMenuName(type.Name))
+                .ToHashSet();
 
             container.Register(Classes.FromAssemblyContaining<CommandBase>()
                 .Where(type => type.Namespace != null
                             && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty)
                             && (type.BaseType == typeof(CommandBase) || type.BaseType == typeof(RefactorCommandBase))
                             && type.Name.EndsWith("Command")
-                            // FIXME something something commandsForCommandMenuItems ...
-                            && type.Assembly.GetTypes().Any(menuItemType => menuItemType.Name == (type.Name + "MenuItem")))
+                            && commandsForCommandMenuItems.Contains(type.Name))
                 .WithService.Self()
                 .WithService.Select(new[] { typeof(CommandBase) })
                 .LifestyleTransient()
