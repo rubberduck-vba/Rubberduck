@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.Win32;
+using Moq;
+using NUnit.Framework;
 using Rubberduck.VBERuntime;
 using RubberduckTests.Mocks;
 
@@ -7,13 +9,25 @@ namespace RubberduckTests.VBE
     [TestFixture]
     public class VBESettingsTests
     {
+        private const string Vbe7SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\7.0\Common";
+        private const string Vbe6SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\6.0\Common";
+        private const int DWordFalseValue = 0;
+        private const int DWordTrueValue = 1;
+
+        private Mock<IRegistryWrapper> GetRegistryMock()
+        {
+            return new Mock<IRegistryWrapper>();
+        }
+
         [Category("VBE")]
         [Test]
         public void DllVersion_MustBe6()
         {
             var vbe = new MockVbeBuilder().Build();
+            var registry = GetRegistryMock();
+
             vbe.SetupGet(s => s.Version).Returns("6.00");
-            var settings = new VBESettings(vbe.Object);
+            var settings = new VBESettings(vbe.Object, registry.Object);
 
             Assert.IsTrue(settings.Version == VBESettings.DllVersion.Vbe6);
         }
@@ -23,8 +37,10 @@ namespace RubberduckTests.VBE
         public void DllVersion_MustBe7()
         {
             var vbe = new MockVbeBuilder().Build();
+            var registry = GetRegistryMock();
+
             vbe.SetupGet(s => s.Version).Returns("7.00");
-            var settings = new VBESettings(vbe.Object);
+            var settings = new VBESettings(vbe.Object, registry.Object);
 
             Assert.IsTrue(settings.Version == VBESettings.DllVersion.Vbe7);
         }
@@ -34,8 +50,10 @@ namespace RubberduckTests.VBE
         public void DllVersion_IsBogus()
         {
             var vbe = new MockVbeBuilder().Build();
+            var registry = GetRegistryMock();
+
             vbe.SetupGet(s => s.Version).Returns("foo");
-            var settings = new VBESettings(vbe.Object);
+            var settings = new VBESettings(vbe.Object, registry.Object);
 
             Assert.IsTrue(settings.Version == VBESettings.DllVersion.Unknown);
         }
@@ -45,38 +63,44 @@ namespace RubberduckTests.VBE
         public void DllVersion_IsNull()
         {
             var vbe = new MockVbeBuilder().Build();
+            var registry = GetRegistryMock();
+
             vbe.SetupGet(s => s.Version).Returns((string)null);
-            var settings = new VBESettings(vbe.Object);
+            var settings = new VBESettings(vbe.Object, registry.Object);
 
             Assert.IsTrue(settings.Version == VBESettings.DllVersion.Unknown);
         }
 
         [Category("VBE")]
         [Test]
-        public void CompileOnDemand_WriteRead()
+        public void CompileOnDemand_Write_IsTrue()
         {
             var vbe = new MockVbeBuilder().Build();
+            var registry = GetRegistryMock();
+
             vbe.SetupGet(s => s.Version).Returns("7.00");
-            var settings = new VBESettings(vbe.Object);
+            registry.Setup(s => s.SetValue(Vbe7SettingPath, "CompileOnDemand", true, RegistryValueKind.DWord));
+            registry.Setup(s => s.GetValue(Vbe7SettingPath, "CompileOnDemand", DWordFalseValue)).Returns(DWordTrueValue);
+
+            var settings = new VBESettings(vbe.Object, registry.Object);
 
             settings.CompileOnDemand = true;
             Assert.IsTrue(settings.CompileOnDemand);
-
-            settings.CompileOnDemand = false;
-            Assert.IsTrue(settings.CompileOnDemand == false);
         }
 
         [Category("VBE")]
         [Test]
-        public void BackGroundCompile_WriteRead()
+        public void BackGroundCompile_Write_IsFalse()
         {
             var vbe = new MockVbeBuilder().Build();
+            var registry = GetRegistryMock();
+
             vbe.SetupGet(s => s.Version).Returns("7.00");
-            var settings = new VBESettings(vbe.Object);
+            registry.Setup(s => s.SetValue(Vbe7SettingPath, "BackGroundCompile", false, RegistryValueKind.DWord));
+            registry.Setup(s => s.GetValue(Vbe7SettingPath, "BackGroundCompile", DWordFalseValue)).Returns(DWordFalseValue);
 
-            settings.BackGroundCompile = true;
-            Assert.IsTrue(settings.BackGroundCompile);
-
+            var settings = new VBESettings(vbe.Object, registry.Object);
+            
             settings.BackGroundCompile = false;
             Assert.IsTrue(settings.BackGroundCompile == false);
         }

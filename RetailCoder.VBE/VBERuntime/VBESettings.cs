@@ -16,10 +16,11 @@ namespace Rubberduck.VBERuntime
             Vbe7
         }
 
+        private readonly IRegistryWrapper _registry;
         private readonly string _activeRegistryRootPath;
         private readonly string[] _registryRootPaths = {Vbe7SettingPath, Vbe6SettingPath};
 
-        public VBESettings(IVBE vbe)
+        public VBESettings(IVBE vbe, IRegistryWrapper registry)
         {
             try
             {
@@ -43,6 +44,7 @@ namespace Rubberduck.VBERuntime
                 Version = DllVersion.Unknown;
                 _activeRegistryRootPath = null;
             }
+            _registry = registry;
         }
 
         public DllVersion Version { get; }
@@ -80,14 +82,14 @@ namespace Rubberduck.VBERuntime
 
         private bool? DWordToBooleanConverter(string path, string keyName)
         {
-            return !(Registry.GetValue(path, keyName, DWordFalseValue) is int result)
+            return !(_registry.GetValue(path, keyName, DWordFalseValue) is int result)
                 ? (bool?) null
                 : Convert.ToBoolean(result);
         }
 
         private void BooleanToDWordConverter(string path, string keyName, bool value)
         {
-            Registry.SetValue(path, keyName, value ? DWordTrueValue : DWordFalseValue, RegistryValueKind.DWord);
+            _registry.SetValue(path, keyName, value ? DWordTrueValue : DWordFalseValue, RegistryValueKind.DWord);
         }
     }
 }
