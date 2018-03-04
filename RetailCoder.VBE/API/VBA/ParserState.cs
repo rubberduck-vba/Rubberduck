@@ -14,6 +14,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.API.VBA
 {
@@ -55,6 +56,7 @@ namespace Rubberduck.API.VBA
 
         public ParserState()
         {
+            UiContext.Initialize();
             UiDispatcher.Initialize();
             ComMessagePumper.Initialize();
         }
