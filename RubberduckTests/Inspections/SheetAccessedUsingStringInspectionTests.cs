@@ -24,7 +24,7 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
