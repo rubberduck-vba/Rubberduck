@@ -4,6 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -23,15 +24,10 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var pane = Vbe.ActiveCodePane;
-            {
-                if (_state.Status != ParserState.Ready || pane.IsWrappingNullReference)
-                {
-                    return false;
-                }
+            
+            var selection = Vbe.GetActiveSelection();        
 
-                var selection = pane.GetQualifiedSelection();
-                if (!selection.HasValue)
+            if (!selection.HasValue)
                 {
                     return false;
                 }
@@ -43,21 +39,20 @@ namespace Rubberduck.UI.Command.Refactorings
                     d.QualifiedSelection.QualifiedName.Equals(selection.Value.QualifiedName));
 
                 return targetInterface != null && targetClass != null;
-            }
+            
         }
 
         protected override void OnExecute(object parameter)
         {
-            var pane = Vbe.ActiveCodePane;
+            using (var pane = Vbe.ActiveCodePane)
             {
                 if (pane.IsWrappingNullReference)
                 {
                     return;
                 }
-
-                var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox);
-                refactoring.Refactor();
             }
+            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox);
+            refactoring.Refactor();
         }
     }
 }

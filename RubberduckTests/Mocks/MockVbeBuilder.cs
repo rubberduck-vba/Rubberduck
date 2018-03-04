@@ -183,11 +183,14 @@ namespace RubberduckTests.Mocks
         {
             var vbe = new Mock<IVBE>();
             _windows.VBE = vbe.Object;
+            vbe.Setup(m => m.Dispose());
+            vbe.SetupReferenceEqualityIncludingHashCode();
             vbe.Setup(m => m.Windows).Returns(() => _windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             
             vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane?.CodeModule?.Parent);
+            vbe.Setup(m => m.GetActiveSelection()).Returns(() => vbe.Object.ActiveCodePane?.GetQualifiedSelection());
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
             var mainWindow = new Mock<IWindow>();
@@ -252,12 +255,25 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<IVBProjects>();
 
+            result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
+
             result.Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _projects.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _projects.Count);
 
+            result.Setup(m => m.Add(It.IsAny<ProjectType>()))
+                .Returns((ProjectType pt) =>
+            {
+                var projectBuilder = ProjectBuilder("test", ProjectProtection.Unprotected);
+                var project = projectBuilder.Build();
+                project.Object.AssignProjectId();
+                AddProject(project);
+                return project.Object;
+            });
+            result.Setup(m => m.Remove(It.IsAny<IVBProject>())).Callback((IVBProject proj) => _projects.Remove(proj));
 
             return result;
         }
@@ -265,6 +281,9 @@ namespace RubberduckTests.Mocks
         private Mock<ICodePanes> CreateCodePanesMock()
         {
             var result = new Mock<ICodePanes>();
+
+            result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
 
             result.Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
@@ -274,5 +293,7 @@ namespace RubberduckTests.Mocks
 
             return result;
         }
+
+        public Mock<IVBProjects> MockProjectsCollection => _vbProjects;
     }
 }

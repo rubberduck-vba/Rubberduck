@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -38,7 +39,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -76,7 +77,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -121,13 +122,13 @@ End Function";
                 .AddComponent("Bar", ComponentType.ClassModule, inputImplementationCode1)
                 .AddComponent("Bar2", ComponentType.ClassModule, inputImplementationCode2)
                 .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
 
@@ -153,7 +154,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -177,7 +178,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -201,7 +202,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -225,7 +226,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -249,7 +250,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -273,7 +274,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -297,7 +298,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -321,7 +322,7 @@ End Sub";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());

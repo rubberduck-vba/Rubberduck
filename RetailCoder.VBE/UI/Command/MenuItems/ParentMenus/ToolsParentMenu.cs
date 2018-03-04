@@ -14,7 +14,6 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
     public enum ToolsMenuItemDisplayOrder
     {
-        SourceControl,
         CodeMetrics,
         ToDoExplorer,
         RegexAssistant,

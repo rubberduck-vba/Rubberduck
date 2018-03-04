@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -66,13 +67,13 @@ End Sub
                 .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
                 .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -90,7 +91,7 @@ End Property";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -108,7 +109,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -126,7 +127,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -144,7 +145,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -162,7 +163,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
@@ -180,7 +181,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -199,7 +200,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -218,7 +219,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -236,7 +237,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -254,7 +255,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var results = inspection.GetInspectionResults().ToList();
+                var results = inspection.GetInspectionResults(CancellationToken.None).ToList();
 
                 Assert.AreEqual(0, results.Count);
             }
@@ -276,7 +277,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -299,7 +300,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -322,7 +323,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -341,7 +342,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -373,7 +374,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -405,7 +406,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -438,7 +439,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -476,7 +477,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
             }
@@ -508,7 +509,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -540,7 +541,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -573,7 +574,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -606,7 +607,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual("arg2", inspectionResults.Single().Target.IdentifierName);
             }

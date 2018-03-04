@@ -15,9 +15,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         void DeleteLines(Selection selection);
         void DeleteLines(int startLine, int count = 1);
         QualifiedSelection? GetQualifiedSelection();
+        QualifiedModuleName QualifiedModuleName { get; }
         string Content();
         void Clear();
         string ContentHash();
+        int SimpleContentHash();
 
         /// <summary>
         /// Adds the specified code to the module. If "require variable declaration" is on, code is added under Option Explicit and an extraneous empty line.
@@ -30,6 +32,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         int GetProcBodyStartLine(string procName, ProcKind procKind);
         int GetProcCountLines(string procName, ProcKind procKind);
         string GetProcOfLine(int line);
-        ProcKind GetProcKindOfLine(int line);
+        ProcKind GetProcKindOfLine(int line);      
     }
 }

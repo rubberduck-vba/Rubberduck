@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
@@ -23,7 +24,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -43,7 +44,7 @@ End Function";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -64,7 +65,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
@@ -83,7 +84,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -104,7 +105,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -127,7 +128,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -157,13 +158,13 @@ End Sub
             var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, class1)
                 .AddComponent("Module1", ComponentType.StandardModule, caller)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }

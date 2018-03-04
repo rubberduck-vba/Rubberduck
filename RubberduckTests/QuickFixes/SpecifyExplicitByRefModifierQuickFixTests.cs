@@ -188,7 +188,7 @@ End Sub";
             var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -237,7 +237,7 @@ End Sub";
             var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -286,7 +286,7 @@ End Sub";
             var vbe = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))

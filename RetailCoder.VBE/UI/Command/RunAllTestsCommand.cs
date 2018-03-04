@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using System.Linq;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
@@ -54,13 +55,19 @@ namespace Rubberduck.UI.Command
 
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()
         {
-            foreach (var member in _state.AllUserDeclarations)
+            var projectIdsOfMembersUsingAddInLibrary = _state.DeclarationFinder.AllUserDeclarations
+                .Where(member => member.AsTypeName == "Rubberduck.PermissiveAssertClass"
+                                 || member.AsTypeName == "Rubberduck.AssertClass")
+                .Select(member => member.ProjectId)
+                .ToHashSet();
+            var projectsUsingAddInLibrary = _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .Where(declaration => projectIdsOfMembersUsingAddInLibrary.Contains(declaration.ProjectId))
+                .Select(declaration => declaration.Project);
+
+            foreach (var project in projectsUsingAddInLibrary)
             {
-                if (member.AsTypeName == "Rubberduck.PermissiveAssertClass" ||
-                    member.AsTypeName == "Rubberduck.AssertClass")
-                {
-                    member.Project.EnsureReferenceToAddInLibrary();
-                }
+                project?.EnsureReferenceToAddInLibrary();
             }
         }
 

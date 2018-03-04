@@ -51,7 +51,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return _state.AllUserDeclarations
                             .Any(c => c.DeclarationType.HasFlag(DeclarationType.Module) &&
                             c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
-                            c.Project == declaration.Project);
+                            c.ProjectId == declaration.ProjectId);
             }
 
             if (parameter is CodeExplorerCustomFolderViewModel)
@@ -88,14 +88,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 var declaration = ((ICodeExplorerDeclarationViewModel)node).Declaration;
 
-                var components = _state.AllUserDeclarations.Where(c => 
+                var componentDeclarations = _state.AllUserDeclarations.Where(c => 
                             c.DeclarationType.HasFlag(DeclarationType.Module) &&
                             c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
-                            c.Project == declaration.Project);
+                            c.ProjectId == declaration.ProjectId);
 
-                foreach (var component in components)
+                foreach (var componentDeclaration in componentDeclarations)
                 {
-                    _indenter.Indent(component.QualifiedName.QualifiedModuleName.Component);
+                    _indenter.Indent(_state.ProjectsProvider.Component(componentDeclaration.QualifiedName.QualifiedModuleName));
                 }
             }
 
@@ -104,7 +104,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var components = node.Items.OfType<CodeExplorerComponentViewModel>()
                         .Select(s => s.Declaration)
                         .Where(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent))
-                        .Select(d => d.QualifiedName.QualifiedModuleName.Component);
+                        .Select(d => _state.ProjectsProvider.Component(d.QualifiedName.QualifiedModuleName));
 
                 foreach (var component in components)
                 {
@@ -114,7 +114,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (node is CodeExplorerComponentViewModel)
             {
-                _indenter.Indent(node.QualifiedSelection.Value.QualifiedName.Component);
+                _indenter.Indent(_state.ProjectsProvider.Component(node.QualifiedSelection.Value.QualifiedName));
             }
 
             if (node is CodeExplorerMemberViewModel)

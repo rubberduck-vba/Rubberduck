@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
@@ -95,12 +96,23 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready ||
-                (_vbe.ActiveCodePane == null && !(_vbe.SelectedVBComponent?.HasDesigner ?? false)))
+            if (_state.Status != ParserState.Ready)
             {
                 return false;
             }
-            
+
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                using (var selectedComponent = _vbe.SelectedVBComponent)
+                {
+                    if ((activePane == null || activePane.IsWrappingNullReference)
+                        && !(selectedComponent?.HasDesigner ?? false))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             var target = FindTarget(parameter);
             var canExecute = target != null;
 
@@ -152,13 +164,21 @@ namespace Rubberduck.UI.Command
             var results = declaration.References.Distinct().Select(reference =>
                 new SearchResultItem(
                     reference.ParentNonScoping,
-                    new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection), 
-                    reference.QualifiedModuleName.Component.CodeModule.GetLines(reference.Selection.StartLine, 1).Trim()));
+                    new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
+                    GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)));
             
             var viewModel = new SearchResultsViewModel(_navigateCommand,
                 string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
 
             return viewModel;
+        }
+
+        private string GetModuleLine(QualifiedModuleName module, int line)
+        {
+            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            {
+                return codeModule.GetLines(line, 1).Trim();
+            }
         }
 
         private Declaration FindTarget(object parameter)
@@ -168,7 +188,17 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            return _vbe.ActiveCodePane != null && (_vbe.SelectedVBComponent?.HasDesigner ?? false)
+            bool findDesigner;
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                using (var selectedComponent = _vbe.SelectedVBComponent)
+                {
+                    findDesigner = activePane != null && !activePane.IsWrappingNullReference 
+                                    && (selectedComponent?.HasDesigner ?? false);
+                }
+            }
+
+            return findDesigner
                 ? FindFormDesignerTarget()
                 : FindCodePaneTarget();
         }
@@ -179,36 +209,59 @@ namespace Rubberduck.UI.Command
         }
 
         private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)
-        {            
-            (var projectId, var component) = qualifiedModuleName.HasValue
-                ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
-                : (_vbe.ActiveVBProject.ProjectId, _vbe.SelectedVBComponent);
+        {
+            if (qualifiedModuleName.HasValue)
+            {
+                return FindFormDesignerTarget(qualifiedModuleName.Value);
+            }
+
+            string projectId;
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                projectId = activeProject.ProjectId;
+            }
+            var component = _vbe.SelectedVBComponent;
 
             if (component?.HasDesigner ?? false)
             {
-                if (qualifiedModuleName.HasValue)
+                DeclarationType selectedType;
+                string selectedName;
+                using (var selectedControls = component.SelectedControls)
                 {
-                    return _state.DeclarationFinder
-                        .MatchName(qualifiedModuleName.Value.Name)
-                        .SingleOrDefault(m => m.ProjectId == projectId
-                            && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
-                            && m.ComponentName == component.Name);
+                    var selectedCount = selectedControls.Count;
+                    if (selectedCount > 1)
+                    {
+                        return null;
+                    }
+
+                    // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+                    (selectedType, selectedName) = selectedCount == 0
+                        ? (DeclarationType.ClassModule, component.Name)
+                        : (DeclarationType.Control, selectedControls[0].Name);
                 }
-
-                var selectedCount = component.SelectedControls.Count;                
-                if (selectedCount > 1) { return null; }
-
-                // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                (var selectedType, var selectedName) = selectedCount == 0
-                    ? (DeclarationType.ClassModule, component.Name)
-                    : (DeclarationType.Control, component.SelectedControls[0].Name);
-                
                 return _state.DeclarationFinder
                     .MatchName(selectedName)
                     .SingleOrDefault(m => m.ProjectId == projectId
                         && m.DeclarationType.HasFlag(selectedType)
                         && m.ComponentName == component.Name);                
             }
+            return null;
+        }
+
+        private Declaration FindFormDesignerTarget(QualifiedModuleName qualifiedModuleName)
+        {
+            var projectId = qualifiedModuleName.ProjectId;
+            var component = _state.ProjectsProvider.Component(qualifiedModuleName);
+
+            if (component?.HasDesigner ?? false)
+            {
+                return _state.DeclarationFinder
+                    .MatchName(qualifiedModuleName.Name)
+                    .SingleOrDefault(m => m.ProjectId == projectId
+                                          && m.DeclarationType.HasFlag(qualifiedModuleName.ComponentType)
+                                          && m.ComponentName == component.Name);
+            }
+
             return null;
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Refactorings.ExtractInterface
@@ -27,7 +28,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return null;
             }
 
-            _view.ViewModel.ComponentNames = _model.TargetDeclaration.Project.VBComponents.Select(c => c.Name).ToList();
+            _view.ViewModel.ComponentNames = _model.State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Module)
+                .Where(moduleDeclaration => moduleDeclaration.ProjectId == _model.TargetDeclaration.ProjectId)
+                .Select(module => module.ComponentName)
+                .ToList();
             _view.ViewModel.InterfaceName = _model.InterfaceName;
             _view.ViewModel.Members = _model.Members.ToList();
 

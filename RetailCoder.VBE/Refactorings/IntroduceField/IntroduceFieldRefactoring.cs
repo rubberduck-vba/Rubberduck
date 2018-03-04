@@ -33,7 +33,7 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         public void Refactor()
         {
-            var selection = _vbe.ActiveCodePane.GetQualifiedSelection();
+            var selection = _vbe.GetActiveSelection();
 
             if (!selection.HasValue)
             {
@@ -78,21 +78,19 @@ namespace Rubberduck.Refactorings.IntroduceField
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
-            if (_vbe.ActiveCodePane != null)
-            {
-                oldSelection = _vbe.ActiveCodePane.CodeModule.GetQualifiedSelection();
-            }
+            var oldSelection = _vbe.GetActiveSelection();
 
             rewriter.Remove(target);
             AddField(rewriter, target);
 
             if (oldSelection.HasValue)
             {
-                var module = oldSelection.Value.QualifiedName.Component.CodeModule;
-                var pane = module.CodePane;
+                using (var module = _state.ProjectsProvider.Component(oldSelection.Value.QualifiedName).CodeModule)
                 {
-                    pane.Selection = oldSelection.Value.Selection;
+                    using (var pane = module.CodePane)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
                 }
             }
 

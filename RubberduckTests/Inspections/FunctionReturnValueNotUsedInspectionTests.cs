@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -26,7 +27,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -49,7 +50,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -72,7 +73,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -94,7 +95,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -118,7 +119,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -141,7 +142,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -165,7 +166,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -191,7 +192,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -217,7 +218,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -243,7 +244,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -266,7 +267,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -290,7 +291,7 @@ End Function";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -315,7 +316,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -336,7 +337,7 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -371,13 +372,13 @@ End Sub";
                 .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
                 .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -411,13 +412,13 @@ End Sub";
                 .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
                 .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }

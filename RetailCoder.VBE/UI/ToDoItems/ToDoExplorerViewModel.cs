@@ -21,13 +21,13 @@ namespace Rubberduck.UI.ToDoItems
     {
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
-        private readonly IOperatingSystem _operatingSystem;
+        private readonly ISettingsFormFactory _settingsFormFactory;
 
-        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService, IOperatingSystem operatingSystem)
+        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory)
         {
             _state = state;
             _configService = configService;
-            _operatingSystem = operatingSystem;
+            _settingsFormFactory = settingsFormFactory;
             _state.StateChanged += HandleStateChanged;
 
             SetMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
@@ -149,13 +149,14 @@ namespace Rubberduck.UI.ToDoItems
                         return;
                     }
 
-                    using (var module = _selectedItem.Selection.QualifiedName.Component.CodeModule)
+                    using (var module = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName).CodeModule)
                     {
                         var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
                         var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
 
                         module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
                     }
+
                     RefreshCommand.Execute(null);
                 }
                 );
@@ -221,9 +222,10 @@ namespace Rubberduck.UI.ToDoItems
                 }
                 return _openTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 {
-                    using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.TodoSettings))
+                    using (var window = _settingsFormFactory.Create())
                     {
                         window.ShowDialog();
+                        _settingsFormFactory.Release(window);
                     }
                 });
             }
@@ -238,7 +240,7 @@ namespace Rubberduck.UI.ToDoItems
                 {
                     return _navigateCommand;
                 }
-                return _navigateCommand = new NavigateCommand();
+                return _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
             }
         }
 

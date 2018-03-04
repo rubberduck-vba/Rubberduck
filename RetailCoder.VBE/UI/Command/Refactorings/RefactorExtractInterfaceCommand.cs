@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime;
+using Microsoft.VB6.Interop.VBIDE;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -34,7 +36,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var selection = Vbe.ActiveCodePane.GetQualifiedSelection();
+            var selection = Vbe.GetActiveSelection();
+
             if (!selection.HasValue)
             {
                 return false;
@@ -69,9 +72,12 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
+            using(var activePane = Vbe.ActiveCodePane)
             {
-                return;
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return;
+                }
             }
 
             using (var view = new ExtractInterfaceDialog(new ExtractInterfaceViewModel()))

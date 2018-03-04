@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line)))
             {
                 string lines;
-                using (var module = context.ModuleName.Component.CodeModule)
+                using (var module = State.ProjectsProvider.Component(context.ModuleName).CodeModule)
                 {
                     lines = module.GetLines(context.Context.Start.Line,
                         context.Context.Stop.Line - context.Context.Start.Line + 1);

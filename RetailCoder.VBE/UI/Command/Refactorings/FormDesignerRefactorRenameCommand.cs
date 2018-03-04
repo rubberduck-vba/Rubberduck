@@ -45,35 +45,58 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget(QualifiedModuleName? qualifiedModuleName = null)
         {
-            (var projectId, var component) = qualifiedModuleName.HasValue 
-                ? (qualifiedModuleName.Value.ProjectId, qualifiedModuleName.Value.Component)
-                : (Vbe.ActiveVBProject.ProjectId, Vbe.SelectedVBComponent);
-                        
+            if (qualifiedModuleName.HasValue)
+            {
+                return GetTarget(qualifiedModuleName.Value);
+            }
+
+            string projectId;
+            using (var activeProject = Vbe.ActiveVBProject)
+            {
+                projectId = activeProject.ProjectId;
+            }
+            var component = Vbe.SelectedVBComponent;
+
             if (component?.HasDesigner ?? false)
             {
-                if (qualifiedModuleName.HasValue)
+                DeclarationType selectedType;
+                string selectedName;
+                using (var selectedControls = component.SelectedControls)
                 {
-                    return _state.DeclarationFinder
-                        .MatchName(qualifiedModuleName.Value.Name)
-                        .SingleOrDefault(m => m.ProjectId == projectId
-                            && m.DeclarationType.HasFlag(qualifiedModuleName.Value.ComponentType)
-                            && m.ComponentName == component.Name);
+                    var selectedCount = selectedControls.Count;
+                    if (selectedCount > 1)
+                    {
+                        return null;
+                    }
+
+                    // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+                    (selectedType, selectedName) = selectedCount == 0
+                        ? (DeclarationType.ClassModule, component.Name)
+                        : (DeclarationType.Control, selectedControls[0].Name);
                 }
-                
-                var selectedCount = component.SelectedControls.Count;
-                if (selectedCount > 1) { return null; }
-                
-                // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                (var selectedType, var selectedName) = selectedCount == 0
-                    ? (DeclarationType.ClassModule, component.Name)
-                    : (DeclarationType.Control, component.SelectedControls[0].Name);
-                
+
                 return _state.DeclarationFinder
                     .MatchName(selectedName)
                     .SingleOrDefault(m => m.ProjectId == projectId
                         && m.DeclarationType.HasFlag(selectedType)
                         && m.ComponentName == component.Name);
              }
+            return null;
+        }
+
+        private Declaration GetTarget(QualifiedModuleName qualifiedModuleName)
+        {
+            var projectId = qualifiedModuleName.ProjectId;
+            var component = _state.ProjectsProvider.Component(qualifiedModuleName);
+
+            if (component?.HasDesigner ?? false)
+            {
+                return _state.DeclarationFinder
+                    .MatchName(qualifiedModuleName.Name)
+                    .SingleOrDefault(m => m.ProjectId == projectId
+                                          && m.DeclarationType.HasFlag(qualifiedModuleName.ComponentType)
+                                          && m.ComponentName == component.Name);
+            }
             return null;
         }
     }

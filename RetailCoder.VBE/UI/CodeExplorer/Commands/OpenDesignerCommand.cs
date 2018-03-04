@@ -3,13 +3,20 @@ using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
     public class OpenDesignerCommand : CommandBase
     {
-        public OpenDesignerCommand() : base(LogManager.GetCurrentClassLogger()) { }
+        private readonly IProjectsProvider _projectsProvider;
+
+        public OpenDesignerCommand(IProjectsProvider projectsProvider)
+            : base(LogManager.GetCurrentClassLogger())
+        {
+            _projectsProvider = projectsProvider;
+        }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
@@ -22,7 +29,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 var declaration = ((CodeExplorerItemViewModel) parameter).GetSelectedDeclaration();
                 return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
-                       declaration.QualifiedName.QualifiedModuleName.Component.HasDesigner;
+                       _projectsProvider.Component(declaration.QualifiedName.QualifiedModuleName).HasDesigner;
             }
             catch (COMException)
             {
@@ -33,7 +40,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            var designer = ((ICodeExplorerDeclarationViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName.Component.DesignerWindow();
+            var component = _projectsProvider.Component(((ICodeExplorerDeclarationViewModel)parameter).Declaration.QualifiedName.QualifiedModuleName);
+            using (var designer = component.DesignerWindow())
             {
                 if (!designer.IsWrappingNullReference)
                 {

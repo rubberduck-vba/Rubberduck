@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
@@ -224,7 +225,7 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
                 var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
@@ -272,7 +273,7 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
                 var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
