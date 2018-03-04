@@ -95,7 +95,7 @@ namespace Rubberduck.Parsing.UIContext
         
         private void CheckInitialization()
         {
-            if (!_contextProvider.CheckContext())
+            if (_contextProvider.UiContext == null)
             {
                 throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");
             }
