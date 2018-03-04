@@ -2113,6 +2113,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Excel already defines a globally scoped object variable with this reference. Consider using the sheet&apos;s &apos;CodeName&apos; property..
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionMeta {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refer to sheet by its code name.
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionName {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statically accessed sheet can be referred to by its code name.
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string SpecifyExplicitPublicModifierQuickFix {

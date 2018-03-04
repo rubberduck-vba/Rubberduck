@@ -104,6 +104,7 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="Inspections\InspectionProviderTests.cs" />
