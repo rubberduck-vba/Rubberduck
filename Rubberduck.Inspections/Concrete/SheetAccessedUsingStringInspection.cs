@@ -29,7 +29,8 @@ namespace Rubberduck.Inspections.Concrete
                 .ToArray();
 
             return from declaration in worksheetsDeclarations
-                from reference in declaration.References.Where(r => !IsIgnoringInspectionResultFor(r, AnnotationName) && IsAccessedUsingThisWorkbook(r))
+                from reference in declaration.References.Where(r =>
+                    !IsIgnoringInspectionResultFor(r, AnnotationName) && IsAccessedUsingThisWorkbook(r) && IsAccessedWithStringLiteralParameter(r))
                 let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
                 select new IdentifierReferenceInspectionResult(this,
                     InspectionsUI.SheetAccessedUsingStringInspectionResultFormat,
@@ -40,6 +41,16 @@ namespace Rubberduck.Inspections.Concrete
         private static bool IsAccessedUsingThisWorkbook(IdentifierReference reference)
         {
             return (reference.Context.Parent.GetChild(0) as VBAParser.SimpleNameExprContext)?.identifier().GetText() == "ThisWorkbook";
+        }
+
+        private static bool IsAccessedWithStringLiteralParameter(IdentifierReference reference)
+        {
+            return ((reference.Context.Parent.Parent as VBAParser.IndexExprContext)
+                       ?.argumentList()
+                       ?.argument(0)
+                       ?.positionalArgument()
+                       ?.argumentExpression().expression() as VBAParser.LiteralExprContext)
+                   ?.literalExpression().STRINGLITERAL() != null;
         }
     }
 }

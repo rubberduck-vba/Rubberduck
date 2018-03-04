@@ -13,7 +13,7 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_ReturnsResult_AccessingThisWorkbookProperty()
+        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingStringLiteral()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -27,6 +27,28 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingVariable()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    Dim s As String
+    s = ""Sheet1""
+
+    ThisWorkbook.Worksheets(s).Range(""A1"") = ""Foo""
+    ThisWorkbook.Sheets(s).Range(""A1"") = ""Foo""
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
