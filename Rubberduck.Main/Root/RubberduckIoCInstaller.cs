@@ -155,7 +155,9 @@ namespace Rubberduck.Root
 
         private void RegisterUnitTestingComSide(IWindsorContainer container)
         {
-            container.Register(Component.For<IFakesFactory>().AsFactory());
+            container.Register(Component.For<IFakesFactory>()
+                .AsFactory()
+                .LifestyleSingleton());
             container.Register(Component.For<IFakes>()
                 .ImplementedBy<FakesProvider>()
                 .LifestyleTransient());
