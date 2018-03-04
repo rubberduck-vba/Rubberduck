@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-	<Product Id="*" Name="Rubberduck.Deployment" Language="1033" Version="1.0.0.0" Manufacturer="" UpgradeCode="87de4cc1-bb89-4d30-96d9-17e2bb1f6b59">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="Rubberduck.Deployment" Language="1033" Version="1.0.0.0" Manufacturer="Rubberduck VBA" UpgradeCode="87de4cc1-bb89-4d30-96d9-17e2bb1f6b59">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
