@@ -75,51 +75,57 @@ namespace Rubberduck.UnitTesting
                                 && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
 
                 var fakes = _fakesFactory.GetFakes();
-
-                Run(module.Key.FindModuleInitializeMethods(_state));
-                foreach (var test in moduleTestMethods)
+                try
                 {
-                    // no need to run setup/teardown for ignored tests
-                    if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
+                    Run(module.Key.FindModuleInitializeMethods(_state));
+                    foreach (var test in moduleTestMethods)
                     {
-                        test.UpdateResult(TestOutcome.Ignored);
+                        // no need to run setup/teardown for ignored tests
+                        if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
+                        {
+                            test.UpdateResult(TestOutcome.Ignored);
+                            OnTestCompleted();
+                            continue;
+                        }
+
+                        var stopwatch = new Stopwatch();
+                        stopwatch.Start();
+
+                        try
+                        {
+                            fakes.StartTest();
+                            Run(testInitialize);
+                            test.Run();
+                            Run(testCleanup);
+                        }
+                        catch (COMException ex)
+                        {
+                            Logger.Error(ex, "Unexpected COM exception while running tests.", test.Declaration?.QualifiedName);
+                            test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
+                        }
+                        finally
+                        {
+                            fakes.StopTest();
+                        }
+
+                        stopwatch.Stop();
+                        test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
+
                         OnTestCompleted();
-                        continue;
+                        Model.AddExecutedTest(test);
                     }
-
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
-
-                    try
-                    {
-                        fakes.StartTest();
-                        Run(testInitialize);                        
-                        test.Run();
-                        Run(testCleanup);
-                    }
-                    catch (COMException ex)
-                    {
-                        Logger.Error(ex, "Unexpected COM exception while running tests.", test.Declaration?.QualifiedName);
-                        test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
-                    }
-                    finally
-                    {
-                        fakes.StopTest();
-                    }
-
-                    stopwatch.Stop();
-                    test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
-
-                    OnTestCompleted();
-                    Model.AddExecutedTest(test);
+                    Run(module.Key.FindModuleCleanupMethods(_state));
                 }
-                Run(module.Key.FindModuleCleanupMethods(_state));
+                finally
+                {
+                    _fakesFactory.Release(fakes);
+                }
             }
         }
 
         private void Run(IEnumerable<Declaration> members)
         {
-            var groupedMembers = members.GroupBy(m=> m.ProjectName);
+            var groupedMembers = members.GroupBy(m => m.ProjectName);
             foreach (var group in groupedMembers)
             {
                 using (var project = _vbe.VBProjects[group.Key])
