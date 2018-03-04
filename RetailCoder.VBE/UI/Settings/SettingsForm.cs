@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
-using Rubberduck.VBEditor.VBERuntime.Settings.Settings;
+using Rubberduck.VBEditor.VBERuntime.Settings;
 
 namespace Rubberduck.UI.Settings
 {

@@ -11,7 +11,7 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.VBERuntime.Settings.Settings;
+using Rubberduck.VBEditor.VBERuntime.Settings;
 
 namespace Rubberduck.UI.Command
 {

@@ -4,13 +4,6 @@ namespace Rubberduck.VBEditor.VBERuntime
 {
     public class VBERuntimeAccessor : IVBERuntime
     {
-        private enum DllVersion
-        {
-            Unknown,
-            Vbe6,
-            Vbe7
-        }
-
         private static DllVersion _version;
         private readonly IVBERuntime _runtime;
         

@@ -132,8 +132,9 @@
     <Compile Include="ComManagement\ComMessagePumper.cs" />
     <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
     <Compile Include="VBERuntime\IVBERuntime.cs" />
-    <Compile Include="VBERuntime\Settings\Settings\IVBESettings.cs" />
-    <Compile Include="VBERuntime\Settings\Settings\VBESettings.cs" />
+    <Compile Include="VBERuntime\Settings\IVBESettings.cs" />
+    <Compile Include="VBERuntime\Settings\VBESettings.cs" />
+    <Compile Include="VBERuntime\VBEDllVersion.cs" />
     <Compile Include="VBERuntime\VBERuntime6.cs" />
     <Compile Include="VBERuntime\VBERuntime7.cs" />
     <Compile Include="VBERuntime\VBERuntimeAccessor.cs" />

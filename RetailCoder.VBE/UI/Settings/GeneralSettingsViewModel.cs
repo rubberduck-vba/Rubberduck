@@ -10,7 +10,7 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.Root;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.VBERuntime.Settings.Settings;
+using Rubberduck.VBEditor.VBERuntime.Settings;
 
 namespace Rubberduck.UI.Settings
 {
