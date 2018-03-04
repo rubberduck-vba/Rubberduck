@@ -1,4 +1,7 @@
 ﻿using System;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.VBERuntime.Settings;
 
 namespace Rubberduck.VBEditor.VBERuntime
 {
@@ -14,17 +17,35 @@ namespace Rubberduck.VBEditor.VBERuntime
 
         public VBERuntimeAccessor()
         {
+            _runtime = InitializeRuntime();
+        }
+
+        public VBERuntimeAccessor(IVBE vbe, IRegistryWrapper registry)
+        {
+            if (_version == DllVersion.Unknown)
+            {
+                try
+                {
+                    _version = new VBESettings(vbe, registry).Version;
+                }
+                catch
+                {
+                    _version = DllVersion.Unknown;
+                }
+            }
+            _runtime = InitializeRuntime();
+        }
+
+        private static IVBERuntime InitializeRuntime()
+        {
             switch (_version)
             {
                 case DllVersion.Vbe7:
-                    _runtime = new VBERuntime7();
-                    break;
+                    return new VBERuntime7();
                 case DllVersion.Vbe6:
-                    _runtime = new VBERuntime6();
-                    break;
+                    return new VBERuntime6();
                 default:
-                    _runtime = DetermineVersion();
-                    break;
+                    return DetermineVersion();
             }
         }
 
