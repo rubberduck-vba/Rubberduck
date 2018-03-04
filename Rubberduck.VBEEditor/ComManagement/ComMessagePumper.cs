@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Rubberduck.VBEditor.ComManagement.VBERuntime;
+using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.VBEditor.ComManagement
 {

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
-using Rubberduck.VBERuntime;
+using Rubberduck.Common;
+using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.VBERuntime.Settings.Settings;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.VBE
