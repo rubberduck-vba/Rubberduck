@@ -13,9 +13,9 @@ namespace Rubberduck.VBEditor.ComManagement
     public class ComMessagePumper : IComMessagePumper
     {
         private static readonly Lazy<IVBERuntime> Runtime = new Lazy<IVBERuntime>(() => new VBERuntimeAccessor());
-        private readonly IUiContext _uiContext;
+        private readonly IUiContextProvider _uiContext;
 
-        public ComMessagePumper(IUiContext uiContext)
+        public ComMessagePumper(IUiContextProvider uiContext)
         {
             _uiContext = uiContext;
         }

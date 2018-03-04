@@ -4,22 +4,8 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Parsing.UIContext
 {
-    public static class UiDispatcher
+    public class UiDispatcher
     {
-        // thanks to Pellared on http://stackoverflow.com/a/12909070/1188513
-
-        private static SynchronizationContext UiContext { get; set; }
-        private static TaskScheduler UiTaskScheduler { get; set; }
-
-        public static void Initialize()
-        {
-            if (UiContext == null)
-            {
-                UiContext = SynchronizationContext.Current;
-                UiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            }
-        }
-
         /// <summary>
         /// Invokes an action asynchronously on the UI thread.
         /// </summary>

@@ -4,20 +4,22 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.VBEditor.Utility
 {
-    public interface IUiContext
+    public interface IUiContextProvider
     {
         bool CheckContext();
         TaskScheduler UiTaskScheduler { get; }
     }
 
-    public class UiContext : IUiContext
+    public class UiContextProvider : IUiContextProvider
     {
+        // thanks to Pellared on http://stackoverflow.com/a/12909070/1188513
+
         private static SynchronizationContext Context { get; set; }
         private static TaskScheduler TaskScheduler { get; set; }
-        private static readonly UiContext UiContextInstance = new UiContext();
+        private static readonly UiContextProvider UiContextInstance = new UiContextProvider();
         private static readonly object Lock = new object();
 
-        private UiContext() { }
+        private UiContextProvider() { }
         
         public static void Initialize()
         {
@@ -31,8 +33,9 @@ namespace Rubberduck.VBEditor.Utility
             }
         }
 
-        public static UiContext Instance() => UiContextInstance;
+        public static UiContextProvider Instance() => UiContextInstance;
 
+        public SynchronizationContext UiContext => Context;
         public TaskScheduler UiTaskScheduler => TaskScheduler;
 
         public bool CheckContext()

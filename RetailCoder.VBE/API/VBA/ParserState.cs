@@ -56,7 +56,7 @@ namespace Rubberduck.API.VBA
 
         public ParserState()
         {
-            UiContext.Initialize();
+            UiContextProvider.Initialize();
             UiDispatcher.Initialize();
         }
 

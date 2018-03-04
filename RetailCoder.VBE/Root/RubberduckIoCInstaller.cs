@@ -795,7 +795,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IVBE>().Instance(_vbe));
             container.Register(Component.For<IAddIn>().Instance(_addin));
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars)); //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
-            container.Register(Component.For<IUiContext>().Instance(UiContext.Instance()).LifestyleSingleton());
+            container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
         }
 
         private static void RegisterHotkeyFactory(IWindsorContainer container)
