@@ -16,8 +16,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly IParseCoordinator _parser;
         private readonly ISelectionChangeService _selectionService;
 
-        public RubberduckCommandBar(IParseCoordinator parser, IEnumerable<ICommandMenuItem> items, IContextFormatter formatter, ISelectionChangeService selectionService) 
-            : base("Rubberduck", CommandBarPosition.Top, items)
+        public RubberduckCommandBar(IParseCoordinator parser, IEnumerable<ICommandMenuItem> items, IContextFormatter formatter, ISelectionChangeService selectionService, IUiDispatcher uiDispatcher) 
+            : base("Rubberduck", CommandBarPosition.Top, items, uiDispatcher)
         {
             _parser = parser;
             _formatter = formatter;
@@ -106,7 +106,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var showErrorsCommandButton = FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
             if (showErrorsCommandButton == null) { return; }
 
-            UiDispatcher.Invoke(() =>
+            _uiDispatcher.Invoke(() =>
             {
                 try
                 {
@@ -132,7 +132,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var contextReferences = FindChildByTag(typeof(ReferenceCounterLabelMenuItem).FullName) as ReferenceCounterLabelMenuItem;
             var contextDescription = FindChildByTag(typeof(ContextDescriptionLabelMenuItem).FullName) as ContextDescriptionLabelMenuItem;
 
-            UiDispatcher.Invoke(() =>
+            _uiDispatcher.Invoke(() =>
             {
                 try
                 {

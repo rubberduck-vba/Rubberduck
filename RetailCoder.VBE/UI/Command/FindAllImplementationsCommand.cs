@@ -28,12 +28,13 @@ namespace Rubberduck.UI.Command
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IVBE _vbe;
+        private readonly IUiDispatcher _uiDispatcher;
 
         private new static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public FindAllImplementationsCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
             RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
-            SearchResultPresenterInstanceManager presenterService)
+            SearchResultPresenterInstanceManager presenterService, IUiDispatcher uiDispatcher)
              : base(LogManager.GetCurrentClassLogger())
         {
             _navigateCommand = navigateCommand;
@@ -42,6 +43,7 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
             _viewModel = viewModel;
             _presenterService = presenterService;
+            _uiDispatcher = uiDispatcher;
 
             _state.StateChanged += _state_StateChanged;
         }
@@ -62,7 +64,7 @@ namespace Rubberduck.UI.Command
 
             if (_viewModel == null) { return; }
 
-            UiDispatcher.InvokeAsync(UpdateTab);
+            _uiDispatcher.InvokeAsync(UpdateTab);
         }
 
         private void UpdateTab()

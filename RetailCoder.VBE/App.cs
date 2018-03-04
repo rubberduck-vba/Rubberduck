@@ -52,7 +52,6 @@ namespace Rubberduck
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             UiContextProvider.Initialize();
-            UiDispatcher.Initialize();
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)

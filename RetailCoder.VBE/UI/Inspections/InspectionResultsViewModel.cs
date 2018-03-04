@@ -15,7 +15,6 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 
@@ -41,12 +40,20 @@ namespace Rubberduck.UI.Inspections
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
+        private readonly IUiDispatcher _uiDispatcher;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, IQuickFixProvider quickFixProvider,
-            INavigateCommand navigateCommand, ReparseCommand reparseCommand,
-            IClipboardWriter clipboard, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory)
+        public InspectionResultsViewModel(
+            RubberduckParserState state, 
+            IInspector inspector, 
+            IQuickFixProvider quickFixProvider,
+            INavigateCommand navigateCommand, 
+            ReparseCommand reparseCommand,
+            IClipboardWriter clipboard, 
+            IGeneralConfigService configService, 
+            ISettingsFormFactory settingsFormFactory,
+            IUiDispatcher uiDispatcher)
         {
             _state = state;
             _inspector = inspector;
@@ -55,6 +62,8 @@ namespace Rubberduck.UI.Inspections
             _clipboard = clipboard;
             _configService = configService;
             _settingsFormFactory = settingsFormFactory;
+            _uiDispatcher = uiDispatcher;
+
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
                 o =>
                 {
@@ -326,7 +335,7 @@ namespace Rubberduck.UI.Inspections
 
             Results = new ObservableCollection<IInspectionResult>(results);
 
-            UiDispatcher.Invoke(() =>
+            _uiDispatcher.Invoke(() =>
             {
                 try
                 {

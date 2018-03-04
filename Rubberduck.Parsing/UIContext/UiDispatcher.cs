@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Parsing.UIContext
 {
-    public class UiDispatcher
+    public class UiDispatcher : IUiDispatcher
     {
+        private readonly IUiContextProvider _contextProvider;
+
+        public UiDispatcher(IUiContextProvider contextProvider)
+        {
+            _contextProvider = contextProvider;
+        }
+
         /// <summary>
         /// Invokes an action asynchronously on the UI thread.
         /// </summary>
         /// <param name="action">The action that must be executed.</param>
-        public static void InvokeAsync(Action action)
+        public void InvokeAsync(Action action)
         {
             CheckInitialization();
 
-            UiContext.Post(x => action(), null);
+            _contextProvider.UiContext.Post(x => action(), null);
         }
 
         /// <summary>
@@ -28,11 +36,11 @@ namespace Rubberduck.Parsing.UIContext
         /// </summary>
         /// <param name="action">The action that will be executed on the UI
         /// thread</param>
-        public static void Invoke(Action action)
+        public void Invoke(Action action)
         {
             CheckInitialization();
 
-            if (UiContext == SynchronizationContext.Current)
+            if (_contextProvider.UiContext == SynchronizationContext.Current)
             {
                 action();
             }
@@ -50,15 +58,15 @@ namespace Rubberduck.Parsing.UIContext
         /// <param name="token">Optional cancellation token</param>
         /// <param name="options">Optional TaskCreationOptions</param>
         /// <returns></returns>
-        public static Task StartTask(Action action, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
+        public Task StartTask(Action action, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
         {
             CheckInitialization();
 
-            return Task.Factory.StartNew(action, token, options, UiTaskScheduler);
+            return Task.Factory.StartNew(action, token, options, _contextProvider.UiTaskScheduler);
         }
 
         //This separate overload is necessary because CancellationToken.None is not a compile-time constant and thus cannot be used as default value.
-        public static Task StartTask(Action action, TaskCreationOptions options = TaskCreationOptions.None)
+        public Task StartTask(Action action, TaskCreationOptions options = TaskCreationOptions.None)
         {
             return StartTask(action, CancellationToken.None, options);
         }
@@ -72,22 +80,25 @@ namespace Rubberduck.Parsing.UIContext
         /// <param name="token">Optional cancellation token</param>
         /// <param name="options">Optional TaskCreationOptions</param>
         /// <returns></returns>
-        public static Task<T> StartTask<T>(Func<T> func, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
+        public Task<T> StartTask<T>(Func<T> func, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
         {
             CheckInitialization();
 
-            return Task.Factory.StartNew(func, token, options, UiTaskScheduler);
+            return Task.Factory.StartNew(func, token, options, _contextProvider.UiTaskScheduler);
         }
 
         //This separate overload is necessary because CancellationToken.None is not a compile-time constant and thus cannot be used as default value.
-        public static Task<T> StartTask<T>(Func<T> func, TaskCreationOptions options = TaskCreationOptions.None)
+        public Task<T> StartTask<T>(Func<T> func, TaskCreationOptions options = TaskCreationOptions.None)
         {
             return StartTask(func, CancellationToken.None, options);
         }
         
-        private static void CheckInitialization()
+        private void CheckInitialization()
         {
-            if (UiContext == null) throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");
+            if (!_contextProvider.CheckContext())
+            {
+                throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");
+            }
         }
 
         public static void Shutdown()

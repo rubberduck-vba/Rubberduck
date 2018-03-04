@@ -14,7 +14,6 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
@@ -32,17 +31,24 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly IConfigProvider<WindowSettings> _windowSettingsProvider;
         private readonly GeneralSettings _generalSettings;
         private readonly WindowSettings _windowSettings;
+        private readonly IUiDispatcher _uiDispatcher;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public CodeExplorerViewModel(FolderHelper folderHelper, RubberduckParserState state, List<CommandBase> commands,
-            IConfigProvider<GeneralSettings> generalSettingsProvider, IConfigProvider<WindowSettings> windowSettingsProvider)
+        public CodeExplorerViewModel(
+            FolderHelper folderHelper, 
+            RubberduckParserState state, 
+            List<CommandBase> commands,
+            IConfigProvider<GeneralSettings> generalSettingsProvider, 
+            IConfigProvider<WindowSettings> windowSettingsProvider, 
+            IUiDispatcher uiDispatcher)
         {
             _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
             _windowSettingsProvider = windowSettingsProvider;
+            _uiDispatcher = uiDispatcher;
 
             if (generalSettingsProvider != null)
             {
@@ -388,7 +394,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 var projectName = componentProject.Name;
                 var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
 
-                UiDispatcher.Invoke(() =>
+                _uiDispatcher.Invoke(() =>
                 {
                     try
                     {

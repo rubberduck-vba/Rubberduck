@@ -7,6 +7,7 @@ namespace Rubberduck.VBEditor.Utility
     public interface IUiContextProvider
     {
         bool CheckContext();
+        SynchronizationContext UiContext { get; }
         TaskScheduler UiTaskScheduler { get; }
     }
 

@@ -8,11 +8,9 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Utility;
 
@@ -53,11 +51,12 @@ namespace Rubberduck.API.VBA
         private AttributeParser _attributeParser;
         private ParseCoordinator _parser;
         private VBE _vbe;
+        private readonly IUiDispatcher _dispatcher;
 
         public ParserState()
         {
             UiContextProvider.Initialize();
-            UiDispatcher.Initialize();
+            _dispatcher = new UiDispatcher(UiContextProvider.Instance());
         }
 
         public void Initialize(Microsoft.Vbe.Interop.VBE vbe)
@@ -147,7 +146,7 @@ namespace Rubberduck.API.VBA
         public void BeginParse()
         {
             // non-blocking call
-            UiDispatcher.Invoke(() => _state.OnParseRequested(this));
+            _dispatcher.Invoke(() => _state.OnParseRequested(this));
         }
 
         public event Action OnParsed;
@@ -167,19 +166,19 @@ namespace Rubberduck.API.VBA
             var errorHandler = OnError;
             if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
             {
-                UiDispatcher.Invoke(errorHandler.Invoke);
+                _dispatcher.Invoke(errorHandler.Invoke);
             }
 
             var parsedHandler = OnParsed;
             if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
             {
-                UiDispatcher.Invoke(parsedHandler.Invoke);
+                _dispatcher.Invoke(parsedHandler.Invoke);
             }
 
             var readyHandler = OnReady;
             if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
             {
-                UiDispatcher.Invoke(readyHandler.Invoke);
+                _dispatcher.Invoke(readyHandler.Invoke);
             }
         }
 
