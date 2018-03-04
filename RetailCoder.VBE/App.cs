@@ -53,7 +53,6 @@ namespace Rubberduck
             
             UiContext.Initialize();
             UiDispatcher.Initialize();
-            ComMessagePumper.Initialize();
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)

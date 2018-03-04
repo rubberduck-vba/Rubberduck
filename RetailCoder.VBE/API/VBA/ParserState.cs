@@ -58,7 +58,6 @@ namespace Rubberduck.API.VBA
         {
             UiContext.Initialize();
             UiDispatcher.Initialize();
-            ComMessagePumper.Initialize();
         }
 
         public void Initialize(Microsoft.Vbe.Interop.VBE vbe)
