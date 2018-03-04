@@ -20,13 +20,13 @@ namespace Rubberduck.VBEditor.VBERuntime
             _runtime = InitializeRuntime();
         }
 
-        public VBERuntimeAccessor(IVBE vbe, IRegistryWrapper registry)
+        public VBERuntimeAccessor(IVBESettings vbeSettingsy)
         {
             if (_version == DllVersion.Unknown)
             {
                 try
                 {
-                    _version = new VBESettings(vbe, registry).Version;
+                    _version = vbeSettingsy.Version;
                 }
                 catch
                 {
