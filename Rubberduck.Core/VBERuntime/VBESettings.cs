@@ -24,7 +24,7 @@ namespace Rubberduck.VBERuntime
         {
             try
             {
-                switch (Convert.ToInt32(decimal.Parse(vbe.Version)))
+                switch (int.Parse(vbe.Version.Split('.')[0]))
                 {
                     case 6:
                         Version = DllVersion.Vbe6;

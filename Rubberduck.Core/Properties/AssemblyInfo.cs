@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Rubberduck.Core")]
 [assembly: AssemblyCopyright("Copyright ©  2014-2018")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("en")]
+[assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("Rubberduck.Main")]
 [assembly: InternalsVisibleTo("RubberduckTests")]
 
