@@ -18,13 +18,13 @@ namespace Rubberduck.VBEditor.VBERuntime.Settings
         {
             try
             {
-                switch (Convert.ToInt32(decimal.Parse(vbe.Version)))
+                switch (VBEDllVersion.GetCurrentVersion(vbe))
                 {
-                    case 6:
+                    case DllVersion.Vbe6:
                         Version = DllVersion.Vbe6;
                         _activeRegistryRootPath = Vbe6SettingPath;
                         break;
-                    case 7:
+                    case DllVersion.Vbe7:
                         Version = DllVersion.Vbe7;
                         _activeRegistryRootPath = Vbe7SettingPath;
                         break;
