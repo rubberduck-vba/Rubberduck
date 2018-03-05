@@ -12,12 +12,13 @@ namespace Rubberduck.VBEditor.ComManagement
 
     public class ComMessagePumper : IComMessagePumper
     {
-        private static readonly Lazy<IVBERuntime> Runtime = new Lazy<IVBERuntime>(() => new VBERuntimeAccessor());
+        private readonly IVBERuntime _runtime;
         private readonly IUiContextProvider _uiContext;
 
-        public ComMessagePumper(IUiContextProvider uiContext)
+        public ComMessagePumper(IUiContextProvider uiContext, IVBERuntime runtime)
         {
             _uiContext = uiContext;
+            _runtime = runtime;
         }
 
         /// <summary>
@@ -38,7 +39,7 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             CheckContext();
 
-            return Runtime.Value.DoEvents();
+            return _runtime.DoEvents();
         }
 
         private void CheckContext()

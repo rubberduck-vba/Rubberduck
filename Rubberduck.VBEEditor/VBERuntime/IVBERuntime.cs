@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.VBEditor.VBERuntime
 {
-    internal interface IVBERuntime
+    public interface IVBERuntime
     {
         float Timer();
         int DoEvents();

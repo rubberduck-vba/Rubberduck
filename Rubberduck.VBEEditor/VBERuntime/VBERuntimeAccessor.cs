@@ -12,12 +12,7 @@ namespace Rubberduck.VBEditor.VBERuntime
         {
             _version = DllVersion.Unknown;
         }
-
-        public VBERuntimeAccessor()
-        {
-            _runtime = InitializeRuntime();
-        }
-
+        
         public VBERuntimeAccessor(IVBE vbe)
         {
             if (_version == DllVersion.Unknown)
