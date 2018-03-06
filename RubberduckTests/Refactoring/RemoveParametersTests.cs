@@ -743,6 +743,59 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_ClientReferencesAreUpdated_OtherModule()
+        {
+            //Input
+            const string inputDeclaringCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+";
+            const string inputCallingCode = 
+@"Private Sub Bar()
+    Foo 10, ""Hello""
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCallingCode =
+@"Private Sub Bar()
+    Foo 10
+End Sub
+";
+
+            var vbeBuilder = new MockVbeBuilder();
+            var projectBuilder = vbeBuilder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("DeclarationModule", ComponentType.StandardModule, inputDeclaringCode, selection)
+                .AddComponent("CallingModule", ComponentType.StandardModule, inputCallingCode);
+            projectBuilder.AddProjectToVbeBuilder();
+            var vbe = vbeBuilder.Build();
+            var declaringComponent = projectBuilder.MockComponents[0].Object;
+            var callingComponent = projectBuilder.MockComponents[1].Object; 
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(declaringComponent), selection);
+
+                //Specify Param(s) to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[1].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, state.ProjectsProvider);
+                refactoring.Refactor(qualifiedSelection);
+                var resultCallingCode = callingComponent.CodeModule.Content();
+
+                Assert.AreEqual(expectedCallingCode, resultCallingCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_ParamArray()
         {
             //Input
