@@ -178,7 +178,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     break;
                 }
 
-                if (args.Count > i && args[i].positionalArgument() != null)
+                if (args.Count > i && (args[i].positionalArgument() != null || args[i].missingArgument() != null))
                 {
                     rewriter.Remove(args[i]);
                 }
