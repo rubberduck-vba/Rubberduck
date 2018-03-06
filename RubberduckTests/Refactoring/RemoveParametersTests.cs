@@ -1097,11 +1097,11 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-                @"Private Sub Foo(ByVal arg1 As Integer)
+                @"Private Sub Foo(Optional ByVal arg2 As String)
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer)
-    Foo
+    Foo 
     Foo ""test""
     Foo ""test""
 End Sub";
@@ -1151,7 +1151,7 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-                @"Private Sub Foo(ByVal arg1 As Integer)
+                @"Private Sub Foo(Optional ByVal arg1 As Integer, Optional ByVal arg3 As Integer)
 End Sub
 
 Private Sub Goo(ByVal arg1 As Integer)
@@ -1161,7 +1161,7 @@ Private Sub Goo(ByVal arg1 As Integer)
     Foo 1, 3
     Foo 
     Foo , 3
-    Foo , 3
+    Foo ,3
 End Sub";
 
             IVBComponent component;
