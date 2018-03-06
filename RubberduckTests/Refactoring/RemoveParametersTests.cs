@@ -590,6 +590,57 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam_LineContinued()
+        {
+            //Input
+            const string inputCode =
+                @"Private Function Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Function
+
+Private Sub Bar()
+    Dim x As Variant    
+    x = Foo _
+        (10, ""Hello"")
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Function Foo(ByVal arg2 As String)
+End Function
+
+Private Sub Bar()
+    Dim x As Variant    
+    x = Foo _
+        (""Hello"")
+End Sub
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                //Specify Param(s) to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[0].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, state.ProjectsProvider);
+                refactoring.Refactor(qualifiedSelection);
+
+                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam_ParensAroundCall()
         {
             //Input
