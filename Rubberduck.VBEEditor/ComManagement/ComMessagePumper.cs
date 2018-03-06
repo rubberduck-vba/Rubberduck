@@ -44,7 +44,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         private void CheckContext()
         {
-            if (_uiContext.CheckContext())
+            if (!_uiContext.CheckContext())
             {
                 throw new InvalidOperationException("ComMessagePumper cannot be used in other threads. Only the UI thread can call methods on the ComMessagePumper");
             }
