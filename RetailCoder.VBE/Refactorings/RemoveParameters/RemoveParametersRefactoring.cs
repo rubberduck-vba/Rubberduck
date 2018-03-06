@@ -137,6 +137,16 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
                 if (argumentList == null)
                 {
+                    var whitespaceIndexExpression =
+                        reference.Context.GetAncestor<VBAParser.WhitespaceIndexExprContext>();
+                    if (whitespaceIndexExpression != null)
+                    {
+                        argumentList = whitespaceIndexExpression.GetChild<VBAParser.ArgumentListContext>();
+                    }
+                }
+
+                if (argumentList == null)
+                {
                     continue;
                 }
 
