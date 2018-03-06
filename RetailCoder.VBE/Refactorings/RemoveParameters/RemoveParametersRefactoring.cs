@@ -10,9 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -22,13 +20,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
-        private readonly IProjectsProvider _projectsProvider;
 
-        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IProjectsProvider projectsProvider)
+        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
             _vbe = vbe;
             _factory = factory;
-            _projectsProvider = projectsProvider;
         }
 
         public void Refactor()
