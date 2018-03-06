@@ -103,7 +103,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveParameters()
         {
-            if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null"); }
+            if (_model.TargetDeclaration == null)
+            {
+                throw new NullReferenceException("Parameter is null");
+            }
 
             AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
@@ -150,16 +153,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                using (var module = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
-                {
-                    RemoveCallArguments(argumentList, module);
-                }
+                RemoveCallArguments(argumentList, reference.QualifiedModuleName);
             }
         }
 
-        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, ICodeModule module)
+        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module)
         {
-            var rewriter = _model.State.GetRewriter(module.Parent);
+            var rewriter = _model.State.GetRewriter(module);
 
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
@@ -171,6 +171,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 
                 if (_model.Parameters[i].IsParamArray)
                 {
+                    //The following code works because it is neither allowed to use both named arguments
+                    //and a ParamArray nor optional arguments and a ParamArray.
                     var index = i == 0 ? 0 : argList.children.IndexOf(args[i - 1]) + 1;
                     for (var j = index; j < argList.children.Count; j++)
                     {
