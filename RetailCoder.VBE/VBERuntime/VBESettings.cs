@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Microsoft.Win32;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -24,7 +25,7 @@ namespace Rubberduck.VBERuntime
         {
             try
             {
-                switch (Convert.ToInt32(decimal.Parse(vbe.Version)))
+                switch (Convert.ToInt32(decimal.Parse(vbe.Version, CultureInfo.InvariantCulture)))
                 {
                     case 6:
                         Version = DllVersion.Vbe6;
