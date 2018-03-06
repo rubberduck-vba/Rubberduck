@@ -981,7 +981,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_RemoveOptionalParam()
+        public void RemoveParametersRefactoring_RemoveOptionalParam_LastParam()
         {
             //Input
             const string inputCode =
@@ -1022,6 +1022,114 @@ End Sub";
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_FirstParam()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer, Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1, ""test""
+    Foo , ""test""
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo(ByVal arg1 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo
+    Foo ""test""
+    Foo ""test""
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                //Specify Params to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[0].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, state.ProjectsProvider);
+                refactoring.Refactor(qualifiedSelection);
+                var resultingCode = component.CodeModule.Content();
+
+                Assert.AreEqual(expectedCode, resultingCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_MiddleParam()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer, Optional ByVal arg2 As String, Optional ByVal arg3 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1, ""test""
+    Foo 1, ""test"", 3
+    Foo 1, , 3
+    Foo , ""test""
+    Foo , ""test"", 3
+    Foo ,, 3
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo(ByVal arg1 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1
+    Foo 1, 3
+    Foo 1, 3
+    Foo 
+    Foo , 3
+    Foo , 3
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                //Specify Params to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[1].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, state.ProjectsProvider);
+                refactoring.Refactor(qualifiedSelection);
+                var resultingCode = component.CodeModule.Content();
+
+                Assert.AreEqual(expectedCode, resultingCode);
             }
         }
 
