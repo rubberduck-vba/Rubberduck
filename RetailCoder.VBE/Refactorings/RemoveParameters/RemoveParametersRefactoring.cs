@@ -160,6 +160,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module)
         {
             var rewriter = _model.State.GetRewriter(module);
+            _rewriters.Add(rewriter);
 
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
