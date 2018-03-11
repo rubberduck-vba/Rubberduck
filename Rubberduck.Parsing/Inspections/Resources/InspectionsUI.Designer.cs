@@ -61,6 +61,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
+        /// </summary>
+        public static string AccessSheetUsingCodeNameQuickFix {
+            get {
+                return ResourceManager.GetString("AccessSheetUsingCodeNameQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add step.
         /// </summary>
         public static string AddStepOneQuickFix {
@@ -2122,7 +2131,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refer to sheet by its code name.
+        ///   Looks up a localized string similar to Statically accessible sheet accessed using string.
         /// </summary>
         public static string SheetAccessedUsingStringInspectionName {
             get {
@@ -2131,7 +2140,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Statically accessed sheet can be referred to by its code name.
+        ///   Looks up a localized string similar to Statically accessible sheet can be referred to by its code name.
         /// </summary>
         public static string SheetAccessedUsingStringInspectionResultFormat {
             get {

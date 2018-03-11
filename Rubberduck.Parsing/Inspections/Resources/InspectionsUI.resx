@@ -936,12 +936,15 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'For...Next' loop step 1 is redundant</value>
   </data>
   <data name="SheetAccessedUsingStringInspectionResultFormat" xml:space="preserve">
-    <value>Statically accessed sheet can be referred to by its code name</value>
+    <value>Statically accessible sheet can be referred to by its code name</value>
   </data>
   <data name="SheetAccessedUsingStringInspectionMeta" xml:space="preserve">
     <value>Excel already defines a globally scoped object variable with this reference. Consider using the sheet's 'CodeName' property.</value>
   </data>
   <data name="SheetAccessedUsingStringInspectionName" xml:space="preserve">
-    <value>Refer to sheet by its code name</value>
+    <value>Statically accessible sheet accessed using string</value>
+  </data>
+  <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
+    <value>Refer to statically accessible sheet by its code name</value>
   </data>
 </root>

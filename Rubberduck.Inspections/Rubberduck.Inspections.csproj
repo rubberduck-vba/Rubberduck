@@ -120,6 +120,7 @@
     <Compile Include="Concrete\ProcedureCanBeWrittenAsFunctionInspection.cs" />
     <Compile Include="Concrete\ProcedureNotUsedInspection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFix.cs" />
     <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="QuickFixes\AddStepOneQuickFix.cs" />
