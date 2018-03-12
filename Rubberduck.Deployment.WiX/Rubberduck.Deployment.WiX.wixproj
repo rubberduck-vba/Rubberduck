@@ -25,17 +25,6 @@
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Name>Rubberduck</Name>
-      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>
-      </DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup>
     <WixToolPath>$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\</WixToolPath>
     <WixTargetsPath>$(WixToolPath)wix.targets</WixTargetsPath>
@@ -46,8 +35,7 @@
     <Error Text="The WiX Toolset v4 build tools must be installed to build this project. To download the WiX Toolset v4, see http://wixtoolset.org/releases/" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)\packages\WiX.Toolset.3.9.1208.0\tools\wix\heat.exe" file "$(SolutionDir)\RetailCoder.VBE\bin\$(ConfigurationName)\Rubberduck.dll" -out "$(TargetDir)\Rubberduck.dll.xml"
-"$(SolutionDir)\packages\WiX.Toolset.3.9.1208.0\tools\wix\heat.exe" file "$(SolutionDir)\RetailCoder.VBE\bin\$(ConfigurationName)\Rubberduck.tlb" -out "$(TargetDir)\Rubberduck.tlb.xml"</PreBuildEvent>
+    <PreBuildEvent />
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
