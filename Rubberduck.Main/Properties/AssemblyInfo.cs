@@ -5,12 +5,12 @@ using System.Runtime.CompilerServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rubberduck.SettingsProvider")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Rubberduck")]
+[assembly: AssemblyDescription("The Rubberduck AddIn")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Rubberduck.SettingsProvider")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCompany("Rubberduck-VBA")]
+[assembly: AssemblyProduct("Rubberduck")]
+[assembly: AssemblyCopyright("Copyright ©  2014-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("RubberduckTests")]
@@ -21,7 +21,7 @@ using System.Runtime.CompilerServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("26096055-4801-45f6-a82b-add86311eddf")]
+[assembly: Guid("e07c841c-14b4-4890-83e9-8c80b06dd59d")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,5 +33,5 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("2.1.*")]
+//[assembly: AssemblyFileVersion("2.1.0.0")]
