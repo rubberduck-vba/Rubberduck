@@ -24,14 +24,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public IReorderParametersPresenter Create()
         {
-            var pane = _vbe.ActiveCodePane;
+            var selection = _vbe.GetActiveSelection();
 
-            if (pane == null || pane.IsWrappingNullReference)
-            {
-                return null;
-            }
-
-            var selection = pane.GetQualifiedSelection();
             if (!selection.HasValue)
             {
                 return null;
@@ -39,7 +33,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             var model = new ReorderParametersModel(_state, selection.Value, _messageBox);
             return new ReorderParametersPresenter(_view, model, _messageBox);
-
+            
         }
     }
 }

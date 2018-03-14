@@ -24,13 +24,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public RemoveParametersPresenter Create()
         {
-            var pane = _vbe.ActiveCodePane;
-            if (pane == null || pane.IsWrappingNullReference)
-            {
-                return null;
-            }
+            var selection = _vbe.GetActiveSelection();
 
-            var selection = pane.GetQualifiedSelection();
             if (!selection.HasValue)
             {
                 return null;
@@ -38,7 +33,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var model = new RemoveParametersModel(_state, selection.Value, _messageBox);
             return new RemoveParametersPresenter(_view, model, _messageBox);
-
         }
     }
 }

@@ -12,19 +12,19 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class SettingsCommand : CommandBase
     {
-        private readonly IGeneralConfigService _service;
-        private readonly IOperatingSystem _operatingSystem;
-        public SettingsCommand(IGeneralConfigService service, IOperatingSystem operatingSystem) : base(LogManager.GetCurrentClassLogger())
+        private readonly ISettingsFormFactory _settingsFormFactory;
+
+        public SettingsCommand(ISettingsFormFactory settingsFormFactory) : base(LogManager.GetCurrentClassLogger())
         {
-            _service = service;
-            _operatingSystem = operatingSystem;
+            _settingsFormFactory = settingsFormFactory;
         }
 
         protected override void OnExecute(object parameter)
         {
-            using (var window = new SettingsForm(_service, _operatingSystem))
+            using (var window = _settingsFormFactory.Create())
             {
                 window.ShowDialog();
+                _settingsFormFactory.Release(window);
             }
         }
     }

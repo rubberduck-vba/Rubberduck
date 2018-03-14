@@ -8,7 +8,8 @@ namespace RubberduckTests.VBEditor
     [TestFixture()]
     public class ReferenceEqualityComparerTests
     {
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AnObjectIsEqualToItself()
         {
             var referenceComparer = new ReferenceEqualityComparer();
@@ -21,7 +22,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsTrue(consideredEqual);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void DifferentObjectsEqualAsIEquatableAreNotConsideredEqual()
         {
             var referenceComparer = new ReferenceEqualityComparer();
@@ -38,7 +40,8 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(consideredEqual);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void GetHashCodeIgnoresHashAsIEquatable()
         {
             var referenceComparer = new ReferenceEqualityComparer();

@@ -51,7 +51,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
                 RemoveParameters();
 
-                if (oldSelection.HasValue)
+                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
                 {
                     pane.Selection = oldSelection.Value.Selection;
                 }

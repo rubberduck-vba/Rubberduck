@@ -22,27 +22,38 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null)
+            Declaration target;
+            using (var activePane = Vbe.ActiveCodePane)
             {
-                return false;
+                if (Vbe.ActiveCodePane == null || activePane.IsWrappingNullReference)
+                {
+                    return false;
+                }
+            
+                target = _state.FindSelectedDeclaration(activePane);
             }
 
-            var target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
             return _state.Status == ParserState.Ready && target != null && target.IsUserDefined;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (Vbe.ActiveCodePane == null) { return; }
-
             Declaration target;
-            if (parameter != null)
+            using (var activePane = Vbe.ActiveCodePane)
             {
-                target = parameter as Declaration;
-            }
-            else
-            {
-                target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                if (parameter != null)
+                {
+                    target = parameter as Declaration;
+                }
+                else
+                {
+                    target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
+                }
             }
 
             if (target == null || !target.IsUserDefined)

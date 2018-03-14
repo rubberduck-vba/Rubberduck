@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -26,7 +27,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -50,7 +51,7 @@ End Property";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
@@ -93,7 +94,7 @@ End Property";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 
@@ -118,7 +119,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
 

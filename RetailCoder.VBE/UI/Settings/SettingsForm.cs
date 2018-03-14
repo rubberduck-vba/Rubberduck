@@ -1,9 +1,16 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
+using Rubberduck.VBERuntime;
 
 namespace Rubberduck.UI.Settings
 {
+    public interface ISettingsFormFactory
+    {
+        SettingsForm Create();
+        void Release(SettingsForm form);
+    }
+
     public partial class SettingsForm : Form
     {
         public SettingsForm()
@@ -11,7 +18,7 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
+        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, IMessageBox messageBox, IVBESettings vbeSettings, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
         {
             var config = configService.LoadConfiguration();
 
@@ -19,7 +26,7 @@ namespace Rubberduck.UI.Settings
                 config,
                 new SettingsView
                 {
-                    Control = new GeneralSettings(new GeneralSettingsViewModel(config, operatingSystem)),
+                    Control = new GeneralSettings(new GeneralSettingsViewModel(config, operatingSystem, messageBox, vbeSettings)),
                     View = SettingsViews.GeneralSettings
                 },
                 new SettingsView

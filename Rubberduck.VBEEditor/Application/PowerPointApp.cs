@@ -6,7 +6,10 @@ namespace Rubberduck.VBEditor.Application
     {
         private readonly IVBE _vbe;
 
-        public PowerPointApp(IVBE vbe) : base("PowerPoint") { }
+        public PowerPointApp(IVBE vbe) : base(vbe, "PowerPoint")
+        {
+            _vbe = vbe;
+        }
 
         public override void Run(dynamic declaration)
         {

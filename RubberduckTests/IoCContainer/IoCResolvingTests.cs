@@ -17,6 +17,7 @@ namespace RubberduckTests.IoCContainer
     public class IoCResolvingTests
     {
         [Test]
+        [Category("IoC_Registration")]
         public void ResolveInspections_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -26,10 +27,7 @@ namespace RubberduckTests.IoCContainer
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
                 {
-                    new ExperimentalFeatures
-                    {
-                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl)
-                    }
+                    new ExperimentalFeatures()
                 }
             };
 
@@ -56,6 +54,7 @@ namespace RubberduckTests.IoCContainer
         }
 
         [Test]
+        [Category("IoC_Registration")]
         public void ResolveRubberduckParserState_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -65,10 +64,7 @@ namespace RubberduckTests.IoCContainer
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
                 {
-                    new ExperimentalFeatures
-                    {
-                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl)
-                    }
+                    new ExperimentalFeatures()
                 }
             };
 

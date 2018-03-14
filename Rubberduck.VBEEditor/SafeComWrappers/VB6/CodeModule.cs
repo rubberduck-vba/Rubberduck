@@ -160,6 +160,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
+        public int SimpleContentHash()
+        {
+            var code = Content();
+            return string.IsNullOrEmpty(code)
+                ? 0
+                : code.GetHashCode();
+        }
+
         public bool IsDirty => _previousContentHash.Equals(ContentHash());
 
         public void AddFromString(string content)

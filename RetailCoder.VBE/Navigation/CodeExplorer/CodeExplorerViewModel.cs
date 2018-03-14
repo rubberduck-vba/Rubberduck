@@ -18,6 +18,7 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
+using Rubberduck.Parsing.UIContext;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 // ReSharper disable ExplicitCallerInfoArgument
@@ -91,10 +92,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             PrintCommand = commands.OfType<PrintCommand>().SingleOrDefault();
-
-            CommitCommand = commands.OfType<CommitCommand>().SingleOrDefault();
-            UndoCommand = commands.OfType<UndoCommand>().SingleOrDefault();
-
+            
             CopyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
@@ -362,7 +360,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private void ParserState_ModuleStateChanged(object sender, Parsing.ParseProgressEventArgs e)
+        private void ParserState_ModuleStateChanged(object sender, ParseProgressEventArgs e)
         {
             // if we are resolving references, we already have the declarations and don't need to display error
             if (!(e.State == ParserState.Error ||
@@ -375,7 +373,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
             {
                 var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                    .FirstOrDefault(p => p.Declaration.Project.Equals(componentProject));
+                    .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false);
 
                 if (projectNode == null)
                 {
@@ -424,7 +422,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             var projectDeclaration =
                 _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
-                    .FirstOrDefault(item => item.Project.ProjectId == module.ProjectId);
+                    .FirstOrDefault(item => item.ProjectId == module.ProjectId);
 
             if (module.ComponentType == ComponentType.StandardModule)
             {
@@ -533,9 +531,6 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase RemoveCommand { get; }
 
         public CommandBase PrintCommand { get; }
-
-        public CommandBase CommitCommand { get; }
-        public CommandBase UndoCommand { get; }
         
         private readonly CommandBase _externalRemoveCommand;
 
@@ -554,9 +549,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public Visibility ExportVisibility => CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
-
-        public bool EnableSourceControl => _generalSettings.EnableExperimentalFeatures.Any(a => a.Key == RubberduckUI.GeneralSettings_EnableSourceControl);
-
+        
         public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;

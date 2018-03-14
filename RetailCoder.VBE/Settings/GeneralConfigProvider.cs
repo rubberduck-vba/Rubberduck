@@ -61,11 +61,5 @@ namespace Rubberduck.Settings
         {
             AutoSaveSettingsChanged?.Invoke(this, e);
         }
-
-        public event EventHandler SourceControlEnabledChanged;
-        protected virtual void OnSourceControlEnabledChanged(EventArgs e)
-        {
-            SourceControlEnabledChanged?.Invoke(this, e);
-        }
     }
 }

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
@@ -95,12 +96,23 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready ||
-                (_vbe.ActiveCodePane == null && !(_vbe.SelectedVBComponent?.HasDesigner ?? false)))
+            if (_state.Status != ParserState.Ready)
             {
                 return false;
             }
-            
+
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                using (var selectedComponent = _vbe.SelectedVBComponent)
+                {
+                    if ((activePane == null || activePane.IsWrappingNullReference)
+                        && !(selectedComponent?.HasDesigner ?? false))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             var target = FindTarget(parameter);
             var canExecute = target != null;
 
@@ -176,7 +188,17 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            return _vbe.ActiveCodePane != null && (_vbe.SelectedVBComponent?.HasDesigner ?? false)
+            bool findDesigner;
+            using (var activePane = _vbe.ActiveCodePane)
+            {
+                using (var selectedComponent = _vbe.SelectedVBComponent)
+                {
+                    findDesigner = activePane != null && !activePane.IsWrappingNullReference 
+                                    && (selectedComponent?.HasDesigner ?? false);
+                }
+            }
+
+            return findDesigner
                 ? FindFormDesignerTarget()
                 : FindCodePaneTarget();
         }

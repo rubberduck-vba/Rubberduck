@@ -1,3 +1,4 @@
+using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.VBA;
@@ -37,7 +38,7 @@ namespace RubberduckTests.Commands
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
@@ -126,7 +127,7 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
@@ -355,7 +356,7 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
@@ -420,7 +421,7 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var msgbox = new Mock<IMessageBox>();
                 var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
@@ -488,7 +489,7 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var msgbox = new Mock<IMessageBox>();
                 var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object);
@@ -555,7 +556,7 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
@@ -694,7 +695,7 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
@@ -939,7 +940,7 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));

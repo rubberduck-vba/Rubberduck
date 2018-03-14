@@ -485,7 +485,7 @@ End Sub";
                 coordinator.Parse(new CancellationTokenSource());
 
                 var inspection = new ObjectVariableNotSetInspection(coordinator.State);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(expected, inspectionResults.Count());
             }

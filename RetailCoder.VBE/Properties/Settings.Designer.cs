@@ -214,23 +214,6 @@ namespace Rubberduck.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <Key1>D6</Key1>
-  <IsEnabled>true</IsEnabled>
-  <HasShiftModifier>true</HasShiftModifier>
-  <HasAltModifier>false</HasAltModifier>
-  <HasCtrlModifier>true</HasCtrlModifier>
-  <CommandTypeName>SourceControlCommand</CommandTypeName>
-</HotkeySetting>")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_SourceControlCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_SourceControlCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <Key1>T</Key1>
   <IsEnabled>true</IsEnabled>
   <HasShiftModifier>true</HasShiftModifier>
@@ -280,25 +263,6 @@ namespace Rubberduck.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<WindowSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <CodeExplorerVisibleOnStartup>false</CodeExplorerVisibleOnStartup>
-  <CodeInspectionsVisibleOnStartup>false</CodeInspectionsVisibleOnStartup>
-  <SourceControlVisibleOnStartup>false</SourceControlVisibleOnStartup>
-  <TestExplorerVisibleOnStartup>false</TestExplorerVisibleOnStartup>
-  <TodoExplorerVisibleOnStartup>false</TodoExplorerVisibleOnStartup>
-  <CodeExplorer_SortByName>true</CodeExplorer_SortByName>
-  <CodeExplorer_SortByCodeOrder>false</CodeExplorer_SortByCodeOrder>
-  <CodeExplorer_GroupByType>false</CodeExplorer_GroupByType>
-</WindowSettings>")]
-        public global::Rubberduck.Settings.WindowSettings WindowSettings {
-            get {
-                return ((global::Rubberduck.Settings.WindowSettings)(this["WindowSettings"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <UnitTestSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <BindingMode>LateBinding</BindingMode>
   <AssertMode>StrictAssert</AssertMode>
@@ -319,6 +283,7 @@ namespace Rubberduck.Properties {
   <Language Code=""en-US"" />
   <CanShowSplash>true</CanShowSplash>
   <CanCheckVersion>true</CanCheckVersion>
+  <CompileBeforeParse>true</CompileBeforeParse>
   <IsSmartIndenterPrompted>false</IsSmartIndenterPrompted>
   <IsAutoSaveEnabled>false</IsAutoSaveEnabled>
   <AutoSavePeriod>10</AutoSavePeriod>
@@ -440,6 +405,24 @@ namespace Rubberduck.Properties {
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<WindowSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <CodeExplorerVisibleOnStartup>false</CodeExplorerVisibleOnStartup>
+  <CodeInspectionsVisibleOnStartup>false</CodeInspectionsVisibleOnStartup>
+  <TestExplorerVisibleOnStartup>false</TestExplorerVisibleOnStartup>
+  <TodoExplorerVisibleOnStartup>false</TodoExplorerVisibleOnStartup>
+  <CodeExplorer_SortByName>true</CodeExplorer_SortByName>
+  <CodeExplorer_SortByCodeOrder>false</CodeExplorer_SortByCodeOrder>
+  <CodeExplorer_GroupByType>false</CodeExplorer_GroupByType>
+</WindowSettings>")]
+        public global::Rubberduck.Settings.WindowSettings WindowSettings {
+            get {
+                return ((global::Rubberduck.Settings.WindowSettings)(this["WindowSettings"]));
             }
         }
     }
