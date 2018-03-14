@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public interface ISummaryClause<T> where T : System.IComparable<T>
     {

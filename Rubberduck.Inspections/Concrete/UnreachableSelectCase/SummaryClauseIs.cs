@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public class SummaryClauseIsLT<T> : SummaryClauseIsBase<T> where T : IComparable<T>
     {
@@ -16,12 +16,33 @@ namespace Rubberduck.Inspections.Concrete
             return HasCoverage ? $"IsLT={Value}" : string.Empty;
         }
 
-        public void Add(SummaryClauseIsLT<T> candidate)
+        //public void Add(SummaryClauseIsLT<T> candidate)
+        //{
+        //    if (candidate.HasCoverage)
+        //    {
+        //        Value = candidate.Value;
+        //    }
+        //}
+
+        public void ClearIfCoveredBy(SummaryClauseIsLT<T> isClause)
         {
-            if (candidate.HasCoverage)
+            if (isClause.Covers(this))
             {
-                Value = candidate.Value;
+                Clear();
             }
+        }
+
+        public bool Covers(SummaryClauseIsLT<T> candidate)
+        {
+            if (HasCoverage)
+            {
+                return _value.CompareTo(candidate.Value) >= 0;
+            }
+            if (HasExtents)
+            {
+                return _extentMin.CompareTo(candidate.Value) >= 0;
+            }
+            return false;
         }
 
         public override bool Covers(T candidate)
@@ -52,12 +73,33 @@ namespace Rubberduck.Inspections.Concrete
             return HasCoverage ? $"IsGT={Value}" : string.Empty;
         }
 
-        public void Add(SummaryClauseIsGT<T> candidate)
+        //public void Add(SummaryClauseIsGT<T> candidate)
+        //{
+        //    if (candidate.HasCoverage)
+        //    {
+        //        Value = candidate.Value;
+        //    }
+        //}
+
+        public void ClearIfCoveredBy(SummaryClauseIsGT<T> isClause)
         {
-            if (candidate.HasCoverage)
+            if (isClause.Covers(this))
             {
-                Value = candidate.Value;
+                Clear();
             }
+        }
+
+        public bool Covers(SummaryClauseIsGT<T> candidate)
+        {
+            if (HasCoverage)
+            {
+                return _value.CompareTo(candidate.Value) <= 0;
+            }
+            if (HasExtents)
+            {
+                return _extentMax.CompareTo(candidate.Value) <= 0;
+            }
+            return false;
         }
 
         public override bool Covers(T candidate)
@@ -169,13 +211,13 @@ namespace Rubberduck.Inspections.Concrete
 
         public bool IsLTClause { set; get; }
 
-        public void ClearIfCoveredBy(SummaryClauseIsBase<T> isClause)
-        {
-            if (isClause.Covers(Value))
-            {
-                Clear();
-            }
-        }
+        //public void ClearIfCoveredBy(SummaryClauseIsBase<T> isClause)
+        //{
+        //    if (isClause.Covers(Value))
+        //    {
+        //            Clear();
+        //    }
+        //}
 
         public void Clear()
         {

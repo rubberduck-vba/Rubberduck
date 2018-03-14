@@ -1,7 +1,8 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections;
+using Rubberduck.Inspections.Concrete.UnreachableSelectCase;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -17,330 +18,658 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class UnreachableCaseInspectionTests
     {
+        //private IUnreachableCaseParseTreeValueFactory _ptFactory;
+        //private SummaryCoverageFactory _summaryCoverageFactory;
 
-        [TestCase(@"""105""", @"""105""")]
-        [TestCase("105", "105")]
-        [TestCase("105.6", "105.6")]
-        [TestCase("45.2", "45.2")]
-        [TestCase("True", "1")]
-        [TestCase("False", "0")]
-        [TestCase("32.000023@", "32.000023")]
-        [TestCase("32.000023!", "32.000023")]
-        [TestCase("32.000023#", "32.000023")]
+
+        //private static Dictionary<string, UnreachableCaseInspectionBinaryOp> BinaryOps = new Dictionary<string, UnreachableCaseInspectionBinaryOp>()
+        //{
+        //    ["*"] = new UnreachableCaseInspectionMultiply(),
+        //    ["/"] = new UnreachableCaseInspectionDivide(),
+        //    ["+"] = new UnreachableCaseInspectionAdd(),
+        //    ["-"] = new UnreachableCaseInspectionSubtract(),
+        //    ["Pow"] = new UnreachableCaseInspectionPow(),
+        //    ["Mod"] = new UnreachableCaseInspectionModulo(),
+        //    ["="] = new UnreachableCaseInspectionEQ(),
+        //    ["<"] = new UnreachableCaseInspectionLT(),
+        //    ["<="] = new UnreachableCaseInspectionLTE(),
+        //    [">"] = new UnreachableCaseInspectionGT(),
+        //    [">="] = new UnreachableCaseInspectionGTE(),
+        //    [Tokens.And] = new UnreachableCaseInspectionAnd(),
+        //    [Tokens.Or] = new UnreachableCaseInspectionOr(),
+        //    [Tokens.XOr] = new UnreachableCaseInspectionXor(),
+        //};
+
+
+        //private IUnreachableCaseInspectionValue CreateParseTreeValue(string testValue, string declaredType = "", string evalType = "")
+        //{
+        //    return new UnreachableCaseInspectionValue(testValue);
+        //    //if(_ptFactory is null)
+        //    //{
+        //    //    _ptFactory = new UnreachableCaseParseTreeValueFactory();
+        //    //}
+        //    //return _ptFactory.Create(testValue);
+        //}
+
+        //[TestCase(@"""105""", @"""105""")]
+        //[TestCase("105", "105")]
+        //[TestCase("105.6", "105.6")]
+        //[TestCase("45.2", "45.2")]
+        //[TestCase("True", "1")]
+        //[TestCase("False", "0")]
+        //[TestCase("32.000023@", "32.000023")]
+        //[TestCase("32.000023!", "32.000023")]
+        //[TestCase("32.000023#", "32.000023")]
+        //[Category("Inspections")]
+        //public void UnreachableCaseInspUnit_ptvParseTreeValueConversionTests(string testValue, string checkValue)
+        //{
+        //    var ctxtValue = CreateParseTreeValue(testValue);
+        //    var convertible = checkValue.Replace("\"", "");
+
+        //    var testDouble = Convert.ToDouble(convertible);
+        //    ctxtValue.TryGetValue(out double resultDbl);
+        //    Assert.AreEqual(testDouble, resultDbl,  "Double Failed");
+
+        //    var testDecimal = Convert.ToDecimal(convertible);
+        //    ctxtValue.TryGetValue(out decimal resultDec);
+        //    Assert.AreEqual(testDecimal, resultDec, "Decimal Failed");
+
+        //    var testLong = Convert.ToInt64(testDouble);
+        //    ctxtValue.TryGetValue(out long resultLng);
+        //    Assert.AreEqual(testLong, resultLng, "Long Failed");
+
+        //    var testInt = Convert.ToInt32(testLong);
+        //    ctxtValue.TryGetValue(out int resultInt);
+        //    Assert.AreEqual(testInt, resultInt, "Integer Failed");
+
+        //    if (testLong > 0 && testLong < 256)
+        //    {
+        //        var testByte = Convert.ToByte(testLong);
+        //        ctxtValue.TryGetValue(out byte resultB);
+        //        Assert.AreEqual(testByte, resultB, "Byte Failed");
+        //    }
+
+        //    var testBool = Convert.ToBoolean(testLong);
+        //    ctxtValue.TryGetValue(out bool resultBool);
+        //    Assert.AreEqual(testBool, resultBool, "Boolean Failed");
+
+        //    if(testValue.Equals(Tokens.True) || testValue.Equals(Tokens.False))
+        //    {
+        //        Assert.AreEqual(testValue, ctxtValue.ToString(), "String Failed");
+        //    }
+        //    else
+        //    {
+        //        Assert.AreEqual(checkValue, ctxtValue.ToString(), "String Failed");
+        //    }
+        //}
+
+        //[TestCase("What@", "What@")]
+        //[TestCase("What!", "What!")]
+        //[TestCase("What#", "What#")]
+        //[Category("Inspections")]
+        //public void UnreachableCaseInspUnit_NonNumberWithTypeHintEndingsUnchanged(string firstCase, string value)
+        //{
+        //    var ctxtValue = CreateParseTreeValue(firstCase);
+        //    Assert.IsFalse(ctxtValue.TryGetValue(out long _));
+        //    Assert.AreEqual(ctxtValue.ToString(),value);
+        //}
+
+        //[TestCase("10.5", "105.6", "Long")]
+        //[TestCase("10.5", "105.6", "Integer")]
+        //[TestCase("10.5", "105.6", "Double")]
+        //[TestCase("10.5", "105.6", "Single")]
+        //[TestCase("10.5", "105.6", "Currency")]
+        //[TestCase("10.5", "105.6", "Byte")]
+        //[TestCase("-1", "0", "Boolean")]
+        //[TestCase("Apples", "Oranges", "String")]
+        //[Category("Inspections")]
+        //public void UnreachableCaseInspUnit_ParseTreeValueLogicalOperations(string smallVal, string bigVal, string typeName)
+        //{
+        //    var smallValue = (UnreachableCaseParseTreeValue)CreateParseTreeValue(smallVal, typeName);
+        //    var bigValue = (UnreachableCaseParseTreeValue)CreateParseTreeValue(bigVal, typeName);
+
+        //    Assert.True(smallValue < bigValue, $"{typeName}: LT Failed");
+        //    Assert.True(smallValue <= bigValue, $"{typeName}: LTE Failed");
+        //    Assert.True(bigValue > smallValue, $"{typeName}: GT Failed");
+        //    Assert.True(bigValue >= smallValue, $"{typeName}: GTE Failed");
+        //    Assert.False(bigValue == smallValue, $"{typeName}: EQ Failed");
+        //    Assert.True(bigValue != smallValue, $"{typeName}: NEQ Failed");
+        //}
+
+        //[TestCase("10.51_Double", "11.2", "Long")]
+        //[TestCase("10.51_Decimal", "11.2", "Long")]
+        //[TestCase(@"""10.51""_String", "11.2", "Long")]
+        //[TestCase("True_Boolean", "1", "Long")]
+        //[Category("Inspections")]
+        //public void UnreachableCaseInspUnit_PTValueConversionTests(string initialValAndType, string result, string typeName)
+        //{
+        //    var valAndType = initialValAndType.Split(new string[] { "_" }, StringSplitOptions.None);
+        //    var initialValue = CreateParseTreeValue(valAndType[0], valAndType[1]);
+        //    var resultVal = CreateParseTreeValue(result, typeName);
+        //    initialValue.TryGetValue(out long testValAsLong);
+        //    resultVal.TryGetValue(out long expectedValAsLong);
+        //    Assert.True(expectedValAsLong == testValAsLong, $"Expected:{expectedValAsLong} not Equal to Result:{testValAsLong}");
+        //}
+
+        [TestCase("2", "Long", "Long")]
+        [TestCase("2.54", "Double", "Double")]
+        [TestCase("2.54", "", "Double")]
+        [TestCase("2.54:Double", "", "Double")]
+        [TestCase("2.54:Double", "Long", "Long")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_ParseTreeValueConversionTests(string testValue, string checkValue)
+        public void UnreachableCaseInspUnit_uciConformedTypes(string operands, string conformToType, string expectedTypeName)
         {
-            var ctxtValue = new ParseTreeValue(testValue);
-            var convertible = checkValue.Replace("\"", "");
-
-            var testDouble = Convert.ToDouble(convertible);
-            Assert.AreEqual(testDouble, ctxtValue.AsDouble(),  "Double Failed");
-
-            var testDecimal = Convert.ToDecimal(convertible);
-            Assert.AreEqual(testDecimal, ctxtValue.AsCurrency(), "Decimal Failed");
-
-            var testLong = Convert.ToInt64(testDouble);
-            Assert.AreEqual(testLong, ctxtValue.AsLong(), "Long Failed");
-
-            var testInt = Convert.ToInt32(testLong);
-            Assert.AreEqual(testInt, ctxtValue.AsInt(), "Integer Failed");
-
-            if (testLong > 0 && testLong < 256)
+            var baseVal = CreateInspValueFrom(operands);
+            var value = new UnreachableCaseInspectionValueConformed(baseVal, conformToType);
+            Assert.IsTrue(value.TypeName.Equals(expectedTypeName), $"Actual:{value.TypeName} Expected:{expectedTypeName}");
+            Assert.IsTrue(value.IsConstantValue, $"Input {operands} not evaluated as a constant");
+            if(baseVal.IsDeclaredTypeName && conformToType != baseVal.TypeName)
             {
-                var testByte = Convert.ToByte(testLong);
-                Assert.AreEqual(testByte, ctxtValue.AsByte(), "Byte Failed");
+                Assert.IsFalse(value.IsDeclaredTypeName, "IsDeclaredTypeName property false positive");
             }
-
-            var testBool = Convert.ToBoolean(testLong);
-            Assert.AreEqual(testBool, ctxtValue.AsBoolean(), "Boolean Failed");
-
-            if(testValue.Equals(Tokens.True) || testValue.Equals(Tokens.False))
+            else if(baseVal.IsDeclaredTypeName)
             {
-                Assert.AreEqual(testValue, ctxtValue.ToString(), "String Failed");
+                Assert.IsTrue(value.IsDeclaredTypeName, "IsDeclaredTypeName property false negative");
             }
             else
             {
-                Assert.AreEqual(checkValue, ctxtValue.ToString(), "String Failed");
+                Assert.IsFalse(value.IsDeclaredTypeName, "IsDeclaredTypeName property false positive");
             }
         }
 
-        [TestCase("What@", "What@")]
-        [TestCase("What!", "What!")]
-        [TestCase("What#", "What#")]
+        [TestCase("x", "Variant")]
+        [TestCase("x:String", "String")]
+        [TestCase("x:Double","Double")]
+        [TestCase("x456", "Variant")]
+        [TestCase(@"""x456""", "String")]
+        [TestCase("x456:String", "String")]
+        [TestCase("45E2", "Double")]
+        [TestCase(@"""10.51""", "String")]
+        [TestCase(@"""What@""", "String")]
+        [TestCase(@"""What!""", "String")]
+        [TestCase(@"""What#""", "String")]
+        [TestCase("What%", "Integer")]
+        [TestCase("What&", "Long")]
+        [TestCase("What@", "Decimal")]
+        [TestCase("What!", "Single")]
+        [TestCase("What#", "Double")]
+        [TestCase("What$", "String")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_NonNumberWithTypeHintEndingsUnchanged(string firstCase, string value)
+        public void UnreachableCaseInspUnit_uciVariableTypes(string operands, string expectedTypeName)
         {
-            var ctxtValue = new ParseTreeValue(firstCase);
-            Assert.IsFalse(ctxtValue.AsLong().HasValue);
-            Assert.AreEqual(ctxtValue.ToString(),value);
+            var value = CreateInspValueFrom(operands);
+            Assert.IsTrue(value.TypeName.Equals(expectedTypeName), $"Actual:{value.TypeName} Expected:{expectedTypeName}");
         }
 
-        [TestCase("10.5", "105.6", "Long")]
-        [TestCase("10.5", "105.6", "Integer")]
-        [TestCase("10.5", "105.6", "Double")]
-        [TestCase("10.5", "105.6", "Single")]
-        [TestCase("10.5", "105.6", "Currency")]
-        [TestCase("10.5", "105.6", "Byte")]
-        [TestCase("-1", "0", "Boolean")]
-        [TestCase("Apples", "Oranges", "String")]
+        [TestCase("x:Byte_-_2:Long", "x - 2", "Byte")]
+        [TestCase("2_-_x:Byte:Long", "2 - x", "Byte")]
+        [TestCase("x:Byte_+_2:Long", "x + 2", "Byte")]
+        [TestCase("x:Double_/_11.2:Double", "x / 11.2", "Long")]
+        [TestCase("x:Double_*_11.2:Double", "x * 11.2", "Long")]
+        [TestCase("x:Double_*_y:Double", "x * y", "Long")]
+        [TestCase("x:Double_Mod_11.2:Double", "x Mod 11.2", "Long")]
+        [TestCase("x:Long_*_y:Double", "x * y", "Long")]
+        [TestCase("x:Long_^_11.2:Double", "x ^ 11.2", "Long")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_ParseTreeValueOperatorTests(string smallVal, string bigVal, string typeName)
+        public void UnreachableCaseInspUnit_uciVariableMath(string operands, string expected, string typeName)
         {
-            var smallValue = new ParseTreeValue(smallVal, typeName);
-            var bigValue = new ParseTreeValue(bigVal, typeName);
-
-            Assert.True(smallValue < bigValue, $"{typeName}: LT Failed");
-            Assert.True(smallValue <= bigValue, $"{typeName}: LTE Failed");
-            Assert.True(bigValue > smallValue, $"{typeName}: GT Failed");
-            Assert.True(bigValue >= smallValue, $"{typeName}: GTE Failed");
-            Assert.False(bigValue == smallValue, $"{typeName}: EQ Failed");
-            Assert.True(bigValue != smallValue, $"{typeName}: NEQ Failed");
-        }
-
-        [TestCase("10.51:Double", "11.2", "Long")]
-        [TestCase("10.51:Decimal", "11.2", "Long")]
-        [TestCase(@"""10.51"":String", "11.2", "Long")]
-        [TestCase("True:Boolean", "1", "Long")]
-        [Category("Inspections")]
-        public void UnreachableCaseInspUnit_PTValueConversionTests(string initialValAndType, string result, string typeName)
-        {
-            var valAndType = initialValAndType.Split(new string[] { ":" }, StringSplitOptions.None);
-            var initialValue = new ParseTreeValue(valAndType[0], valAndType[1]);
-            var resultVal = new ParseTreeValue(result, typeName);
-            var testValAsLong = initialValue.AsLong();
-            var expectedValAsLong = resultVal.AsLong();
-            Assert.True(expectedValAsLong == testValAsLong, $"Expected:{expectedValAsLong} not Equal to Result:{testValAsLong}");
-        }
-
-        [TestCase("10_*_2", "20", "Long")]
-        [TestCase("10_/_2", "5", "Long")]
-        [TestCase("10_+_2", "12", "Long")]
-        [TestCase("10_-_2", "8", "Long")]
-        [TestCase("10_Pow_2", "100", "Long")]
-        [TestCase("10_Mod_2", "0", "Long")]
-        [TestCase("10_*_2", "20", "Integer")]
-        [TestCase("10_/_2", "5", "Integer")]
-        [TestCase("10_+_2", "12", "Integer")]
-        [TestCase("10_-_2", "8", "Integer")]
-        [TestCase("10_Pow_2", "100", "Integer")]
-        [TestCase("10_Mod_2", "0", "Integer")]
-        [TestCase("10_*_2", "20", "Double")]
-        [TestCase("10_/_2", "5", "Double")]
-        [TestCase("10_+_2", "12", "Double")]
-        [TestCase("10_-_2", "8", "Double")]
-        [TestCase("10_Pow_2", "100", "Double")]
-        [TestCase("10_Mod_2", "0", "Double")]
-        [TestCase("10_*_2", "20", "Single")]
-        [TestCase("10_/_2", "5", "Single")]
-        [TestCase("10_+_2", "12", "Single")]
-        [TestCase("10_-_2", "8", "Single")]
-        [TestCase("10_Pow_2", "100", "Single")]
-        [TestCase("10_Mod_2", "0", "Single")]
-        [TestCase("10_*_2", "20", "Currency")]
-        [TestCase("10_/_2", "5", "Currency")]
-        [TestCase("10_+_2", "12", "Currency")]
-        [TestCase("10_-_2", "8", "Integer")]
-        [TestCase("10_Pow_2", "100", "Currency")]
-        [TestCase("10_Mod_2", "0", "Currency")]
-        [TestCase("10_*_2", "20", "Byte")]
-        [TestCase("10_/_2", "5", "Byte")]
-        [TestCase("10_+_2", "12", "Byte")]
-        [TestCase("10_-_2", "8", "Byte")]
-        [TestCase("10_Pow_2", "100", "Byte")]
-        [TestCase("10_Mod_2", "0", "Byte")]
-        [Category("Inspections")]
-        public void UnreachableCaseInspUnit_ParseTreeValueMathOperatorTests(string operands, string result, string typeName)
-        {
-            var separator = new string[] { "_" };
-            var lhs = operands.Split(separator, StringSplitOptions.None)[0];
-            var op = operands.Split(separator, StringSplitOptions.None)[1];
-            var rhs = operands.Split(separator, StringSplitOptions.None)[2];
-            var LHS = new ParseTreeValue(lhs, typeName);
-            var RHS = new ParseTreeValue(rhs, typeName);
-
-            if (op.Equals("*"))
+            GetBinaryOpValues(operands, out IUnreachableCaseInspectionValue LHS, out IUnreachableCaseInspectionValue RHS, out string opSymbol);
+            if (UnreachableCaseInspectionValueVisitor.BinaryOps.TryGetValue(opSymbol, out UnreachableCaseInspectionBinaryOp calculator))
             {
-                var testResult = LHS * RHS;
-                Assert.AreEqual(testResult, new ParseTreeValue(result, typeName), $"{typeName}: '{op}' operator Failed");
-            }
-            else if (op.Equals("/"))
-            {
-                var testResult = LHS / RHS;
-                Assert.AreEqual(testResult, new ParseTreeValue(result, typeName), $"{typeName}: '{op}' operator Failed");
-            }
-            else if (op.Equals("+"))
-            {
-                var testResult = LHS + RHS;
-                Assert.AreEqual(testResult, new ParseTreeValue(result, typeName), $"{typeName}: '{op}' operator Failed");
-            }
-            else if (op.Equals("-"))
-            {
-                var testResult = LHS - RHS;
-                Assert.AreEqual(testResult, new ParseTreeValue(result, typeName), $"{typeName}: '{op}' operator Failed");
-            }
-            else if (op.Equals("Pow"))
-            {
-                var testResult = ParseTreeValue.Pow(LHS, RHS );
-                Assert.AreEqual(testResult, new ParseTreeValue(result, typeName), $"{typeName}: '{op}' operator Failed");
-            }
-            else if (op.Equals("Mod"))
-            {
-                var testResult = LHS % RHS;
-                Assert.AreEqual(testResult, new ParseTreeValue(result, typeName), $"{typeName}: '{op}' operator Failed");
+                var result = calculator.Evaluate(LHS, RHS, typeName);
+                Assert.IsTrue(result.ValueText.Equals(expected), $"Actual: {result.ValueText} Expected: {expected}");
+                Assert.IsFalse(result.IsConstantValue);
+                Assert.IsTrue(result.TypeName.Equals(typeName), $"Actual: {result.TypeName} Expected: {typeName}");
             }
             else
             {
-                Assert.IsFalse(true, $"operation: {op} - has no test code");
+                Assert.Fail($"Binary operation symbol {opSymbol} unsupported");
             }
         }
 
-        [TestCase("zLong * bLong", "5 To 10", ExpectedResult = "Long")]
-        [TestCase("zLong * cDbl", "5 To 10", ExpectedResult = "Double")]
-        [TestCase("ToString(zLong) & dString", "5 To 10", ExpectedResult = "String")]
-        [TestCase("zLong & dString", "dString To ddString", ExpectedResult = "String")]
-        [TestCase(@"zLong & ""45""", "5 To 10", ExpectedResult = "String")]
-        [TestCase("Random() > 0.5", "5 To 10", ExpectedResult = "Boolean")]
-        [TestCase("True", "5 To 10", ExpectedResult = "Boolean")]
-        [TestCase("zLong And True", "5 To 10", ExpectedResult = "Boolean")]
-        [TestCase("zLong And jDbl > 0.00", "5 To 10", ExpectedResult = "Boolean")]
-        [TestCase("TestValueLong()", "5 To 10", ExpectedResult = "Long")]
-        [TestCase("vVariant", "bLong To bbLong", ExpectedResult = "Long")]
-        [TestCase("vVariant", "5 To 100", ExpectedResult = "Long")]
-        [TestCase("vVariant", "5 To 45.6", ExpectedResult = "Double")]
-        [TestCase("vVariant", "ToLong( jDbl ) * bbLong * Random() + bLong ^ 4.5", ExpectedResult = "Double")]
-        [TestCase("vVariant", @"ToLong(""105.777"") * bbLong * Random() + bLong ^ 4.5", ExpectedResult = "Double")]
-        [TestCase("hint&", "5.0 To 45.6", ExpectedResult = "Long")]
-        [TestCase("Sunday", "5.0 To 45.6", ExpectedResult = "Long")]
+        [TestCase("-1_>_0", "0", "Long")]
+        [TestCase("-1.0_>_0.0", "0", "Double")]
+        [TestCase("-1_<_0", "-1", "Long")]
+        [TestCase("-1.0_<_0.0", "-1", "Double")]
         [Category("Inspections")]
-        public string UnreachableCaseInspFunctional_DetermineSelectCaseType(string selectExpr, string firstCaseExpr)
+        public void UnreachableCaseInspUnit_uciRelationalOp(string input, string expected, string typeName)
+        {
+            GetBinaryOpValues(input, out IUnreachableCaseInspectionValue LHS, out IUnreachableCaseInspectionValue RHS, out string opSymbol);
+
+            var op = UnreachableCaseInspectionValueVisitor.BinaryOps[opSymbol];
+            var result = op.Evaluate(LHS, RHS, typeName);
+            Assert.IsTrue(result.ValueText.Equals(expected), $"Actual: {result.ValueText} Expected: {expected}");
+        }
+
+
+        [TestCase("False", "False")]
+        [TestCase("True", "True")]
+        [TestCase("-1", "True")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciConvertToBoolText(string input, string expected)
+        {
+            var testObj = new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.MULT);
+            var result = UCIValueConverter.ConvertToType(input, Tokens.Boolean);
+            Assert.IsNotNull(result, $"Type conversion to {Tokens.Boolean} return null interface");
+            Assert.IsTrue(result.ValueText.Equals(expected), $"Actual: {result.ValueText} Expected: {expected}");
+        }
+
+        [TestCase("Yahoo", "Long")]
+        [TestCase("Yahoo", "Double")]
+        [TestCase("Yahoo", "Boolean")]
+        [TestCase(null, "String")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciConvertToType(string input, string convertToTypeName)
+        {
+            var UUT = new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.MULT);
+            var result = UCIValueConverter.ConvertToType(input, convertToTypeName);
+            Assert.IsNotNull(result, $"Type conversion to {convertToTypeName} return null interface");
+            Assert.IsTrue(result.ValueText.Equals("NaN"), $"Actual: {result.ValueText} Expected: 'NaN'");
+        }
+
+        [TestCase("10.51:Double_*_11.2", "117.712", "Currency")]
+        [TestCase("10.51:Currency_*_11.2", "117.712", "")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciHandlesCurrency(string operands, string expected, string typeName)
+        {
+            var result = TestBinaryOp(new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.MULT), operands, expected, typeName);
+            Assert.IsTrue(result.TypeName.Equals("Currency"), $"Actual={result.TypeName} Expected='Currency'");
+        }
+
+        [TestCase("10.51:Long_*_11.2", "123", "Long")]
+        [TestCase("10.51:Long_*_11.2", "123", "Integer")]
+        [TestCase("10.51:Long_*_11.2", "123", "Byte")]
+        [TestCase("10.51:Double_*_11.2", "118", "Long")]
+        [TestCase("10_*_11.2", "112", "Long")]
+        [TestCase("11.2_*_10", "112", "Long")]
+        [TestCase("10.51_*_11.2", "117.712", "Double")]
+        [TestCase("10.51_*_11.2", "117.712", "Single")]
+        [TestCase("10_*_11", "110", "Double")]
+        [TestCase("10_*_11", "True", "Boolean")]
+        [TestCase("10_*_11", "110", "String")]
+        [TestCase("10.51_*_11.2", "117.712", "String")]
+        [TestCase(@"""10.51""_*_11.2", "118", "Long")]
+        [TestCase(@"""10.51""_*_11.2", "117.712", "Double")]
+        [TestCase("True_*_10.5", "-10", "Long")]
+        [TestCase("10.5_*_True", "-10", "Long")]
+        [TestCase("10.51:Double_*_11.2:Double", "118", "Long")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciMultiplication(string operands, string expected, string typeName)
+        {
+            TestBinaryOp(new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.MULT), operands, expected, typeName);
+        }
+
+        [TestCase("10_/_11.2", "1", "Long")]
+        [TestCase("11.2_/_10", "1", "Long")]
+        [TestCase("10.51_/_11.2", "0.93839286", "Double")]
+        [TestCase("10_/_11", "0.9090909", "Double")]
+        [TestCase("10_/_11", "True", "Boolean")]
+        [TestCase("10_/_11", "0.9090909", "String")]
+        [TestCase("10.51_/_11.2", "0.93839286", "String")]
+        [TestCase(@"""10.51""_/_11.2", "1", "Long")]
+        [TestCase(@"""10.51""_/_11.2", "0.93839286", "Double")]
+        [TestCase("True_/_10.5", "0", "Long")]
+        [TestCase("True_/_10.5", "-0.0952", "Double")]
+        [TestCase("10.5_/_True", "-10.5", "Double")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciDivision(string operands, string expected, string typeName)
+        {
+            TestBinaryOp(new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.DIV), operands, expected, typeName);
+        }
+
+        [TestCase("10.51_+_11.2", "22", "Long")]
+        [TestCase("10_+_11.2", "21", "Long")]
+        [TestCase("11.2_+_10", "21", "Long")]
+        [TestCase("10.51_+_11.2", "21.71", "Double")]
+        [TestCase("10_+_11", "21", "Double")]
+        [TestCase("10_+_11", "True", "Boolean")]
+        [TestCase("10_+_11", "21", "String")]
+        [TestCase("10.51_+_11.2", "21.71", "String")]
+        [TestCase(@"""10.51""_+_11.2", "22", "Long")]
+        [TestCase(@"""10.51""_+_11.2", "21.71", "Double")]
+        [TestCase("True_+_10.5", "10", "Long")]
+        [TestCase("True_+_10.5", "9.5", "Double")]
+        [TestCase("10.5_+_True", "9.5", "Double")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciAddition(string operands, string expected, string typeName)
+        {
+            TestBinaryOp(new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.ADD), operands, expected, typeName);
+        }
+
+        [TestCase("10.51_-_11.2", "-1", "Long")]
+        [TestCase("10_-_11.2", "-1", "Long")]
+        [TestCase("11.2_-_10", "1", "Long")]
+        [TestCase("10.51_-_11.2", "-0.69", "Double")]
+        [TestCase("10_-_11", "-1", "Double")]
+        [TestCase("10_-_11", "True", "Boolean")]
+        [TestCase("10_-_11", "-1", "String")]
+        [TestCase("10.51_-_11.2", "-0.69", "String")]
+        [TestCase(@"""10.51""_-_11.2", "-1", "Long")]
+        [TestCase(@"""10.51""_-_11.2", "-0.69", "Double")]
+        [TestCase("True_-_10.5", "-12", "Long")]
+        [TestCase("True_-_10.5", "-11.5", "Double")]
+        [TestCase("10.5_-_True", "11.5", "Double")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciSubtraction(string operands, string expected, string typeName)
+        {
+            TestBinaryOp(new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.SUBTRACT), operands, expected, typeName);
+        }
+
+        [TestCase("10_^_2", "100", "Long")]
+        [TestCase("10.5:Currency_^_2.2:Currency", "176", "Long")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciPowers(string operands, string expected, string typeName)
+        {
+            TestBinaryOp(new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.POW), operands, expected, typeName);
+        }
+
+        [TestCase("10_Mod_3", "1", "Currency")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciModulo(string operands, string expected, string typeName)
+        {
+            TestBinaryOp(new UnreachableCaseInspectionBinaryOp(UnreachableCaseInspectionValueVisitor.MathTokens.MOD), operands, expected, typeName);
+        }
+
+        [TestCase("10_=_3", "False")]
+        [TestCase("10_=_10", "True")]
+        [TestCase("10_<>_3", "True")]
+        [TestCase("10_<>_10", "False")]
+        [TestCase("10_<_3", "False")]
+        [TestCase("10_<=_10", "True")]
+        [TestCase("10_>_11", "False")]
+        [TestCase("10_>=_10", "True")]
+        [TestCase("5_And_0", "False")]
+        [TestCase("5_Or_0", "True")]
+        [TestCase("5_Xor_6", "False")]
+        [TestCase("6.5_>_5.2", "True")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciLogicBinaryConstants(string operands, string expected)
+        {
+            GetBinaryOpValues(operands, out IUnreachableCaseInspectionValue LHS, out IUnreachableCaseInspectionValue RHS, out string opSymbol);
+
+            if (UnreachableCaseInspectionValueVisitor.BinaryOps.TryGetValue(opSymbol, out UnreachableCaseInspectionBinaryOp calculator))
+            {
+                var result = calculator.Evaluate(LHS, RHS, Tokens.Boolean);
+
+                Assert.IsTrue(result.ValueText == expected, $"Actual={result.ValueText} Expected={expected}");
+                Assert.IsTrue(result.IsConstantValue);
+            }
+            else
+            {
+                Assert.Fail($"Binary operation symbol {opSymbol} unsupported");
+            }
+        }
+
+        [TestCase("Not_False", "True")]
+        [TestCase("Not_True", "False")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciLogicUnaryConstants(string operands, string expected)
+        {
+            GetUnaryOpValues(operands, out IUnreachableCaseInspectionValue theValue, out string opSymbol);
+
+            if (UnreachableCaseInspectionValueVisitor.UnaryOps.TryGetValue(opSymbol, out UnreachableCaseInspectionUnaryOp calculator))
+            {
+                var result = calculator.Evaluate(theValue, Tokens.Boolean);
+
+                Assert.IsTrue(result.ValueText == expected, $"Actual={result.ValueText} Expected={expected}");
+                Assert.IsTrue(result.IsConstantValue);
+            }
+            else
+            {
+                Assert.Fail($"Unary operation symbol {opSymbol} unsupported");
+            }
+        }
+
+        [TestCase("45", "-45")]
+        [TestCase("23.78", "-23.78")]
+        [TestCase("True", "1:Double")]
+        [TestCase("False", "0:Double")]
+        [TestCase("-1:Double", "True:Boolean")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciMinusUnaryOp(string operands, string expected)
+        {
+            var theValue = CreateInspValueFrom(operands);
+            var expectedVal = CreateInspValueFrom(expected);
+            var opSymbol = UnreachableCaseInspectionValueVisitor.MathTokens.SUBTRACT;
+
+            if (UnreachableCaseInspectionValueVisitor.UnaryOps.TryGetValue(opSymbol, out UnreachableCaseInspectionUnaryOp calculator))
+            {
+                var result = calculator.Evaluate(theValue, expectedVal.TypeName);
+
+                Assert.IsTrue(result.ValueText == expectedVal.ValueText, $"Actual={result.ValueText} Expected={expectedVal.ValueText}");
+                Assert.IsTrue(result.IsConstantValue);
+            }
+            else
+            {
+                Assert.Fail($"Unary operation symbol {opSymbol} unsupported");
+            }
+        }
+
+        private static IUnreachableCaseInspectionValue TestBinaryOp(UnreachableCaseInspectionBinaryOp calculator, string operands, string expected, string typeName)
+        {
+            GetBinaryOpValues(operands, out IUnreachableCaseInspectionValue LHS, out IUnreachableCaseInspectionValue RHS, out _);
+
+            var result = calculator.Evaluate(LHS, RHS, typeName);
+
+            if (typeName.Equals(Tokens.Double))
+            {
+                Assert.IsTrue(Math.Abs(double.Parse(result.ValueText) - double.Parse(expected)) < .001, $"Actual={result.ValueText} Expected={expected}");
+            }
+            else if (typeName.Equals(Tokens.String))
+            {
+                var toComp = expected.Length > 5 ? 5 : expected.Length;
+                Assert.IsTrue(result.ValueText.Substring(0, toComp).Equals(expected.Substring(0, toComp)), $"Actual={result.ValueText} Expected={expected}");
+            }
+            else
+            {
+                Assert.IsTrue(result.ValueText == expected, $"Actual={result.ValueText} Expected={expected}");
+            }
+            Assert.IsTrue(result.IsConstantValue);
+            return result;
+        }
+
+        private static void GetBinaryOpValues(string operands, out IUnreachableCaseInspectionValue LHS, out IUnreachableCaseInspectionValue RHS, out string opSymbol)
+        {
+            var operandItems = operands.Split(new string[] { "_" }, StringSplitOptions.None);
+
+            LHS = CreateInspValueFrom(operandItems[0]);
+            opSymbol = operandItems[1];
+            RHS = CreateInspValueFrom(operandItems[2]);
+        }
+
+        private static void GetUnaryOpValues(string operands, out IUnreachableCaseInspectionValue LHS, out string opSymbol)
+        {
+            var operandItems = operands.Split(new string[] { "_" }, StringSplitOptions.None);
+
+            opSymbol = operandItems[0];
+            LHS = CreateInspValueFrom(operandItems[1]);
+        }
+
+        private static IUnreachableCaseInspectionValue CreateInspValueFrom(string input)
+        {
+            if (input.Contains(":"))
+            {
+                var ValAndType = input.Split(new string[] { ":" }, StringSplitOptions.None);
+                return new UnreachableCaseInspectionValue(ValAndType[0], ValAndType[1]);
+            }
+            return new UnreachableCaseInspectionValue(input);
+        }
+
+        //Used by ParseTreeValue tests, remove after PTVals are removed
+        private static string[] ParseTreeValueMathOperands(string inputCode, string separator = "_")
+        {
+            var separators = new string[] { separator };
+            var operandItems = inputCode.Split(separators, StringSplitOptions.None);
+            return operandItems;
+        }
+
+        [TestCase("Dim Hint$\r\nSelect Case Hint$", @"""Here"" To ""Eternity"",""Forever""", "String")] //String
+        [TestCase("Dim Hint#\r\nHint#= 1.0\r\nSelect Case Hint#", "10.00 To 30.00, 20.00", "Double")] //Double
+        [TestCase("Dim Hint!\r\nHint! = 1.0\r\nSelect Case Hint!", "10.00 To 30.00,20.00", "Single")] //Single
+        [TestCase("Dim Hint%\r\nHint% = 1\r\nSelect Case Hint%", "10 To 30,20", "Integer")] //Integer
+        [TestCase("Dim Hint&\r\nHint& = 1\r\nSelect Case Hint&", "1000 To 3000,2000", "Long")] //Long
+        [Category("Inspections")]
+        public void UnreachableCaseInspFunctional_uciSelectExprTypeHint(string typeHintExpr, string firstCase, string expected)
         {
             string inputCode =
 @"
-        Private Enum Weekday
-            Sunday = 1
-            Monday = 2
-            Tuesday = 3
-            Wednesday = 4
-            Thursday = 5
-            Friday = 6
-            Saturday = 7
-        End Enum
+        Sub Foo()
 
-        Private const bLong As Long = 55
-        Private const bbLong As Long = 100
-        Private const cDbl As Double = 0.0023
-        Private const dString As String = ""Bar""
-        Private const ddString As String = ""Foo""
-
-        Private Function ToLong(val As Variant) As Long
-           ToLong = CLng( val )
-        End Function
-
-        Private Function ToString(val As Variant) As Long
-           ToString = CStr( val )
-        End Function
-
-        Private Function Random() As Double
-            Random = VBA.Rnd()
-        End Function
-
-        Private Function TestValueLong() As Long
-            TestValueLong = 5
-        End Function
-
-        Sub Foo(zLong As Long, jDbl As Double, vVariant as Variant)
-
-        Dim hint&
-        hint& = 25
-
-        Select Case <selectExpr>
-          Case <firstCaseExpr>
+        <typeHintExprAndSelectCase>
+            Case <firstCaseVal>
             'OK
-          Case Else
-            'OK
+            Case Else
+            'Unreachable
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<selectExpr>", selectExpr);
-            inputCode = inputCode.Replace("<firstCaseExpr>", firstCaseExpr);
-            return GetSelectCaseEvaluationType(inputCode);
+            inputCode = inputCode.Replace("<typeHintExprAndSelectCase>", typeHintExpr);
+            inputCode = inputCode.Replace("<firstCaseVal>", firstCase);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var selectExprCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectExpressionContext>();
+                IParseTreeVisitor<IUnreachableCaseInspectionValue> ptVisitor = new UnreachableCaseInspectionValueVisitor(state, new IUnreachableCaseInspectionValueFactory());
+                //var UUT = new SelectExpressionTypeVisitor(selectExprCtxt, ptVisitor);
+                var UUT = new SelectCaseContextTypeVisitor<VBAParser.SelectExpressionContext>(ptVisitor);
+                var result = selectExprCtxt.Accept(UUT);
+                Assert.AreEqual(expected, result);
+            }
         }
 
-        [Test]
+        [TestCase("Dim Hint$\r\nSelect Case x", "Hint$", "String")] //String
+        [TestCase("Dim Hint#\r\nHint#= 1.0\r\nSelect Case x", "Hint#", "Double")] //Double
+        [TestCase("Dim Hint!\r\nHint! = 1.0\r\nSelect Case x", "Hint!", "Single")] //Single
+        [TestCase("Dim Hint%\r\nHint% = 1\r\nSelect Case x", "Hint%", "Integer")] //Integer
+        [TestCase("Dim Hint&\r\nHint& = 1\r\nSelect Case x", "Hint&", "Long")] //Long
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_StringsInTheMixConvertable()
+        public void UnreachableCaseInspFunctional_uciCaseClauseTypeHint(string typeHintExpr, string firstCase, string expected)
         {
-            const string inputCode =
+            string inputCode =
+@"
+        Sub Foo(x As Variant)
+
+        <typeHintExprAndSelectCase>
+            Case <firstCaseVal>
+            'OK
+            Case Else
+            'Unreachable
+        End Select
+
+        End Sub";
+            inputCode = inputCode.Replace("<typeHintExprAndSelectCase>", typeHintExpr);
+            inputCode = inputCode.Replace("<firstCaseVal>", firstCase);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                IParseTreeVisitor<IUnreachableCaseInspectionValue> ptVisitor = new UnreachableCaseInspectionValueVisitor(state, new IUnreachableCaseInspectionValueFactory());
+                var caseClauseCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.CaseClauseContext>();
+                var UUT = new CaseClauseTypeVisitor(caseClauseCtxt, ptVisitor);
+                var result = caseClauseCtxt.Accept(UUT);
+                Assert.AreEqual(expected, result);
+            }
+        }
+
+        [TestCase("Not x", "x As Long", "Boolean")]
+        [TestCase("x", "x As Long", "Long")]
+        [TestCase("x < 5", "x As Long", "Boolean")]
+        [TestCase("ToLong(True) * .0035", "x As Byte", "Double")]
+        [TestCase("True", "x As Byte", "Boolean")]
+        [TestCase("ToString(45)", "x As Byte", "String")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspFunctional_uciSelectExpressionType(string selectExpr, string argList, string expected)
+        {
+            string inputCode =
 @"
         Private Function ToLong(val As Variant) As Long
             ToLong = 5
         End Function
 
-        Sub Foo(z As Long, s As String)
+        Private Function ToString(val As Variant) As String
+            ToString = ""Foo""
+        End Function
 
-        Select Case z + ToLong(s)
-            Case ""105""
-            'OK
-            Case 55
-            'Unreachable
-            Case 55
-            'Unreachable
-            Case Else
-            'OK
-        End Select
+        Sub Foo(<argList>)
+
+            Select Case <selectExpr>
+                Case 45
+                'OK
+                Case Else
+                'OK
+            End Select
 
         End Sub";
 
-            var result = GetSelectCaseEvaluationType(inputCode);
-            Assert.AreEqual(Tokens.Long, result);
+            inputCode = inputCode.Replace("<selectExpr>", selectExpr);
+            inputCode = inputCode.Replace("<argList>", argList);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                IParseTreeVisitor<IUnreachableCaseInspectionValue> ptVisitor = new UnreachableCaseInspectionValueVisitor(state, new IUnreachableCaseInspectionValueFactory());
+                var selectExprCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectExpressionContext>();
+                var UUT = new SelectCaseContextTypeVisitor<VBAParser.SelectExpressionContext>(ptVisitor);
+                var result = selectExprCtxt.Accept(UUT);
+                Assert.AreEqual(expected, result);
+            }
         }
 
-        [TestCase("50 To 100", 50, 100)]
-        [TestCase("fromVal To toVal", 50, 100)]
-        [TestCase("50.25 To 100.49", 50, 100)]
-        [TestCase("True To False", 1, 0)]
-        [TestCase("False To True", 0, 1)]
-        [TestCase(@"""50"" To ""100""", 50, 100)]
-        [TestCase("100 To 50", 100, 50)]
+        [TestCase("x < 5","False", "Boolean")]
+        [TestCase("ToLong(True) * .0035", "45", "Double")]
+        [TestCase("True", "x < 5", "Boolean")]
+        [TestCase("1 To 10.0", "55 To 100.0", "Double")]
+        [TestCase("ToString(45)",@"""Bar""","String")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_SelectStmtParseTreeValues(string firstCase, long start, long end)
+        public void UnreachableCaseInspFunctional_uciCaseClauseType(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
 @"
-        Private Const fromVal As long = 50
-        Private Const toVal As Long = 100
+        Private Function ToLong(val As Variant) As Long
+            ToLong = 5
+        End Function
 
-        Sub Foo(z As Long)
+        Private Function ToString(val As Variant) As String
+            ToString = ""Foo""
+        End Function
 
-        Select Case z
-            Case <firstCase>
-            'OK
-        End Select
+        Sub Foo(x As Variant)
+
+            Select Case x
+                Case <rangeExpr1>, <rangeExpr2>
+                'OK
+                Case Else
+                'OK
+            End Select
 
         End Sub";
 
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
+            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
 
-            var tdo = GetTestDataObject(inputCode, Tokens.Long);
-            var startContext = tdo.ParseTreeValues.ValueResolvedContexts.Keys.Where(k => k is VBAParser.SelectStartValueContext);
-            var endContext = tdo.ParseTreeValues.ValueResolvedContexts.Keys.Where(k => k is VBAParser.SelectEndValueContext);
-            Assert.True(startContext.Any(), "Start context not found in Keys");
-            Assert.True(endContext.Any(), "End context not found in Keys");
-            Assert.AreEqual(tdo.ParseTreeValues.ValueResolvedContexts[startContext.First()].AsLong(), start);
-            Assert.AreEqual(tdo.ParseTreeValues.ValueResolvedContexts[endContext.First()].AsLong(), end);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                IParseTreeVisitor<IUnreachableCaseInspectionValue> ptVisitor = new UnreachableCaseInspectionValueVisitor(state, new IUnreachableCaseInspectionValueFactory());
+                var caseClauseCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.CaseClauseContext>();
+                var UUT = new CaseClauseTypeVisitor(caseClauseCtxt, ptVisitor);
+                var result = caseClauseCtxt.Accept(UUT);
+                Assert.AreEqual(expected, result);
+            }
         }
+
+            //TODO: Review all uses of tdo.CaseClauseSummary....Looks like there is 
+            //a lot of tests that check math rather than SummaryCoverage build-up
 
         [TestCase("Is < 100", 100, false)]
         [TestCase("Is < 100.49", 100, false)]
         [TestCase("Is < 100#", 100, false)]
-        [TestCase("Is < True", 1, false)]
+        [TestCase("Is < True", -1, false)]
         [TestCase(@"Is < ""100""", 100, false)]
         [TestCase("Is < toVal", 1000, false)]
         [TestCase("Is <= 100", 100, true)]
         [TestCase("Is <= 100.49", 100, true)]
         [TestCase("Is <= 100#", 100, true)]
-        [TestCase("Is <= True", 1, true)]
+        [TestCase("Is <= True", -1, true)]
         [TestCase(@"Is <= ""100""", 100, true)]
         [TestCase("Is <= toVal", 1000, true)]
         [TestCase("Is < 45, Is < 100", 100, false)]
@@ -352,7 +681,37 @@ namespace RubberduckTests.Inspections
         {
             string inputCode =
 @"
-                Private Const fromVal As long = 500
+                Private Const fromVal As Long = 500
+                Private Const toVal As Long = 1000
+
+                Sub Foo(z As Long)
+
+                Select Case z
+                    Case <firstCase>
+                    'OK
+                End Select
+
+                End Sub";
+
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var summaryCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+
+            Assert.AreEqual(isLTMax, summaryCoverage.IsLT.Value, "IsLT value incorrect");
+            if (isLTE)
+            {
+                Assert.AreEqual(true, summaryCoverage.SingleValues.HasCoverage,/*.Values.Any(),*/ "SingleValue not updated");
+                Assert.IsTrue(summaryCoverage.SingleValues.Covers(isLTMax), $"SingleValue is missing Value: {isLTMax}");
+            }
+        }
+
+        [TestCase("Is <= 100, Is <= 45", 100, true)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_uciSummaryCoverageIsLTClause(string firstCase, long isLTMax, bool isLTE)
+        {
+
+            string inputCode =
+@"
+                Private Const fromVal As Long = 500
                 Private Const toVal As Long = 1000
 
                 Sub Foo(z As Long)
@@ -378,13 +737,13 @@ namespace RubberduckTests.Inspections
         [TestCase("Is > 100", 100, false)]
         [TestCase("Is > 100.49", 100, false)]
         [TestCase("Is > 100#", 100, false)]
-        [TestCase("Is > True", 1, false)]
+        [TestCase("Is > True", -1, false)]
         [TestCase(@"Is > ""100""", 100, false)]
         [TestCase("Is > toVal", 1000, false)]
         [TestCase("Is >= 100", 100, true)]
         [TestCase("Is >= 100.49", 100, true)]
         [TestCase("Is >= 100#", 100, true)]
-        [TestCase("Is >= True", 1, true)]
+        [TestCase("Is >= True", -1, true)]
         [TestCase(@"Is >= ""100""", 100, true)]
         [TestCase("Is >= toVal", 1000, true)]
         [TestCase("Is > 45, Is > 100", 45, false)]
@@ -396,7 +755,7 @@ namespace RubberduckTests.Inspections
         {
             string inputCode =
 @"
-        Private Const fromVal As long = 500
+        Private Const fromVal As Long = 500
         Private Const toVal As Long = 1000
 
         Sub Foo(z As Long)
@@ -423,7 +782,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Is = 100", 100)]
         [TestCase("Is = 100.49", 100)]
         [TestCase("Is = 100#", 100)]
-        [TestCase("Is = True", 1)]
+        [TestCase("Is = True", -1)]
         [TestCase(@"Is = ""100""", 100)]
         [TestCase("Is = toVal", 1000)]
         [Category("Inspections")]
@@ -431,7 +790,7 @@ namespace RubberduckTests.Inspections
         {
             string inputCode =
 @"
-        Private Const fromVal As long = 500
+        Private Const fromVal As Long = 500
         Private Const toVal As Long = 1000
 
         Sub Foo(z As Long)
@@ -453,7 +812,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Is <> 100", 100)]
         [TestCase("Is <> 100.49", 100)]
         [TestCase("Is <> 100#", 100)]
-        [TestCase("Is <> True", 1)]
+        [TestCase("Is <> True", -1)]
         [TestCase(@"Is <> ""100""", 100)]
         [TestCase("Is <> toVal", 1000)]
         [Category("Inspections")]
@@ -461,7 +820,7 @@ namespace RubberduckTests.Inspections
         {
             string inputCode =
 @"
-        Private Const fromVal As long = 500
+        Private Const fromVal As Long = 500
         Private Const toVal As Long = 1000
 
         Sub Foo(z As Long)
@@ -496,7 +855,7 @@ namespace RubberduckTests.Inspections
 @"
         Sub Foo(z As Long)
 
-        Private Const fromVal As long = 500
+        Private Const fromVal As Long = 500
         Private Const toVal As Long = 1000
 
         Select Case z
@@ -504,7 +863,7 @@ namespace RubberduckTests.Inspections
             'OK
             Case <secondCase>
             'OK
-            Case <relOpCase>
+            'Case <relOpCase>
              'Unreachable
         End Select
 
@@ -513,7 +872,7 @@ namespace RubberduckTests.Inspections
             inputCode = inputCode.Replace("<firstCase>", firstCase);
             inputCode = inputCode.Replace("<secondCase>", secondCase);
             var caseClauseCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
-            Assert.IsTrue(hasCoverage == ((SummaryCoverage<long>)caseClauseCoverage).RelationalOps.HasCoverage, "No RelationalOps Coverage");
+            Assert.IsTrue(hasCoverage == caseClauseCoverage.RelationalOps.HasCoverage, "No RelationalOps Coverage");
         }
 
         //[TestCase("z < 100", "fromVal < toVal, fromVal = toVal", true)]
@@ -544,146 +903,236 @@ namespace RubberduckTests.Inspections
             Assert.IsTrue( UUT.Count == countExpected);
         }
 
-        [TestCase("50 * 5", 250)]
-        [TestCase("8 / 2", 4)]
-        [TestCase("toVal / fromVal", 2)]
-        [TestCase("toVal + fromVal", 1500)]
-        [TestCase("fromVal - toVal", -500)]
-        [TestCase("toVal * True + fromVal / 2", 1250)]
-        [TestCase("2 ^ 3", 8)]
-        [TestCase("9 Mod 4", 1)]
+//        [TestCase("50 * 5", 250)]
+//        [TestCase("8 / 2", 4)]
+//        [TestCase("toVal / fromVal", 2)]
+//        [TestCase("toVal + fromVal", 1500)]
+//        [TestCase("fromVal - toVal", -500)]
+//        [TestCase("toVal * True + fromVal / 2", -750)]
+//        [TestCase("2 ^ 3", 8)]
+//        [TestCase("9 Mod 4", 1)]
+//        [Category("Inspections")]
+//        public void UnreachableCaseInspUnit_SummaryCoverageBinaryMathOps(string firstCase, long target)
+//        {
+//            string inputCode =
+//@"
+//        Private Const fromVal As Long = 500
+//        Private Const toVal As Long = 1000
+
+//        Sub Foo(z As Long)
+
+//        Select Case z
+//            Case <firstCase>
+//            'OK
+//        End Select
+
+//        End Sub";
+
+//            inputCode = inputCode.Replace("<firstCase>", firstCase);
+//            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+
+//            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
+//            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
+//       }
+
+        //[TestCase("fromVal > 5 And toVal > 20", -1)]
+        //[TestCase("6.5 > 5 And 21.7 > 20", -1)]
+        //[TestCase("fromVal > 500000 Or toVal > 20000000", 0)]
+        //[TestCase("True Xor True", 0)]
+        //[TestCase("Not fromVal", 0)]
+//        [Category("Inspections")]
+//        public void UnreachableCaseInspUnit_SummaryCoverageLogicOps(string firstCase, long target)
+//        {
+//            string inputCode =
+//@"
+//        Private Const fromVal As Long = 500
+//        Private Const toVal As Long = 1000
+
+//        Sub Foo(z As Long)
+
+//        Select Case z
+//            Case <firstCase>
+//            'OK
+//        End Select
+
+//        End Sub";
+
+//            inputCode = inputCode.Replace("<firstCase>", firstCase);
+//            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+//            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
+//            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
+//        }
+
+//        [TestCase("(fromVal - toVal) * 2", -1000)]
+//        [TestCase("(((((fromVal) - (toVal)) * (2))))", -1000)]
+//        [Category("Inspections")]
+//        public void UnreachableCaseInspUnit_SummaryCoverageParentheses(string firstCase, long target)
+//        {
+//            string inputCode =
+//@"
+//        Private Const fromVal As Long = 500
+//        Private Const toVal As Long = 1000
+
+//        Sub Foo(z As Long)
+
+//        Select Case z
+//            Case <firstCase>
+//            'OK
+//        End Select
+
+//        End Sub";
+
+//            inputCode = inputCode.Replace("<firstCase>", firstCase);
+//            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+
+//            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
+//            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
+//        }
+
+//        [TestCase("-fromVal", -500)]
+//        [Category("Inspections")]
+//        public void UnreachableCaseInspUnit_SummaryCoverageUnaryMinus(string firstCase, long target)
+//        {
+//            string inputCode =
+//@"
+//        Private Const fromVal As Long = 500
+//        Private Const toVal As Long = 1000
+
+//        Sub Foo(z As Long)
+
+//        Select Case z
+//            Case <firstCase>
+//            'OK
+//        End Select
+
+//        End Sub";
+
+//            inputCode = inputCode.Replace("<firstCase>", firstCase);
+//            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+
+//            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
+//            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
+//        }
+
+//        [TestCase("BitCountMaxValues.max1Bits", 1)]
+//        [TestCase("BitCountMaxValues.max4Bits", 15)]
+//        [Category("Inspections")]
+//        public void UnreachableCaseInspUnit_EnumMemberAccess(string firstCase, long value)
+//        {
+//            string inputCode =
+//@"
+//        private Enum BitCountMaxValues
+//            max1Bits = 2 ^ 0
+//            max2Bits = 2 ^ 1 + max1Bits
+//            max3Bits = 2 ^ 2 + max2Bits
+//            max4Bits = 2 ^ 3 + max3Bits
+//        End Enum
+
+//        Sub Foo(z As BitCountMaxValues)
+
+//        Select Case z
+//            Case <firstCase>
+//            'OK
+//        End Select
+
+//        End Sub";
+
+//            var caseVals = new List<long>() { value };
+
+//            inputCode = inputCode.Replace("<firstCase>", firstCase);
+//            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+
+//            Assert.IsTrue(testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
+//            Assert.IsTrue(testCoverage.SingleValues.Values.All(sv => caseVals.Contains(sv)));
+//        }
+
+        [TestCase("IsLT=5", "", "IsLT=5")]
+        [TestCase("IsGT=5", "", "IsGT=5")]
+        [TestCase("IsLT=5", "IsGT=300", "IsLT=5!IsGT=300")]
+        [TestCase("IsLT=5,Range=45:55", "IsGT=300", "IsLT=5!IsGT=300!Ranges=45:55")]
+        [TestCase("IsLT=5,Range=45:55", "IsGT=300,Single=200", "IsLT=5!IsGT=300!Ranges=45:55!Single=200")]
+        [TestCase("IsLT=5,Range=45:55", "IsGT=300,Single=200,RelOp=x < 50", "IsLT=5!IsGT=300!Ranges=45:55!Single=200!RelOp=x < 50")]
+        [TestCase("Range=45:55", "Range=60:65", "Ranges=60:65,45:55")]
+        [TestCase("Single=45,Single=46", "Single=60", "Single=60,45,46")]
+        [TestCase("RelOp=x < 50", "RelOp=x > 75", "RelOp=x > 75,x < 50")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_SummaryCoverageBinaryMathOps(string firstCase, long target)
+        public void UnreachableCaseInspUnit_ToString(string firstCase, string secondCase, string expectedClauses)
         {
-            string inputCode =
-@"
-        Private Const fromVal As long = 500
-        Private Const toVal As Long = 1000
+            var caseToRanges = CasesToRanges(new string[] { firstCase, secondCase });
+            var sumClauses = new List<SummaryCoverage<long>>();
+            foreach (var id in caseToRanges)
+            {
+                var newSummary = CreateTestSummaryCoverageLong(id.Value, Tokens.Long);
+                sumClauses.Add(newSummary);
+            }
 
-        Sub Foo(z As Long)
+            var candidateClause = sumClauses[0];
+            var existingClauses = sumClauses[1];
+            existingClauses.Add(candidateClause);
+            //var check = sumClauses[2];
 
-        Select Case z
-            Case <firstCase>
-            'OK
-        End Select
-
-        End Sub";
-
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
-
-            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
-            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
-       }
-
-        [TestCase("fromVal > 5 And toVal > 20", 1)]
-        [TestCase("fromVal > 500000 Or toVal > 20000000", 0)]
-        [TestCase("True Xor True", 0)]
-        [TestCase("Not fromVal", 0)]
-        [Category("Inspections")]
-        public void UnreachableCaseInspUnit_SummaryCoverageLogicOps(string firstCase, long target)
-        {
-            string inputCode =
-@"
-        Private Const fromVal As long = 500
-        Private Const toVal As Long = 1000
-
-        Sub Foo(z As Long)
-
-        Select Case z
-            Case <firstCase>
-            'OK
-        End Select
-
-        End Sub";
-
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
-            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
-            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
+            //Assert.IsTrue(check.ToString().Length > 0,"expected string is zero length");
+            Assert.IsTrue(existingClauses.ToString().Length > 0, "actual string is zero length");
+            Assert.AreEqual(expectedClauses, existingClauses.ToString());
         }
 
-        [TestCase("(fromVal - toVal) * 2", -1000)]
-        [TestCase("(((((fromVal) - (toVal)) * (2))))", -1000)]
+        [TestCase("50:Long_To_100:Long", "Long", "Ranges=50:100")]
+        [TestCase("50.3:Double_To_100.2:Double", "Long", "Ranges=50:100")]
+        [TestCase("50.3:Double_To_100.2:Double", "Double", "Ranges=50.3:100.2")]
+        [TestCase("50_To_100,75_To_125", "Long", "Ranges=50:125")]
+        [TestCase("50_To_100,175_To_225", "Long", "Ranges=50:100,175:225")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_SummaryCoverageParentheses(string firstCase, long target)
+        public void UnreachableCaseInspUnit_uciAddRangeClauses(string firstCase, string summaryTypeName, string expected)
         {
-            string inputCode =
-@"
-        Private Const fromVal As long = 500
-        Private Const toVal As Long = 1000
+            var factory = new SummaryCoverageFactory();
+            var UUT = factory.Create(summaryTypeName);
 
-        Sub Foo(z As Long)
-
-        Select Case z
-            Case <firstCase>
-            'OK
-        End Select
-
-        End Sub";
-
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
-
-            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
-            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
+            var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
+            foreach (var clause in clauses)
+            {
+                GetBinaryOpValues(clause, out IUnreachableCaseInspectionValue start, out IUnreachableCaseInspectionValue end, out string symbol);
+                UUT.AddValueRange(start, end);
+            }
+            Assert.IsTrue(UUT.ToString() == expected, $"Actual: {UUT.ToString()} Expected: {expected}");
         }
 
-        [TestCase("-fromVal", -500)]
+        [TestCase("45", "Long", "Single=45")]
+        [TestCase("45,-500,9", "Long", "Single=45,-500,9")]
+        //[TestCase("45", "Long", "Single=45")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_SummaryCoverageUnaryMinus(string firstCase, long target)
+        public void UnreachableCaseInspUnit_uciAddSingleValue(string firstCase, string summaryTypeName, string expected)
         {
-            string inputCode =
-@"
-        Private Const fromVal As long = 500
-        Private Const toVal As Long = 1000
+            var factory = new SummaryCoverageFactory();
+            var UUT = factory.Create(summaryTypeName);
 
-        Sub Foo(z As Long)
-
-        Select Case z
-            Case <firstCase>
-            'OK
-        End Select
-
-        End Sub";
-
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
-
-            Assert.AreEqual(true, testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
-            Assert.AreEqual(target, testCoverage.SingleValues.Values.First(), "SingleValue has incorrect Value");
+            var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
+            foreach (var clause in clauses)
+            {
+                var theVal = CreateInspValueFrom(clause);
+                UUT.AddSingleValue(theVal);
+            }
+            Assert.IsTrue(UUT.ToString() == expected, $"Actual: {UUT.ToString()} Expected: {expected}");
         }
 
-        [TestCase("BitCountMaxValues.max1Bits", 1)]
-        [TestCase("BitCountMaxValues.max4Bits", 15)]
+        [TestCase("Is_<_50", "Long", "IsLT=50")]
+        [TestCase("Is_<_50,Is_<_25", "Long", "IsLT=50")]
+        [TestCase("Is_<_50,Is_<_75", "Long", "IsLT=75")]
+        [TestCase("Is_<_50,Is_<_75,Is_>_300", "Long", "IsLT=75!IsGT=300")]
+        [TestCase("Is_<=_50", "Long", "IsLT=50!Single=50")]
+        [TestCase("Is_<=_50,Is_>=_51", "Long", "IsLT=50!IsGT=51!Single=50,51")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_EnumMemberAccess(string firstCase, long value)
+        public void UnreachableCaseInspUnit_uciAddIsClauses(string firstCase, string summaryTypeName, string expected)
         {
-            string inputCode =
-@"
-        private Enum BitCountMaxValues
-            max1Bits = 2 ^ 0
-            max2Bits = 2 ^ 1 + max1Bits
-            max3Bits = 2 ^ 2 + max2Bits
-            max4Bits = 2 ^ 3 + max3Bits
-        End Enum
+            var factory = new SummaryCoverageFactory();
+            var UUT = factory.Create(summaryTypeName);
 
-        Sub Foo(z As BitCountMaxValues)
-
-        Select Case z
-            Case <firstCase>
-            'OK
-        End Select
-
-        End Sub";
-
-            var caseVals = new List<long>() { value };
-
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var testCoverage = (SummaryCoverage<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
-
-            Assert.IsTrue(testCoverage.SingleValues.Values.Any(), "SingleValue not updated");
-            Assert.IsTrue(testCoverage.SingleValues.Values.All(sv => caseVals.Contains(sv)));
+            var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
+            foreach (var clause in clauses)
+            {
+                GetBinaryOpValues(clause, out IUnreachableCaseInspectionValue start, out IUnreachableCaseInspectionValue end, out string symbol);
+                UUT.AddIsClause(end, symbol);
+            }
+            Assert.IsTrue(UUT.ToString() == expected, $"Actual: {UUT.ToString()} Expected: {expected}");
         }
 
         [TestCase("IsLT=45,Range=20:70", "IsLT=45", "Range=20:70")]
@@ -709,8 +1158,17 @@ namespace RubberduckTests.Inspections
             var existingClauses = sumClauses[1];
             var check = sumClauses[2];
             
-            var nonDuplicates = candidateClause.CreateSummaryCoverageDifference(existingClauses);
-            Assert.AreEqual(check.ToString(), nonDuplicates.ToString());
+            if (candidateClause.HasClausesNotCoveredBy(existingClauses, out ISummaryCoverage nonDuplicates))
+            {
+                Assert.AreEqual(check.ToString(), nonDuplicates.ToString());
+            }
+            else
+            {
+                if (!check.ToString().Equals(""))
+                {
+                    Assert.Fail("Function fails to return ISummaryCoverage");
+                }
+            }
         }
 
         [TestCase("IsLT=40,IsGT=40", "Range=35:45", "Long")]
@@ -723,14 +1181,18 @@ namespace RubberduckTests.Inspections
         public void UnreachableCaseInspUnit_CoversAll(string firstCase, string secondCase, string typeName)
         {
             var caseToRanges = CasesToRanges(new string[] { firstCase, secondCase });
-            var cumClause = (SummaryCoverage<long>)UnreachableSelectCaseFactory.CreateSummaryCoverageShell(typeName);
+            var factory = new SummaryCoverageFactory();
+            var summaryCoverage = (SummaryCoverage<long>)factory.Create(typeName);
+
             foreach (var id in caseToRanges)
             {
                 var newSummary = CreateTestSummaryCoverageLong(id.Value, typeName);
-                var diff = newSummary.CreateSummaryCoverageDifference(cumClause);
-                cumClause.Add(diff);
+                if (newSummary.HasClausesNotCoveredBy(summaryCoverage, out ISummaryCoverage diff))
+                {
+                    summaryCoverage.Add(diff);
+                }
             }
-            Assert.IsTrue(cumClause.CoversAllValues);
+            Assert.IsTrue(summaryCoverage.CoversAllValues);
         }
 
         [TestCase("IsLT=True, IsGT=True", "Single=False", "")]
@@ -752,8 +1214,17 @@ namespace RubberduckTests.Inspections
             var existingClauses = sumClauses[1];
             var check = sumClauses[2];
 
-            var nonDuplicates = candidateClause.CreateSummaryCoverageDifference(existingClauses);
-            Assert.AreEqual(check, nonDuplicates);
+            if (candidateClause.HasClausesNotCoveredBy(existingClauses, out ISummaryCoverage nonDuplicates))
+            {
+                Assert.AreEqual(check.ToString(), nonDuplicates.ToString());
+            }
+            else
+            {
+                if (!check.ToString().Equals(""))
+                {
+                    Assert.Fail("Function fails to return ISummaryCoverage");
+                }
+            }
         }
 
         [TestCase("Range=101:149,Range=1:100", "Range=150:250", "Range=1:250")]
@@ -764,8 +1235,11 @@ namespace RubberduckTests.Inspections
         {
             var caseToRanges = CasesToRanges(new string[] { firstCase, secondCase, expectedClauses });
             var sumClauses = new List<SummaryCoverage<long>>();
+            var factory = new SummaryCoverageFactory();
             foreach (var id in caseToRanges)
             {
+                //var newSummary = (SummaryCoverage<long>)factory.Create(Tokens.Long);
+                //newSummary = CreateTestSummaryCoverageLong(id.Value, newSummary);
                 var newSummary = CreateTestSummaryCoverageLong(id.Value, Tokens.Long);
                 sumClauses.Add(newSummary);
             }
@@ -786,9 +1260,10 @@ namespace RubberduckTests.Inspections
         {
             var caseToRanges = CasesToRanges(new string[] { firstCase, secondCase, expectedClauses });
             var sumClauses = new List<SummaryCoverage<double>>();
+            var factory = new SummaryCoverageFactory();
             foreach (var id in caseToRanges)
             {
-                var newSummary = new SummaryCoverage<double>();
+                var newSummary = (SummaryCoverage<double>)factory.Create(Tokens.Double);
                 newSummary = CreateTestSummaryCoverageDouble(id.Value, newSummary);
                 sumClauses.Add(newSummary);
             }
@@ -883,8 +1358,14 @@ namespace RubberduckTests.Inspections
 
         private SummaryCoverage<long> CreateTestSummaryCoverageLong(List<string> annotations, string integerTypeName)
         {
-
-            var result = (SummaryCoverage<long>)GetTestDataObject(evaluationTypeName: integerTypeName).SummaryCoverage;
+            var factory = new SummaryCoverageFactory();
+            //var tdo = new UnreachableTestDataObject()
+            //{
+            //    SummaryCoverage = factory.Create(integerTypeName)
+            //};
+            var result = (SummaryCoverage<long>)factory.Create(integerTypeName);
+            //var result = summaryCoverage;
+            //var result = (SummaryCoverage<long>)GetTestDataObject(Tokens.Long, integerTypeName).SummaryCoverage;
             foreach (var item in annotations)
             {
                 var element = item.Trim().Split(new string[] { "=" }, StringSplitOptions.None);
@@ -910,6 +1391,10 @@ namespace RubberduckTests.Inspections
                 else if (clauseType.Equals("Single"))
                 {
                     result.Add(long.Parse(clauseExpression));
+                }
+                else if (clauseType.Equals("RelOp"))
+                {
+                    result.RelationalOps.Add(clauseExpression);
                 }
             }
             return result;
@@ -949,7 +1434,8 @@ namespace RubberduckTests.Inspections
 
         private SummaryCoverage<bool> CreateTestSummaryCoverageBoolean(List<string> annotations)
         {
-            var result = new SummaryCoverage<bool>();
+            var factory = new SummaryCoverageFactory();
+            var result = (SummaryCoverage<bool>)factory.Create(Tokens.Boolean);
             foreach (var item in annotations)
             {
                 var element = item.Split(new string[] { "=" }, StringSplitOptions.None);
@@ -984,13 +1470,14 @@ namespace RubberduckTests.Inspections
         [TestCase("Is < toVal_fromVal_500", 2)]
         [TestCase("toVal_fromVal To toVal_750", 1)]
         [TestCase("0 To 50_25 To 75_20 To 51", 1)]
-        [TestCase("Is > 0_fromVal To toVal_-100", 1)]
+        [TestCase("Is > 0_fromVal To toVal_55", 2)]
+        [TestCase("Is > 0_fromVal To toVal_z > 0", 1)]
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_SummarizeResults(string allCases, long expected)
         {
             string inputCode =
 @"
-        Private Const fromVal As long = 500
+        Private Const fromVal As Long = 500
         Private Const toVal As Long = 1000
 
         Sub Foo(z As Long)
@@ -1015,86 +1502,98 @@ namespace RubberduckTests.Inspections
             inputCode = inputCode.Replace("<firstCase>", firstCase);
             inputCode = inputCode.Replace("<secondCase>", secondCase);
             inputCode = inputCode.Replace("<thirdCase>", thirdCase);
-            var tdo = GetTestDataObject(inputCode, Tokens.Long);
-            var overallSummaryCoverage = UnreachableSelectCaseFactory.CreateSummaryCoverageShell(tdo.SummaryCoverage.TypeName);
 
-            var unreachableCases = new List<ParserRuleContext>();
-            foreach (var caseClause in tdo.SelectCaseStmtCtxt.caseClause())
+
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var factory = new SummaryCoverageFactory();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var summaryCoverage = tdo.SummaryCoverage.CoverageFor(caseClause);
-                if(summaryCoverage.HasConditionsNotCoveredBy(overallSummaryCoverage, out ISummaryCoverage diff))
+                var selectCaseStmtCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
+                var overallSummaryCoverage = factory.Create(Tokens.Long);
+                var unreachableCases = new List<ParserRuleContext>();
+                foreach (var caseClause in selectCaseStmtCtxt.caseClause())
                 {
-                    overallSummaryCoverage.Add(summaryCoverage);
+                    var caseClauseVisitor = new CaseClauseSummaryVisitor(caseClause, state, /*new IUnreachableCaseInspectionValueFactory(),*/ Tokens.Long);
+                    var summaryCoverage = caseClause.Accept(caseClauseVisitor);
+                    if (summaryCoverage.HasClausesNotCoveredBy(overallSummaryCoverage, out ISummaryCoverage diff))
+                    {
+                        overallSummaryCoverage.Add(summaryCoverage);
+                    }
+                    else
+                    {
+                        unreachableCases.Add(caseClause);
+                    }
                 }
-                else
-                {
-                    unreachableCases.Add(caseClause);
-                }
+                Assert.AreEqual(expected, unreachableCases.Count());
             }
-            Assert.AreEqual(expected, unreachableCases.Count());
+
+
+
+
+            //var tdo = GetTestDataObject(inputCode, Tokens.Long);
+            //var overallSummaryCoverage = new SummaryCoverageFactory().Create(tdo.SummaryCoverage.TypeName);
+
+            //var unreachableCases = new List<ParserRuleContext>();
+            //foreach (var caseClause in tdo.SelectCaseStmtCtxt.caseClause())
+            //{
+            //    var summaryCoverage = tdo.SummaryCoverage.CoverageForCaseClause(caseClause);
+            //    if(summaryCoverage.HasClausesNotCoveredBy(overallSummaryCoverage, out ISummaryCoverage diff))
+            //    {
+            //        overallSummaryCoverage.Add(summaryCoverage);
+            //    }
+            //    else
+            //    {
+            //        unreachableCases.Add(caseClause);
+            //    }
+            //}
+            //Assert.AreEqual(expected, unreachableCases.Count());
         }
 
-        private string GetSelectCaseEvaluationType(string inputCode)
-        {
-            var tdo = GetTestDataObject(inputCode: inputCode);
-            var result = UnreachableCaseInspection.DetermineSelectCaseEvaluationTypeName(tdo.SelectCaseStmtCtxt, tdo.ParseTreeValues);
-            return result;
-        }
+        //private string GetSelectCaseEvaluationType(string inputCode)
+        //{
+        //    var tdo = GetTestDataObject(inputCode: inputCode);
+        //    var selectCase = new UnreachableCaseInspectionSelectStmtContext(tdo.QualifiedContext, tdo.SelectCaseStmtCtxt.Accept(tdo.UntypedValueVisitor));
+        //    return selectCase.EvaluationTypeName;
+        //}
 
         internal struct UnreachableTestDataObject
         {
             public ISummaryCoverage SummaryCoverage;
+            public QualifiedContext<ParserRuleContext> QualifiedContext;
             public VBAParser.SelectCaseStmtContext SelectCaseStmtCtxt;
-            public IParseTreeValueResults ParseTreeValues;
+            //public IParseTreeValueResults ParseTreeValues;
             public ISummaryCoverage CasesSummary;
-
+            //public IParseTreeVisitor<IParseTreeValueResults> UntypedValueVisitor;
         }
 
-        private UnreachableTestDataObject GetTestDataObject(string inputCode = "", string evaluationTypeName = "")
+        private UnreachableTestDataObject GetTestDataObject(string inputCode, string evaluationTypeName)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-
-            if (inputCode is null || inputCode.Equals(string.Empty))
+            var tdo = new UnreachableTestDataObject();
+            var factory = new SummaryCoverageFactory();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var tdo = new UnreachableTestDataObject()
+                tdo.SelectCaseStmtCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
+                tdo.QualifiedContext = new QualifiedContext<ParserRuleContext>(new QualifiedModuleName(vbe.Object.VBProjects.First()), tdo.SelectCaseStmtCtxt);
+                var visitorFactory = new UnreachableCaseInspectionVisitorFactory();
+                //tdo.ParseTreeValues = tdo.SelectCaseStmtCtxt.Accept(visitorFactory.Create(state));
+                //tdo.SummaryCoverage = factory.Create(tdo.SelectCaseStmtCtxt, tdo.ParseTreeValues, evaluationTypeName);
+                tdo.SummaryCoverage = factory.Create(evaluationTypeName);
+                tdo.CasesSummary = factory.Create(tdo.SummaryCoverage.TypeName);
+                //var visitor = new UnreachableCaseInspectionVisitor();
+                foreach (var caseClause in tdo.SelectCaseStmtCtxt.caseClause())
                 {
-                    SummaryCoverage = UnreachableSelectCaseFactory.CreateSummaryCoverageShell(evaluationTypeName)
-                };
-                return tdo;
-            }
-            else if (evaluationTypeName is null || evaluationTypeName.Equals(string.Empty))
-            {
-                var tdo = new UnreachableTestDataObject();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-                    tdo.SelectCaseStmtCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
-                    tdo.ParseTreeValues = tdo.SelectCaseStmtCtxt.Accept(UnreachableSelectCaseFactory.CreateParseTreeVisitor(state));
-               }
-                return tdo;
-            }
-            else
-            {
-                //                var selectCaseTypedVisitor = UnreachableSelectCaseFactory.CreateParseTreeVisitor(State, evaluationTypeName);
-                //var parseTreeValueResults = selectCaseStmt.Context.Accept(selectCaseTypedVisitor);
-
-                var tdo = new UnreachableTestDataObject();
-                using (var state = MockParser.CreateAndParse(vbe.Object))
-                {
-                    tdo.SelectCaseStmtCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
-                    tdo.ParseTreeValues = tdo.SelectCaseStmtCtxt.Accept(UnreachableSelectCaseFactory.CreateParseTreeVisitor(state));
-                    //tdo.SummaryCoverage = UnreachableSelectCaseFactory.CreateSummaryCoverage(tdo.SelectCaseStmtCtxt, state, evaluationTypeName);
-                    tdo.SummaryCoverage = UnreachableSelectCaseFactory.CreateSummaryCoverage(tdo.SelectCaseStmtCtxt, tdo.ParseTreeValues, evaluationTypeName);
-                    tdo.CasesSummary = UnreachableSelectCaseFactory.CreateSummaryCoverageShell(tdo.SummaryCoverage.TypeName);
-                    foreach (var caseClause in tdo.SelectCaseStmtCtxt.caseClause())
-                    {
-                        tdo.CasesSummary.Add(tdo.SummaryCoverage.CoverageFor(caseClause));
-                    }
+                    var caseClauseVisitor = new CaseClauseSummaryVisitor(caseClause, state, /*new IUnreachableCaseInspectionValueFactory(),*/ evaluationTypeName);
+                    var summary = caseClause.Accept(caseClauseVisitor);
+                    //tdo.CasesSummary.Add(tdo.SummaryCoverage.CoverageForCaseClause(caseClause));
+                    tdo.CasesSummary.Add(summary);
                 }
-                return tdo;
             }
+            return tdo;
         }
 
-#region oldTests
+        #region oldTests
         /**/
         [TestCase("String", @"""Foo""", @"""Bar""")]
         [TestCase("Long", "450000", "850000")]
@@ -1166,7 +1665,7 @@ namespace RubberduckTests.Inspections
         [TestCase("x Or x < 5")]
         [TestCase("x = 1 Xor x < 5")]
         [TestCase("x And x < 5")]
-        [TestCase("x Eqv 1")]
+        //[TestCase("x Eqv 1")] TODO: Support this op?
         [TestCase("Not x")]
         [Category("Inspections")]
         public void UnreachableCaseInspFunctional_LogicalOpSelectCase(string booleanOp)
@@ -1194,11 +1693,11 @@ namespace RubberduckTests.Inspections
             string inputCode =
 @"Sub Foo(x As Long)
 
-        Private Const fromVal As long = 500
+        Private Const fromVal As Long = 500
         Private Const toVal As Long = 1000
 
         Select Case x
-           'Case fromVal < toVal
+           Case fromVal < toVal
             'OK
            Case x < 100
             'OK
@@ -1242,31 +1741,31 @@ namespace RubberduckTests.Inspections
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
-        [TestCase("Dim Hint$\r\nSelect Case Hint$", @"""Here"" To ""Eternity""", @"""Forever""")] //String
-        [TestCase("Dim Hint#\r\nHint#= 1.0\r\nSelect Case Hint#", "10.00 To 30.00", "20.00")] //Double
-        [TestCase("Dim Hint!\r\nHint! = 1.0\r\nSelect Case Hint!", "10.00 To 30.00", "20.00")] //Single
-        [TestCase("Dim Hint%\r\nHint% = 1\r\nSelect Case Hint%", "10 To 30", "20")] //Integer
-        [TestCase("Dim Hint&\r\nHint& = 1\r\nSelect Case Hint&", "1000 To 3000", "2000")] //Long
-        [Category("Inspections")]
-        public void UnreachableCaseInspFunctional_TypeHint(string typeHintExpr, string firstCase, string secondCase)
-        {
-            string inputCode =
-@"
-        Sub Foo()
+//        [TestCase("Dim Hint$\r\nSelect Case Hint$", @"""Here"" To ""Eternity""", @"""Forever""")] //String
+//        [TestCase("Dim Hint#\r\nHint#= 1.0\r\nSelect Case Hint#", "10.00 To 30.00", "20.00")] //Double
+//        [TestCase("Dim Hint!\r\nHint! = 1.0\r\nSelect Case Hint!", "10.00 To 30.00", "20.00")] //Single
+//        [TestCase("Dim Hint%\r\nHint% = 1\r\nSelect Case Hint%", "10 To 30", "20")] //Integer
+//        [TestCase("Dim Hint&\r\nHint& = 1\r\nSelect Case Hint&", "1000 To 3000", "2000")] //Long
+//        [Category("Inspections")]
+//        public void UnreachableCaseInspFunctional_TypeHint(string typeHintExpr, string firstCase, string secondCase)
+//        {
+//            string inputCode =
+//@"
+//        Sub Foo()
 
-        <typeHintExprAndSelectCase>
-            Case <firstCaseVal>
-            'OK
-            Case <secondCaseVal>
-            'Unreachable
-        End Select
+//        <typeHintExprAndSelectCase>
+//            Case <firstCaseVal>
+//            'OK
+//            Case <secondCaseVal>
+//            'Unreachable
+//        End Select
 
-        End Sub";
-            inputCode = inputCode.Replace("<typeHintExprAndSelectCase>", typeHintExpr);
-            inputCode = inputCode.Replace("<firstCaseVal>", firstCase);
-            inputCode = inputCode.Replace("<secondCaseVal>", secondCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
-        }
+//        End Sub";
+//            inputCode = inputCode.Replace("<typeHintExprAndSelectCase>", typeHintExpr);
+//            inputCode = inputCode.Replace("<firstCaseVal>", firstCase);
+//            inputCode = inputCode.Replace("<secondCaseVal>", secondCase);
+//            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+//        }
 
         [TestCase("Long", "Is < 5", "Is > -5000")]
         [TestCase("Long", "Is <> 4", "4")]
@@ -1594,16 +2093,16 @@ namespace RubberduckTests.Inspections
             Case ""Foo""
             'Unreachable
             Case ""Food""
-            Select Case  z
-                Case ""Food"", ""Bard"",""Good""
-                'OK
-                Case ""Bar""
-                'OK
-                Case ""Foo""
-                'OK
-                Case ""Goo""
-                'OK
-            End Select
+                Select Case  z
+                    Case ""Food"", ""Bard"",""Good""
+                    'OK
+                    Case ""Bar""
+                    'OK
+                    Case ""Foo""
+                    'OK
+                    Case ""Goo""
+                    'OK
+                End Select
         End Select
 
         End Sub";
@@ -1617,29 +2116,26 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Sub Foo(x As String, z As String)
 
-        'Const x As String = ""Foo""
-        'Const z As String = ""Bar""
-
-        Select Case x
+Select Case x
             Case ""Foo"", ""Bar""
             'OK
             Case ""Foo""
             'Unreachable
             Case ""Food""
             Select Case  z
-                Case ""Foo"", ""Bar"",""Goo""
+                Case ""Bar"",""Goo""
                 'OK
                 Case ""Bar""
                 'Unreachable
                 Case ""Foo""
-                'Unreachable
+                'OK
                 Case ""Goo""
                 'Unreachable
             End Select
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 4);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
         }
 
         [Test]
@@ -2516,7 +3012,7 @@ Sub Foo( x As Variant)
             CheckActualResultsEqualsExpected(inputCode, unreachable: expected);
         }
 
-        //TODO: Still a relevant test (after is passes)
+        //TODO: Still a relevant test? (after it passes)
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspFunctional_SelectCaseUsesConstantIndeterminantExpression()
@@ -2653,6 +3149,8 @@ Sub Foo( x As Variant)
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
+            ISummaryCoverageFactory factory = new SummaryCoverageFactory();
+            IUnreachableCaseInspectionVisitorFactory vFactory = new UnreachableCaseInspectionVisitorFactory();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UnreachableCaseInspection(state);

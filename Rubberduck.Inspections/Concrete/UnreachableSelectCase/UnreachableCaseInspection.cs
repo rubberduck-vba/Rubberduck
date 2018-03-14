@@ -15,10 +15,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
+        private readonly ISummaryCoverageFactory _summaryCoverageFactory;
+        private readonly IUnreachableCaseInspectionVisitorFactory _visitorFactory;
         private enum ClauseEvaluationResult { Unreachable, MismatchType, CaseElse };
 
         private Dictionary<ClauseEvaluationResult, string> ResultMessages = new Dictionary<ClauseEvaluationResult, string>()
@@ -28,94 +30,65 @@ namespace Rubberduck.Inspections.Concrete
             [ClauseEvaluationResult.CaseElse] = InspectionsUI.UnreachableCaseInspection_CaseElse
         };
 
-        private struct SelectCaseData
+        public UnreachableCaseInspection(RubberduckParserState state/*, ISummaryCoverageFactory factory, IUnreachableCaseInspectionVisitorFactory visitorFactory*/) : base(state)
         {
-            public Dictionary<QualifiedContext<ParserRuleContext>,string> SelectCaseAndTypeNames;
-            public IParseTreeValueResults ParseTreeResults;
+            //TODO_Question: Candidates for IoCInstaller?  Or...not appropriate?
+            _summaryCoverageFactory = new SummaryCoverageFactory();
+            _visitorFactory = new UnreachableCaseInspectionVisitorFactory();
         }
-
-        public UnreachableCaseInspection(RubberduckParserState state) : base(state) { }
 
         public override IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
+
+        public UnreachableCaseInspectionMismatchListener MismatchListener { get; } =
+            new UnreachableCaseInspectionMismatchListener();
 
         private List<IInspectionResult> InspectionResults { set; get; } = new List<IInspectionResult>();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            InspectionResults = new List<IInspectionResult>();
-            var selectContextData = LoadSelectCaseData();
-            foreach (var selectCaseCtxtTypeName in selectContextData.SelectCaseAndTypeNames.Where(sc => sc.Value != string.Empty))
-            {
-                var selectCaseSummarizedCoverage = UnreachableSelectCaseFactory.CreateSummaryCoverage(
-                    selectCaseCtxtTypeName.Key.Context, 
-                    selectContextData.ParseTreeResults, 
-                    selectCaseCtxtTypeName.Value);
-
-                InspectSelectStatement(selectCaseCtxtTypeName.Key, selectCaseSummarizedCoverage);
-            }
-
-            return InspectionResults;
-        }
-
-        private SelectCaseData LoadSelectCaseData()
-        {
             var selectCaseStmtContexts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
-            var selectData = new SelectCaseData()
+            InspectionResults = new List<IInspectionResult>();
+            var selectCasesToInspect = new List<IUnreachableCaseInspectionSelectStmt>();
+            foreach (var ctxt in selectCaseStmtContexts)
             {
-                SelectCaseAndTypeNames = new Dictionary<QualifiedContext<ParserRuleContext>, string>()
-            };
-
-            foreach (var selectCaseStmt in selectCaseStmtContexts)
-            {
-                //TODO: Maybe - ISelectCaseTypeEvaluator (returns typeName)
-                var selectCaseUnTypedVisitor = UnreachableSelectCaseFactory.CreateParseTreeVisitor(State);
-                var selectCaseResults = selectCaseStmt.Context.Accept(selectCaseUnTypedVisitor);
-                var evaluationTypeName = DetermineSelectCaseEvaluationTypeName(selectCaseStmt.Context, selectCaseResults);
-
-                var selectCaseTypedVisitor = UnreachableSelectCaseFactory.CreateParseTreeVisitor(State, evaluationTypeName);
-                var parseTreeValueResults = selectCaseStmt.Context.Accept(selectCaseTypedVisitor);
-
-                selectData.SelectCaseAndTypeNames.Add(selectCaseStmt, evaluationTypeName);
-                if (selectData.ParseTreeResults is null)
+                IParseTreeVisitor<IUnreachableCaseInspectionValue> ptVisitor = new UnreachableCaseInspectionValueVisitor(State, new IUnreachableCaseInspectionValueFactory());
+                var inspectionSelectCaseStmt = new UnreachableCaseInspectionSelectStmtContext(ctxt, ptVisitor);
+                if (inspectionSelectCaseStmt.CanBeInspected)
                 {
-                    selectData.ParseTreeResults = parseTreeValueResults;
-                }
-                else
-                {
-                    selectData.ParseTreeResults.Add(parseTreeValueResults);
+                    InspectSelectStatement(inspectionSelectCaseStmt);
                 }
             }
-            return selectData;
+            return InspectionResults;
         }
 
-        private void InspectSelectStatement(QualifiedContext<ParserRuleContext> qualifiedSelectCaseContext, ISummaryCoverage allSelectCaseContextCoverage)
-        {
-            //var inspResults = new List<IInspectionResult>();
-            if(!(qualifiedSelectCaseContext.Context is VBAParser.SelectCaseStmtContext selectCaseStatementContext))
-            {
-                throw new ArgumentException("Invalid argument type", "selectCaseStatementContext");
-            }
 
-            var cummulativeCoverage = UnreachableSelectCaseFactory.CreateSummaryCoverageShell(allSelectCaseContextCoverage.TypeName);
-            selectCaseStatementContext = qualifiedSelectCaseContext.Context as VBAParser.SelectCaseStmtContext;
-            foreach (var caseClauseCtxt in selectCaseStatementContext.caseClause())
+        private void InspectSelectStatement(IUnreachableCaseInspectionSelectStmt selectStmt)
+        {
+            var qualifiedSelectCaseContext = selectStmt.QualifiedContext;
+            var cummulativeCoverage = _summaryCoverageFactory.Create(selectStmt.EvaluationTypeName);
+
+            var selectCaseStatementContext = (VBAParser.SelectCaseStmtContext)qualifiedSelectCaseContext.Context;
+            foreach (var inspCaseClause in selectStmt.CaseClauses)
             {
                 if (cummulativeCoverage.CoversAllValues)
                 {
-                    //Once all values are covered, the remaining CaseClauses are unreachable
-                    //and there is no point in evaluating them
-                    CreateInspectionResult(qualifiedSelectCaseContext, caseClauseCtxt, ResultMessages[ClauseEvaluationResult.Unreachable]);
-                    //inspResults.Add(result);
+                    //Once all values are covered, the remaining CaseClauses are now unreachable
+                    CreateInspectionResult(qualifiedSelectCaseContext, inspCaseClause.Context, ResultMessages[ClauseEvaluationResult.Unreachable]);
                     continue;
                 }
 
-                if (allSelectCaseContextCoverage.CanBeInspected(caseClauseCtxt.rangeClause()))
+                //MismatchListener.ClearContexts();
+                //var caseClauseVisitor = PrepareCaseClauseSummaryVisitor(inspCaseClause, selectStmt.EvaluationTypeName);
+                var caseClauseCoverge = RetrieveSummaryCoverage(inspCaseClause, selectStmt.EvaluationTypeName);
+                //RetrieveSummaryCoverage
+                //var caseClauseCoverge = inspCaseClause.Context.Accept(caseClauseVisitor);
+                //var isMismatch = MismatchListener.Contexts.Count == inspCaseClause.Context.GetDescendents<VBAParser.RangeClauseContext>().Count();
+                if(!MismatchListener.MismatchFound(inspCaseClause))
                 {
-                    var caseClauseCoverge = allSelectCaseContextCoverage.CoverageFor(caseClauseCtxt);
-                    if (caseClauseCoverge.HasConditionsNotCoveredBy(cummulativeCoverage, out ISummaryCoverage additionalCoverage))
+                    if (caseClauseCoverge.HasClausesNotCoveredBy(cummulativeCoverage, out ISummaryCoverage additionalCoverage))
                     {
                         cummulativeCoverage.Add(additionalCoverage);
                     }
@@ -123,27 +96,29 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         //If there are no conditions to add, then the current CaseClause's conditions are covered
                         //by the combination of prior CaseClauses - and the CaseClause is therefore unreachable
-                        CreateInspectionResult(qualifiedSelectCaseContext, caseClauseCtxt, ResultMessages[ClauseEvaluationResult.Unreachable]);
-                        //inspResults.Add(result);
+                        CreateInspectionResult(qualifiedSelectCaseContext, inspCaseClause.Context, ResultMessages[ClauseEvaluationResult.Unreachable]);
                     }
                 }
                 else
                 {
                     //Call out CaseClauses that cannot be implicitly converted to the SelectCase type as a special case of unreachable
-                    if (allSelectCaseContextCoverage.IsIncompatibleType(caseClauseCtxt.rangeClause()))
-                    {
-                        CreateInspectionResult(qualifiedSelectCaseContext, caseClauseCtxt, ResultMessages[ClauseEvaluationResult.MismatchType]);
-                        //inspResults.Add(result);
-                    }
+                    CreateInspectionResult(qualifiedSelectCaseContext, inspCaseClause.Context, ResultMessages[ClauseEvaluationResult.MismatchType]);
                 }
             }
 
             if (cummulativeCoverage.CoversAllValues && !(selectCaseStatementContext.caseElseClause() is null))
             {
                 CreateInspectionResult(qualifiedSelectCaseContext, selectCaseStatementContext.caseElseClause(), ResultMessages[ClauseEvaluationResult.CaseElse]);
-                //inspResults.Add(result);
             }
-            //return inspResults;
+        }
+
+        private ISummaryCoverage RetrieveSummaryCoverage(IUnreachableCaseInspectionCaseClause inspCaseClause, string evalTypeName)
+        {
+            MismatchListener.ClearContexts();
+            var caseClauseVisitor = new CaseClauseSummaryVisitor((VBAParser.CaseClauseContext)inspCaseClause.Context, State, evalTypeName);
+            caseClauseVisitor.IncompatibleRangeClauseDetected += MismatchListener.IncompatibleRangeDetected;
+            var caseClauseCoverge = inspCaseClause.Context.Accept(caseClauseVisitor);
+            return caseClauseCoverge;
         }
 
         private void CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)
@@ -154,123 +129,30 @@ namespace Rubberduck.Inspections.Concrete
             InspectionResults.Add(result);
         }
 
-        public static string DetermineSelectCaseEvaluationTypeName(ParserRuleContext selectStmt, IParseTreeValueResults selectStmtValues)
+        #region UnreachableCaseInspectionListeners
+        public class UnreachableCaseInspectionMismatchListener
         {
-            Debug.Assert(selectStmt is VBAParser.SelectCaseStmtContext);
+            private readonly List<ParserRuleContext> _contexts = new List<ParserRuleContext>();
+            public IReadOnlyList<ParserRuleContext> Contexts => _contexts;
 
-            var selectExpression = ((VBAParser.SelectCaseStmtContext)selectStmt).selectExpression();
-            if (selectExpression.children.Any(child => IsLogicalContext(child) || IsTrueFalseLiteral(child)))
+            public bool MismatchFound(IUnreachableCaseInspectionCaseClause inspCaseClause)
             {
-                return Tokens.Boolean;
+                return Contexts.Count == inspCaseClause.Context.GetDescendents<VBAParser.RangeClauseContext>().Count();
             }
 
-            if (selectExpression.children.Any(child => child is VBAParser.ConcatOpContext))
+            public QualifiedModuleName CurrentModuleName { get; set; }
+
+            public void ClearContexts()
             {
-                return Tokens.String;
+                _contexts.Clear();
             }
 
-            var theTypeName = string.Empty;
-            var smplName = selectExpression.GetDescendent<VBAParser.SimpleNameExprContext>();
-            if (SymbolList.TypeHintToTypeName.TryGetValue(smplName.GetText().Last().ToString(), out theTypeName))
+            public void IncompatibleRangeDetected(object sender, IncompatibleRangeClauseDetectedArgs e)
             {
-                return theTypeName;
+                _contexts.Add(e.RangeClause);
             }
-
-            var selectExpressionContexts = selectStmtValues.AllContexts.Where(se => se.IsDescendentOf<VBAParser.SelectExpressionContext>());
-            if (selectStmtValues.AllContexts.Any(se => selectStmtValues.Result(se).HasValue))
-            {
-                var unresolvedContextTypeNames = selectExpressionContexts.Where(val => selectStmtValues.Result(val).HasDeclaredTypeName).Select(val => selectStmtValues.Result(val).DeclaredTypeName);
-                if (TryDetermineEvaluationTypeFromTypes(unresolvedContextTypeNames, out theTypeName))
-                {
-                    return theTypeName;
-                }
-            }
-            else
-            {
-                var resolvedContextTypeNames = selectExpressionContexts.Where(val => selectStmtValues.Result(val).HasDeclaredTypeName).Select(val => selectStmtValues.Result(val).DeclaredTypeName);
-
-                if (TryDetermineEvaluationTypeFromTypes(resolvedContextTypeNames, out theTypeName))
-                {
-                    return theTypeName;
-                }
-            }
-
-            var typeNames = selectStmtValues.RangeClauseResults().Select(res => res.UseageTypeName);
-            if (TryDetermineEvaluationTypeFromTypes(typeNames, out string typeName))
-            {
-                return typeName;
-            }
-
-            //If Strings are in the mix and prevent resolution to a type, we remove them
-            //here and see if a resolution becomes possible.  The strings will be converted to the
-            //final type during subsequent unreachable analysis.  If they cannot be converted to
-            //the "Evaluation Type", they will be flagged as mismatching e.g., "45" converts to a number
-            //but "foo" will not.
-            var modifiedNames = typeNames.ToList();
-            modifiedNames.RemoveAll(tn => tn.Equals(Tokens.String));
-            if (TryDetermineEvaluationTypeFromTypes(modifiedNames, out typeName))
-            {
-                return typeName;
-            }
-            return string.Empty;
         }
 
-        private static bool TryDetermineEvaluationTypeFromTypes(IEnumerable<string> typeNames, out string typeName)
-        {
-            typeName = string.Empty;
-            var typeList = typeNames.ToList();
-            typeList.Remove(Tokens.Variant);
-            if (!typeList.Any())
-            {
-                return false;
-            }
-            //To select "String" or "Currency", all types in the typelist must match
-            if (typeList.All(tn => tn.Equals(typeList.First())))
-            {
-                typeName = typeList.First();
-                return true;
-            }
-
-            var nextType = new string[] { Tokens.Long, Tokens.LongLong, Tokens.Integer, Tokens.Byte };
-            var result = typeList.All(tn => nextType.Contains(tn));
-            if (result)
-            {
-                typeName = Tokens.Long;
-                return true;
-            }
-
-            nextType = new string[] { Tokens.Long, Tokens.LongLong, Tokens.Integer, Tokens.Byte, Tokens.Single, Tokens.Double };
-            result = typeList.All(tn => nextType.Contains(tn));
-            if (result)
-            {
-                typeName = Tokens.Double;
-                return true;
-            }
-            return false;
-        }
-
-        private static bool IsLogicalContext<T>(T child)
-        {
-            return child is VBAParser.RelationalOpContext
-                || child is VBAParser.LogicalXorOpContext
-                || child is VBAParser.LogicalAndOpContext
-                || child is VBAParser.LogicalOrOpContext
-                || child is VBAParser.LogicalEqvOpContext
-                || child is VBAParser.LogicalNotOpContext;
-        }
-
-        private static bool IsTrueFalseLiteral<T>(T child)
-        {
-            if (child is VBAParser.LiteralExprContext)
-            {
-                var litExpr = child as VBAParser.LiteralExprContext;
-                return litExpr.GetText().Equals(Tokens.True) || litExpr.GetText().Equals(Tokens.False);
-            }
-            return false;
-        }
-
-
-        #region UnreachableCaseInspectionListener
         public class UnreachableCaseInspectionListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();

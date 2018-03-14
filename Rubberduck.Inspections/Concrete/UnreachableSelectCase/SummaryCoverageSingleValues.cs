@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public class SummaryClauseSingleValues<T> : SummaryClauseSingleValueBase<T> where T : IComparable<T>
     {
@@ -20,12 +20,17 @@ namespace Rubberduck.Inspections.Concrete
 
         public override string ToString()
         {
-            var result = "Single =";
+            const string prefix = "Single=";
+            var result = prefix;
             foreach (var val in Values)
             {
                 result = $"{result}{val.ToString()},";
             }
-            return result.Length > 0 ? result.Remove(result.Length - 1) : string.Empty;
+            if (result.Equals(prefix))
+            {
+                return string.Empty;
+            }
+            return  result.Length > 0 ? result.Remove(result.Length - 1) : string.Empty;
         }
 
         public override void Add(T value)

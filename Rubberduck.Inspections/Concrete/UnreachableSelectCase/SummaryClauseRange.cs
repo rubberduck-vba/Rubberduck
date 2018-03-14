@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public interface ISummaryClauseRange<T> : ISummaryClause<T> where T : System.IComparable<T>
     {
@@ -101,7 +101,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             if (HasCoverage)
             {
-                return $"Range={Start}:{End}";
+                return $"{Start}:{End}";
 
             }
             return string.Empty;

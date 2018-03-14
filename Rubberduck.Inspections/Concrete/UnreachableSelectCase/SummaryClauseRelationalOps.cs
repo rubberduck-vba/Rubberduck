@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public class SummaryClauseRelationalOps<T> : SummaryClauseSingleValueBase<T> where T : IComparable<T>
     {
@@ -33,11 +33,17 @@ namespace Rubberduck.Inspections.Concrete
         public override bool HasCoverage => _unresolvedRelationalOps.Any();
         public override bool Covers(T candidate) => _singleValues.Covers(candidate);
         public bool Covers(string relationalOpText) => _unresolvedRelationalOps.Contains(relationalOpText);
+
+        public void Clear()
+        {
+            _unresolvedRelationalOps.Clear();
+        }
+
         public override void Add(T value)
         {
             if (!(Covers(TrueValue) && Covers(FalseValue)))
             {
-                if(value.CompareTo(FalseValue) != 0)
+                if (value.CompareTo(FalseValue) != 0)
                 {
                     _singleValues.Add(TrueValue);
                 }
@@ -46,11 +52,6 @@ namespace Rubberduck.Inspections.Concrete
                     _singleValues.Add(FalseValue);
                 }
             }
-        }
-
-        public void Clear()
-        {
-            _unresolvedRelationalOps.Clear();
         }
 
         public void Add(SummaryClauseRelationalOps<T> newRelOp)
@@ -76,10 +77,15 @@ namespace Rubberduck.Inspections.Concrete
 
         public override string ToString()
         {
-            var result = string.Empty;
+            if (!_unresolvedRelationalOps.Any())
+            {
+                return string.Empty;
+            }
+            const string prefix = "RelOp=";
+            var result = prefix;
             foreach (var val in _unresolvedRelationalOps)
             {
-                result = $"{result}RelOp={val},";
+                result = $"{result}{val.ToString()},";
             }
             return result.Length > 0 ? result.Remove(result.Length - 1) : string.Empty;
 

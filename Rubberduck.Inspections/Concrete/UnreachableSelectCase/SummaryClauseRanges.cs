@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public class SummaryClauseRanges<T> : SummaryClauseBase<T> where T : IComparable<T>
     {
@@ -73,12 +73,17 @@ namespace Rubberduck.Inspections.Concrete
 
         public override string ToString()
         {
-            var result = string.Empty;
-            foreach(var range in RangeClauses)
+            if (!RangeClauses.Any())
             {
-                result = result.Length > 0 ? $",{range.ToString()}" : $"{range.ToString()}";
+                return string.Empty;
             }
-            return result;
+            const string prefix = "Ranges=";
+            var result = string.Empty;
+            foreach (var range in RangeClauses)
+            {
+                result = result.Length > 0 ? $"{result},{range.ToString()}" : $"{range.ToString()}";
+            }
+            return $"{prefix}{result}";
         }
 
         public List<long> AsIntegerNumbers
