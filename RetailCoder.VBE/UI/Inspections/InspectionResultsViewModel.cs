@@ -11,6 +11,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -39,13 +40,13 @@ namespace Rubberduck.UI.Inspections
         private readonly IQuickFixProvider _quickFixProvider;
         private readonly IClipboardWriter _clipboard;
         private readonly IGeneralConfigService _configService;
-        private readonly IOperatingSystem _operatingSystem;
+        private readonly ISettingsFormFactory _settingsFormFactory;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public InspectionResultsViewModel(RubberduckParserState state, IInspector inspector, IQuickFixProvider quickFixProvider,
             INavigateCommand navigateCommand, ReparseCommand reparseCommand,
-            IClipboardWriter clipboard, IGeneralConfigService configService, IOperatingSystem operatingSystem)
+            IClipboardWriter clipboard, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory)
         {
             _state = state;
             _inspector = inspector;
@@ -53,7 +54,7 @@ namespace Rubberduck.UI.Inspections
             NavigateCommand = navigateCommand;
             _clipboard = clipboard;
             _configService = configService;
-            _operatingSystem = operatingSystem;
+            _settingsFormFactory = settingsFormFactory;
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
                 o =>
                 {
@@ -101,7 +102,7 @@ namespace Rubberduck.UI.Inspections
         {            
             if (e.InspectionSettingsChanged)
             {
-                RefreshInspections();
+                RefreshCommand.Execute(null);
             }
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
@@ -237,9 +238,10 @@ namespace Rubberduck.UI.Inspections
 
         private void OpenSettings(object param)
         {
-            using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.InspectionSettings))
+            using (var window = _settingsFormFactory.Create())
             {
                 window.ShowDialog();
+                _settingsFormFactory.Release(window);
             }
         }
 
@@ -268,7 +270,7 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _runInspectionsOnReparse;
-        private void HandleStateChanged(object sender, EventArgs e)
+        private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
             if(!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
             {
@@ -283,16 +285,27 @@ namespace Rubberduck.UI.Inspections
 
             if (_runInspectionsOnReparse || IsRefreshing)
             {
-                RefreshInspections();
+                RefreshInspections(e.Token);
             }
         }
 
-        private async void RefreshInspections()
+        private async void RefreshInspections(CancellationToken token)
         {
             var stopwatch = Stopwatch.StartNew();
             IsBusy = true;
 
-            var results = (await _inspector.FindIssuesAsync(_state, CancellationToken.None)).ToList();
+            List<IInspectionResult> results;
+            try
+            {
+                var inspectionResults = await _inspector.FindIssuesAsync(_state, token);
+                results = inspectionResults.ToList();
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Debug("Inspections got canceled.");
+                return; //We throw away the partial results.
+            }
+
             if (GroupByInspectionType)
             {
                 results = results.OrderBy(o => o.Inspection.InspectionType)

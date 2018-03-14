@@ -149,7 +149,6 @@
     <Compile Include="ComReflection\ComStruct.cs" />
     <Compile Include="ComReflection\ComType.cs" />
     <Compile Include="ComReflection\ComVariant.cs" />
-    <Compile Include="Emitter.cs" />
     <Compile Include="Grammar\Annotations.cs" />
     <Compile Include="Grammar\PartialExtensions\IIdentifierContext.cs" />
     <Compile Include="Grammar\PartialExtensions\IAnnotatedContext.cs" />
@@ -176,6 +175,7 @@
     <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorInfo.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseSyntaxErrorException.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
+    <Compile Include="UIContext\UiDispatcher.cs" />
     <Compile Include="VBA\RepositoryProjectManager.cs" />
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
@@ -233,7 +233,6 @@
     <Compile Include="Binding\Expressions\SimpleNameExpression.cs" />
     <Compile Include="Binding\Bindings\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
-    <Compile Include="IParseResultProvider.cs" />
     <Compile Include="IParseCoordinator.cs" />
     <Compile Include="ParsingText.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -21,8 +22,9 @@ namespace Rubberduck.UI.UnitTesting
         private readonly RubberduckParserState _state;
         private readonly ITestEngine _testEngine;
         private readonly IClipboardWriter _clipboard;
-        private readonly IGeneralConfigService _configService;
-        private readonly IOperatingSystem _operatingSystem;
+        private readonly ISettingsFormFactory _settingsFormFactory;
+        //private readonly IGeneralConfigService _configService;
+        //private readonly IOperatingSystem _operatingSystem;
 
         public TestExplorerViewModel(IVBE vbe,
              RubberduckParserState state,
@@ -30,7 +32,7 @@ namespace Rubberduck.UI.UnitTesting
              TestExplorerModel model,
              IClipboardWriter clipboard,
              IGeneralConfigService configService,
-             IOperatingSystem operatingSystem)
+             ISettingsFormFactory settingsFormFactory)
         {
             _vbe = vbe;
             _state = state;
@@ -38,8 +40,7 @@ namespace Rubberduck.UI.UnitTesting
             _testEngine.TestCompleted += TestEngineTestCompleted;
             Model = model;
             _clipboard = clipboard;
-            _configService = configService;
-            _operatingSystem = operatingSystem;
+            _settingsFormFactory = settingsFormFactory;
 
             _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
 
@@ -196,9 +197,10 @@ namespace Rubberduck.UI.UnitTesting
 
         private void OpenSettings(object param)
         {
-            using (var window = new SettingsForm(_configService, _operatingSystem, SettingsViews.UnitTestSettings))
+            using (var window = _settingsFormFactory.Create())
             {
                 window.ShowDialog();
+                _settingsFormFactory.Release(window);
             }
         }
 
@@ -222,13 +224,19 @@ namespace Rubberduck.UI.UnitTesting
 
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()
         {
-            foreach (var member in _state.AllUserDeclarations)
+            var projectIdsOfMembersUsingAddInLibrary = _state.DeclarationFinder.AllUserDeclarations
+                .Where(member => member.AsTypeName == "Rubberduck.PermissiveAssertClass" 
+                                    || member.AsTypeName == "Rubberduck.AssertClass")
+                .Select(member => member.ProjectId)
+                .ToHashSet();
+            var projectsUsingAddInLibrary = _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .Where(declaration => projectIdsOfMembersUsingAddInLibrary.Contains(declaration.ProjectId))
+                .Select(declaration => declaration.Project);
+
+            foreach (var project in projectsUsingAddInLibrary)
             {
-                if (member.AsTypeName == "Rubberduck.PermissiveAssertClass" ||
-                    member.AsTypeName == "Rubberduck.AssertClass")
-                {
-                    member.Project.EnsureReferenceToAddInLibrary();
-                }
+                project?.EnsureReferenceToAddInLibrary();
             }
         }
 

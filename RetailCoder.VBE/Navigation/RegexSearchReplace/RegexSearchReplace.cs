@@ -96,6 +96,11 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         {
             using (var pane = _vbe.ActiveCodePane)
             {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return new List<RegexSearchResult>();    
+                }
+
                 using (var module = pane.CodeModule)
                 {
                     var results = GetResultsFromModule(module, searchPattern);
@@ -119,21 +124,22 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             var state = _parser.State;
             using (var pane = _vbe.ActiveCodePane)
             {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return new List<RegexSearchResult>();
+                }
+
                 using (var module = pane.CodeModule)
                 {
                     var results = GetResultsFromModule(module, searchPattern);
 
-                    using (var moduleParent = module.Parent)
-                    {
-                        var qualifiedSelection =
-                            new QualifiedSelection(new QualifiedModuleName(moduleParent), pane.Selection);
-                        dynamic block = state.AllDeclarations.FindTarget(qualifiedSelection, declarationTypes).Context
-                            .Parent;
-                        var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
-                            block.Stop.Column);
+                    var qualifiedSelection = pane.GetQualifiedSelection();
+                    dynamic block = state.AllDeclarations.FindTarget(qualifiedSelection.Value, declarationTypes).Context
+                        .Parent;
+                    var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
+                        block.Stop.Column);
 
-                        return results.Where(r => selection.Contains(r.Selection)).ToList();
-                    }
+                    return results.Where(r => selection.Contains(r.Selection)).ToList();
                 }
             }
         }
@@ -142,6 +148,11 @@ namespace Rubberduck.Navigation.RegexSearchReplace
         {
             using (var pane = _vbe.ActiveCodePane)
             {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return new List<RegexSearchResult>();
+                }
+
                 using (var codeModule = pane.CodeModule)
                 {
                     return GetResultsFromModule(codeModule, searchPattern).ToList();

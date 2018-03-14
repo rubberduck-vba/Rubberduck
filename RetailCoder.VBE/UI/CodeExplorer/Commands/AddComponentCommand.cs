@@ -30,8 +30,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public void AddComponent(CodeExplorerItemViewModel node, ComponentType type)
         {
+            var nodeProject = GetDeclaration(node)?.Project;
+            if (node != null && nodeProject == null)
+            {
+                return; //The project is not available.
+            }
+
             using (var components = node != null
-                ? GetDeclaration(node).Project.VBComponents
+                ? nodeProject.VBComponents
                 : ComponentsCollectionFromActiveProject())
             {
                 var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";

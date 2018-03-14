@@ -8,10 +8,10 @@ If you like this project and would like to thank its contributors, you are welco
 [![GoFundMe campaign](https://user-images.githubusercontent.com/5751684/29191799-e3d20b72-7dec-11e7-8ec6-0c69da4a3135.png)](https://www.gofundme.com/rubberduckvba)
 -->
 
-Branch     | Description | Build Status |
-|------------|---|--------------|
-| **master** | The last released build | ![master branch build status][masterBuildStatus] |
-| **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] |
+|Branch     | Description | Build Status | Download link |
+|------------|---|--------------|-|
+| **master** | The last released build | ![master branch build status][masterBuildStatus] | [stable](https://github.com/rubberduck-vba/Rubberduck/releases/latest) |
+| **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] | [dev](https://github.com/rubberduck-vba/Rubberduck/releases) |
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
@@ -26,8 +26,10 @@ Branch     | Description | Build Status |
 
  * [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md)
  * [About](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/About.md)
- * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md)
+ * [Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)
+ * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) using Rubberduck
  * [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
+ * [User Testimonials](https://github.com/rubberduck-vba/Rubberduck/blob/next/thanks.md)
 
 ---
 

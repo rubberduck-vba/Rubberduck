@@ -35,52 +35,44 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var pane = Vbe.ActiveCodePane;
+            if (_state.Status != ParserState.Ready)
             {
-                if (pane.IsWrappingNullReference || _state.Status != ParserState.Ready)
-                {
-                    return false;
-                }
-
-                var selection = pane.GetQualifiedSelection();
-                var member = _state.AllUserDeclarations.FindTarget(selection.Value, ValidDeclarationTypes);
-                if (member == null)
-                {
-                    return false;
-                }
-
-                var parameters = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter && member.Equals(item.ParentScopeDeclaration)).ToList();
-                var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
-                        ? parameters.Count > 2
-                        : parameters.Count > 1;
-
-                return canExecute;
+                return false;
             }
+
+            var selection = Vbe.GetActiveSelection();
+            if (selection == null)
+            {
+                return false;
+            }
+            var member = _state.AllUserDeclarations.FindTarget(selection.Value, ValidDeclarationTypes);
+            if (member == null)
+            {
+                return false;
+            }
+
+            var parameters = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter && member.Equals(item.ParentScopeDeclaration)).ToList();
+            var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
+                    ? parameters.Count > 2
+                    : parameters.Count > 1;
+
+            return canExecute;
         }
 
         protected override void OnExecute(object parameter)
         {
-            using (var pane = Vbe.ActiveCodePane)
+            var selection = Vbe.GetActiveSelection();
+
+            if (selection == null)
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
+                return;
+            }
 
-                using (var module = pane.CodeModule)
-                {
-                    using (var component = module.Parent)
-                    {
-                        var selection = new QualifiedSelection(new QualifiedModuleName(component), pane.Selection); //The component does not get passed out. So, it is safe to dispose afterwards.
-
-                        using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
-                        {
-                            var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                            var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox, _state.ProjectsProvider);
-                            refactoring.Refactor(selection);
-                        }
-                    }
-                }
+            using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
+            {
+                var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
+                var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox, _state.ProjectsProvider);
+                refactoring.Refactor(selection.Value);
             }
         }
     }

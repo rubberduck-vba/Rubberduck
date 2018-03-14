@@ -10,7 +10,9 @@ using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 
 namespace Rubberduck.API.VBA
@@ -54,6 +56,7 @@ namespace Rubberduck.API.VBA
         public ParserState()
         {
             UiDispatcher.Initialize();
+            ComMessagePumper.Initialize();
         }
 
         public void Initialize(Microsoft.Vbe.Interop.VBE vbe)

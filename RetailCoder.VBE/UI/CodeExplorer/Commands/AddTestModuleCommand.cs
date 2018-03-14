@@ -23,7 +23,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             try
             {
-                return GetDeclaration(parameter) != null || _vbe.ProjectsCount == 1;
+                return GetDeclaration(parameter)?.Project != null || _vbe.ProjectsCount == 1;
             }
             catch (COMException)
             {
@@ -33,8 +33,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
+            var parameterProject = GetDeclaration(parameter)?.Project;
+            if (parameter != null && parameterProject == null)
+            {
+                return; //The project selected module is not available.
+            }
+
             _newUnitTestModuleCommand.Execute(parameter != null
-                ? GetDeclaration(parameter).Project
+                ? parameterProject
                 : _vbe.ActiveVBProject);
         }
 

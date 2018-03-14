@@ -3,7 +3,6 @@ using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -50,9 +49,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         node = node.Parent; // the project node is an ICodeExplorerDeclarationViewModel--no worries here
                     }
 
+                    var nodeProject = node.GetSelectedDeclaration().Project;
+                    if (nodeProject == null)
+                    {
+                        return; //The project declaration has been disposed, i.e. the project has been removed already.
+                    }
+
                     try
                     {
-                        _vbe.ActiveVBProject = node.GetSelectedDeclaration().Project;
+                        _vbe.ActiveVBProject = nodeProject;
                     }
                     catch (COMException)
                     {
