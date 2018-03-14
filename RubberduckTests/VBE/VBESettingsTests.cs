@@ -1,10 +1,7 @@
 ﻿using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
-using Rubberduck.Common;
-using Rubberduck.VBEditor.Utility;
-using Rubberduck.VBEditor.VBERuntime;
-using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.VBERuntime;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.VBE
@@ -32,7 +29,7 @@ namespace RubberduckTests.VBE
             vbe.SetupGet(s => s.Version).Returns("6.00");
             var settings = new VBESettings(vbe.Object, registry.Object);
 
-            Assert.IsTrue(settings.Version == DllVersion.Vbe6);
+            Assert.AreEqual(VBESettings.DllVersion.Vbe6, settings.Version);
         }
 
         [Category("VBE")]
@@ -45,7 +42,7 @@ namespace RubberduckTests.VBE
             vbe.SetupGet(s => s.Version).Returns("7.00");
             var settings = new VBESettings(vbe.Object, registry.Object);
 
-            Assert.IsTrue(settings.Version == DllVersion.Vbe7);
+            Assert.AreEqual(VBESettings.DllVersion.Vbe7, settings.Version);
         }
         
         [Category("VBE")]
@@ -58,7 +55,7 @@ namespace RubberduckTests.VBE
             vbe.SetupGet(s => s.Version).Returns("foo");
             var settings = new VBESettings(vbe.Object, registry.Object);
 
-            Assert.IsTrue(settings.Version == DllVersion.Unknown);
+            Assert.AreEqual(VBESettings.DllVersion.Unknown, settings.Version);
         }
 
         [Category("VBE")]
@@ -71,7 +68,7 @@ namespace RubberduckTests.VBE
             vbe.SetupGet(s => s.Version).Returns((string)null);
             var settings = new VBESettings(vbe.Object, registry.Object);
 
-            Assert.IsTrue(settings.Version == DllVersion.Unknown);
+            Assert.IsTrue(settings.Version == VBESettings.DllVersion.Unknown);
         }
 
         [Category("VBE")]
