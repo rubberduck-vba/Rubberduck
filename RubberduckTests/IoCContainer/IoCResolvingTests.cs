@@ -17,6 +17,7 @@ namespace RubberduckTests.IoCContainer
     public class IoCResolvingTests
     {
         [Test]
+        [Category("IoC_Registration")]
         public void ResolveInspections_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -53,6 +54,7 @@ namespace RubberduckTests.IoCContainer
         }
 
         [Test]
+        [Category("IoC_Registration")]
         public void ResolveRubberduckParserState_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();

@@ -98,8 +98,7 @@ namespace Rubberduck.Parsing.UIContext
         {
             return StartTask(func, CancellationToken.None, options);
         }
-
-
+        
         private static void CheckInitialization()
         {
             if (UiContext == null) throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");

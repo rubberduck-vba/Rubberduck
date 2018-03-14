@@ -23,7 +23,6 @@ namespace RubberduckTests.Mocks
     {
         public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
         {
-
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
             qualifiedModuleName = new QualifiedModuleName(component);
@@ -35,7 +34,6 @@ namespace RubberduckTests.Mocks
                 Assert.Inconclusive("Parser Error: {0}");
             }
             return parser.State;
-
         }
 
         public static ParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
@@ -113,14 +111,37 @@ namespace RubberduckTests.Mocks
                 parserStateManager,
                 true);
         }
-
-        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
+        
+        public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener, IEnumerable<string> testLibraries = null)
         {
-            var parser = Create(vbe);
+            var parser = CreateWithLibraries(vbe, testLibraries: testLibraries);
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            { Assert.Inconclusive("Parser Error"); }
+
+            return parser.State;
+        }
+
+        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null, IEnumerable<string> testLibraries = null)
+        {
+            var parser = CreateWithLibraries(vbe, serializedDeclarationsPath, testLibraries);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             return parser.State;
+        }
+
+        private static ParseCoordinator CreateWithLibraries(IVBE vbe, string serializedDeclarationsPath = null, IEnumerable<string> testLibraries = null)
+        {
+            var parser = Create(vbe, serializedDeclarationsPath);
+            if (testLibraries != null)
+            {
+                foreach (var lib in testLibraries)
+                {
+                    parser.State.AddTestLibrary(lib);
+                }
+            }
+            return parser;
         }
 
         private static readonly HashSet<DeclarationType> ProceduralTypes =
@@ -161,16 +182,6 @@ namespace RubberduckTests.Mocks
             {
                 state.AddDeclaration(declaration);
             }
-        }
-
-        public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener)
-        {
-            var parser = Create(vbe);
-            parser.Parse(new CancellationTokenSource());
-            if(parser.State.Status >= ParserState.Error)
-            { Assert.Inconclusive("Parser Error"); }
-
-            return parser.State;
         }
     }
 }
