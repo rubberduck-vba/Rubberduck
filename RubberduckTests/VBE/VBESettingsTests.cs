@@ -29,7 +29,7 @@ namespace RubberduckTests.VBE
             vbe.SetupGet(s => s.Version).Returns("6.00");
             var settings = new VBESettings(vbe.Object, registry.Object);
 
-            Assert.IsTrue(settings.Version == VBESettings.DllVersion.Vbe6);
+            Assert.AreEqual(VBESettings.DllVersion.Vbe6, settings.Version);
         }
 
         [Category("VBE")]
@@ -42,7 +42,7 @@ namespace RubberduckTests.VBE
             vbe.SetupGet(s => s.Version).Returns("7.00");
             var settings = new VBESettings(vbe.Object, registry.Object);
 
-            Assert.IsTrue(settings.Version == VBESettings.DllVersion.Vbe7);
+            Assert.AreEqual(VBESettings.DllVersion.Vbe7, settings.Version);
         }
         
         [Category("VBE")]
@@ -55,7 +55,7 @@ namespace RubberduckTests.VBE
             vbe.SetupGet(s => s.Version).Returns("foo");
             var settings = new VBESettings(vbe.Object, registry.Object);
 
-            Assert.IsTrue(settings.Version == VBESettings.DllVersion.Unknown);
+            Assert.AreEqual(VBESettings.DllVersion.Unknown, settings.Version);
         }
 
         [Category("VBE")]
