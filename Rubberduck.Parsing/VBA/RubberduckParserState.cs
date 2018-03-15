@@ -86,25 +86,12 @@ namespace Rubberduck.Parsing.VBA
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
-        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory)
+        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents)
         {
-            if (vbe == null)
-            {
-                throw new ArgumentNullException(nameof(vbe));
-            }
-            if (declarationFinderFactory == null)
-            {
-                throw new ArgumentNullException(nameof(declarationFinderFactory));
-            }
-            if (projectRepository == null)
-            {
-                throw new ArgumentException(nameof(projectRepository));
-            }
-
-            _vbe = vbe;
-            _projectRepository = projectRepository;
-            _vbeEvents = VBEEvents.Initialize(_vbe);
-            _declarationFinderFactory = declarationFinderFactory;
+            _vbe = vbe ?? throw new ArgumentNullException(nameof(vbe));
+            _projectRepository = projectRepository ?? throw new ArgumentException(nameof(projectRepository));
+            _declarationFinderFactory = declarationFinderFactory ?? throw new ArgumentNullException(nameof(declarationFinderFactory));
+            _vbeEvents = vbeEvents ?? throw new ArgumentNullException(nameof(vbeEvents));
 
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)

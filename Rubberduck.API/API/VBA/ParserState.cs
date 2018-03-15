@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.Utility;
 
@@ -51,6 +52,7 @@ namespace Rubberduck.API.VBA
         private AttributeParser _attributeParser;
         private ParseCoordinator _parser;
         private VBE _vbe;
+        private IVBEEvents _vbeEvents;
         private readonly IUiDispatcher _dispatcher;
 
         public ParserState()
@@ -67,9 +69,10 @@ namespace Rubberduck.API.VBA
             }
 
             _vbe = new VBE(vbe);
+            _vbeEvents = VBEEvents.Initialize(_vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(_vbe);
-            _state = new RubberduckParserState(null, projectRepository, declarationFinderFactory);
+            _state = new RubberduckParserState(null, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
 
             var exporter = new ModuleExporter();
