@@ -520,7 +520,8 @@ namespace Rubberduck.Root
 
         private static void RegisterCodeExplorerViewModelWithCodeExplorerCommands(IWindsorContainer container)
         {
-            var codeExplorerCommands = Assembly.GetExecutingAssembly().GetTypes()
+            // Assumption: All Commands are defined in the same assembly as CommandBase
+            var codeExplorerCommands = Assembly.GetAssembly(typeof(CommandBase)).GetTypes()
                 .Where(type => type.IsClass && type.Namespace != null &&
                                type.CustomAttributes.Any(a => a.AttributeType == typeof(CodeExplorerCommandAttribute)));
             container.Register(Component.For<CodeExplorerViewModel>()
