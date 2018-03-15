@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="i18n\AssistantResources.de.resx" />
-    <EmbeddedResource Include="i18n\AssistantResources.fr.resx" />
     <EmbeddedResource Include="i18n\AssistantResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AssistantResources.Designer.cs</LastGenOutput>

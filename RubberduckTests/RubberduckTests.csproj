@@ -321,13 +321,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
-      <Name>Rubberduck</Name>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
+      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
+      <Name>Rubberduck.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
       <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
       <Name>Rubberduck.Inspections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
+      <Project>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</Project>
+      <Name>Rubberduck.Main</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
