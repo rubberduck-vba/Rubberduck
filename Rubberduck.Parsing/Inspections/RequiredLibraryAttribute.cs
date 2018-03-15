@@ -5,7 +5,7 @@ namespace Rubberduck.Parsing.Inspections
     /// <summary>
     /// This inspection requires a specific type library to be referenced in order to run.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class RequiredLibraryAttribute : Attribute
     {
         public RequiredLibraryAttribute(string name)
