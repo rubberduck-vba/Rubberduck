@@ -7,6 +7,8 @@ namespace Rubberduck.Parsing.UIContext
 {
     public class UiDispatcher : IUiDispatcher
     {
+        // thanks to Pellared on http://stackoverflow.com/a/12909070/1188513
+
         private readonly IUiContextProvider _contextProvider;
 
         public UiDispatcher(IUiContextProvider contextProvider)
@@ -92,12 +94,15 @@ namespace Rubberduck.Parsing.UIContext
         {
             return StartTask(func, CancellationToken.None, options);
         }
-        
+
+        /// <remarks>
+        /// Depends on the static method: <see cref="UiContextProvider.Initialize"/>
+        /// </remarks>
         private void CheckInitialization()
         {
             if (_contextProvider.UiContext == null)
             {
-                throw new InvalidOperationException("UiDispatcher is not initialized. Invoke Initialize() from UI thread first.");
+                throw new InvalidOperationException("UiContext is not initialized. Invoke UiContextProvider.Initialize() from the UI thread first.");
             }
         }
 

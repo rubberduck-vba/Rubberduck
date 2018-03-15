@@ -6,15 +6,13 @@ namespace Rubberduck.VBEditor.Utility
 {
     public interface IUiContextProvider
     {
-        bool CheckContext();
+        bool IsExecutingInUiContext();
         SynchronizationContext UiContext { get; }
         TaskScheduler UiTaskScheduler { get; }
     }
 
     public class UiContextProvider : IUiContextProvider
     {
-        // thanks to Pellared on http://stackoverflow.com/a/12909070/1188513
-
         private static SynchronizationContext Context { get; set; }
         private static TaskScheduler TaskScheduler { get; set; }
         private static readonly UiContextProvider UiContextInstance = new UiContextProvider();
@@ -26,11 +24,13 @@ namespace Rubberduck.VBEditor.Utility
         {
             lock (Lock)
             {
-                if (Context == null)
+                if (Context != null)
                 {
-                    Context = SynchronizationContext.Current;
-                    TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                    return;
                 }
+
+                Context = SynchronizationContext.Current;
+                TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             }
         }
 
@@ -39,7 +39,7 @@ namespace Rubberduck.VBEditor.Utility
         public SynchronizationContext UiContext => Context;
         public TaskScheduler UiTaskScheduler => TaskScheduler;
 
-        public bool CheckContext()
+        public bool IsExecutingInUiContext()
         {
             lock (Lock)
             {

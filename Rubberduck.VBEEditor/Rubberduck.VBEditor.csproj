@@ -143,7 +143,7 @@
     <Compile Include="ComManagement\ComSafeManager.cs" />
     <Compile Include="ComManagement\IProjectsProvider.cs" />
     <Compile Include="ComManagement\IProjectsRepository.cs" />
-    <Compile Include="Events\IVbeEvents.cs" />
+    <Compile Include="Events\IVBEEvents.cs" />
     <Compile Include="ComManagement\ProjectsRepository.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeInfos.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
