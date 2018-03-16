@@ -1,0 +1,90 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Win32;
+using Rubberduck.Deployment.Structs;
+
+namespace Rubberduck.Deployment.Writers
+{
+    public class InnoSetupRegistryWriter
+    {
+        private readonly List<string> registryEntries = new List<string>();
+
+        public string Write(IOrderedEnumerable<RegistryEntry> entries)
+        {
+            //Root: "HKCU"; Subkey: "subkey"; ValueType: string; ValueName: "value"; ValueData: "data"; Flags: deletekey uninsdeletekey
+            foreach (var entry in entries)
+            {
+                const string flags = "deletekey uninsdeletekey";
+                
+                var snippet =
+                    $@"Subkey: ""{Quote(entry.Key)}""; ValueType: {ConvertValueType(entry.Type)}; ValueName: ""{Quote(entry.Name)}""; ValueData: ""{Quote(ReplacePlaceholder(entry.Value, entry.Bitness))}""; Flags: {flags}";
+
+                switch (entry.Bitness)
+                {
+                    case Bitness.IsAgnostic:
+                        registryEntries.Add($@"Root: ""HKCU64""; {snippet}; Check: IsWin64");
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet}; Check: not IsWin64");
+                        break;
+                    case Bitness.IsPlatformDependent:
+                        registryEntries.Add($@"Root: ""HKCU64""; {snippet}; Check: IsWin64");
+                        registryEntries.Add($@"Root: ""HKCU32""; {snippet}; Check: IsWin64");
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet}; Check: not IsWin64");
+                        break;
+                    case Bitness.Is64Bit:
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet}; Check: IsWin64");
+                        break;
+                    case Bitness.Is32Bit:
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet}");
+                        break;
+                }
+            }
+            
+            return string.Join(Environment.NewLine, registryEntries);
+        }
+
+        private string Quote(string value)
+        {
+            return value?.Replace("{", "{{").Replace("}", "}}");
+        }
+
+        private string ReplacePlaceholder(string value, Bitness bitness)
+        {
+            switch (value)
+            {
+                case PlaceHolders.InstallPath:
+                    return "{code:GetInstallPath}";
+                case PlaceHolders.DllPath:
+                    return "{code:GetDllPath}";
+                case PlaceHolders.TlbPath:
+                    return bitness == Bitness.Is64Bit ? "{code:GetTlbPath64}" : "{code:GetTlbPath32}";
+                default:
+                    return value;
+            }
+        }
+
+        private string ConvertValueType(RegistryValueKind valueType)
+        {
+            // ReSharper disable once SwitchStatementMissingSomeCases
+            switch (valueType)
+            {
+                case RegistryValueKind.String:
+                    return "string";
+                case RegistryValueKind.ExpandString:
+                    return "expandsz";
+                case RegistryValueKind.Binary:
+                    return "binary";
+                case RegistryValueKind.DWord:
+                    return "dword";
+                case RegistryValueKind.MultiString:
+                    return "multisz";
+                case RegistryValueKind.QWord:
+                    return "qword";
+                case RegistryValueKind.None:
+                    return "none";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(valueType), valueType, null);
+            }
+        }
+    }
+}

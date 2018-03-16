@@ -39,10 +39,12 @@ try
 	{
 		$sourceDll = $sourceDir + $file;
 		$targetDll = $targetDir + $file;
-		$sourceTlb = $sourceDir + ($file -replace ".dll", ".tlb");
-		$targetTlb = $targetDir + ($file -replace ".dll", ".tlb");
+		$sourceTlb32 = $sourceDir + ($file -replace ".dll", ".x32.tlb");
+		$targetTlb32 = $targetDir + ($file -replace ".dll", ".x32.tlb");
+		$sourceTlb64 = $sourceDir + ($file -replace ".dll", ".x64.tlb");
+		$targetTlb64 = $targetDir + ($file -replace ".dll", ".x64.tlb");
 		$dllXml = $targetDll + ".xml"
-		$tlbXml = $targetTlb + ".xml"
+		$tlbXml = $targetTlb32 + ".xml"
 
 		# Use for debugging issues with passing parameters to the external programs
 		# Note that it is not legal to have syntax like `& $cmdIncludingArguments` or `& $cmd $args`
@@ -50,22 +52,23 @@ try
 		# & "C:\GitHub\Rubberduck\Rubberduck\Rubberduck.Deployment\echoargs.exe" ""$sourceDll"" /win32 /out:""$sourceTlb"";
 		
 		$cmd = "{0}tlbexp.exe" -f $netToolsDir;
-		& $cmd ""$sourceDll"" /win32 /out:""$sourceTlb"";
+		& $cmd ""$sourceDll"" /win32 /out:""$sourceTlb32"";
+		& $cmd ""$sourceDll"" /win64 /out:""$sourceTlb64"";
 
 		$cmd = "{0}heat.exe" -f $wixToolsDir;
 		& $cmd file ""$sourceDll"" -out ""$dllXml"";
-		& $cmd file ""$sourceTlb"" -out ""$tlbXml"";
-
-		$bitness = 0;
-	
+		& $cmd file ""$sourceTlb32"" -out ""$tlbXml"";
+			
 		[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
-		$builder = New-Object Rubberduck.Deployment.RegistryEntryBuilder
+		$builder = New-Object Rubberduck.Deployment.Builders.RegistryEntryBuilder
 	
-		$out = $builder.Parse($tlbXml, $dllXml, $bitness);
+		$entries = $builder.Parse($tlbXml, $dllXml);
 
-		# TODO: Do something more than just printing it to the output...
+		# For debugging
+		# $entries | Format-Table | Out-String |% {Write-Host $_};
 
-		$out | Format-Table | Out-String |% {Write-Host $_};
+		$writer = New-Object Rubberduck.Deployment.Writers.InnoSetupRegistryWriter
+		$writer.Write($entries) > ($targetDir + ($file -replace ".dll", ".reg.iss"))
 	}
 }
 catch
@@ -75,4 +78,4 @@ catch
 
 # for debugging locally
 # Write-Host "Press any key to continue...";
-# [void][System.Console]::ReadKey($true);
+# Read-Host -Prompt "Press Enter to continue";

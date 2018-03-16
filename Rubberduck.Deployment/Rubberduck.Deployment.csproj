@@ -40,8 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Structs\Bitness.cs" />
+    <Compile Include="Structs\ClassMap.cs" />
+    <Compile Include="Structs\FileMap.cs" />
+    <Compile Include="Structs\PlaceHolders.cs" />
+    <Compile Include="Structs\RecordMap.cs" />
+    <Compile Include="Structs\RegistryEntry.cs" />
+    <Compile Include="Structs\TypeLibMap.cs" />
+    <Compile Include="Writers\InnoSetupRegistryWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistryEntryBuilder.cs" />
+    <Compile Include="Builders\RegistryEntryBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Examples\Delete HKCU Rubberduck Registry Entries.reg.txt" />
