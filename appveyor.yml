@@ -38,7 +38,7 @@ install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
 assembly_info:
   patch: true
-  file: RetailCoder.VBE\Properties\AssemblyInfo.cs
+  file: Rubberduck.Main\Properties\AssemblyInfo.cs
   assembly_version: '{version}'
 
 before_build:
@@ -52,12 +52,8 @@ build:
 test_script:
   # we use -returntargetcode to fail the build if tests fail
   - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-
-after_test:
-  - codecov -f "Rubberduck_Coverage.xml" -F core -F ui -F inspections -F tools
-
-before_package:
-  - copy Rubberduck.Inspections\bin\Release\Rubberduck.Inspections.dll RetailCoder.VBE\bin\Release\Rubberduck.Inspections.dll
+  # when using test_script, after_test seems to not be executed
+  - codecov -f "Rubberduck_Coverage.xml"
 
 for:
   - branches:

@@ -1,8 +1,7 @@
-#define BuildDir SourcePath + "RetailCoder.VBE\bin\Release"
+#define BuildDir SourcePath + "Rubberduck.Main\bin\Release"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
-#define InspectionsDLL "Rubberduck.Inspections.dll"
-#define AppVersion GetFileVersion(SourcePath + "RetailCoder.VBE\bin\Release\Rubberduck.dll")
+#define AppVersion GetFileVersion(SourcePath + "Rubberduck.Main\bin\Release\Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
 #define License SourcePath + "\License.rtf"
@@ -42,7 +41,6 @@ Source: "{#BuildDir}\lib\win32\x64\*"; DestDir: "{app}"; Flags: ignoreversion; E
 Source: "{#BuildDir}\lib\win32\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
 
 Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "{#AddinDLL},\NativeBinaries"
-Source: "{#BuildDir}\{#InspectionsDLL}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: RegisterAddin
 
 [Run]

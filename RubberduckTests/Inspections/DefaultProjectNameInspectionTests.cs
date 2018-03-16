@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -22,7 +23,7 @@ namespace RubberduckTests.Inspections
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new DefaultProjectNameInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -41,7 +42,7 @@ namespace RubberduckTests.Inspections
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new DefaultProjectNameInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }

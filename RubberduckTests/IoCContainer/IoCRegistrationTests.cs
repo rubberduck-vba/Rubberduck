@@ -14,6 +14,7 @@ namespace RubberduckTests.IoCContainer
     public class IoCRegistrationTests
     {
         [Test]
+        [Category("IoC_Registration")]
         public void RegistrationOfRubberduckIoCContainerWithSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
@@ -23,10 +24,7 @@ namespace RubberduckTests.IoCContainer
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
                 {
-                    new ExperimentalFeatures
-                    {
-                        Key = nameof(RubberduckUI.GeneralSettings_EnableSourceControl)
-                    }
+                    new ExperimentalFeatures()
                 }
             };
 
@@ -39,6 +37,7 @@ namespace RubberduckTests.IoCContainer
         }
 
         [Test]
+        [Category("IoC_Registration")]
         public void RegistrationOfRubberduckIoCContainerWithoutSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();

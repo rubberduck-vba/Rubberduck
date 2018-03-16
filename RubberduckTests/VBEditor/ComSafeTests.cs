@@ -6,22 +6,26 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 namespace RubberduckTests.VBEditor
 {
     [TestFixture()]
-    public class ComSafeTests
+    public abstract class ComSafeTestBase
     {
-        [Test()]
+        protected abstract IComSafe TestComSafe();
+
+        [Test]
+        [Category("COM")]
         public void TryRemoveOnNewComSafe_ReturnsFalse()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var testComWrapper = new Mock<ISafeComWrapper>().Object;
             var result = comSafe.TryRemove(testComWrapper);
 
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void TryRemoveWithItemPreviouslyAddedToComSafe_ReturnsTrue()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var testComWrapper = new Mock<ISafeComWrapper>().Object;
             comSafe.Add(testComWrapper);
             var result = comSafe.TryRemove(testComWrapper);
@@ -29,10 +33,11 @@ namespace RubberduckTests.VBEditor
             Assert.IsTrue(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void TryRemoveWithOtherItemPreviouslyAddedToComSafe_ReturnsFalse()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var testComWrapper = new Mock<ISafeComWrapper>().Object;
             var otherTestComWrapper = new Mock<ISafeComWrapper>().Object;
             comSafe.Add(otherTestComWrapper);
@@ -41,10 +46,11 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void TryRemoveWithItemAndOtherItemPreviouslyAddedToComSafe_ReturnsTrue()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var testComWrapper = new Mock<ISafeComWrapper>().Object;
             var otherTestComWrapper = new Mock<ISafeComWrapper>().Object;
             comSafe.Add(otherTestComWrapper);
@@ -54,10 +60,11 @@ namespace RubberduckTests.VBEditor
             Assert.IsTrue(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SecondTryRemoveWithItemPreviouslyAddedToComSafe_ReturnsFalse()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var testComWrapper = new Mock<ISafeComWrapper>().Object;
             comSafe.Add(testComWrapper);
             comSafe.TryRemove(testComWrapper);
@@ -66,10 +73,11 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SecondTryRemoveWithItemPreviouslyAddedToComSafeTwice_ReturnsFalse()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var testComWrapper = new Mock<ISafeComWrapper>().Object;
             comSafe.Add(testComWrapper);
             comSafe.Add(testComWrapper);
@@ -79,10 +87,11 @@ namespace RubberduckTests.VBEditor
             Assert.IsFalse(result);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AddedSafeComWrapperGetsDisposedOnDisposalOfComSafe()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var mock = new Mock<ISafeComWrapper>();
             mock.Setup(wrapper => wrapper.Dispose());
 
@@ -93,10 +102,11 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SafeComWrapperAddedTwiceGetsDisposedOnceOnDisposalOfComSafe()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var mock = new Mock<ISafeComWrapper>();
             mock.Setup(wrapper => wrapper.Dispose());
 
@@ -108,10 +118,11 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void RemovedSafeComWrapperDoesNotGetDisposedOnDisposalOfComSafe()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var mock = new Mock<ISafeComWrapper>();
             mock.Setup(wrapper => wrapper.Dispose());
 
@@ -123,10 +134,11 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Never);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void SafeComWrapperRemovedAfterHavingBeenAddedTwiceDoesNotGetDisposedOnDisposalOfComSafe()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var mock = new Mock<ISafeComWrapper>();
             mock.Setup(wrapper => wrapper.Dispose());
 
@@ -139,10 +151,11 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Never);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AddedSafeComWrapperGetsDisposedOnDisposalOfAfterOtherItemGotRemovedComSafe()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var mock = new Mock<ISafeComWrapper>();
             mock.Setup(wrapper => wrapper.Dispose());
 
@@ -156,10 +169,11 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AddedSafeComWrapperDoesNotGetDisposedAgainOnSecondDisposalOfComSafe()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var mock = new Mock<ISafeComWrapper>();
             mock.Setup(wrapper => wrapper.Dispose());
 
@@ -171,10 +185,11 @@ namespace RubberduckTests.VBEditor
             mock.Verify(wrapper => wrapper.Dispose(), Times.Once);
         }
 
-        [Test()]
+        [Test]
+        [Category("COM")]
         public void AfterDisposalTryRemoveReturnsFalseForAddedItem()
         {
-            var comSafe = new ComSafe();
+            var comSafe = TestComSafe();
             var mock = new Mock<ISafeComWrapper>();
             mock.Setup(wrapper => wrapper.Dispose());
 
@@ -184,6 +199,24 @@ namespace RubberduckTests.VBEditor
             var result = comSafe.TryRemove(testComWrapper);
 
             Assert.IsFalse(result);
+        }
+
+        [TestFixture()]
+        public class StrongComSafeTests : ComSafeTestBase
+        {
+            protected override IComSafe TestComSafe()
+            {
+                return new StrongComSafe();
+            }
+        }
+
+        [TestFixture()]
+        public class WeakComSafeTests : ComSafeTestBase
+        {
+            protected override IComSafe TestComSafe()
+            {
+                return new WeakComSafe();
+            }
         }
     }
 }

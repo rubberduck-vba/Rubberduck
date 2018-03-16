@@ -6,6 +6,7 @@ using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
@@ -74,7 +75,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
-
+        
         //public override void Release(bool final = false)
         //{
         //    if (!IsWrappingNullReference)
@@ -163,6 +164,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {
                     return projects.Count;
                 }
+            }
+        }
+
+        public QualifiedSelection? GetActiveSelection()
+        {
+            using (var activePane = ActiveCodePane)
+            {
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+
+                return activePane.GetQualifiedSelection();
             }
         }
     }

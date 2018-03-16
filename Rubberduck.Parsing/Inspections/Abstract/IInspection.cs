@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Rubberduck.Parsing.Inspections.Abstract
 {
@@ -11,7 +12,8 @@ namespace Rubberduck.Parsing.Inspections.Abstract
         /// <summary>
         /// Runs code inspection and returns inspection results.
         /// </summary>
+        /// <param name="token"></param>
         /// <returns>Returns inspection results, if any.</returns>
-        IEnumerable<IInspectionResult> GetInspectionResults();
+        IEnumerable<IInspectionResult> GetInspectionResults(CancellationToken token);
     }
 }

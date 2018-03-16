@@ -1,0 +1,38 @@
+﻿using System.Linq;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Refactorings;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+
+namespace Rubberduck.Refactorings.ExtractInterface
+{
+    public class ExtractInterfacePresenterFactory : IRefactoringPresenterFactory<ExtractInterfacePresenter>
+    {
+        private readonly IVBE _vbe;
+        private readonly IRefactoringDialog<ExtractInterfaceViewModel> _view;
+        private readonly RubberduckParserState _state;
+
+        public ExtractInterfacePresenterFactory(IVBE vbe, RubberduckParserState state, IRefactoringDialog<ExtractInterfaceViewModel> view)
+        {
+            _vbe = vbe;
+            _view = view;
+            _state = state;
+        }
+
+        public ExtractInterfacePresenter Create()
+        {
+
+            var selection = _vbe.GetActiveSelection();
+            
+            if (selection == null)
+            {
+                return null;
+            }
+
+            var model = new ExtractInterfaceModel(_state, selection.Value);
+
+            // don't show the UI if there's no memeber to extract
+            return model.Members.Any() ? new ExtractInterfacePresenter(_view, model) : null; 
+        }
+    }
+}

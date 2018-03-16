@@ -30,7 +30,7 @@ End Sub";
             using(var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ParameterNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
                     inspectionResults.First());
