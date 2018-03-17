@@ -11,7 +11,7 @@
 # C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
 #  -command "$(ProjectDir)BuildRegistryScript.ps1 
 #  -builderAssemblyPath '$(TargetPath)' 
-#  -netToolsDir 'C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\' 
+#  -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' 
 #  -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' 
 #  -sourceDir '$(TargetDir)' 
 #  -targetDir '$(TargetDir)' 
