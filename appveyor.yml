@@ -60,7 +60,7 @@ for:
       only:
         - next
     after_test:
-      - iscc /q "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" 
+      - iscc /O "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" 
       - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
   - branches:
       only:
