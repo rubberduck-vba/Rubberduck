@@ -7,7 +7,6 @@ using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 
@@ -22,17 +21,20 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
+        private readonly IUiDispatcher _uiDispatcher;
 
         public ShowParserErrorsCommand(INavigateCommand navigateCommand,
             RubberduckParserState state,
             ISearchResultsWindowViewModel viewModel,
-            SearchResultPresenterInstanceManager presenterService)
+            SearchResultPresenterInstanceManager presenterService,
+            IUiDispatcher uiDispatcher)
             : base(LogManager.GetCurrentClassLogger())
         {
             _navigateCommand = navigateCommand;
             _state = state;
             _viewModel = viewModel;
             _presenterService = presenterService;
+            _uiDispatcher = uiDispatcher;
 
             _state.StateChanged += _state_StateChanged;
         }
@@ -42,8 +44,8 @@ namespace Rubberduck.UI.Command
             if (_viewModel == null) { return; }
 
             if (_state.Status != ParserState.Error && _state.Status != ParserState.Parsed) { return; }
-            
-            UiDispatcher.InvokeAsync(UpdateTab);
+
+            _uiDispatcher.InvokeAsync(UpdateTab);
         }
 
         private void UpdateTab()

@@ -1,10 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Rubberduck.VBEditor.ComManagement.VBERuntime
+namespace Rubberduck.VBEditor.VBERuntime
 {
-    internal class VBERuntime6 : IVBERuntime
+    internal class VBERuntime7 : IVBERuntime
     {
-        private const string DllName = "vbe6.dll";
+        private const string DllName = "vbe7.dll";
 
         [DllImport(DllName)]
         private static extern int rtcDoEvents();
