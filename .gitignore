@@ -179,6 +179,3 @@ Installers/
 *.xlsx
 
 CodeGraphData/
-
-# Deployment generated files
-Rubberduck.Deployment/InnoSetup/Includes
