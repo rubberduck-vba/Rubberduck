@@ -244,8 +244,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .Where(type => type.IsBasedOn(typeof(IQuickFix)) && type.NotDisabledExperimental(_initialSettings))
-                    .WithService.Base()
-                    .WithService.Self()
+                    .WithService.Select(new[] {typeof(IQuickFix)})
                     .LifestyleSingleton());
             }
         }
@@ -257,7 +256,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .Where(type => type.IsBasedOn(typeof(IInspection)) && type.NotDisabledExperimental(_initialSettings))
-                    .WithService.Base()
+                    .WithService.Select(new[] { typeof(IInspection) })
                     .LifestyleTransient());
             }
         }
@@ -269,7 +268,6 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .Where(type => type.IsBasedOn(typeof(IParseTreeInspection)) && type.NotDisabledExperimental(_initialSettings))
-                    .WithService.Base()
                     .WithService.Select(new[] { typeof(IInspection) })
                     .LifestyleTransient());
             }
