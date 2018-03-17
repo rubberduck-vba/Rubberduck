@@ -10,9 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -22,13 +20,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
-        private readonly IProjectsProvider _projectsProvider;
 
-        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IProjectsProvider projectsProvider)
+        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
             _vbe = vbe;
             _factory = factory;
-            _projectsProvider = projectsProvider;
         }
 
         public void Refactor()
@@ -103,7 +99,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveParameters()
         {
-            if (_model.TargetDeclaration == null) { throw new NullReferenceException("Parameter is null"); }
+            if (_model.TargetDeclaration == null)
+            {
+                throw new NullReferenceException("Parameter is null");
+            }
 
             AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
             AdjustSignatures();
@@ -137,19 +136,27 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
                 if (argumentList == null)
                 {
+                    var whitespaceIndexExpression =
+                        reference.Context.GetAncestor<VBAParser.WhitespaceIndexExprContext>();
+                    if (whitespaceIndexExpression != null)
+                    {
+                        argumentList = whitespaceIndexExpression.GetChild<VBAParser.ArgumentListContext>();
+                    }
+                }
+
+                if (argumentList == null)
+                {
                     continue;
                 }
 
-                using (var module = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
-                {
-                    RemoveCallArguments(argumentList, module);
-                }
+                RemoveCallArguments(argumentList, reference.QualifiedModuleName);
             }
         }
 
-        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, ICodeModule module)
+        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module)
         {
-            var rewriter = _model.State.GetRewriter(module.Parent);
+            var rewriter = _model.State.GetRewriter(module);
+            _rewriters.Add(rewriter);
 
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
@@ -161,6 +168,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 
                 if (_model.Parameters[i].IsParamArray)
                 {
+                    //The following code works because it is neither allowed to use both named arguments
+                    //and a ParamArray nor optional arguments and a ParamArray.
                     var index = i == 0 ? 0 : argList.children.IndexOf(args[i - 1]) + 1;
                     for (var j = index; j < argList.children.Count; j++)
                     {
@@ -169,7 +178,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     break;
                 }
 
-                if (args.Count > i && args[i].positionalArgument() != null)
+                if (args.Count > i && (args[i].positionalArgument() != null || args[i].missingArgument() != null))
                 {
                     rewriter.Remove(args[i]);
                 }
