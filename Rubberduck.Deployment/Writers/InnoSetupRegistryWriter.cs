@@ -10,12 +10,20 @@ namespace Rubberduck.Deployment.Writers
     {
         private readonly List<string> registryEntries = new List<string>();
 
+        // Those set of const should correspond to the defined
+        // functions in the .iss script so that they can be expanded
+        // at the install time. 
+        private const string InstallPathVariable = "{code:GetInstallPath}";
+        private const string DllPathVariable = "{code:GetDllPath}";
+        private const string Tlb32PathVariable = "{code:GetTlbPath32}";
+        private const string Tlb64PathVariable = "{code:GetTlbPath64}";
+
         public string Write(IOrderedEnumerable<RegistryEntry> entries)
         {
             //Root: "HKCU"; Subkey: "subkey"; ValueType: string; ValueName: "value"; ValueData: "data"; Flags: deletekey uninsdeletekey
             foreach (var entry in entries)
             {
-                const string flags = "deletekey uninsdeletekey";
+                const string flags = "uninsdeletekey";
                 
                 var snippet =
                     $@"Subkey: ""{Quote(entry.Key)}""; ValueType: {ConvertValueType(entry.Type)}; ValueName: ""{Quote(entry.Name)}""; ValueData: ""{Quote(ReplacePlaceholder(entry.Value, entry.Bitness))}""; Flags: {flags}";
@@ -45,7 +53,13 @@ namespace Rubberduck.Deployment.Writers
 
         private string Quote(string value)
         {
-            return value?.Replace("{", "{{").Replace("}", "}}");
+            if (string.IsNullOrWhiteSpace(value)
+                || value.StartsWith("{code:"))
+            {
+                return value;
+            }
+
+            return value.Replace("{", "{{").Replace("}", "}}");
         }
 
         private string ReplacePlaceholder(string value, Bitness bitness)
@@ -53,11 +67,11 @@ namespace Rubberduck.Deployment.Writers
             switch (value)
             {
                 case PlaceHolders.InstallPath:
-                    return "{code:GetInstallPath}";
+                    return InstallPathVariable;
                 case PlaceHolders.DllPath:
-                    return "{code:GetDllPath}";
+                    return DllPathVariable;
                 case PlaceHolders.TlbPath:
-                    return bitness == Bitness.Is64Bit ? "{code:GetTlbPath64}" : "{code:GetTlbPath32}";
+                    return bitness == Bitness.Is64Bit ? Tlb64PathVariable : Tlb32PathVariable;
                 default:
                     return value;
             }

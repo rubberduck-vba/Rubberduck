@@ -1,13 +1,38 @@
-#define BuildDir SourcePath + "Rubberduck.Main\bin\Release"
+#pragma include __INCLUDE__ + ";" + SourcePath + "\Includes\"
+
+#define protected
+#define BuildDir ExtractFileDir(ExtractFileDir(SourcePath)) + "\bin\Debug\"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
-#define AppVersion GetFileVersion(SourcePath + "Rubberduck.Main\bin\Release\Rubberduck.dll")
+#define Tlb32bit "Rubberduck.x32.tlb"
+#define Tlb64bit "Rubberduck.x64.tlb"
+#define DllFullPath BuildDir + AddinDLL
+#define Tlb32bitFullPath BuildDir + Tlb32bit
+#define Tlb64bitFullPath BuildDir + Tlb64bit 
+#define AppVersion GetFileVersion(BuildDir + "Rubberduck.Core.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
 #define License SourcePath + "\License.rtf"
-#define OutputDirectory SourcePath + "\Installers"
+#define OutputDirectory SourcePath + "Installers\"
 #define AddinProgId "Rubberduck.Extension"
 #define AddinCLSID "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66"
+
+; Output the defined constants to aid in verification
+#pragma message "Include: " + __INCLUDE__
+#pragma message "SourcePath: " + SourcePath
+#pragma message "BuildDir: " + BuildDir
+#pragma message "AppName: " + AppName
+#pragma message "AddinDLL: " + AddinDLL
+#pragma message "DllFullPath: " + DllFullPath
+#pragma message "Tlb32bitFullPath: " + Tlb32bitFullPath
+#pragma message "Tlb64bitFullPath: " + Tlb64bitFullPath
+#pragma message "AppVersion: " + AppVersion
+#pragma message "AppPublisher: " + AppPublisher
+#pragma message "AppURL: " + AppURL
+#pragma message "License: " + License
+#pragma message "OutputDirectory: " + OutputDirectory 
+#pragma message "AddinProgId: " + AddinProgId
+#pragma message "AddinCLSID: " + AddInCLSID
 
 [Setup]
 ; TODO this CLSID should match the one used by the current installer.
@@ -18,8 +43,7 @@ AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
-; use the local appdata folder instead of the program files dir.
-DefaultDirName={commonappdata}\{#AppName}
+DefaultDirName={code:GetDefaultDirName}
 DefaultGroupName=Rubberduck
 AllowNoIcons=yes
 LicenseFile={#License}
@@ -31,26 +55,25 @@ SolidCompression=yes
 ArchitecturesAllowed=x86 x64
 ArchitecturesInstallIn64BitMode=x64
 
+PrivilegesRequired=lowest
+
 [Languages]
 ; TODO add additional installation languages here.
 Name: "English"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-; Install the correct bitness binaries.         
-Source: "{#BuildDir}\lib\win32\x64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is64BitOfficeInstalled
-Source: "{#BuildDir}\lib\win32\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes: "{#AddinDLL}"; Check: Is32BitOfficeInstalled
+; Install the correct bitness binaries.
+Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"
+Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion;
 
-Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "{#AddinDLL},\NativeBinaries"
-Source: "{#BuildDir}\{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: RegisterAddin
-
-[Run]
-; http://stackoverflow.com/questions/5618337/how-to-register-a-net-dll-using-inno-setup
-Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/codebase {#AddinDLL}"; WorkingDir: "{app}"; Flags: runascurrentuser runminimized; StatusMsg: "Registering Controls..."; Check: Is32BitOfficeInstalled
-Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/codebase {#AddinDLL}"; WorkingDir: "{app}"; Flags: runascurrentuser runminimized; StatusMsg: "Registering Controls..."; Check: Is64BitOfficeInstalled
-
-[UninstallRun]
-Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is32BitOfficeInstalled
-Filename: "{dotnet4064}\RegAsm.exe"; Parameters: "/u {#AddinDLL}"; WorkingDir: "{app}"; StatusMsg: "Unregistering Controls..."; Flags: runascurrentuser runminimized; Check: Is64BitOfficeInstalled
+[Registry]
+#include <Rubberduck.reg.iss>
+Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "string"; ValueName: "Description"; ValueData: "Rubberduck"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "string"; ValueName: "Friendly"; ValueData: "Rubberduck"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "dword"; ValueName: "LoadBehavior"; ValueData: "3"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Description"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
+Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Friendly"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
+Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "dword"; ValueName: "LoadBehavior"; ValueData: "3"; Flags: uninsdeletekey; Check: IsWin64
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{localappdata}\{#AppName}"
@@ -58,10 +81,18 @@ Type: filesandordirs; Name: "{localappdata}\{#AppName}"
 [CustomMessages]
 ; TODO add additional languages here.
 English.NETFramework40NotInstalled=Microsoft .NET Framework 4.0 installation was not detected.
+English.InstallPerUserOrAllUsersCaption=Choose installation options
+English.InstallPerUserOrAllUsersMessage=Who should this application be installed for? 
+English.InstallPerUserOrAllUsersAdminDescription=Please select whether you wish to make this software available for all users or just yourself.%n%nNOTE: if you wish to install for all users and the option is disabled then restart installer with 'Run As Administartor'
+English.InstallPerUserOrAllUsersAdminButtonCaption=&Anyone who use this computer
+English.InstallPerUserOrAllUsersUserButtonCaption=&You only
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
+
+[ThirdParty]
+UseRelativePaths=True
 
 [Code]
 // The following code is adapted from: http://stackoverflow.com/a/11651515/2301065
@@ -74,9 +105,62 @@ const
 var
   HasCheckedOfficeBitness: Boolean;
   OfficeIs64Bit: Boolean;
+  OptionPage: TInputOptionWizardPage;
+
+procedure InitializeWizard();
+begin
+  OptionPage :=
+    CreateInputOptionPage(
+      wpWelcome,
+      ExpandConstant('{cm:InstallPerUserOrAllUsersCaption}'), 
+      ExpandConstant('{cm:InstallPerUserOrAllUsersMessage}'),
+      ExpandConstant('{cm:InstallPerUserOrAllUsersAdminDescription}'),
+      True, False);
+
+  OptionPage.Add(ExpandConstant('{cm:InstallPerUserOrAllUsersAdminButtonCaption}'));
+  OptionPage.Add(ExpandConstant('{cm:InstallPerUserOrAllUsersUserButtonCaption}'));
+
+  if IsAdminLoggedOn then
+  begin
+    OptionPage.Values[0] := True;
+  end
+    else
+  begin
+    OptionPage.Values[1] := True;
+    OptionPage.CheckListBox.ItemEnabled[0] := False;
+  end;
+end;
+
+function NextButtonClick(CurPageID: Integer): Boolean;
+begin
+  if CurPageID = OptionPage.ID then
+  begin
+    if OptionPage.Values[1] then
+    begin
+      WizardForm.DirEdit.Text := ExpandConstant('{userappdata}\{#AppName}')
+    end
+      else
+    begin
+      WizardForm.DirEdit.Text := ExpandConstant('{pf}\{#AppName}');
+    end;
+  end;
+  Result := True;
+end;
 
 function GetBinaryType(lpApplicationName: AnsiString; var lpBinaryType: Integer): Boolean;
 external 'GetBinaryTypeA@kernel32.dll stdcall';
+
+function GetDefaultDirName(Param: string): string;
+begin
+  if IsAdminLoggedOn then
+  begin
+    Result := ExpandConstant('{pf}{#AppName}');
+  end
+    else
+  begin
+    Result := ExpandConstant('{userappdata}{#AppName}');
+  end;
+end;
 
 function GetOfficeAppBitness(exeName: string): Integer;
 var
@@ -184,6 +268,26 @@ begin
     end;
 
     result := success and (install = 1) and (serviceCount >= service);
+end;
+
+function GetInstallPath(Unused: string): string;
+begin
+  result := ExpandConstant('{app}');
+end;
+
+function GetDllPath(Unused: string): string;
+begin
+  result := ExpandConstant('{app}') + '\Rubberduck.dll';
+end;
+
+function GetTlbPath32(Unused: string): string;
+begin
+  result := ExpandConstant('{app}') + '\Rubberduck.x32.tlb';
+end;
+
+function GetTlbPath64(Unused: string): string;
+begin
+  result := ExpandConstant('{app}') + '\Rubberduck.x64.tlb';
 end;
 
 function InitializeSetup(): Boolean;

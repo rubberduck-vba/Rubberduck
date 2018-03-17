@@ -15,6 +15,8 @@ namespace Rubberduck.Deployment.Builders
         private List<ClassMap> classMapList;
         private Dictionary<string, List<RegistryEntry>> recordMap;
 
+        private const string baseFolder = @"Software\Classes\";
+
         public IOrderedEnumerable<RegistryEntry> Parse(string tlbHeatOutputXmlPath, string dllHeatOutputXmlPath)
         {
             var tlbXml = new XmlDocument();
@@ -80,7 +82,7 @@ namespace Rubberduck.Deployment.Builders
                 [HKEY_LOCAL_MACHINE\Software\Classes\TypeLib\{E07C841C-14B4-4890-83E9-8C80B06DD59D}\2.1\HELPDIR]
                 @="C:\\Github\\Rubberduck\\Rubberduck\\RetailCoder.VBE\\bin\\Debug"
             */
-            const string basePath = @"Software\Classes\TypeLib\";
+            const string basePath = baseFolder + @"TypeLib\";
             var libGuid = node.Attributes["Id"].Value;
             var libDesc = node.Attributes["Description"].Value;
             var language = node.Attributes["Language"].Value;
@@ -145,7 +147,7 @@ namespace Rubberduck.Deployment.Builders
                     "Version"="2.1"
                 */
 
-                const string netMarshalGuid = "{00020424-0000-0000-C000-000000000046}";
+                const string universalMarshalerGuid = "{00020424-0000-0000-C000-000000000046}";
 
                 var guid = node.Attributes["Id"].Value;
                 var name = node.Attributes["Name"].Value;
@@ -153,19 +155,19 @@ namespace Rubberduck.Deployment.Builders
                 var proxy32 = node.Attributes["ProxyStubClassId32"]?.Value;
 
                 var entries = new List<RegistryEntry>();
-                entries.Add(new RegistryEntry($@"Interface\{guid}", null, name, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}", null, name, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
                 if (proxy != null)
                 {
-                    entries.Add(new RegistryEntry($@"Interface\{guid}\{proxy}", null, netMarshalGuid,
+                    entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\{proxy}", null, universalMarshalerGuid,
                         RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
                 }
                 if (proxy32 != null)
                 {
-                    entries.Add(new RegistryEntry($@"Interface\{guid}\{proxy32}", null, netMarshalGuid,
+                    entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\{proxy32}", null, universalMarshalerGuid,
                         RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
                 }
-                entries.Add(new RegistryEntry($@"Interface\{guid}\TypeLib", null, typeLibMap.Guid, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
-                entries.Add(new RegistryEntry($@"Interface\{guid}\TypeLib", "Version", typeLibMap.Version, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\TypeLib", null, typeLibMap.Guid, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\TypeLib", "Version", typeLibMap.Version, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
 
                 dict.Add(guid, entries);
             }
@@ -185,7 +187,7 @@ namespace Rubberduck.Deployment.Builders
             var dict = new Dictionary<string, List<RegistryEntry>>();
             foreach (XmlNode node in recordList)
             {
-                var key = node.Attributes["Key"].Value;
+                var key = baseFolder + node.Attributes["Key"].Value;
                 var name = node.Attributes["Name"].Value;
                 var value = node.Attributes["Value"].Value;
                 var type = ParseRegistryType(node.Attributes["Type"].Value);
@@ -233,10 +235,10 @@ namespace Rubberduck.Deployment.Builders
                     [HKEY_LOCAL_MACHINE\Software\Classes\Wow6432Node\CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\ProgId]
                     @="Rubberduck.ParserState"                 
                 */
-                entries.Add(new RegistryEntry($@"CLSID\{guid}", null, description, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
-                entries.Add(new RegistryEntry($@"CLSID\{guid}\{context}", null, foreignServer, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
-                entries.Add(new RegistryEntry($@"CLSID\{guid}\{context}", "ThreadingModel", threadingModel, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
-                entries.Add(new RegistryEntry($@"CLSID\{guid}\ProgId", null, progId, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                entries.Add(new RegistryEntry($@"{baseFolder}CLSID\{guid}", null, description, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                entries.Add(new RegistryEntry($@"{baseFolder}CLSID\{guid}\{context}", null, foreignServer, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                entries.Add(new RegistryEntry($@"{baseFolder}CLSID\{guid}\{context}", "ThreadingModel", threadingModel, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                entries.Add(new RegistryEntry($@"{baseFolder}CLSID\{guid}\ProgId", null, progId, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
 
                 foreach (XmlNode registryNode in componentXml.SelectNodes($@"//RegistryValue[starts-with(@Key, 'CLSID\{guid}')]"))
                 {
@@ -253,7 +255,7 @@ namespace Rubberduck.Deployment.Builders
                         <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />                
                     */
 
-                    var key = registryNode.Attributes["Key"].Value;
+                    var key = baseFolder + registryNode.Attributes["Key"].Value;
                     var name = registryNode.Attributes["Name"]?.Value;
                     var value = registryNode.Attributes["Value"].Value;
                     var type = ParseRegistryType(registryNode.Attributes["Type"].Value);
@@ -269,8 +271,8 @@ namespace Rubberduck.Deployment.Builders
                         @="{28754D11-10CC-45FD-9F6A-525A65412B7A}" 
                     */
 
-                    entries.Add(new RegistryEntry(progId, null, progIdDescription, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
-                    entries.Add(new RegistryEntry(progId + @"\CLSID", null, guid, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                    entries.Add(new RegistryEntry(baseFolder + progId, null, progIdDescription, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
+                    entries.Add(new RegistryEntry(baseFolder + progId + @"\CLSID", null, guid, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
                 }
 
                 classMaps.Add(new ClassMap(guid, context, description, threadingModel, progId, progIdDescription, entries));
@@ -300,3 +302,4 @@ namespace Rubberduck.Deployment.Builders
         }
     }
 }
+

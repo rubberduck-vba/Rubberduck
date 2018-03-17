@@ -15,6 +15,7 @@
 #  -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' 
 #  -sourceDir '$(TargetDir)' 
 #  -targetDir '$(TargetDir)' 
+#  -includeDir '$(ProjectDir)InnoSetup\Includes\'
 #  -filesToExtract 'Rubberduck.dll'"
 param (
 	[Parameter(Mandatory=$true)][string]$builderAssemblyPath,
@@ -22,6 +23,7 @@ param (
 	[Parameter(Mandatory=$true)][string]$wixToolsDir,
 	[Parameter(Mandatory=$true)][string]$sourceDir,
 	[Parameter(Mandatory=$true)][string]$targetDir,
+	[Parameter(Mandatory=$true)][string]$includeDir,
 	[Parameter(Mandatory=$true)][string]$filesToExtract
 )
 
@@ -68,7 +70,11 @@ try
 		# $entries | Format-Table | Out-String |% {Write-Host $_};
 
 		$writer = New-Object Rubberduck.Deployment.Writers.InnoSetupRegistryWriter
-		$writer.Write($entries) > ($targetDir + ($file -replace ".dll", ".reg.iss"))
+		$content = $writer.Write($entries);
+		 
+		$regFile = ($includeDir + ($file -replace ".dll", ".reg.iss"))
+		$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+		[System.IO.File]::WriteAllLines($regFile, $content, $Utf8NoBomEncoding)
 	}
 }
 catch
