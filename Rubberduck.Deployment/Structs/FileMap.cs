@@ -19,7 +19,7 @@ namespace Rubberduck.Deployment.Structs
             }
             
             return source.Replace(@"file:///[#" + FileId + @"]", FilePath)
-                .Replace(FileId, FilePath);
+                 .Replace(FileId, FilePath);
         }
     }
 }

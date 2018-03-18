@@ -59,7 +59,7 @@ namespace Rubberduck.Deployment.Writers
                 return value;
             }
 
-            return value.Replace("{", "{{").Replace("}", "}}");
+            return value.Replace("{", "{{");
         }
 
         private string ReplacePlaceholder(string value, Bitness bitness)

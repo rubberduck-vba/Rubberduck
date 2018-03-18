@@ -67,13 +67,13 @@ Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; E
 Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion;
 
 [Registry]
-#include <Rubberduck.reg.iss>
+; #include <Rubberduck.reg.iss>
 Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "string"; ValueName: "Description"; ValueData: "Rubberduck"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "string"; ValueName: "Friendly"; ValueData: "Rubberduck"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "dword"; ValueName: "LoadBehavior"; ValueData: "3"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Description"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
-Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Friendly"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
-Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "dword"; ValueName: "LoadBehavior"; ValueData: "3"; Flags: uninsdeletekey; Check: IsWin64
+; Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Description"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
+; Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Friendly"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
+; Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "dword"; ValueName: "LoadBehavior"; ValueData: "3"; Flags: uninsdeletekey; Check: IsWin64
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{localappdata}\{#AppName}"

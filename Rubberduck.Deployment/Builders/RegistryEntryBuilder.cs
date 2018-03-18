@@ -257,7 +257,7 @@ namespace Rubberduck.Deployment.Builders
                     var name = registryNode.Attributes["Name"]?.Value;
                     var value = registryNode.Attributes["Value"].Value;
                     var type = ParseRegistryType(registryNode.Attributes["Type"].Value);
-                    entries.Add(new RegistryEntry(key, name, value, type, Bitness.IsPlatformDependent, fileMap));
+                    entries.Add(new RegistryEntry(key, name, value, string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(value) ? RegistryValueKind.None : type, Bitness.IsPlatformDependent, fileMap));
                 }
 
                 {
