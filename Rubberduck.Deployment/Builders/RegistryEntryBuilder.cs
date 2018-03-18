@@ -147,8 +147,6 @@ namespace Rubberduck.Deployment.Builders
                     "Version"="2.1"
                 */
 
-                const string universalMarshalerGuid = "{00020424-0000-0000-C000-000000000046}";
-
                 var guid = node.Attributes["Id"].Value;
                 var name = node.Attributes["Name"].Value;
                 var proxy = node.Attributes["ProxyStubClassId"]?.Value;
@@ -158,12 +156,12 @@ namespace Rubberduck.Deployment.Builders
                 entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}", null, name, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
                 if (proxy != null)
                 {
-                    entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\{proxy}", null, universalMarshalerGuid,
+                    entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\ProxyStubClsid", null, proxy,
                         RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
                 }
                 if (proxy32 != null)
                 {
-                    entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\{proxy32}", null, universalMarshalerGuid,
+                    entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\ProxyStubClsid32", null, proxy32,
                         RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
                 }
                 entries.Add(new RegistryEntry($@"{baseFolder}Interface\{guid}\TypeLib", null, typeLibMap.Guid, RegistryValueKind.String, Bitness.IsPlatformDependent, fileMap));
