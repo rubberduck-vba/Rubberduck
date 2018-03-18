@@ -16,13 +16,15 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly string _name;
         private readonly CommandBarPosition _position;
         private readonly IDictionary<ICommandMenuItem, ICommandBarControl> _items;
+        protected readonly IUiDispatcher _uiDispatcher;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        protected AppCommandBarBase(string name, CommandBarPosition position, IEnumerable<ICommandMenuItem> items)
+        protected AppCommandBarBase(string name, CommandBarPosition position, IEnumerable<ICommandMenuItem> items, IUiDispatcher uiDispatcher)
         {
             _name = name;
             _position = position;
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
+            _uiDispatcher = uiDispatcher;
         }
 
         protected ICommandMenuItem FindChildByTag(string tag)
@@ -53,7 +55,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 try
                 {
                     var item = kvp;
-                    UiDispatcher.Invoke(() => LocalizeInternal(item, kvp));
+                    _uiDispatcher.Invoke(() => LocalizeInternal(item, kvp));
 
                 }
                 catch (Exception e)
