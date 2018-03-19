@@ -64,8 +64,8 @@ Name: "English"; MessagesFile: "compiler:Default.isl"
 [Files]
 ; Install the correct bitness binaries.
 ; Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Permissions: users-readexec;
-Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"; Permissions: users-readexec;
-Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Permissions: users-readexec; AfterInstall: RegisterAddin
+Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries";
+Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; AfterInstall: RegisterAddin
 
 [Registry]
 ; DO NOT attempt to register VBE Add-In with section. It doesn't work
@@ -103,6 +103,7 @@ var
   HasCheckedOfficeBitness: Boolean;
   OfficeIs64Bit: Boolean;
   OptionPage: TInputOptionWizardPage;
+  ShouldInstallAllUsers: Boolean;
 
 procedure InitializeWizard();
 begin
@@ -134,11 +135,13 @@ begin
   begin
     if OptionPage.Values[1] then
     begin
+      ShouldInstallAllUsers := False;
       WizardForm.DirEdit.Text := ExpandConstant('{localappdata}{\}{#AppName}')
     end
       else
     begin
-      WizardForm.DirEdit.Text := ExpandConstant('{pf}\{#AppName}');
+      ShouldInstallAllUsers := True;
+      WizardForm.DirEdit.Text := ExpandConstant('{commonappdata}{\}{#AppName}');
     end;
   end;
   Result := True;
@@ -287,6 +290,11 @@ begin
   result := ExpandConstant('{app}') + '\Rubberduck.x64.tlb';
 end;
 
+function GetRegistryRoot(Unused: string): string;
+begin
+  result := 'HKCU';
+end;
+
 function InitializeSetup(): Boolean;
 var
    iErrorCode: Integer;
@@ -333,4 +341,9 @@ end;
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
   if CurUninstallStep = usUninstall then UnregisterAddin();
+end;
+
+function InstallAllUsers():boolean;
+begin
+  result := ShouldInstallAllUsers;
 end;
