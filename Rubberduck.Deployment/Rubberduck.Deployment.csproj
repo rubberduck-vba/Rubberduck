@@ -64,9 +64,41 @@
     <None Include="BuildRegistryScript.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj">
+      <Project>{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}</Project>
+      <Name>Rubberduck.API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
+      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
+      <Name>Rubberduck.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
+      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
+      <Name>Rubberduck.Inspections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
       <Project>{e8ab5d93-2d0f-423d-bc15-5ee118673e48}</Project>
       <Name>Rubberduck.Main</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
+      <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
+      <Name>Rubberduck.RegexAssistant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
+      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
+      <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
+      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
+      <Name>Rubberduck.SmartIndenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

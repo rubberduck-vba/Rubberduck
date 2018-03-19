@@ -63,17 +63,14 @@ Name: "English"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; Install the correct bitness binaries.
-Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"
-Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion;
+; Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Permissions: users-readexec;
+Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"; Permissions: users-readexec;
+Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Permissions: users-readexec; AfterInstall: RegisterAddin
 
 [Registry]
-; #include <Rubberduck.reg.iss>
-Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "string"; ValueName: "Description"; ValueData: "Rubberduck"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "string"; ValueName: "Friendly"; ValueData: "Rubberduck"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns\Rubberduck.Extension"; ValueType: "dword"; ValueName: "LoadBehavior"; ValueData: "3"; Flags: uninsdeletekey
-; Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Description"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
-; Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "string"; ValueName: "Friendly"; ValueData: "Rubberduck"; Flags: uninsdeletekey; Check: IsWin64
-; Root: HKCU; Subkey: "Software\Microsoft\VBA\VBE\6.0\AddIns64\Rubberduck.Extension"; ValueType: "dword"; ValueName: "LoadBehavior"; ValueData: "3"; Flags: uninsdeletekey; Check: IsWin64
+; DO NOT attempt to register VBE Add-In with section. It doesn't work
+; Use [Code] section (RegisterAddIn procedure) to register the entries instead.
+#include <Rubberduck.reg.iss>
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{localappdata}\{#AppName}"
@@ -137,7 +134,7 @@ begin
   begin
     if OptionPage.Values[1] then
     begin
-      WizardForm.DirEdit.Text := ExpandConstant('{userappdata}\{#AppName}')
+      WizardForm.DirEdit.Text := ExpandConstant('{localappdata}{\}{#AppName}')
     end
       else
     begin
@@ -320,10 +317,9 @@ end;
 
 procedure RegisterAddin();
 begin
-  if Is32BitOfficeInstalled() then
-    RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+  RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
 
-  if Is64BitOfficeInstalled() then 
+  if IsWin64() then 
     RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
 end;
 
