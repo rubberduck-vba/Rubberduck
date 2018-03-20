@@ -1,6 +1,6 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 
-namespace Rubberduck.VBERuntime
+namespace Rubberduck.VBEditor.Utility
 {
     public interface IRegistryWrapper
     {

@@ -1,10 +1,9 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
-using Rubberduck.VBERuntime;
+using Rubberduck.VBEditor.VBERuntime.Settings;
 using System.Collections.Generic;
 using System;
-using System.Collections.ObjectModel;
 
 namespace Rubberduck.UI.Settings
 {

@@ -7,7 +7,7 @@ using GeneralSettings = Rubberduck.Settings.GeneralSettings;
 using Rubberduck.Common;
 using Moq;
 using Rubberduck.UI;
-using Rubberduck.VBERuntime;
+using Rubberduck.VBEditor.VBERuntime.Settings;
 using System;
 
 namespace RubberduckTests.Settings

@@ -1,36 +1,30 @@
 ﻿using System;
 using Microsoft.Win32;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
-namespace Rubberduck.VBERuntime
+namespace Rubberduck.VBEditor.VBERuntime.Settings
 {
     public class VBESettings : IVBESettings
     {
         private const string Vbe7SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\7.0\Common";
         private const string Vbe6SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\6.0\Common";
 
-        public enum DllVersion
-        {
-            Unknown,
-            Vbe6,
-            Vbe7
-        }
-
         private readonly IRegistryWrapper _registry;
         private readonly string _activeRegistryRootPath;
-        private readonly string[] _registryRootPaths = {Vbe7SettingPath, Vbe6SettingPath};
+        private readonly string[] _registryRootPaths = { Vbe7SettingPath, Vbe6SettingPath };
 
         public VBESettings(IVBE vbe, IRegistryWrapper registry)
         {
             try
             {
-                switch (int.Parse(vbe.Version.Split('.')[0]))
+                switch (VBEDllVersion.GetCurrentVersion(vbe))
                 {
-                    case 6:
+                    case DllVersion.Vbe6:
                         Version = DllVersion.Vbe6;
                         _activeRegistryRootPath = Vbe6SettingPath;
                         break;
-                    case 7:
+                    case DllVersion.Vbe7:
                         Version = DllVersion.Vbe7;
                         _activeRegistryRootPath = Vbe7SettingPath;
                         break;
@@ -83,7 +77,7 @@ namespace Rubberduck.VBERuntime
         private bool? DWordToBooleanConverter(string path, string keyName)
         {
             return !(_registry.GetValue(path, keyName, DWordFalseValue) is int result)
-                ? (bool?) null
+                ? (bool?)null
                 : Convert.ToBoolean(result);
         }
 

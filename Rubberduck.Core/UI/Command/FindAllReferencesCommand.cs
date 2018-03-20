@@ -6,7 +6,6 @@ using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -25,10 +24,11 @@ namespace Rubberduck.UI.Command
         private readonly ISearchResultsWindowViewModel _viewModel;
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IVBE _vbe;
+        private readonly IUiDispatcher _uiDispatcher;
 
         public FindAllReferencesCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
             RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
-            SearchResultPresenterInstanceManager presenterService)
+            SearchResultPresenterInstanceManager presenterService, IUiDispatcher uiDispatcher)
              : base(LogManager.GetCurrentClassLogger())
         {
             _navigateCommand = navigateCommand;
@@ -37,6 +37,7 @@ namespace Rubberduck.UI.Command
             _vbe = vbe;
             _viewModel = viewModel;
             _presenterService = presenterService;
+            _uiDispatcher = uiDispatcher;
 
             _state.StateChanged += _state_StateChanged;
         }
@@ -57,7 +58,7 @@ namespace Rubberduck.UI.Command
 
             if (_viewModel == null) { return; }
 
-            UiDispatcher.InvokeAsync(UpdateTab);
+            _uiDispatcher.InvokeAsync(UpdateTab);
         }
 
         private void UpdateTab()
