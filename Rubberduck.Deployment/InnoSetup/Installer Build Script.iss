@@ -9,7 +9,7 @@
 #define DllFullPath BuildDir + AddinDLL
 #define Tlb32bitFullPath BuildDir + Tlb32bit
 #define Tlb64bitFullPath BuildDir + Tlb64bit 
-#define AppVersion GetFileVersion(BuildDir + "Rubberduck.Core.dll")
+#define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
 #define License SourcePath + "\License.rtf"
@@ -172,7 +172,8 @@ var
   #define AW "A"
 #endif
 
-///<remarks>///Win32 API function used to launch a 2nd instance of the installer
+///<remarks>
+///Win32 API function used to launch a 2nd instance of the installer
 ///under elevated context, used by <see cref="Elevate" />.
 ///</remarks>
 function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
@@ -181,7 +182,8 @@ function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
   
 // Helper functions section
 
-///<remarks>///Encapuslate the check whether the installer is running in an
+///<remarks>
+///Encapuslate the check whether the installer is running in an
 ///elevated context or not. This does not indicate whether the
 ///installer was launched by a non-elevated installer, however.
 ///<see cref="HasElevateSwitch" />
@@ -208,7 +210,8 @@ begin
     end;
 end;
 
-///<remarks>///Used to determine whether a install directory that user 
+///<remarks>
+///Used to determine whether a install directory that user 
 ///selected is in fact writable by the user, especially 
 ///for non-elevated installation. 
 ///</remarks>
@@ -242,6 +245,7 @@ end;
 ///The original installer does not terminate but rather remains open for the
 ///elevated install to complete so that the user can then proceed with VBE
 ///addin registration on the <see cref="RegisterAddInOptionPage" /> page.
+///<remarks>
 function Elevate: Boolean;
 var
   I: Integer;
@@ -291,7 +295,7 @@ begin
 end;
 
 ///<remarks>
-///Adapated from http://kynosarges.org/DotNetVersion.html; used during
+///Adapted from http://kynosarges.org/DotNetVersion.html; used during
 ///the <see cref="InitializeSetup"> event function to ensure that the
 ///.NET framework is present on the computer.
 ///</remarks>
@@ -412,7 +416,8 @@ begin
   result := ShouldInstallAllUsers and HasElevateSwitch;
 end;
 
-///<remarks>///Helper function used in the File section to assess whether an
+///<remarks>
+///Helper function used in the File section to assess whether an
 ///file(s) should be installed based on whether there's privilege
 ///to do so. This guards against the case of both the non-elevated 
 ///installer and the elevated installer installing same files into
@@ -479,7 +484,8 @@ end;
 //       that the Inno Setup will undergo for each event it calls. Note that
 //       for certain events, it may be called more than once.
 
-///<remarks>///This is the first event of the installer, fires prior to the wizard
+///<remarks>
+///This is the first event of the installer, fires prior to the wizard
 ///being initialized. This is primarily used to validate that the 
 ///pre-requisites are met, in this case, pre-existence of .NET framework.
 ///</remarks>
@@ -498,7 +504,8 @@ begin
     Result := True;
 end;
 
-///<remarks>///The second event of installer allow us to customize the wizard by 
+///<remarks>
+///The second event of installer allow us to customize the wizard by 
 ///assessing whether we were launched in elevated context from an 
 ///non-elevated installer; <see cref="HasElevateSwitch" />. We then
 ///set up the <see cref="InstallForWhoOptionPage" /> and 
@@ -652,7 +659,8 @@ begin
   end;
 end;
 
-///<remarks>///The event function is called when wizard reaches the ready to install page.
+///<remarks>
+///The event function is called when wizard reaches the ready to install page.
 ///Because we may or may not launch an elevated installer which will show similar
 ///page, we need to help to make clear to the user what the installer(s) will be
 ///doing by adding the extra custom messages accordingly to the page.
@@ -682,7 +690,8 @@ begin
   result := output;
 end;
 
-///<remarks>///As a rule, the addin registration should be always uninstalled; there is no
+///<remarks>
+///As a rule, the addin registration should be always uninstalled; there is no
 ///purpose in having the addin registered when the DLL gets uninstalled. Note
 ///this is also unconditional - it will uninstall the related registry keys.
 ///</remarks>
