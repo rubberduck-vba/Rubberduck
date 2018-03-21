@@ -1,7 +1,10 @@
 #pragma include __INCLUDE__ + ";" + SourcePath + "\Includes\"
 
 #define protected
-#define BuildDir ExtractFileDir(ExtractFileDir(SourcePath)) + "\bin\Debug\"
+#ifndef Config
+#define Config "Debug"
+#endif
+#define BuildDir ExtractFileDir(ExtractFileDir(SourcePath)) + "\bin\" + Config + "\"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
 #define Tlb32bit "Rubberduck.x32.tlb"
@@ -19,6 +22,7 @@
 
 ; Output the defined constants to aid in verification
 #pragma message "Include: " + __INCLUDE__
+#pragma message "Config: " + Config
 #pragma message "SourcePath: " + SourcePath
 #pragma message "BuildDir: " + BuildDir
 #pragma message "AppName: " + AppName
