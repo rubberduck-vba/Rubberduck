@@ -350,11 +350,11 @@ function GetDefaultDirName(Param: string): string;
 begin
   if IsElevated() then
   begin
-    Result := ExpandConstant('{pf}{#AppName}');
+    Result := ExpandConstant('{commonappdata}{\}{#AppName}');
   end
     else
   begin
-    Result := ExpandConstant('{userappdata}{#AppName}');
+    Result := ExpandConstant('{localappdata}{\}{#AppName}')
   end;
 end;
 
@@ -417,7 +417,7 @@ end;
 function CheckShouldInstallFiles():boolean;
 begin
   if ShouldInstallAllUsers then
-    result := HasElevateSwitch and IsElevated()
+    result := IsElevated()
   else
     result := true;
 end;
@@ -518,7 +518,7 @@ begin
   InstallForWhoOptionPage.Add(ExpandConstant('{cm:InstallPerUserOrAllUsersAdminButtonCaption}'));
   InstallForWhoOptionPage.Add(ExpandConstant('{cm:InstallPerUserOrAllUsersUserButtonCaption}'));
 
-  if IsAdminLoggedOn then
+  if IsElevated() then
   begin
     InstallForWhoOptionPage.Values[0] := True;
     InstallForWhoOptionPage.CheckListBox.ItemEnabled[1] := False;
@@ -585,7 +585,7 @@ var
   Respone: integer;
 begin
   // We should assume true because a false value will cause the 
-  // installer to stay on the same apge, which may not be desirable
+  // installer to stay on the same page, which may not be desirable
   // due to several branching in this prcocedure.
   Result := true;
   
@@ -681,6 +681,9 @@ begin
 end;
 
 ///<remarks>
+///Called during uninstall, once for each step but for our purpose, we are 
+///interested in only one step doing the actual uninstall.
+///
 ///As a rule, the addin registration should be always uninstalled; there is no
 ///purpose in having the addin registered when the DLL gets uninstalled. Note
 ///this is also unconditional - it will uninstall the related registry keys.

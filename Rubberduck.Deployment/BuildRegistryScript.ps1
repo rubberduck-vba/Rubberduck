@@ -4,9 +4,6 @@
 # reference to the projects that needs to be registered, so that 
 # their DLL files will be present in the $(TargetDir) macro. 
 #
-# TODO: Figure a better way to locate the SDK tool where the TlbExp.exe
-#	    is located.
-#
 # Possible syntax for Post Build event of the project to invoke this:
 # C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
 #  -command "$(ProjectDir)BuildRegistryScript.ps1 
