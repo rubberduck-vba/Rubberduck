@@ -26,31 +26,31 @@ namespace Rubberduck.Deployment.Writers
                 const string flags = "uninsdeletekey";
                 
                 var snippet =
-                    $@"Subkey: ""{Quote(entry.Key)}""; ValueType: {ConvertValueType(entry.Type)}; ValueName: ""{Quote(entry.Name)}""; ValueData: ""{Quote(ReplacePlaceholder(entry.Value, entry.Bitness))}""; Flags: {flags}";
+                    $@"Subkey: ""{Quote(entry.Key)}""; ValueType: {ConvertValueType(entry.Type)}; ValueName: ""{Quote(entry.Name)}""; ValueData: ""{Quote(ReplacePlaceholder(entry.Value, entry.Bitness))}""; Flags: {flags};";
 
                 switch (entry.Bitness)
                 {
                     case Bitness.IsAgnostic:
-                        registryEntries.Add($@"Root: ""HKCU64""; {snippet}; Check: IsWin64 and not InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKCU""; {snippet}; Check: not IsWin64 and not InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKLM64""; {snippet}; Check: IsWin64 and InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKLM""; {snippet}; Check: not IsWin64 and InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKCU64""; {snippet} Check: IsWin64 and not InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet} Check: not IsWin64 and not InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKLM64""; {snippet} Check: IsWin64 and InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKLM""; {snippet} Check: not IsWin64 and InstallAllUsers");
                         break;
                     case Bitness.IsPlatformDependent:
-                        registryEntries.Add($@"Root: ""HKCU64""; {snippet}; Check: IsWin64 and not InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKCU32""; {snippet}; Check: IsWin64 and not InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKCU""; {snippet}; Check: not IsWin64 and not InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKLM64""; {snippet}; Check: IsWin64 and InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKLM32""; {snippet}; Check: IsWin64 and InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKLM""; {snippet}; Check: not IsWin64 and InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKCU64""; {snippet} Check: IsWin64 and not InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKCU32""; {snippet} Check: IsWin64 and not InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet} Check: not IsWin64 and not InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKLM64""; {snippet} Check: IsWin64 and InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKLM32""; {snippet} Check: IsWin64 and InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKLM""; {snippet} Check: not IsWin64 and InstallAllUsers");
                         break;
                     case Bitness.Is64Bit:
-                        registryEntries.Add($@"Root: ""HKCU""; {snippet}; Check: IsWin64 and not InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKLM""; {snippet}; Check: IsWin64 and InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet} Check: IsWin64 and not InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKLM""; {snippet} Check: IsWin64 and InstallAllUsers");
                         break;
                     case Bitness.Is32Bit:
-                        registryEntries.Add($@"Root: ""HKCU""; {snippet}; Check: not InstallAllUsers");
-                        registryEntries.Add($@"Root: ""HKLM""; {snippet}; Check: InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKCU""; {snippet} Check: not InstallAllUsers");
+                        registryEntries.Add($@"Root: ""HKLM""; {snippet} Check: InstallAllUsers");
                         break;
                 }
             }
