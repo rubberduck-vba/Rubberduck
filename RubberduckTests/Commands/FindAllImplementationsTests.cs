@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
@@ -39,11 +40,12 @@ End Sub";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+            var uiDispatcher = new Mock<IUiDispatcher>();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -73,11 +75,12 @@ End Sub";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+            var uiDispatcher = new Mock<IUiDispatcher>();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.First(s => s.IdentifierName == "IClass1_Foo"));
 
@@ -113,10 +116,12 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             vbe.Setup(v => v.ActiveCodePane).Returns(project.Object.VBComponents["Class1"].CodeModule.CodePane);
 
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(null);
 
@@ -134,6 +139,7 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
+            var uiDispatcher = new Mock<IUiDispatcher>();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -143,7 +149,7 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, messageBox.Object, state, vbe.Object, vm, null);
+                var command = new FindAllImplementationsCommand(null, messageBox.Object, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -173,12 +179,14 @@ End Sub";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var navigateCommand = new Mock<INavigateCommand>();
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(navigateCommand.Object, null, state, vbe.Object, vm, null);
+                var command = new FindAllImplementationsCommand(navigateCommand.Object, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -197,7 +205,8 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(null);
 
@@ -228,7 +237,8 @@ End Sub";
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -247,7 +257,8 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(null));
             }
@@ -276,7 +287,8 @@ End Sub";
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
             }
@@ -293,7 +305,8 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(null));
             }
