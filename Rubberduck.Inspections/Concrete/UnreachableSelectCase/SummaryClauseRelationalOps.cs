@@ -11,32 +11,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
     public class SummaryClauseRelationalOps<T> : SummaryClauseSingleValueBase<T> where T : IComparable<T>
     {
         private ISummaryClauseSingleValues<T> _singleValues;
-        private List<string> _unresolvedRelationalOps;
+        private List<string> _variableRelationalOps;
 
-        //Used to modify logic operators to convert LHS and RHS for expressions like '5 > x' (= 'x < 5')
-        public static Dictionary<string, string> AlgebraicLogicalInversions = new Dictionary<string, string>()
-        {
-            [CompareTokens.EQ] = CompareTokens.EQ,
-            [CompareTokens.NEQ] = CompareTokens.NEQ,
-            [CompareTokens.LT] = CompareTokens.GT,
-            [CompareTokens.LTE] = CompareTokens.GTE,
-            [CompareTokens.GT] = CompareTokens.LT,
-            [CompareTokens.GTE] = CompareTokens.LTE
-        };
-
-        public SummaryClauseRelationalOps(ISummaryClauseSingleValues<T> singleValues)
+        public SummaryClauseRelationalOps(ISummaryClauseSingleValues<T> singleValues) : base(singleValues.TConverter)
         {
             _singleValues = singleValues;
-            _unresolvedRelationalOps = new List<string>();
+            _variableRelationalOps = new List<string>();
         }
 
-        public override bool HasCoverage => _unresolvedRelationalOps.Any();
+        public override bool HasCoverage => _variableRelationalOps.Any();
         public override bool Covers(T candidate) => _singleValues.Covers(candidate);
-        public bool Covers(string relationalOpText) => _unresolvedRelationalOps.Contains(relationalOpText);
+        //public bool Covers(string relationalOpText) => _unresolvedRelationalOps.Contains(relationalOpText);
 
         public void Clear()
         {
-            _unresolvedRelationalOps.Clear();
+            _variableRelationalOps.Clear();
         }
 
         public override void Add(T value)
@@ -58,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
         {
             if (newRelOp.HasCoverage && !(Covers(TrueValue) && Covers(FalseValue)))
             {
-                _unresolvedRelationalOps.AddRange(newRelOp._unresolvedRelationalOps);
+                _variableRelationalOps.AddRange(newRelOp._variableRelationalOps);
             }
         }
 
@@ -66,29 +55,28 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
         {
             if(!(Covers(TrueValue) && Covers(FalseValue)))
             {
-                if (!_unresolvedRelationalOps.Contains(value))
+                if (!_variableRelationalOps.Contains(value))
                 {
-                    _unresolvedRelationalOps.Add(value);
+                    _variableRelationalOps.Add(value);
                 }
             }
         }
 
-        public int Count => _unresolvedRelationalOps.Count;
+        public int Count => _variableRelationalOps.Count;
 
         public override string ToString()
         {
-            if (!_unresolvedRelationalOps.Any())
+            if (!_variableRelationalOps.Any())
             {
                 return string.Empty;
             }
             const string prefix = "RelOp=";
             var result = prefix;
-            foreach (var val in _unresolvedRelationalOps)
+            foreach (var val in _variableRelationalOps)
             {
                 result = $"{result}{val.ToString()},";
             }
             return result.Length > 0 ? result.Remove(result.Length - 1) : string.Empty;
-
         }
     }
 }

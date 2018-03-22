@@ -7,203 +7,78 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
-    public interface IUnreachableCaseInspectionValueConvert
-    {
-        string ConvertToType(string value, string typeName);
-    }
-
     internal class UCIValueConverter
     {
-        public static long ConvertLong(IUnreachableCaseInspectionValue value)
+        internal static long ConvertLong(IUnreachableCaseInspectionValue value)
         {
-            if (TryConvert(value, out long result))
+            return ConvertLong(value.ValueText);
+        }
+
+        internal static long ConvertLong(string value)
+        {
+            if (TryConvertValue(value, out long result))
             {
                 return result;
             }
-            throw new ArgumentException($"Unable to convert parameter (value = {value.ValueText}) to {result.GetType()}");
+            throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        public static double ConvertDouble(IUnreachableCaseInspectionValue value)
+        internal static double ConvertDouble(IUnreachableCaseInspectionValue value)
         {
-            if (TryConvert(value, out double result))
+            return ConvertDouble(value.ValueText);
+        }
+
+        internal static double ConvertDouble(string value)
+        {
+            if (TryConvertValue(value, out double result))
             {
                 return result;
             }
-            throw new ArgumentException($"Unable to convert parameter (value = {value.ValueText}) to {result.GetType()}");
+            throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        public static decimal ConvertDecimal(IUnreachableCaseInspectionValue value)
+        internal static decimal ConvertDecimal(IUnreachableCaseInspectionValue value)
         {
-            if (TryConvert(value, out decimal result))
+            return ConvertDecimal(value.ValueText);
+        }
+
+        internal static decimal ConvertDecimal(string value)
+        {
+            if (TryConvertValue(value, out decimal result))
             {
                 return result;
             }
-            throw new ArgumentException($"Unable to convert parameter (value = {value.ValueText}) to {result.GetType()}");
+            throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        public static bool ConvertBoolean(IUnreachableCaseInspectionValue value)
+        internal static bool ConvertBoolean(IUnreachableCaseInspectionValue value)
         {
-            if (TryConvert(value, out bool result))
+            return ConvertBoolean(value.ValueText);
+        }
+
+        internal static bool ConvertBoolean(string value)
+        {
+            if (TryConvertValue(value, out bool result))
             {
                 return result;
             }
-            throw new ArgumentException($"Unable to convert parameter (value = {value.ValueText}) to {result.GetType()}");
+            throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        public static string ConvertString(IUnreachableCaseInspectionValue value)
+        internal static string ConvertString(IUnreachableCaseInspectionValue value)
         {
             return value.ValueText;
         }
 
-        internal static double? GetOperandAsDouble(IUnreachableCaseInspectionValue value)
-        {
-            double? result;
-            var conformed = new UnreachableCaseInspectionValueConformed(value, value.TypeName);
-            if (!TryConvert(conformed, out double conformedValue))
-            {
-                result = null;
-            }
-            else
-            {
-                result = conformedValue;
-            }
-            return result;
-        }
-
-        internal static IUnreachableCaseInspectionValue ConvertToType<T>(T tValue, string targetType)
-        {
-            try { tValue.ToString(); }
-            catch (NullReferenceException)
-            {
-                return new UnreachableCaseInspectionValue(double.NaN.ToString(), targetType);
-            }
-
-            if (UnreachableCaseInspectionValue.IntegerTypes.Contains(targetType))
-            {
-                if (TryConvertValue(tValue, out long result))
-                {
-                    return new UnreachableCaseInspectionValue(result);
-                }
-            }
-
-            if (UnreachableCaseInspectionValue.RationalTypes.Contains(targetType))
-            {
-                if (targetType.Equals(Tokens.Currency))
-                {
-                    if (TryConvertValue(tValue, out decimal cResult))
-                    {
-                        return new UnreachableCaseInspectionValue(cResult);
-                    }
-                }
-
-                if (TryConvertValue(tValue, out double dResult))
-                {
-                    return new UnreachableCaseInspectionValue(dResult);
-                }
-            }
-
-            if (targetType.Equals(Tokens.Boolean))
-            {
-                if (tValue.ToString().Equals(Tokens.True) || tValue.ToString().Equals(Tokens.False))
-                {
-                    var value = tValue.ToString().Equals(Tokens.True) ? -1 : 0;
-                    return new UnreachableCaseInspectionValue(value != 0); ;
-                }
-                if (TryConvertValue(tValue, out long result))
-                {
-                    return new UnreachableCaseInspectionValue(result != 0);
-                }
-            }
-
-            if (targetType.Equals(Tokens.String))
-            {
-                return new UnreachableCaseInspectionValue($"\"{tValue.ToString()}\"", Tokens.String);
-            }
-            return new UnreachableCaseInspectionValue(double.NaN.ToString(), targetType);
-        }
-
-        static private bool TryConvert(IUnreachableCaseInspectionValue valToConvert, out long result)
-        {
-            result = default;
-            if (!TryConvertValue(valToConvert.ValueText, out result))
-            {
-                if (valToConvert.TypeName.Equals(Tokens.Boolean))
-                {
-                    result = valToConvert.ValueText.Equals(Tokens.True) ? -1 : 0;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        static private bool TryConvert(IUnreachableCaseInspectionValue valToConvert, out double result)
-        {
-            result = default;
-            if (!TryConvertValue(valToConvert.ValueText, out result))
-            {
-                if (valToConvert.TypeName.Equals(Tokens.Boolean))
-                {
-                    result = valToConvert.ValueText.Equals(Tokens.True) ? -1.0 : 0.0;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        static private bool TryConvert(IUnreachableCaseInspectionValue valToConvert, out decimal result)
-        {
-            result = default;
-            if (!TryConvertValue(valToConvert.ValueText, out result))
-            {
-                if (valToConvert.TypeName.Equals(Tokens.Boolean))
-                {
-                    result = valToConvert.ValueText.Equals(Tokens.True) ? -1.0M : 0.0M;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        static private bool TryConvert(IUnreachableCaseInspectionValue valToConvert, out bool result)
-        {
-            result = default;
-            if (!TryConvertValue(valToConvert.ValueText, out result))
-            {
-                if (valToConvert.TypeName.Equals(Tokens.Boolean))
-                {
-                    result = valToConvert.ValueText.Equals(Tokens.True);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private static bool TryConvertValue<T>(T inspVal, out long value)
+        internal static bool TryConvertValue(string inspVal, out long value)
         {
             value = default;
-            if (typeof(T) == typeof(bool))
+            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
             {
-                value = inspVal.ToString() == bool.TrueString ? -1 : 0;
+                value = inspVal.Equals(Tokens.True) ? -1 : 0;
                 return true;
             }
-
-            if (double.TryParse(inspVal.ToString(), out double rational))
+            if (double.TryParse(inspVal, out double rational))
             {
                 value = Convert.ToInt64(rational);
                 return true;
@@ -211,16 +86,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return false;
         }
 
-        private static bool TryConvertValue<T>(T inspVal, out double value)
+        internal static bool TryConvertValue(string inspVal, out double value)
         {
             value = default;
-            if (typeof(T) == typeof(bool))
+            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
             {
-                value = inspVal.ToString() == bool.TrueString ? -1.0 : 0.0;
+                value = inspVal.Equals(Tokens.True) ? -1 : 0;
                 return true;
             }
-
-            if (double.TryParse(inspVal.ToString(), out double rational))
+            if (double.TryParse(inspVal, out double rational))
             {
                 value = rational;
                 return true;
@@ -228,10 +102,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return false;
         }
 
-        private static bool TryConvertValue<T>(T inspVal, out decimal value)
+        internal static bool TryConvertValue(string inspVal, out decimal value)
         {
             value = default;
-            if (decimal.TryParse(inspVal.ToString(), out decimal rational))
+            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
+            {
+                value = inspVal.Equals(Tokens.True) ? -1 : 0;
+                return true;
+            }
+            if (decimal.TryParse(inspVal, out decimal rational))
             {
                 value = rational;
                 return true;
@@ -239,20 +118,34 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return false;
         }
 
-        private static bool TryConvertValue<T>(T inspVal, out bool value)
+        internal static bool TryConvertValue(string inspVal, out bool value)
         {
             value = default;
-            if (bool.TryParse(inspVal.ToString(), out bool booleanVal))
+            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
             {
-                value = booleanVal;
+                value = inspVal.Equals(Tokens.True);
                 return true;
             }
-            if(long.TryParse(inspVal.ToString(), out long lValue))
+            if (double.TryParse(inspVal, out double dVal))
             {
-                value = lValue != 0 ? true : false;
+                value = Math.Abs(dVal) > double.Epsilon;
                 return true;
             }
             return false;
         }
+
+        //private static List<string> IntegerTypes = new List<string>()
+        //{
+        //    Tokens.Long,
+        //    Tokens.Integer,
+        //    Tokens.Byte
+        //};
+
+        //private static List<string> RationalTypes = new List<string>()
+        //{
+        //    Tokens.Double,
+        //    Tokens.Single,
+        //    Tokens.Currency
+        //};
     }
 }

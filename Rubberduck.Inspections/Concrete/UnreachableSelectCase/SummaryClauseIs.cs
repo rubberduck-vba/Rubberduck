@@ -8,21 +8,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public class SummaryClauseIsLT<T> : SummaryClauseIsBase<T> where T : IComparable<T>
     {
-        public SummaryClauseIsLT() : base(true) { }
-        public SummaryClauseIsLT(T value) : base(value, true) { }
+        //public SummaryClauseIsLT() : base(true) { }
+        //public SummaryClauseIsLT(T value) : base(value, true) { }
+        public SummaryClauseIsLT(Func<IUnreachableCaseInspectionValue, T> tConverter) : base(true, tConverter) { }
+        public SummaryClauseIsLT(T value, Func<IUnreachableCaseInspectionValue, T> tConverter) : base(value, true, tConverter) { }
 
         public override string ToString()
         {
             return HasCoverage ? $"IsLT={Value}" : string.Empty;
         }
-
-        //public void Add(SummaryClauseIsLT<T> candidate)
-        //{
-        //    if (candidate.HasCoverage)
-        //    {
-        //        Value = candidate.Value;
-        //    }
-        //}
 
         public void ClearIfCoveredBy(SummaryClauseIsLT<T> isClause)
         {
@@ -65,21 +59,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 
     public class SummaryClauseIsGT<T> : SummaryClauseIsBase<T> where T : IComparable<T>
     {
-        public SummaryClauseIsGT() : base(false) { }
-        public SummaryClauseIsGT(T value) : base(value, false) { }
+        public SummaryClauseIsGT(Func<IUnreachableCaseInspectionValue, T> tConverter) : base(false, tConverter) { }
+        public SummaryClauseIsGT(T value, Func<IUnreachableCaseInspectionValue, T> tConverter) : base(value, false, tConverter) { }
 
         public override string ToString()
         {
             return HasCoverage ? $"IsGT={Value}" : string.Empty;
         }
-
-        //public void Add(SummaryClauseIsGT<T> candidate)
-        //{
-        //    if (candidate.HasCoverage)
-        //    {
-        //        Value = candidate.Value;
-        //    }
-        //}
 
         public void ClearIfCoveredBy(SummaryClauseIsGT<T> isClause)
         {
@@ -124,13 +110,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
         protected T _extentMax;
         protected bool _hasExtents;
 
-        public SummaryClauseIsBase(T value, bool isLT)
+        public SummaryClauseIsBase(T value, bool isLT, Func<IUnreachableCaseInspectionValue, T> tConverter) : base (tConverter)
         {
             IsLTClause = isLT;
             Value = value;
         }
 
-        public SummaryClauseIsBase(bool isLT)
+        public SummaryClauseIsBase(bool isLT, Func<IUnreachableCaseInspectionValue, T> tConverter) : base(tConverter)
         {
             IsLTClause = isLT;
             _hasValue = false;
@@ -210,14 +196,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
         }
 
         public bool IsLTClause { set; get; }
-
-        //public void ClearIfCoveredBy(SummaryClauseIsBase<T> isClause)
-        //{
-        //    if (isClause.Covers(Value))
-        //    {
-        //            Clear();
-        //    }
-        //}
 
         public void Clear()
         {

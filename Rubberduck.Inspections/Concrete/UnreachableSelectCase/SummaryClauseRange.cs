@@ -8,8 +8,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public interface ISummaryClauseRange<T> : ISummaryClause<T> where T : System.IComparable<T>
     {
-        T Start { get; set; }
-        T End { get; set; }
+        T Start { get; } // set; }
+        T End { get; } // set; }
         bool Covers(ISummaryClauseRange<T> range);
         List<long> AsIntegerNumbers { get; }
         bool IsAdjacent(ISummaryClauseRange<T> range);
@@ -18,20 +18,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
         void RemoveOverlap(ISummaryClauseRange<T> overlapRange);
     }
 
-    public class SummaryClauseRange<T> : SummaryClauseBase<T>, ISummaryClauseRange<T> where T : System.IComparable<T>
+    public class SummaryClauseRange<T> : SummaryClauseBase<T>, ISummaryClauseRange<T> where T : IComparable<T>
     {
         private bool _hasStart;
         private bool _hasEnd;
         T _start;
         T _end;
 
-        public SummaryClauseRange()
-        {
-            _hasStart = false;
-            _hasEnd = false;
-        }
-
-        public SummaryClauseRange(T start, T end)
+        public SummaryClauseRange(T start, T end, Func<IUnreachableCaseInspectionValue, T> tConverter) : base(tConverter)
         {
             _hasStart = false;
             _hasEnd = false;
@@ -119,19 +113,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             long testEnd = long.Parse(range.End.ToString());
             return testEnd == thisStart - 1 || testStart == thisEnd + 1;
         }
-
-        //public bool IsAdjacent(SummaryClauseRange<T> range)
-        //{
-        //    if (!ContainsIntegerNumbers)
-        //    {
-        //        return false;
-        //    }
-        //    long thisStart = long.Parse(Start.ToString());
-        //    long thisEnd = long.Parse(End.ToString());
-        //    long testStart = long.Parse(range.Start.ToString());
-        //    long testEnd = long.Parse(range.End.ToString());
-        //    return testEnd == thisStart - 1 || testStart == thisEnd + 1;
-        //}
 
         public bool Overlaps(ISummaryClauseRange<T> range)
         {

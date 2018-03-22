@@ -8,14 +8,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     public class SummaryClauseRanges<T> : SummaryClauseBase<T> where T : IComparable<T>
     {
-        public SummaryClauseRanges()
+        private List<Tuple<T, T>> _ranges;
+
+        public SummaryClauseRanges(Func<IUnreachableCaseInspectionValue, T> tConverter) : base(tConverter)
         {
             RangeClauses = new List<ISummaryClauseRange<T>>();
+            _ranges = new List<Tuple<T, T>>();
         }
 
         public List<ISummaryClauseRange<T>> RangeClauses { set; get; }
         public override bool HasCoverage => Any();
-        public bool Any() => RangeClauses.Any();
+        private bool Any() => RangeClauses.Any() || _ranges.Any();
 
         public void Add(ISummaryClauseRange<T> candidate)
         {
@@ -41,7 +44,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             {
                 return false;
             }
-            return RangeClauses.Any(rg => rg.Start.CompareTo(candidate) <= 0 && rg.End.CompareTo(candidate) >= 0);
+            return RangeClauses.Any(rg => rg.Start.CompareTo(candidate) <= 0 && rg.End.CompareTo(candidate) >= 0)
+                || _ranges.Any(rg => rg.Item1.CompareTo(candidate) <= 0 && rg.Item2.CompareTo(candidate) >= 0);
         }
 
         public void RemoveIfCoveredBy(SummaryClauseRanges<T> ranges)
@@ -77,7 +81,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             {
                 return string.Empty;
             }
-            const string prefix = "Ranges=";
+            const string prefix = "Range=";
             var result = string.Empty;
             foreach (var range in RangeClauses)
             {
@@ -177,5 +181,4 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
         }
 
     }
-
 }

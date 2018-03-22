@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
     {
         private HashSet<T> _values;
 
-        public SummaryClauseSingleValues()
+        public SummaryClauseSingleValues(Func<IUnreachableCaseInspectionValue,T> tConverter) :base(tConverter)
         {
             _values = new HashSet<T>();
         }
