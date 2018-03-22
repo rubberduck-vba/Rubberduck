@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
@@ -33,11 +34,13 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -65,7 +68,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(null);
 
@@ -92,7 +96,8 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -121,7 +126,8 @@ End Sub";
                 var navigateCommand = new Mock<INavigateCommand>();
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -141,7 +147,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(null);
 
@@ -172,7 +179,8 @@ End Sub";
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -192,7 +200,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(null));
             }
@@ -222,7 +231,8 @@ End Sub";
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
             }
@@ -240,7 +250,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(null));
             }
@@ -270,7 +281,8 @@ End Sub
                 AssertParserReady(state);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -304,7 +316,8 @@ End Sub
                 var navigateCommand = new Mock<INavigateCommand>();
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -340,7 +353,8 @@ End Sub
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -372,7 +386,8 @@ End Sub
                 AssertParserReady(state);
 
                 var targets = state.AllUserDeclarations.Where(s => s.IdentifierName.StartsWith("TextBox"));
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, null, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, null, null, uiDispatcher.Object);
 
 
                 Assert.IsFalse(command.CanExecute(targets));
@@ -403,7 +418,8 @@ End Sub
                 AssertParserReady(state);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1");
 
                 command.Execute(target);
@@ -438,7 +454,8 @@ End Sub
                 AssertParserReady(state);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1"));
 
@@ -473,7 +490,8 @@ End Sub
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1");
 
                 command.Execute(target);

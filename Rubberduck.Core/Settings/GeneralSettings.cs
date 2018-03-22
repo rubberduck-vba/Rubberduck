@@ -55,6 +55,14 @@ namespace Rubberduck.Settings
 
         public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeatures>();
 
+        public GeneralSettings()
+        {
+            //Enforce non-default default value for members
+            //In other words, if we want a bool to default to
+            //true, it must be set here for correct behavior
+            CompileBeforeParse = true;
+        }
+
         public bool Equals(GeneralSettings other)
         {
             return other != null &&

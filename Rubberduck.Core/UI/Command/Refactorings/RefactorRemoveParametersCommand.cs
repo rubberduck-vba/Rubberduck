@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {
                 var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                var refactoring = new RemoveParametersRefactoring(Vbe, factory, _state.ProjectsProvider);
+                var refactoring = new RemoveParametersRefactoring(Vbe, factory);
                 refactoring.Refactor(selection.Value);
             }
         }

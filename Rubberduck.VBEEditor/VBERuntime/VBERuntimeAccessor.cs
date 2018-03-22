@@ -1,16 +1,10 @@
 ﻿using System;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.ComManagement.VBERuntime
+namespace Rubberduck.VBEditor.VBERuntime
 {
     public class VBERuntimeAccessor : IVBERuntime
     {
-        private enum DllVersion
-        {
-            Unknown,
-            Vbe6,
-            Vbe7
-        }
-
         private static DllVersion _version;
         private readonly IVBERuntime _runtime;
         
@@ -18,20 +12,33 @@ namespace Rubberduck.VBEditor.ComManagement.VBERuntime
         {
             _version = DllVersion.Unknown;
         }
+        
+        public VBERuntimeAccessor(IVBE vbe)
+        {
+            if (_version == DllVersion.Unknown)
+            {
+                try
+                {
+                    _version = VBEDllVersion.GetCurrentVersion(vbe);
+                }
+                catch
+                {
+                    _version = DllVersion.Unknown;
+                }
+            }
+            _runtime = InitializeRuntime();
+        }
 
-        public VBERuntimeAccessor()
+        private static IVBERuntime InitializeRuntime()
         {
             switch (_version)
             {
                 case DllVersion.Vbe7:
-                    _runtime = new VBERuntime7();
-                    break;
+                    return new VBERuntime7();
                 case DllVersion.Vbe6:
-                    _runtime = new VBERuntime6();
-                    break;
+                    return new VBERuntime6();
                 default:
-                    _runtime = DetermineVersion();
-                    break;
+                    return DetermineVersion();
             }
         }
 

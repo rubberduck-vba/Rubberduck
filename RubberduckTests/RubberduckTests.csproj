@@ -104,6 +104,7 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />

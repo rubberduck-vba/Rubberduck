@@ -38,16 +38,15 @@ using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
-using GeneralSettingsViewModel = Rubberduck.UI.Settings.GeneralSettingsViewModel;
 using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
-using Rubberduck.Inspections.Rubberduck.Inspections;
+using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Root
 {
@@ -244,8 +243,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .Where(type => type.IsBasedOn(typeof(IQuickFix)) && type.NotDisabledExperimental(_initialSettings))
-                    .WithService.Base()
-                    .WithService.Self()
+                    .WithService.Select(new[] {typeof(IQuickFix)})
                     .LifestyleSingleton());
             }
         }
@@ -257,7 +255,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .Where(type => type.IsBasedOn(typeof(IInspection)) && type.NotDisabledExperimental(_initialSettings))
-                    .WithService.Base()
+                    .WithService.Select(new[] { typeof(IInspection) })
                     .LifestyleTransient());
             }
         }
@@ -269,7 +267,6 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .Where(type => type.IsBasedOn(typeof(IParseTreeInspection)) && type.NotDisabledExperimental(_initialSettings))
-                    .WithService.Base()
                     .WithService.Select(new[] { typeof(IInspection) })
                     .LifestyleTransient());
             }
@@ -810,7 +807,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IVBE>().Instance(_vbe));
             container.Register(Component.For<IAddIn>().Instance(_addin));
             //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
-            container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars)); 
+            container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
+            container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
+            container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
         }
 
         private static void RegisterHotkeyFactory(IWindsorContainer container)
