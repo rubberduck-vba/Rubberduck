@@ -5,6 +5,7 @@
 #define Config "Debug"
 #endif
 #define BuildDir ExtractFileDir(ExtractFileDir(SourcePath)) + "\bin\" + Config + "\"
+#define IncludesDir SourcePath + "\Includes\"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
 #define Tlb32bit "Rubberduck.x32.tlb"
@@ -39,8 +40,9 @@
 #pragma message "AddinCLSID: " + AddInCLSID
 
 [Setup]
-; TODO this CLSID should match the one used by the current installer.
-AppId={{979AFF96-DD9E-4FC2-802D-9E0C36A60D09}
+; The Previous language must be no when AppId uses constants
+UsePreviousLanguage=no
+AppId={code:GetAppId}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppPublisher={#AppPublisher}
@@ -49,7 +51,6 @@ AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
 DefaultDirName={code:GetDefaultDirName}
 DefaultGroupName=Rubberduck
-DisableProgramGroupPage=yes
 AllowNoIcons=yes
 LicenseFile={#License}
 OutputDir={#OutputDirectory}
@@ -63,6 +64,9 @@ ArchitecturesInstallIn64BitMode=x64
 SetupLogging=yes
 PrivilegesRequired=lowest
 
+; should be 55 x 58 bitmap; use the included non-default bitamp from IS
+WizardSmallImageFile=compiler:WizModernSmallImage-IS.bmp
+
 ; should be a 164 x 314 bitmap
 WizardImageFile=InstallerBitMap.bmp
 
@@ -73,9 +77,12 @@ Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
 ; Install the correct bitness binaries.
-; Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Permissions: users-readexec;
 Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"; Check: CheckShouldInstallFiles
 Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles
+
+; Included only if installed for all users to enable self-registration for other users on machine
+Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: InstallAllUsers;
+Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: InstallAllUsers;
 
 [Registry]
 ; DO NOT attempt to register VBE Add-In with this section. It doesn't work
@@ -87,6 +94,7 @@ Type: filesandordirs; Name: "{localappdata}\{#AppName}"
 
 [CustomMessages]
 ; TODO add additional languages here by adding include files in \Includes folder
+;      and uncomment or add lines to include the file.
 #include <English.CustomMessages.iss>
 ; #include <French.CustomMessages.iss>
 ; #include <German.CustomMessages.iss>
@@ -94,6 +102,9 @@ Type: filesandordirs; Name: "{localappdata}\{#AppName}"
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
+
+; Included only if installed for all users to enable self-registration for other users on machine
+Name: "{group}\{cm:RegisterAddin, {#AppName}}"; Filename: "{app}\Rubberduck.RegisterAddIn.bat"; WorkingDir: "{app}"; Check: InstallAllUsers;
 
 [Code]
 ///<remarks>
@@ -149,6 +160,15 @@ var
   ///as read-only in all contexts other than <see cref="InitializeWizard" />.
   ///<remarks>
   HasElevateSwitch : Boolean;
+
+  ///<remarks>
+  ///Indicates that the installer can only run in per-user only. This is typically
+  ///when there is a previous version of Rubberduck and the user either won't or
+  ///can't uninstall it. Therefore, we cannot safely install using all-user mode
+  ///in this context. This is set in the <see cref="SetupInitialize" /> event 
+  ///function and should be read-only in all other contexts.
+  ///</remarks>
+  PerUserOnly : Boolean;
 
 // External functions section
 
@@ -403,7 +423,7 @@ end;
 ///</remarks>
 function InstallAllUsers():boolean;
 begin
-  result := ShouldInstallAllUsers and HasElevateSwitch;
+  result := ShouldInstallAllUsers and IsElevated();
 end;
 
 ///<remarks>
@@ -468,6 +488,78 @@ begin
     UnregisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
 end;
 
+///<remarks>
+///Generate AppId based on whether it's going to be 
+///per-user or for all users. This enable separate
+///install/uninstall of each mode. Used by AppId
+///directive in the [Setup] section.
+///</remarks>
+function GetAppId(Unused: string): string;
+begin
+  if ShouldInstallAllUsers then
+    result := '{979AFF96-DD9E-4FC2-802D-9E0C36A60D09}'
+  else
+    result := '{DF0E0E6F-2CED-482E-831C-7E9721EB66AA}';
+end;
+
+///<remarks>
+///Deterimine if there is a previous version of Rubberduck installed
+///All uninstaller will store a registry key with the AppId, so we can
+///use AppId to detect previous versions.
+///</remarks>
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+///<remarks>
+///Encapuslates the check for previous versions
+///from <see cref="GetUninstallString" /> as a 
+///boolean result
+///</remarks>
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+///<remarks>
+///Perform uninstall of old versions. Called in the
+///<see cref="CurStepChanged" /> event function and only when
+///a previous version was detected.
+///</remarks>
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+
+  // default return value
+  Result := 0;
+
+  // get the uninstall string of the old app
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+
 // Event functions called by Inno Setup
 //
 // NOTE: the ordering should be preserved to indicate the general sequence
@@ -486,12 +578,52 @@ begin
   // MS .NET Framework 4.5 must be installed for this application to work.
   if not IsDotNetDetected('v4.5', 0) then
   begin
+    Log('User does not have the prerequisite .NET framework installed');
     MsgBox(ExpandConstant('{cm:NETFramework40NotInstalled}'), mbCriticalError, mb_Ok);
     ShellExec('open', 'http://msdn.microsoft.com/en-us/netframework/aa731542', '', '', SW_SHOW, ewNoWait, iErrorCode) 
     Result := False;
   end
   else
+  begin
+    Log('.Net v4.5 Framework was found on the system');
     Result := True;
+  end;
+
+  if Result then
+  begin
+    //We need to check whether there's previous version to be uninstalled
+    //We have to do it early enough or the installer will try to use the
+    //previous version's directory, which will basically ignore the directory
+    //being selected.
+    if IsUpgrade() And Not HasElevateSwitch then
+    begin
+      Log('A previous version was detected; prompting the user whether to uninstall');
+      if IDYES = MsgBox(ExpandConstant('{cm:UninstallOldVersionPrompt}'), mbConfirmation, MB_YESNO) then
+      begin
+        iErrorCode := -1;
+        iErrorCode := UnInstallOldVersion();
+        Log(Format('The result of UninstallOldVersion was %d.', [iErrorCode]));
+        if (iErrorCode <> 3) or (IsUpgrade()) then
+        begin
+          Log('Uninstall of previous version failed or was cancelled.');
+          if IDYES = MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_YESNO) then
+          begin
+            PerUserOnly := true;
+          end
+            else
+          begin
+            Log('User declined the per-user install option; aborting...');
+            Result := false;
+          end;
+        end;
+      end
+        else
+      begin
+        Log('User declined to uninstall previous install. Proceeding with per-user only...');
+        PerUserOnly := true;
+      end;
+    end;
+  end;
 end;
 
 ///<remarks>
@@ -506,6 +638,11 @@ end;
 procedure InitializeWizard();
 begin
   HasElevateSwitch := CmdLineParamExists('/ELEVATE');
+  Log(Format('HasElevateSwitch: %d', [HasElevateSwitch]));
+  Log(Format('IsElevated: %d', [IsElevated()]));
+
+  //Assume we are installing for all users if we were elevated
+  ShouldInstallAllUsers := HasElevateSwitch;
 
   InstallForWhoOptionPage :=
     CreateInputOptionPage(
@@ -518,14 +655,19 @@ begin
   InstallForWhoOptionPage.Add(ExpandConstant('{cm:InstallPerUserOrAllUsersAdminButtonCaption}'));
   InstallForWhoOptionPage.Add(ExpandConstant('{cm:InstallPerUserOrAllUsersUserButtonCaption}'));
 
-  if IsElevated() then
+  if PerUserOnly then
   begin
-    InstallForWhoOptionPage.Values[0] := True;
-    InstallForWhoOptionPage.CheckListBox.ItemEnabled[1] := False;
+    InstallForWhoOptionPage.Values[1] := true;
+    InstallForWhoOptionPage.CheckListBox.ItemEnabled[0] := false;
+  end
+    else if IsElevated() then
+  begin
+    InstallForWhoOptionPage.Values[0] := true;
+    InstallForWhoOptionPage.CheckListBox.ItemEnabled[1] := false;
   end
     else
   begin
-    InstallForWhoOptionPage.Values[1] := True;
+    InstallForWhoOptionPage.Values[1] := true;
   end;
 
   RegisterAddInOptionPage :=
@@ -560,17 +702,26 @@ begin
   Result := not PagesSkipped and HasElevateSwitch and IsElevated() and (PageID <> wpReady);
   // if we've reached the Ready page, set our flag variable to avoid skipping further pages.
   if not Result then
+  begin
+    Log('PageSkipped set to true now');
     PagesSkipped := True;
+  end;
 
   // If the installer is elevated, we cannot register the addin so we must skip the
   // custom page.
   if (PageID = RegisterAddInOptionPage.ID) and IsElevated() then
+  begin
+    Log('RegisterAddInOptionPage skipped because we are running elevated.');
     Result := true;
+  end;
 
   // We don't need to show the users finished panel from the elevated installer
   // if they already have the non-elevated installer running.
   if (PageID = wpFinished) and HasElevateSwitch then
+  begin
+    Log('Skipping Finished page because we are running with /ELEVATE switch');
     Result := true;
+  end;
 end;
 
 ///<remarks>
@@ -584,6 +735,9 @@ var
   RetVal: HINSTANCE;
   Respone: integer;
 begin
+  // Prevent accidental extra clicks 
+  Wizardform.NextButton.Enabled := False;
+
   // We should assume true because a false value will cause the 
   // installer to stay on the same page, which may not be desirable
   // due to several branching in this prcocedure.
@@ -600,10 +754,12 @@ begin
       begin
         if IDYES = MsgBox(ExpandConstant('{cm:ElevationRequiredForSelectedFolderWarning}'), mbConfirmation, MB_YESNO) then
         begin
+          Log('Setting ShouldIntallAllUsers to true because we need elevation to write to selected directory');
           ShouldInstallAllUsers := true;
         end
           else
         begin
+          Log('User declined to elevate the permission so we will remain on wpSelectDir page to allow user to change the selection');
           Result := false
         end;
       end;
@@ -613,12 +769,26 @@ begin
     // and verify we are able to do so. Failure should keep user on the
     // same page as the user can retry or cancel out from the non-elevated
     // installer.
+    //
+    // We also need to verify there are no previous versions and if there are,
+    // to uninstall them. 
     else if CurPageID = wpReady then
   begin
+    // Log all output of functions called by non-code sections
+    Log('GetInstallPath: ' + GetInstallPath(''));
+    Log('GetDllPath: ' + GetDllPath(''));
+    Log('GetTlbPath32: ' + GetTlbPath32(''));
+    Log('GetTlbPath64: ' + GetTlbPath64(''));
+    Log(Format('InstallAllUsers: %d', [InstallAllUsers()]));
+    Log(Format('CheckShouldInstallFiles: %d', [CheckShouldInstallFiles()]));
+    Log(Format('ShouldInstallAllUsers variable: %d', [ShouldInstallAllUsers]));
+
     if not IsElevated() and ShouldInstallAllUsers then
     begin
+      Log('All-users install is required but we don''t have privilege; requesting elevation...');
       if not Elevate() then
       begin
+        Log('Elevation failed or was cancelled; we cannot continue.');
         Result := False;
         MsgBox(Format(ExpandConstant('{cm:ElevationRequestFailMessage}'), [RetVal]), mbError, MB_OK);
       end;
@@ -633,20 +803,33 @@ begin
     begin
       ShouldInstallAllUsers := False;
       WizardForm.DirEdit.Text := ExpandConstant('{localappdata}{\}{#AppName}')
+      Log('ShouldInstallAllUsers set to false because we chose You Only option');
     end
       else
     begin
       ShouldInstallAllUsers := True;
       WizardForm.DirEdit.Text := ExpandConstant('{commonappdata}{\}{#AppName}');
+      Log('ShouldInstallAllUsers set to true because we chose All Users options');
     end;
+    Log(Format('Selected default directory: %s', [WizardForm.DirEdit.Text]));
   end
     // if the user has allowed registration of the IDE (default) from our
     // custom page we should run RegisterAdd()
     else if CurPageID = RegisterAddInOptionPage.ID then
   begin
     if not IsElevated() and RegisterAddInOptionPage.Values[0] then
+    begin
+      Log('Addin registration was requested and will be performed');
       RegisterAddIn();
+    end
+      else
+    begin
+      Log('Addin registration was declined because either we are elevated or the user unchecked the checkbox');
+    end;
   end;
+
+  // Re-enable the button disabled at start of procedure
+  Wizardform.NextButton.Enabled := True;
 end;
 
 ///<remarks>

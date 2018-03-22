@@ -1,4 +1,5 @@
 ; English Custom Messages Include
+English.RegisterAddin=Repair VBE Addin registration
 English.ProgramOnTheWeb=Rubberduck VBA website
 English.UninstallProgram=Uninstall Rubberduck
 English.NETFramework40NotInstalled=Microsoft .NET Framework 4.0 installation was not detected.
@@ -15,4 +16,7 @@ English.RegisterAddInDescription=VBE Add-ins are registered on a per-user basis,
 English.RegisterAddInButtonCaption=Register the Rubberduck VBE Add-in
 English.WillExecuteAdminInstall=Rubberduck Add-In will be available to all users.%n%nNOTE: each user individually must register the Rubberduck Add-In as%nthis is a per-user setting and cannot be deployed to all users.
 English.WillLaunchAdminInstall=The installer will request for admin privilege to install for all users and will%nresume afterward to perform the add-in registration.
-English.WillInstallForCurrentUser=Rubberduck Add-In will be made available to the current user only and will not require admin privileges.
+English.WillInstallForCurrentUser=Rubberduck Add-In will be made available to the current user only and will not%nrequire admin privileges.
+English.UninstallOldVersionPrompt=There seems to be a previous version of Rubberduck and it should be uninstalled. Proceed?
+English.UninstallOldVersionFail=Unable to uninstall the previous version of Rubberduck. Do you want to install a per-user instance of Rubberduck?
+English.ElevationRequestFailMessage=Unable to uninstall the previous version of Rubberduck. You may need to uninstall it directly before you can install the new version.
