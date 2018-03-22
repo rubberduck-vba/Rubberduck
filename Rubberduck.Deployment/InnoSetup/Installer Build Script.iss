@@ -64,6 +64,11 @@ ArchitecturesInstallIn64BitMode=x64
 SetupLogging=yes
 PrivilegesRequired=lowest
 
+UninstallFilesDir={app}\Installers
+UninstallDisplayName={code:GetUninstallDisplayName}
+Uninstallable=ShouldCreateUninstaller()
+CreateUninstallRegKey=ShouldCreateUninstaller()
+
 ; should be 55 x 58 bitmap; use the included non-default bitamp from IS
 WizardSmallImageFile=compiler:WizModernSmallImage-IS.bmp
 
@@ -78,7 +83,7 @@ Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 [Files]
 ; Install the correct bitness binaries.
 Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"; Check: CheckShouldInstallFiles
-Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles
+Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
 
 ; Included only if installed for all users to enable self-registration for other users on machine
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: InstallAllUsers;
@@ -90,7 +95,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 #include <Rubberduck.reg.iss>
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{localappdata}\{#AppName}"
+Type: filesandordirs; Name: "{userappdata}\{#AppName}"
 
 [CustomMessages]
 ; TODO add additional languages here by adding include files in \Includes folder
@@ -119,6 +124,27 @@ Name: "{group}\{cm:RegisterAddin, {#AppName}}"; Filename: "{app}\Rubberduck.Regi
 
 type
   HINSTANCE = THandle;
+
+const
+   ///<remarks>
+   ///Identifiers for installation in everyone mode to support
+   ///functions that needs to distinguish between install modes.
+   ///</remarks>
+   EveryoneAppMode = 'Everyone';
+   EveryoneAppId = '{979AFF96-DD9E-4FC2-802D-9E0C36A60D09}';
+   PerUserAppMode = 'PerUser';
+   PerUserAppId = '{DF0E0E6F-2CED-482E-831C-7E9721EB66AA}';
+   
+  ///<remarks>
+  ///Pseudo-Bitwise enum to support functions for
+  ///checking previous versions of different modes.
+  ///Pascal scripting doesn't have bitwise operators 
+  ///so we improvise....
+  ///<remarks>
+  NoneIsInstalled = 0; 
+  PerUserIsInstalled = 1;
+  EveryoneIsInstalled = 2; 
+  BothAreInstalled = 3;
 
 var
   ///<remarks>
@@ -494,12 +520,58 @@ end;
 ///install/uninstall of each mode. Used by AppId
 ///directive in the [Setup] section.
 ///</remarks>
-function GetAppId(Unused: string): string;
+///<param name="AppMode">
+///If value is 'peruser', then returns per-user AppId
+///If value is 'everyone', then returns everyone AppId
+///Otherwise if left blank or contains invalid value, returns 
+///the AppId based on ShouldInstallAllUsers 
+///(e.g. based on user's selection.)
+///</param>
+function GetAppId(AppMode: string): string;
+begin
+  if AppMode = EveryoneAppMode then
+    result := EveryoneAppId
+  else if AppMode = PerUserAppMode then
+    result := PerUserAppId
+  else
+    if ShouldInstallAllUsers then
+      result := EveryoneAppId
+    else
+      result := PerUserAppId
+end;
+
+///<remarks>
+///Used to help disambiguate multiple installs of Rubberduck 
+///by providing a suffix to indicate which mode it is
+///</remarks>
+function GetAppSuffix(): string;
 begin
   if ShouldInstallAllUsers then
-    result := '{979AFF96-DD9E-4FC2-802D-9E0C36A60D09}'
+    result := ExpandConstant('{cm:Everyone}')
   else
-    result := '{DF0E0E6F-2CED-482E-831C-7E9721EB66AA}';
+    result := ExpandConstant('{cm:PerUser}');
+end;
+
+///<remakrs>
+///Provide a sufixed name of uninstaller to help identify what mode
+///the version is installed in.
+///</remarks>
+function GetUninstallDisplayName(Unused: string): string;
+begin
+  result := ExpandConstant('{#AppName} (') + GetAppSuffix() + ')';
+end;
+
+///<remarks>
+///Prevent creating an uninstaller from the non-elevated installer
+///The elevated installer will do it instead. Otherwise, we get 
+///weird behavior & errors when uninstalling mixed mode.
+///</remarks>
+function ShouldCreateUninstaller(): boolean;
+begin
+  if not IsElevated() and ShouldInstallAllUsers then
+    result:= false
+  else
+    result:= true;
 end;
 
 ///<remarks>
@@ -507,15 +579,27 @@ end;
 ///All uninstaller will store a registry key with the AppId, so we can
 ///use AppId to detect previous versions.
 ///</remarks>
-function GetUninstallString(): String;
+///<param name="AppId">
+///If contains a valid AppId, attempt to get uninstaller for that.
+///If left blank, attempt to get uninstaller for current mode.
+///</param>
+function GetUninstallString(AppId: string): String;
 var
+  sAppId: string;
   sUnInstPath: String;
   sUnInstallString: String;
 begin
-  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  if AppId = '' then
+    sAppId := GetAppId('')
+  else
+    sAppId := AppId;
+
+  sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\' + sAppId + '_is1';
+  Log('Looking in registry: ' + sUnInstPath);
   sUnInstallString := '';
   if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
     RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Log('Result of registry query: ' + sUnInstallString);
   Result := sUnInstallString;
 end;
 
@@ -524,9 +608,35 @@ end;
 ///from <see cref="GetUninstallString" /> as a 
 ///boolean result
 ///</remarks>
-function IsUpgrade(): Boolean;
+function IsUpgrade(): boolean;
 begin
-  Result := (GetUninstallString() <> '');
+  result := (GetUninstallString('') <> '');
+end;
+
+///<reamrks>
+///An expanded version of IsUpgrade function, usuable only
+///within [Code] section that additional provides information
+///for all modes of installation.
+///</remarks>
+///<returns>
+///An integer representing the fake ***IsInstalled enum
+///</returns>
+function IsUpgradeApp(): integer;
+var
+  PerUserExists: boolean;
+  EveryoneExists: boolean;
+begin
+    PerUserExists := (GetUninstallString(PerUserAppId) <> '');
+    EveryoneExists := (GetUninstallString(EveryoneAppId) <> '')
+    
+    if PerUserExists and EveryoneExists then
+      result := BothAreInstalled
+    else if PerUserExists and not EveryoneExists then
+      result := PerUserIsInstalled
+    else if not PerUserExists and EveryoneExists then
+      result := EveryoneIsInstalled
+    else
+      result := NoneIsInstalled;
 end;
 
 ///<remarks>
@@ -534,21 +644,26 @@ end;
 ///<see cref="CurStepChanged" /> event function and only when
 ///a previous version was detected.
 ///</remarks>
-function UnInstallOldVersion(): Integer;
+///<param name="AppId">
+///If non-blank, uninstall the specific AppId.
+///Otherwise, use the selected mode to uninstall.
+///</param>
+///<returns>
+/// Return Values:
+///   1 - uninstall string is empty
+///   2 - error executing the UnInstallString
+///   3 - successfully executed the UnInstallString
+///</returns>
+function UnInstallOldVersion(AppId: string): integer;
 var
-  sUnInstallString: String;
-  iResultCode: Integer;
+  sUnInstallString: string;
+  iResultCode: integer;
 begin
-// Return Values:
-// 1 - uninstall string is empty
-// 2 - error executing the UnInstallString
-// 3 - successfully executed the UnInstallString
-
   // default return value
   Result := 0;
 
   // get the uninstall string of the old app
-  sUnInstallString := GetUninstallString();
+  sUnInstallString := GetUninstallString(AppId);
   if sUnInstallString <> '' then begin
     sUnInstallString := RemoveQuotes(sUnInstallString);
     if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
@@ -559,6 +674,37 @@ begin
     Result := 1;
 end;
 
+///<remarks>
+///Encapuslates the UI interaction with user to see whether to uninstall
+///the previous verison of a given mode.
+///<remakrs>
+///<param name = "AppMode">
+///Indicate which app mode to uninstall
+///</param>
+///<returns>
+///Boolean indicating whether it was uninstalled succesffully.
+///</returns>
+function PromptToUninstall(AppMode: string): boolean;
+var
+  ErrorCode: integer;
+begin
+  Log('A previous version of ' + AppMode + ' was detected; prompting the user whether to uninstall');
+  if IDYES = MsgBox(Format(ExpandConstant('{cm:UninstallOldVersionPrompt}'), [AppMode]), mbConfirmation, MB_YESNO) then
+  begin
+    ErrorCode := -1;
+    ErrorCode := UnInstallOldVersion(GetAppId(AppMode));
+    Log(Format('The result of UninstallOldVersion for %s was %d.', [AppMode, ErrorCode]));
+
+    if ErrorCode <> 3 then
+      MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_OK);
+    result := (ErrorCode = 3);
+  end
+    else
+  begin
+    Log('Uninstall of previous version (%s) was declined by the user.');
+    result := false;
+  end;
+end;
 
 // Event functions called by Inno Setup
 //
@@ -573,56 +719,20 @@ end;
 ///</remarks>
 function InitializeSetup(): Boolean;
 var
-   iErrorCode: Integer;
+   ErrorCode: Integer;
 begin
   // MS .NET Framework 4.5 must be installed for this application to work.
   if not IsDotNetDetected('v4.5', 0) then
   begin
     Log('User does not have the prerequisite .NET framework installed');
     MsgBox(ExpandConstant('{cm:NETFramework40NotInstalled}'), mbCriticalError, mb_Ok);
-    ShellExec('open', 'http://msdn.microsoft.com/en-us/netframework/aa731542', '', '', SW_SHOW, ewNoWait, iErrorCode) 
+    ShellExec('open', 'http://msdn.microsoft.com/en-us/netframework/aa731542', '', '', SW_SHOW, ewNoWait, ErrorCode); 
     Result := False;
   end
   else
   begin
     Log('.Net v4.5 Framework was found on the system');
     Result := True;
-  end;
-
-  if Result then
-  begin
-    //We need to check whether there's previous version to be uninstalled
-    //We have to do it early enough or the installer will try to use the
-    //previous version's directory, which will basically ignore the directory
-    //being selected.
-    if IsUpgrade() And Not HasElevateSwitch then
-    begin
-      Log('A previous version was detected; prompting the user whether to uninstall');
-      if IDYES = MsgBox(ExpandConstant('{cm:UninstallOldVersionPrompt}'), mbConfirmation, MB_YESNO) then
-      begin
-        iErrorCode := -1;
-        iErrorCode := UnInstallOldVersion();
-        Log(Format('The result of UninstallOldVersion was %d.', [iErrorCode]));
-        if (iErrorCode <> 3) or (IsUpgrade()) then
-        begin
-          Log('Uninstall of previous version failed or was cancelled.');
-          if IDYES = MsgBox(ExpandConstant('{cm:UninstallOldVersionFail}'), mbError, MB_YESNO) then
-          begin
-            PerUserOnly := true;
-          end
-            else
-          begin
-            Log('User declined the per-user install option; aborting...');
-            Result := false;
-          end;
-        end;
-      end
-        else
-      begin
-        Log('User declined to uninstall previous install. Proceeding with per-user only...');
-        PerUserOnly := true;
-      end;
-    end;
   end;
 end;
 
@@ -734,6 +844,7 @@ var
   Params: string; 
   RetVal: HINSTANCE;
   Respone: integer;
+  UpgradeResult: integer;
 begin
   // Prevent accidental extra clicks 
   Wizardform.NextButton.Enabled := False;
@@ -781,8 +892,11 @@ begin
     Log('GetTlbPath64: ' + GetTlbPath64(''));
     Log(Format('InstallAllUsers: %d', [InstallAllUsers()]));
     Log(Format('CheckShouldInstallFiles: %d', [CheckShouldInstallFiles()]));
+    Log(Format('GetAppId: %s', [GetAppId('')]));
+    Log(Format('AppSuffix: %s', [GetAppSuffix()]));
+    Log(Format('ShouldCreateUninstaller: %d', [ShouldCreateUninstaller()]));
     Log(Format('ShouldInstallAllUsers variable: %d', [ShouldInstallAllUsers]));
-
+    
     if not IsElevated() and ShouldInstallAllUsers then
     begin
       Log('All-users install is required but we don''t have privilege; requesting elevation...');
@@ -812,6 +926,45 @@ begin
       Log('ShouldInstallAllUsers set to true because we chose All Users options');
     end;
     Log(Format('Selected default directory: %s', [WizardForm.DirEdit.Text]));
+
+    //We need to check whether there's previous version to be uninstalled
+    //We have to do it early enough or the installer will try to use the
+    //previous version's directory, which will basically ignore the directory
+    //being selected.
+    UpgradeResult := IsUpgradeApp();
+
+    if (UpgradeResult > NoneIsInstalled) then
+    begin
+      if IsElevated() then
+      begin
+        // Uninstall per user; continue regardless of result
+        if (UpgradeResult = PerUserIsInstalled) or (UpgradeResult = BothAreInstalled) then
+          PromptToUninstall(PerUserAppMode);
+
+        // Uninstall all users; must succeed to continue
+        if (UpgradeResult = EveryoneIsInstalled) or (UpgradeResult = BothAreInstalled) then
+          result := PromptToUninstall(EveryoneAppMode);
+      end
+        else
+      begin
+        if ShouldInstallAllUsers then
+        begin
+          // We're asking to install for all users; so we must uninstall old version to continue
+          if (UpgradeResult = EveryoneIsInstalled) or (UpgradeResult = BothAreInstalled) then
+            result := PromptToUninstall(EveryoneAppMode);
+        end
+          else
+        begin
+          // Warn RE: multiple install (if both is installed, they already were warned)
+          if (UpgradeResult = EveryoneIsInstalled) then
+            result := (IDYES = MsgBox(ExpandConstant('{cm:WarnInstallPerUserOverEveryone}'), mbConfirmation, MB_YESNO));
+        end;
+
+        // Uninstall per user; must succeed to continue
+        if result and ((UpgradeResult = PerUserIsInstalled) or (UpgradeResult = BothAreInstalled)) then
+          result := PromptToUninstall(PerUserAppMode);
+      end;
+    end;
   end
     // if the user has allowed registration of the IDE (default) from our
     // custom page we should run RegisterAdd()
