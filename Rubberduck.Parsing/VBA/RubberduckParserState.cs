@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -85,26 +86,35 @@ namespace Rubberduck.Parsing.VBA
         private readonly IVBEEvents _vbeEvents;
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
-
-        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory)
+        
+        /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VBEEvents.Initialize"/> must be already called prior to constructing the method.</param>
+        [SuppressMessage("ReSharper", "JoinNullCheckWithUsage")]
+        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents)
         {
             if (vbe == null)
             {
                 throw new ArgumentNullException(nameof(vbe));
             }
-            if (declarationFinderFactory == null)
-            {
-                throw new ArgumentNullException(nameof(declarationFinderFactory));
-            }
+
             if (projectRepository == null)
             {
                 throw new ArgumentException(nameof(projectRepository));
             }
 
+            if (declarationFinderFactory == null)
+            {
+                throw new ArgumentNullException(nameof(declarationFinderFactory)); 
+            }
+
+            if (vbeEvents == null)
+            {
+                throw new ArgumentNullException(nameof(vbeEvents));
+            }
+
             _vbe = vbe;
             _projectRepository = projectRepository;
-            _vbeEvents = VBEEvents.Initialize(_vbe);
             _declarationFinderFactory = declarationFinderFactory;
+            _vbeEvents = vbeEvents;
 
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)

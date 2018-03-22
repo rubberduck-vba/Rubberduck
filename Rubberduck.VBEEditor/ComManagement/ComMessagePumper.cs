@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Threading;
-using Rubberduck.VBEditor.ComManagement.VBERuntime;
+using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
-    public static class ComMessagePumper
+    public interface IComMessagePumper
     {
-        private static SynchronizationContext UiContext { get; set; }
-        private static readonly Lazy<IVBERuntime> Runtime = new Lazy<IVBERuntime>(() => new VBERuntimeAccessor());
+        int PumpMessages();
+    }
 
-        public static void Initialize()
+    public class ComMessagePumper : IComMessagePumper
+    {
+        private readonly IVBERuntime _runtime;
+        private readonly IUiContextProvider _uiContext;
+
+        public ComMessagePumper(IUiContextProvider uiContext, IVBERuntime runtime)
         {
-            if (UiContext == null)
-            {
-                UiContext = SynchronizationContext.Current;
-            }
+            _uiContext = uiContext;
+            _runtime = runtime;
         }
 
         /// <summary>
@@ -31,23 +35,18 @@ namespace Rubberduck.VBEditor.ComManagement
         /// from COM objects' events can use this method.
         /// </remarks>
         /// <returns>Count of open forms which is always zero for VBA hosts but may be nonzero for VB6 projects.</returns>
-        public static int PumpMessages()
+        public int PumpMessages()
         {
             CheckContext();
 
-            return Runtime.Value.DoEvents();
+            return _runtime.DoEvents();
         }
 
-        private static void CheckContext()
+        private void CheckContext()
         {
-            if (UiContext == null)
+            if (!_uiContext.IsExecutingInUiContext())
             {
-                throw new InvalidOperationException("UiSynchronizer is not initialized. Invoke Initialize() from UI thread first.");
-            }
-
-            if (UiContext != SynchronizationContext.Current)
-            {
-                throw new InvalidOperationException("UiSynchronizer cannot be used in other threads. Only the UI thread can call methods on the UiSynchronizer");
+                throw new InvalidOperationException("ComMessagePumper cannot be used in other threads. Only the UI thread can call methods on the ComMessagePumper");
             }
         }
     }

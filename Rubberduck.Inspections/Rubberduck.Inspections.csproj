@@ -197,10 +197,9 @@
     <Compile Include="Concrete\WriteOnlyPropertyInspection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
-      <Name>Rubberduck</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
+      <Project>{A1587EAC-7B54-407E-853F-4C7493D0323E}</Project>
+      <Name>Rubberduck.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
@@ -233,12 +232,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(Configuration)" == "Debug" (
-   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Debug" /Y
-)
-if "$(Configuration)" == "Release" (
-   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Release" /Y
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

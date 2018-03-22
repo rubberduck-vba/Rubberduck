@@ -15,6 +15,7 @@ using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
@@ -38,9 +39,10 @@ namespace RubberduckTests.Mocks
 
         public static ParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
         {
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Moq.Mock<IVBE>());
             var declarationFinderFactory = new DeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(vbe);
-            var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory);
+            var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents.Object);
             return Create(vbe, state, projectRepository, serializedDeclarationsPath);
         }
 
