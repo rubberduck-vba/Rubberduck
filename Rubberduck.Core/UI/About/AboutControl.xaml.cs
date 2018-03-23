@@ -1,8 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using System;
-using System.IO;
-using Application = System.Windows.Forms.Application;
 
 namespace Rubberduck.UI.About
 {
@@ -33,11 +30,6 @@ namespace Rubberduck.UI.About
         private void CopyVersionInfoToClipboard()
         {
             var sb = new System.Text.StringBuilder();
-            //sb.AppendLine($"Rubberduck version: {Version.Text}");
-            //sb.AppendLine($"Operating System: {Environment.OSVersion.VersionString}, {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}");
-            //sb.AppendLine($"Host Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}");
-            //sb.AppendLine($"Host Version: {Application.ProductVersion}");
-            //sb.AppendFormat($"Host Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}"); 
             sb.AppendLine(Version.Text);
             sb.AppendLine(OperatingSystem.Text);
             sb.AppendLine(HostProduct.Text);
