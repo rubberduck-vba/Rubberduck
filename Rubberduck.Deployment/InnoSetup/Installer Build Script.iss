@@ -16,7 +16,7 @@
 #define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
-#define License SourcePath + "\License.rtf"
+#define License SourcePath + "\Includes\License.rtf"
 #define OutputDirectory SourcePath + "Installers\"
 #define AddinProgId "Rubberduck.Extension"
 #define AddinCLSID "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66"
@@ -66,6 +66,7 @@ PrivilegesRequired=lowest
 
 UninstallFilesDir={app}\Installers
 UninstallDisplayName={code:GetUninstallDisplayName}
+UninstallDisplayIcon=ducky.ico
 Uninstallable=ShouldCreateUninstaller()
 CreateUninstallRegKey=ShouldCreateUninstaller()
 
@@ -255,7 +256,6 @@ function HaveWriteAccessToApp: Boolean;
 var
   FileName: string;
 begin
-{
   FileName := AddBackslash(WizardDirValue) + 'writetest.tmp';
   Result := SaveStringToFile(FileName, 'test', False);
   if Result then
@@ -269,8 +269,6 @@ begin
     Log(Format('Does not have write access to the last installation path [%s]', [
       WizardDirValue]));
   end;
-}
-Result := true;
 end;
 
 ///<remarks>
@@ -286,7 +284,6 @@ function Elevate: Boolean;
 var
   I: Integer;
   instance: HINSTANCE;
-  waitSignal: DWORD;
   Params: string;
   S: string;
 begin
@@ -553,12 +550,12 @@ begin
 end;
 
 ///<remakrs>
-///Provide a sufixed name of uninstaller to help identify what mode
+///Provide a suffixed name of uninstaller to help identify what mode
 ///the version is installed in.
 ///</remarks>
 function GetUninstallDisplayName(Unused: string): string;
 begin
-  result := ExpandConstant('{#AppName} (') + GetAppSuffix() + ')';
+  result := ExpandConstant('{#AppName} (') + GetAppSuffix() + ') {#AppVersion}';
 end;
 
 ///<remarks>
@@ -841,9 +838,7 @@ end;
 ///<remarks>
 function NextButtonClick(CurPageID: Integer): Boolean;
 var
-  Params: string; 
   RetVal: HINSTANCE;
-  Respone: integer;
   UpgradeResult: integer;
 begin
   // Prevent accidental extra clicks 

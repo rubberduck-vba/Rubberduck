@@ -62,6 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildRegistryScript.ps1" />
+    <None Include="Licenses\License.rtf" />
+    <None Include="PreInnoSetupConfiguration.ps1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj">
@@ -106,7 +108,6 @@
     <PostBuildEvent>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "$(ProjectDir)BuildRegistryScript.ps1 -builderAssemblyPath '$(TargetPath)' -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' -sourceDir '$(TargetDir)' -targetDir '$(TargetDir)' -includeDir '$(ProjectDir)InnoSetup\Includes\' -filesToExtract 'Rubberduck.dll'"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "$(ProjectDir)PreInnoSetupConfiguration.ps1 -WorkingDir $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
 </Project>
