@@ -254,9 +254,25 @@ end;
 ///</remarks>
 function HaveWriteAccessToApp: Boolean;
 var
+  PathName: string;
   FileName: string;
 begin
-  FileName := AddBackslash(WizardDirValue) + 'writetest.tmp';
+  
+  //DirExists() will return true if the path has a ending backslash
+  //so we must take care to remove the backslash while we locate a
+  //existent directory to avoid trying to create a file to a directory
+  //that doesn't exists. We can assume that if we can create a file in
+  //the first existent directory, we should be able to create directories
+  PathName := RemoveBackslash(WizardDirValue);
+  Log('Starting PathName: ' + PathName);
+    
+  while not DirExists(PathName) do
+  begin
+     PathName := RemoveBackSlash(ExtractFilePath(PathName));
+     Log('Modified PathName: ' + PathName);
+  end;
+
+  FileName := AddBackSlash(PathName) + 'writetest.tmp';
   Result := SaveStringToFile(FileName, 'test', False);
   if Result then
   begin
