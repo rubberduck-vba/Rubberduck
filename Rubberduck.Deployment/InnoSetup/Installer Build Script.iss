@@ -66,7 +66,7 @@ PrivilegesRequired=lowest
 
 UninstallFilesDir={app}\Installers
 UninstallDisplayName={code:GetUninstallDisplayName}
-UninstallDisplayIcon=ducky.ico
+UninstallDisplayIcon={app}\Ducky.ico
 Uninstallable=ShouldCreateUninstaller()
 CreateUninstallRegKey=ShouldCreateUninstaller()
 
@@ -83,20 +83,20 @@ Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 
 [Dirs]
 ; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
-Name: {app}; Attribs: readonly
+Name: {group}; Attribs: readonly
 
 [Files]
 ; Install the correct bitness binaries.
 Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"; Check: CheckShouldInstallFiles
 Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
 
-; Used for customizing the folder appearance
-Source: "desktop.ini"; DestDir: "{app}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
-Source: "ducky.ico"; DestDir: "{app}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
+; Used for customizing the Start menu folder appearance
+Source: "desktop.ini"; DestDir: "{group}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
+Source: "ducky.ico"; DestDir: "{group}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
 
-; Included only if installed for all users to enable self-registration for other users on machine
-Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: InstallAllUsers;
-Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: InstallAllUsers;
+; Makes it easier to fix VBE registration issues
+Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
+Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
 
 [Registry]
 ; DO NOT attempt to register VBE Add-In with this section. It doesn't work
@@ -116,9 +116,7 @@ Type: filesandordirs; Name: "{userappdata}\{#AppName}"
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
-
-; Included only if installed for all users to enable self-registration for other users on machine
-Name: "{group}\{cm:RegisterAddin, {#AppName}}"; Filename: "{app}\Rubberduck.RegisterAddIn.bat"; WorkingDir: "{app}"; Check: InstallAllUsers;
+Name: "{group}\{cm:RegisterAddin, {#AppName}}"; Filename: "{app}\Rubberduck.RegisterAddIn.bat"; WorkingDir: "{app}";
 
 [Code]
 ///<remarks>
