@@ -159,6 +159,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IFakes>()
                 .ImplementedBy<FakesProvider>()
+                .Named("Fakes")
                 .LifestyleTransient());
         }
 
