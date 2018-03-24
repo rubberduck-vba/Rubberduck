@@ -1,53 +1,32 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
-    public interface IUnreachableCaseInspectionValue
+    public interface IUCIValue
     {
         string ValueText { get; }
         string TypeName { get; }
-        bool IsConstantValue { get; set; }
+        bool ParsesToConstantValue { get; set; }
     }
 
-    public class UnreachableCaseInspectionValue : IUnreachableCaseInspectionValue
+    public class UCIValue : IUCIValue
     {
         private string _valueText;
         private string _declaredType;
         private string _derivedType;
 
-        private static List<String> IntegerTypes = new List<string>()
-        {
-            Tokens.Long,
-            Tokens.Integer,
-            Tokens.Byte
-        };
-
-        private static List<String> RationalTypes = new List<string>()
-        {
-            Tokens.Double,
-            Tokens.Single,
-            Tokens.Currency
-        };
-
-        public override string ToString()
-        {
-            return _valueText;
-        }
-
-        public UnreachableCaseInspectionValue(string value, string declaredType = null)
+        public UCIValue(string value, string declaredType = null)
         {
             if (value is null)
             {
                 throw new ArgumentException("null value passed to UnreachableCaseInspectionValue");
             }
 
-            IsConstantValue = IsStringConstant(value);
-            _declaredType = IsConstantValue && (declaredType is null) ? Tokens.String : declaredType;
+            ParsesToConstantValue = IsStringConstant(value);
+            _declaredType = ParsesToConstantValue && (declaredType is null) ? Tokens.String : declaredType;
             _derivedType = DeriveTypeName(value, out bool derivedFromTypeHint);
             if (derivedFromTypeHint)
             {
@@ -59,14 +38,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
                 _valueText = value.Replace("\"", "");
             }
             var conformToTypeName = _declaredType ?? _derivedType;
-            ConformToType(conformToTypeName);
+            ConformValueTextToType(conformToTypeName);
         }
 
         public string TypeName => _declaredType ?? _derivedType ?? string.Empty;
 
         public virtual string ValueText => _valueText;
 
-        public bool IsConstantValue { set; get; }
+        public bool ParsesToConstantValue { set; get; }
+
+        public override string ToString() => _valueText;
 
         private static string RemoveTypeHintChar(string inputValue)
         {
@@ -128,19 +109,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return result;
         }
 
-        private void ConformToType(string conformTypeName )
+        private void ConformValueTextToType(string conformTypeName )
         {
             if (_valueText.Equals(double.NaN.ToString()) && !conformTypeName.Equals(Tokens.String))
             {
                 return;
             }
 
-            if (IntegerTypes.Contains(conformTypeName))
+            if (conformTypeName.Equals(Tokens.Long) || conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
             {
-                if(UCIValueConverter.TryConvertValue(_valueText, out long newVal))
+                if (UCIValueConverter.TryConvertValue(_valueText, out long newVal))
                 {
                     _valueText = newVal.ToString();
-                    IsConstantValue = true;
+                    ParsesToConstantValue = true;
                 }
             }
             else if (conformTypeName.Equals(Tokens.Double) || conformTypeName.Equals(Tokens.Single))
@@ -148,7 +129,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
                 if (UCIValueConverter.TryConvertValue(_valueText, out double newVal))
                 {
                     _valueText = newVal.ToString();
-                    IsConstantValue = true;
+                    ParsesToConstantValue = true;
                 }
             }
             else if (conformTypeName.Equals(Tokens.Boolean))
@@ -156,19 +137,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
                 if (UCIValueConverter.TryConvertValue(_valueText, out bool newVal))
                 {
                     _valueText = newVal.ToString();
-                    IsConstantValue = true;
+                    ParsesToConstantValue = true;
                 }
             }
             else if (conformTypeName.Equals(Tokens.String))
             {
-                IsConstantValue = true;
+                ParsesToConstantValue = true;
             }
             else if (conformTypeName.Equals(Tokens.Currency))
             {
                 if (UCIValueConverter.TryConvertValue(_valueText, out decimal newVal))
                 {
                     _valueText = newVal.ToString();
-                    IsConstantValue = true;
+                    ParsesToConstantValue = true;
                 }
             }
         }

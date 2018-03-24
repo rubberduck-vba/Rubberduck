@@ -1,15 +1,11 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
     internal class UCIValueConverter
     {
-        internal static long ConvertLong(IUnreachableCaseInspectionValue value)
+        internal static long ConvertLong(IUCIValue value)
         {
             return ConvertLong(value.ValueText);
         }
@@ -23,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static double ConvertDouble(IUnreachableCaseInspectionValue value)
+        internal static double ConvertDouble(IUCIValue value)
         {
             return ConvertDouble(value.ValueText);
         }
@@ -37,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static decimal ConvertDecimal(IUnreachableCaseInspectionValue value)
+        internal static decimal ConvertDecimal(IUCIValue value)
         {
             return ConvertDecimal(value.ValueText);
         }
@@ -51,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static bool ConvertBoolean(IUnreachableCaseInspectionValue value)
+        internal static bool ConvertBoolean(IUCIValue value)
         {
             return ConvertBoolean(value.ValueText);
         }
@@ -65,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static string ConvertString(IUnreachableCaseInspectionValue value)
+        internal static string ConvertString(IUCIValue value)
         {
             return value.ValueText;
         }
@@ -133,19 +129,5 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             }
             return false;
         }
-
-        //private static List<string> IntegerTypes = new List<string>()
-        //{
-        //    Tokens.Long,
-        //    Tokens.Integer,
-        //    Tokens.Byte
-        //};
-
-        //private static List<string> RationalTypes = new List<string>()
-        //{
-        //    Tokens.Double,
-        //    Tokens.Single,
-        //    Tokens.Currency
-        //};
     }
 }

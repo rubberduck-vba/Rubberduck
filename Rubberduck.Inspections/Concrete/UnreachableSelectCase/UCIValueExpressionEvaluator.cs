@@ -2,22 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
-    public interface IUnreachableCaseInspectionValueExpressionEvaluator
+    public interface IUCIValueExpressionEvaluator
     {
-        IUnreachableCaseInspectionValue Evaluate(IUnreachableCaseInspectionValue LHS, IUnreachableCaseInspectionValue RHS, string opSymbol);
-        IUnreachableCaseInspectionValue Evaluate(IUnreachableCaseInspectionValue LHS, string opSymbol);
+        IUCIValue Evaluate(IUCIValue LHS, IUCIValue RHS, string opSymbol);
+        IUCIValue Evaluate(IUCIValue LHS, string opSymbol);
     }
 
-    public class UnreachableCaseInspectionValueExpressionEvaluator : IUnreachableCaseInspectionValueExpressionEvaluator
+    public class UCIValueExpressionEvaluator : IUCIValueExpressionEvaluator
     {
 
-        private readonly IUnreachableCaseInspectionValueFactory _valueFactory;
+        private readonly IUCIValueFactory _valueFactory;
 
         private static Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
         {
@@ -74,12 +71,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             public static readonly string ADDITIVE_INVERSE = "-";
         }
 
-        public UnreachableCaseInspectionValueExpressionEvaluator(IUnreachableCaseInspectionValueFactory valueFactory)
+        public UCIValueExpressionEvaluator(IUCIValueFactory valueFactory)
         {
             _valueFactory = valueFactory;
         }
 
-        public IUnreachableCaseInspectionValue Evaluate(IUnreachableCaseInspectionValue LHS, IUnreachableCaseInspectionValue RHS, string opSymbol)
+        public IUCIValue Evaluate(IUCIValue LHS, IUCIValue RHS, string opSymbol)
         {
             var isMathOp = MathOpsBinary.ContainsKey(opSymbol);
             var isLogicOp = LogicOpsBinary.ContainsKey(opSymbol);
@@ -101,7 +98,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opResultTypeName);
         }
 
-        public IUnreachableCaseInspectionValue Evaluate(IUnreachableCaseInspectionValue value, string opSymbol)
+        public IUCIValue Evaluate(IUCIValue value, string opSymbol)
         {
             var isMathOp = MathOpsUnary.ContainsKey(opSymbol);
             var isLogicOp = LogicOpsUnary.ContainsKey(opSymbol);
@@ -122,7 +119,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return _valueFactory.Create($"{opSymbol} {value.ValueText}", opResultTypeName);
         }
 
-        private static string DetermineMathResultType(IUnreachableCaseInspectionValue LHS, IUnreachableCaseInspectionValue RHS)
+        private static string DetermineMathResultType(IUCIValue LHS, IUCIValue RHS)
         {
             var lhsTypeNameIndex = ResultTypeRanking.FindIndex(el => el.Equals(LHS.TypeName));
             var rhsTypeNameIndex = ResultTypeRanking.FindIndex(el => el.Equals(RHS.TypeName));

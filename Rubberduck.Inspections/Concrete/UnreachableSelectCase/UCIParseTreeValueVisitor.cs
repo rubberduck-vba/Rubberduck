@@ -4,47 +4,31 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
 {
-    public interface IUnreachableCaseInspectionValueFactory
-    {
-        IUnreachableCaseInspectionValue Create(string valueToken, string declaredTypeName = null);
-    }
+    public interface IUCIParseTreeValueVisitor : IParseTreeVisitor<IUCIValueResults> { }
 
-    public class UnreachableCaseInspectionValueFactory : IUnreachableCaseInspectionValueFactory
+    public class UCIParseTreeValueVisitor : IUCIParseTreeValueVisitor
     {
-        public IUnreachableCaseInspectionValue Create(string valueToken, string declaredTypeName = null)
-        {
-            return new UnreachableCaseInspectionValue(valueToken, declaredTypeName);
-        }
-    }
-
-    public class UnreachableCaseInspectionValueVisitor : IParseTreeVisitor<IUnreachableCaseInspectionValueResults>
-    {
-        private IUnreachableCaseInspectionValueResults _contextValues;
+        private IUCIValueResults _contextValues;
         private RubberduckParserState _state;
-        private UnreachableCaseInspectionValueFactory _inspValueFactory;
-        private IUnreachableCaseInspectionValueExpressionEvaluator _calculator;
+        private UCIValueFactory _inspValueFactory;
+        private IUCIValueExpressionEvaluator _calculator;
 
-        public UnreachableCaseInspectionValueVisitor(RubberduckParserState state, UnreachableCaseInspectionValueFactory factory)
+        public UCIParseTreeValueVisitor(RubberduckParserState state, UCIValueFactory factory)
         {
             _state = state;
             _inspValueFactory = factory;
-            _calculator = new UnreachableCaseInspectionValueExpressionEvaluator(_inspValueFactory);
-            _contextValues = new UnreachableCaseInspectionValueResults();
+            _calculator = new UCIValueExpressionEvaluator(_inspValueFactory);
+            _contextValues = new UCIValueResults();
         }
 
         private RubberduckParserState State => _state;
 
-        public virtual IUnreachableCaseInspectionValueResults Visit(IParseTree tree)
+        public virtual IUCIValueResults Visit(IParseTree tree)
         {
             if (tree is ParserRuleContext context)
             {
@@ -53,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return _contextValues;
         }
 
-        public virtual IUnreachableCaseInspectionValueResults VisitChildren(IRuleNode node)
+        public virtual IUCIValueResults VisitChildren(IRuleNode node)
         {
             if (node is ParserRuleContext context)
             {
@@ -65,12 +49,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             return _contextValues;
         }
 
-        public virtual IUnreachableCaseInspectionValueResults VisitTerminal(ITerminalNode node)
+        public virtual IUCIValueResults VisitTerminal(ITerminalNode node)
         {
             return _contextValues;
         }
 
-        public virtual IUnreachableCaseInspectionValueResults VisitErrorNode(IErrorNode node)
+        public virtual IUCIValueResults VisitErrorNode(IErrorNode node)
         {
             return _contextValues;
         }
@@ -126,7 +110,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
                 return;
             }
 
-            IUnreachableCaseInspectionValue newResult = null;
+            IUCIValue newResult = null;
             if (TryGetTheLExprValue(context, out string lexprValue, out string declaredType))
             {
                 newResult = _inspValueFactory.Create(lexprValue, declaredType);
@@ -162,7 +146,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             VisitImpl(context);
 
             var operands = RetrieveRelevantOpData(context, out string opSymbol);
-            if(operands.Count != 2 || operands.All(opr => opr is null))
+            if (operands.Count != 2 || operands.All(opr => opr is null))
             {
                 return;
             }
@@ -185,10 +169,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             StoreVisitResult(context, result);
         }
 
-        private List<IUnreachableCaseInspectionValue> RetrieveRelevantOpData(ParserRuleContext context, out string opSymbol)
+        private List<IUCIValue> RetrieveRelevantOpData(ParserRuleContext context, out string opSymbol)
         {
             opSymbol = string.Empty;
-            var values = new List<IUnreachableCaseInspectionValue>();
+            var values = new List<IUCIValue>();
             var contextsOfInterest = NonWhitespaceChildren(context);
             for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
             {
@@ -231,7 +215,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             }
         }
 
-        private void StoreVisitResult(ParserRuleContext context, IUnreachableCaseInspectionValue inspValue)
+        private void StoreVisitResult(ParserRuleContext context, IUCIValue inspValue)
         {
             if (ContextHasResult(context))
             {
@@ -326,7 +310,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
             foreach (var child in contextsOfInterest)
             {
                 Visit(child);
-                if (_contextValues.TryGetValue(child, out IUnreachableCaseInspectionValue value))
+                if (_contextValues.TryGetValue(child, out IUCIValue value))
                 {
                     return value.ValueText;
                 }
