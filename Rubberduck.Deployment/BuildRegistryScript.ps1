@@ -7,6 +7,7 @@
 # Possible syntax for Post Build event of the project to invoke this:
 # C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe 
 #  -command "$(ProjectDir)BuildRegistryScript.ps1 
+#  -config '$(ConfigurationName)' 
 #  -builderAssemblyPath '$(TargetPath)' 
 #  -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' 
 #  -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' 
@@ -15,6 +16,7 @@
 #  -includeDir '$(ProjectDir)InnoSetup\Includes\'
 #  -filesToExtract 'Rubberduck.dll'"
 param (
+	[Parameter(Mandatory=$true)][string]$config,
 	[Parameter(Mandatory=$true)][string]$builderAssemblyPath,
 	[Parameter(Mandatory=$true)][string]$netToolsDir,
 	[Parameter(Mandatory=$true)][string]$wixToolsDir,
@@ -23,6 +25,12 @@ param (
 	[Parameter(Mandatory=$true)][string]$includeDir,
 	[Parameter(Mandatory=$true)][string]$filesToExtract
 )
+
+function Get-ScriptDirectory
+{
+  $Invocation = (Get-Variable MyInvocation -Scope 1).Value
+  Split-Path $Invocation.MyCommand.Path
+}
 
 Set-StrictMode -Version latest
 $ErrorActionPreference = "Stop";
@@ -65,20 +73,50 @@ try
 
 		# For debugging
 		# $entries | Format-Table | Out-String |% {Write-Host $_};
-
+		
 		$writer = New-Object Rubberduck.Deployment.Writers.InnoSetupRegistryWriter
 		$content = $writer.Write($entries);
 		 
 		$regFile = ($includeDir + ($file -replace ".dll", ".reg.iss"))
-		$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
-		[System.IO.File]::WriteAllLines($regFile, $content, $Utf8NoBomEncoding)
+		$encoding = New-Object System.Text.UTF8Encoding $False
+		[System.IO.File]::WriteAllLines($regFile, $content, $encoding)
+
+		# Register the debug build on the local machine
+		if($config -eq "Debug")
+		{
+			$writer = New-Object Rubberduck.Deployment.Writers.LocalDebugRegistryWriter
+			$content = $writer.Write($entries);
+
+			$dir = ((Get-ScriptDirectory) + "\LocalRegistryEntries");
+			$regFile = $dir + "\DebugRegistryEntries.reg";
+
+			if (Test-Path -Path $dir -PathType Container)
+			{
+				if (Test-Path -Path $regFile -PathType Leaf)
+				{
+					$datetime = Get-Date;
+					& reg.exe import $regFile;
+					& reg.exe import ($dir + "\RubberduckAddinRegistry.reg");
+					Move-Item -Path $regFile -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddhhmmss") + ".txt" )
+				}
+			}
+			else
+			{
+				New-Item $dir -ItemType Directory
+			}
+			$encoding = New-Object System.Text.ASCIIEncoding;
+			[System.IO.File]::WriteAllLines($regFile, $content, $encoding);
+		}
 	}
 }
 catch
 {
 	Write-Host -Foreground Red -Background Black ($_);
+	# Cause the build to fail
+	throw;
 }
 
 # for debugging locally
 # Write-Host "Press any key to continue...";
 # Read-Host -Prompt "Press Enter to continue";
+

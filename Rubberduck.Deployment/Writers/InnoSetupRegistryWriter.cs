@@ -7,7 +7,7 @@ using Rubberduck.Deployment.Structs;
 
 namespace Rubberduck.Deployment.Writers
 {
-    public class InnoSetupRegistryWriter
+    public class InnoSetupRegistryWriter : IRegistryWriter
     {
         private readonly List<string> registryEntries = new List<string>();
 
