@@ -81,10 +81,18 @@ Name: "English"; MessagesFile: "compiler:Default.isl"
 Name: "French"; MessagesFile: "compiler:Languages\French.isl"
 Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 
+[Dirs]
+; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
+Name: {app}; Attribs: readonly
+
 [Files]
 ; Install the correct bitness binaries.
 Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"; Check: CheckShouldInstallFiles
 Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
+
+; Used for customizing the folder appearance
+Source: "desktop.ini"; DestDir: "{app}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
+Source: "ducky.ico"; DestDir: "{app}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
 
 ; Included only if installed for all users to enable self-registration for other users on machine
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: InstallAllUsers;
