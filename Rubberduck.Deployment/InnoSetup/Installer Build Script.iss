@@ -66,7 +66,7 @@ PrivilegesRequired=lowest
 
 UninstallFilesDir={app}\Installers
 UninstallDisplayName={code:GetUninstallDisplayName}
-UninstallDisplayIcon={app}\Ducky.ico
+UninstallDisplayIcon={group}\Ducky.ico
 Uninstallable=ShouldCreateUninstaller()
 CreateUninstallRegKey=ShouldCreateUninstaller()
 
@@ -92,7 +92,7 @@ Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replace
 
 ; Used for customizing the Start menu folder appearance
 Source: "desktop.ini"; DestDir: "{group}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
-Source: "ducky.ico"; DestDir: "{group}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
+Source: "Ducky.ico"; DestDir: "{group}"; Attribs: hidden system; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
 
 ; Makes it easier to fix VBE registration issues
 Source: "{#IncludesDir}Rubberduck.RegisterAddIn.bat"; DestDir: "{app}"; Flags: ignoreversion replacesameversion;
@@ -1031,6 +1031,21 @@ begin
   output := output + MemoDirInfo + NewLine;
 
   result := output;
+end;
+
+///<remarks>
+///Allow customization of the uninstall form
+///Specificallly, show the version in the form
+///</remarks>
+procedure InitializeUninstallProgressForm();
+var
+  TempString: string;
+begin
+  TempString := UninstallProgressForm.Caption;
+  Log('Original Uninstall caption: ' + TempString);
+  StringChange(TempString, '{#AppName}', '{#AppName} {#AppVersion}');
+  Log('Modified Uninstall caption: ' + TempString);
+  UninstallProgressForm.Caption := TempString;
 end;
 
 ///<remarks>
