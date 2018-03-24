@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
+namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUCIParseTreeValueVisitorFactory
     {

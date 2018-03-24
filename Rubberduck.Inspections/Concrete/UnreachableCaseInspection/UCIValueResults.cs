@@ -1,7 +1,7 @@
 ﻿using Antlr4.Runtime;
 using System.Collections.Generic;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
+namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUCIValueResults
     {

@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using System;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
+namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     internal class UCIValueConverter
     {

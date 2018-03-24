@@ -3,7 +3,7 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Linq;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
+namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUCIValue
     {

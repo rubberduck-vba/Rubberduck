@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete.UnreachableSelectCase;
+using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;

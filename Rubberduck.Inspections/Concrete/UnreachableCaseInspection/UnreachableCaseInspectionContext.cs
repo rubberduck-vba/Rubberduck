@@ -4,7 +4,7 @@ using Rubberduck.Parsing.Grammar;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableSelectCase
+namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public abstract class UnreachableCaseInspectionContext
     {
