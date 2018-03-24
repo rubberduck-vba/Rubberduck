@@ -744,7 +744,7 @@ begin
   if not IsDotNetDetected('v4.5', 0) then
   begin
     Log('User does not have the prerequisite .NET framework installed');
-    MsgBox(ExpandConstant('{cm:NETFramework40NotInstalled}'), mbCriticalError, mb_Ok);
+    MsgBox(ExpandConstant('{cm:NETFramework45NotInstalled}'), mbCriticalError, mb_Ok);
     ShellExec('open', 'http://msdn.microsoft.com/en-us/netframework/aa731542', '', '', SW_SHOW, ewNoWait, ErrorCode); 
     Result := False;
   end
