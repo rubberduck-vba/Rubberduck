@@ -33,11 +33,7 @@ namespace Rubberduck.Deployment.Writers
                 var value = ReplacePlaceholder(entry.Value, entry.Bitness);
 
                 var key = Registry.CurrentUser.CreateSubKey(entry.Key);
-                if (string.IsNullOrWhiteSpace(entry.Name) && string.IsNullOrWhiteSpace(value))
-                {
-                    key.CreateSubKey(entry.Key);
-                }
-                else
+                if (!(string.IsNullOrWhiteSpace(entry.Name) && string.IsNullOrWhiteSpace(value)))
                 {
                     key.SetValue(entry.Name, value);
                 }
@@ -51,7 +47,7 @@ namespace Rubberduck.Deployment.Writers
             foreach (var key in distinctKeys)
             {
                 //we need a break each entry, so 2 newline is wanted (AppendLine adds one, and we add another)
-                sb.AppendLine("[-" + key + "]" + Environment.NewLine);
+                sb.AppendLine("[-HKEY_CURRENT_USER\\" + key + "]" + Environment.NewLine);
             }
 
             return sb.ToString();

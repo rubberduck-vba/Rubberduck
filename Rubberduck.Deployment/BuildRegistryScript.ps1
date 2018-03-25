@@ -84,9 +84,9 @@ try
 		# Register the debug build on the local machine
 		if($config -eq "Debug")
 		{
-			$writer = New-Object Rubberduck.Deployment.Writers.LocalDebugRegistryWriter
-			$content = $writer.Write($entries);
-
+			# First see if there are registry script from the previous build
+			# If so, execute them to delete previous build's keys (which may
+		    # no longer exist for the current build and thus won't be overwritten)
 			$dir = ((Get-ScriptDirectory) + "\LocalRegistryEntries");
 			$regFile = $dir + "\DebugRegistryEntries.reg";
 
@@ -104,6 +104,13 @@ try
 			{
 				New-Item $dir -ItemType Directory
 			}
+			
+			# NOTE: The local writer will perform the actual registry changes; the return
+			# is a registry script with deletion instructions for the keys to be deleted
+			# in the next build.
+			$writer = New-Object Rubberduck.Deployment.Writers.LocalDebugRegistryWriter
+			$content = $writer.Write($entries);
+
 			$encoding = New-Object System.Text.ASCIIEncoding;
 			[System.IO.File]::WriteAllLines($regFile, $content, $encoding);
 		}
