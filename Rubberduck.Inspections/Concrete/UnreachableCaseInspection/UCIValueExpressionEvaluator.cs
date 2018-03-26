@@ -13,7 +13,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public class UCIValueExpressionEvaluator : IUCIValueExpressionEvaluator
     {
-
         private readonly IUCIValueFactory _valueFactory;
 
         private static Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
@@ -59,17 +58,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Tokens.Byte,
             Tokens.Boolean,
         };
-
-        internal static class MathTokens
-        {
-            public static readonly string MULT = "*";
-            public static readonly string DIV = "/";
-            public static readonly string ADD = "+";
-            public static readonly string SUBTRACT = "-";
-            public static readonly string POW = "^";
-            public static readonly string MOD = Tokens.Mod;
-            public static readonly string ADDITIVE_INVERSE = "-";
-        }
 
         public UCIValueExpressionEvaluator(IUCIValueFactory valueFactory)
         {

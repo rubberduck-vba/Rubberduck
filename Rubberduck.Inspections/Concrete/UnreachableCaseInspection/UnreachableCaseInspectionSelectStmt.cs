@@ -18,61 +18,52 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public class UnreachableCaseInspectionSelectStmt : UnreachableCaseInspectionContext, IUnreachableCaseInspectionSelectStmt
     {
         private readonly VBAParser.SelectCaseStmtContext _selectCaseContext;
+        private IUnreachableCaseInspectionRangeFactory _inspectionRangeFactory;
         private List<ParserRuleContext> _unreachableResults;
         private List<ParserRuleContext> _misMatchResults;
         private List<ParserRuleContext> _caseElseResults;
         private string _evalTypeName;
 
-        public UnreachableCaseInspectionSelectStmt(VBAParser.SelectCaseStmtContext selectCaseContext, IUCIValueResults inspValues, IUCIRangeClauseFilterFactory factory, IUCIValueFactory valueFactory)
-            : base(selectCaseContext, inspValues, factory, valueFactory)
+        public UnreachableCaseInspectionSelectStmt(VBAParser.SelectCaseStmtContext selectCaseContext, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
+            : base(selectCaseContext, inspValues, factoryFactory)
         {
             _selectCaseContext = selectCaseContext;
             _unreachableResults = new List<ParserRuleContext>();
             _misMatchResults = new List<ParserRuleContext>();
             _caseElseResults = new List<ParserRuleContext>();
             _evalTypeName = null;
+            _inspectionRangeFactory = factoryFactory.CreateUnreachableCaseInspectionRangeFactory();
         }
 
-        public string EvaluationTypeName
-        {
-            get => _evalTypeName ?? DetermineSelectCaseEvaluationTypeName(Context, _inspValues, _factoryRangeClauseFilter);
-        }
-
-        public List<ParserRuleContext> UnreachableCases => _unreachableResults;
-        public List<ParserRuleContext> MismatchTypeCases => _misMatchResults;
-        public List<ParserRuleContext> UnreachableCaseElseCases => _caseElseResults;
-        protected override bool IsResultContext<TContext>(TContext context)
-        {
-            return context is VBAParser.SelectExpressionContext;
-        }
+        public string EvaluationTypeName => _evalTypeName 
+            ?? DetermineSelectCaseEvaluationTypeName(Context, ParseTreeValueResults, FilterFactory);
 
         public void InspectForUnreachableCases()
         {
-            _evalTypeName = DetermineSelectCaseEvaluationTypeName(Context, _inspValues, _factoryRangeClauseFilter);
-            if (_evalTypeName is null || _evalTypeName.Equals(Tokens.Variant))
+            if (!InspectionCanEvaluateTypeName(EvaluationTypeName))
             {
                 return;
             }
 
-            var cummulativeRangeFilter = CreateInspectionFilter();
+            var cummulativeRangeFilter = FilterFactory.Create(EvaluationTypeName, ValueFactory);
             foreach (var caseClause in _selectCaseContext.caseClause())
             {
                 var inspectedRanges = new List<IUnreachableCaseInspectionRange>();
                 foreach (var range in caseClause.rangeClause())
                 {
-                    var inspRange = WrapContext(range);
-                    if (inspRange.IsReachable(cummulativeRangeFilter))
+                    var inspectionRange = _inspectionRangeFactory.Create(EvaluationTypeName, range, _inspValues);
+                    if (inspectionRange.IsReachable(cummulativeRangeFilter))
                     {
-                        cummulativeRangeFilter.Add(inspRange.RangeClause);
+                        cummulativeRangeFilter.Add(inspectionRange.AsFilter);
                     }
-                    inspectedRanges.Add(inspRange);
+                    inspectedRanges.Add(inspectionRange);
                 }
 
                 if (inspectedRanges.All(ir => ir.HasIncompatibleType))
                 {
                     _misMatchResults.Add(caseClause);
                 }
-                else if (inspectedRanges.All(ir => !ir.HasCoverage))
+                else if (inspectedRanges.All(ir => ir.IsUnreachable))
                 {
                     _unreachableResults.Add(caseClause);
                 }
@@ -83,19 +74,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private IUnreachableCaseInspectionRange WrapContext(VBAParser.RangeClauseContext range)
-        {
-            IUnreachableCaseInspectionRange inspectableRange = new UnreachableCaseInspectionRange(range, _inspValues, _factoryRangeClauseFilter, _factoryValue)
-            {
-                EvaluationTypeName = EvaluationTypeName
-            };
-            return inspectableRange;
-        }
+        public List<ParserRuleContext> UnreachableCases => _unreachableResults;
 
-        private IUCIRangeClauseFilter CreateInspectionFilter()
-        {
-            return _factoryRangeClauseFilter.Create(EvaluationTypeName, _factoryValue, _factoryRangeClauseFilter);
-        }
+        public List<ParserRuleContext> MismatchTypeCases => _misMatchResults;
+
+        public List<ParserRuleContext> UnreachableCaseElseCases => _caseElseResults;
+
+        private static bool InspectionCanEvaluateTypeName(string typeName) => !(typeName == string.Empty || typeName == Tokens.Variant);
 
         private string DetermineSelectCaseEvaluationTypeName(ParserRuleContext context, IUCIValueResults inspValues, IUCIRangeClauseFilterFactory factory)
         {
@@ -111,16 +96,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 _evalTypeName = result.TypeName;
             }
 
-            if (TypeNameCandBeInspected(_evalTypeName))
+            if (InspectionCanEvaluateTypeName(_evalTypeName))
             {
                 return _evalTypeName;
             }
-            return DeriveTypeFromCaseClauses(inspValues, selectStmt, factory);
+            _evalTypeName = DeriveTypeFromCaseClauses(inspValues, selectStmt);
+            return _evalTypeName;
         }
 
-        private static bool TypeNameCandBeInspected(string typeName) => !(typeName == string.Empty || typeName == Tokens.Variant);
-
-        private string DeriveTypeFromCaseClauses(IUCIValueResults inspValues, VBAParser.SelectCaseStmtContext selectStmt, IUCIRangeClauseFilterFactory factory)
+        private string DeriveTypeFromCaseClauses(IUCIValueResults inspValues, VBAParser.SelectCaseStmtContext selectStmt)
         {
             var caseClauseTypeNames = new List<string>();
             foreach (var caseClause in selectStmt.caseClause())
@@ -130,22 +114,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     if (TryDetectTypeHint(range.GetText(), out string hintTypeName))
                     {
                         caseClauseTypeNames.Add(hintTypeName);
-                        continue;
-                    }
-
-                    var inspRange = new UnreachableCaseInspectionRange(range, inspValues, factory, _factoryValue);
-                    if (inspRange.IsValueRange)
-                    {
-                        caseClauseTypeNames.Add(inspValues.GetTypeName(inspRange.RangeStart));
-                        caseClauseTypeNames.Add(inspValues.GetTypeName(inspRange.RangeEnd));
-                    }
-                    else if (inspRange.IsRelationalOp)
-                    {
-                        caseClauseTypeNames.Add(Tokens.Boolean);
                     }
                     else
                     {
-                        caseClauseTypeNames.Add(inspValues.GetTypeName(inspRange.Result));
+                        var inspRange = _inspectionRangeFactory.Create(range, inspValues);
+                        var types = inspRange.ResultContexts.Select(rc => inspValues.GetTypeName(rc));
+                        caseClauseTypeNames.AddRange(types);
                     }
                 }
             }
@@ -155,6 +129,40 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return _evalTypeName;
             }
             return string.Empty;
+        }
+
+        private static bool TryDetermineEvaluationTypeFromTypes(IEnumerable<string> typeNames, out string typeName)
+        {
+            typeName = string.Empty;
+            var typeList = typeNames.ToList();
+
+            //If everything is declared as a Variant, we do not attempt to inspect the selectStatement
+            if (typeList.All(tn => new string[] { Tokens.Variant }.Contains(tn)))
+            {
+                return false;
+            }
+            typeList.All(tn => new string[] { typeList.First() }.Contains(tn));
+            //If all match, the typeName is easy...This is the only way to return "String" or "Currency".
+            if (typeList.All(tn => new string[] { typeList.First() }.Contains(tn)))
+            {
+                typeName = typeList.First();
+                return true;
+            }
+            //Integer numbers will be evaluated using Long
+            if (typeList.All(tn => new string[] { Tokens.Long, Tokens.Integer, Tokens.Byte }.Contains(tn)))
+            {
+                typeName = Tokens.Long;
+                return true;
+            }
+
+            //Mix of Integertypes and rational number types will be evaluated using Double
+            if (typeList.All(tn => new string[] { Tokens.Long, Tokens.Integer, Tokens.Byte, Tokens.Single, Tokens.Double }.Contains(tn)))
+            {
+                typeName = Tokens.Double;
+                return true;
+            }
+
+            return false;
         }
 
         private static bool TryDetectTypeHint(string content, out string typeName)
@@ -169,4 +177,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
     }
+
+    internal static class MathTokens
+    {
+        public static readonly string MULT = "*";
+        public static readonly string DIV = "/";
+        public static readonly string ADD = "+";
+        public static readonly string SUBTRACT = "-";
+        public static readonly string POW = "^";
+        public static readonly string MOD = Tokens.Mod;
+        public static readonly string ADDITIVE_INVERSE = "-";
+    }
+
+    internal static class CompareTokens
+    {
+        public static readonly string EQ = "=";
+        public static readonly string NEQ = "<>";
+        public static readonly string LT = "<";
+        public static readonly string LTE = "<=";
+        public static readonly string GT = ">";
+        public static readonly string GTE = ">=";
+    }
+
 }

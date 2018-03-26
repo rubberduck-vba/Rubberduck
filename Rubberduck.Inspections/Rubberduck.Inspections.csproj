@@ -80,6 +80,7 @@
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionContext.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionFactoryFactory.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionRange.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionRangeFactory.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionSelectStmt.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UCIValueExpressionEvaluator.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UCIValueResults.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Concrete\UnreachableCaseInspection\UCIRangeClauseFilter.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UCIValue.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UCIParseTreeValueVisitorFactory.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionSelectStmtFactory.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />

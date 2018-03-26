@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
@@ -8,20 +9,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspectionRange
     {
-        string EvaluationTypeName { get; }
+        string EvaluationTypeName { set;  get; }
         bool HasIncompatibleType { set; get; }
-        bool HasCoverage { get; }
-        bool IsValueRange { get; }
-        bool IsLTorGT { get; }
-        bool IsSingleValue { get; }
-        bool IsRelationalOp { get; }
-        ParserRuleContext Result { get; }
-        ParserRuleContext RangeStart { get; }
-        ParserRuleContext RangeEnd { get; }
-        string IsClauseSymbol { get; }
+        bool IsUnreachable { set; get; }
         bool IsReachable(IUCIRangeClauseFilter filter);
-        IUCIRangeClauseFilter Coverage(IUCIValueResults results, string evaluationTypeName);
-        IUCIRangeClauseFilter RangeClause { set; get; }
+        IUCIRangeClauseFilter AsFilter { set; get; }
+        List<ParserRuleContext> ResultContexts { get; }
     }
 
     public class UnreachableCaseInspectionRange : UnreachableCaseInspectionContext, IUnreachableCaseInspectionRange
@@ -30,19 +23,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly bool _isLTorGT;
         private readonly bool _isSingleValue;
         private readonly bool _isRelationalOp;
-        private readonly IUCIRangeClauseFilterFactory _rangeFilterFactory;
         private string _evalTypeName;
 
-        public UnreachableCaseInspectionRange(VBAParser.RangeClauseContext context, IUCIValueResults inspValues, IUCIRangeClauseFilterFactory factory, IUCIValueFactory valueFactory) 
-            : base(context, inspValues, factory, valueFactory)
+        public UnreachableCaseInspectionRange(VBAParser.RangeClauseContext context, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
+            : base(context, inspValues, factoryFactory)
         {
             _isValueRange = Context.HasChildToken(Tokens.To);
             _isLTorGT = Context.HasChildToken(Tokens.Is);
             _isRelationalOp = Context.TryGetChildContext<VBAParser.RelationalOpContext>(out _);
             _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
-            _rangeFilterFactory = factory;
             _evalTypeName = string.Empty;
-            RangeClause = _rangeFilterFactory.Create(Tokens.Long, _factoryValue, _rangeFilterFactory);
+            IsUnreachable = false;
+            AsFilter = FilterFactory.Create(Tokens.Long, ValueFactory);
         }
 
         public string EvaluationTypeName
@@ -52,108 +44,61 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (value != _evalTypeName)
                 {
                     _evalTypeName = value;
-                    RangeClause = Coverage();
+                    AsFilter = AddFilterContent();
                 }
             }
             get => _evalTypeName;
         }
 
         public bool HasIncompatibleType { get; set; }
-        public bool HasCoverage => RangeClause.HasCoverage;
-        public bool IsValueRange => _isValueRange;
-        public bool IsLTorGT => _isLTorGT;
-        public bool IsSingleValue => _isSingleValue;
-        public bool IsRelationalOp => _isRelationalOp;
-        public IUCIRangeClauseFilter RangeClause { set; get; }
-        //public ISummaryCoverage Filter(ISummaryCoverage filter);
-        public IUCIValueResults InspectionResults { set; get; }
-        public ParserRuleContext Result => FirstResultContext();
-        public ParserRuleContext RangeStart => GetChild<VBAParser.SelectStartValueContext>();
-        public ParserRuleContext RangeEnd => GetChild<VBAParser.SelectEndValueContext>();
-        public string IsClauseSymbol => GetChild<VBAParser.ComparisonOperatorContext>().GetText();
+
+        public bool IsUnreachable { set; get; }
+
+        public IUCIRangeClauseFilter AsFilter { set; get; }
+
+        public List<ParserRuleContext> ResultContexts
+        {
+            get
+            {
+                var results = new List<ParserRuleContext>();
+                if(!TryGetFirstResultContext(out ParserRuleContext resultContext))
+                {
+                    return results;
+                }
+
+                if (_isValueRange)
+                {
+                    results.Add(SelectStartValue);
+                    results.Add(SelectEndValue);
+                }
+                else
+                {
+                    results.Add(resultContext);
+                }
+                return results;
+            }
+        }
 
         public bool IsReachable(IUCIRangeClauseFilter filter)
         {
-            var inspectedCoverage = Coverage();
-            RangeClause = inspectedCoverage.FilterUnreachableClauses(filter);
-            return RangeClause.HasCoverage;
-        }
+            if (filter.FiltersAllValues)
+            {
+                IsUnreachable = true;
+                return false;
+            }
 
-        private IUCIRangeClauseFilter Coverage()
-        {
-            var rangeClauseCoverage = _rangeFilterFactory.Create(EvaluationTypeName, _factoryValue, _rangeFilterFactory);
-            try
-            {
-                if (IsSingleValue)
-                {
-                    rangeClauseCoverage.AddSingleValue(_inspValues.GetValue(Result));
-                }
-                else if (IsValueRange)
-                {
-                    rangeClauseCoverage.AddValueRange(_inspValues.GetValue(RangeStart), _inspValues.GetValue(RangeEnd));
-                }
-                else if (IsLTorGT)
-                {
-                    rangeClauseCoverage.AddIsClause(_inspValues.GetValue(Result), IsClauseSymbol);
-                }
-                else if (IsRelationalOp)
-                {
-                    rangeClauseCoverage.AddRelationalOp(_inspValues.GetValue(Result));
-                }
-            }
-            catch (ArgumentException)
-            {
-                HasIncompatibleType = true;
-            }
-            return rangeClauseCoverage;
-        }
-
-        public IUCIRangeClauseFilter Coverage(IUCIValueResults results, string evaluationTypeName)
-        {
-            RangeClause = _rangeFilterFactory.Create(evaluationTypeName, _factoryValue, _rangeFilterFactory);
-            try
-            {
-                if (IsSingleValue)
-                {
-                    RangeClause.AddSingleValue(results.GetValue(Result));
-                }
-                else if (IsValueRange)
-                {
-                    RangeClause.AddValueRange(results.GetValue(RangeStart), results.GetValue(RangeEnd));
-                }
-                else if (IsLTorGT)
-                {
-                    RangeClause.AddIsClause(results.GetValue(Result), IsClauseSymbol);
-                }
-                else if (IsRelationalOp)
-                {
-                    RangeClause.AddRelationalOp(results.GetValue(Result));
-                }
-            }
-            catch (ArgumentException)
-            {
-                HasIncompatibleType = true;
-            }
-            return RangeClause;
+            var inspectedCoverage = AddFilterContent();
+            AsFilter = inspectedCoverage.FilterUnreachableClauses(filter);
+            IsUnreachable = !AsFilter.HasCoverage;
+            return AsFilter.HasCoverage;
         }
 
         public override string ToString()
         {
-            return $"{Context.GetText()} ({RangeClause.ToString()})";
+            return $"{Context.GetText()} ({AsFilter.ToString()})";
         }
 
-        protected ParserRuleContext FirstResultContext()
-        {
-            var resultContexts = Context.children.Where(p => p is ParserRuleContext).Where(ch => IsResultContext((ParserRuleContext)ch)).Select(k => (ParserRuleContext)k);
-            if (resultContexts.Any())
-            {
-                return resultContexts.First();
-            }
-            //TODO: exception?
-            return null;
-        }
-
-        protected override bool IsResultContext<TContext>(TContext context)
+        private bool IsResultContext<TContext>(TContext context)
         {
             return UCIParseTreeValueVisitor.IsMathContext(context)
                     || UCIParseTreeValueVisitor.IsLogicalContext(context)
@@ -163,6 +108,58 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     || context is VBAParser.SelectEndValueContext
                     || context is VBAParser.LExprContext
                     || context is VBAParser.LiteralExprContext;
+        }
+
+        private string IsClauseSymbol => Context.GetChild<VBAParser.ComparisonOperatorContext>().GetText(); // GetChild<VBAParser.ComparisonOperatorContext>().GetText();
+
+        private ParserRuleContext SelectStartValue => Context.GetChild<VBAParser.SelectStartValueContext>();
+
+        private ParserRuleContext SelectEndValue => Context.GetChild<VBAParser.SelectEndValueContext>();
+
+        private IUCIRangeClauseFilter AddFilterContent()
+        {
+            var rangeClauseFilter = FilterFactory.Create(EvaluationTypeName, ValueFactory);
+            try
+            {
+                if (!TryGetFirstResultContext(out ParserRuleContext resultContext))
+                {
+                    return rangeClauseFilter;
+                 }
+
+                if (_isSingleValue)
+                {
+                    rangeClauseFilter.AddSingleValue(ParseTreeValueResults.GetValue(resultContext));
+                }
+                else if (_isValueRange)
+                {
+                    rangeClauseFilter.AddValueRange(ParseTreeValueResults.GetValue(SelectStartValue), ParseTreeValueResults.GetValue(SelectEndValue));
+                }
+                else if (_isLTorGT)
+                {
+                    rangeClauseFilter.AddIsClause(ParseTreeValueResults.GetValue(resultContext), IsClauseSymbol);
+                }
+                else if (_isRelationalOp)
+                {
+                    rangeClauseFilter.AddRelationalOp(ParseTreeValueResults.GetValue(resultContext));
+                }
+            }
+            catch (ArgumentException)
+            {
+                HasIncompatibleType = true;
+            }
+            return rangeClauseFilter;
+        }
+
+        private bool TryGetFirstResultContext( out ParserRuleContext result)
+        {
+            result = null;
+            var resultContexts = Context.children.Where(p => p is ParserRuleContext).Where(ch => IsResultContext((ParserRuleContext)ch)).Select(k => (ParserRuleContext)k);
+            if (resultContexts.Any())
+            {
+                result = resultContexts.First();
+                return true;
+            }
+            return false;
         }
     }
 }

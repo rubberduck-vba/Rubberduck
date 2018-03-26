@@ -5,21 +5,10 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    internal static class CompareTokens
-    {
-        public static readonly string EQ = "=";
-        public static readonly string NEQ = "<>";
-        public static readonly string LT = "<";
-        public static readonly string LTE = "<=";
-        public static readonly string GT = ">";
-        public static readonly string GTE = ">=";
-    }
-
     public interface IUCIRangeClauseFilter
     {
         bool HasCoverage { get; }
         bool FiltersAllValues { get; }
-        bool CoversTrueFalse { get; }
         string TypeName { set; get; }
         IUCIRangeClauseFilter FilterUnreachableClauses(IUCIRangeClauseFilter filter);
         void Add(IUCIRangeClauseFilter newSummary);
@@ -27,25 +16,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         void AddIsClause(IUCIValue value, string opSymbol);
         void AddSingleValue(IUCIValue value);
         void AddRelationalOp(IUCIValue value);
-        void AddExtents(IUCIValue minValue, IUCIValue maxValue);
     }
 
     public interface IUCIRangeFilterTestSupport<T>
     {
         bool TryGetIsLTValue(out T isLT);
-        void RemoveIsLTClause();
         bool TryGetIsGTValue(out T isGT);
-        void RemoveIsGTClause();
-        List<Tuple<T, T>> RangeValues { get; }
-        void RemoveRangeValues(List<Tuple<T, T>> toRemove);
-        HashSet<string> RelationalOps { get; }
         HashSet<T> SingleValues { get; }
     }
 
     public class UCIRangeClauseFilter<T> : IUCIRangeClauseFilter, IUCIRangeFilterTestSupport<T> where T : IComparable<T>
     {
         private readonly IUCIValueFactory _valueFactory;
-        private readonly IUCIRangeClauseFilterFactory _summaryFactory;
+        private readonly IUCIRangeClauseFilterFactory _filterFactory;
         private readonly Func<IUCIValue, T> _tConverter;
         private readonly T _trueValue;
         private readonly T _falseValue;
@@ -55,17 +38,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private HashSet<T> _singleValues;
         private HashSet<string> _relationalOps;
 
+        private bool _hasExtents;
         private T _minExtent;
-        bool _hasExtents;
         private T _maxExtent;
-
-        private static bool ContainsBooleans => typeof(T) == typeof(bool);
-        private static bool ContainsIntegerNumbers => typeof(T) == typeof(long) || typeof(T) == typeof(Int32) || typeof(T) == typeof(byte);
 
         public UCIRangeClauseFilter(string typeName, IUCIValueFactory valueFactory, IUCIRangeClauseFilterFactory summaryFactory, Func<IUCIValue, T> tConverter)
         {
             _valueFactory = valueFactory;
-            _summaryFactory = summaryFactory;
+            _filterFactory = summaryFactory;
             _tConverter = tConverter;
 
             _ranges = new List<Tuple<T, T>>();
@@ -73,8 +53,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _isClause = new Dictionary<string, List<T>>();
             _relationalOps = new HashSet<string>();
             _hasExtents = false;
-            _trueValue = _tConverter(_valueFactory.Create("True", TypeName));
-            _falseValue = _tConverter(_valueFactory.Create("False", TypeName));
+            _trueValue = _tConverter(_valueFactory.Create("True", typeName));
+            _falseValue = _tConverter(_valueFactory.Create("False", typeName));
             TypeName = typeName;
         }
 
@@ -83,6 +63,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             get
             {
+
                 var coversAll = false;
                 var hasLTFilter = TryGetIsLTValue(out T ltValue);
                 var hasGTFilter = TryGetIsGTValue(out T gtValue);
@@ -98,7 +79,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     var lt = ToLong(ltValue);
                     var gt = ToLong(gtValue);
                     coversAll = gt - lt + 1 <= RangesValuesCount() + SingleValues.Count()
-                        || gt == lt && RangesCoverValue(ltValue);
+                        || gt == lt && RangesFilterValue(ltValue);
                 }
                 else if (ContainsBooleans && !coversAll)
                 {
@@ -108,11 +89,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return coversAll;
             }
         }
-
-        //ISummaryCoverage
-        public bool CoversTrueFalse => _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
-            || _ranges.Any(rg => rg.Item1.CompareTo(_trueValue) <= 0 && rg.Item2.CompareTo(_falseValue) >= 0)
-            || IsClausesCoversTrueFalse();
 
         //ISummaryCoverage
         public string TypeName { get; set; }
@@ -152,7 +128,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var relOps = itf.RelationalOps;
             foreach (var op in relOps)
             {
-                AddRelationalOpImpl(op); // _valueFactory.Create(op,TypeName));
+                AddRelationalOpImpl(op);
             }
 
             var singleVals = itf.SingleValues;
@@ -160,16 +136,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 AddSingleValueImpl(val);
             }
-        }
-
-        //ISummaryCoverage
-        public void AddExtents(IUCIValue min, IUCIValue max)
-        {
-            _hasExtents = true;
-            _minExtent = _tConverter(min);
-            _maxExtent = _tConverter(max);
-            AddIsClauseImpl(_minExtent, CompareTokens.LT);
-            AddIsClauseImpl(_maxExtent, CompareTokens.GT);
         }
 
         //ISummaryCoverage
@@ -225,12 +191,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 throw new ArgumentException($"Argument is not of type SummaryCoverage<{typeof(T).ToString()}>", "summary");
             }
 
-            var filteredCoverage = _summaryFactory.Create(TypeName, _valueFactory, _summaryFactory);
+            var filteredCoverage = _filterFactory.Create(TypeName, _valueFactory);
 
             filteredCoverage = (UCIRangeClauseFilter<T>)MemberwiseClone();
             if (!HasCoverage || filter.FiltersAllValues)
             {
-                return _summaryFactory.Create(TypeName, _valueFactory, _summaryFactory);
+                return _filterFactory.Create(TypeName, _valueFactory);
             }
 
             if (!filter.HasCoverage && !_hasExtents)
@@ -240,94 +206,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             filteredCoverage = RemoveClausesCoveredBy((UCIRangeClauseFilter<T>)filteredCoverage, (UCIRangeClauseFilter<T>)filter);
             return filteredCoverage;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is UCIRangeClauseFilter<T> element))
-            {
-                return false;
-            }
-            if (!(element is IUCIRangeClauseFilter))
-            {
-                return false;
-            }
-            var test = element;
-            if (test.SingleValues.Count != SingleValues.Count
-                || test.RangeValues.Count != RangeValues.Count
-                || test.RelationalOps.Count != RelationalOps.Count)
-            {
-                return false;
-            }
-
-            var clausesMatch = true;
-            if (test.TryGetIsLTValue(out T isLT))
-            {
-                if (TryGetIsLTValue(out T myLT))
-                {
-                    if (isLT.CompareTo(myLT) != 0)
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            if (test.TryGetIsGTValue(out T testGT))
-            {
-                if (TryGetIsGTValue(out T myGT))
-                {
-                    if (testGT.CompareTo(myGT) != 0)
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            if (!clausesMatch)
-            {
-                return false;
-            }
-            var theRanges = test._ranges.All(rg => _ranges.Contains(rg));
-            var singles = test._singleValues.All(rg => _singleValues.Contains(rg));
-            var relOps = test._relationalOps.All(ro => _relationalOps.Contains(ro));
-            return theRanges && relOps && singles;
-        }
-
-        public override string ToString()
-        {
-            var descriptors = new List<string>();
-            descriptors = AddDesciptor(GetIsLTClausesDescriptor(), descriptors);
-            descriptors = AddDesciptor(GetIsGTClausesDescriptor(), descriptors);
-            descriptors = AddDesciptor(GetRangesDescriptor(), descriptors);
-            descriptors = AddDesciptor(GetSinglesDescriptor(), descriptors);
-            descriptors = AddDesciptor(GetRelOpDescriptor(), descriptors);
-            var descriptor = string.Empty;
-            foreach (var desc in descriptors)
-            {
-                descriptor = descriptor + desc + "!";
-            }
-            if (descriptor.Length > 0)
-            {
-                return descriptor.Substring(0, descriptor.Length - 1);
-            }
-            return string.Empty;
-        }
-
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
-
-        //ISummaryCoverageTestSupport<T>
-        public void RemoveIsLTClause()
-        {
-            RemoveIsClauseImpl(CompareTokens.LT);
         }
 
         //ISummaryCoverageTestSupport<T>
@@ -346,12 +224,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         //ISummaryCoverageTestSupport<T>
-        public void RemoveIsGTClause()
-        {
-            RemoveIsClauseImpl(CompareTokens.GT);
-        }
-
-        //ISummaryCoverageTestSupport<T>
         public bool TryGetIsGTValue(out T isGT)
         {
             isGT = default;
@@ -367,10 +239,125 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         //ISummaryCoverageTestSupport<T>
-        public List<Tuple<T, T>> RangeValues => _ranges;
+        public HashSet<T> SingleValues => _singleValues;
 
-        //ISummaryCoverageTestSupport<T>
-        public void RemoveRangeValues(List<Tuple<T, T>> toRemove)
+        public override bool Equals(object obj)
+        {
+            if (!(obj is UCIRangeClauseFilter<T> filter))
+            {
+                return false;
+            }
+            if (!(filter is IUCIRangeClauseFilter))
+            {
+                return false;
+            }
+
+            if (filter.SingleValues.Count != SingleValues.Count
+                || filter.RangeValues.Count != RangeValues.Count
+                || filter.RelationalOps.Count != RelationalOps.Count)
+            {
+                return false;
+            }
+
+            var clausesMatch = true;
+            if (filter.TryGetIsLTValue(out T isLT))
+            {
+                if (TryGetIsLTValue(out T myLT))
+                {
+                    if (isLT.CompareTo(myLT) != 0)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            if (filter.TryGetIsGTValue(out T testGT))
+            {
+                if (TryGetIsGTValue(out T myGT))
+                {
+                    if (testGT.CompareTo(myGT) != 0)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            if (!clausesMatch)
+            {
+                return false;
+            }
+            var theRanges = filter._ranges.All(rg => _ranges.Contains(rg));
+            var singles = filter._singleValues.All(rg => _singleValues.Contains(rg));
+            var relOps = filter._relationalOps.All(ro => _relationalOps.Contains(ro));
+            return theRanges && relOps && singles;
+        }
+
+        public override string ToString()
+        {
+            var descriptors = new List<string>();
+            descriptors = AddDescriptor(GetIsClausesDescriptor(CompareTokens.LT), descriptors);
+            descriptors = AddDescriptor(GetIsClausesDescriptor(CompareTokens.GT), descriptors);
+            descriptors = AddDescriptor(GetRangesDescriptor(), descriptors);
+            descriptors = AddDescriptor(GetSinglesDescriptor(), descriptors);
+            descriptors = AddDescriptor(GetRelOpDescriptor(), descriptors);
+            var descriptor = string.Empty;
+            foreach (var desc in descriptors)
+            {
+                descriptor = descriptor + desc + "!";
+            }
+            if (descriptor.Length > 0)
+            {
+                return descriptor.Substring(0, descriptor.Length - 1);
+            }
+            return string.Empty;
+        }
+
+        private static List<string> AddDescriptor(string descriptor, List<string> content)
+        {
+            if (descriptor.Length > 0)
+            {
+                content.Add(descriptor);
+            }
+            return content;
+        }
+
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+
+        internal void AddExtents(IUCIValue min, IUCIValue max)
+        {
+            _hasExtents = true;
+            _minExtent = _tConverter(min);
+            _maxExtent = _tConverter(max);
+            AddIsClauseImpl(_minExtent, CompareTokens.LT);
+            AddIsClauseImpl(_maxExtent, CompareTokens.GT);
+        }
+
+        private bool FiltersTrueFalse => _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
+            || _ranges.Any(rg => rg.Item1.CompareTo(_trueValue) <= 0 && rg.Item2.CompareTo(_falseValue) >= 0)
+            || IsClausesCoversTrueFalse();
+
+        private void RemoveIsLTClause()
+        {
+            RemoveIsClauseImpl(CompareTokens.LT);
+        }
+
+        private void RemoveIsGTClause()
+        {
+            RemoveIsClauseImpl(CompareTokens.GT);
+        }
+
+        private List<Tuple<T, T>> RangeValues => _ranges;
+
+        private void RemoveRangeValues(List<Tuple<T, T>> toRemove)
         {
             foreach (var tp in toRemove)
             {
@@ -378,11 +365,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        //ISummaryCoverageTestSupport<T>
-        public HashSet<string> RelationalOps => _relationalOps;
+        private HashSet<string> RelationalOps => _relationalOps;
 
-        //ISummaryCoverageTestSupport<T>
-        public HashSet<T> SingleValues => _singleValues;
+        private static bool ContainsBooleans => typeof(T) == typeof(bool);
+
+        private static bool ContainsIntegerNumbers => typeof(T) == typeof(long) || typeof(T) == typeof(Int32) || typeof(T) == typeof(byte);
 
         private IUCIRangeClauseFilter RemoveClausesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
         {
@@ -510,7 +497,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private UCIRangeClauseFilter<T> RemoveRelationalOpsCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
         {
             List<string> toRemove = new List<string>();
-            if (((IUCIRangeClauseFilter)removalSpec).CoversTrueFalse)
+            if (removalSpec.FiltersTrueFalse)
             {
                 removeFrom.RelationalOps.Clear();
             }
@@ -529,22 +516,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return removeFrom;
         }
 
-        private HashSet<long> FlattenRangeValuesAsLongs()
-        {
-            var discreteRangeValues = new HashSet<long>();
-            if (ContainsIntegerNumbers)
-            {
-                foreach (var range in _ranges)
-                {
-                    for (var value = ToLong(range.Item1); value <= ToLong(range.Item2); value++)
-                    {
-                        discreteRangeValues.Add(value);
-                    }
-                }
-            }
-            return discreteRangeValues;
-        }
-
         private void AddIsClauseImpl(T val, string opSymbol)
         {
             if (ContainsBooleans)
@@ -553,17 +524,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 //TODO: verify empirical test - do not have data for Is <> 1
                 if (opSymbol.Equals(CompareTokens.NEQ))
                 {
-                    AddSingleValueImpl(ConvertToT(!bVal));
+                    AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
                 }
                 else if (opSymbol.Equals(CompareTokens.EQ))
                 {
-                    AddSingleValueImpl(ConvertToT(bVal));
+                    AddSingleValueImpl(ConvertToContainedGeneric(bVal));
                 }
                 else if (opSymbol.Equals(CompareTokens.GT))
                 {
                     if (bVal)
                     {
-                        AddSingleValueImpl(ConvertToT(!bVal));
+                        AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
                     }
                     //TODO: verify empirical test
                     //TODO: test that this results in a unreachable case
@@ -573,7 +544,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (!bVal)
                     {
-                        AddSingleValueImpl(ConvertToT(!bVal));
+                        AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
                     }
                     //TODO: test that this results in a unreachable case
                     //TODO: verify empirical test
@@ -609,13 +580,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 _isClause[CompareTokens.LT].Add(val);
                 _isClause[CompareTokens.GT].Add(val);
             }
+
+            FilterExistingRanges();
+            FilterExistingSingles();
+            TrimExistingRanges(true);
+            TrimExistingRanges(false);
         }
 
         private void AddSingleValueImpl(T value)
         {
-            if (IsLTCoversValue(value) 
-                || IsGTCoversValue(value)
-                || RangesCoverValue(value))
+            if (IsClausesFilterValue(value)
+                || RangesFilterValue(value))
             {
                 return;
             }
@@ -624,7 +599,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void AddRelationalOpImpl(string value)
         {
-            if (!CoversTrueFalse)
+            if (!FiltersTrueFalse)
             {
                 _relationalOps.Add(value);
                 return;
@@ -636,7 +611,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return long.Parse(value.ToString());
         }
 
-        private bool IsLTCoversValue(T value)
+        private bool IsClausesFilterValue(T value) => IsLTFiltersValue(value) || IsGTFiltersValue(value);
+
+        private bool IsLTFiltersValue(T value)
         {
             if (TryGetIsLTValue(out T isLT))
             {
@@ -645,7 +622,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private bool IsGTCoversValue(T value)
+        private bool IsGTFiltersValue(T value)
         {
             if (TryGetIsGTValue(out T isGT))
             {
@@ -656,26 +633,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void AddValueRangeImpl(T inputStart, T inputEnd)
         {
+            if (ContainsBooleans)
+            {
+                SingleValues.Add(inputStart);
+                SingleValues.Add(inputEnd);
+                return;
+            }
+
             var swapValueOrder = inputStart.CompareTo(inputEnd) > 0;
             T start = swapValueOrder ? inputEnd : inputStart;
             T end = swapValueOrder ? inputStart : inputEnd;
 
-            if (ContainsBooleans)
-            {
-                SingleValues.Add(start);
-                SingleValues.Add(end);
-                return;
-            }
-
-            if (IsLTCoversValue(end) 
-                || IsGTCoversValue(start)
-                || _ranges.Any(t => t.Item1.CompareTo(start) <= 0 && t.Item2.CompareTo(end) >= 0))
+            if (IsClausesFilterRange(start, end) || RangesFilterRange(start, end))
             {
                 return;
             }
 
-            start = IsLTCoversValue(start) ? GetIsLTValue() : start;
-            end = IsGTCoversValue(end) ? GetIsGTValue() : end;
+            start = IsLTFiltersValue(start) ? _isClause[CompareTokens.LT].Max() : start;
+            end = IsGTFiltersValue(end) ? _isClause[CompareTokens.GT].Min() : end;
 
             if (!_ranges.Any())
             {
@@ -691,7 +666,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     _ranges.Add(new Tuple<T, T>(start, end));
                 }
-             }
+            }
+
+            ConcatenateExistingRanges();
+            FilterExistingRanges();
+            FilterExistingSingles();
+        }
+
+        private void ConcatenateExistingRanges()
+        {
+            if (!ContainsIntegerNumbers)
+            {
+                return;
+            }
 
             if (_ranges.Count() > 1)
             {
@@ -702,25 +689,43 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     ConcatenateRanges();
                 } while (_ranges.Count() < preConcatentateCount && _ranges.Count() > 1);
             }
-            _ranges.ForEach(rg => RemoveSinglesCoveredByRange(rg));
         }
 
-        private void RemoveSinglesCoveredByRange(Tuple<T,T> range)
+        private void TrimExistingRanges(bool trimStart)
         {
-            var toRemove = _singleValues.Where(sv => range.Item1.CompareTo(sv) <= 0 && range.Item2.CompareTo(sv) >= 0).ToList();
-            toRemove.ForEach(tr => _singleValues.Remove(tr));
+            var rangesToTrim = trimStart ? 
+                 _ranges.Where(rg => IsLTFiltersValue(rg.Item1))
+                 : _ranges.Where(rg => IsGTFiltersValue(rg.Item2));
+
+            var replacementRanges = new List<Tuple<T, T>>();
+            foreach (var range in rangesToTrim)
+            {
+                var newRange = trimStart ?
+                    new Tuple<T, T>(_isClause[CompareTokens.LT].Max(), range.Item2)
+                        : new Tuple<T, T>(range.Item1, _isClause[CompareTokens.GT].Min());
+
+                replacementRanges.Add(newRange);
+            }
+            rangesToTrim.ToList().ForEach(rg => _ranges.Remove(rg));
+            _ranges.AddRange(replacementRanges);
         }
 
-        private bool CoversRange(T start, T end)
-        {
-            var existingCoversProposed = _ranges.Where(t => t.Item1.CompareTo(start) <= 0 && t.Item2.CompareTo(end) >= 0);
-            return existingCoversProposed.Any();
-        }
+        private void FilterExistingRanges()
+            => _ranges.Where(rg => IsClausesFilterRange(rg.Item1, rg.Item2))
+            .ToList().ForEach(tr => _ranges.Remove(tr));
 
-        private bool RangesCoverValue(T value)
-        {
-            return _ranges.Any(rg => rg.Item1.CompareTo(value) <= 0 && rg.Item2.CompareTo(value) >= 0);
-        }
+        private void FilterExistingSingles()
+            => _singleValues.Where(sv => IsClausesFilterValue(sv) || RangesFilterValue(sv))
+            .ToList().ForEach(tr => _singleValues.Remove(tr));
+
+        private bool IsClausesFilterRange(T start, T end)
+            => IsLTFiltersValue(end) || IsGTFiltersValue(start);
+
+        private bool RangesFilterRange(T start, T end)
+            => _ranges.Any(t => t.Item1.CompareTo(start) <= 0 && t.Item2.CompareTo(end) >= 0);
+
+        private bool RangesFilterValue(T value) 
+            => _ranges.Any(rg => rg.Item1.CompareTo(value) <= 0 && rg.Item2.CompareTo(value) >= 0);
 
         private void ConcatenateRanges()
         {
@@ -747,7 +752,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             if (concatenatedRanges.Any())
             {
                 var allRanges = new Dictionary<int, Tuple<T, T>>();
-                for(int idx = 0; idx < _ranges.Count; idx++)
+                for (int idx = 0; idx < _ranges.Count; idx++)
                 {
                     allRanges.Add(idx, _ranges[idx]);
                 }
@@ -757,12 +762,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var tRanges = new List<Tuple<T, T>>();
                 foreach (var ral in sortedRanges)
                 {
-                    tRanges.Add( new Tuple<T, T>(ConvertToT(ral.Item1), ConvertToT(ral.Item2)));
+                    tRanges.Add(new Tuple<T, T>(ConvertToContainedGeneric(ral.Item1), ConvertToContainedGeneric(ral.Item2)));
                 }
 
                 foreach (var ral in concatenatedRanges)
                 {
-                    tRanges.Add(new Tuple<T, T>(ConvertToT(ral.Item1), ConvertToT(ral.Item2)));
+                    tRanges.Add(new Tuple<T, T>(ConvertToContainedGeneric(ral.Item1), ConvertToContainedGeneric(ral.Item2)));
                 }
 
                 _ranges.Clear();
@@ -788,7 +793,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return result;
         }
 
-        private T ConvertToT<K>(K value)
+        private T ConvertToContainedGeneric<K>(K value)
         {
             var uciVal = _valueFactory.Create(value.ToString(), TypeName);
             return _tConverter(uciVal);
@@ -821,15 +826,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return rangeIsAdded;
         }
 
-        private static List<string> AddDesciptor(string descriptor, List<string> content)
-        {
-            if (descriptor.Length > 0)
-            {
-                content.Add(descriptor);
-            }
-            return content;
-        }
-
         private void RemoveIsClauseImpl(string opSymbol)
         {
             if (_isClause.Keys.Contains(opSymbol))
@@ -851,6 +847,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (ContainsBooleans)
             {
+                //TODO: Truth table
                 return false;
             }
             var coversTrueFalse = false;
@@ -865,40 +862,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return coversTrueFalse;
         }
 
-        private T GetIsLTValue()
-        {
-            return _isClause[CompareTokens.LT].Max();
-        }
-
-        private T GetIsGTValue()
-        {
-            return _isClause[CompareTokens.GT].Min();
-        }
-
         private string GetSinglesDescriptor()
         {
-            var series = string.Empty;
-            if (_singleValues.Any())
-            {
-                foreach (var val in _singleValues)
-                {
-                    series = series + val.ToString() + ",";
-                }
-                return $"Single={series.Substring(0, series.Length - 1)}";
-            }
-            return series;
+            return GetSingleValueTypeDescriptor(_singleValues, "Single=");
         }
 
         private string GetRelOpDescriptor()
         {
+            return GetSingleValueTypeDescriptor(_relationalOps, "RelOp=");
+        }
+
+        private string GetSingleValueTypeDescriptor<K>(HashSet<K> values, string prefix)
+        {
             var series = string.Empty;
-            if (_relationalOps.Any())
+            if (values.Any())
             {
-                foreach (var val in _relationalOps)
+                foreach (var val in values)
                 {
                     series = series + val.ToString() + ",";
                 }
-                return $"RelOp={series.Substring(0, series.Length - 1)}";
+                return $"{prefix}{series.Substring(0, series.Length - 1)}";
             }
             return series;
         }
@@ -917,17 +900,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return series;
         }
 
-        private string GetIsLTClausesDescriptor()
-        {
-            return GetIsClausesDescriptor(CompareTokens.LT, "IsLT=");
-        }
-
-        private string GetIsGTClausesDescriptor()
-        {
-            return GetIsClausesDescriptor(CompareTokens.GT, "IsGT=");
-        }
-
-        private string GetIsClausesDescriptor(string opSymbol, string prefix)
+        private string GetIsClausesDescriptor(string opSymbol)
         {
             var result = string.Empty;
             if (_isClause.TryGetValue(opSymbol, out List<T> values))
@@ -935,6 +908,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var isLT = opSymbol.Equals(CompareTokens.LT);
                 var value = isLT ? values.Max() : values.Min();
                 var extentToCompare = isLT ? _minExtent : _maxExtent;
+                var prefix = isLT ? "IsLT=" : "IsGT=";
                 if (!(_hasExtents && value.CompareTo(extentToCompare) == 0))
                 {
                     result = $"{prefix}{value.ToString()}";
@@ -943,5 +917,4 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return result;
         }
     }
-
 }

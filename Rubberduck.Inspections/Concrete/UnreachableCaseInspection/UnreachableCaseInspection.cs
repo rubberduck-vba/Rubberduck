@@ -15,47 +15,29 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
-        private IUnreachableCaseInspectionFactoryFactory _factoriesFactory;
-        private IUCIRangeClauseFilterFactory _summaryCoverageFactory;
-        private IUCIParseTreeValueVisitorFactory _visitorFactory;
+        private IUCIParseTreeValueVisitorFactory _parseTreeVisitorFactory;
+        private IUnreachableCaseInspectionSelectStmtFactory _selectStmtFactory;
         private IUCIValueFactory _valueFactory;
-        private enum ClauseEvaluationResult { Unreachable, MismatchType, CaseElse };
+        private IUCIParseTreeValueVisitor _parseTreeValueVisitor;
+        private enum CaseInpectionResult { Unreachable, MismatchType, CaseElse };
 
-        private Dictionary<ClauseEvaluationResult, string> ResultMessages = new Dictionary<ClauseEvaluationResult, string>()
+        private Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
         {
-            [ClauseEvaluationResult.Unreachable] = InspectionsUI.UnreachableCaseInspection_Unreachable,
-            [ClauseEvaluationResult.MismatchType] = InspectionsUI.UnreachableCaseInspection_TypeMismatch,
-            [ClauseEvaluationResult.CaseElse] = InspectionsUI.UnreachableCaseInspection_CaseElse
+            [CaseInpectionResult.Unreachable] = InspectionsUI.UnreachableCaseInspection_Unreachable,
+            [CaseInpectionResult.MismatchType] = InspectionsUI.UnreachableCaseInspection_TypeMismatch,
+            [CaseInpectionResult.CaseElse] = InspectionsUI.UnreachableCaseInspection_CaseElse
         };
 
         public UnreachableCaseInspection(RubberduckParserState state) : base(state)
         {
-            //TODO_Question: Candidate(s) for IoCInstaller?  Or...not appropriate?
-            _summaryCoverageFactory = FactoriesFactory.CreateSummaryClauseFactory();
-            _visitorFactory = FactoriesFactory.CreateVisitorFactory();
-            _valueFactory = FactoriesFactory.CreateValueFactory();
-        }
+            //TODO_Question: IUnreachableCaseInspectionFactoryFactory - candidate for IoCInstaller?
+            var factoriesFactory = new UnreachableCaseInspectionFactoryFactory();
 
-        public IUnreachableCaseInspectionFactoryFactory FactoriesFactory
-        {
-            get
-            {
-                if (_factoriesFactory is null)
-                {
-                    _factoriesFactory = new UnreachableCaseInspectionFactoryFactory();
-                }
-                return _factoriesFactory;
-            }
-            set
-            {
-                if (value != _factoriesFactory)
-                {
-                    _factoriesFactory = value;
-                    _summaryCoverageFactory = _factoriesFactory.CreateSummaryClauseFactory();
-                    _visitorFactory = _factoriesFactory.CreateVisitorFactory();
-                    _valueFactory = _factoriesFactory.CreateValueFactory();
-                }
-            }
+            _selectStmtFactory = factoriesFactory.CreateUnreachableCaseInspectionSelectStmtFactory();
+            _valueFactory = factoriesFactory.CreateIUCIValueFactory();
+            _parseTreeVisitorFactory = factoriesFactory.CreateIUCIParseTreeValueVisitorFactory();
+
+            _parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
         }
 
         public override IInspectionListener Listener { get; } =
@@ -63,30 +45,30 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private List<IInspectionResult> InspectionResults { set; get; } = new List<IInspectionResult>();
 
+        private UCIValueResults ValueResults { get; } = new UCIValueResults();
+
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var qualifiedSelectCaseStmts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
+            _parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
             {
-                var selectCaseVisitor = _visitorFactory.Create(State);
-                var selectCaseContext = (VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context;
-                var selectStmtValueResults = selectCaseContext.Accept(selectCaseVisitor);
-                var inspectableSelectCaseStmt = ApplyInspectionWrapper(selectCaseContext, selectStmtValueResults);
+                qualifiedSelectCaseStmt.Context.Accept(_parseTreeValueVisitor);
+            }
 
-                inspectableSelectCaseStmt.InspectForUnreachableCases();
+            foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
+            {
+                var selectStmt = _selectStmtFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults);
 
-                inspectableSelectCaseStmt.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[ClauseEvaluationResult.Unreachable]));
-                inspectableSelectCaseStmt.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[ClauseEvaluationResult.MismatchType]));
-                inspectableSelectCaseStmt.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[ClauseEvaluationResult.CaseElse]));
+                selectStmt.InspectForUnreachableCases();
+
+                selectStmt.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[CaseInpectionResult.Unreachable]));
+                selectStmt.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.MismatchType]));
+                selectStmt.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInpectionResult.CaseElse]));
             }
             return InspectionResults;
-        }
-
-        private IUnreachableCaseInspectionSelectStmt ApplyInspectionWrapper(VBAParser.SelectCaseStmtContext selectCaseContext, IUCIValueResults selectStmtValueResults)
-        {
-            return new UnreachableCaseInspectionSelectStmt(selectCaseContext, selectStmtValueResults, _summaryCoverageFactory, _valueFactory);
         }
 
         private void CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)

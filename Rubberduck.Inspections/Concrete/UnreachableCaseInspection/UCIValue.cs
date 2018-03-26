@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (value is null)
             {
-                throw new ArgumentException("null value passed to UnreachableCaseInspectionValue");
+                throw new ArgumentNullException("null 'value' argument passed to UCIValue");
             }
 
             ParsesToConstantValue = IsStringConstant(value);

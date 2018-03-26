@@ -3,27 +3,44 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspectionFactoryFactory
     {
-        IUCIParseTreeValueVisitorFactory CreateVisitorFactory();
-        IUCIValueFactory CreateValueFactory();
-        IUCIRangeClauseFilterFactory CreateSummaryClauseFactory();
+        IUCIParseTreeValueVisitorFactory CreateIUCIParseTreeValueVisitorFactory();
+        IUCIValueFactory CreateIUCIValueFactory();
+        IUCIRangeClauseFilterFactory CreateIUCIRangeClauseFilterFactory();
+        IUnreachableCaseInspectionSelectStmtFactory CreateUnreachableCaseInspectionSelectStmtFactory();
+        IUnreachableCaseInspectionRangeFactory CreateUnreachableCaseInspectionRangeFactory();
     }
 
     public class UnreachableCaseInspectionFactoryFactory : IUnreachableCaseInspectionFactoryFactory
     {
-        public IUCIParseTreeValueVisitorFactory CreateVisitorFactory()
+        public IUCIParseTreeValueVisitorFactory CreateIUCIParseTreeValueVisitorFactory()
         {
             return new UCIParseTreeValueVisitorFactory();
         }
 
-        public IUCIValueFactory CreateValueFactory()
+        public IUCIValueFactory CreateIUCIValueFactory()
         {
             return new UCIValueFactory();
         }
 
-        public IUCIRangeClauseFilterFactory CreateSummaryClauseFactory()
+        public IUCIRangeClauseFilterFactory CreateIUCIRangeClauseFilterFactory()
         {
             return new UCIRangeClauseFilterFactory();
         }
-    }
 
+        public IUnreachableCaseInspectionSelectStmtFactory CreateUnreachableCaseInspectionSelectStmtFactory()
+        {
+            return new UnreachableCaseInspectionSelectStmtFactory()
+            {
+                FactoryFactory = this
+            };
+        }
+
+        public IUnreachableCaseInspectionRangeFactory CreateUnreachableCaseInspectionRangeFactory()
+        {
+            return new UnreachableCaseInspectionRangeFactory()
+            {
+                FactoryFactory = this
+            };
+        }
+    }
 }

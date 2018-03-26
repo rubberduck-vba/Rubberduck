@@ -23,7 +23,27 @@ namespace RubberduckTests.Inspections
         private IUCIValueFactory _valueFactory;
         private IUCIValueExpressionEvaluator _calculator;
         private IUCIParseTreeValueVisitorFactory _visitorFactory;
-        private IUCIRangeClauseFilterFactory _summaryClauseFactory;
+        private IUCIRangeClauseFilterFactory _rangeClauseFilterFactory;
+        private IUnreachableCaseInspectionRangeFactory _rangeFactory;
+        private IUnreachableCaseInspectionSelectStmtFactory _selectStmtFactory;
+        private Dictionary<ParserRuleContext, IUCIValue> _inspectionResults;
+
+        private void Test_OnValueResultCreated(object sender, ValueResultEventArgs e)
+        {
+            ParseValueResults.Add(e.Context, e.Value);
+        }
+
+        private Dictionary<ParserRuleContext, IUCIValue> ParseValueResults
+        {
+            get
+            {
+                if(_inspectionResults is null)
+                {
+                    _inspectionResults = new Dictionary<ParserRuleContext, IUCIValue>();
+                }
+                return _inspectionResults;
+            }
+        }
 
         private IUnreachableCaseInspectionFactoryFactory FactoriesFactoryTest
         {
@@ -43,7 +63,7 @@ namespace RubberduckTests.Inspections
             {
                 if(_valueFactory is null)
                 {
-                    _valueFactory = FactoriesFactoryTest.CreateValueFactory();
+                    _valueFactory = FactoriesFactoryTest.CreateIUCIValueFactory();
                 }
                 return _valueFactory;
             }
@@ -67,21 +87,45 @@ namespace RubberduckTests.Inspections
             {
                 if (_visitorFactory is null)
                 {
-                    _visitorFactory = FactoriesFactoryTest.CreateVisitorFactory();
+                    _visitorFactory = FactoriesFactoryTest.CreateIUCIParseTreeValueVisitorFactory();
                 }
                 return _visitorFactory;
             }
         }
 
-        private IUCIRangeClauseFilterFactory SummaryCoverageFactory
+        private IUCIRangeClauseFilterFactory RangeClauseFilterFactory
         {
             get
             {
-                if (_summaryClauseFactory is null)
+                if (_rangeClauseFilterFactory is null)
                 {
-                    _summaryClauseFactory = FactoriesFactoryTest.CreateSummaryClauseFactory();
+                    _rangeClauseFilterFactory = FactoriesFactoryTest.CreateIUCIRangeClauseFilterFactory();
                 }
-                return _summaryClauseFactory;
+                return _rangeClauseFilterFactory;
+            }
+        }
+
+        private IUnreachableCaseInspectionRangeFactory InspectionRangeFactory
+        {
+            get
+            {
+                if (_rangeFactory is null)
+                {
+                    _rangeFactory = FactoriesFactoryTest.CreateUnreachableCaseInspectionRangeFactory();
+                }
+                return _rangeFactory;
+            }
+        }
+
+        private IUnreachableCaseInspectionSelectStmtFactory InspectionSelectStmtFactory
+        {
+            get
+            {
+                if (_selectStmtFactory is null)
+                {
+                    _selectStmtFactory = FactoriesFactoryTest.CreateUnreachableCaseInspectionSelectStmtFactory();
+                }
+                return _selectStmtFactory;
             }
         }
 
@@ -231,7 +275,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciHandlesCurrency(string operands, string expected, string typeName)
         {
-            var result = TestBinaryOp(UCIValueExpressionEvaluator.MathTokens.MULT, operands, expected, typeName);
+            var result = TestBinaryOp(MathTokens.MULT, operands, expected, typeName);
             Assert.AreEqual(typeName, result.TypeName);
         }
 
@@ -250,7 +294,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciMultiplication(string operands, string expected, string typeName)
         {
-            TestBinaryOp(UCIValueExpressionEvaluator.MathTokens.MULT, operands, expected, typeName);
+            TestBinaryOp(MathTokens.MULT, operands, expected, typeName);
         }
 
         [TestCase("10_/_2", "5", "Long")]
@@ -265,7 +309,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciDivision(string operands, string expected, string typeName)
         {
-            TestBinaryOp(UCIValueExpressionEvaluator.MathTokens.DIV, operands, expected, typeName);
+            TestBinaryOp(MathTokens.DIV, operands, expected, typeName);
         }
 
         [TestCase("10.51_+_11.2", "21.71", "Double")]
@@ -277,7 +321,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciAddition(string operands, string expected, string typeName)
         {
-            TestBinaryOp(UCIValueExpressionEvaluator.MathTokens.ADD, operands, expected, typeName);
+            TestBinaryOp(MathTokens.ADD, operands, expected, typeName);
         }
 
         [TestCase("10.51_-_11.2", "-0.69", "Double")]
@@ -287,7 +331,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciSubtraction(string operands, string expected, string typeName)
         {
-            TestBinaryOp(UCIValueExpressionEvaluator.MathTokens.SUBTRACT, operands, expected, typeName);
+            TestBinaryOp(MathTokens.SUBTRACT, operands, expected, typeName);
         }
 
         [TestCase("10_^_2", "100", "Double")]
@@ -295,14 +339,14 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciPowers(string operands, string expected, string typeName)
         {
-            TestBinaryOp(UCIValueExpressionEvaluator.MathTokens.POW, operands, expected, typeName);
+            TestBinaryOp(MathTokens.POW, operands, expected, typeName);
         }
 
         [TestCase("10_Mod_3", "1", "Currency")]
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciModulo(string operands, string expected, string typeName)
         {
-            TestBinaryOp(UCIValueExpressionEvaluator.MathTokens.MOD, operands, expected, typeName);
+            TestBinaryOp(MathTokens.MOD, operands, expected, typeName);
         }
 
         [TestCase("10_=_3", "False")]
@@ -351,7 +395,7 @@ namespace RubberduckTests.Inspections
         {
             var theValue = CreateInspValueFrom(operands);
             var expectedVal = CreateInspValueFrom(expected);
-            var opSymbol = UCIValueExpressionEvaluator.MathTokens.SUBTRACT;
+            var opSymbol = MathTokens.SUBTRACT;
 
             var result = Calculator.Evaluate(theValue, opSymbol);
 
@@ -787,7 +831,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciAddRangeClauses(string firstCase, string summaryTypeName, string expectedClauses)
         {
-            var UUT = SummaryCoverageFactory.Create(summaryTypeName, ValueFactory, SummaryCoverageFactory);
+            var UUT = RangeClauseFilterFactory.Create(summaryTypeName, ValueFactory);
 
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
@@ -807,7 +851,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciAddSingleValue(string firstCase, string summaryTypeName, string expected)
         {
-            var UUT = SummaryCoverageFactory.Create(summaryTypeName, ValueFactory, SummaryCoverageFactory);
+            var UUT = RangeClauseFilterFactory.Create(summaryTypeName, ValueFactory);
 
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
@@ -823,7 +867,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciAddRelationalOp(string firstCase, string summaryTypeName, string expected)
         {
-            var UUT = SummaryCoverageFactory.Create(summaryTypeName, ValueFactory, SummaryCoverageFactory);
+            var UUT = RangeClauseFilterFactory.Create(summaryTypeName, ValueFactory);
 
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
@@ -843,7 +887,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_uciAddIsClauses(string firstCase, string summaryTypeName, string expected)
         {
-            var UUT = SummaryCoverageFactory.Create(summaryTypeName, ValueFactory, SummaryCoverageFactory);
+            var UUT = RangeClauseFilterFactory.Create(summaryTypeName, ValueFactory);
 
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
@@ -875,7 +919,7 @@ namespace RubberduckTests.Inspections
             var clausesToFilter = sumClauses[0];
             var filter = sumClauses[1];
 
-            var filterResults = SummaryCoverageFactory.Create(Tokens.Long, ValueFactory, SummaryCoverageFactory);
+            var filterResults = RangeClauseFilterFactory.Create(Tokens.Long, ValueFactory);
 
             filterResults = clausesToFilter.FilterUnreachableClauses(filter);
             if(filterResults.HasCoverage)
@@ -910,7 +954,7 @@ namespace RubberduckTests.Inspections
         public void UnreachableCaseInspUnit_FiltersAll(string firstCase, string secondCase, string typeName)
         {
             var caseToRanges = CasesToRanges(new string[] { firstCase, secondCase });
-            var summaryCoverage = SummaryCoverageFactory.Create(typeName, ValueFactory, SummaryCoverageFactory);
+            var summaryCoverage = RangeClauseFilterFactory.Create(typeName, ValueFactory);
 
             foreach (var id in caseToRanges)
             {
@@ -940,6 +984,14 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expected, filteredResults);
         }
 
+        [TestCase("Range=3:55", "IsLT=6", "IsLT=6,Range=6:55")]
+        [TestCase("Range=3:55", "IsGT=6", "IsGT=6,Range=3:6")]
+        [TestCase("IsLT=6", "Range=1:5", "IsLT=6")]
+        [TestCase("Single=5,Single=6,Single=7", "IsGT=6", "IsGT=6,Single=5,Single=6")]
+        [TestCase("Single=5,Single=6,Single=7", "IsLT=6", "IsLT=6,Single=6,Single=7")]
+        [TestCase("IsLT=5,IsGT=75", "Single=85", "IsLT=5,IsGT=75")]
+        [TestCase("IsLT=5,IsGT=75", "Single=0", "IsLT=5,IsGT=75")]
+        [TestCase("Range=45:85", "Single=50", "Range=45:85")]
         [TestCase("Single=5,Single=6,Single=7,Single=8","Range=6:8", "Range=6:8,Single=5")]
         [TestCase("IsLT=400,Range=15:160","Range=500:505", "IsLT=400,Range=500:505")]
         [TestCase("Range=101:149","Range=15:160", "Range=15:160")]
@@ -947,51 +999,53 @@ namespace RubberduckTests.Inspections
         [TestCase("Range=150:250,Range=1:100,Range=101:149","Range=25:249", "Range=1:250")]
         [TestCase("Range=150:250,Range=1:100,Range=-5:-2,Range=101:149","Range=25:249", "Range=-5:-2,Range=1:250")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_AddRangesInteger(string existing, string toAdd, string expectedClause)
+        public void UnreachableCaseInspUnit_AddFiltersInteger(string existing, string toAdd, string expectedClause)
         {
-            CombineRangesTestSupport(new string[] { existing, toAdd, expectedClause }, Tokens.Long);
+            AddFiltersTestSupport(new string[] { existing, toAdd, expectedClause }, Tokens.Long);
         }
 
         [TestCase("Range=101.45:149.00007", "Range=101.57:110.63", "Range=101.45:149.00007")]
         [TestCase("Range=101.45:149.0007", "Range=15.67:148.9999", "Range=15.67:149.0007")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_AddRangesRational(string firstCase, string secondCase, string expectedClauses)
+        public void UnreachableCaseInspUnit_AddFiltersRational(string firstCase, string secondCase, string expectedClauses)
         {
-            CombineRangesTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Double);
+            AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Double);
         }
 
         [TestCase(@"Range=""Alpha"":""Omega""", @"Range=""Nuts"":""Soup""", @"Range=""Alpha"":""Soup""")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_CombineRangesString(string firstCase, string secondCase, string expectedClauses)
+        public void UnreachableCaseInspUnit_AddFiltersString(string firstCase, string secondCase, string expectedClauses)
         {
-            CombineRangesTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.String);
+            AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.String);
         }
 
         [TestCase(@"Range=""True:True""", "Single=True", "Single=True")]
         [TestCase(@"Range=""True:False""", "Single=True", "Single=False,Single=True")]
         [TestCase("IsLT=5", "RelOp=x < 5", "RelOp=x < 5")]
         [Category("Inspections")]
-        public void UnreachableCaseInspUnit_CombineRangesBoolean(string firstCase, string secondCase, string expectedClauses)
+        public void UnreachableCaseInspUnit_AddFiltersBoolean(string firstCase, string secondCase, string expectedClauses)
         {
-            CombineRangesTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
+            AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
         }
 
-        [TestCase("IsLT=5,IsGT=75", "Single=85", "IsLT=5,IsGT=75")]
-        [TestCase("IsLT=5,IsGT=75", "Single=0", "IsLT=5,IsGT=75")]
-        [TestCase("Range=45:85", "Single=50", "Range=45:85")]
-        [Category("Inspections")]
-        public void UnreachableCaseInspUnit_AddSingleValue(string firstCase, string secondCase, string expectedClauses)
-        {
-            CombineRangesTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
-        }
+        //[TestCase("Single=5,Single=6,Single=7", "IsGT=6", "IsGT=6,Single=5,Single=6")]
+        //[TestCase("Single=5,Single=6,Single=7", "IsLT=6", "IsLT=6,Single=6,Single=7")]
+        //[TestCase("IsLT=5,IsGT=75", "Single=85", "IsLT=5,IsGT=75")]
+        //[TestCase("IsLT=5,IsGT=75", "Single=0", "IsLT=5,IsGT=75")]
+        //[TestCase("Range=45:85", "Single=50", "Range=45:85")]
+        //[Category("Inspections")]
+        //public void UnreachableCaseInspUnit_AddSingleValue(string firstCase, string secondCase, string expectedClauses)
+        //{
+        //    AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
+        //}
 
-        private void CombineRangesTestSupport(string[] input, string typeName)
+        private void AddFiltersTestSupport(string[] input, string typeName)
         {
             Assert.IsTrue(input.Count() >= 2, "At least two rangeClase input strings are neede for this test");
 
             var sumClauses = TestRangesToSummaryClauses(input, typeName);
 
-            IUCIRangeClauseFilter summary = SummaryCoverageFactory.Create(typeName, ValueFactory, SummaryCoverageFactory);
+            IUCIRangeClauseFilter summary = RangeClauseFilterFactory.Create(typeName, ValueFactory);
             for(var idx = 0; idx <= sumClauses.Count - 2; idx++)
             {
                 summary.Add(sumClauses[idx]);
@@ -1038,7 +1092,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_Extents(string typeName)
         {
-            var summary = SummaryCoverageFactory.Create(typeName, ValueFactory, SummaryCoverageFactory);
+            var summary = RangeClauseFilterFactory.Create(typeName, ValueFactory);
 
             if(typeName.Equals(Tokens.Long))
             {
@@ -1074,14 +1128,16 @@ namespace RubberduckTests.Inspections
         private string GetSelectExpressionType(string inputCode)
         {
             var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmt);
-            IUnreachableCaseInspectionSelectStmt iSelectStmt = new UnreachableCaseInspectionSelectStmt(selectStmt, selectStmtValueResults, SummaryCoverageFactory, ValueFactory);
+            var iSelectStmt = InspectionSelectStmtFactory.Create(selectStmt, selectStmtValueResults);
+            //var selectStmtValueResults = GetParseTreeValueResultsEvents(inputCode, out IUnreachableCaseInspectionSelectStmt iSelectStmt);
             return iSelectStmt.EvaluationTypeName;
         }
 
         private string GetCaseClauseType(string inputCode)
         {
             var valueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmt);
-            IUnreachableCaseInspectionSelectStmt iSelectStmt = new UnreachableCaseInspectionSelectStmt(selectStmt, valueResults, SummaryCoverageFactory, ValueFactory);
+            var iSelectStmt = InspectionSelectStmtFactory.Create(selectStmt, valueResults);
+            //var selectStmtValueResults = GetParseTreeValueResultsEvents(inputCode, out IUnreachableCaseInspectionSelectStmt iSelectStmt);
             return iSelectStmt.EvaluationTypeName;
         }
 
@@ -1093,8 +1149,29 @@ namespace RubberduckTests.Inspections
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 selectStmt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
-                var visitor = ValueVisitorFactory.Create(state);
+                var visitor = ValueVisitorFactory.Create(state, ValueFactory);
+
+                visitor.OnValueResultCreated += Test_OnValueResultCreated;
                 valueResults = selectStmt.Accept(visitor);
+            }
+            return valueResults;
+        }
+
+        private IUCIValueResults GetParseTreeValueResultsEvents(string inputCode, out IUnreachableCaseInspectionSelectStmt selectStmt)
+        {
+            selectStmt = null;
+            IUCIValueResults valueResults = null;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var selectContext = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
+                selectStmt = InspectionSelectStmtFactory.Create(selectContext, null);
+                var visitor = ValueVisitorFactory.Create(state, ValueFactory);
+                visitor.OnValueResultCreated += Test_OnValueResultCreated;
+                //visitor.OnValueResultCreated += selectStmt.SelectStmt_OnValueResultCreated;
+                //selectStmt.Accept(visitor);
+                //valueResults = selectStmt.Accept(visitor);
+                selectStmt = InspectionSelectStmtFactory.Create(selectContext, valueResults);
             }
             return valueResults;
         }
@@ -1118,7 +1195,7 @@ namespace RubberduckTests.Inspections
 
         private IUCIRangeClauseFilter CreateTestSummaryCoverage(List<string> annotations, string typeName)
         {
-            var result = SummaryCoverageFactory.Create(typeName, ValueFactory, SummaryCoverageFactory);
+            var result = RangeClauseFilterFactory.Create(typeName, ValueFactory);
 
             foreach (var item in annotations)
             {
@@ -1173,6 +1250,7 @@ namespace RubberduckTests.Inspections
             public IUCIRangeClauseFilter SummaryCoverage;
             public QualifiedContext<ParserRuleContext> QualifiedContext;
             public VBAParser.SelectCaseStmtContext SelectCaseStmtCtxt;
+            public IUnreachableCaseInspectionSelectStmt InspSelectStmt;
             public IUCIRangeClauseFilter CasesSummary;
         }
 
@@ -1184,22 +1262,36 @@ namespace RubberduckTests.Inspections
             {
                 tdo.SelectCaseStmtCtxt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
                 tdo.QualifiedContext = new QualifiedContext<ParserRuleContext>(new QualifiedModuleName(vbe.Object.VBProjects.First()), tdo.SelectCaseStmtCtxt);
-                tdo.SummaryCoverage = SummaryCoverageFactory.Create(evaluationTypeName, ValueFactory, SummaryCoverageFactory);
-                tdo.CasesSummary = SummaryCoverageFactory.Create(tdo.SummaryCoverage.TypeName, ValueFactory, SummaryCoverageFactory);
+                tdo.SummaryCoverage = RangeClauseFilterFactory.Create(evaluationTypeName, ValueFactory);
+                tdo.CasesSummary = RangeClauseFilterFactory.Create(tdo.SummaryCoverage.TypeName, ValueFactory);
 
-                var visitor = ValueVisitorFactory.Create(state);
-                var contextResults = tdo.SelectCaseStmtCtxt.Accept(visitor);
+                var visitor = ValueVisitorFactory.Create(state, ValueFactory);
+                var contextResults = new UCIValueResults();
+                visitor.OnValueResultCreated += contextResults.OnNewValueResult;
+                tdo.SelectCaseStmtCtxt.Accept(visitor);
+
+                tdo.InspSelectStmt = InspectionSelectStmtFactory.Create(tdo.SelectCaseStmtCtxt, contextResults);
+                //tdo.InspSelectStmt.Accept(visitor);
+
+                //var inspRanges = tdo.InspSelectStmt.InspectionRanges;
+                //var summary = RangeClauseFilterFactory.Create(tdo.SummaryCoverage.TypeName, ValueFactory);
+                //foreach ( var inspRange in inspRanges)
+                //{
+                //    inspRange.EvaluationTypeName = tdo.SummaryCoverage.TypeName;
+                //    summary.Add(inspRange.AsFilter);
+                //}
+                //tdo.CasesSummary.Add(summary);
+
 
                 foreach (var caseClause in tdo.SelectCaseStmtCtxt.caseClause())
                 {
-                    var summary = SummaryCoverageFactory.Create(tdo.SummaryCoverage.TypeName, ValueFactory, SummaryCoverageFactory);
+                    var summary = RangeClauseFilterFactory.Create(tdo.SummaryCoverage.TypeName, ValueFactory);
                     foreach (var range in caseClause.rangeClause())
                     {
-                        var inspR = new UnreachableCaseInspectionRange(range, contextResults, SummaryCoverageFactory, new UCIValueFactory())
-                        {
-                            EvaluationTypeName = tdo.SummaryCoverage.TypeName
-                        };
-                        summary.Add(inspR.RangeClause);
+                        //ParseValueResults
+                        //var inspR = InspectionRangeFactory.Create(tdo.SummaryCoverage.TypeName, range, contextResults);
+                        var inspR = InspectionRangeFactory.Create(tdo.SummaryCoverage.TypeName, range, contextResults);
+                        summary.Add(inspR.AsFilter);
                     }
                     tdo.CasesSummary.Add(summary);
                 }
@@ -1370,12 +1462,14 @@ namespace RubberduckTests.Inspections
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var visitorFactory = FactoriesFactoryTest.CreateVisitorFactory();
-                var ptVisitor = visitorFactory.Create(state);
+                var visitorFactory = FactoriesFactoryTest.CreateIUCIParseTreeValueVisitorFactory();
+                var ptVisitor = visitorFactory.Create(state, ValueFactory);
                 var selectStmtContext = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
+                //TODO: we need this in many places
+                ptVisitor.OnValueResultCreated += Test_OnValueResultCreated;
                 var result = selectStmtContext.Accept(ptVisitor);
                 var logicalNotContext = selectStmtContext.GetDescendent<VBAParser.LogicalNotOpContext>();
-                Assert.AreEqual(expected, result.GetValueString(logicalNotContext));
+                Assert.AreEqual(expected, result.GetValueText(logicalNotContext));
             }
         }
 
@@ -2512,9 +2606,7 @@ Sub Foo( x As Variant)
             CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
         }
 
-        //invalid[TestCase("( z * 3 ) - 2", "z > maxValue", 0)]
         [TestCase("( z * 3 ) - 2", "Is > maxValue", 2)]
-        //invalide[TestCase("( z * 3 ) - 2", "( z * 3 ) - 2 > maxValue", 2)]
         [Category("Inspections")]
         public void UnreachableCaseInspFunctional_SelectCaseUsesConstantReferenceExpr(string selectExpr, string firstCase, int expected)
         {
@@ -2683,11 +2775,7 @@ Sub Foo( x As Variant)
             IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state)
-                {
-                    FactoriesFactory = FactoriesFactoryTest
-                };
-
+                var inspection = new UnreachableCaseInspection(state);
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }
@@ -2699,9 +2787,6 @@ Sub Foo( x As Variant)
             var expectedMsg = BuildResultString(expected[InspectionsUI.UnreachableCaseInspection_Unreachable], expected[InspectionsUI.UnreachableCaseInspection_TypeMismatch], expected[InspectionsUI.UnreachableCaseInspection_CaseElse]);
 
             Assert.AreEqual(expectedMsg, actualMsg);
-            //Assert.AreEqual(expected[InspectionsUI.UnreachableCaseInspection_Unreachable], actualUnreachable.Count(), "Unreachable result");
-            //Assert.AreEqual(expected[InspectionsUI.UnreachableCaseInspection_TypeMismatch], actualMismatches.Count(), "Mismatch result");
-            //Assert.AreEqual(expected[InspectionsUI.UnreachableCaseInspection_CaseElse], actualUnreachableCaseElses.Count(), "CaseElse result");
         }
         private string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount)
         {
