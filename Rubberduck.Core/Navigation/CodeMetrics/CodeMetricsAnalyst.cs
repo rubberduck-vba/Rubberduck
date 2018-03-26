@@ -1,29 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.VBA;
+﻿using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.SmartIndenter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
     public class CodeMetricsAnalyst : ICodeMetricsAnalyst
-    {
-        private readonly IIndenterSettings _indenterSettings;
-    
-        public CodeMetricsAnalyst(IIndenterSettings indenterSettings)
-        {
-            _indenterSettings = indenterSettings;
-        }
+    {    
+        public CodeMetricsAnalyst() { }
 
         public IEnumerable<ModuleMetricsResult> ModuleMetrics(RubberduckParserState state)
         {
             if (state == null || !state.AllUserDeclarations.Any())
             {
-                // must not return Enumerable.Empty
+                // can not explicitly return Enumerable.Empty, this is equivalent
                 yield break;
             }
 
@@ -42,8 +37,9 @@ namespace Rubberduck.Navigation.CodeMetrics
 
         private ModuleMetricsResult GetModuleResult(QualifiedModuleName qmn, IParseTree moduleTree, DeclarationFinder declarationFinder)
         {
-            // Consider rewrite as visitor? That should make subtrees easier and allow us to expand metrics
-            var cmListener = new CodeMetricsListener(declarationFinder, _indenterSettings);
+            // FIXME rewrite as visitor, see discussion on pulls#3522
+            // That should make subtrees easier and allow us to expand metrics
+            var cmListener = new CodeMetricsListener(declarationFinder);
             ParseTreeWalker.Default.Walk(cmListener, moduleTree);
             return cmListener.GetMetricsResult(qmn);
         }
@@ -52,31 +48,36 @@ namespace Rubberduck.Navigation.CodeMetrics
         private class CodeMetricsListener : VBAParserBaseListener
         {
             private readonly DeclarationFinder _finder;
-            private readonly IIndenterSettings _indenterSettings;
 
             private Declaration _currentMember;
+            private int _currentNestingLevel = 0;
+            private int _currentMaxNesting = 0;
             private List<CodeMetricsResult> _results = new List<CodeMetricsResult>();
             private List<CodeMetricsResult> _moduleResults = new List<CodeMetricsResult>();
 
             private List<MemberMetricsResult> _memberResults = new List<MemberMetricsResult>();
 
-            public CodeMetricsListener(DeclarationFinder finder, IIndenterSettings indenterSettings)
+            public CodeMetricsListener(DeclarationFinder finder)
             {
                 _finder = finder;
-                _indenterSettings = indenterSettings;
+            }
+            public override void EnterBlock([NotNull] VBAParser.BlockContext context)
+            {
+                _currentNestingLevel++;
+                if (_currentNestingLevel > _currentMaxNesting)
+                {
+                    _currentMaxNesting = _currentNestingLevel;
+                }
+            }
+
+            public override void ExitBlock([NotNull] VBAParser.BlockContext context)
+            {
+                _currentNestingLevel--;
             }
 
             public override void EnterEndOfLine([NotNull] VBAParser.EndOfLineContext context)
             {
-                int followingIndentationLevel = 0;
-                // we have a proper newline
-                if (context.NEWLINE() != null)
-                {
-                    // the last whitespace, which is the one in front of the next line's contents
-                    var followingWhitespace = context.whiteSpace().LastOrDefault();
-                    followingIndentationLevel = IndentationLevelFromWhitespace(followingWhitespace);
-                }
-                (_currentMember == null ? _moduleResults : _results).Add(new CodeMetricsResult(1, 0, followingIndentationLevel));
+                (_currentMember == null ? _moduleResults : _results).Add(new CodeMetricsResult(1, 0, 0));
             }
 
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
@@ -160,27 +161,15 @@ namespace Rubberduck.Navigation.CodeMetrics
             { 
                 ExitMeasurableMember();
             }
-
-            public override void EnterBlockStmt([NotNull] VBAParser.BlockStmtContext context)
-            {
-                // there is a whitespace context here after the option of a statementLabel.
-                // we need to account for that
-                _results.Add(new CodeMetricsResult(0, 0, IndentationLevelFromWhitespace(context.whiteSpace())));
-            }
             
-            private int IndentationLevelFromWhitespace(VBAParser.WhiteSpaceContext wsContext)
-            {
-                if (wsContext == null) return 0;
-                // the only thing that contains underscores is the line-continuation at this point
-                var lineContinuation = wsContext.children.LastOrDefault((tree) => tree.GetText().Contains("_"));
-                var index = lineContinuation != null ? wsContext.children.IndexOf(lineContinuation) : 0;
-                return (wsContext?.ChildCount ?? 0 - index) / _indenterSettings.IndentSpaces;
-            }
-
             private void ExitMeasurableMember()
             {
+                Debug.Assert(_currentNestingLevel == 0, "Unexpected Nesting Level when exiting Measurable Member");
+                _results.Add(new CodeMetricsResult(0, 0, _currentMaxNesting));
                 _memberResults.Add(new MemberMetricsResult(_currentMember, _results));
-                _results = new List<CodeMetricsResult>(); // reinitialize to drop results
+                // reset state
+                _results = new List<CodeMetricsResult>(); 
+                _currentMaxNesting = 0;
                 _currentMember = null;
             }
 
