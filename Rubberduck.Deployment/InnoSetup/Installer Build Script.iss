@@ -137,9 +137,9 @@ const
    ///Identifiers for installation in everyone mode to support
    ///functions that needs to distinguish between install modes.
    ///</remarks>
-   EveryoneAppMode = 'Everyone';
+   EveryoneAppMode = 'AllUsers';
    EveryoneAppId = '{979AFF96-DD9E-4FC2-802D-9E0C36A60D09}';
-   PerUserAppMode = 'PerUser';
+   PerUserAppMode = 'CurrentUser';
    PerUserAppId = '{DF0E0E6F-2CED-482E-831C-7E9721EB66AA}';
    
   ///<remarks>
@@ -706,9 +706,14 @@ end;
 function PromptToUninstall(AppMode: string): boolean;
 var
   ErrorCode: integer;
+  LocalizedMode: string;
 begin
   Log('A previous version of ' + AppMode + ' was detected; prompting the user whether to uninstall');
-  if IDYES = MsgBox(Format(ExpandConstant('{cm:UninstallOldVersionPrompt}'), [AppMode]), mbConfirmation, MB_YESNO) then
+  if AppMode = EveryoneAppMode then
+    LocalizedMode := ExpandConstant('{cm:Everyone}')
+  else if AppMode = PerUserAppMode then
+    LocalizedMode := ExpandConstant('{cm:PerUser}');
+  if IDYES = MsgBox(Format(ExpandConstant('{cm:UninstallOldVersionPrompt}'), [LocalizedMode]), mbConfirmation, MB_YESNO) then
   begin
     ErrorCode := -1;
     ErrorCode := UnInstallOldVersion(GetAppId(AppMode));
