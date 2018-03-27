@@ -634,7 +634,7 @@ namespace RubberduckTests.Inspections
                 End Sub";
 
             inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var iSummaryElements = (IUCIRangeFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+            var iSummaryElements = (IUCIRangeClauseFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
             if(iSummaryElements.TryGetIsLTValue(out long ltVal))
             {
                 Assert.AreEqual(isLTMax, ltVal, "IsLT value incorrect");
@@ -685,7 +685,7 @@ namespace RubberduckTests.Inspections
 
             inputCode = inputCode.Replace("<firstCase>", firstCase);
 
-            var iSummaryElements = (IUCIRangeFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+            var iSummaryElements = (IUCIRangeClauseFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
             if(iSummaryElements.TryGetIsGTValue(out long gtValue))
             {
                 Assert.AreEqual(isGTMin, gtValue, "IsGT value incorrect");
@@ -725,7 +725,7 @@ namespace RubberduckTests.Inspections
         End Sub";
 
             inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var iSummaryElements = (IUCIRangeFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+            var iSummaryElements = (IUCIRangeClauseFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
             Assert.AreEqual(true, iSummaryElements.SingleValues.Any(), "SingleValue not updated");
             Assert.AreEqual(isGTMin, iSummaryElements.SingleValues.First(), "SingleValue has incorrect Value");
 
@@ -755,7 +755,7 @@ namespace RubberduckTests.Inspections
         End Sub";
 
             inputCode = inputCode.Replace("<firstCase>", firstCase);
-            var iSummaryElements = (IUCIRangeFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
+            var iSummaryElements = (IUCIRangeClauseFilterTestSupport<long>)GetTestDataObject(inputCode, Tokens.Long).CasesSummary;
             if (iSummaryElements.TryGetIsGTValue(out long isGT))
             {
                 Assert.AreEqual(isNEQ, isGT);
@@ -968,10 +968,10 @@ namespace RubberduckTests.Inspections
             Assert.IsTrue(summaryCoverage.FiltersAllValues, summaryCoverage.ToString());
         }
 
-        [TestCase("IsLT=True, IsGT=True", "RelOp=x > 6", "Single=False")]
-        [TestCase("IsLT=False, IsGT=False", "RelOp=x > 6", "Single=True")]
-        [TestCase("IsGT=False", "RelOp=x > 6", "")]
-        [TestCase("Single=True, Single=False", "Single=True", "Single=False")]
+        [TestCase("IsLT=True, IsGT=True", "RelOp=x > 6", "Single=False,RelOp=Is > True")]
+        [TestCase("IsLT=False, IsGT=False", "RelOp=x > 6", "Single=False,RelOp=Is < False")]
+        [TestCase("IsGT=False", "RelOp=x > 6", "Single=False")]
+        [TestCase("Single=True, Single=False", "Single=True", "")]
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_FilterBoolean(string firstCase, string secondCase, string expectedClauses)
         {
@@ -1019,25 +1019,35 @@ namespace RubberduckTests.Inspections
             AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.String);
         }
 
+        /*
+         * Indeterminant cases are added as unresolved Relational Ops
+         * 
+        *************************** Is Clause Boolean Truth Table  *********************
+        *                          Select Case Value
+        *   Resolved Expression     True    False
+        *   ****************************************************************************
+        *   Is < True               False   False   <= Always False
+        *   Is <= True              True    False   
+        *   Is > True               False   True    
+        *   Is >= True              True    True    <= Always True
+        *   Is = True               True    False
+        *   Is <> True              False   True
+        *   Is > False              False   False   <= Always False
+        *   Is >= False             False   True
+        *   Is < False              True    False
+        *   Is <= False             True    True    <= Always True
+        *   Is = False              False   True
+        *   Is <> False             True    False
+        */
+
         [TestCase(@"Range=""True:True""", "Single=True", "Single=True")]
         [TestCase(@"Range=""True:False""", "Single=True", "Single=False,Single=True")]
-        [TestCase("IsLT=5", "RelOp=x < 5", "RelOp=x < 5")]
+        [TestCase("IsLT=5", "RelOp=x < 5", "Single=False,RelOp=x < 5")]
         [Category("Inspections")]
         public void UnreachableCaseInspUnit_AddFiltersBoolean(string firstCase, string secondCase, string expectedClauses)
         {
             AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
         }
-
-        //[TestCase("Single=5,Single=6,Single=7", "IsGT=6", "IsGT=6,Single=5,Single=6")]
-        //[TestCase("Single=5,Single=6,Single=7", "IsLT=6", "IsLT=6,Single=6,Single=7")]
-        //[TestCase("IsLT=5,IsGT=75", "Single=85", "IsLT=5,IsGT=75")]
-        //[TestCase("IsLT=5,IsGT=75", "Single=0", "IsLT=5,IsGT=75")]
-        //[TestCase("Range=45:85", "Single=50", "Range=45:85")]
-        //[Category("Inspections")]
-        //public void UnreachableCaseInspUnit_AddSingleValue(string firstCase, string secondCase, string expectedClauses)
-        //{
-        //    AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
-        //}
 
         private void AddFiltersTestSupport(string[] input, string typeName)
         {
@@ -1096,22 +1106,22 @@ namespace RubberduckTests.Inspections
 
             if(typeName.Equals(Tokens.Long))
             {
-                var check = (IUCIRangeFilterTestSupport<long>)summary;
+                var check = (IUCIRangeClauseFilterTestSupport<long>)summary;
                 CheckExtents(check, UCIRangeClauseFilterFactory.IntegerNumberExtents[typeName].Item1, UCIRangeClauseFilterFactory.IntegerNumberExtents[typeName].Item2);
             }
             else if (typeName.Equals(Tokens.Single))
             {
-                var check = (IUCIRangeFilterTestSupport<double>)summary;
+                var check = (IUCIRangeClauseFilterTestSupport<double>)summary;
                 CheckExtents(check, CompareExtents.SINGLEMIN, CompareExtents.SINGLEMAX);
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var check = (IUCIRangeFilterTestSupport<decimal>)summary;
+                var check = (IUCIRangeClauseFilterTestSupport<decimal>)summary;
                 CheckExtents(check, CompareExtents.CURRENCYMIN, CompareExtents.CURRENCYMAX);
             }
         }
 
-        private void CheckExtents<T>(IUCIRangeFilterTestSupport<T> check, T min, T max) where T: IComparable<T>
+        private void CheckExtents<T>(IUCIRangeClauseFilterTestSupport<T> check, T min, T max) where T: IComparable<T>
         {
             if (check.TryGetIsLTValue(out T ltResult) && check.TryGetIsGTValue(out T gtResult))
             {
@@ -1196,10 +1206,25 @@ namespace RubberduckTests.Inspections
         private IUCIRangeClauseFilter CreateTestSummaryCoverage(List<string> annotations, string typeName)
         {
             var result = RangeClauseFilterFactory.Create(typeName, ValueFactory);
-
+            var clauseItem = string.Empty;
             foreach (var item in annotations)
             {
-                var element = item.Trim().Split(new string[] { "=" }, StringSplitOptions.None);
+                var modifiedString = false;
+                if(item.Contains(">=") || item.Contains("<="))
+                {
+                    clauseItem = item.Contains(">=") ? item.Replace(">=", ">") : item.Replace("<=", "<");
+                    modifiedString = true;
+                }
+                else if(item.Contains(" = "))
+                {
+                    clauseItem = item.Replace(" = ", " @ ");
+                    modifiedString = true;
+                }
+                else
+                {
+                    clauseItem = item;
+                }
+                var element = clauseItem.Trim().Split(new string[] { "=" }, StringSplitOptions.None);
                 if (element[0].Equals(string.Empty) || element.Count() < 2)
                 {
                     continue;
@@ -1211,11 +1236,23 @@ namespace RubberduckTests.Inspections
                 {
                     if (clauseType.Equals("IsLT"))
                     {
+                        //if (modifiedString)
+                        //{
+                        //    clauseExpression.Replace("<", "<=");
+                        //    clauseExpression.Replace(">", ">=");
+                        //    clauseExpression.Replace(" @ ", " = ");
+                        //}
                         var uciVal = ValueFactory.Create(clauseExpression, typeName);
                         result.AddIsClause(uciVal, CompareTokens.LT);
                     }
                     else if (clauseType.Equals("IsGT"))
                     {
+                        //if (modifiedString)
+                        //{
+                        //    clauseExpression.Replace("<", "<=");
+                        //    clauseExpression.Replace(">", ">=");
+                        //    clauseExpression.Replace(" @ ", " = ");
+                        //}
                         var uciVal = ValueFactory.Create(clauseExpression, typeName);
                         result.AddIsClause(uciVal, CompareTokens.GT);
                     }
@@ -1233,6 +1270,12 @@ namespace RubberduckTests.Inspections
                     }
                     else if (clauseType.Equals("RelOp"))
                     {
+                        if (modifiedString)
+                        {
+                            clauseExpression = clauseExpression.Replace("<", "<=");
+                            clauseExpression = clauseExpression.Replace(">", ">=");
+                            clauseExpression = clauseExpression.Replace(" @ ", " = ");
+                        }
                         var uciVal = ValueFactory.Create(clauseExpression, typeName);
                         result.AddRelationalOp(uciVal);
                     }
@@ -1271,25 +1314,12 @@ namespace RubberduckTests.Inspections
                 tdo.SelectCaseStmtCtxt.Accept(visitor);
 
                 tdo.InspSelectStmt = InspectionSelectStmtFactory.Create(tdo.SelectCaseStmtCtxt, contextResults);
-                //tdo.InspSelectStmt.Accept(visitor);
-
-                //var inspRanges = tdo.InspSelectStmt.InspectionRanges;
-                //var summary = RangeClauseFilterFactory.Create(tdo.SummaryCoverage.TypeName, ValueFactory);
-                //foreach ( var inspRange in inspRanges)
-                //{
-                //    inspRange.EvaluationTypeName = tdo.SummaryCoverage.TypeName;
-                //    summary.Add(inspRange.AsFilter);
-                //}
-                //tdo.CasesSummary.Add(summary);
-
 
                 foreach (var caseClause in tdo.SelectCaseStmtCtxt.caseClause())
                 {
                     var summary = RangeClauseFilterFactory.Create(tdo.SummaryCoverage.TypeName, ValueFactory);
                     foreach (var range in caseClause.rangeClause())
                     {
-                        //ParseValueResults
-                        //var inspR = InspectionRangeFactory.Create(tdo.SummaryCoverage.TypeName, range, contextResults);
                         var inspR = InspectionRangeFactory.Create(tdo.SummaryCoverage.TypeName, range, contextResults);
                         summary.Add(inspR.AsFilter);
                     }
@@ -1380,14 +1410,14 @@ namespace RubberduckTests.Inspections
             Case True
             'OK
             Case False 
-            'OK
+            'Unreachable
             Case -5
             'Unreachable
         End Select
 
         End Sub";
             inputCode = inputCode.Replace("<booleanOp>", booleanOp);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
         [Test]
@@ -1953,8 +1983,48 @@ Sub Foo( x As Variant)
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
-        [TestCase("True", "Is <> False", 2)]
-        [TestCase("Is >= True", "False", 1)]
+         //The test cases below represent the truth table
+        //for Is clauses for boolean Select Case Statements.
+        //See UCIRangeClauseFilter.AddIsClauseBoolean(...)
+        //Cases that always resolve to True (or False) are stored as Single values.
+        //All others are stored as variable RelationalOp expressions
+        [TestCase("Is < True", "Single=False")]
+        [TestCase("Is <= True", "RelOp=Is <= True")]
+        [TestCase("Is > True", "RelOp=Is > True")]
+        [TestCase("Is >= True", "Single=True")]
+        [TestCase("Is = True", "RelOp=Is = True")]
+        [TestCase("Is <> True", "RelOp=Is <> True")]
+        [TestCase("Is > False", "Single=False")]
+        [TestCase("Is >= False", "RelOp=Is >= False")]
+        [TestCase("Is < False", "RelOp=Is < False")]
+        [TestCase("Is <= False", "Single=True")]
+        [TestCase("Is = False", "RelOp=Is = False")]
+        [TestCase("Is <> False", "RelOp=Is <> False")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspUnit_BooleanIsClauseTruthTable(string firstCase, string expected)
+        {
+            string inputCode =
+@"Sub Foo( x As Boolean)
+
+        Select Case x
+            Case <firstCase>
+            'OK
+            Case Else
+            'Foo
+        End Select
+End Sub";
+            inputCode = inputCode.Replace("<firstCase>", firstCase);
+            var results = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext);
+            var range = selectStmtContext.GetDescendent<VBAParser.RangeClauseContext>();
+            var inspRange = InspectionRangeFactory.Create(range, results);
+            inspRange.EvaluationTypeName = Tokens.Boolean;
+
+            var expectedFilters = TestRangesToSummaryClauses(new string[] { expected }, Tokens.Boolean);
+            Assert.AreEqual(expectedFilters.First().ToString(), inspRange.AsFilter.ToString());
+        }
+
+        [TestCase("True", "Is <= False", 2)]
+        [TestCase("Is >= True", "False", 2)]
         [Category("Inspections")]
         public void UnreachableCaseInspFunctional_BooleanRelationalOps(string firstCase, string secondCase, int expected)
         {

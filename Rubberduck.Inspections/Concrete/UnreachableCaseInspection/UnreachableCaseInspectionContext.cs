@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly IUCIRangeClauseFilterFactory _rangeFilterFactory;
         private readonly IUCIValueFactory _valueFactory;
 
-        public UnreachableCaseInspectionContext(ParserRuleContext context, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory) //, IUCIRangeClauseFilterFactory factory, IUCIValueFactory valueFactory)
+        public UnreachableCaseInspectionContext(ParserRuleContext context, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
         {
             _context = context;
             _rangeFilterFactory = factoryFactory.CreateIUCIRangeClauseFilterFactory();
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected IUCIRangeClauseFilterFactory FilterFactory => _rangeFilterFactory;
 
-        protected ParserRuleContext Context => _context;
+        public ParserRuleContext Context => _context;
 
         protected IUCIValueResults ParseTreeValueResults => _inspValues;
     }

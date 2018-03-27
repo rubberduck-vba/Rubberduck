@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private IUCIParseTreeValueVisitor _parseTreeValueVisitor;
         private enum CaseInpectionResult { Unreachable, MismatchType, CaseElse };
 
-        private Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
+        private static Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
         {
             [CaseInpectionResult.Unreachable] = InspectionsUI.UnreachableCaseInspection_Unreachable,
             [CaseInpectionResult.MismatchType] = InspectionsUI.UnreachableCaseInspection_TypeMismatch,

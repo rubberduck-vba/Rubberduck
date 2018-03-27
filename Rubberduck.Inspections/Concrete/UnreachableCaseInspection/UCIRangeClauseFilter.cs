@@ -18,14 +18,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         void AddRelationalOp(IUCIValue value);
     }
 
-    public interface IUCIRangeFilterTestSupport<T>
+    public interface IUCIRangeClauseFilterTestSupport<T>
     {
         bool TryGetIsLTValue(out T isLT);
         bool TryGetIsGTValue(out T isGT);
         HashSet<T> SingleValues { get; }
     }
 
-    public class UCIRangeClauseFilter<T> : IUCIRangeClauseFilter, IUCIRangeFilterTestSupport<T> where T : IComparable<T>
+    public class UCIRangeClauseFilter<T> : IUCIRangeClauseFilter, IUCIRangeClauseFilterTestSupport<T> where T : IComparable<T>
     {
         private readonly IUCIValueFactory _valueFactory;
         private readonly IUCIRangeClauseFilterFactory _filterFactory;
@@ -58,7 +58,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             TypeName = typeName;
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public bool FiltersAllValues
         {
             get
@@ -83,17 +83,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 else if (ContainsBooleans && !coversAll)
                 {
-                    //TODO: Add test and code for IsLT = 1 and IsGT = -1
-                    coversAll = SingleValues.Count == 2;
+                    coversAll = SingleValues.Contains(_trueValue);
                 }
                 return coversAll;
             }
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public string TypeName { get; set; }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public bool HasCoverage
         {
             get
@@ -106,7 +105,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public void Add(IUCIRangeClauseFilter newSummary)
         {
             var itf = (UCIRangeClauseFilter<T>)newSummary;
@@ -138,13 +137,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public void AddIsClause(IUCIValue value, string opSymbol)
         {
             AddIsClauseImpl(_tConverter(value), opSymbol);
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public void AddRelationalOp(IUCIValue value)
         {
             if (value.ParsesToConstantValue)
@@ -157,13 +156,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public void AddSingleValue(IUCIValue value)
         {
             AddSingleValueImpl(_tConverter(value));
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public void AddValueRange(IUCIValue inputStartVal, IUCIValue inputEndVal)
         {
             var currentRanges = new List<Tuple<T, T>>();
@@ -178,7 +177,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             AddValueRangeImpl(_tConverter(inputStartVal), _tConverter(inputEndVal));
         }
 
-        //ISummaryCoverage
+        //IUCIRangeClauseFilter
         public IUCIRangeClauseFilter FilterUnreachableClauses(IUCIRangeClauseFilter filter)
         {
             if (filter is null)
@@ -208,7 +207,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return filteredCoverage;
         }
 
-        //ISummaryCoverageTestSupport<T>
+        //IUCIRangeClauseFilterTestSupport<T>
         public bool TryGetIsLTValue(out T isLT)
         {
             isLT = default;
@@ -223,7 +222,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        //ISummaryCoverageTestSupport<T>
+        //IUCIRangeClauseFilterTestSupport<T>
         public bool TryGetIsGTValue(out T isGT)
         {
             isGT = default;
@@ -238,7 +237,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        //ISummaryCoverageTestSupport<T>
+        //IUCIRangeClauseFilterTestSupport<T>
         public HashSet<T> SingleValues => _singleValues;
 
         public override bool Equals(object obj)
@@ -341,9 +340,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             AddIsClauseImpl(_maxExtent, CompareTokens.GT);
         }
 
-        private bool FiltersTrueFalse => _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
-            || _ranges.Any(rg => rg.Item1.CompareTo(_trueValue) <= 0 && rg.Item2.CompareTo(_falseValue) >= 0)
-            || IsClausesCoversTrueFalse();
+        private bool FiltersAllRelationalOps
+        {
+            get
+            {
+                if (ContainsBooleans)
+                {
+                    return _singleValues.Contains(_trueValue)
+                        || RangesFilterValue(_trueValue);
+                }
+                return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
+                    || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue)
+                    || IsLTFiltersValue(_trueValue) && IsLTFiltersValue(_falseValue)
+                    || IsGTFiltersValue(_trueValue) && IsGTFiltersValue(_falseValue);
+            }
+        }
 
         private void RemoveIsLTClause()
         {
@@ -497,7 +508,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private UCIRangeClauseFilter<T> RemoveRelationalOpsCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
         {
             List<string> toRemove = new List<string>();
-            if (removalSpec.FiltersTrueFalse)
+            if (removalSpec.FiltersAllRelationalOps)
             {
                 removeFrom.RelationalOps.Clear();
             }
@@ -520,36 +531,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (ContainsBooleans)
             {
-                var bVal = bool.Parse(val.ToString());
-                //TODO: verify empirical test - do not have data for Is <> 1
-                if (opSymbol.Equals(CompareTokens.NEQ))
-                {
-                    AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
-                }
-                else if (opSymbol.Equals(CompareTokens.EQ))
-                {
-                    AddSingleValueImpl(ConvertToContainedGeneric(bVal));
-                }
-                else if (opSymbol.Equals(CompareTokens.GT))
-                {
-                    if (bVal)
-                    {
-                        AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
-                    }
-                    //TODO: verify empirical test
-                    //TODO: test that this results in a unreachable case
-                    //Empirical testing indicates Is > false does not trigger on true or false
-                }
-                else if (opSymbol.Equals(CompareTokens.LT))
-                {
-                    if (!bVal)
-                    {
-                        AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
-                    }
-                    //TODO: test that this results in a unreachable case
-                    //TODO: verify empirical test
-                    //Empirical testing indicates Is < true does not trigger on true or false
-                }
+                AddIsClauseBoolean(val, opSymbol);
                 return;
             }
 
@@ -587,6 +569,51 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             TrimExistingRanges(false);
         }
 
+        private void AddIsClauseBoolean(T val, string opSymbol)
+        {
+            /*
+             * Indeterminant cases are added as unresolved Relational Ops
+             * 
+            *************************** Is Clause Boolean Truth Table  *********************
+            *                          Select Case Value
+            *   Resolved Expression     True    False
+            *   ****************************************************************************
+            *   Is < True               False   False   <= Always False
+            *   Is <= True              True    False   
+            *   Is > True               False   True    
+            *   Is >= True              True    True    <= Always True
+            *   Is = True               True    False
+            *   Is <> True              False   True
+            *   Is > False              False   False   <= Always False
+            *   Is >= False             False   True
+            *   Is < False              True    False
+            *   Is <= False             True    True    <= Always True
+            *   Is = False              False   True
+            *   Is <> False             True    False
+            */
+            var relationalOpInput = $"Is {opSymbol} {val}";
+            var bVal = bool.Parse(val.ToString());
+
+            if(opSymbol.Equals(CompareTokens.NEQ)
+                || opSymbol.Equals(CompareTokens.EQ)
+                || (opSymbol.Equals(CompareTokens.GT) && bVal)
+                || (opSymbol.Equals(CompareTokens.LT) && !bVal)
+                || (opSymbol.Equals(CompareTokens.GTE) && !bVal)
+                || (opSymbol.Equals(CompareTokens.LTE) && bVal)
+                )
+            {
+                AddRelationalOpImpl(relationalOpInput);
+            }
+            else if (opSymbol.Equals(CompareTokens.GT) || opSymbol.Equals(CompareTokens.GTE))
+            {
+                AddSingleValueImpl(ConvertToContainedGeneric(bVal));
+            }
+            else if (opSymbol.Equals(CompareTokens.LT) || opSymbol.Equals(CompareTokens.LTE))
+            {
+                AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
+            }
+        }
+
         private void AddSingleValueImpl(T value)
         {
             if (IsClausesFilterValue(value)
@@ -599,7 +626,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void AddRelationalOpImpl(string value)
         {
-            if (!FiltersTrueFalse)
+            if (!FiltersAllRelationalOps)
             {
                 _relationalOps.Add(value);
                 return;
@@ -841,25 +868,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     _isClause.Remove(opSymbol);
                 }
             }
-        }
-
-        private bool IsClausesCoversTrueFalse()
-        {
-            if (ContainsBooleans)
-            {
-                //TODO: Truth table
-                return false;
-            }
-            var coversTrueFalse = false;
-            if (_isClause.ContainsKey(CompareTokens.LT))
-            {
-                coversTrueFalse = _isClause[CompareTokens.LT].Any(cl => cl.CompareTo(_falseValue) > 0);
-            }
-            if (!coversTrueFalse && _isClause.ContainsKey(CompareTokens.GT))
-            {
-                coversTrueFalse = _isClause[CompareTokens.GT].Any(cl => cl.CompareTo(_trueValue) < 0);
-            }
-            return coversTrueFalse;
         }
 
         private string GetSinglesDescriptor()

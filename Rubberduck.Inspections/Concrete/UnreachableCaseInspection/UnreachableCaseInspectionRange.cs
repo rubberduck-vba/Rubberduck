@@ -110,7 +110,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     || context is VBAParser.LiteralExprContext;
         }
 
-        private string IsClauseSymbol => Context.GetChild<VBAParser.ComparisonOperatorContext>().GetText(); // GetChild<VBAParser.ComparisonOperatorContext>().GetText();
+        private string IsClauseSymbol => Context.GetChild<VBAParser.ComparisonOperatorContext>().GetText();
 
         private ParserRuleContext SelectStartValue => Context.GetChild<VBAParser.SelectStartValueContext>();
 
