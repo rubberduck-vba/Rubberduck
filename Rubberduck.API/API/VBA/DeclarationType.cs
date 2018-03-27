@@ -2,7 +2,7 @@
 
 namespace Rubberduck.API.VBA
 {
-    [ComVisible(true)]
+    [ComVisible(true), Guid(RubberduckGuid.DeclarationTypeGuid)]
     //[Flags]
     public enum DeclarationType
     {

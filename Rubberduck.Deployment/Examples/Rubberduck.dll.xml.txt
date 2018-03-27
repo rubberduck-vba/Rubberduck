@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="TARGETDIR">
+            <Directory Id="dir39B22699688E51DCD8DCBB99A47E835B" Name="Debug" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir39B22699688E51DCD8DCBB99A47E835B">
+            <Component Id="cmp3A8BE2D78A357AB6B3A9FD6453889D0B" Guid="PUT-GUID-HERE">
+                <Class Id="{28754D11-10CC-45FD-9F6A-525A65412B7A}" Context="InprocServer32" Description="Rubberduck.API.VBA.ParserState" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Rubberduck.ParserState" Description="Rubberduck.API.VBA.ParserState" />
+                </Class>
+                <Class Id="{40F71F29-D63F-4481-8A7D-E04A4B054501}" Context="InprocServer32" Description="Rubberduck.UnitTesting.PermissiveAssertClass" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Rubberduck.PermissiveAssertClass" Description="Rubberduck.UnitTesting.PermissiveAssertClass" />
+                </Class>
+                <Class Id="{69E194DA-43F0-3B33-B105-9B8188A6F040}" Context="InprocServer32" Description="Rubberduck.UnitTesting.AssertClass" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Rubberduck.AssertClass" Description="Rubberduck.UnitTesting.AssertClass" />
+                </Class>
+                <Class Id="{69E194DD-43F0-3B33-B105-9B8188A6F040}" Context="InprocServer32" Description="Rubberduck.UnitTesting.FakesProvider" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Rubberduck.FakesProvider" Description="Rubberduck.UnitTesting.FakesProvider" />
+                </Class>
+                <Class Id="{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}" Context="InprocServer32" Description="Rubberduck._Extension" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Rubberduck.Extension" Description="Rubberduck._Extension" />
+                </Class>
+                <Class Id="{9CF1392A-2DC9-48A6-AC0B-E601A9802608}" Context="InprocServer32" Description="Rubberduck.UI._DockableWindowHost" ThreadingModel="both" ForeignServer="mscoree.dll">
+                    <ProgId Id="Rubberduck.UI.DockableWindowHost" Description="Rubberduck.UI._DockableWindowHost" />
+                </Class>
+                <File Id="filEC54EFF475370C463E57905243620C96" KeyPath="yes" Source="SourceDir\Debug\Rubberduck.dll" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32\2.1.6642.37961" Name="Class" Value="Rubberduck.API.VBA.ParserState" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32" Name="Class" Value="Rubberduck.API.VBA.ParserState" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{28754D11-10CC-45FD-9F6A-525A65412B7A}\InprocServer32" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32\2.1.6642.37961" Name="Class" Value="Rubberduck.UnitTesting.PermissiveAssertClass" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32" Name="Class" Value="Rubberduck.UnitTesting.PermissiveAssertClass" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{40F71F29-D63F-4481-8A7D-E04A4B054501}\InprocServer32" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="Class" Value="Rubberduck.UnitTesting.AssertClass" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="Class" Value="Rubberduck.UnitTesting.AssertClass" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DA-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="Class" Value="Rubberduck.UnitTesting.FakesProvider" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="Class" Value="Rubberduck.UnitTesting.FakesProvider" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{69E194DD-43F0-3B33-B105-9B8188A6F040}\InprocServer32" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\2.1.6642.37961" Name="Class" Value="Rubberduck._Extension" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32" Name="Class" Value="Rubberduck._Extension" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66}\InprocServer32" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\2.1.6642.37961" Name="Class" Value="Rubberduck.UI._DockableWindowHost" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32" Name="Class" Value="Rubberduck.UI._DockableWindowHost" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="CLSID\{9CF1392A-2DC9-48A6-AC0B-E601A9802608}\InprocServer32" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3E077C17-5678-3605-8449-FEABE42C9725}\2.1.6642.37961" Name="Class" Value="Rubberduck.API.VBA.DeclarationType" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3E077C17-5678-3605-8449-FEABE42C9725}\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3E077C17-5678-3605-8449-FEABE42C9725}\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{3E077C17-5678-3605-8449-FEABE42C9725}\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{6BD869B8-C7C6-3970-8ED4-AC74DD2EBA92}\2.1.6642.37961" Name="Class" Value="Rubberduck.API.VBA.Accessibility" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{6BD869B8-C7C6-3970-8ED4-AC74DD2EBA92}\2.1.6642.37961" Name="Assembly" Value="Rubberduck, Version=2.1.6642.37961, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{6BD869B8-C7C6-3970-8ED4-AC74DD2EBA92}\2.1.6642.37961" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
+                <RegistryValue Root="HKCR" Key="Record\{6BD869B8-C7C6-3970-8ED4-AC74DD2EBA92}\2.1.6642.37961" Name="CodeBase" Value="file:///[#filEC54EFF475370C463E57905243620C96]" Type="string" Action="write" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>
