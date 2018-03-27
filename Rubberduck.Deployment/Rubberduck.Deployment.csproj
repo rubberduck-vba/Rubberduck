@@ -107,7 +107,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "$(ProjectDir)BuildRegistryScript.ps1 -config '$(ConfigurationName)' -builderAssemblyPath '$(TargetPath)' -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' -sourceDir '$(TargetDir)' -targetDir '$(TargetDir)' -includeDir '$(ProjectDir)InnoSetup\Includes\' -filesToExtract 'Rubberduck.dll'"</PostBuildEvent>
+    <PostBuildEvent>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "$(ProjectDir)BuildRegistryScript.ps1 -config '$(ConfigurationName)' -builderAssemblyPath '$(TargetPath)' -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' -wixToolsDir '$(ProjectDir)WixToolset\' -sourceDir '$(TargetDir)' -targetDir '$(TargetDir)' -includeDir '$(ProjectDir)InnoSetup\Includes\' -filesToExtract 'Rubberduck.dll'"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "$(ProjectDir)PreInnoSetupConfiguration.ps1 -WorkingDir $(ProjectDir)</PreBuildEvent>
