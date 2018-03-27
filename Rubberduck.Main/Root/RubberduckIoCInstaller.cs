@@ -770,6 +770,7 @@ namespace Rubberduck.Root
                 assemblies.Add(Assembly.LoadFile(inspectionsAssembly));
             }
 
+            /* Commented out as we don't want to support the plugins right now...
             var path = Path.Combine(basePath, "Plug-ins");
             if (!Directory.Exists(path))
             {
@@ -787,6 +788,7 @@ namespace Rubberduck.Root
                     // can we log yet?
                 }
             }
+            */
 
             return assemblies;
         }

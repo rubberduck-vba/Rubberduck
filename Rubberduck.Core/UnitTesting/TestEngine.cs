@@ -74,7 +74,7 @@ namespace Rubberduck.UnitTesting
                     .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
                                 && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
 
-                var fakes = _fakesFactory.GetFakes();
+                var fakes = _fakesFactory.Create();
                 try
                 {
                     Run(module.Key.FindModuleInitializeMethods(_state));
