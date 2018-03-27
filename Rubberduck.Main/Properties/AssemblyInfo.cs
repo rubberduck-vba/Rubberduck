@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using Rubberduck;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -21,7 +22,7 @@ using System.Runtime.CompilerServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e07c841c-14b4-4890-83e9-8c80b06dd59d")]
+[assembly: Guid(RubberduckGuid.RubberduckTypeLibGuid)]
 
 // Version information for an assembly consists of the following four values:
 //
