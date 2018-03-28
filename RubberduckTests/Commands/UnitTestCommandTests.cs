@@ -6,6 +6,7 @@ using Moq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -237,6 +238,8 @@ Private Assert As Object
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var messageBox = new Mock<IMessageBox>();
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -244,7 +247,7 @@ Private Assert As Object
                 var config = GetUnitTestConfig();
                 settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object);
+                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object, messageBox.Object);
                 addTestModuleCommand.Execute(null);
 
                 // mock suite auto-assigns "TestModule1" to the first component when we create the mock
@@ -310,9 +313,10 @@ End Property";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
+            var messageBox = new Mock<IMessageBox>();
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
                 var config = GetUnitTestConfig();
                 settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -320,7 +324,7 @@ End Property";
                 var project = state.DeclarationFinder.FindProject("TestProject1");
                 var module = state.DeclarationFinder.FindStdModule("TestModule1", project);
 
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object);
+                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object, messageBox.Object);
                 addTestModuleCommand.Execute(module);
 
                 var testModule = state.DeclarationFinder.FindStdModule("TestModule2", project);
