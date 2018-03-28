@@ -7,7 +7,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUCIRangeClauseFilter
     {
-        bool HasCoverage { get; }
+        bool ContainsFilters { get; }
         bool FiltersAllValues { get; }
         string TypeName { set; get; }
         IUCIRangeClauseFilter FilterUnreachableClauses(IUCIRangeClauseFilter filter);
@@ -37,6 +37,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private Dictionary<string, List<T>> _isClause;
         private HashSet<T> _singleValues;
         private HashSet<string> _relationalOps;
+        private HashSet<string> _variableRanges;
+        private HashSet<string> _variableSingles;
 
         private bool _hasExtents;
         private T _minExtent;
@@ -52,6 +54,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _singleValues = new HashSet<T>();
             _isClause = new Dictionary<string, List<T>>();
             _relationalOps = new HashSet<string>();
+            _variableRanges = new HashSet<string>();
+            _variableSingles = new HashSet<string>();
             _hasExtents = false;
             _trueValue = _tConverter(_valueFactory.Create("True", typeName));
             _falseValue = _tConverter(_valueFactory.Create("False", typeName));
@@ -93,12 +97,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public string TypeName { get; set; }
 
         //IUCIRangeClauseFilter
-        public bool HasCoverage
+        public bool ContainsFilters
         {
             get
             {
-                return _ranges.Any()
-                    || _singleValues.Any()
+                return _ranges.Any() || _variableRanges.Any()
+                    || _singleValues.Any() || _variableSingles.Any()
                     || TryGetIsLTValue(out T isLT) && isLT.CompareTo(_minExtent) != 0
                     || TryGetIsGTValue(out T isGT) && isGT.CompareTo(_maxExtent) != 0
                     || _relationalOps.Any();
@@ -118,20 +122,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 AddIsClauseImpl(isGT, CompareTokens.GT);
             }
 
-            var ranges = itf.RangeValues;
-            foreach (var tuple in ranges)
+            //var ranges = itf.RangeValues;
+            foreach (var tuple in itf.RangeValues)
             {
                 AddValueRangeImpl(tuple.Item1, tuple.Item2);
             }
 
-            var relOps = itf.RelationalOps;
-            foreach (var op in relOps)
+            //var varRanges = itf.VariableRanges;
+            foreach (var val in itf.VariableRanges)
+            {
+                _variableRanges.Add(val);
+                //AddValueRangeImpl(tuple.Item1, tuple.Item2);
+            }
+
+            //var relOps = itf.RelationalOps;
+            foreach (var op in itf.RelationalOps)
             {
                 AddRelationalOpImpl(op);
             }
 
-            var singleVals = itf.SingleValues;
-            foreach (var val in singleVals)
+            //var singleVals = itf.SingleValues;
+            foreach (var val in itf.SingleValues)
             {
                 AddSingleValueImpl(val);
             }
@@ -159,7 +170,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         //IUCIRangeClauseFilter
         public void AddSingleValue(IUCIValue value)
         {
-            AddSingleValueImpl(_tConverter(value));
+            if (value.ParsesToConstantValue)
+            {
+                AddSingleValueImpl(_tConverter(value));
+            }
+            else
+            {
+                VariableSingleValues.Add(value.ValueText);
+            }
         }
 
         //IUCIRangeClauseFilter
@@ -174,7 +192,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 AddValueRangeImpl(range.Item1, range.Item2);
             }
 
-            AddValueRangeImpl(_tConverter(inputStartVal), _tConverter(inputEndVal));
+            if(inputStartVal.ParsesToConstantValue && inputEndVal.ParsesToConstantValue)
+            {
+                AddValueRangeImpl(_tConverter(inputStartVal), _tConverter(inputEndVal));
+            }
+            else
+            {
+                AddVariableRangeImpl(inputStartVal.ValueText, inputEndVal.ValueText);
+            }
         }
 
         //IUCIRangeClauseFilter
@@ -193,12 +218,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var filteredCoverage = _filterFactory.Create(TypeName, _valueFactory);
 
             filteredCoverage = (UCIRangeClauseFilter<T>)MemberwiseClone();
-            if (!HasCoverage || filter.FiltersAllValues)
+            if (!ContainsFilters || filter.FiltersAllValues)
             {
                 return _filterFactory.Create(TypeName, _valueFactory);
             }
 
-            if (!filter.HasCoverage && !_hasExtents)
+            if (!filter.ContainsFilters && !_hasExtents)
             {
                 return filteredCoverage;
             }
@@ -240,6 +265,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         //IUCIRangeClauseFilterTestSupport<T>
         public HashSet<T> SingleValues => _singleValues;
 
+        private HashSet<string> VariableSingleValues => _variableSingles;
+
         public override bool Equals(object obj)
         {
             if (!(obj is UCIRangeClauseFilter<T> filter))
@@ -252,7 +279,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             if (filter.SingleValues.Count != SingleValues.Count
+                || filter.VariableSingleValues.Count != VariableSingleValues.Count
                 || filter.RangeValues.Count != RangeValues.Count
+                || filter.VariableRanges.Count != VariableRanges.Count
                 || filter.RelationalOps.Count != RelationalOps.Count)
             {
                 return false;
@@ -291,7 +320,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return false;
             }
-            var theRanges = filter._ranges.All(rg => _ranges.Contains(rg));
+            var theRanges = filter._ranges.All(rg => _ranges.Contains(rg))
+                    && filter._variableRanges.All(vrg => _variableRanges.Contains(vrg));
+
             var singles = filter._singleValues.All(rg => _singleValues.Contains(rg));
             var relOps = filter._relationalOps.All(ro => _relationalOps.Contains(ro));
             return theRanges && relOps && singles;
@@ -368,6 +399,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private List<Tuple<T, T>> RangeValues => _ranges;
 
+        private HashSet<string> VariableRanges => _variableRanges;
+
         private void RemoveRangeValues(List<Tuple<T, T>> toRemove)
         {
             foreach (var tp in toRemove)
@@ -418,7 +451,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private UCIRangeClauseFilter<T> RemoveRangesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
         {
-            if (!(removeFrom.RangeValues.Any()))
+            if (!(removeFrom.RangeValues.Any() || removeFrom.VariableRanges.Any()))
             {
                 return removeFrom;
             }
@@ -457,6 +490,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
             removeFrom.RemoveRangeValues(rangesToRemove);
+
+            var varRangesToRemove = new List<string>();
+            foreach(var value in removeFrom.VariableRanges)
+            {
+                if (removalSpec.VariableRanges.Contains(value))
+                {
+                    varRangesToRemove.Add(value);
+                }
+            }
+
+            varRangesToRemove.ForEach(vr => removeFrom._variableRanges.Remove(vr));
             return removeFrom;
         }
 
@@ -502,6 +546,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 removeFrom.SingleValues.Remove(rem);
             }
+
+            var toRemoveVariables = new List<string>();
+            foreach(var value in removalSpec.VariableSingleValues)
+            {
+                if(removeFrom.VariableSingleValues.Contains(value))
+                {
+                    toRemoveVariables.Add(value);
+                }
+            }
+            toRemoveVariables.ForEach(rv => removeFrom.VariableSingleValues.Remove(rv));
             return removeFrom;
         }
 
@@ -537,20 +591,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (opSymbol.Equals(CompareTokens.LT) || opSymbol.Equals(CompareTokens.GT))
             {
-                if (!_isClause.Keys.Contains(opSymbol))
-                {
-                    _isClause.Add(opSymbol, new List<T>());
-                }
-                _isClause[opSymbol].Add(val);
+                StoreIsClauseValue(val, opSymbol);
             }
             else if (opSymbol.Equals(CompareTokens.LTE) || opSymbol.Equals(CompareTokens.GTE))
             {
                 var ltOrGtSymbol = opSymbol.Substring(0, opSymbol.Length - 1);
-                if (!_isClause.Keys.Contains(ltOrGtSymbol))
-                {
-                    _isClause.Add(ltOrGtSymbol, new List<T>());
-                }
-                _isClause[ltOrGtSymbol].Add(val);
+                StoreIsClauseValue(val, ltOrGtSymbol);
+
                 AddSingleValueImpl(val);
             }
             else if (opSymbol.Equals(CompareTokens.EQ))
@@ -559,14 +606,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else if (opSymbol.Equals(CompareTokens.NEQ))
             {
-                _isClause[CompareTokens.LT].Add(val);
-                _isClause[CompareTokens.GT].Add(val);
+                StoreIsClauseValue(val, CompareTokens.LT);
+                StoreIsClauseValue(val, CompareTokens.GT);
             }
 
             FilterExistingRanges();
             FilterExistingSingles();
             TrimExistingRanges(true);
             TrimExistingRanges(false);
+        }
+
+        private void StoreIsClauseValue(T value, string opSymbol)
+        {
+            if (_isClause.ContainsKey(opSymbol))
+            {
+                _isClause[opSymbol].Add(value);
+            }
+            else
+            {
+                _isClause.Add(opSymbol, new List<T>() { value });
+            }
         }
 
         private void AddIsClauseBoolean(T val, string opSymbol)
@@ -656,6 +715,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return value.CompareTo(isGT) > 0;
             }
             return false;
+        }
+
+        private void AddVariableRangeImpl(string inputStart, string inputEnd)
+        {
+            _variableRanges.Add($"{inputStart}:{inputEnd}");
         }
 
         private void AddValueRangeImpl(T inputStart, T inputEnd)
@@ -872,15 +936,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string GetSinglesDescriptor()
         {
-            return GetSingleValueTypeDescriptor(_singleValues, "Single=");
+            var singles = _singleValues.Select(sv => sv.ToString()).ToList();
+            singles.AddRange(_variableSingles);
+            return GetSingleValueTypeDescriptor(singles, "Single=");
         }
 
         private string GetRelOpDescriptor()
         {
-            return GetSingleValueTypeDescriptor(_relationalOps, "RelOp=");
+            return GetSingleValueTypeDescriptor(_relationalOps.ToList(), "RelOp=");
         }
 
-        private string GetSingleValueTypeDescriptor<K>(HashSet<K> values, string prefix)
+        private string GetSingleValueTypeDescriptor<K>(List<K> values, string prefix)
         {
             var series = string.Empty;
             if (values.Any())
@@ -897,11 +963,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private string GetRangesDescriptor()
         {
             var series = string.Empty;
-            if (_ranges.Any())
+            if (_ranges.Any() || _variableRanges.Any())
             {
                 foreach (var val in _ranges)
                 {
                     series = series + val.Item1.ToString() + ":" + val.Item2.ToString() + ",";
+                }
+                foreach (var val in _variableRanges)
+                {
+                    series = series + val + ",";
                 }
                 return $"Range={series.Substring(0, series.Length - 1)}";
             }

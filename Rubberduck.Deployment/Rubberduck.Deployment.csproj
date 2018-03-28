@@ -63,6 +63,7 @@
     <Content Include="Examples\_readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="BuildRegistryScript.ps1" />
     <None Include="Licenses\License.rtf" />
     <None Include="PreInnoSetupConfiguration.ps1" />

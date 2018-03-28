@@ -13,7 +13,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         List<ParserRuleContext> UnreachableCases { get; }
         List<ParserRuleContext> MismatchTypeCases { get; }
         List<ParserRuleContext> UnreachableCaseElseCases { get; }
-        ParserRuleContext Context { get; }
     }
 
     public class UnreachableCaseInspectionSelectStmt : UnreachableCaseInspectionContext, IUnreachableCaseInspectionSelectStmt

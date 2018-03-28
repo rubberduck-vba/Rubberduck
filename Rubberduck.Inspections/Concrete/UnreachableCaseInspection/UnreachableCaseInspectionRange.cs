@@ -89,8 +89,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             var inspectedCoverage = AddFilterContent();
             AsFilter = inspectedCoverage.FilterUnreachableClauses(filter);
-            IsUnreachable = !AsFilter.HasCoverage;
-            return AsFilter.HasCoverage;
+            IsUnreachable = !AsFilter.ContainsFilters;
+            return AsFilter.ContainsFilters;
         }
 
         public override string ToString()
