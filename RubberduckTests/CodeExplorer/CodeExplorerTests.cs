@@ -19,7 +19,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.Events;
 
 namespace RubberduckTests.CodeExplorer
 {
