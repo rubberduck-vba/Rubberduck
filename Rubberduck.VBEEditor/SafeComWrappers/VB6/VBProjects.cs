@@ -8,7 +8,10 @@ using VB = Microsoft.VB6.Interop.VBIDE;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
+    //TODO: the event is UNTESTED, PRESUMED TO BE BROKEN
+    //if you wanna to enable vb6, please have the courtesy
+    //to fix it up right. 
+    public class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects
     {
         private static readonly Guid VBProjectsEventsGuid = new Guid("0002E190-0000-0000-C000-000000000046");
 
@@ -115,7 +118,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private ItemAddedDelegate _projectAdded;
         private void OnProjectAdded(VB.VBProject vbProject)
         {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectAdded, vbProject, true);
+            OnDispatch(ProjectAdded, vbProject, true);
         }
 
         public event EventHandler<ProjectEventArgs> ProjectRemoved;
@@ -123,7 +126,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private ItemRemovedDelegate _projectRemoved;
         private void OnProjectRemoved(VB.VBProject vbProject)
         {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectRemoved, vbProject);
+            OnDispatch(ProjectRemoved, vbProject);
         }
 
         public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
@@ -138,7 +141,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 project.Dispose();
                 return;
             }
-            
+
             var projectId = project.ProjectId;
 
             var handler = ProjectRenamed;
@@ -156,7 +159,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         private ItemActivatedDelegate _projectActivated;
         private void OnProjectActivated(VB.VBProject vbProject)
         {
-            if (VBE.IsInDesignMode) OnDispatch(ProjectActivated, vbProject);
+            OnDispatch(ProjectActivated, vbProject);
         }
 
         private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
@@ -164,7 +167,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             var project = new VBProject(vbProject);
 
             var handler = dispatched;
-            if (handler == null)
+            if (handler == null || !VBE.IsInDesignMode)
             {
                 project.Dispose();
                 return;

@@ -17,40 +17,28 @@ coverage:
   status:
     # don't check patch coverage
     patch: off
-    changes:
-      base: auto
     project:
       default:
         target: 0 # don't force a minimum coverage
         # allow decrease by up to 5 %
         threshold: 5
         base: auto
-      core:
-        # restrict core decrease to 1.5%
-        threshold: 1.5
-        flags: core
-      ui:
-        flags: ui
-      inspections:
-        flags: inspections
-      tools:
-        flags: tools
   
 comment:
   layout: "flags, diff, files"
-  behavior: new
+  behavior: once
   require_changes: yes
 
 flags:
   core:
     paths:
       - Rubberduck.Parsing
-      - RetailCoder.VBE
+      - Rubberduck.Core
       # Exclude UI from the core flag, that has a separate flag
-      - !RetailCoder.VBE/UI 
+      - !Rubberduck.Core/UI 
   ui:
     paths:
-      - RetailCoder.VBE/UI
+      - Rubberduck.Core/UI
   inspections:
     paths:
       - Rubberduck.Inspections

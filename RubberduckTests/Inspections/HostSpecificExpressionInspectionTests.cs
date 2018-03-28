@@ -47,10 +47,20 @@ End Sub
                 }
 
                 var inspection = new HostSpecificExpressionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "HostSpecificExpressionInspection";
+            var inspection = new HostSpecificExpressionInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
         }
     }
 }

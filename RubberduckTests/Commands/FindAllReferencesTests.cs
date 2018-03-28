@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
@@ -32,11 +34,13 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -64,7 +68,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(null);
 
@@ -91,7 +96,8 @@ End Sub";
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -120,7 +126,8 @@ End Sub";
                 var navigateCommand = new Mock<INavigateCommand>();
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -140,7 +147,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(null);
 
@@ -168,10 +176,11 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo"));
 
@@ -191,7 +200,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(null));
             }
@@ -218,10 +228,11 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo")));
             }
@@ -239,7 +250,8 @@ End Sub";
             {
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 Assert.IsFalse(command.CanExecute(null));
             }
@@ -259,17 +271,18 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 AssertParserReady(state);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -292,10 +305,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -303,7 +316,8 @@ End Sub
                 var navigateCommand = new Mock<INavigateCommand>();
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -324,10 +338,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -339,7 +353,8 @@ End Sub
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "TextBox1");
 
                 command.Execute(target);
@@ -361,17 +376,18 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").AddControl("TextBox2").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 AssertParserReady(state);
 
                 var targets = state.AllUserDeclarations.Where(s => s.IdentifierName.StartsWith("TextBox"));
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, null, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, null, null, uiDispatcher.Object);
 
 
                 Assert.IsFalse(command.CanExecute(targets));
@@ -392,17 +408,18 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 AssertParserReady(state);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1");
 
                 command.Execute(target);
@@ -426,10 +443,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).AddControl("TextBox1").Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -437,7 +454,8 @@ End Sub
                 AssertParserReady(state);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(navigateCommand.Object, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1"));
 
@@ -457,10 +475,10 @@ End Sub
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
             var form = project.MockUserFormBuilder("Form1", code).Build();
 
-            project.AddComponent(form);
+            project.AddComponent(form.Component, form.CodeModule);
             builder.AddProject(project.Build());
             var vbe = builder.Build();
-            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Object);
+            vbe.SetupGet(v => v.SelectedVBComponent).Returns(form.Component.Object);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -472,7 +490,8 @@ End Sub
                         It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var vm = new SearchResultsWindowViewModel();
-                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null);
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var command = new FindAllReferencesCommand(null, messageBox.Object, state, vbe.Object, vm, null, uiDispatcher.Object);
                 var target = state.AllUserDeclarations.Single(s => s.IdentifierName == "Form1");
 
                 command.Execute(target);

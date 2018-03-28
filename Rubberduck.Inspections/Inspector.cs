@@ -27,9 +27,9 @@ namespace Rubberduck.Inspections
             private readonly List<IInspection> _inspections;
             private const int AGGREGATION_THRESHOLD = 128;
 
-            public Inspector(IGeneralConfigService configService, IEnumerable<IInspection> inspections)
+            public Inspector(IGeneralConfigService configService, IInspectionProvider inspectionProvider)
             {
-                _inspections = inspections.ToList();
+                _inspections = inspectionProvider.Inspections.ToList();
 
                 _configService = configService;
                 configService.SettingsChanged += ConfigServiceSettingsChanged;
@@ -61,23 +61,27 @@ namespace Rubberduck.Inspections
                 {
                     return new IInspectionResult[] { };
                 }
+                token.ThrowIfCancellationRequested();
 
                 state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
                 var allIssues = new ConcurrentBag<IInspectionResult>();
+                token.ThrowIfCancellationRequested();
 
                 var config = _configService.LoadConfiguration();
                 UpdateInspectionSeverity(config);
+                token.ThrowIfCancellationRequested();
 
                 var parseTreeInspections = _inspections
                     .Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                     .OfType<IParseTreeInspection>()
                     .ToArray();
+                token.ThrowIfCancellationRequested();
 
-                foreach(var listener in parseTreeInspections.Select(inspection => inspection.Listener))
+                foreach (var listener in parseTreeInspections.Select(inspection => inspection.Listener))
                 {
                     listener.ClearContexts();
                 }
-                
+
                 // Prepare ParseTreeWalker based inspections
                 var passes = Enum.GetValues(typeof (ParsePass)).Cast<ParsePass>();
                 foreach (var parsePass in passes)
@@ -91,8 +95,10 @@ namespace Rubberduck.Inspections
                         LogManager.GetCurrentClassLogger().Warn(e);
                     }
                 }
+                token.ThrowIfCancellationRequested();
 
                 var inspectionsToRun = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
+                token.ThrowIfCancellationRequested();
 
                 try
                 {
@@ -102,12 +108,15 @@ namespace Rubberduck.Inspections
                 {
                     if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                     {
-                        LogManager.GetCurrentClassLogger().Debug("Inspections got canceled.");
+                        //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                        throw exception.InnerException ?? exception;
                     }
-                    else
-                    {
-                        LogManager.GetCurrentClassLogger().Error(exception);
-                    }
+
+                    LogManager.GetCurrentClassLogger().Error(exception);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception e)
                 {
@@ -137,20 +146,26 @@ namespace Rubberduck.Inspections
 
                 Parallel.ForEach(inspectionsToRun,
                     options,
-                    inspection => RunInspection(inspection, allIssues)
+                    inspection => RunInspection(inspection, allIssues, token)
                 );
             }
 
-            private static void RunInspection(IInspection inspection, ConcurrentBag<IInspectionResult> allIssues)
+            private static void RunInspection(IInspection inspection, ConcurrentBag<IInspectionResult> allIssues, CancellationToken token)
             {
                 try
                 {
-                    var inspectionResults = inspection.GetInspectionResults();
+                    var inspectionResults = inspection.GetInspectionResults(token);
+
+                    token.ThrowIfCancellationRequested();
 
                     foreach (var inspectionResult in inspectionResults)
                     {
                         allIssues.Add(inspectionResult);
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception e)
                 {

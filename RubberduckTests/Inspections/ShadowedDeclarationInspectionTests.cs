@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -196,7 +197,7 @@ End Property";
                 using (var state = MockParser.CreateAndParse(vbe.Object))
                 {
                     var inspection = new ShadowedDeclarationInspection(state);
-                    inspectionResults = inspection.GetInspectionResults();
+                    inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 }
 
                 Assert.AreEqual(expectedResultCount.Value, inspectionResults.Count(), $"Wrong number of inspection results for {expectedResultCount.Key}");
@@ -257,10 +258,11 @@ End Property";
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -400,10 +402,11 @@ End Property";
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -495,10 +498,11 @@ End Property";
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -3573,7 +3577,7 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -3598,7 +3602,7 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.AreEqual(1, inspectionResults.Count());
@@ -3623,7 +3627,7 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -3644,7 +3648,7 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -4085,7 +4089,7 @@ End Type";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -4788,7 +4792,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -4813,7 +4817,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.AreEqual(12, inspectionResults.Count());
@@ -4834,7 +4838,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -4880,7 +4884,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults().ToList();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
             }
             var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
@@ -4904,7 +4908,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -4950,7 +4954,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults().ToList();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
             }
             var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
@@ -4974,7 +4978,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -5020,7 +5024,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults().ToList();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
             }
             var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
@@ -5052,7 +5056,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -5077,7 +5081,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -5099,7 +5103,7 @@ Public {sameName} As String";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
@@ -5131,10 +5135,19 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            var inspection = new ShadowedDeclarationInspection(null);
+
+            Assert.AreEqual("ShadowedDeclarationInspection", inspection.Name);
         }
 
         private void AssertResultCountsEqualForThoseWithExpectation(Dictionary<string, int> expectedResultCounts,
@@ -5155,7 +5168,7 @@ End Sub";
 
         private Dictionary<string, int> InspectionResultCountsByTargetIdentifierName(IInspection inspection)
         {
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             return InspectionResultCountsByTargetIdentifierName(inspectionResults);
         }
 

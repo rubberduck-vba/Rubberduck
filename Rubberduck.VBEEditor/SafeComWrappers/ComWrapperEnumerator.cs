@@ -14,7 +14,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
     [ComImport(), Guid("00020400-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]        
-    interface IDispatch
+    internal interface IDispatch
     {
         [PreserveSig] int GetTypeInfoCount([Out] out uint pctinfo);
         [PreserveSig] int GetTypeInfo([In] uint iTInfo, [In] uint lcid, [Out] out ComTypes.ITypeInfo pTypeInfo);
@@ -31,7 +31,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             [Out] out uint pArgErr);
     }
 
-    class IDispatchHelper
+    internal class IDispatchHelper
     {
         public enum StandardDispIds : int
         {
@@ -49,13 +49,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         public static object PropertyGet_NoArgs(IDispatch obj, int memberId)
         {
             var pDispParams = new ComTypes.DISPPARAMS();
-            object pVarResult;
             var pExcepInfo = new ComTypes.EXCEPINFO();
-            uint ErrArg;
             Guid guid = new Guid();
-            
+
             int hr = obj.Invoke(memberId, ref guid, 0, (uint)(InvokeKind.DISPATCH_METHOD | InvokeKind.DISPATCH_PROPERTYGET), 
-                                    ref pDispParams, out pVarResult, ref pExcepInfo, out ErrArg);
+                                    ref pDispParams, out var pVarResult, ref pExcepInfo, out uint ErrArg);
 
             if (hr < 0)
             {
@@ -97,11 +95,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
         }
 
-        public void Dispose()
-        {
-            if (!IsWrappingNullReference) Marshal.ReleaseComObject(_enumeratorRCW);
-        }
-
         void IEnumerator.Reset()
         {
             if (!IsWrappingNullReference)
@@ -121,7 +114,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         bool IEnumerator.MoveNext()
         {
-            if (IsWrappingNullReference) return false;
+            if (IsWrappingNullReference)
+            {
+                return false;
+            }
 
             _currentItem = null;
 
@@ -138,6 +134,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
            
             return (celtFetched == 1);      // celtFetched will be 0 when we reach the end of the collection
+        }
+
+        public void Dispose()
+        {
+            if (!IsWrappingNullReference)
+            {
+                Marshal.ReleaseComObject(_enumeratorRCW);
+            }
         }
     }
 }

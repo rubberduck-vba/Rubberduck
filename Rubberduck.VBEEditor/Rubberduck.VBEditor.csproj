@@ -33,6 +33,7 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CustomMarshalers" />
     <Reference Include="Interop.SldWorks.Extensibility">
       <HintPath>..\libs\Interop.SldWorks.Extensibility.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -128,19 +129,43 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComManagement\ComMessagePumper.cs" />
+    <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
+    <Compile Include="Utility\UiContext.cs" />
+    <Compile Include="VBERuntime\IVBERuntime.cs" />
+    <Compile Include="VBERuntime\Settings\IVBESettings.cs" />
+    <Compile Include="VBERuntime\Settings\VBESettings.cs" />
+    <Compile Include="VBERuntime\VBEDllVersion.cs" />
+    <Compile Include="VBERuntime\VBERuntime6.cs" />
+    <Compile Include="VBERuntime\VBERuntime7.cs" />
+    <Compile Include="VBERuntime\VBERuntimeAccessor.cs" />
+    <Compile Include="ComManagement\WeakComSafe.cs" />
+    <Compile Include="ComManagement\ComSafeManager.cs" />
+    <Compile Include="ComManagement\IProjectsProvider.cs" />
+    <Compile Include="ComManagement\IProjectsRepository.cs" />
+    <Compile Include="Events\IVBEEvents.cs" />
+    <Compile Include="ComManagement\ProjectsRepository.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeInfos.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsSupport.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
-    <Compile Include="ComManagement\ComSafe.cs" />
+    <Compile Include="ComManagement\StrongComSafe.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
     <Compile Include="Events\ComponentEventArgs.cs" />
     <Compile Include="Events\ComponentRenamedEventArgs.cs" />
     <Compile Include="Events\ProjectEventArgs.cs" />
     <Compile Include="Events\ProjectRenamedEventArgs.cs" />
     <Compile Include="Events\SelectionChangedEventArgs.cs" />
+    <Compile Include="Events\VBEEvents.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
     <Compile Include="Events\WindowChangedEventArgs.cs" />
+    <Compile Include="Extensions\VBComponentExtensions.cs" />
+    <Compile Include="Extensions\KeyValuePairExtensions.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\IUserForm.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
+    <Compile Include="SafeComWrappers\Abstract\ISafeEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
     <Compile Include="SafeComWrappers\MSAccessComponentType.cs" />
     <Compile Include="SafeComWrappers\MSForms\ControlType.cs" />
@@ -174,6 +199,7 @@
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarControls.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBarPopup.cs" />
     <Compile Include="SafeComWrappers\Office.Core\Abstract\ICommandBars.cs" />
+    <Compile Include="SafeComWrappers\SafeEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB6\AddIn.cs" />
     <Compile Include="SafeComWrappers\VB6\AddIns.cs" />
     <Compile Include="SafeComWrappers\VB6\Application.cs" />
@@ -240,6 +266,8 @@
     <Compile Include="SafeComWrappers\MSForms\WindowState.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\VBA\VBE.cs" />
+    <Compile Include="Utility\DisposalActionContainer.cs" />
+    <Compile Include="Utility\RegistryWrapper.cs" />
     <Compile Include="WindowsApi\ChildWindowFinder.cs" />
     <Compile Include="WindowsApi\CodePaneSubclass.cs" />
     <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
@@ -273,7 +301,6 @@
     <Compile Include="Application\Visio.cs" />
     <Compile Include="Application\WordApp.cs" />
     <Compile Include="Application\AutoCADApp.cs" />
-    <Compile Include="Extensions\VBProjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowsApi\SubclassingWindow.cs" />
     <Compile Include="WindowsApi\User32.cs" />
@@ -295,6 +322,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

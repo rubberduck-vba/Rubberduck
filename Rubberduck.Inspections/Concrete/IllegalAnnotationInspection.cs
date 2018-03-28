@@ -19,12 +19,11 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class IllegalAnnotationInspection : ParseTreeInspectionBase
     {
         public IllegalAnnotationInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error)
+            : base(state)
         {
             Listener = new IllegalAttributeAnnotationsListener(state);
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.RubberduckOpportunities;
+        
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

@@ -3,9 +3,7 @@ using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -30,7 +28,7 @@ End Sub
             using(var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UseMeaningfulNameInspection(state, GetInspectionSettings().Object);
-                var inspectionResults = inspection.GetInspectionResults().Where(i => i.Target.DeclarationType == DeclarationType.LineLabel);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None).Where(i => i.Target.DeclarationType == DeclarationType.LineLabel);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
@@ -148,14 +146,6 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new UseMeaningfulNameInspection(null, null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "UseMeaningfulNameInspection";
@@ -175,7 +165,7 @@ End Sub";
             using(var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UseMeaningfulNameInspection(state, GetInspectionSettings().Object);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(expectedCount, inspectionResults.Count());
             }

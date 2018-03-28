@@ -1,7 +1,7 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -21,7 +21,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -48,7 +48,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -75,7 +75,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -93,7 +93,7 @@ End Property";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -114,7 +114,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
@@ -132,7 +132,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -153,7 +153,7 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -172,18 +172,10 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ImplicitVariantReturnTypeInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
         }
 
         [Test]

@@ -162,7 +162,7 @@ Sub DoSomething()
 30 End With
 End Sub
 ";
-            var result = Parse(code);
+            var result = Parse(code, PredictionMode.Sll);
             AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", matches => matches.Count == 3);
             AssertTree(result.Item1, result.Item2, "//withStmt");
         }
@@ -382,8 +382,8 @@ _
         [Test]
         public void TestDefDirectiveLetterRange()
         {
-            string code = @"DefBool B-C: DefByte Y-X: DefInt I-J: DefLng L-M: DefLngLng N-O: DefLngPtr P-Q: DefCur C-D: DefSng G-H: DefDbl D-E: DefDate T-U: DefStr E-F: DefObj O-P: DefVar V-W";
-            var parseResult = Parse(code);
+            string code = @"DefBool A-C: DefByte Y-X: DefInt I-J: DefLng L-M: DefLngLng N-O: DefLngPtr P-Q: DefCur C-D: DefSng G-H: DefDbl D-E: DefDate T-U: DefStr E-F: DefObj O-P: DefVar V-W";
+            var parseResult = Parse(code, PredictionMode.Sll);
             AssertTree(parseResult.Item1, parseResult.Item2, "//letterRange", matches => matches.Count == 13);
         }
 
@@ -391,7 +391,7 @@ _
         [Test]
         public void TestDefDirectiveUniversalLetterRange()
         {
-            string code = @"DefBool A - Z";
+            string code = @"DefBool A-Z";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//universalLetterRange");
         }
@@ -1274,7 +1274,7 @@ End Sub";
 Sub Test()
     If Not oP_Window Is Nothing Then If Not oP_Window.Visible Then Unload oP_Window: Set oP_Window = Nothing
 End Sub";
-            var parseResult = Parse(code);
+            var parseResult = Parse(code, PredictionMode.Sll);
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 2);
         }
 
@@ -1577,7 +1577,7 @@ Sub Test()
         Debug.Print ""SecondO:""; ans(1)
     End If
 End Sub";
-            var parseResult = Parse(code);
+            var parseResult = Parse(code, PredictionMode.Sll);
             AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 2);
         }
 
@@ -2135,6 +2135,68 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
+        [Category("Parser")]
+        [Test]
+        public void SubtractionExpressionsAreNoLetterRanges()
+        {
+            const string code = @"
+Public Sub Foo()
+    Dim a As Long
+    Dim b As Long
+    Dim z As Long
+    a = 1
+    b = 2
+    z = a-b
+    b = a-z
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//letterRange", matches => matches.Count == 0);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//universalLetterRange", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void SLLParserDoesNotThrowForArrayDefinitionInModuleWithMultipleSpacesInFromtOfAsType()
+        {
+            const string code = @"
+Dim Foo1(0 To 3)       As Long
+
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void SLLParserDoesNotThrowForArrayDefinitionInSubWithMultipleSpacesInFromtOfAsType()
+        {
+            const string code = @"
+Sub Test()
+    Dim Foo2(0 To 3)       As Long
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void UserDefinedType_TreatsFinalCommentAsComment()
+        {
+            // See Issue #3789
+            const string code = @"
+Private Type tX
+    foo As String
+    bar As Long
+    'foobar as shouldNotBeVisible
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//commentOrAnnotation", matches => matches.Count == 1);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);
@@ -2156,6 +2218,7 @@ End Sub
                 {
                     // If SLL fails we want to get notified ASAP so we can fix it, that's why we don't retry using LL.
                     // If LL mode fails, we're done.
+
                     throw;
                 }
 

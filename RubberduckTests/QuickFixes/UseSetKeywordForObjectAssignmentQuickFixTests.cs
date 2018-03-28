@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -38,7 +39,7 @@ End Function";
             {
 
                 var inspection = new ObjectVariableNotSetInspection(state);
-                var inspectionResults = inspection.GetInspectionResults().ToList();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
 
                 Assert.AreEqual(expectedResultCount, inspectionResults.Count);
                 var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
@@ -75,7 +76,7 @@ End Property
             {
 
                 var inspection = new ObjectVariableNotSetInspection(state);
-                var inspectionResults = inspection.GetInspectionResults().ToList();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
 
                 Assert.AreEqual(expectedResultCount, inspectionResults.Count);
                 var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);

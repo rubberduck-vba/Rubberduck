@@ -58,11 +58,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public QualifiedSelection? GetQualifiedSelection()
         {
-            if (IsWrappingNullReference || CodePane.IsWrappingNullReference)
+            using (var codePane = CodePane)
             {
-                return null;
+                if (IsWrappingNullReference || codePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+            
+                return codePane.GetQualifiedSelection();
             }
-            return CodePane.GetQualifiedSelection();
+        }
+
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get
+            {
+                using (var component = Parent)
+                {
+                    return component.QualifiedModuleName;
+                }
+            }
         }
 
         public string Content()
@@ -143,6 +158,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             {
                 return _previousContentHash = new string(Encoding.Unicode.GetChars(hash.ComputeHash(stream)));
             }
+        }
+
+        public int SimpleContentHash()
+        {
+            var code = Content();
+            return string.IsNullOrEmpty(code)
+                ? 0
+                : code.GetHashCode();
         }
 
         public bool IsDirty => _previousContentHash.Equals(ContentHash());

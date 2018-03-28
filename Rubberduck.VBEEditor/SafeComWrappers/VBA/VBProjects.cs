@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -9,26 +8,11 @@ using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProjects : SafeComWrapper<VB.VBProjects>, IVBProjects
+    public class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects, VB._dispVBProjectsEvents
     {
-        private static readonly Guid VBProjectsEventsGuid = new Guid("0002E103-0000-0000-C000-000000000046");
-        private static VB.VBProjects _projects;
-        private enum ProjectEventDispId
-        {
-            ItemAdded = 1,
-            ItemRemoved = 2,
-            ItemRenamed = 3,
-            ItemActivated = 4
-        }
-
-        public VBProjects(VB.VBProjects target, bool rewrapping = false) 
+        public VBProjects(VB.VBProjects target, bool rewrapping = false)
         :base(target, rewrapping)
         {
-            if (_projects == null)
-            {
-                _projects = target;
-                AttachEvents();
-            }          
         }
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
@@ -48,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 return;
             }
-            Target.Remove((VB.VBProject) project.Target);
+            Target.Remove((VB.VBProject)project.Target);
         }
 
         public IVBProject Open(string path)
@@ -82,69 +66,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 
+            return IsWrappingNullReference ? 0
                 : HashCode.Compute(Target);
         }
 
         #region Events
 
-        private static void AttachEvents()
+        public event EventHandler<ProjectEventArgs> ProjectAdded;
+        void VB._dispVBProjectsEvents.ItemAdded([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (_projects != null)
-            {
-                _projectAdded = OnProjectAdded;
-                _projectRemoved = OnProjectRemoved;
-                _projectRenamed = OnProjectRenamed;
-                _projectActivated = OnProjectActivated;
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-                ComEventsHelper.Combine(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
-            }
+            OnDispatch(ProjectAdded, VBProject, true);
         }
 
-        internal static void DetatchEvents()
+        public event EventHandler<ProjectEventArgs> ProjectRemoved;
+        void VB._dispVBProjectsEvents.ItemRemoved([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (_projects != null)
-            {
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemAdded, _projectAdded);
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRemoved, _projectRemoved);
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemRenamed, _projectRenamed);
-                ComEventsHelper.Remove(_projects, VBProjectsEventsGuid, (int)ProjectEventDispId.ItemActivated, _projectActivated);
-                _projects = null;
-            }
+            OnDispatch(ProjectRemoved, VBProject);
         }
 
-        public static event EventHandler<ProjectEventArgs> ProjectAdded;
-        private delegate void ItemAddedDelegate(VB.VBProject vbProject);
-        private static ItemAddedDelegate _projectAdded;
-        private static void OnProjectAdded(VB.VBProject vbProject)
+        public event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
+        void VB._dispVBProjectsEvents.ItemRenamed([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject,
+            [MarshalAs(UnmanagedType.BStr), In] string OldName)
         {
-            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
-            {
-                OnDispatch(ProjectAdded, vbProject, true);
-            }
-        }
+            var project = new VBProject(VBProject);
 
-        public static event EventHandler<ProjectEventArgs> ProjectRemoved;
-        private delegate void ItemRemovedDelegate(VB.VBProject vbProject);
-        private static ItemRemovedDelegate _projectRemoved;
-        private static void OnProjectRemoved(VB.VBProject vbProject)
-        {
-            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
-            {
-                OnDispatch(ProjectRemoved, vbProject);
-            }
-        }
-
-        public static event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
-        private delegate void ItemRenamedDelegate(VB.VBProject vbProject, string oldName);
-        private static ItemRenamedDelegate _projectRenamed;
-        private static void OnProjectRenamed(VB.VBProject vbProject, string oldName)
-        {
-            var project = new VBProject(vbProject);
-
-            if (!IsInDesignMode() || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
             {
                 project.Dispose();
                 return;
@@ -158,25 +104,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 project.Dispose();
                 return;
             }
-            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, oldName));
+            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, OldName));
         }
 
-        public static event EventHandler<ProjectEventArgs> ProjectActivated;
-        private delegate void ItemActivatedDelegate(VB.VBProject vbProject);
-        private static ItemActivatedDelegate _projectActivated;
-        private static void OnProjectActivated(VB.VBProject vbProject)
+        public event EventHandler<ProjectEventArgs> ProjectActivated;
+        void VB._dispVBProjectsEvents.ItemActivated([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject)
         {
-            if (IsInDesignMode() && vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_none)
-            {
-                OnDispatch(ProjectActivated, vbProject);
-            }
+            OnDispatch(ProjectActivated, VBProject);
         }
 
-        private static void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
+        private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
         {
             var project = new VBProject(vbProject);
             var handler = dispatched;
-            if (handler == null || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            if (handler == null || !IsInDesignMode() || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
             {
                 project.Dispose();
                 return;
@@ -196,19 +137,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             handler.Invoke(project, new ProjectEventArgs(projectId, project));
         }
 
-        private static bool IsInDesignMode()
+        private bool IsInDesignMode()
         {
-            if (_projects == null)
-            {
-                return true;
-            }
-            foreach (var project in _projects.Cast<VB.VBProject>())
-            {
-                if (project.Mode != VB.vbext_VBAMode.vbext_vm_Design)
+            foreach (var project in this)
+                using(project)
                 {
-                    return false;
+                    if (project.Mode != EnvironmentMode.Design)
+                    {
+                        return false;
+                    }
                 }
-            }
             return true;
         }
 

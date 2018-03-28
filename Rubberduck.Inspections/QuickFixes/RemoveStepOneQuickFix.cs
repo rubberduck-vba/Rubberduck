@@ -17,11 +17,11 @@ namespace Rubberduck.Inspections.QuickFixes
             _state = state;
         }
 
-        public override bool CanFixInProcedure => false;
+        public override bool CanFixInProcedure => true;
 
-        public override bool CanFixInModule => false;
+        public override bool CanFixInModule => true;
 
-        public override bool CanFixInProject => false;
+        public override bool CanFixInProject => true;
 
         public override string Description(IInspectionResult result)
         {

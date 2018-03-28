@@ -15,9 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyForLoopBlockInspection : ParseTreeInspectionBase
     {
         public EmptyForLoopBlockInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Warning) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

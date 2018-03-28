@@ -77,22 +77,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
-
-        public Guid EventsInterfaceId => throw new NotImplementedException();
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        VBProjects.Release();
-        //        CodePanes.Release();
-        //        //CommandBars.Release();
-        //        Windows.Release();
-        //        AddIns.Release();
-        //        base.Release(final);
-        //    }
-        //}
-
+        
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {
             return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
@@ -146,17 +131,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 using (var component = components.SingleOrDefault(c => ComponentHasName(c, name))) 
                 {
-                    if (component == null || component.IsWrappingNullReference)
-                    {
-                        return;
-                    }
+            if (component == null || component.IsWrappingNullReference)
+            {
+                return;
+            }
 
                     using (var module = component.CodeModule)
                     {
                         using (var pane = module.CodePane)
                         {
-                            pane.Selection = selection;
-                        }
+            pane.Selection = selection;
+        }
                     }
                 }
             }
@@ -200,10 +185,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
-            //This needs the VBE as a ctor argument.
-            if (host.Equals("SLDWORKS.EXE"))
+            //These need the VBE as a ctor argument.
+            if (host.Equals("SLDWORKS.EXE") || host.Equals("POWERPNT.EXE"))
             {
-                return new SolidWorksApp(this);
+                return (IHostApplication)Activator.CreateInstance(HostAppMap[host], this);
             }
             //The rest don't.
             if (HostAppMap.ContainsKey(host))
@@ -241,7 +226,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                                     result = new WordApp();
                                     break;
                                 case "Microsoft PowerPoint":
-                                    result = new PowerPointApp();
+                                    result = new PowerPointApp(this);
                                     break;
                                 case "Microsoft Outlook":
                                     result = new OutlookApp();
@@ -288,7 +273,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                             case "Word":
                                 return new WordApp(this);
                             case "PowerPoint":
-                                return new PowerPointApp();
+                                return new PowerPointApp(this);
                             case "Outlook":
                                 return new OutlookApp();
                             case "MSProject":
@@ -405,5 +390,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
             return false;
         }
+
+        public QualifiedSelection? GetActiveSelection()
+        {
+            using (var activePane = ActiveCodePane)
+            {
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+
+                return activePane.GetQualifiedSelection();
+            }
+        }
     }
 }
+

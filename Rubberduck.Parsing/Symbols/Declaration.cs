@@ -279,6 +279,7 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration ParentDeclaration { get; }
 
         public QualifiedMemberName QualifiedName { get; }
+        public QualifiedModuleName QualifiedModuleName => QualifiedName.QualifiedModuleName;
 
         public ParserRuleContext Context { get; }
 

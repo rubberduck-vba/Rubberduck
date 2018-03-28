@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props')" />
-  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -44,18 +43,14 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.net45">
-      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Windsor.4.0.0\lib\net45\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.24.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LibGit2Sharp.0.24.0\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Vbe.Interop, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -104,8 +99,14 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Mocks\MockVbeEvents.cs" />
+    <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
+    <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
+    <Compile Include="Inspections\InspectionProviderTests.cs" />
+    <Compile Include="VBEditor\Utility\DisposalActionContainerTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
+    <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
     <Compile Include="VBEditor\ComSafeTests.cs" />
     <Compile Include="Commands\ExportAllCommandTests.cs" />
@@ -148,7 +149,7 @@
     <Compile Include="QuickFixes\AddStepOneQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveStepOneQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
-    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
@@ -193,7 +194,6 @@
     <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
     <Compile Include="Settings\HotkeyFactoryTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
-    <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Stats\ParseTreeMetricsAnalystTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
@@ -291,12 +291,6 @@
     <Compile Include="SmartIndenter\MiscAndCornerCaseTests.cs" />
     <Compile Include="SmartIndenter\MultiSegmentLineTests.cs" />
     <Compile Include="SmartIndenter\SpecificSettingTests.cs" />
-    <Compile Include="SourceControlConfig.cs" />
-    <Compile Include="SourceControl\BranchesViewModelTests.cs" />
-    <Compile Include="SourceControl\ChangesViewModelTests.cs" />
-    <Compile Include="SourceControl\SettingsViewModelTests.cs" />
-    <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
-    <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexAssistant\CharacterClassTests.cs" />
@@ -308,6 +302,7 @@
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
     <Compile Include="UnitTesting\ViewModelTests.cs" />
+    <Compile Include="VBE\VBESettingsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -320,13 +315,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
-      <Name>Rubberduck</Name>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
+      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
+      <Name>Rubberduck.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
       <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
       <Name>Rubberduck.Inspections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
+      <Project>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</Project>
+      <Name>Rubberduck.Main</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
@@ -344,16 +343,14 @@
       <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
-      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
-      <Name>Rubberduck.SourceControl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Utility\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="IntegrationTests\FakeTests.bas" />
     <None Include="IntegrationTests\StubTests.bas" />
@@ -499,7 +496,6 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props'))" />
     <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

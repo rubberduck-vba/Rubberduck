@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -18,6 +19,7 @@ namespace RubberduckTests.Mocks
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
+        private readonly Mock<IVBEEvents> _vbeEvents;
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
         public static readonly string LibraryPathVBA = @"C:\PROGRA~2\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
@@ -183,11 +185,14 @@ namespace RubberduckTests.Mocks
         {
             var vbe = new Mock<IVBE>();
             _windows.VBE = vbe.Object;
+            vbe.Setup(m => m.Dispose());
+            vbe.SetupReferenceEqualityIncludingHashCode();
             vbe.Setup(m => m.Windows).Returns(() => _windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             
             vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane?.CodeModule?.Parent);
+            vbe.Setup(m => m.GetActiveSelection()).Returns(() => vbe.Object.ActiveCodePane?.GetQualifiedSelection());
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
             var mainWindow = new Mock<IWindow>();
@@ -252,12 +257,25 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<IVBProjects>();
 
+            result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
+
             result.Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _projects.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _projects.Count);
 
+            result.Setup(m => m.Add(It.IsAny<ProjectType>()))
+                .Returns((ProjectType pt) =>
+            {
+                var projectBuilder = ProjectBuilder("test", ProjectProtection.Unprotected);
+                var project = projectBuilder.Build();
+                project.Object.AssignProjectId();
+                AddProject(project);
+                return project.Object;
+            });
+            result.Setup(m => m.Remove(It.IsAny<IVBProject>())).Callback((IVBProject proj) => _projects.Remove(proj));
 
             return result;
         }
@@ -265,6 +283,9 @@ namespace RubberduckTests.Mocks
         private Mock<ICodePanes> CreateCodePanesMock()
         {
             var result = new Mock<ICodePanes>();
+
+            result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
 
             result.Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
@@ -274,5 +295,7 @@ namespace RubberduckTests.Mocks
 
             return result;
         }
+
+        public Mock<IVBProjects> MockProjectsCollection => _vbProjects;
     }
 }
