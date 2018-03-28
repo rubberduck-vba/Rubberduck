@@ -1030,7 +1030,6 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        [Ignore("Todo")] // not sure how to handle GetBuiltInDeclarations
         public void UntypedFunctionUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =

@@ -15,7 +15,6 @@ namespace RubberduckTests.QuickFixes
     {
         [Test]
         [Category("QuickFixes")]
-        [Ignore("Todo")] // not sure how to handle GetBuiltInDeclarations
         public void UntypedFunctionUsage_QuickFixWorks()
         {
             const string inputCode =

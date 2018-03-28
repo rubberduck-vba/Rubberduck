@@ -645,7 +645,7 @@ End Sub
 
         [Test]
         [Category("Resolver")]
-        [Ignore("Broken feature")] // bug: this test should pass... it's not all that evil
+        // [Ignore("Broken feature")] // bug: this test should pass... it's not all that evil
         public void AmbiguousNameSelectsSmallestScopedDeclaration()
         {
             var code =
