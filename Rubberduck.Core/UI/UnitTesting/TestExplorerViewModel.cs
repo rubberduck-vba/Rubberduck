@@ -6,6 +6,7 @@ using System.Windows;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -23,8 +24,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ITestEngine _testEngine;
         private readonly IClipboardWriter _clipboard;
         private readonly ISettingsFormFactory _settingsFormFactory;
-        //private readonly IGeneralConfigService _configService;
-        //private readonly IOperatingSystem _operatingSystem;
+        private readonly IMessageBox _messageBox;
 
         public TestExplorerViewModel(IVBE vbe,
              RubberduckParserState state,
@@ -32,7 +32,8 @@ namespace Rubberduck.UI.UnitTesting
              TestExplorerModel model,
              IClipboardWriter clipboard,
              IGeneralConfigService configService,
-             ISettingsFormFactory settingsFormFactory)
+             ISettingsFormFactory settingsFormFactory,
+             IMessageBox messageBox)
         {
             _vbe = vbe;
             _state = state;
@@ -41,13 +42,14 @@ namespace Rubberduck.UI.UnitTesting
             Model = model;
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
+            _messageBox = messageBox;
 
             _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
 
             RunAllTestsCommand = new RunAllTestsCommand(vbe, state, testEngine, model, null);
             RunAllTestsCommand.RunCompleted += RunCompleted;
 
-            AddTestModuleCommand = new AddTestModuleCommand(vbe, state, configService);
+            AddTestModuleCommand = new AddTestModuleCommand(vbe, state, configService, _messageBox);
             AddTestMethodCommand = new AddTestMethodCommand(vbe, state);
             AddErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state);
 
