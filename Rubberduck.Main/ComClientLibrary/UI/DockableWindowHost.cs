@@ -347,7 +347,13 @@ namespace Rubberduck.UI
                 return;
             }
             var param = new LParam { Value = (uint)e.LParam };
-            _userControl.Size = new Size(param.LowWord, param.HighWord);
+            // The VBE passes a special value to the HighWord when docking into the VBE Codepane 
+            // instead of docking into the VBE itself.
+            // that special value (0xffef) blows up inside the guts of Window management because it's
+            // apparently converted to a signed short somewhere and then considered "negative"
+            // that is why we drop the signbit for shorts off our values when creating the control Size.
+            const ushort signBitMask = 0x8000;
+            _userControl.Size = new Size(param.LowWord & ~signBitMask, param.HighWord & ~signBitMask);
         }
 
         public void AddUserControl(UserControl control, IntPtr vbeHwnd)
