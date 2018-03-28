@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var inspectedRanges = new List<IUnreachableCaseInspectionRange>();
                 foreach (var range in caseClause.rangeClause())
                 {
-                    var inspectionRange = _inspectionRangeFactory.Create(EvaluationTypeName, range, _inspValues);
+                    var inspectionRange = _inspectionRangeFactory.Create(range, EvaluationTypeName, _inspValues);
                     if (inspectionRange.IsReachable(cummulativeRangeFilter))
                     {
                         cummulativeRangeFilter.Add(inspectionRange.AsFilter);

@@ -37,6 +37,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             AsFilter = FilterFactory.Create(Tokens.Long, ValueFactory);
         }
 
+        public UnreachableCaseInspectionRange(VBAParser.RangeClauseContext context, string evalTypeName, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
+            : base(context, inspValues, factoryFactory)
+        {
+            _isValueRange = Context.HasChildToken(Tokens.To);
+            _isLTorGT = Context.HasChildToken(Tokens.Is);
+            _isRelationalOp = Context.TryGetChildContext<VBAParser.RelationalOpContext>(out _);
+            _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
+            IsUnreachable = false;
+            AsFilter = FilterFactory.Create(evalTypeName, ValueFactory);
+            _evalTypeName = evalTypeName;
+            AsFilter = AddFilterContent();
+        }
+
         public string EvaluationTypeName
         {
             set
