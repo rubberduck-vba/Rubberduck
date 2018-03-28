@@ -16,7 +16,7 @@ namespace RubberduckTests.Stats
         [SetUp]
         public void Setup()
         {
-            cut = new CodeMetricsAnalyst(IndenterSettingsTests.GetMockIndenterSettings());
+            cut = new CodeMetricsAnalyst();
         }
 
         [Test]
