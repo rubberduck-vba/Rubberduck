@@ -110,39 +110,34 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         //IUCIRangeClauseFilter
-        public void Add(IUCIRangeClauseFilter filterToAdd)
+        public void Add(IUCIRangeClauseFilter filter)
         {
-            var itf = (UCIRangeClauseFilter<T>)filterToAdd;
-            if (itf.TryGetIsLTValue(out T isLT))
+            var newFilter = (UCIRangeClauseFilter<T>)filter;
+            if (newFilter.TryGetIsLTValue(out T isLT))
             {
                 AddIsClauseImpl(isLT, CompareTokens.LT);
             }
-            if (itf.TryGetIsGTValue(out T isGT))
+            if (newFilter.TryGetIsGTValue(out T isGT))
             {
                 AddIsClauseImpl(isGT, CompareTokens.GT);
             }
 
-            //var ranges = itf.RangeValues;
-            foreach (var tuple in itf.RangeValues)
+            foreach (var tuple in newFilter.RangeValues)
             {
                 AddValueRangeImpl(tuple.Item1, tuple.Item2);
             }
 
-            //var varRanges = itf.VariableRanges;
-            foreach (var val in itf.VariableRanges)
+            foreach (var val in newFilter.VariableRanges)
             {
                 _variableRanges.Add(val);
-                //AddValueRangeImpl(tuple.Item1, tuple.Item2);
             }
 
-            //var relOps = itf.RelationalOps;
-            foreach (var op in itf.RelationalOps)
+            foreach (var op in newFilter.RelationalOps)
             {
                 AddRelationalOpImpl(op);
             }
 
-            //var singleVals = itf.SingleValues;
-            foreach (var val in itf.SingleValues)
+            foreach (var val in newFilter.SingleValues)
             {
                 AddSingleValueImpl(val);
             }
@@ -151,7 +146,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         //IUCIRangeClauseFilter
         public void AddIsClause(IUCIValue value, string opSymbol)
         {
-            AddIsClauseImpl(_tConverter(value), opSymbol);
+            if (value.ParsesToConstantValue)
+            {
+                AddIsClauseImpl(_tConverter(value), opSymbol);
+            }
+            else
+            {
+                AddRelationalOpImpl(value.ValueText);
+            }
         }
 
         //IUCIRangeClauseFilter

@@ -449,6 +449,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Is_<>_100#", "Double", "IsLT=100,IsGT=100")]
         [TestCase("Is_<>_True", "Boolean", "RelOp=Is <> True")]
         [TestCase(@"Is_<>_""100""", "Long", "IsLT=100,IsGT=100")]
+        [TestCase("Is_>_x", "Long", "IsLT=x")]
         [Category("Inspections")]
         public void UciUnit_AddIsClauses(string firstCase, string filterTypeName, string expectedRangeClauses)
         {
@@ -465,6 +466,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedResult.First().ToString(), UUT.ToString());
         }
 
+        [TestCase("IsLT=z,Single=45", "IsLT=z", "Single=45")]
         [TestCase("Single=z,Single=45", "Single=z", "Single=45")]
         [TestCase("Range=20:x,Single=45", "Range=20:x", "Single=45")]
         [TestCase("IsLT=45,Range=20:70", "IsLT=45", "Range=45:70")]
@@ -2055,6 +2057,38 @@ Select Case x
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
+        [TestCase("<")]
+        [TestCase(">")]
+        [TestCase("<=")]
+        [TestCase(">=")]
+        [TestCase("<>")]
+        [TestCase("=")]
+        [Category("Inspections")]
+        public void UciFunctional_IsStmtVariables(string opSymbol)
+        {
+            string inputCode =
+@"
+        private const START As Long = 10
+        private const FINISH As Long = 3
+
+        Sub Foo(x As Long, y As Long, z As Long)
+        Select Case z
+            Case 95
+            'OK
+            Case Is <opSymbol> x
+            'OK
+            Case -START To FINISH 
+            'OK
+            Case Is <opSymbol> y 
+            'Unreachable
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<opSymbol>", opSymbol);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
         private static void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var expected = new Dictionary<string, int>
@@ -2260,6 +2294,5 @@ Select Case x
             clauseExpression = clauseExpression.Replace(" @ ", " = ");
             return clauseExpression;
         }
-
     }
 }
