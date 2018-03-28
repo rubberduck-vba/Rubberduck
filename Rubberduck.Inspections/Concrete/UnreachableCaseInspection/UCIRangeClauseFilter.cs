@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool FiltersAllValues { get; }
         string TypeName { set; get; }
         IUCIRangeClauseFilter FilterUnreachableClauses(IUCIRangeClauseFilter filter);
-        void Add(IUCIRangeClauseFilter newSummary);
+        void Add(IUCIRangeClauseFilter filter);
         void AddValueRange(IUCIValue startVal, IUCIValue endVal);
         void AddIsClause(IUCIValue value, string opSymbol);
         void AddSingleValue(IUCIValue value);
@@ -44,10 +44,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private T _minExtent;
         private T _maxExtent;
 
-        public UCIRangeClauseFilter(string typeName, IUCIValueFactory valueFactory, IUCIRangeClauseFilterFactory summaryFactory, Func<IUCIValue, T> tConverter)
+        public UCIRangeClauseFilter(string typeName, IUCIValueFactory valueFactory, IUCIRangeClauseFilterFactory filterFactory, Func<IUCIValue, T> tConverter)
         {
             _valueFactory = valueFactory;
-            _filterFactory = summaryFactory;
+            _filterFactory = filterFactory;
             _tConverter = tConverter;
 
             _ranges = new List<Tuple<T, T>>();
@@ -110,9 +110,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         //IUCIRangeClauseFilter
-        public void Add(IUCIRangeClauseFilter newSummary)
+        public void Add(IUCIRangeClauseFilter filterToAdd)
         {
-            var itf = (UCIRangeClauseFilter<T>)newSummary;
+            var itf = (UCIRangeClauseFilter<T>)filterToAdd;
             if (itf.TryGetIsLTValue(out T isLT))
             {
                 AddIsClauseImpl(isLT, CompareTokens.LT);
@@ -212,7 +212,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (!(filter is UCIRangeClauseFilter<T>))
             {
-                throw new ArgumentException($"Argument is not of type SummaryCoverage<{typeof(T).ToString()}>", "summary");
+                throw new ArgumentException($"Argument is not of type UCIRangeClauseFilter<{typeof(T).ToString()}>", "filter");
             }
 
             var filteredCoverage = _filterFactory.Create(TypeName, _valueFactory);
@@ -417,11 +417,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private IUCIRangeClauseFilter RemoveClausesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
         {
-            var newSummary = RemoveIsClausesCoveredBy(removeFrom, removalSpec);
-            newSummary = RemoveRangesCoveredBy(removeFrom, removalSpec);
-            newSummary = RemoveSingleValuesCoveredBy(removeFrom, removalSpec);
-            newSummary = RemoveRelationalOpsCoveredBy(removeFrom, removalSpec);
-            return newSummary;
+            var newFilter = RemoveIsClausesCoveredBy(removeFrom, removalSpec);
+            newFilter = RemoveRangesCoveredBy(removeFrom, removalSpec);
+            newFilter = RemoveSingleValuesCoveredBy(removeFrom, removalSpec);
+            newFilter = RemoveRelationalOpsCoveredBy(removeFrom, removalSpec);
+            return newFilter;
         }
 
         private static UCIRangeClauseFilter<T> RemoveIsClausesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)

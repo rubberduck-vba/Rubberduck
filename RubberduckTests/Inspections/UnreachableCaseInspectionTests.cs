@@ -394,10 +394,10 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_ToString(string firstCase, string secondCase, string expectedClauses)
         {
-            var sumClauses = TestRangesToSummaryClauses(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
-            sumClauses[0].Add(sumClauses[1]);
+            var filters = RangeDescriptorsToFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
+            filters[0].Add(filters[1]);
 
-            Assert.AreEqual(sumClauses[2], sumClauses[0]);
+            Assert.AreEqual(filters[2], filters[0]);
         }
 
         [TestCase("50?Long_To_x?Long", "Long", "Range=50:x")]
@@ -409,9 +409,9 @@ namespace RubberduckTests.Inspections
         [TestCase("50_To_100,175_To_225", "Long", "Range=50:100,Range=175:225")]
         [TestCase("500?Long_To_100?Long", "Long", "Range=100:500")]
         [Category("Inspections")]
-        public void UciUnit_AddRangeClauses(string firstCase, string summaryTypeName, string expectedClauses)
+        public void UciUnit_AddRangeClauses(string firstCase, string filterTypeName, string expectedClauses)
         {
-            var UUT = RangeClauseFilterFactory.Create(summaryTypeName, ValueFactory);
+            var UUT = RangeClauseFilterFactory.Create(filterTypeName, ValueFactory);
 
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
@@ -421,8 +421,8 @@ namespace RubberduckTests.Inspections
             }
 
             clauses = expectedClauses.Split(new string[] { "," }, StringSplitOptions.None);
-            var theVal = CreateTestSummaryCoverage(clauses.ToList(), summaryTypeName);
-            Assert.AreEqual(UUT, theVal);
+            var testFilter = CreateTestFilter(clauses.ToList(), filterTypeName);
+            Assert.AreEqual(testFilter, UUT);
         }
 
         [TestCase("Is_>_50", "Long", "IsGT=50")]
@@ -450,11 +450,11 @@ namespace RubberduckTests.Inspections
         [TestCase("Is_<>_True", "Boolean", "RelOp=Is <> True")]
         [TestCase(@"Is_<>_""100""", "Long", "IsLT=100,IsGT=100")]
         [Category("Inspections")]
-        public void UciUnit_AddIsClauses(string firstCase, string summaryTypeName, string expectedRangeClauses)
+        public void UciUnit_AddIsClauses(string firstCase, string filterTypeName, string expectedRangeClauses)
         {
-            var UUT = RangeClauseFilterFactory.Create(summaryTypeName, ValueFactory);
+            var UUT = RangeClauseFilterFactory.Create(filterTypeName, ValueFactory);
 
-            var expectedResult = TestRangesToSummaryClauses(new string[] { expectedRangeClauses }, summaryTypeName);
+            var expectedResult = RangeDescriptorsToFilters(new string[] { expectedRangeClauses }, filterTypeName);
 
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
@@ -484,7 +484,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_RemovalRangeClauses(string candidateClauseInput, string existingClauseInput, string expectedClauses)
         {
-            var sumClauses = TestRangesToSummaryClauses(new string[] { candidateClauseInput, existingClauseInput }, Tokens.Long);
+            var sumClauses = RangeDescriptorsToFilters(new string[] { candidateClauseInput, existingClauseInput }, Tokens.Long);
             var clausesToFilter = sumClauses[0];
             var filter = sumClauses[1];
 
@@ -494,14 +494,14 @@ namespace RubberduckTests.Inspections
             if (filterResults.ContainsFilters)
             {
                 var clauses = expectedClauses.Split(new string[] { "," }, StringSplitOptions.None);
-                var expected = CreateTestSummaryCoverage(clauses.ToList(), Tokens.Long);
+                var expected = CreateTestFilter(clauses.ToList(), Tokens.Long);
                 Assert.AreEqual(expected, filterResults);
             }
             else
             {
                 if (!expectedClauses.Equals(""))
                 {
-                    Assert.Fail("Function fails to return ISummaryCoverage");
+                    Assert.Fail("Function fails to return Interface");
                 }
             }
         }
@@ -522,14 +522,14 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_FiltersAll(string firstCase, string secondCase, string typeName)
         {
-            var summaryCoverage = RangeClauseFilterFactory.Create(typeName, ValueFactory);
-            var sumClauses = TestRangesToSummaryClauses(new string[] { firstCase, secondCase }, typeName);
+            var cummulativeFilter = RangeClauseFilterFactory.Create(typeName, ValueFactory);
+            var sumClauses = RangeDescriptorsToFilters(new string[] { firstCase, secondCase }, typeName);
             for (var idx = 0; idx < sumClauses.Count; idx++)
             {
-                var filteredResults = sumClauses[idx].FilterUnreachableClauses(summaryCoverage);
-                summaryCoverage.Add(filteredResults);
+                var filteredResults = sumClauses[idx].FilterUnreachableClauses(cummulativeFilter);
+                cummulativeFilter.Add(filteredResults);
             }
-            Assert.IsTrue(summaryCoverage.FiltersAllValues, summaryCoverage.ToString());
+            Assert.IsTrue(cummulativeFilter.FiltersAllValues, cummulativeFilter.ToString());
         }
 
         [TestCase("IsLT=True, IsGT=True", "RelOp=x > 6", "Single=False,RelOp=Is > True")]
@@ -539,7 +539,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_FilterBoolean(string firstCase, string secondCase, string expectedClauses)
         {
-            var sumClauses = TestRangesToSummaryClauses(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
+            var sumClauses = RangeDescriptorsToFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
 
             var candidateClause = sumClauses[0];
             var filter = sumClauses[1];
@@ -599,7 +599,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_FiltersRelationalOps(string firstCase, string secondCase, string expectedClauses)
         {
-            var sumClauses = TestRangesToSummaryClauses(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
+            var sumClauses = RangeDescriptorsToFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
             var firstClause = sumClauses[0];
             var secondClause = sumClauses[1];
             var expected = sumClauses[2];
@@ -617,21 +617,21 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_Extents(string typeName)
         {
-            var summary = RangeClauseFilterFactory.Create(typeName, ValueFactory);
+            var filter = RangeClauseFilterFactory.Create(typeName, ValueFactory);
 
             if (typeName.Equals(Tokens.Long))
             {
-                var check = (IUCIRangeClauseFilterTestSupport<long>)summary;
+                var check = (IUCIRangeClauseFilterTestSupport<long>)filter;
                 CheckExtents(check, UCIRangeClauseFilterFactory.IntegerNumberExtents[typeName].Item1, UCIRangeClauseFilterFactory.IntegerNumberExtents[typeName].Item2);
             }
             else if (typeName.Equals(Tokens.Single))
             {
-                var check = (IUCIRangeClauseFilterTestSupport<double>)summary;
+                var check = (IUCIRangeClauseFilterTestSupport<double>)filter;
                 CheckExtents(check, CompareExtents.SINGLEMIN, CompareExtents.SINGLEMAX);
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var check = (IUCIRangeClauseFilterTestSupport<decimal>)summary;
+                var check = (IUCIRangeClauseFilterTestSupport<decimal>)filter;
                 CheckExtents(check, CompareExtents.CURRENCYMIN, CompareExtents.CURRENCYMAX);
             }
         }
@@ -675,7 +675,7 @@ End Sub";
             var inspRange = InspectionRangeFactory.Create(range, results);
             inspRange.EvaluationTypeName = Tokens.Boolean;
 
-            var expectedFilters = TestRangesToSummaryClauses(new string[] { expected }, Tokens.Boolean);
+            var expectedFilters = RangeDescriptorsToFilters(new string[] { expected }, Tokens.Boolean);
             Assert.AreEqual(expectedFilters.First().ToString(), inspRange.AsFilter.ToString());
         }
 
@@ -2118,26 +2118,26 @@ Select Case x
         {
             Assert.IsTrue(input.Count() >= 2, "At least two rangeClase input strings are neede for this test");
 
-            var sumClauses = TestRangesToSummaryClauses(input, typeName);
+            var sumClauses = RangeDescriptorsToFilters(input, typeName);
 
-            IUCIRangeClauseFilter summary = RangeClauseFilterFactory.Create(typeName, ValueFactory);
+            IUCIRangeClauseFilter filter = RangeClauseFilterFactory.Create(typeName, ValueFactory);
             for (var idx = 0; idx <= sumClauses.Count - 2; idx++)
             {
-                summary.Add(sumClauses[idx]);
+                filter.Add(sumClauses[idx]);
             }
 
             var expected = sumClauses[sumClauses.Count - 1];
-            Assert.AreEqual(expected, summary);
+            Assert.AreEqual(expected, filter);
         }
 
-        private List<IUCIRangeClauseFilter> TestRangesToSummaryClauses(string[] input, string typeName)
+        private List<IUCIRangeClauseFilter> RangeDescriptorsToFilters(string[] input, string typeName)
         {
             var caseToRanges = CasesToRanges(input);
             var sumClauses = new List<IUCIRangeClauseFilter>();
             foreach (var id in caseToRanges)
             {
-                var newSummary = CreateTestSummaryCoverage(id.Value, typeName);
-                sumClauses.Add(newSummary);
+                var newFilter = CreateTestFilter(id.Value, typeName);
+                sumClauses.Add(newFilter);
             }
             return sumClauses;
         }
@@ -2173,7 +2173,7 @@ Select Case x
             return caseToRanges;
         }
 
-        private IUCIRangeClauseFilter CreateTestSummaryCoverage(List<string> annotations, string typeName)
+        private IUCIRangeClauseFilter CreateTestFilter(List<string> annotations, string typeName)
         {
             var result = RangeClauseFilterFactory.Create(typeName, ValueFactory);
             var clauseItem = string.Empty;

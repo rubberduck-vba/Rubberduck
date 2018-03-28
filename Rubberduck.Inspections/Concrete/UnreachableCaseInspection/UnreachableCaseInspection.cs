@@ -52,14 +52,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var qualifiedSelectCaseStmts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
-            _parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
-            foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
-            {
-                qualifiedSelectCaseStmt.Context.Accept(_parseTreeValueVisitor);
-            }
+            var parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
+            parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
             {
+                qualifiedSelectCaseStmt.Context.Accept(parseTreeValueVisitor);
                 var selectStmt = _selectStmtFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults);
 
                 selectStmt.InspectForUnreachableCases();
