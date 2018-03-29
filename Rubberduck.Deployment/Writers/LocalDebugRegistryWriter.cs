@@ -31,14 +31,10 @@ namespace Rubberduck.Deployment.Writers
                     throw new InvalidOperationException("Unexpected registry entry: " + entry.Key);
                 }
 
+                MakeRegistryEntries(entry, Registry.CurrentUser);
                 if (Environment.Is64BitOperatingSystem)
                 {
-                    MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32));
                     MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64));
-                }
-                else 
-                {
-                    MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32));
                 }
                 
                 if (!distinctKeys.Contains(entry.Key))
@@ -53,7 +49,7 @@ namespace Rubberduck.Deployment.Writers
                 sb.AppendLine("[-HKEY_CURRENT_USER\\" + key + "]" + Environment.NewLine);
             }
 
-            return sb.ToString(); //FIXME: this is not printing reg redirections.
+            return sb.ToString();
         }
 
         private void MakeRegistryEntries(RegistryEntry entry, RegistryKey hKey) 
