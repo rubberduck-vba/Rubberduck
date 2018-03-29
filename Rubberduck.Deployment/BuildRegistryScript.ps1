@@ -102,7 +102,7 @@ try
 					}
 					else 
 					{
-						& reg.exe import $regFile /reg:32;					
+						& reg.exe import $regFile;
 					}
 					& reg.exe import ($dir + "\RubberduckAddinRegistry.reg");
 					Move-Item -Path $regFile -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" )

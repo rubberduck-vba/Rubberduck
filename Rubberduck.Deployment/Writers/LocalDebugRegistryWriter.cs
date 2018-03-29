@@ -31,12 +31,15 @@ namespace Rubberduck.Deployment.Writers
                     throw new InvalidOperationException("Unexpected registry entry: " + entry.Key);
                 }
 
-                MakeRegistryEntries(entry, Registry.CurrentUser);
                 if (Environment.Is64BitOperatingSystem)
                 {
                     MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64));
                 }
-                
+                else 
+                {
+                    MakeRegistryEntries(entry, Registry.CurrentUser);
+                }
+
                 if (!distinctKeys.Contains(entry.Key))
                 {
                     distinctKeys.Add(entry.Key);
