@@ -33,6 +33,7 @@ namespace Rubberduck.Deployment.Writers
 
                 if (Environment.Is64BitOperatingSystem)
                 {
+                    MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32));
                     MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64));
                 }
                 else 
