@@ -3,90 +3,32 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
+using MSO = Microsoft.Office.Core;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ButtonState = Rubberduck.VBEditor.SafeComWrappers.MSForms.ButtonState;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarButton : CommandBarControl, ICommandBarButton
+    public class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO.ICommandBarsEvents>, ICommandBarButton, MSO.ICommandBarButtonEvents
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        public const bool AddCommandBarControlsTemporarily = false;
 
-        public CommandBarButton(Microsoft.Office.Core.CommandBarButton target, bool rewrapping = false) 
+        public CommandBarButton(MSO.CommandBarButton target, bool rewrapping = false) 
             : base(target, rewrapping)
         {
         }
-
-        private Microsoft.Office.Core.CommandBarButton Button => (Microsoft.Office.Core.CommandBarButton)Target;
+        
+        private MSO.CommandBarButton Button => Target;
 
         public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
         {
-            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target, rewrapping: true);
+            return new CommandBarButton((MSO.CommandBarButton)control.Target, rewrapping: true);
         }
-
-        private EventHandler<CommandBarButtonClickEventArgs> _clickHandler; 
-        public event EventHandler<CommandBarButtonClickEventArgs> Click
-        {
-            add
-            {
-                if (_clickHandler == null)
-                {
-                    ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
-                }
-                _clickHandler += value;
-                using (var parent = Parent)
-                {
-                    _logger.Trace($"Added handler for: {parent.Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
-                }
-            }
-            remove
-            {
-                _clickHandler -= value;
-                try
-                {
-                    if (_clickHandler == null)
-                    {
-                        ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
-                    }
-                }
-                catch
-                {
-                    // he's gone, dave.
-                }
-                using (var parent = Parent)
-                {
-                    _logger.Trace($"Removed handler for: {parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
-                }
-            }
-        }
-
-        private void Target_Click(Microsoft.Office.Core.CommandBarButton control, ref bool cancelDefault)
-        {
-            var button = new CommandBarButton(control);
-
-            var handler = _clickHandler;
-            if (handler == null || IsWrappingNullReference)
-            {
-                button.Dispose();
-                return;
-            }
-
-            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
-
-            //note: event is fired for every parent the command exists under. not sure why.
-            using (var parent = Parent)
-            {
-                _logger.Trace($"Executing handler for: {parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
-            }
-
-            var args = new CommandBarButtonClickEventArgs(button);
-            handler.Invoke(this, args);
-            cancelDefault = args.Cancel;
-            //button.Release(final:true);
-        }
-
+        
         public bool IsBuiltInFace
         {
             get => !IsWrappingNullReference && Button.BuiltInFace;
@@ -130,7 +72,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 if (!IsWrappingNullReference)
                 {
-                    Button.State = (Microsoft.Office.Core.MsoButtonState)value;
+                    Button.State = (MSO.MsoButtonState)value;
                 }
             }
         }
@@ -142,7 +84,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 if (!IsWrappingNullReference)
                 {
-                    Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value;
+                    Button.Style = (MSO.MsoButtonStyle)value;
                 }
             }
         }
@@ -228,6 +170,241 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                 g.DrawImage(image, 0, 0);
             }
             return output;
+        }
+
+        public bool BeginsGroup
+        {
+            get => !IsWrappingNullReference && Target.BeginGroup;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.BeginGroup = value;
+                }
+            }
+        }
+
+        public bool IsBuiltIn => !IsWrappingNullReference && Target.BuiltIn;
+
+        public string Caption
+        {
+            get => IsWrappingNullReference ? string.Empty : Target.Caption;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Caption = CommandBarControlCaptionGuard.ApplyGuard(value);
+                }
+            }
+        }
+
+        public string DescriptionText
+        {
+            get => IsWrappingNullReference ? string.Empty : Target.DescriptionText;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.DescriptionText = value;
+                }
+            }
+        }
+
+        public bool IsEnabled
+        {
+            get => !IsWrappingNullReference && Target.Enabled;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Enabled = value;
+                }
+            }
+        }
+
+        public int Height
+        {
+            get => Target.Height;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Height = value;
+                }
+            }
+        }
+
+        public int Id => IsWrappingNullReference ? 0 : Target.Id;
+
+        public int Index => IsWrappingNullReference ? 0 : Target.Index;
+
+        public int Left => IsWrappingNullReference ? 0 : Target.Left;
+
+        public string OnAction
+        {
+            get => IsWrappingNullReference ? string.Empty : Target.OnAction;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.OnAction = value;
+                }
+            }
+        }
+
+        public ICommandBar Parent => new CommandBar(IsWrappingNullReference ? null : Target.Parent);
+
+        public string Parameter
+        {
+            get => IsWrappingNullReference ? string.Empty : Target.Parameter;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Parameter = value;
+                }
+            }
+        }
+
+        public int Priority
+        {
+            get => IsWrappingNullReference ? 0 : Target.Priority;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Priority = value;
+                }
+            }
+        }
+
+        public string Tag
+        {
+            get => Target?.Tag;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Tag = value;
+                }
+            }
+        }
+
+        public string TooltipText
+        {
+            get => IsWrappingNullReference ? string.Empty : Target.TooltipText;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.TooltipText = value;
+                }
+            }
+        }
+
+        public int Top => IsWrappingNullReference ? 0 : Target.Top;
+
+        public ControlType Type => IsWrappingNullReference ? 0 : (ControlType)Target.Type;
+
+        public bool IsVisible
+        {
+            get => !IsWrappingNullReference && Target.Visible;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Visible = value;
+                }
+            }
+        }
+
+        public int Width
+        {
+            get => IsWrappingNullReference ? 0 : Target.Width;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Width = value;
+                }
+            }
+        }
+
+        public bool IsPriorityDropped => (!IsWrappingNullReference) && Target.IsPriorityDropped;
+
+        public void Delete()
+        {
+            if (!IsWrappingNullReference)
+            {
+                Target.Delete(AddCommandBarControlsTemporarily);
+            }
+        }
+
+        public void Execute()
+        {
+            if (!IsWrappingNullReference)
+            {
+                Target.Execute();
+            }
+        }
+        
+        public bool Equals(ICommandBarControl other)
+        {
+            return Equals(other as SafeComWrapper<MSO.CommandBarControl>);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : HashCode.Compute(Type, Id, Index, IsBuiltIn, Target.Parent);
+        }
+
+        public override bool Equals(ISafeComWrapper<MSO.CommandBarButton> other)
+        {
+            return IsEqualIfNull(other) ||
+                   (other != null
+                    && (int)other.Target.Type == (int)Type
+                    && other.Target.Id == Id
+                    && other.Target.Index == Index
+                    && other.Target.BuiltIn == IsBuiltIn
+                    && ReferenceEquals(other.Target.Parent, Target.Parent));
+        }
+
+        private object _eventLock = new object();
+        private event EventHandler<CommandBarButtonClickEventArgs> _click;
+        public event EventHandler<CommandBarButtonClickEventArgs> Click
+        {
+            add
+            {
+                lock (_eventLock)
+                {
+                    AttachEvents();
+                    _click += value;
+                }
+            }
+            remove
+            {
+                lock (_eventLock)
+                {
+                    _click -= value;
+                    DetachEvents();
+                }
+            }
+        }
+        void MSO.ICommandBarButtonEvents.Click(MSO.CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var button = new CommandBarButton(Ctrl);
+            var handler = _click;
+            if (handler == null || IsWrappingNullReference)
+            {
+                button.Dispose();
+                return;
+            }
+
+            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
+
+            var args = new CommandBarButtonClickEventArgs(button);
+            handler.Invoke(this, args);
+            CancelDefault = args.Cancel;
         }
     }
 }
