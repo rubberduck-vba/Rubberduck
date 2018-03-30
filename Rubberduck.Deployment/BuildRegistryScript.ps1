@@ -95,9 +95,17 @@ try
 				if (Test-Path -Path $regFile -PathType Leaf)
 				{
 					$datetime = Get-Date;
-					& reg.exe import $regFile;
+					if ([Environment]::Is64BitOperatingSystem)
+					{
+						& reg.exe import $regFile /reg:32;
+						& reg.exe import $regFile /reg:64;
+					}
+					else 
+					{
+						& reg.exe import $regFile;
+					}
 					& reg.exe import ($dir + "\RubberduckAddinRegistry.reg");
-					Move-Item -Path $regFile -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddhhmmss") + ".txt" )
+					Move-Item -Path $regFile -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" )
 				}
 			}
 			else
