@@ -880,5 +880,43 @@ End Sub";
                 Assert.AreEqual(inputCode, rewriter.GetText());
             }
         }
+
+        [Test]
+        [Category("Move Closer")]
+        [Category("Refactorings")]
+        public void MoveCloser_RespectsObjectProperties_InUsages()
+        {
+            const string input = @"Option Explicit
+
+Public Sub Test()
+    Dim foo As Object
+    Debug.Print ""Some statements between""
+    Debug.Print ""Declaration and first usage!""
+    Set foo = CreateObject(""Some.Object"")
+    foo.Name = ""FooName""
+    foo.OtherProperty = 1626
+End Sub";
+
+            const string expected = @"Option Explicit
+
+Public Sub Test()
+    Debug.Print ""Some statements between""
+    Debug.Print ""Declaration and first usage!""
+    Dim foo As Object
+Set foo = CreateObject(""Some.Object"")
+    foo.Name = ""FooName""
+    foo.OtherProperty = 1626
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var messageBox = new Mock<IMessageBox>();
+                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
+                refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType == DeclarationType.Variable));
+                var rewriter = state.GetRewriter(component);
+                Assert.AreEqual(expected, rewriter.GetText());
+            }
+        }
     }
 }
