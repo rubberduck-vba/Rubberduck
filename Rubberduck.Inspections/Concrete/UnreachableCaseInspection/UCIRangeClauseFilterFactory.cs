@@ -11,6 +11,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         IUCIRangeClauseFilter Create(string typeNme, IUCIValueFactory valueFactory);
     }
 
+    //The following MIN/MAX values relate to VBA types
     internal static class CompareExtents
     {
         public static long LONGMIN = Int32.MinValue; //- 2147486648;

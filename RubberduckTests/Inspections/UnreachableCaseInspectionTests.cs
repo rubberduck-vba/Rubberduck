@@ -384,20 +384,20 @@ namespace RubberduckTests.Inspections
 
         [TestCase("IsLT=5", "", "IsLT=5")]
         [TestCase("IsGT=5", "", "IsGT=5")]
-        [TestCase("IsLT=5", "IsGT=300", "IsLT=5,IsGT=300")]
-        [TestCase("IsLT=5,Range=45:55", "IsGT=300", "IsLT=5,IsGT=300,Range=45:55")]
-        [TestCase("IsLT=5,Range=45:55", "IsGT=300,Single=200", "IsLT=5,IsGT=300,Range=45:55,Single=200")]
-        [TestCase("IsLT=-2,Range=45:55", "IsGT=300,Single=200,RelOp=x < 50", "IsLT=-2,IsGT=300,Range=45:55,Single=200,RelOp=x < 50")]
-        [TestCase("Range=45:55", "Range=60:65", "Range=45:55,Range=60:65")]
-        [TestCase("Single=45,Single=46", "Single=60", "Single=45,Single=46,Single=60")]
-        [TestCase("RelOp=x < 50", "RelOp=x > 75", "RelOp=x < 50,RelOp=x > 75")]
+        [TestCase("IsLT=5", "IsGT=300", "IsLT=5!IsGT=300")]
+        [TestCase("IsLT=5,Range=45:55", "IsGT=300", "IsLT=5!IsGT=300!Range=45:55")]
+        [TestCase("IsLT=5,Range=45:55", "IsGT=300,Single=200", "IsLT=5!IsGT=300!Range=45:55!Single=200")]
+        [TestCase("IsLT=-2,Range=45:55", "IsGT=300,Single=200,RelOp=x < 50", "IsLT=-2!IsGT=300!Range=45:55!Single=200!RelOp=x < 50")]
+        [TestCase("Range=45:55", "Range=60:65", "Range=45:55,60:65")]
+        [TestCase("Single=45,Single=46", "Single=60", "Single=45,46,60")]
+        [TestCase("RelOp=x < 50", "RelOp=x > 75", "RelOp=x < 50,x > 75")]
         [Category("Inspections")]
-        public void UciUnit_ToString(string firstCase, string secondCase, string expectedClauses)
+        public void UciUnit_ToString(string firstCase, string secondCase, string expected)
         {
-            var filters = RangeDescriptorsToFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
+            var filters = RangeDescriptorsToFilters(new string[] { firstCase, secondCase/*, expectedClauses*/ }, Tokens.Long);
             filters[0].Add(filters[1]);
 
-            Assert.AreEqual(filters[2], filters[0]);
+            Assert.AreEqual(expected, filters[0].ToString());
         }
 
         [TestCase("50?Long_To_x?Long", "Long", "Range=50:x")]

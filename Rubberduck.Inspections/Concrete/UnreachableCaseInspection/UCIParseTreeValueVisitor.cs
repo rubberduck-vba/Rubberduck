@@ -123,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             IUCIValue newResult = null;
-            if (TryGetTheLExprValue(context, out string lexprValue, out string declaredType))
+            if (TryGetLExprValue(context, out string lexprValue, out string declaredType))
             {
                 newResult = _inspValueFactory.Create(lexprValue, declaredType);
             }
@@ -237,32 +237,36 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return ptParent.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext));
         }
 
-        private bool TryGetTheLExprValue(VBAParser.LExprContext ctxt, out string expressionValue, out string declaredTypeName)
+        private bool TryGetLExprValue(VBAParser.LExprContext lExprContext, out string expressionValue, out string declaredTypeName)
         {
             expressionValue = string.Empty;
             declaredTypeName = string.Empty;
-            if (ctxt.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess))
+            var isMemberAccess = lExprContext.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess);
+            var isSimpleName = lExprContext.TryGetChildContext(out VBAParser.SimpleNameExprContext smplName);
+
+            if (!(isMemberAccess || isSimpleName))
+            {
+                return false;
+            }
+
+            if (isMemberAccess)
             {
                 var member = memberAccess.GetChild<VBAParser.UnrestrictedIdentifierContext>();
 
-                if (TryGetIdentifierReferenceForContext(member, out IdentifierReference idRef))
+                if (TryGetIdentifierReferenceForContext(member, out IdentifierReference idRef)
+                    && idRef.Declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember)
+                    && idRef.Declaration.Context is VBAParser.EnumerationStmt_ConstantContext)
                 {
                     var dec = idRef.Declaration;
-                    if (dec.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                    {
-                        var theCtxt = dec.Context;
-                        if (theCtxt is VBAParser.EnumerationStmt_ConstantContext)
-                        {
-                            expressionValue = GetConstantDeclarationValueToken(dec);
-                            declaredTypeName = dec.AsTypeIsBaseType ? dec.AsTypeName : dec.AsTypeDeclaration.AsTypeName;
-                            return true;
-                        }
-                    }
+                    var theCtxt = dec.Context;
+                    expressionValue = GetConstantDeclarationValueToken(dec);
+                    declaredTypeName = dec.AsTypeIsBaseType ? dec.AsTypeName : dec.AsTypeDeclaration.AsTypeName;
+                    return true;
                 }
                 return false;
             }
 
-            if (ctxt.TryGetChildContext(out VBAParser.SimpleNameExprContext smplName))
+            if (isSimpleName)
             {
                 if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference rangeClauseIdentifierReference))
                 {
@@ -279,7 +283,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private bool TryGetIdentifierReferenceForContext<T>(T context, out IdentifierReference idRef) where T : ParserRuleContext
+        private bool TryGetIdentifierReferenceForContext(ParserRuleContext context, out IdentifierReference idRef)
         {
             idRef = null;
             var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
@@ -327,8 +331,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static bool IsBinaryMathContext<T>(T context)
         {
-            return context is VBAParser.MultOpContext
-                || context is VBAParser.AddOpContext
+            return context is VBAParser.MultOpContext   //MultOpContext includes both * and /
+                || context is VBAParser.AddOpContext    //AddOpContet includes both + and -
                 || context is VBAParser.PowOpContext
                 || context is VBAParser.ModOpContext;
         }

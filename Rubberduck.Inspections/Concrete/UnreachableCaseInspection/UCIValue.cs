@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public string TypeName => _declaredType ?? _derivedType ?? string.Empty;
 
-        public virtual string ValueText => _valueText;
+        public string ValueText => _valueText;
 
         public bool ParsesToConstantValue { set; get; }
 
@@ -109,7 +109,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return result;
         }
 
-        private void ConformValueTextToType(string conformTypeName )
+        private void ConformValueTextToType(string conformTypeName)
         {
             if (_valueText.Equals(double.NaN.ToString()) && !conformTypeName.Equals(Tokens.String))
             {
