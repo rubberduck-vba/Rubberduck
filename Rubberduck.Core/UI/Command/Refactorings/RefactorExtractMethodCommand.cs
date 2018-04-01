@@ -25,8 +25,11 @@ namespace Rubberduck.UI.Command.Refactorings
         {
 
             var qualifiedSelection = Vbe.GetActiveSelection();
-
             if (!qualifiedSelection.HasValue)
+            {
+                return false;
+            }
+            if (_state.IsNewOrModified(qualifiedSelection.Value.QualifiedName))
             {
                 return false;
             }

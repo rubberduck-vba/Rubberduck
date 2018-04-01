@@ -30,6 +30,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
                 var target = _state.FindSelectedDeclaration(activePane);
                 return target != null
+                       && !_state.IsNewOrModified(target.QualifiedModuleName)
                        && (target.DeclarationType == DeclarationType.Variable ||
                            target.DeclarationType == DeclarationType.Constant)
                        && target.References.Any();
