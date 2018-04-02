@@ -50,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public bool Any()
         {
-            return _parseTreeValues.Count == 0;
+            return _parseTreeValues.Count != 0;
         }
 
         public bool TryGetValue(ParserRuleContext context, out IUCIValue value)
@@ -60,11 +60,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public void OnNewValueResult(object sender, ValueResultEventArgs e)
         {
-            if (_parseTreeValues.ContainsKey(e.Context))
+            if (!_parseTreeValues.ContainsKey(e.Context))
             {
-                return;
+                _parseTreeValues.Add(e.Context, e.Value);
             }
-            _parseTreeValues.Add(e.Context, e.Value);
         }
     }
 }

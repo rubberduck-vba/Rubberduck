@@ -126,11 +126,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var newFilter = (UCIRangeClauseFilter<T>)filter;
             if (newFilter.TryGetIsLTValue(out T isLT))
             {
-                AddIsClauseImpl(isLT, CompareTokens.LT);
+                AddIsClauseImpl(isLT, LogicSymbols.LT);
             }
             if (newFilter.TryGetIsGTValue(out T isGT))
             {
-                AddIsClauseImpl(isGT, CompareTokens.GT);
+                AddIsClauseImpl(isGT, LogicSymbols.GT);
             }
 
             foreach (var tuple in newFilter.RangeValues)
@@ -243,7 +243,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public bool TryGetIsLTValue(out T isLT)
         {
             isLT = default;
-            if (_isClause.TryGetValue(CompareTokens.LT, out List<T> isLTValues) && isLTValues.Any())
+            if (_isClause.TryGetValue(LogicSymbols.LT, out List<T> isLTValues) && isLTValues.Any())
             {
                 isLT = isLTValues.Max();
                 return true;
@@ -254,7 +254,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public bool TryGetIsGTValue(out T isGT)
         {
             isGT = default;
-            if (_isClause.TryGetValue(CompareTokens.GT, out List<T> isGTValues) && isGTValues.Any())
+            if (_isClause.TryGetValue(LogicSymbols.GT, out List<T> isGTValues) && isGTValues.Any())
             {
                 isGT = isGTValues.Min();
                 return true;
@@ -295,8 +295,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var descriptors = new HashSet<string>
             {
-                GetIsClausesDescriptor(CompareTokens.LT),
-                GetIsClausesDescriptor(CompareTokens.GT),
+                GetIsClausesDescriptor(LogicSymbols.LT),
+                GetIsClausesDescriptor(LogicSymbols.GT),
                 GetRangesDescriptor(),
                 GetSinglesDescriptor(),
                 GetRelOpDescriptor()
@@ -326,8 +326,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _hasExtents = true;
             _minExtent = _tConverter(min);
             _maxExtent = _tConverter(max);
-            AddIsClauseImpl(_minExtent, CompareTokens.LT);
-            AddIsClauseImpl(_maxExtent, CompareTokens.GT);
+            AddIsClauseImpl(_minExtent, LogicSymbols.LT);
+            AddIsClauseImpl(_maxExtent, LogicSymbols.GT);
         }
 
         private bool FiltersAllRelationalOps
@@ -346,9 +346,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private void RemoveIsLTClause() => RemoveIsClauseImpl(CompareTokens.LT);
+        private void RemoveIsLTClause() => RemoveIsClauseImpl(LogicSymbols.LT);
 
-        private void RemoveIsGTClause() => RemoveIsClauseImpl(CompareTokens.GT);
+        private void RemoveIsGTClause() => RemoveIsClauseImpl(LogicSymbols.GT);
 
         private void RemoveRangeValues(List<Tuple<T, T>> toRemove)
         {
@@ -526,25 +526,25 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            if (opSymbol.Equals(CompareTokens.LT) || opSymbol.Equals(CompareTokens.GT))
+            if (opSymbol.Equals(LogicSymbols.LT) || opSymbol.Equals(LogicSymbols.GT))
             {
                 StoreIsClauseValue(val, opSymbol);
             }
-            else if (opSymbol.Equals(CompareTokens.LTE) || opSymbol.Equals(CompareTokens.GTE))
+            else if (opSymbol.Equals(LogicSymbols.LTE) || opSymbol.Equals(LogicSymbols.GTE))
             {
                 var ltOrGtSymbol = opSymbol.Substring(0, opSymbol.Length - 1);
                 StoreIsClauseValue(val, ltOrGtSymbol);
 
                 AddSingleValueImpl(val);
             }
-            else if (opSymbol.Equals(CompareTokens.EQ))
+            else if (opSymbol.Equals(LogicSymbols.EQ))
             {
                 AddSingleValueImpl(val);
             }
-            else if (opSymbol.Equals(CompareTokens.NEQ))
+            else if (opSymbol.Equals(LogicSymbols.NEQ))
             {
-                StoreIsClauseValue(val, CompareTokens.LT);
-                StoreIsClauseValue(val, CompareTokens.GT);
+                StoreIsClauseValue(val, LogicSymbols.LT);
+                StoreIsClauseValue(val, LogicSymbols.GT);
             }
 
             FilterExistingRanges();
@@ -591,21 +591,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             var bVal = bool.Parse(val.ToString());
 
-            if (opSymbol.Equals(CompareTokens.NEQ)
-                || opSymbol.Equals(CompareTokens.EQ)
-                || (opSymbol.Equals(CompareTokens.GT) && bVal)
-                || (opSymbol.Equals(CompareTokens.LT) && !bVal)
-                || (opSymbol.Equals(CompareTokens.GTE) && !bVal)
-                || (opSymbol.Equals(CompareTokens.LTE) && bVal)
+            if (opSymbol.Equals(LogicSymbols.NEQ)
+                || opSymbol.Equals(LogicSymbols.EQ)
+                || (opSymbol.Equals(LogicSymbols.GT) && bVal)
+                || (opSymbol.Equals(LogicSymbols.LT) && !bVal)
+                || (opSymbol.Equals(LogicSymbols.GTE) && !bVal)
+                || (opSymbol.Equals(LogicSymbols.LTE) && bVal)
                 )
             {
                 AddRelationalOpImpl($"Is {opSymbol} {val}");
             }
-            else if (opSymbol.Equals(CompareTokens.GT) || opSymbol.Equals(CompareTokens.GTE))
+            else if (opSymbol.Equals(LogicSymbols.GT) || opSymbol.Equals(LogicSymbols.GTE))
             {
                 AddSingleValueImpl(ConvertToContainedGeneric(bVal));
             }
-            else if (opSymbol.Equals(CompareTokens.LT) || opSymbol.Equals(CompareTokens.LTE))
+            else if (opSymbol.Equals(LogicSymbols.LT) || opSymbol.Equals(LogicSymbols.LTE))
             {
                 AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
             }
@@ -678,8 +678,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            start = IsLTFiltersValue(start) ? _isClause[CompareTokens.LT].Max() : start;
-            end = IsGTFiltersValue(end) ? _isClause[CompareTokens.GT].Min() : end;
+            start = IsLTFiltersValue(start) ? _isClause[LogicSymbols.LT].Max() : start;
+            end = IsGTFiltersValue(end) ? _isClause[LogicSymbols.GT].Min() : end;
 
             if (!_ranges.Any())
             {
@@ -730,8 +730,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             foreach (var range in rangesToTrim)
             {
                 var newRange = trimStart ?
-                    new Tuple<T, T>(_isClause[CompareTokens.LT].Max(), range.Item2)
-                        : new Tuple<T, T>(range.Item1, _isClause[CompareTokens.GT].Min());
+                    new Tuple<T, T>(_isClause[LogicSymbols.LT].Max(), range.Item2)
+                        : new Tuple<T, T>(range.Item1, _isClause[LogicSymbols.GT].Min());
 
                 replacementRanges.Add(newRange);
             }
@@ -862,7 +862,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (_hasExtents)
                 {
                     _isClause.Remove(opSymbol);
-                    var extentVal = opSymbol.Equals(CompareTokens.LT) ? _minExtent : _maxExtent;
+                    var extentVal = opSymbol.Equals(LogicSymbols.LT) ? _minExtent : _maxExtent;
                     AddIsClauseImpl(extentVal, opSymbol);
                 }
                 else
@@ -917,7 +917,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var result = string.Empty;
             if (_isClause.TryGetValue(opSymbol, out List<T> values))
             {
-                var isLT = opSymbol.Equals(CompareTokens.LT);
+                var isLT = opSymbol.Equals(LogicSymbols.LT);
                 var value = isLT ? values.Max() : values.Min();
                 var extentToCompare = isLT ? _minExtent : _maxExtent;
                 var prefix = isLT ? "IsLT=" : "IsGT=";

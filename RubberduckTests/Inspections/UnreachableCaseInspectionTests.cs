@@ -255,7 +255,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_MathOpCurrency(string operands, string expected, string typeName)
         {
-            var result = TestBinaryOp(MathTokens.MULT, operands, expected, typeName);
+            var result = TestBinaryOp(MathSymbols.MULTIPLY, operands, expected, typeName);
             Assert.AreEqual(typeName, result.TypeName);
         }
 
@@ -274,7 +274,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_Multiplication(string operands, string expected, string typeName)
         {
-            TestBinaryOp(MathTokens.MULT, operands, expected, typeName);
+            TestBinaryOp(MathSymbols.MULTIPLY, operands, expected, typeName);
         }
 
         [TestCase("10_/_2", "5", "Long")]
@@ -289,7 +289,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_Division(string operands, string expected, string typeName)
         {
-            TestBinaryOp(MathTokens.DIV, operands, expected, typeName);
+            TestBinaryOp(MathSymbols.DIVIDE, operands, expected, typeName);
         }
 
         [TestCase("10.51_+_11.2", "21.71", "Double")]
@@ -301,7 +301,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_Addition(string operands, string expected, string typeName)
         {
-            TestBinaryOp(MathTokens.ADD, operands, expected, typeName);
+            TestBinaryOp(MathSymbols.PLUS, operands, expected, typeName);
         }
 
         [TestCase("10.51_-_11.2", "-0.69", "Double")]
@@ -311,7 +311,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_Subtraction(string operands, string expected, string typeName)
         {
-            TestBinaryOp(MathTokens.SUBTRACT, operands, expected, typeName);
+            TestBinaryOp(MathSymbols.MINUS, operands, expected, typeName);
         }
 
         [TestCase("10_^_2", "100", "Double")]
@@ -319,14 +319,14 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_Powers(string operands, string expected, string typeName)
         {
-            TestBinaryOp(MathTokens.POW, operands, expected, typeName);
+            TestBinaryOp(MathSymbols.EXPONENT, operands, expected, typeName);
         }
 
         [TestCase("10_Mod_3", "1", "Currency")]
         [Category("Inspections")]
         public void UciUnit_Modulo(string operands, string expected, string typeName)
         {
-            TestBinaryOp(MathTokens.MOD, operands, expected, typeName);
+            TestBinaryOp(MathSymbols.MODULO, operands, expected, typeName);
         }
 
         [TestCase("10_=_3", "False")]
@@ -2038,6 +2038,10 @@ Select Case x
         [Category("Inspections")]
         public void UciFunctional_IsStmtAndNegativeRangeWithConstants()
         {
+            var test1 = VBAParser.DefaultVocabulary.GetDisplayName(VBAParser.EQ);
+            var test2 = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.EQ);
+            var test3 = VBAParser.DefaultVocabulary.GetSymbolicName(VBAParser.EQ);
+
             const string inputCode =
 @"
         private const START As Long = 10
@@ -2233,12 +2237,12 @@ Select Case x
                     if (clauseType.Equals("IsLT"))
                     {
                         var uciVal = ValueFactory.Create(clauseExpression, typeName);
-                        result.AddIsClause(uciVal, CompareTokens.LT);
+                        result.AddIsClause(uciVal, LogicSymbols.LT);
                     }
                     else if (clauseType.Equals("IsGT"))
                     {
                         var uciVal = ValueFactory.Create(clauseExpression, typeName);
-                        result.AddIsClause(uciVal, CompareTokens.GT);
+                        result.AddIsClause(uciVal, LogicSymbols.GT);
                     }
                     else if (clauseType.Equals("Range"))
                     {

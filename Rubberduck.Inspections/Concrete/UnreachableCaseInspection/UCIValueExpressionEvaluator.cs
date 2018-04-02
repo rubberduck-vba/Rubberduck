@@ -17,35 +17,35 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
         {
-            [MathTokens.MULT] = delegate (double LHS, double RHS) { return LHS * RHS; },
-            [MathTokens.DIV] = delegate (double LHS, double RHS) { return LHS / RHS; },
-            [MathTokens.ADD] = delegate (double LHS, double RHS) { return LHS + RHS; },
-            [MathTokens.SUBTRACT] = delegate (double LHS, double RHS) { return LHS - RHS; },
-            [MathTokens.POW] = Math.Pow,
-            [MathTokens.MOD] = delegate (double LHS, double RHS) { return LHS % RHS; },
+            [MathSymbols.MULTIPLY] = delegate (double LHS, double RHS) { return LHS * RHS; },
+            [MathSymbols.DIVIDE] = delegate (double LHS, double RHS) { return LHS / RHS; },
+            [MathSymbols.PLUS] = delegate (double LHS, double RHS) { return LHS + RHS; },
+            [MathSymbols.MINUS] = delegate (double LHS, double RHS) { return LHS - RHS; },
+            [MathSymbols.EXPONENT] = Math.Pow,
+            [MathSymbols.MODULO] = delegate (double LHS, double RHS) { return LHS % RHS; },
         };
 
         private static Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
         {
-            [CompareTokens.EQ] = delegate (double LHS, double RHS) { return LHS == RHS; },
-            [CompareTokens.NEQ] = delegate (double LHS, double RHS) { return LHS != RHS; },
-            [CompareTokens.LT] = delegate (double LHS, double RHS) { return LHS < RHS; },
-            [CompareTokens.LTE] = delegate (double LHS, double RHS) { return LHS <= RHS; },
-            [CompareTokens.GT] = delegate (double LHS, double RHS) { return LHS > RHS; },
-            [CompareTokens.GTE] = delegate (double LHS, double RHS) { return LHS >= RHS; },
-            [Tokens.And] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) && Convert.ToBoolean(RHS); },
-            [Tokens.Or] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) || Convert.ToBoolean(RHS); },
-            [Tokens.XOr] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) ^ Convert.ToBoolean(RHS); },
+            [LogicSymbols.EQ] = delegate (double LHS, double RHS) { return LHS == RHS; },
+            [LogicSymbols.NEQ] = delegate (double LHS, double RHS) { return LHS != RHS; },
+            [LogicSymbols.LT] = delegate (double LHS, double RHS) { return LHS < RHS; },
+            [LogicSymbols.LTE] = delegate (double LHS, double RHS) { return LHS <= RHS; },
+            [LogicSymbols.GT] = delegate (double LHS, double RHS) { return LHS > RHS; },
+            [LogicSymbols.GTE] = delegate (double LHS, double RHS) { return LHS >= RHS; },
+            [LogicSymbols.AND] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) && Convert.ToBoolean(RHS); },
+            [LogicSymbols.OR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) || Convert.ToBoolean(RHS); },
+            [LogicSymbols.XOR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) ^ Convert.ToBoolean(RHS); },
         };
 
         private static Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
         {
-            [MathTokens.ADDITIVE_INVERSE] = delegate (double value) { return value * -1.0; }
+            [MathSymbols.ADDITIVE_INVERSE] = delegate (double value) { return value * -1.0; }
         };
 
         private static Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
         {
-            [Tokens.Not] = delegate (double value) { return !(Convert.ToBoolean(value)); }
+            [LogicSymbols.NOT] = delegate (double value) { return !(Convert.ToBoolean(value)); }
         };
 
         private static List<string> ResultTypeRanking = new List<string>()
@@ -131,6 +131,33 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
             return results;
+        }
+    }
+
+    internal static class MathSymbols
+    {
+        private static string _multiply;
+        private static string _divide;
+        private static string _plus;
+        private static string _minusSign;
+        private static string _exponent;
+
+        public static string MULTIPLY => _multiply ?? LoadSymbols(VBAParser.MULT);
+        public static string DIVIDE => _divide ?? LoadSymbols(VBAParser.DIV);
+        public static string PLUS => _plus ?? LoadSymbols(VBAParser.PLUS);
+        public static string MINUS => _minusSign ?? LoadSymbols(VBAParser.MINUS);
+        public static string ADDITIVE_INVERSE => MINUS;
+        public static string EXPONENT => _exponent ?? LoadSymbols(VBAParser.POW);
+        public static string MODULO => Tokens.Mod;
+
+        private static string LoadSymbols(int target)
+        {
+            _multiply = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.MULT).Replace("'", "");
+            _divide = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.DIV).Replace("'", "");
+            _plus = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.PLUS).Replace("'", "");
+            _minusSign = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.MINUS).Replace("'", "");
+            _exponent = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.POW).Replace("'", "");
+            return VBAParser.DefaultVocabulary.GetLiteralName(target).Replace("'", "");
         }
     }
 }

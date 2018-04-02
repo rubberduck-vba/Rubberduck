@@ -299,7 +299,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var contextsOfInterest = new List<ParserRuleContext>();
             var contexts = valueDeclaration.Context.children.ToList();
-            var eqIndex = contexts.FindIndex(ch => ch.GetText().Equals(CompareTokens.EQ));
+            var eqIndex = contexts.FindIndex(ch => ch.GetText().Equals(LogicSymbols.EQ));
             for (int idx = eqIndex + 1; idx < contexts.Count(); idx++)
             {
                 var childCtxt = contexts[idx];

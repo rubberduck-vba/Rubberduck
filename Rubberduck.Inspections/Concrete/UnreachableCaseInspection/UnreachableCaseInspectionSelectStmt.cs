@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly VBAParser.SelectCaseStmtContext _selectCaseContext;
         private IUnreachableCaseInspectionRangeFactory _inspectionRangeFactory;
         private List<ParserRuleContext> _unreachableResults;
-        private List<ParserRuleContext> _misMatchResults;
+        private List<ParserRuleContext> _mismatchResults;
         private List<ParserRuleContext> _caseElseResults;
         private string _evalTypeName;
 
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _selectCaseContext = selectCaseContext;
             _unreachableResults = new List<ParserRuleContext>();
-            _misMatchResults = new List<ParserRuleContext>();
+            _mismatchResults = new List<ParserRuleContext>();
             _caseElseResults = new List<ParserRuleContext>();
             _evalTypeName = null;
             _inspectionRangeFactory = factoryFactory.CreateUnreachableCaseInspectionRangeFactory();
@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
                 if (inspectedRanges.All(ir => ir.HasIncompatibleType))
                 {
-                    _misMatchResults.Add(caseClause);
+                    _mismatchResults.Add(caseClause);
                 }
                 else if (inspectedRanges.All(ir => ir.IsUnreachable))
                 {
@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> UnreachableCases => _unreachableResults;
 
-        public List<ParserRuleContext> MismatchTypeCases => _misMatchResults;
+        public List<ParserRuleContext> MismatchTypeCases => _mismatchResults;
 
         public List<ParserRuleContext> UnreachableCaseElseCases => _caseElseResults;
 
@@ -178,25 +178,29 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    internal static class MathTokens
+    internal static class LogicSymbols
     {
-        public static readonly string MULT = "*";
-        public static readonly string DIV = "/";
-        public static readonly string ADD = "+";
-        public static readonly string SUBTRACT = "-";
-        public static readonly string POW = "^";
-        public static readonly string MOD = Tokens.Mod;
-        public static readonly string ADDITIVE_INVERSE = "-";
-    }
+        private static string _lessThan;
+        private static string _greaterThan;
+        private static string _equalTo;
 
-    internal static class CompareTokens
-    {
-        public static readonly string EQ = "=";
-        public static readonly string NEQ = "<>";
-        public static readonly string LT = "<";
-        public static readonly string LTE = "<=";
-        public static readonly string GT = ">";
-        public static readonly string GTE = ">=";
-    }
+        public static string EQ => _equalTo ?? LoadSymbols(VBAParser.EQ);
+        public static string NEQ => "<>";
+        public static string LT => _lessThan ?? LoadSymbols(VBAParser.LT);
+        public static string LTE => "<=";
+        public static string GT => _greaterThan ?? LoadSymbols(VBAParser.GT);
+        public static string GTE => ">=";
+        public static string AND => Tokens.And;
+        public static string OR => Tokens.Or;
+        public static string XOR => Tokens.XOr;
+        public static string NOT => Tokens.Not;
 
+        private static string LoadSymbols(int target)
+        {
+            _lessThan = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.LT).Replace("'", "");
+            _greaterThan = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.GT).Replace("'", "");
+            _equalTo = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.EQ).Replace("'", "");
+            return VBAParser.DefaultVocabulary.GetLiteralName(target).Replace("'", "");
+        }
+    }
 }
