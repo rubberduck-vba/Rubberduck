@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
-using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
