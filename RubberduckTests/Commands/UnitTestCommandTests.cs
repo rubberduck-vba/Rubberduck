@@ -236,13 +236,10 @@ Private Assert As Object
         [Test]
         public void AddsTestModule()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
-            var messageBox = new Mock<IMessageBox>();
-
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
+                var messageBox = new Mock<IMessageBox>();
                 var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
                 var config = GetUnitTestConfig();
                 settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -310,11 +307,8 @@ End Property
 
 Private Property Set PrivateProperty(s As String)
 End Property";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
-            var messageBox = new Mock<IMessageBox>();
-
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
@@ -324,6 +318,7 @@ End Property";
                 var project = state.DeclarationFinder.FindProject("TestProject1");
                 var module = state.DeclarationFinder.FindStdModule("TestModule1", project);
 
+                var messageBox = new Mock<IMessageBox>();
                 var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object, messageBox.Object);
                 addTestModuleCommand.Execute(module);
 
@@ -345,7 +340,7 @@ End Property";
 
         private Configuration GetUnitTestConfig()
         {
-            var unitTestSettings = new UnitTestSettings(BindingMode.EarlyBinding, AssertMode.StrictAssert, false, false, false);
+            var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, false, false, false);
 
             var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
