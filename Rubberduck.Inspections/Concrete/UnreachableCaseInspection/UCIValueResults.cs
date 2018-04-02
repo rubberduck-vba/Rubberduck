@@ -12,7 +12,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool Contains(ParserRuleContext context);
         bool TryGetValue(ParserRuleContext context, out IUCIValue value);
         void OnNewValueResult(object sender, ValueResultEventArgs e);
-        bool Any();
     }
 
     public class UCIValueResults : IUCIValueResults
@@ -46,11 +45,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public bool Contains(ParserRuleContext context)
         {
             return _parseTreeValues.ContainsKey(context);
-        }
-
-        public bool Any()
-        {
-            return _parseTreeValues.Count != 0;
         }
 
         public bool TryGetValue(ParserRuleContext context, out IUCIValue value)
