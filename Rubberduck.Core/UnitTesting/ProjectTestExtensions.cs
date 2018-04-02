@@ -10,7 +10,9 @@ namespace Rubberduck.UnitTesting
     {
         public static void EnsureReferenceToAddInLibrary(this IVBProject project)
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            // FIXME should rely on the assembly containing the UnitTest components.
+            // Those are not necessarily the same.
+            var assembly = Assembly.GetEntryAssembly();
 
             var name = assembly.GetName().Name.Replace('.', '_');
             var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
