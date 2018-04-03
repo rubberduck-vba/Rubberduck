@@ -257,16 +257,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     && idRef.Declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember)
                     && idRef.Declaration.Context is VBAParser.EnumerationStmt_ConstantContext)
                 {
-                    var dec = idRef.Declaration;
-                    var theCtxt = dec.Context;
-                    expressionValue = GetConstantDeclarationValueToken(dec);
-                    declaredTypeName = dec.AsTypeIsBaseType ? dec.AsTypeName : dec.AsTypeDeclaration.AsTypeName;
+                    var declaration = idRef.Declaration;
+                    var theCtxt = declaration.Context;
+                    expressionValue = GetConstantDeclarationValueToken(declaration);
+                    declaredTypeName = declaration.AsTypeIsBaseType ? declaration.AsTypeName : declaration.AsTypeDeclaration.AsTypeName;
                     return true;
                 }
-                return false;
             }
-
-            if (isSimpleName)
+            else if (isSimpleName)
             {
                 if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference rangeClauseIdentifierReference))
                 {
@@ -295,14 +293,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private string GetConstantDeclarationValueToken(Declaration valueDeclaration)
+        private string GetConstantDeclarationValueToken(Declaration constantDeclaration)
         {
+            var declarationContextChildren = constantDeclaration.Context.children.ToList();
+            var equalsSymbolIndex = declarationContextChildren.FindIndex(ch => ch.Equals(constantDeclaration.Context.GetToken(VBAParser.EQ, 0)));
+
             var contextsOfInterest = new List<ParserRuleContext>();
-            var contexts = valueDeclaration.Context.children.ToList();
-            var eqIndex = contexts.FindIndex(ch => ch.GetText().Equals(LogicSymbols.EQ));
-            for (int idx = eqIndex + 1; idx < contexts.Count(); idx++)
+            for (int idx = equalsSymbolIndex + 1; idx < declarationContextChildren.Count(); idx++)
             {
-                var childCtxt = contexts[idx];
+                var childCtxt = declarationContextChildren[idx];
                 if (!(childCtxt is VBAParser.WhiteSpaceContext))
                 {
                     contextsOfInterest.Add((ParserRuleContext)childCtxt);

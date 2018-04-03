@@ -28,8 +28,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public UnreachableCaseInspectionRange(VBAParser.RangeClauseContext context, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
             : base(context, inspValues, factoryFactory)
         {
-            _isValueRange = Context.HasChildToken(Tokens.To);
-            _isLTorGT = Context.HasChildToken(Tokens.Is);
+            _isValueRange = !(context.TO() is null);
+            _isLTorGT = !(context.IS() is null);
             _isRelationalOp = Context.TryGetChildContext<VBAParser.RelationalOpContext>(out _);
             _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
             _evalTypeName = string.Empty;
@@ -40,8 +40,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public UnreachableCaseInspectionRange(VBAParser.RangeClauseContext context, string evalTypeName, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
             : base(context, inspValues, factoryFactory)
         {
-            _isValueRange = Context.HasChildToken(Tokens.To);
-            _isLTorGT = Context.HasChildToken(Tokens.Is);
+            _isValueRange = !(context.TO() is null);
+            _isLTorGT = !(context.IS() is null);
             _isRelationalOp = Context.TryGetChildContext<VBAParser.RelationalOpContext>(out _);
             _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
             IsUnreachable = false;
