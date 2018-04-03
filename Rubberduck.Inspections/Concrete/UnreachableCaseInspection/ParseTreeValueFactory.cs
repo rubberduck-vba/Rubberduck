@@ -1,4 +1,6 @@
 ﻿
+using Rubberduck.Parsing.Grammar;
+
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IParseTreeValueFactory

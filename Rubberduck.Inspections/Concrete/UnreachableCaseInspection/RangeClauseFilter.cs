@@ -30,7 +30,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly IParseTreeValueFactory _valueFactory;
         private readonly IRangeClauseFilterFactory _filterFactory;
-        private readonly Func<IParseTreeValue, T> _tConverter;
         private readonly TryConvertParseTreeValue<T> _tNewConverter;
         private readonly T _trueValue;
         private readonly T _falseValue;
@@ -46,11 +45,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private T _minExtent;
         private T _maxExtent;
 
-        public RangeClauseFilter(string typeName, IParseTreeValueFactory valueFactory, IRangeClauseFilterFactory filterFactory, Func<IParseTreeValue, T> tConverter)
+        public RangeClauseFilter(string typeName, IParseTreeValueFactory valueFactory, IRangeClauseFilterFactory filterFactory, TryConvertParseTreeValue<T> tConverter)
         {
             _valueFactory = valueFactory;
             _filterFactory = filterFactory;
-            _tConverter = tConverter;
+            _tNewConverter = tConverter;
 
             _ranges = new List<Tuple<T, T>>();
             _singleValues = new HashSet<T>();
@@ -59,30 +58,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _variableRanges = new HashSet<string>();
             _variableSingles = new HashSet<string>();
             _hasExtents = false;
-            _trueValue = _tConverter(_valueFactory.Create("True", typeName));
-            _falseValue = _tConverter(_valueFactory.Create("False", typeName));
+            _falseValue = ConvertToContainedGeneric(false);
+            _trueValue = ConvertToContainedGeneric(true);
             TypeName = typeName;
         }
-
-        //public RangeClauseFilter(string typeName, IUCIValueFactory valueFactory, IRangeClauseFilterFactory filterFactory, TryConvertParseTreeValue<T> tConverter)
-        //{
-        //    _valueFactory = valueFactory;
-        //    _filterFactory = filterFactory;
-        //    _tNewConverter = tConverter;
-
-        //    _ranges = new List<Tuple<T, T>>();
-        //    _singleValues = new HashSet<T>();
-        //    _isClause = new Dictionary<string, List<T>>();
-        //    _relationalOps = new HashSet<string>();
-        //    _variableRanges = new HashSet<string>();
-        //    _variableSingles = new HashSet<string>();
-        //    _hasExtents = false;
-        //    //_trueValue = _tConverter(_valueFactory.Create("True", typeName));
-        //    //_falseValue = _tConverter(_valueFactory.Create("False", typeName));
-        //    _tNewConverter(_valueFactory.Create("True", typeName), out _trueValue);
-        //    _tNewConverter(_valueFactory.Create("False", typeName), out _falseValue);
-        //    TypeName = typeName;
-        //}
 
         private List<Tuple<T, T>> RangeValues => _ranges;
 
@@ -179,7 +158,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (value.ParsesToConstantValue)
             {
-                AddIsClauseImpl(_tConverter(value), opSymbol);
+                if (!_tNewConverter(value, out T result))
+                {
+                    throw new ArgumentException();
+                }
+                AddIsClauseImpl(result, opSymbol);
             }
             else
             {
@@ -191,7 +174,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (value.ParsesToConstantValue)
             {
-                AddSingleValueImpl(_tConverter(value));
+                if (!_tNewConverter(value, out T result))
+                {
+                    throw new ArgumentException();
+                }
+                AddSingleValueImpl(result);
             }
             else
             {
@@ -203,7 +190,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (value.ParsesToConstantValue)
             {
-                AddSingleValueImpl(_tConverter(value));
+                if (!_tNewConverter(value, out T result))
+                {
+                    throw new ArgumentException();
+                }
+                AddSingleValueImpl(result);
             }
             else
             {
@@ -224,7 +215,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (inputStartVal.ParsesToConstantValue && inputEndVal.ParsesToConstantValue)
             {
-                AddValueRangeImpl(_tConverter(inputStartVal), _tConverter(inputEndVal));
+                if (!(_tNewConverter(inputStartVal, out T startVal) && _tNewConverter(inputEndVal, out T endVal)))
+                {
+                    throw new ArgumentException();
+                }
+                AddValueRangeImpl(startVal, endVal);
             }
             else
             {
@@ -345,10 +340,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public void AddExtents(IParseTreeValue min, IParseTreeValue max)
         {
             _hasExtents = true;
-            _minExtent = _tConverter(min);
-            _maxExtent = _tConverter(max);
-            AddIsClauseImpl(_minExtent, LogicSymbols.LT);
-            AddIsClauseImpl(_maxExtent, LogicSymbols.GT);
+            if (_tNewConverter(min, out _minExtent))
+            {
+                AddIsClauseImpl(_minExtent, LogicSymbols.LT);
+            }
+
+            if (_tNewConverter(max, out _maxExtent))
+            {
+                AddIsClauseImpl(_maxExtent, LogicSymbols.GT);
+            }
         }
 
         private bool FiltersAllRelationalOps
@@ -845,8 +845,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private T ConvertToContainedGeneric<K>(K value)
         {
-            var uciVal = _valueFactory.Create(value.ToString(), TypeName);
-            return _tConverter(uciVal);
+            var parseTreeValue = _valueFactory.Create(value.ToString(), TypeName);
+            if(_tNewConverter(parseTreeValue, out T tValue))
+            {
+                return tValue;
+            }
+            throw new ArgumentException($"Unable to convert {value.ToString()} to {typeof(T).ToString()}");
         }
 
         private bool TryMergeWithOverlappingRange(T start, T end)

@@ -625,7 +625,7 @@ namespace RubberduckTests.Inspections
             if (typeName.Equals(Tokens.Long))
             {
                 var check = (IRangeClauseFilterTestSupport<long>)filter;
-                CheckExtents(check, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegerNumberExtents[typeName].Item1, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegerNumberExtents[typeName].Item2);
+                CheckExtents(check, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegralNumberExtents[typeName].Item1, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegralNumberExtents[typeName].Item2);
             }
             else if (typeName.Equals(Tokens.Single))
             {

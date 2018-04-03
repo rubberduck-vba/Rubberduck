@@ -26,14 +26,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static double SINGLEMAX = float.MaxValue;  //3402823E38;
     }
 
-
     public class RangeClauseFilterFactory : IRangeClauseFilterFactory
     {
         public IRangeClauseFilter Create(string typeName, IParseTreeValueFactory valueFactory)
         {
             if(valueFactory is null) { throw new ArgumentNullException(); }
 
-            if(!(IntegerNumberExtents.Keys.Contains(typeName)
+            if(!(IntegralNumberExtents.Keys.Contains(typeName)
                 || typeName.Equals(Tokens.Double)
                 || typeName.Equals(Tokens.Single)
                 || typeName.Equals(Tokens.Currency)
@@ -43,19 +42,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 throw new ArgumentException($"Unsupported TypeName ({typeName})");
             }
 
-            if (IntegerNumberExtents.Keys.Contains(typeName))
+            if (IntegralNumberExtents.Keys.Contains(typeName))
             {
-                var integerTypeFilter = new RangeClauseFilter<long>(typeName, valueFactory, this, ParseTreeValueConverter.ConvertLong);
-                //var integerTypeFilter = new RangeClauseFilter<long>(typeName, valueFactory, this, ParseTreeValueConverter.TryConvertValue);
-                var minExtent = valueFactory.Create(IntegerNumberExtents[typeName].Item1.ToString(), typeName);
-                var maxExtent = valueFactory.Create(IntegerNumberExtents[typeName].Item2.ToString(), typeName);
+                var integerTypeFilter = new RangeClauseFilter<long>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+                var minExtent = valueFactory.Create(IntegralNumberExtents[typeName].Item1.ToString(), typeName);
+                var maxExtent = valueFactory.Create(IntegralNumberExtents[typeName].Item2.ToString(), typeName);
                 integerTypeFilter.AddExtents(minExtent, maxExtent);
                 return integerTypeFilter;
             }
             else if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
             {
-                var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValueConverter.ConvertDouble);
-                //var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValueConverter.TryConvertValue);
+                var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
                 if (typeName.Equals(Tokens.Single))
                 {
                     var minExtent = valueFactory.Create(CompareExtents.SINGLEMIN.ToString(), typeName);
@@ -64,30 +61,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 return doubleTypeFilter;
             }
-            //else if (typeName.Equals(Tokens.Double))
-            //{
-            //    //var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValueConverter.ConvertDouble);
-            //    var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValueConverter.TryConvertValue);
-            //    return doubleTypeFilter;
-            //}
             else if (typeName.Equals(Tokens.Boolean))
             {
-                var boolTypeFilter = new RangeClauseFilter<bool>(typeName, valueFactory, this, ParseTreeValueConverter.ConvertBoolean);
+                var boolTypeFilter = new RangeClauseFilter<bool>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
                 return boolTypeFilter;
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var decimalTypeFilter = new RangeClauseFilter<decimal>(typeName, valueFactory, this, ParseTreeValueConverter.ConvertDecimal);
+                var decimalTypeFilter = new RangeClauseFilter<decimal>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
                 var minExtent = valueFactory.Create(CompareExtents.CURRENCYMIN.ToString(), typeName);
                 var maxExtent = valueFactory.Create(CompareExtents.CURRENCYMAX.ToString(), typeName);
                 decimalTypeFilter.AddExtents(minExtent, maxExtent);
                 return decimalTypeFilter;
             }
-            var filter = new RangeClauseFilter<string>(typeName, valueFactory, this, ParseTreeValueConverter.ConvertString);
+            var filter = new RangeClauseFilter<string>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
             return filter;
         }
 
-        internal static Dictionary<string, Tuple<long, long>> IntegerNumberExtents = new Dictionary<string, Tuple<long, long>>()
+        internal static Dictionary<string, Tuple<long, long>> IntegralNumberExtents = new Dictionary<string, Tuple<long, long>>()
         {
             [Tokens.Long] = new Tuple<long, long>(CompareExtents.LONGMIN, CompareExtents.LONGMAX),
             [Tokens.Integer] = new Tuple<long, long>(CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
