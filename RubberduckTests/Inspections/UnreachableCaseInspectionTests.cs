@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Antlr4.Runtime;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -2187,7 +2188,8 @@ Select Case x
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                selectStmt = state.ParseTrees.First().Value.GetDescendent<VBAParser.SelectCaseStmtContext>();
+                var firstParserRuleContext = (ParserRuleContext)state.ParseTrees.Where(pt => pt.Value is ParserRuleContext).First().Value;
+                selectStmt = firstParserRuleContext.GetDescendent<VBAParser.SelectCaseStmtContext>();
                 var visitor = ValueVisitorFactory.Create(state, ValueFactory);
                 valueResults = selectStmt.Accept(visitor);
             }
