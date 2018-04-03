@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUnreachableCaseInspectionSelectStmt
+    public interface ISelectCaseStmtContextWrapper
     {
         string EvaluationTypeName { get; }
         void InspectForUnreachableCases();
@@ -15,16 +15,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         List<ParserRuleContext> UnreachableCaseElseCases { get; }
     }
 
-    public class UnreachableCaseInspectionSelectStmt : UnreachableCaseInspectionContext, IUnreachableCaseInspectionSelectStmt
+    public class SelectCaseStmtContextWrapper : ContextWrapperBase, ISelectCaseStmtContextWrapper
     {
         private readonly VBAParser.SelectCaseStmtContext _selectCaseContext;
-        private IUnreachableCaseInspectionRangeFactory _inspectionRangeFactory;
+        private IRangeClauseContextWrapperFactory _inspectionRangeFactory;
         private List<ParserRuleContext> _unreachableResults;
         private List<ParserRuleContext> _mismatchResults;
         private List<ParserRuleContext> _caseElseResults;
         private string _evalTypeName;
 
-        public UnreachableCaseInspectionSelectStmt(VBAParser.SelectCaseStmtContext selectCaseContext, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
+        public SelectCaseStmtContextWrapper(VBAParser.SelectCaseStmtContext selectCaseContext, IParseTreeVisitorResults inspValues, IUnreachableCaseInspectionFactoryProvider factoryFactory)
             : base(selectCaseContext, inspValues, factoryFactory)
         {
             _selectCaseContext = selectCaseContext;
@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var cummulativeRangeFilter = FilterFactory.Create(EvaluationTypeName, ValueFactory);
             foreach (var caseClause in _selectCaseContext.caseClause())
             {
-                var inspectedRanges = new List<IUnreachableCaseInspectionRange>();
+                var inspectedRanges = new List<IRangeClauseContextWrapper>();
                 foreach (var range in caseClause.rangeClause())
                 {
                     var inspectionRange = _inspectionRangeFactory.Create(range, EvaluationTypeName, _inspValues);
@@ -82,7 +82,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static bool InspectionCanEvaluateTypeName(string typeName) => !(typeName == string.Empty || typeName == Tokens.Variant);
 
-        private string DetermineSelectCaseEvaluationTypeName(ParserRuleContext context, IUCIValueResults inspValues, IUCIRangeClauseFilterFactory factory)
+        private string DetermineSelectCaseEvaluationTypeName(ParserRuleContext context, IParseTreeVisitorResults inspValues, IRangeClauseFilterFactory factory)
         {
             var selectStmt = (VBAParser.SelectCaseStmtContext)context;
             if (TryDetectTypeHint(selectStmt.selectExpression().GetText(), out _evalTypeName))
@@ -91,7 +91,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var typeName = string.Empty;
-            if (inspValues.TryGetValue(selectStmt.selectExpression(), out IUCIValue result))
+            if (inspValues.TryGetValue(selectStmt.selectExpression(), out IParseTreeValue result))
             {
                 _evalTypeName = result.TypeName;
             }
@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _evalTypeName;
         }
 
-        private string DeriveTypeFromCaseClauses(IUCIValueResults inspValues, VBAParser.SelectCaseStmtContext selectStmt)
+        private string DeriveTypeFromCaseClauses(IParseTreeVisitorResults inspValues, VBAParser.SelectCaseStmtContext selectStmt)
         {
             var caseClauseTypeNames = new List<string>();
             foreach (var caseClause in selectStmt.caseClause())

@@ -6,31 +6,32 @@ using System.Text;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUCIRangeClauseFilter
+    public interface IRangeClauseFilter
     {
         bool ContainsFilters { get; }
         bool FiltersAllValues { get; }
         string TypeName { set; get; }
-        IUCIRangeClauseFilter FilterUnreachableClauses(IUCIRangeClauseFilter filter);
-        void Add(IUCIRangeClauseFilter filter);
-        void AddValueRange(IUCIValue startVal, IUCIValue endVal);
-        void AddIsClause(IUCIValue value, string opSymbol);
-        void AddSingleValue(IUCIValue value);
-        void AddRelationalOp(IUCIValue value);
+        IRangeClauseFilter FilterUnreachableClauses(IRangeClauseFilter filter);
+        void Add(IRangeClauseFilter filter);
+        void AddValueRange(IParseTreeValue startVal, IParseTreeValue endVal);
+        void AddIsClause(IParseTreeValue value, string opSymbol);
+        void AddSingleValue(IParseTreeValue value);
+        void AddRelationalOp(IParseTreeValue value);
     }
 
-    public interface IUCIRangeClauseFilterTestSupport<T>
+    public interface IRangeClauseFilterTestSupport<T>
     {
         bool TryGetIsLTValue(out T isLT);
         bool TryGetIsGTValue(out T isGT);
         HashSet<T> SingleValues { get; }
     }
 
-    public class UCIRangeClauseFilter<T> : IUCIRangeClauseFilter, IUCIRangeClauseFilterTestSupport<T> where T : IComparable<T>
+    public class RangeClauseFilter<T> : IRangeClauseFilter, IRangeClauseFilterTestSupport<T> where T : IComparable<T>
     {
-        private readonly IUCIValueFactory _valueFactory;
-        private readonly IUCIRangeClauseFilterFactory _filterFactory;
-        private readonly Func<IUCIValue, T> _tConverter;
+        private readonly IParseTreeValueFactory _valueFactory;
+        private readonly IRangeClauseFilterFactory _filterFactory;
+        private readonly Func<IParseTreeValue, T> _tConverter;
+        private readonly TryConvertParseTreeValue<T> _tNewConverter;
         private readonly T _trueValue;
         private readonly T _falseValue;
 
@@ -45,7 +46,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private T _minExtent;
         private T _maxExtent;
 
-        public UCIRangeClauseFilter(string typeName, IUCIValueFactory valueFactory, IUCIRangeClauseFilterFactory filterFactory, Func<IUCIValue, T> tConverter)
+        public RangeClauseFilter(string typeName, IParseTreeValueFactory valueFactory, IRangeClauseFilterFactory filterFactory, Func<IParseTreeValue, T> tConverter)
         {
             _valueFactory = valueFactory;
             _filterFactory = filterFactory;
@@ -62,6 +63,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _falseValue = _tConverter(_valueFactory.Create("False", typeName));
             TypeName = typeName;
         }
+
+        //public RangeClauseFilter(string typeName, IUCIValueFactory valueFactory, IRangeClauseFilterFactory filterFactory, TryConvertParseTreeValue<T> tConverter)
+        //{
+        //    _valueFactory = valueFactory;
+        //    _filterFactory = filterFactory;
+        //    _tNewConverter = tConverter;
+
+        //    _ranges = new List<Tuple<T, T>>();
+        //    _singleValues = new HashSet<T>();
+        //    _isClause = new Dictionary<string, List<T>>();
+        //    _relationalOps = new HashSet<string>();
+        //    _variableRanges = new HashSet<string>();
+        //    _variableSingles = new HashSet<string>();
+        //    _hasExtents = false;
+        //    //_trueValue = _tConverter(_valueFactory.Create("True", typeName));
+        //    //_falseValue = _tConverter(_valueFactory.Create("False", typeName));
+        //    _tNewConverter(_valueFactory.Create("True", typeName), out _trueValue);
+        //    _tNewConverter(_valueFactory.Create("False", typeName), out _falseValue);
+        //    TypeName = typeName;
+        //}
 
         private List<Tuple<T, T>> RangeValues => _ranges;
 
@@ -121,9 +142,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public void Add(IUCIRangeClauseFilter filter)
+        public void Add(IRangeClauseFilter filter)
         {
-            var newFilter = (UCIRangeClauseFilter<T>)filter;
+            var newFilter = (RangeClauseFilter<T>)filter;
             if (newFilter.TryGetIsLTValue(out T isLT))
             {
                 AddIsClauseImpl(isLT, LogicSymbols.LT);
@@ -154,7 +175,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public void AddIsClause(IUCIValue value, string opSymbol)
+        public void AddIsClause(IParseTreeValue value, string opSymbol)
         {
             if (value.ParsesToConstantValue)
             {
@@ -166,7 +187,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public void AddRelationalOp(IUCIValue value)
+        public void AddRelationalOp(IParseTreeValue value)
         {
             if (value.ParsesToConstantValue)
             {
@@ -178,7 +199,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public void AddSingleValue(IUCIValue value)
+        public void AddSingleValue(IParseTreeValue value)
         {
             if (value.ParsesToConstantValue)
             {
@@ -190,7 +211,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public void AddValueRange(IUCIValue inputStartVal, IUCIValue inputEndVal)
+        public void AddValueRange(IParseTreeValue inputStartVal, IParseTreeValue inputEndVal)
         {
             var currentRanges = new List<Tuple<T, T>>();
             currentRanges.AddRange(_ranges);
@@ -211,21 +232,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public IUCIRangeClauseFilter FilterUnreachableClauses(IUCIRangeClauseFilter filter)
+        public IRangeClauseFilter FilterUnreachableClauses(IRangeClauseFilter filter)
         {
             if (filter is null)
             {
                 throw new ArgumentNullException();
             }
 
-            if (!(filter is UCIRangeClauseFilter<T>))
+            if (!(filter is RangeClauseFilter<T>))
             {
                 throw new ArgumentException($"Argument is not of type UCIRangeClauseFilter<{typeof(T).ToString()}>", "filter");
             }
 
             var filteredCoverage = _filterFactory.Create(TypeName, _valueFactory);
 
-            filteredCoverage = (UCIRangeClauseFilter<T>)MemberwiseClone();
+            filteredCoverage = (RangeClauseFilter<T>)MemberwiseClone();
             if (!ContainsFilters || filter.FiltersAllValues)
             {
                 return _filterFactory.Create(TypeName, _valueFactory);
@@ -236,7 +257,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return filteredCoverage;
             }
 
-            filteredCoverage = RemoveClausesCoveredBy((UCIRangeClauseFilter<T>)filteredCoverage, (UCIRangeClauseFilter<T>)filter);
+            filteredCoverage = RemoveClausesCoveredBy((RangeClauseFilter<T>)filteredCoverage, (RangeClauseFilter<T>)filter);
             return filteredCoverage;
         }
 
@@ -264,7 +285,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override bool Equals(object obj)
         {
-            if (!(obj is UCIRangeClauseFilter<T> filter))
+            if (!(obj is RangeClauseFilter<T> filter))
             {
                 return false;
             }
@@ -321,7 +342,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return ToString().GetHashCode();
         }
 
-        public void AddExtents(IUCIValue min, IUCIValue max)
+        public void AddExtents(IParseTreeValue min, IParseTreeValue max)
         {
             _hasExtents = true;
             _minExtent = _tConverter(min);
@@ -358,7 +379,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private IUCIRangeClauseFilter RemoveClausesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
+        private IRangeClauseFilter RemoveClausesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
         {
             var newFilter = RemoveIsClausesCoveredBy(removeFrom, removalSpec);
             newFilter = RemoveRangesCoveredBy(removeFrom, removalSpec);
@@ -367,7 +388,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return newFilter;
         }
 
-        private static UCIRangeClauseFilter<T> RemoveIsClausesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
+        private static RangeClauseFilter<T> RemoveIsClausesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
         {
             if (removeFrom.TryGetIsLTValue(out T isLT) 
                 && removalSpec.TryGetIsLTValue(out T removalSpecLT)
@@ -386,7 +407,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return removeFrom;
         }
 
-        private UCIRangeClauseFilter<T> RemoveRangesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
+        private RangeClauseFilter<T> RemoveRangesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
         {
             if (!(removeFrom.RangeValues.Any() || removeFrom.VariableRanges.Any()))
             {
@@ -441,7 +462,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return removeFrom;
         }
 
-        private UCIRangeClauseFilter<T> RemoveSingleValuesCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
+        private RangeClauseFilter<T> RemoveSingleValuesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
         {
             List<T> toRemove = new List<T>();
             if (removalSpec.TryGetIsLTValue(out T removalSpecLT))
@@ -496,7 +517,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return removeFrom;
         }
 
-        private UCIRangeClauseFilter<T> RemoveRelationalOpsCoveredBy(UCIRangeClauseFilter<T> removeFrom, UCIRangeClauseFilter<T> removalSpec)
+        private RangeClauseFilter<T> RemoveRelationalOpsCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
         {
             List<string> toRemove = new List<string>();
             if (removalSpec.FiltersAllRelationalOps)

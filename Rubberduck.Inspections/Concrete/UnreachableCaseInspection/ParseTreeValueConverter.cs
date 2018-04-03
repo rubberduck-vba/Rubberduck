@@ -3,14 +3,21 @@ using System;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    internal class UCIValueConverter
+    public delegate bool TryConvertParseTreeValue<T>(IParseTreeValue value, out T result);
+
+    internal class ParseTreeValueConverter
     {
-        internal static long ConvertLong(IUCIValue value)
+        internal static long ConvertLong(IParseTreeValue value)
         {
             return ConvertLong(value.ValueText);
         }
 
-        internal static long ConvertLong(string value)
+        //public static bool TryConvertValue(IParseTreeValue value, out long result)
+        //{
+        //    return TryConvertValue(value.ValueText, out result);
+        //}
+
+        private static long ConvertLong(string value)
         {
             if (TryConvertValue(value, out long result))
             {
@@ -19,12 +26,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static double ConvertDouble(IUCIValue value)
+        internal static double ConvertDouble(IParseTreeValue value)
         {
             return ConvertDouble(value.ValueText);
         }
 
-        internal static double ConvertDouble(string value)
+        public static bool TryConvertValue(IParseTreeValue value, out double result)
+        {
+            return TryConvertValue(value.ValueText, out result);
+        }
+
+        private static double ConvertDouble(string value)
         {
             if (TryConvertValue(value, out double result))
             {
@@ -33,12 +45,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static decimal ConvertDecimal(IUCIValue value)
+        internal static decimal ConvertDecimal(IParseTreeValue value)
         {
             return ConvertDecimal(value.ValueText);
         }
 
-        internal static decimal ConvertDecimal(string value)
+        private static decimal ConvertDecimal(string value)
         {
             if (TryConvertValue(value, out decimal result))
             {
@@ -47,12 +59,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static bool ConvertBoolean(IUCIValue value)
+        internal static bool ConvertBoolean(IParseTreeValue value)
         {
             return ConvertBoolean(value.ValueText);
         }
 
-        internal static bool ConvertBoolean(string value)
+        private static bool ConvertBoolean(string value)
         {
             if (TryConvertValue(value, out bool result))
             {
@@ -61,7 +73,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             throw new ArgumentException($"Unable to convert parameter (value = {value}) to {result.GetType()}");
         }
 
-        internal static string ConvertString(IUCIValue value)
+        internal static string ConvertString(IParseTreeValue value)
         {
             return value.ValueText;
         }

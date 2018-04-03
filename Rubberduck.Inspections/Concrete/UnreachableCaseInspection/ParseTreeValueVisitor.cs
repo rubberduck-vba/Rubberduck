@@ -10,31 +10,31 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUCIParseTreeValueVisitor : IParseTreeVisitor<IUCIValueResults>
+    public interface IParseTreeValueVisitor : IParseTreeVisitor<IParseTreeVisitorResults>
     {
         event EventHandler<ValueResultEventArgs> OnValueResultCreated;
     }
 
-    public class UCIParseTreeValueVisitor : IUCIParseTreeValueVisitor
+    public class ParseTreeValueVisitor : IParseTreeValueVisitor
     {
-        private IUCIValueResults _contextValues;
+        private IParseTreeVisitorResults _contextValues;
         private RubberduckParserState _state;
-        private IUCIValueFactory _inspValueFactory;
+        private IParseTreeValueFactory _inspValueFactory;
 
-        public UCIParseTreeValueVisitor(RubberduckParserState state, IUCIValueFactory valueFactory)
+        public ParseTreeValueVisitor(RubberduckParserState state, IParseTreeValueFactory valueFactory)
         {
             _state = state;
             _inspValueFactory = valueFactory;
-            Calculator = new UCIValueExpressionEvaluator(valueFactory);
-            _contextValues = new UCIValueResults();
+            Calculator = new ParseTreeExpressionEvaluator(valueFactory);
+            _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
         }
 
         public event EventHandler<ValueResultEventArgs> OnValueResultCreated;
 
-        public IUCIValueExpressionEvaluator Calculator { set; get; }
+        public IParseTreeExpressionEvaluator Calculator { set; get; }
 
-        public virtual IUCIValueResults Visit(IParseTree tree)
+        public virtual IParseTreeVisitorResults Visit(IParseTree tree)
         {
             if (tree is ParserRuleContext context)
             {
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _contextValues;
         }
 
-        public virtual IUCIValueResults VisitChildren(IRuleNode node)
+        public virtual IParseTreeVisitorResults VisitChildren(IRuleNode node)
         {
             if (node is ParserRuleContext context)
             {
@@ -55,12 +55,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _contextValues;
         }
 
-        public virtual IUCIValueResults VisitTerminal(ITerminalNode node)
+        public virtual IParseTreeVisitorResults VisitTerminal(ITerminalNode node)
         {
             return _contextValues;
         }
 
-        public virtual IUCIValueResults VisitErrorNode(IErrorNode node)
+        public virtual IParseTreeVisitorResults VisitErrorNode(IErrorNode node)
         {
             return _contextValues;
         }
@@ -75,7 +75,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return IsBinaryLogicalContext(context) || IsUnaryLogicalContext(context);
         }
 
-        private void StoreVisitResult(ParserRuleContext context, IUCIValue inspValue)
+        private void StoreVisitResult(ParserRuleContext context, IParseTreeValue inspValue)
         {
             OnValueResultCreated(this, new ValueResultEventArgs(context, inspValue));
         }
@@ -122,7 +122,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            IUCIValue newResult = null;
+            IParseTreeValue newResult = null;
             if (TryGetLExprValue(context, out string lexprValue, out string declaredType))
             {
                 newResult = _inspValueFactory.Create(lexprValue, declaredType);
@@ -181,10 +181,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             StoreVisitResult(context, result);
         }
 
-        private List<IUCIValue> RetrieveRelevantOpData(ParserRuleContext context, out string opSymbol)
+        private List<IParseTreeValue> RetrieveRelevantOpData(ParserRuleContext context, out string opSymbol)
         {
             opSymbol = string.Empty;
-            var values = new List<IUCIValue>();
+            var values = new List<IParseTreeValue>();
             var contextsOfInterest = NonWhitespaceChildren(context);
             for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
             {
@@ -311,7 +311,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             foreach (var child in contextsOfInterest)
             {
                 Visit(child);
-                if (_contextValues.TryGetValue(child, out IUCIValue value))
+                if (_contextValues.TryGetValue(child, out IParseTreeValue value))
                 {
                     return value.ValueText;
                 }
@@ -366,13 +366,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     
     public class ValueResultEventArgs : EventArgs
     {
-        public ValueResultEventArgs(ParserRuleContext context, IUCIValue value)
+        public ValueResultEventArgs(ParserRuleContext context, IParseTreeValue value)
         {
             Context = context;
             Value = value;
         }
 
         public ParserRuleContext Context { set; get; }
-        public IUCIValue Value { set; get; }
+        public IParseTreeValue Value { set; get; }
     }
 }

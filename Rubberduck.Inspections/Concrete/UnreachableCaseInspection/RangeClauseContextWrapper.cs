@@ -7,17 +7,17 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUnreachableCaseInspectionRange
+    public interface IRangeClauseContextWrapper
     {
         string EvaluationTypeName { set;  get; }
         bool HasIncompatibleType { set; get; }
         bool IsUnreachable { set; get; }
-        bool IsReachable(IUCIRangeClauseFilter filter);
-        IUCIRangeClauseFilter AsFilter { set; get; }
+        bool IsReachable(IRangeClauseFilter filter);
+        IRangeClauseFilter AsFilter { set; get; }
         List<ParserRuleContext> ResultContexts { get; }
     }
 
-    public class UnreachableCaseInspectionRange : UnreachableCaseInspectionContext, IUnreachableCaseInspectionRange
+    public class RangeClauseContextWrapper : ContextWrapperBase, IRangeClauseContextWrapper
     {
         private readonly bool _isValueRange;
         private readonly bool _isLTorGT;
@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly bool _isRelationalOp;
         private string _evalTypeName;
 
-        public UnreachableCaseInspectionRange(VBAParser.RangeClauseContext context, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
+        public RangeClauseContextWrapper(VBAParser.RangeClauseContext context, IParseTreeVisitorResults inspValues, IUnreachableCaseInspectionFactoryProvider factoryFactory)
             : base(context, inspValues, factoryFactory)
         {
             _isValueRange = !(context.TO() is null);
@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             AsFilter = FilterFactory.Create(Tokens.Long, ValueFactory);
         }
 
-        public UnreachableCaseInspectionRange(VBAParser.RangeClauseContext context, string evalTypeName, IUCIValueResults inspValues, IUnreachableCaseInspectionFactoryFactory factoryFactory)
+        public RangeClauseContextWrapper(VBAParser.RangeClauseContext context, string evalTypeName, IParseTreeVisitorResults inspValues, IUnreachableCaseInspectionFactoryProvider factoryFactory)
             : base(context, inspValues, factoryFactory)
         {
             _isValueRange = !(context.TO() is null);
@@ -67,7 +67,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public bool IsUnreachable { set; get; }
 
-        public IUCIRangeClauseFilter AsFilter { set; get; }
+        public IRangeClauseFilter AsFilter { set; get; }
 
         public List<ParserRuleContext> ResultContexts
         {
@@ -92,7 +92,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public bool IsReachable(IUCIRangeClauseFilter filter)
+        public bool IsReachable(IRangeClauseFilter filter)
         {
             if (filter.FiltersAllValues)
             {
@@ -113,8 +113,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool IsResultContext<TContext>(TContext context)
         {
-            return UCIParseTreeValueVisitor.IsMathContext(context)
-                    || UCIParseTreeValueVisitor.IsLogicalContext(context)
+            return ParseTreeValueVisitor.IsMathContext(context)
+                    || ParseTreeValueVisitor.IsLogicalContext(context)
                     || context is VBAParser.SelectStartValueContext
                     || context is VBAParser.SelectEndValueContext
                     || context is VBAParser.ParenthesizedExprContext
@@ -129,7 +129,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private ParserRuleContext SelectEndValue => Context.GetChild<VBAParser.SelectEndValueContext>();
 
-        private IUCIRangeClauseFilter AddFilterContent()
+        private IRangeClauseFilter AddFilterContent()
         {
             var rangeClauseFilter = FilterFactory.Create(EvaluationTypeName, ValueFactory);
             try

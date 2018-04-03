@@ -15,10 +15,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
-        private IUCIParseTreeValueVisitorFactory _parseTreeVisitorFactory;
-        private IUnreachableCaseInspectionSelectStmtFactory _selectStmtFactory;
-        private IUCIValueFactory _valueFactory;
-        private IUCIParseTreeValueVisitor _parseTreeValueVisitor;
+        private IParseTreeValueVisitorFactory _parseTreeVisitorFactory;
+        private ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
+        private IParseTreeValueFactory _valueFactory;
+        private IParseTreeValueVisitor _parseTreeValueVisitor;
         private enum CaseInpectionResult { Unreachable, MismatchType, CaseElse };
 
         private static Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public UnreachableCaseInspection(RubberduckParserState state) : base(state)
         {
             //TODO_Question: IUnreachableCaseInspectionFactoryFactory - candidate for IoCInstaller?
-            var factoriesFactory = new UnreachableCaseInspectionFactoryFactory();
+            var factoriesFactory = new UnreachableCaseInspectionFactoryProvider();
 
             _selectStmtFactory = factoriesFactory.CreateUnreachableCaseInspectionSelectStmtFactory();
             _valueFactory = factoriesFactory.CreateIUCIValueFactory();
@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private List<IInspectionResult> InspectionResults { set; get; } = new List<IInspectionResult>();
 
-        private UCIValueResults ValueResults { get; } = new UCIValueResults();
+        private ParseTreeVisitorResults ValueResults { get; } = new ParseTreeVisitorResults();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

@@ -18,27 +18,27 @@ namespace RubberduckTests.Inspections
         private const string VALUE_TYPE_SEPARATOR = "?";
         private const string OPERAND_SEPARATOR = "_";
 
-        private IUnreachableCaseInspectionFactoryFactory _factoriesFactory;
-        private IUCIValueFactory _valueFactory;
-        private IUCIValueExpressionEvaluator _calculator;
-        private IUCIParseTreeValueVisitorFactory _visitorFactory;
-        private IUCIRangeClauseFilterFactory _rangeClauseFilterFactory;
-        private IUnreachableCaseInspectionRangeFactory _rangeFactory;
-        private IUnreachableCaseInspectionSelectStmtFactory _selectStmtFactory;
+        private IUnreachableCaseInspectionFactoryProvider _factoriesFactory;
+        private IParseTreeValueFactory _valueFactory;
+        private IParseTreeExpressionEvaluator _calculator;
+        private IParseTreeValueVisitorFactory _visitorFactory;
+        private IRangeClauseFilterFactory _rangeClauseFilterFactory;
+        private IRangeClauseContextWrapperFactory _rangeFactory;
+        private ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
 
-        private IUnreachableCaseInspectionFactoryFactory FactoriesFactory
+        private IUnreachableCaseInspectionFactoryProvider FactoriesFactory
         {
             get
             {
                 if (_factoriesFactory is null)
                 {
-                    _factoriesFactory = new UnreachableCaseInspectionFactoryFactory();
+                    _factoriesFactory = new UnreachableCaseInspectionFactoryProvider();
                 }
                 return _factoriesFactory;
              }
         }
 
-        private IUCIValueFactory ValueFactory
+        private IParseTreeValueFactory ValueFactory
         {
             get
             {
@@ -50,19 +50,19 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        private IUCIValueExpressionEvaluator Calculator
+        private IParseTreeExpressionEvaluator Calculator
         {
             get
             {
                 if (_calculator is null)
                 {
-                    _calculator = new UCIValueExpressionEvaluator(ValueFactory);
+                    _calculator = new ParseTreeExpressionEvaluator(ValueFactory);
                 }
                 return _calculator;
             }
         }
 
-        private IUCIParseTreeValueVisitorFactory ValueVisitorFactory
+        private IParseTreeValueVisitorFactory ValueVisitorFactory
         {
             get
             {
@@ -74,7 +74,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        private IUCIRangeClauseFilterFactory RangeClauseFilterFactory
+        private IRangeClauseFilterFactory RangeClauseFilterFactory
         {
             get
             {
@@ -86,7 +86,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        private IUnreachableCaseInspectionRangeFactory InspectionRangeFactory
+        private IRangeClauseContextWrapperFactory InspectionRangeFactory
         {
             get
             {
@@ -98,7 +98,7 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        private IUnreachableCaseInspectionSelectStmtFactory InspectionSelectStmtFactory
+        private ISelectCaseStmtContextWrapperFactory InspectionSelectStmtFactory
         {
             get
             {
@@ -126,7 +126,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_NullInputValue()
         {
-            IUCIValue test = null;
+            IParseTreeValue test = null;
             try
             {
                 test = ValueFactory.Create(null);
@@ -200,7 +200,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_VariableMath(string operands, string expected, string typeName)
         {
-            GetBinaryOpValues(operands, out IUCIValue LHS, out IUCIValue RHS, out string opSymbol);
+            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
             Assert.AreEqual(result.ValueText, expected);
             Assert.AreEqual(typeName, result.TypeName);
@@ -214,7 +214,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_RelationalOp(string input, string expected, string typeName)
         {
-            GetBinaryOpValues(input, out IUCIValue LHS, out IUCIValue RHS, out string opSymbol);
+            GetBinaryOpValues(input, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
             Assert.AreEqual(expected, result.ValueText);
         }
@@ -345,7 +345,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_LogicBinaryConstants(string operands, string expected)
         {
-            GetBinaryOpValues(operands, out IUCIValue LHS, out IUCIValue RHS, out string opSymbol);
+            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
@@ -358,7 +358,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_LogicUnaryConstants(string operands, string expected)
         {
-            GetUnaryOpValues(operands, out IUCIValue theValue, out string opSymbol);
+            GetUnaryOpValues(operands, out IParseTreeValue theValue, out string opSymbol);
 
             var result = Calculator.Evaluate(theValue, opSymbol);
 
@@ -376,7 +376,7 @@ namespace RubberduckTests.Inspections
         public void UciUnit_MinusUnaryOp(string operands, string expected)
         {
             var expectedVal = CreateInspValueFrom(expected);
-            GetUnaryOpValues(operands, out IUCIValue LHS, out string opSymbol);
+            GetUnaryOpValues(operands, out IParseTreeValue LHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, opSymbol);
 
             Assert.AreEqual(expectedVal.ValueText, result.ValueText);
@@ -417,7 +417,7 @@ namespace RubberduckTests.Inspections
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
             {
-                GetBinaryOpValues(clause, out IUCIValue start, out IUCIValue end, out string symbol);
+                GetBinaryOpValues(clause, out IParseTreeValue start, out IParseTreeValue end, out string symbol);
                 UUT.AddValueRange(start, end);
             }
 
@@ -461,7 +461,7 @@ namespace RubberduckTests.Inspections
             var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
             foreach (var clause in clauses)
             {
-                GetBinaryOpValues(clause, out IUCIValue start, out IUCIValue end, out string symbol);
+                GetBinaryOpValues(clause, out IParseTreeValue start, out IParseTreeValue end, out string symbol);
                 UUT.AddIsClause(end, symbol);
             }
             Assert.AreEqual(expectedResult.First().ToString(), UUT.ToString());
@@ -624,17 +624,17 @@ namespace RubberduckTests.Inspections
 
             if (typeName.Equals(Tokens.Long))
             {
-                var check = (IUCIRangeClauseFilterTestSupport<long>)filter;
-                CheckExtents(check, UCIRangeClauseFilterFactory.IntegerNumberExtents[typeName].Item1, UCIRangeClauseFilterFactory.IntegerNumberExtents[typeName].Item2);
+                var check = (IRangeClauseFilterTestSupport<long>)filter;
+                CheckExtents(check, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegerNumberExtents[typeName].Item1, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegerNumberExtents[typeName].Item2);
             }
             else if (typeName.Equals(Tokens.Single))
             {
-                var check = (IUCIRangeClauseFilterTestSupport<double>)filter;
+                var check = (IRangeClauseFilterTestSupport<double>)filter;
                 CheckExtents(check, CompareExtents.SINGLEMIN, CompareExtents.SINGLEMAX);
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var check = (IUCIRangeClauseFilterTestSupport<decimal>)filter;
+                var check = (IRangeClauseFilterTestSupport<decimal>)filter;
                 CheckExtents(check, CompareExtents.CURRENCYMIN, CompareExtents.CURRENCYMAX);
             }
         }
@@ -682,9 +682,9 @@ End Sub";
             Assert.AreEqual(expectedFilters.First().ToString(), inspRange.AsFilter.ToString());
         }
 
-        private IUCIValue TestBinaryOp(string opSymbol, string operands, string expected, string typeName)
+        private IParseTreeValue TestBinaryOp(string opSymbol, string operands, string expected, string typeName)
         {
-            GetBinaryOpValues(operands, out IUCIValue LHS, out IUCIValue RHS, out _);
+            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out _);
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
@@ -705,7 +705,7 @@ End Sub";
             return result;
         }
 
-        private void GetBinaryOpValues(string operands, out IUCIValue LHS, out IUCIValue RHS, out string opSymbol)
+        private void GetBinaryOpValues(string operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol)
         {
             var operandItems = operands.Split(new string[] { OPERAND_SEPARATOR }, StringSplitOptions.None);
 
@@ -714,7 +714,7 @@ End Sub";
             RHS = CreateInspValueFrom(operandItems[2]);
         }
 
-        private void GetUnaryOpValues(string operands, out IUCIValue LHS, out string opSymbol)
+        private void GetUnaryOpValues(string operands, out IParseTreeValue LHS, out string opSymbol)
         {
             var operandItems = operands.Split(new string[] { OPERAND_SEPARATOR }, StringSplitOptions.None);
 
@@ -722,7 +722,7 @@ End Sub";
             LHS = CreateInspValueFrom(operandItems[1]);
         }
 
-        private IUCIValue CreateInspValueFrom(string valAndType, string conformTo = null)
+        private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)
         {
             if (valAndType.Contains(VALUE_TYPE_SEPARATOR))
             {
@@ -2126,7 +2126,7 @@ Select Case x
             return  $"Unreachable={unreachableCount}, Mismatch={mismatchCount}, CaseElse={caseElseCount}";
         }
 
-        private void CheckExtents<T>(IUCIRangeClauseFilterTestSupport<T> check, T min, T max) where T : IComparable<T>
+        private void CheckExtents<T>(IRangeClauseFilterTestSupport<T> check, T min, T max) where T : IComparable<T>
         {
             if (check.TryGetIsLTValue(out T ltResult) && check.TryGetIsGTValue(out T gtResult))
             {
@@ -2159,7 +2159,7 @@ Select Case x
 
             var sumClauses = RangeDescriptorsToFilters(input, typeName);
 
-            IUCIRangeClauseFilter filter = RangeClauseFilterFactory.Create(typeName, ValueFactory);
+            IRangeClauseFilter filter = RangeClauseFilterFactory.Create(typeName, ValueFactory);
             for (var idx = 0; idx <= sumClauses.Count - 2; idx++)
             {
                 filter.Add(sumClauses[idx]);
@@ -2169,10 +2169,10 @@ Select Case x
             Assert.AreEqual(expected, filter);
         }
 
-        private List<IUCIRangeClauseFilter> RangeDescriptorsToFilters(string[] input, string typeName)
+        private List<IRangeClauseFilter> RangeDescriptorsToFilters(string[] input, string typeName)
         {
             var caseToRanges = CasesToRanges(input);
-            var sumClauses = new List<IUCIRangeClauseFilter>();
+            var sumClauses = new List<IRangeClauseFilter>();
             foreach (var id in caseToRanges)
             {
                 var newFilter = CreateTestFilter(id.Value, typeName);
@@ -2181,10 +2181,10 @@ Select Case x
             return sumClauses;
         }
 
-        private IUCIValueResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt)
+        private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt)
         {
             selectStmt = null;
-            IUCIValueResults valueResults = null;
+            IParseTreeVisitorResults valueResults = null;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -2213,7 +2213,7 @@ Select Case x
             return caseToRanges;
         }
 
-        private IUCIRangeClauseFilter CreateTestFilter(List<string> annotations, string typeName)
+        private IRangeClauseFilter CreateTestFilter(List<string> annotations, string typeName)
         {
             var result = RangeClauseFilterFactory.Create(typeName, ValueFactory);
             var clauseItem = string.Empty;

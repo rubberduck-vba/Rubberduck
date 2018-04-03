@@ -5,20 +5,20 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUCIValue
+    public interface IParseTreeValue
     {
         string ValueText { get; }
         string TypeName { get; }
         bool ParsesToConstantValue { get; set; }
     }
 
-    public class UCIValue : IUCIValue
+    public class ParseTreeValue : IParseTreeValue
     {
         private string _valueText;
         private string _declaredType;
         private string _derivedType;
 
-        public UCIValue(string value, string declaredType = null)
+        public ParseTreeValue(string value, string declaredType = null)
         {
             if (value is null)
             {
@@ -118,7 +118,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Long) || conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
             {
-                if (UCIValueConverter.TryConvertValue(_valueText, out long newVal))
+                if (ParseTreeValueConverter.TryConvertValue(_valueText, out long newVal))
                 {
                     _valueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -126,7 +126,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else if (conformTypeName.Equals(Tokens.Double) || conformTypeName.Equals(Tokens.Single))
             {
-                if (UCIValueConverter.TryConvertValue(_valueText, out double newVal))
+                if (ParseTreeValueConverter.TryConvertValue(_valueText, out double newVal))
                 {
                     _valueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -134,7 +134,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else if (conformTypeName.Equals(Tokens.Boolean))
             {
-                if (UCIValueConverter.TryConvertValue(_valueText, out bool newVal))
+                if (ParseTreeValueConverter.TryConvertValue(_valueText, out bool newVal))
                 {
                     _valueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -146,7 +146,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else if (conformTypeName.Equals(Tokens.Currency))
             {
-                if (UCIValueConverter.TryConvertValue(_valueText, out decimal newVal))
+                if (ParseTreeValueConverter.TryConvertValue(_valueText, out decimal newVal))
                 {
                     _valueText = newVal.ToString();
                     ParsesToConstantValue = true;

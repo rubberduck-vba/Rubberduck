@@ -4,26 +4,26 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUCIValueResults
+    public interface IParseTreeVisitorResults
     {
-        IUCIValue GetValue(ParserRuleContext context);
+        IParseTreeValue GetValue(ParserRuleContext context);
         string GetTypeName(ParserRuleContext context);
         string GetValueText(ParserRuleContext context);
         bool Contains(ParserRuleContext context);
-        bool TryGetValue(ParserRuleContext context, out IUCIValue value);
+        bool TryGetValue(ParserRuleContext context, out IParseTreeValue value);
         void OnNewValueResult(object sender, ValueResultEventArgs e);
     }
 
-    public class UCIValueResults : IUCIValueResults
+    public class ParseTreeVisitorResults : IParseTreeVisitorResults
     {
-        private Dictionary<ParserRuleContext, IUCIValue> _parseTreeValues;
+        private Dictionary<ParserRuleContext, IParseTreeValue> _parseTreeValues;
 
-        public UCIValueResults()
+        public ParseTreeVisitorResults()
         {
-            _parseTreeValues = new Dictionary<ParserRuleContext, IUCIValue>();
+            _parseTreeValues = new Dictionary<ParserRuleContext, IParseTreeValue>();
         }
 
-        public IUCIValue GetValue(ParserRuleContext context)
+        public IParseTreeValue GetValue(ParserRuleContext context)
         {
             if (context is null)
             {
@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _parseTreeValues.ContainsKey(context);
         }
 
-        public bool TryGetValue(ParserRuleContext context, out IUCIValue value)
+        public bool TryGetValue(ParserRuleContext context, out IParseTreeValue value)
         {
             return _parseTreeValues.TryGetValue(context, out value);
         }
