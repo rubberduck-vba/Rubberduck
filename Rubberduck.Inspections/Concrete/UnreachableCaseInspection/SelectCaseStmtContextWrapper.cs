@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _mismatchResults = new List<ParserRuleContext>();
             _caseElseResults = new List<ParserRuleContext>();
             _evalTypeName = null;
-            _inspectionRangeFactory = factoryFactory.CreateUnreachableCaseInspectionRangeFactory();
+            _inspectionRangeFactory = factoryFactory.CreateIRangeClauseContextWrapperFactory();
         }
 
         public string EvaluationTypeName => _evalTypeName 
@@ -194,6 +194,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static string OR => Tokens.Or;
         public static string XOR => Tokens.XOr;
         public static string NOT => Tokens.Not;
+        public static string EQV => "Eqv";
+        public static string IMP => "Imp";
 
         private static string LoadSymbols(int target)
         {

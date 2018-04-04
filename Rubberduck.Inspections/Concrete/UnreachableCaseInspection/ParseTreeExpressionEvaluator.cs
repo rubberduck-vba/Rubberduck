@@ -36,6 +36,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [LogicSymbols.AND] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) && Convert.ToBoolean(RHS); },
             [LogicSymbols.OR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) || Convert.ToBoolean(RHS); },
             [LogicSymbols.XOR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) ^ Convert.ToBoolean(RHS); },
+            [LogicSymbols.EQV] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS).Equals(Convert.ToBoolean(RHS)); },
+            [LogicSymbols.IMP] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS).Equals(Convert.ToBoolean(RHS)) || Convert.ToBoolean(RHS); },
         };
 
         private static Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()

@@ -33,9 +33,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             //TODO_Question: IUnreachableCaseInspectionFactoryFactory - candidate for IoCInstaller?
             var factoriesFactory = new UnreachableCaseInspectionFactoryProvider();
 
-            _selectStmtFactory = factoriesFactory.CreateUnreachableCaseInspectionSelectStmtFactory();
-            _valueFactory = factoriesFactory.CreateIUCIValueFactory();
-            _parseTreeVisitorFactory = factoriesFactory.CreateIUCIParseTreeValueVisitorFactory();
+            _selectStmtFactory = factoriesFactory.CreateISelectStmtContextWrapperFactory();
+            _valueFactory = factoriesFactory.CreateIParseTreeValueFactory();
+            _parseTreeVisitorFactory = factoriesFactory.CreateIParseTreeValueVisitorFactory();
 
             _parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
         }

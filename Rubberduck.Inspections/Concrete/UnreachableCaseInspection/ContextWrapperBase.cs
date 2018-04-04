@@ -13,8 +13,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public ContextWrapperBase(ParserRuleContext context, IParseTreeVisitorResults inspValues, IUnreachableCaseInspectionFactoryProvider factoryFactory)
         {
             _context = context;
-            _rangeFilterFactory = factoryFactory.CreateIUCIRangeClauseFilterFactory();
-            _valueFactory = factoryFactory.CreateIUCIValueFactory();
+            _rangeFilterFactory = factoryFactory.CreateIRangeClauseFilterFactory();
+            _valueFactory = factoryFactory.CreateIParseTreeValueFactory();
             _inspValues = inspValues;
         }
 

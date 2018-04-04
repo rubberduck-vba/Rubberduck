@@ -18,7 +18,7 @@ namespace RubberduckTests.Inspections
         private const string VALUE_TYPE_SEPARATOR = "?";
         private const string OPERAND_SEPARATOR = "_";
 
-        private IUnreachableCaseInspectionFactoryProvider _factoriesFactory;
+        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
         private IParseTreeValueFactory _valueFactory;
         private IParseTreeExpressionEvaluator _calculator;
         private IParseTreeValueVisitorFactory _visitorFactory;
@@ -26,15 +26,15 @@ namespace RubberduckTests.Inspections
         private IRangeClauseContextWrapperFactory _rangeFactory;
         private ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
 
-        private IUnreachableCaseInspectionFactoryProvider FactoriesFactory
+        private IUnreachableCaseInspectionFactoryProvider FactoryProvider
         {
             get
             {
-                if (_factoriesFactory is null)
+                if (_factoryProvider is null)
                 {
-                    _factoriesFactory = new UnreachableCaseInspectionFactoryProvider();
+                    _factoryProvider = new UnreachableCaseInspectionFactoryProvider();
                 }
-                return _factoriesFactory;
+                return _factoryProvider;
              }
         }
 
@@ -44,7 +44,7 @@ namespace RubberduckTests.Inspections
             {
                 if (_valueFactory is null)
                 {
-                    _valueFactory = FactoriesFactory.CreateIUCIValueFactory();
+                    _valueFactory = FactoryProvider.CreateIParseTreeValueFactory();
                 }
                 return _valueFactory;
             }
@@ -68,7 +68,7 @@ namespace RubberduckTests.Inspections
             {
                 if (_visitorFactory is null)
                 {
-                    _visitorFactory = FactoriesFactory.CreateIUCIParseTreeValueVisitorFactory();
+                    _visitorFactory = FactoryProvider.CreateIParseTreeValueVisitorFactory();
                 }
                 return _visitorFactory;
             }
@@ -80,7 +80,7 @@ namespace RubberduckTests.Inspections
             {
                 if (_rangeClauseFilterFactory is null)
                 {
-                    _rangeClauseFilterFactory = FactoriesFactory.CreateIUCIRangeClauseFilterFactory();
+                    _rangeClauseFilterFactory = FactoryProvider.CreateIRangeClauseFilterFactory();
                 }
                 return _rangeClauseFilterFactory;
             }
@@ -92,7 +92,7 @@ namespace RubberduckTests.Inspections
             {
                 if (_rangeFactory is null)
                 {
-                    _rangeFactory = FactoriesFactory.CreateUnreachableCaseInspectionRangeFactory();
+                    _rangeFactory = FactoryProvider.CreateIRangeClauseContextWrapperFactory();
                 }
                 return _rangeFactory;
             }
@@ -104,7 +104,7 @@ namespace RubberduckTests.Inspections
             {
                 if (_selectStmtFactory is null)
                 {
-                    _selectStmtFactory = FactoriesFactory.CreateUnreachableCaseInspectionSelectStmtFactory();
+                    _selectStmtFactory = FactoryProvider.CreateISelectStmtContextWrapperFactory();
                 }
                 return _selectStmtFactory;
             }
@@ -344,6 +344,42 @@ namespace RubberduckTests.Inspections
         [TestCase("6.5_>_5.2", "True")]
         [Category("Inspections")]
         public void UciUnit_LogicBinaryConstants(string operands, string expected)
+        {
+            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
+
+            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
+
+            Assert.AreEqual(expected, result.ValueText);
+            Assert.IsTrue(result.ParsesToConstantValue);
+        }
+
+        //        Dim A, B, C, D, MyCheck
+        //A = 10: B = 8: C = 6: D = Null    ' Initialize variables.
+        //MyCheck = A > B Eqv B > C    ' Returns True.
+        //MyCheck = B > A Eqv B > C    ' Returns False.
+        //MyCheck = A > B Eqv B > D    ' Returns Null.
+        //MyCheck = A Eqv B    ' Returns -3 (bitwise comparison).
+        [TestCase("True_Eqv_True", "True")]
+        [TestCase("False_Eqv_True", "False")]
+        [TestCase("True_Eqv_False", "False")]
+        [TestCase("False_Eqv_False", "True")]
+        [Category("Inspections")]
+        public void UciUnit_LogicEqvOperator(string operands, string expected)
+        {
+            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
+
+            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
+
+            Assert.AreEqual(expected, result.ValueText);
+            Assert.IsTrue(result.ParsesToConstantValue);
+        }
+
+        [TestCase("True_Imp_True", "True")]
+        [TestCase("False_Imp_True", "True")]
+        [TestCase("True_Imp_False", "False")]
+        [TestCase("False_Imp_False", "True")]
+        [Category("Inspections")]
+        public void UciUnit_LogicImpOperator(string operands, string expected)
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
 
@@ -2091,6 +2127,64 @@ Select Case x
         End Sub";
 
             inputCode = inputCode.Replace("<opSymbol>", opSymbol);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestCase("START Eqv FINISH", "True")]
+        [TestCase("START * 0 Eqv FINISH * 0", "True")]
+        [TestCase("START Eqv FINISH * 0", "False")]
+        [TestCase("START * 0 Eqv FINISH", "False")]
+        [Category("Inspections")]
+        public void UciFunctional_EqvOperator( string secondCase, string thirdCase)
+        {
+            string inputCode =
+@"
+        private const START As Long = 3
+        private const FINISH As Long = 10
+
+        Sub Foo(x As Long, y As Long, z As Long)
+        Select Case z
+            Case Is < x 
+            'OK
+            Case <secondCase>
+            'OK
+            Case <thirdCase>
+            'Unreachable
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<secondCase>", secondCase);
+            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [TestCase("START Imp FINISH", "True")]
+        [TestCase("START * 0 Imp FINISH * 0", "True")]
+        [TestCase("START Imp FINISH * 0", "False")]
+        [TestCase("START * 0 Imp FINISH", "True")]
+        [Category("Inspections")]
+        public void UciFunctional_ImpOperator(string secondCase, string thirdCase)
+        {
+            string inputCode =
+@"
+        private const START As Long = 3
+        private const FINISH As Long = 10
+
+        Sub Foo(x As Long, y As Long, z As Long)
+        Select Case z
+            Case Is < x 
+            'OK
+            Case <secondCase>
+            'OK
+            Case <thirdCase>
+            'Unreachable
+        End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<secondCase>", secondCase);
+            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 

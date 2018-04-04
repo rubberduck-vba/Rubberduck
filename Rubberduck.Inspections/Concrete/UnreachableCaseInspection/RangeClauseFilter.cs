@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly IParseTreeValueFactory _valueFactory;
         private readonly IRangeClauseFilterFactory _filterFactory;
-        private readonly TryConvertParseTreeValue<T> _tNewConverter;
+        private readonly TryConvertParseTreeValue<T> _valueConverter;
         private readonly T _trueValue;
         private readonly T _falseValue;
 
@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _valueFactory = valueFactory;
             _filterFactory = filterFactory;
-            _tNewConverter = tConverter;
+            _valueConverter = tConverter;
 
             _ranges = new List<Tuple<T, T>>();
             _singleValues = new HashSet<T>();
@@ -158,7 +158,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (value.ParsesToConstantValue)
             {
-                if (!_tNewConverter(value, out T result))
+                if (!_valueConverter(value, out T result))
                 {
                     throw new ArgumentException();
                 }
@@ -174,7 +174,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (value.ParsesToConstantValue)
             {
-                if (!_tNewConverter(value, out T result))
+                if (!_valueConverter(value, out T result))
                 {
                     throw new ArgumentException();
                 }
@@ -190,7 +190,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (value.ParsesToConstantValue)
             {
-                if (!_tNewConverter(value, out T result))
+                if (!_valueConverter(value, out T result))
                 {
                     throw new ArgumentException();
                 }
@@ -215,7 +215,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (inputStartVal.ParsesToConstantValue && inputEndVal.ParsesToConstantValue)
             {
-                if (!(_tNewConverter(inputStartVal, out T startVal) && _tNewConverter(inputEndVal, out T endVal)))
+                if (!(_valueConverter(inputStartVal, out T startVal) && _valueConverter(inputEndVal, out T endVal)))
                 {
                     throw new ArgumentException();
                 }
@@ -340,12 +340,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public void AddExtents(IParseTreeValue min, IParseTreeValue max)
         {
             _hasExtents = true;
-            if (_tNewConverter(min, out _minExtent))
+            if (_valueConverter(min, out _minExtent))
             {
                 AddIsClauseImpl(_minExtent, LogicSymbols.LT);
             }
 
-            if (_tNewConverter(max, out _maxExtent))
+            if (_valueConverter(max, out _maxExtent))
             {
                 AddIsClauseImpl(_maxExtent, LogicSymbols.GT);
             }
@@ -357,8 +357,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (ContainsBooleans)
                 {
-                    return _singleValues.Contains(_trueValue)
-                        || RangesFilterValue(_trueValue);
+                    return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
+                        || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue);
                 }
                 return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
                     || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue)
@@ -846,7 +846,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private T ConvertToContainedGeneric<K>(K value)
         {
             var parseTreeValue = _valueFactory.Create(value.ToString(), TypeName);
-            if(_tNewConverter(parseTreeValue, out T tValue))
+            if(_valueConverter(parseTreeValue, out T tValue))
             {
                 return tValue;
             }

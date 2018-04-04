@@ -3,31 +3,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspectionFactoryProvider
     {
-        IParseTreeValueVisitorFactory CreateIUCIParseTreeValueVisitorFactory();
-        IParseTreeValueFactory CreateIUCIValueFactory();
-        IRangeClauseFilterFactory CreateIUCIRangeClauseFilterFactory();
-        ISelectCaseStmtContextWrapperFactory CreateUnreachableCaseInspectionSelectStmtFactory();
-        IRangeClauseContextWrapperFactory CreateUnreachableCaseInspectionRangeFactory();
+        IParseTreeValueVisitorFactory CreateIParseTreeValueVisitorFactory();
+        IParseTreeValueFactory CreateIParseTreeValueFactory();
+        IRangeClauseFilterFactory CreateIRangeClauseFilterFactory();
+        ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory();
+        IRangeClauseContextWrapperFactory CreateIRangeClauseContextWrapperFactory();
     }
 
     public class UnreachableCaseInspectionFactoryProvider : IUnreachableCaseInspectionFactoryProvider
     {
-        public IParseTreeValueVisitorFactory CreateIUCIParseTreeValueVisitorFactory()
+        public IParseTreeValueVisitorFactory CreateIParseTreeValueVisitorFactory()
         {
             return new ParseTreeValueVisitorFactory();
         }
 
-        public IParseTreeValueFactory CreateIUCIValueFactory()
+        public IParseTreeValueFactory CreateIParseTreeValueFactory()
         {
             return new ParseTreeValueFactory();
         }
 
-        public IRangeClauseFilterFactory CreateIUCIRangeClauseFilterFactory()
+        public IRangeClauseFilterFactory CreateIRangeClauseFilterFactory()
         {
             return new RangeClauseFilterFactory();
         }
 
-        public ISelectCaseStmtContextWrapperFactory CreateUnreachableCaseInspectionSelectStmtFactory()
+        public ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory()
         {
             return new SelectCaseStmtContextWrapperFactory()
             {
@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             };
         }
 
-        public IRangeClauseContextWrapperFactory CreateUnreachableCaseInspectionRangeFactory()
+        public IRangeClauseContextWrapperFactory CreateIRangeClauseContextWrapperFactory()
         {
             return new RangeClauseContextWrapperFactory()
             {

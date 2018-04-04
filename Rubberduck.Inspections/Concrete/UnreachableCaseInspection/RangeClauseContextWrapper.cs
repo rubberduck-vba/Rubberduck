@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _isValueRange = !(context.TO() is null);
             _isLTorGT = !(context.IS() is null);
-            _isRelationalOp = Context.TryGetChildContext<VBAParser.RelationalOpContext>(out _);
+            _isRelationalOp = Context.children.Any(ch => ch is ParserRuleContext && ParseTreeValueVisitor.IsLogicalContext(ch));
             _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
             _evalTypeName = string.Empty;
             IsUnreachable = false;
@@ -42,7 +42,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _isValueRange = !(context.TO() is null);
             _isLTorGT = !(context.IS() is null);
-            _isRelationalOp = Context.TryGetChildContext<VBAParser.RelationalOpContext>(out _);
+            _isRelationalOp = Context.children.Any(ch => ch is ParserRuleContext && ParseTreeValueVisitor.IsLogicalContext(ch));
+
             _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
             IsUnreachable = false;
             AsFilter = FilterFactory.Create(evalTypeName, ValueFactory);
