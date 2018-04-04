@@ -293,6 +293,15 @@ namespace RubberduckTests.Inspections
             TestBinaryOp(MathSymbols.DIVIDE, operands, expected, typeName);
         }
 
+        [TestCase(@"9.5_\_2.4", "5", "Long")]
+        [TestCase(@"10_\_4", "2", "Long")]
+        [TestCase(@"5.423_\_1", "5", "Long")]
+        [Category("Inspections")]
+        public void UciUnit_IntegerDivision(string operands, string expected, string typeName)
+        {
+            TestBinaryOp(MathSymbols.INTEGER_DIVIDE, operands, expected, typeName);
+        }
+
         [TestCase("10.51_+_11.2", "21.71", "Double")]
         [TestCase("10_+_11.2", "21.2", "Double")]
         [TestCase("11.2_+_10", "21.2", "Double")]
@@ -2075,10 +2084,6 @@ Select Case x
         [Category("Inspections")]
         public void UciFunctional_IsStmtAndNegativeRangeWithConstants()
         {
-            var test1 = VBAParser.DefaultVocabulary.GetDisplayName(VBAParser.EQ);
-            var test2 = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.EQ);
-            var test3 = VBAParser.DefaultVocabulary.GetSymbolicName(VBAParser.EQ);
-
             const string inputCode =
 @"
         private const START As Long = 10
@@ -2185,6 +2190,30 @@ Select Case x
 
             inputCode = inputCode.Replace("<secondCase>", secondCase);
             inputCode = inputCode.Replace("<thirdCase>", thirdCase);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UciFunctional_IntegerDivision()
+        {
+            string inputCode =
+@"
+        private const START As Long = 3
+        private const FINISH As Long = 10
+
+        Sub Foo(x As Long, y As Long, z As Long)
+        Select Case z
+            Case x 
+            'OK
+            Case START
+            'OK
+            Case FINISH \ START
+            'Unreachable
+        End Select
+
+        End Sub";
+
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 

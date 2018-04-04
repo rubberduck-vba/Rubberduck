@@ -19,6 +19,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             [MathSymbols.MULTIPLY] = delegate (double LHS, double RHS) { return LHS * RHS; },
             [MathSymbols.DIVIDE] = delegate (double LHS, double RHS) { return LHS / RHS; },
+            [MathSymbols.INTEGER_DIVIDE] = delegate (double LHS, double RHS) { return Math.Truncate(Convert.ToDouble(Convert.ToInt64(LHS) / Convert.ToInt64(RHS))); },
             [MathSymbols.PLUS] = delegate (double LHS, double RHS) { return LHS + RHS; },
             [MathSymbols.MINUS] = delegate (double LHS, double RHS) { return LHS - RHS; },
             [MathSymbols.EXPONENT] = Math.Pow,
@@ -146,6 +147,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public static string MULTIPLY => _multiply ?? LoadSymbols(VBAParser.MULT);
         public static string DIVIDE => _divide ?? LoadSymbols(VBAParser.DIV);
+        public static string INTEGER_DIVIDE => @"\";
         public static string PLUS => _plus ?? LoadSymbols(VBAParser.PLUS);
         public static string MINUS => _minusSign ?? LoadSymbols(VBAParser.MINUS);
         public static string ADDITIVE_INVERSE => MINUS;
