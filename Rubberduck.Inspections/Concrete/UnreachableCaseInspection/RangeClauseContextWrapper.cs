@@ -75,7 +75,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             get
             {
                 var results = new List<ParserRuleContext>();
-                if(!TryGetFirstResultContext(out ParserRuleContext resultContext))
+                if (!TryGetFirstResultContext(out ParserRuleContext resultContext))
                 {
                     return results;
                 }

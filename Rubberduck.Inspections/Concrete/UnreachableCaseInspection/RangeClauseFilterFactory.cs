@@ -30,9 +30,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         public IRangeClauseFilter Create(string typeName, IParseTreeValueFactory valueFactory)
         {
-            if(valueFactory is null) { throw new ArgumentNullException(); }
+            if (valueFactory is null) { throw new ArgumentNullException(); }
 
-            if(!(IntegralNumberExtents.Keys.Contains(typeName)
+            if (!(IntegralNumberExtents.Keys.Contains(typeName)
                 || typeName.Equals(Tokens.Double)
                 || typeName.Equals(Tokens.Single)
                 || typeName.Equals(Tokens.Currency)

@@ -177,7 +177,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            var result = Calculator.Evaluate(operands[0], opSymbol);
+            var result = Calculator.Evaluate(operands[0], opSymbol, operands[0].TypeName);
             StoreVisitResult(context, result);
         }
 

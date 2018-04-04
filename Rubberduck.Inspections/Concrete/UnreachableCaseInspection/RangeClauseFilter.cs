@@ -683,7 +683,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void AddValueRangeImpl(T inputStart, T inputEnd)
         {
-            if (ContainsBooleans)
+            if (ContainsBooleans || inputStart.CompareTo(inputEnd) == 0)
             {
                 SingleValues.Add(inputStart);
                 SingleValues.Add(inputEnd);
@@ -846,7 +846,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private T ConvertToContainedGeneric<K>(K value)
         {
             var parseTreeValue = _valueFactory.Create(value.ToString(), TypeName);
-            if(_valueConverter(parseTreeValue, out T tValue))
+            if (_valueConverter(parseTreeValue, out T tValue))
             {
                 return tValue;
             }
@@ -923,7 +923,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string GetRangesDescriptor()
         {
-            if(!(_ranges.Any() || _variableRanges.Any())) { return string.Empty; }
+            if (!(_ranges.Any() || _variableRanges.Any())) { return string.Empty; }
 
             StringBuilder series = new StringBuilder();
             foreach (var val in _ranges)

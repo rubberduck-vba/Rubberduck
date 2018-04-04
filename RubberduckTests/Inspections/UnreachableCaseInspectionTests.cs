@@ -400,12 +400,13 @@ namespace RubberduckTests.Inspections
 
         [TestCase("Not_False", "True")]
         [TestCase("Not_True", "False")]
+        [TestCase("Not_1", "True")]
         [Category("Inspections")]
         public void UciUnit_LogicUnaryConstants(string operands, string expected)
         {
             GetUnaryOpValues(operands, out IParseTreeValue theValue, out string opSymbol);
 
-            var result = Calculator.Evaluate(theValue, opSymbol);
+            var result = Calculator.Evaluate(theValue, opSymbol, Tokens.Boolean);
 
             Assert.AreEqual(expected, result.ValueText);
             Assert.IsTrue(result.ParsesToConstantValue, "Expected IsConstantValue field to be 'True'");
@@ -415,6 +416,9 @@ namespace RubberduckTests.Inspections
         [TestCase("-_23.78", "-23.78")]
         [TestCase("-_True", "True?Boolean")]
         [TestCase("-_False", "False?Boolean")]
+        [TestCase("-_True", "1?Integer")]
+        [TestCase("-_-1", "1?Long")]
+        [TestCase("-_0", "False?Boolean")]
         [TestCase("-_1?Double", "-1?Double")]
         [TestCase("-_-1?Double", "1?Double")]
         [Category("Inspections")]
@@ -422,7 +426,7 @@ namespace RubberduckTests.Inspections
         {
             var expectedVal = CreateInspValueFrom(expected);
             GetUnaryOpValues(operands, out IParseTreeValue LHS, out string opSymbol);
-            var result = Calculator.Evaluate(LHS, opSymbol);
+            var result = Calculator.Evaluate(LHS, opSymbol, expectedVal.TypeName);
 
             Assert.AreEqual(expectedVal.ValueText, result.ValueText);
             Assert.IsTrue(result.ParsesToConstantValue);
@@ -440,12 +444,13 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void UciUnit_ToString(string firstCase, string secondCase, string expected)
         {
-            var filters = RangeDescriptorsToFilters(new string[] { firstCase, secondCase/*, expectedClauses*/ }, Tokens.Long);
+            var filters = RangeDescriptorsToFilters(new string[] { firstCase, secondCase }, Tokens.Long);
             filters[0].Add(filters[1]);
 
             Assert.AreEqual(expected, filters[0].ToString());
         }
 
+        [TestCase("50?Long_To_50?Long", "Long", "Single=50")]
         [TestCase("50?Long_To_x?Long", "Long", "Range=50:x")]
         [TestCase("50?Long_To_100?Long", "Long", "Range=50:100")]
         [TestCase("Soup?String_To_Nuts?String", "String", "Range=Nuts:Soup")]
@@ -735,12 +740,13 @@ End Sub";
 
             if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single) || typeName.Equals(Tokens.Currency))
             {
-                Assert.IsTrue(Math.Abs(double.Parse(result.ValueText) - double.Parse(expected)) < .001, $"Actual={result.ValueText} Expected={expected}");
+                var compareLength = expected.Length > 5 ? 5 : expected.Length;
+                Assert.IsTrue(Math.Abs(double.Parse(result.ValueText.Substring(0, compareLength)) - double.Parse(expected.Substring(0, compareLength))) <= double.Epsilon, $"Actual={result.ValueText} Expected={expected}");
             }
             else if (typeName.Equals(Tokens.String))
             {
-                var toComp = expected.Length > 5 ? 5 : expected.Length;
-                Assert.AreEqual(expected.Substring(0, toComp), result.ValueText.Substring(0, toComp));
+                var compareLength = expected.Length > 5 ? 5 : expected.Length;
+                Assert.AreEqual(expected.Substring(0, compareLength), result.ValueText.Substring(0, compareLength));
             }
             else
             {
@@ -851,7 +857,7 @@ End Sub";
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase("Not x", "x As Long", "Boolean")]
+        [TestCase("Not x", "x As Long", "Long")]
         [TestCase("x", "x As Long", "Long")]
         [TestCase("x < 5", "x As Long", "Boolean")]
         [TestCase("ToLong(True) * .0035", "x As Byte", "Double")]
@@ -1468,6 +1474,30 @@ Select Case x
 
         [Test]
         [Category("Inspections")]
+        public void UciFunctional_SingleValueRange()
+        {
+            const string inputCode =
+@"Sub Foo( x As Long)
+
+        private const y As Double = 0.5
+
+        Select Case x
+            Case 55
+            'OK
+            Case 55 To 55
+            'Unreachable
+            Case 95
+            'OK
+            Case Else
+            'OK
+        End Select
+
+        End Sub";
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void UciFunctional_LongCollisionUnaryMathOperation()
         {
             const string inputCode =
@@ -1477,7 +1507,7 @@ Select Case x
             Case x > -3000
             'OK
             Case y > -3000
-            'Cannot disqualify other, or be disqualified, except by another y > ** statement
+            'OK
             Case x < y
             'OK - indeterminant
             Case 95

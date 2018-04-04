@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public interface IParseTreeExpressionEvaluator
     {
         IParseTreeValue Evaluate(IParseTreeValue LHS, IParseTreeValue RHS, string opSymbol);
-        IParseTreeValue Evaluate(IParseTreeValue LHS, string opSymbol);
+        IParseTreeValue Evaluate(IParseTreeValue LHS, string opSymbol, string requestedResultType);
     }
 
     public class ParseTreeExpressionEvaluator : IParseTreeExpressionEvaluator
@@ -89,25 +89,34 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opResultTypeName);
         }
 
-        public IParseTreeValue Evaluate(IParseTreeValue value, string opSymbol)
+        public IParseTreeValue Evaluate(IParseTreeValue value, string opSymbol, string requestedResultType)
         {
             var isMathOp = MathOpsUnary.ContainsKey(opSymbol);
             var isLogicOp = LogicOpsUnary.ContainsKey(opSymbol);
             Debug.Assert(isMathOp || isLogicOp);
 
-            var opResultTypeName = isMathOp ? value.TypeName : Tokens.Boolean;
             var operands = PrepareOperands(new string[] { value.ValueText });
             if (operands.Count == 1)
             {
                 if (isMathOp)
                 {
                     var mathResult = MathOpsUnary[opSymbol](operands[0]);
-                    return _valueFactory.Create(mathResult.ToString(), opResultTypeName);
+                    return _valueFactory.Create(mathResult.ToString(), requestedResultType);
                 }
-                var logicResult = LogicOpsUnary[opSymbol](operands[0]);
-                return _valueFactory.Create(logicResult.ToString(), opResultTypeName);
+
+                //Unary Not (!) operator
+                if  (!value.TypeName.Equals(Tokens.Boolean) &&  ParseTreeValue.TryConvertValue(value, out long opValue))
+                {
+                    var bitwiseComplement = ~opValue;
+                    return _valueFactory.Create(Convert.ToBoolean(bitwiseComplement).ToString(), requestedResultType);
+                }
+                else if  (value.TypeName.Equals(Tokens.Boolean))
+                {
+                    var logicResult = LogicOpsUnary[opSymbol](operands[0]);
+                    return _valueFactory.Create(logicResult.ToString(), requestedResultType);
+                }
             }
-            return _valueFactory.Create($"{opSymbol} {value.ValueText}", opResultTypeName);
+            return _valueFactory.Create($"{opSymbol} {value.ValueText}", requestedResultType);
         }
 
         private static string DetermineMathResultType(IParseTreeValue LHS, IParseTreeValue RHS)
