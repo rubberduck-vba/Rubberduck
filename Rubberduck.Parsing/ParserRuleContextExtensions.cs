@@ -164,6 +164,15 @@ namespace Rubberduck.Parsing
             return listener.Matches;
         }
 
+        /// <summary>
+        /// Try to get the first child of the generic context type.
+        /// </summary>
+        public static bool TryGetChildContext<TContext>(this ParserRuleContext ctxt, out TContext opCtxt) where TContext : ParserRuleContext
+        {
+            opCtxt = ctxt.GetChild<TContext>();
+            return opCtxt != null;
+        }
+
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
         {
             private readonly HashSet<TContext> _matches = new HashSet<TContext>();
