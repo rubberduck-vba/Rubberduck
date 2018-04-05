@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
@@ -362,12 +363,6 @@ namespace RubberduckTests.Inspections
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
-        //        Dim A, B, C, D, MyCheck
-        //A = 10: B = 8: C = 6: D = Null    ' Initialize variables.
-        //MyCheck = A > B Eqv B > C    ' Returns True.
-        //MyCheck = B > A Eqv B > C    ' Returns False.
-        //MyCheck = A > B Eqv B > D    ' Returns Null.
-        //MyCheck = A Eqv B    ' Returns -3 (bitwise comparison).
         [TestCase("True_Eqv_True", "True")]
         [TestCase("False_Eqv_True", "False")]
         [TestCase("True_Eqv_False", "False")]
@@ -698,7 +693,7 @@ namespace RubberduckTests.Inspections
          * stored as variable RelationalOp expressions.
         */
         [TestCase("Is < True", "Single=False")] //Always False
-        [TestCase("Is <= True", "RelOp=Is <= True")] //Result depends on Select Case value
+        [TestCase("Is <= True", "RelOp=Is <= True")]
         [TestCase("Is > True", "RelOp=Is > True")]
         [TestCase("Is >= True", "Single=True")] //Always True
         [TestCase("Is = True", "RelOp=Is = True")]
@@ -2247,7 +2242,205 @@ Select Case x
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
+        //Issue# 3885
+        //this test only proves that the Select Statement is not inspected
+        [Test]
+        [Category("Inspections")]
+        public void UciFunctional_BuiltInMember()
+        {
+            string inputCode =
+@"
+Option Explicit
+
+Sub FooCount(x As Long)
+
+    Select Case err.Number
+        Case ""5903""
+            'OK
+        Case 5900 + 3
+            'Unreachable - but undetected by unit tests, 
+        Case 5
+            'Unreachable - but undetected by unit tests, 
+        Case 4 + 1
+            'Unreachable - but undetected by unit tests, 
+    End Select
+
+    Select Case x
+        Case ""5""
+            MsgBox ""Foo""
+        Case 2 + 3
+            'Unreachable - just to make sure the test finds something 
+            MsgBox ""Bar""
+    End Select
+End Sub
+";
+
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UciFunctional_BuiltInMemberInCaseClause()
+        {
+            string inputCode =
+@"
+Option Explicit
+
+Sub FooCount(x As Long)
+
+    Select Case x
+        Case 5900 + 3
+            'OK
+        Case err.Number
+            'OK - not evaluated
+        Case 5903
+            'Unreachable
+        Case 5900 + 2 + 1
+            'Unreachable
+    End Select
+End Sub
+";
+
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+        }
+
+        //Issue# 3885 - replicates with UDT rather than a built-in
+        [TestCase("Long")]
+        [TestCase("Variant")]
+        [Category("Inspections")]
+        public void UciFunctional_MemberAccessor(string propertyType)
+        {
+            string inputCode =
+@"
+Option Explicit
+
+Sub AddVariable(testClass As Class1)
+    Select Case testClass.AValue
+        Case 5903
+            'OK
+        Case 5900 + 3
+            'unreachable
+        Case Else
+            Exit Sub
+    End Select
+End Sub";
+
+            string inputClassCode =
+@"
+Option Explicit
+
+Private myVal As <propertyType>
+
+Public Property Set AValue(val As <propertyType>)
+    myVal = val
+End Property
+
+Public Property Get AValue() As <propertyType>
+    AValue = myVal
+End Property
+";
+            inputClassCode = inputClassCode.Replace("<propertyType>", propertyType);
+            var components = new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>("TestModule1",inputCode),
+                new Tuple<string, string>("Class1", inputClassCode)
+            };
+
+            CheckActualResultsEqualsExpected(components, unreachable: 1);
+        }
+
+        [TestCase("Long")]
+        [TestCase("Variant")]
+        [Category("Inspections")]
+        public void UciFunctional_MemberAccessorInCaseClause(string propertyType)
+        {
+            string inputCode =
+@"
+Option Explicit
+
+Sub AddVariable(x As Long)
+    Select Case x
+        Case 300
+            'OK
+        Case testClass.AValue
+            'OK - variable, not value
+        Case 150 + 150
+            'OK
+        Case 3 * 100
+            'OK
+    End Select
+End Sub";
+
+            string inputClassCode =
+@"
+Option Explicit
+
+Private myVal As <propertyType>
+
+Public Property Set AValue(val As <propertyType>)
+    myVal = val
+End Property
+
+Public Property Get AValue() As <propertyType>
+    AValue = myVal
+End Property
+";
+            inputClassCode = inputClassCode.Replace("<propertyType>", propertyType);
+            var components = new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>("TestModule1",inputCode),
+                new Tuple<string, string>("Class1", inputClassCode)
+            };
+
+            CheckActualResultsEqualsExpected(components, unreachable: 2);
+        }
+
+        [TestCase("Long = 300")]
+        [Category("Inspections")]
+        public void UciFunctional_ConstanInOtherModule(string propertyType)
+        {
+            string inputCode =
+@"
+Option Explicit
+
+Sub AddVariable(x As Variant)
+    Select Case x
+        Case TestModule2.My_CONSTANT
+            'OK
+        Case 300
+            'unreachable
+        Case Else
+            Exit Sub
+    End Select
+End Sub";
+
+            string inputModule2Code =
+@"
+Option Explicit
+
+Public Const MY_CONSTANT As <propertyTypeAndAssignment> 
+";
+            inputModule2Code = inputModule2Code.Replace("<propertyTypeAndAssignment>", propertyType);
+            var components = new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>("TestModule1",inputCode),
+                new Tuple<string, string>("TestModule2", inputModule2Code)
+            };
+
+            CheckActualResultsEqualsExpected(components, unreachable: 1);
+        }
+
         private static void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
+        {
+            var components = new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>("TestModule1", inputCode)
+            };
+
+            CheckActualResultsEqualsExpected(components, unreachable, mismatch, caseElse);
+        }
+
+        private static void CheckActualResultsEqualsExpected(List<Tuple<string, string>> inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var expected = new Dictionary<string, int>
             {
@@ -2256,7 +2449,12 @@ Select Case x
                 { InspectionsUI.UnreachableCaseInspection_CaseElse, caseElse },
             };
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected);
+            inputCode.ForEach(input => project.AddComponent(input.Item1, NameToComponentType(input.Item1), input.Item2));
+            builder = builder.AddProject(project.Build());
+            var vbe = builder.Build();
+
             IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -2272,6 +2470,15 @@ Select Case x
             var expectedMsg = BuildResultString(expected[InspectionsUI.UnreachableCaseInspection_Unreachable], expected[InspectionsUI.UnreachableCaseInspection_TypeMismatch], expected[InspectionsUI.UnreachableCaseInspection_CaseElse]);
 
             Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        private static ComponentType NameToComponentType(string name)
+        {
+            if (name.StartsWith("Class"))
+            {
+                return ComponentType.ClassModule;
+            }
+            return ComponentType.StandardModule;
         }
 
         private static string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount)
