@@ -282,10 +282,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             idRef = null;
             var nameToMatch = context.GetText();
             var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
-            //if (identifierReferences.Any())
             if (identifierReferences.Any(rf => rf.Context == context))
             {
-                idRef = identifierReferences.First(); // (rf => rf.Context == context);
+                idRef = identifierReferences.First();
                 return true;
             }
             return false;
