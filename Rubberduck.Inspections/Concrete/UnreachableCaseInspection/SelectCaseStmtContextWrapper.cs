@@ -128,6 +128,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return _evalTypeName;
             }
+
+            caseClauseTypeNames.Remove(Tokens.Variant);
+            if (TryDetermineEvaluationTypeFromTypes(caseClauseTypeNames, out _evalTypeName))
+            {
+                return _evalTypeName;
+            }
             return string.Empty;
         }
 
@@ -141,7 +147,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return false;
             }
-            typeList.All(tn => new string[] { typeList.First() }.Contains(tn));
+
             //If all match, the typeName is easy...This is the only way to return "String" or "Currency".
             if (typeList.All(tn => new string[] { typeList.First() }.Contains(tn)))
             {

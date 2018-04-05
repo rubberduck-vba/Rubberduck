@@ -241,53 +241,51 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             expressionValue = string.Empty;
             declaredTypeName = string.Empty;
-            var isMemberAccess = lExprContext.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess);
-            var isSimpleName = lExprContext.TryGetChildContext(out VBAParser.SimpleNameExprContext smplName);
 
-            if (!(isMemberAccess || isSimpleName))
-            {
-                return false;
-            }
-
-            if (isMemberAccess)
+            if (lExprContext.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess))
             {
                 var member = memberAccess.GetChild<VBAParser.UnrestrictedIdentifierContext>();
+                GetContextValue(member, out declaredTypeName, out expressionValue);
+                return true;
+            }
 
-                if (TryGetIdentifierReferenceForContext(member, out IdentifierReference idRef)
-                    && idRef.Declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember)
-                    && idRef.Declaration.Context is VBAParser.EnumerationStmt_ConstantContext)
-                {
-                    var declaration = idRef.Declaration;
-                    var theCtxt = declaration.Context;
-                    expressionValue = GetConstantDeclarationValueToken(declaration);
-                    declaredTypeName = declaration.AsTypeIsBaseType ? declaration.AsTypeName : declaration.AsTypeDeclaration.AsTypeName;
-                    return true;
-                }
-            }
-            else if (isSimpleName)
+            if (lExprContext.TryGetChildContext(out VBAParser.SimpleNameExprContext smplName))
             {
-                if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference rangeClauseIdentifierReference))
+                GetContextValue(smplName, out declaredTypeName, out expressionValue);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void GetContextValue(ParserRuleContext context, out string declaredTypeName, out string expressionValue)
+        {
+            expressionValue = context.GetText();
+            declaredTypeName = string.Empty;
+
+            if (TryGetIdentifierReferenceForContext(context, out IdentifierReference rangeClauseIdentifierReference))
+            {
+                var declaration = rangeClauseIdentifierReference.Declaration;
+                expressionValue = rangeClauseIdentifierReference.IdentifierName;
+                declaredTypeName = GetBaseTypeForDeclaration(declaration);
+
+                if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
+                    || declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
                 {
-                    var declaration = rangeClauseIdentifierReference.Declaration;
-                    if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
-                        || declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
-                    {
-                        expressionValue = GetConstantDeclarationValueToken(declaration);
-                        declaredTypeName = declaration.AsTypeName;
-                        return true;
-                    }
+                    expressionValue = GetConstantDeclarationValueToken(declaration);
                 }
             }
-            return false;
         }
 
         private bool TryGetIdentifierReferenceForContext(ParserRuleContext context, out IdentifierReference idRef)
         {
             idRef = null;
+            var nameToMatch = context.GetText();
             var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
-            if (identifierReferences.Any())
+            //if (identifierReferences.Any())
+            if (identifierReferences.Any(rf => rf.Context == context))
             {
-                idRef = identifierReferences.First(rf => rf.Context == context);
+                idRef = identifierReferences.First(); // (rf => rf.Context == context);
                 return true;
             }
             return false;
@@ -319,13 +317,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return string.Empty;
         }
 
-        private static string GetBaseTypeForDeclaration(Declaration declaration)
+        private string GetBaseTypeForDeclaration(Declaration declaration)
         {
-            if (!declaration.AsTypeIsBaseType)
+            var localDeclaration = declaration;
+            var iterationGuard = 0;
+            while (!localDeclaration.AsTypeIsBaseType && iterationGuard++ < 5)
             {
-                return GetBaseTypeForDeclaration(declaration.AsTypeDeclaration);
+                localDeclaration = localDeclaration.AsTypeDeclaration;
             }
-            return declaration.AsTypeName;
+            return localDeclaration.AsTypeName;
         }
 
         private static bool IsBinaryMathContext<T>(T context)
