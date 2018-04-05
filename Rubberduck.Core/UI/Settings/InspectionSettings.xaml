@@ -289,7 +289,9 @@
                                 Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Stretch">
-                            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=InspectionSettings_FilterDescription}" />
+                            <Label Foreground="White"
+                                FontWeight="SemiBold"
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=InspectionSettings_FilterDescription}" />
                             <TextBox MinWidth="125"
                                      Text="{Binding InspectionSettingsFilter, UpdateSourceTrigger=PropertyChanged}"
                                      HorizontalAlignment="Stretch" />
