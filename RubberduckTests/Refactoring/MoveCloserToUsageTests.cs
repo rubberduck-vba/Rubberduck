@@ -891,7 +891,9 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(mb => mb.Show("Prevents an error during the test"));
+                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
+                                             It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                          .Returns(DialogResult.OK);
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType == DeclarationType.Variable));
                 var rewriter = state.GetRewriter(component);
