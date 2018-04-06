@@ -30,7 +30,6 @@ End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode, out var component))
             {
-
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -67,7 +66,6 @@ End Sub";
             
             using (var state = ArrangeParserAndParse(inputCode, out var component))
             {
-
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -94,7 +92,6 @@ End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode, out var component))
             {
-
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -123,7 +120,6 @@ End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode, out var component))
             {
-
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -152,7 +148,6 @@ End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode, out var component))
             {
-
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -189,7 +184,6 @@ End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode, out var component))
             {
-
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -226,7 +220,6 @@ End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode, out var component))
             {
-
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -260,10 +253,9 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var parser = MockParser.Create(vbe.Object);
-
             parser.State.AddTestLibrary("Excel.1.8.xml");
-
             parser.Parse(new CancellationTokenSource());
+
             if (parser.State.Status >= ParserState.Error)
             {
                 Assert.Inconclusive("Parser Error");

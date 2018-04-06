@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections.Concrete
             var sheetName = string.Concat(sheetArgumentContext.GetText().Skip(1).Take(sheetArgumentContext.GetText().Length - 2));
             var project = State.Projects.First(p => p.ProjectId == reference.QualifiedName.ProjectId);
 
-            return project?.VBComponents.FirstOrDefault(c =>
+            return project.VBComponents.FirstOrDefault(c =>
                 c.Type == ComponentType.Document &&
                 (string) c.Properties.First(property => property.Name == "Name").Value == sheetName);
         }
