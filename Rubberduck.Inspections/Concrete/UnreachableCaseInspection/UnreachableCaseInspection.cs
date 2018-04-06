@@ -49,6 +49,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            InspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 

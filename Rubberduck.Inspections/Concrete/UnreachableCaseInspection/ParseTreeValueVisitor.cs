@@ -241,7 +241,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             expressionValue = string.Empty;
             declaredTypeName = string.Empty;
-
             if (lExprContext.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess))
             {
                 var member = memberAccess.GetChild<VBAParser.UnrestrictedIdentifierContext>();
@@ -320,11 +319,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var localDeclaration = declaration;
             var iterationGuard = 0;
-            while (!localDeclaration.AsTypeIsBaseType && iterationGuard++ < 5)
+            while (!(localDeclaration is null) 
+                && !localDeclaration.AsTypeIsBaseType 
+                && iterationGuard++ < 5)
             {
                 localDeclaration = localDeclaration.AsTypeDeclaration;
             }
-            return localDeclaration.AsTypeName;
+            return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
         private static bool IsBinaryMathContext<T>(T context)
