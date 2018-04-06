@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.IO;
 using System.Reflection;
 using Microsoft.Win32;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
