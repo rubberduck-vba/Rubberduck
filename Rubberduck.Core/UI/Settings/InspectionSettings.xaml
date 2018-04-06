@@ -259,44 +259,42 @@
     <Grid>
         <ScrollViewer>
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                    <Label Background="DarkGray"
+                <Label Background="DarkGray"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
-                        <Label.Style>
-                            <Style>
-                                <Style.Resources>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="CornerRadius" Value="5"/>
-                                    </Style>
-                                </Style.Resources>
-                            </Style>
-                        </Label.Style>
-                        <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                                <Label Foreground="White"
-                                   FontWeight="SemiBold" 
-                                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}">
-                                </Label>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition MaxWidth="75"/>
-                                        <ColumnDefinition MaxWidth="75"/>
-                                    </Grid.ColumnDefinitions>
-                                    <controls:LinkButton Grid.Column="1" Margin="2"
-                                                         Command="{Binding ImportButtonCommand}"
-                                                         Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
-                                    <controls:LinkButton Grid.Column="2" Margin="2"
-                                                         Command="{Binding ExportButtonCommand}"
-                                                         Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
-                            </Grid>
-                            </StackPanel>
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                            <Label Content="Description Filter"/>
-                            <TextBox MinWidth="75"
-                                     Text="{Binding InspectionSettingsFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                    <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                            <Label Foreground="White"
+                                FontWeight="SemiBold" 
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}">
+                            </Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Left">
+                            <controls:LinkButton
+                                Margin="2"
+                                Command="{Binding ImportButtonCommand}"
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
+                            <controls:LinkButton
+                                Margin="2"
+                                Command="{Binding ExportButtonCommand}"
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+                            <Label Foreground="White"
+                                FontWeight="SemiBold"
+                                Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=InspectionSettings_FilterDescription}" />
+                            <TextBox MinWidth="125"
+                                     Text="{Binding InspectionSettingsFilter, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Stretch" />
                         </StackPanel>
                     </DockPanel>
                     </Label>  

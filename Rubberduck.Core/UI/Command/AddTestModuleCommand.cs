@@ -5,12 +5,12 @@ using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using System.Text;
 using Rubberduck.Parsing.Symbols;
+using System;
 
 namespace Rubberduck.UI.Command
 {
@@ -23,13 +23,15 @@ namespace Rubberduck.UI.Command
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configLoader;
+        private readonly IMessageBox _messageBox;
 
-        public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader)
+        public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader, IMessageBox messageBox)
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
             _configLoader = configLoader;
+            _messageBox = messageBox;
         }
 
         private readonly string _testModuleEmptyTemplate = new StringBuilder()
@@ -119,25 +121,29 @@ namespace Rubberduck.UI.Command
 
         private IVBProject GetProject()
         {
-            using (var activeProject = _vbe.ActiveVBProject)
+            var activeProject = _vbe.ActiveVBProject;
+            if (!activeProject.IsWrappingNullReference)
             {
-                if (!activeProject.IsWrappingNullReference)
-                {
-                    return activeProject;
-                }
+                return activeProject;
             }
 
             using (var projects = _vbe.VBProjects)
             {
                 return projects.Count == 1
-                    ? projects[1]
+                    ? projects[1] // because VBA-Side indexing
                     : new VBProject(null);
             }
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return !GetProject().IsWrappingNullReference && _vbe.HostSupportsUnitTests();
+            var project = GetProject();
+            return !project.IsWrappingNullReference && CanExecuteCode(project);
+        }
+        
+        private bool CanExecuteCode(IVBProject project)
+        {
+            return project.Protection == ProjectProtection.Unprotected;
         }
 
         protected override void OnExecute(object parameter)
@@ -159,70 +165,80 @@ namespace Rubberduck.UI.Command
                 project.EnsureReferenceToAddInLibrary();
             }
 
-            using(var components = project.VBComponents)
+            try
             {
-                using (var component = components.Add(ComponentType.StandardModule))
+                using (var components = project.VBComponents)
                 {
-                    using (var module = component.CodeModule)
+                    using (var component = components.Add(ComponentType.StandardModule))
                     {
-                        component.Name = GetNextTestModuleName(project);
-
-                        var hasOptionExplicit = false;
-                        if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
+                        using (var module = component.CodeModule)
                         {
-                            hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines)
-                                .Contains("Option Explicit");
-                        }
+                            component.Name = GetNextTestModuleName(project);
 
-                        var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
-                            "Option Private Module\r\n\r\n");
-
-                        if (parameterIsModuleDeclaration)
-                        {
-                            var moduleCodeBuilder = new StringBuilder();
-                            var declarationsToStub = GetDeclarationsToStub((Declaration) parameter);
-
-                            foreach (var declaration in declarationsToStub)
+                            var hasOptionExplicit = false;
+                            if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
                             {
-                                var name = string.Empty;
-
-                                switch (declaration.DeclarationType)
-                                {
-                                    case DeclarationType.Procedure:
-                                    case DeclarationType.Function:
-                                        name = declaration.IdentifierName;
-                                        break;
-                                    case DeclarationType.PropertyGet:
-                                        name = $"Get{declaration.IdentifierName}";
-                                        break;
-                                    case DeclarationType.PropertyLet:
-                                        name = $"Let{declaration.IdentifierName}";
-                                        break;
-                                    case DeclarationType.PropertySet:
-                                        name = $"Set{declaration.IdentifierName}";
-                                        break;
-                                }
-
-                                var stub = AddTestMethodCommand.TestMethodTemplate.Replace(
-                                    AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
-                                moduleCodeBuilder.AppendLine(stub);
+                                hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines)
+                                    .Contains("Option Explicit");
                             }
 
-                            module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
-                        }
-                        else
-                        {
-                            var defaultTestMethod = settings.DefaultTestStubInNewModule
-                                ? AddTestMethodCommand.TestMethodTemplate.Replace(AddTestMethodCommand.NamePlaceholder,
-                                    "TestMethod1")
-                                : string.Empty;
+                            var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
+                                "Option Private Module\r\n\r\n");
 
-                            module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
+                            if (parameterIsModuleDeclaration)
+                            {
+                                var moduleCodeBuilder = new StringBuilder();
+                                var declarationsToStub = GetDeclarationsToStub((Declaration) parameter);
+
+                                foreach (var declaration in declarationsToStub)
+                                {
+                                    var name = string.Empty;
+
+                                    switch (declaration.DeclarationType)
+                                    {
+                                        case DeclarationType.Procedure:
+                                        case DeclarationType.Function:
+                                            name = declaration.IdentifierName;
+                                            break;
+                                        case DeclarationType.PropertyGet:
+                                            name = $"Get{declaration.IdentifierName}";
+                                            break;
+                                        case DeclarationType.PropertyLet:
+                                            name = $"Let{declaration.IdentifierName}";
+                                            break;
+                                        case DeclarationType.PropertySet:
+                                            name = $"Set{declaration.IdentifierName}";
+                                            break;
+                                    }
+
+                                    var stub = AddTestMethodCommand.TestMethodTemplate.Replace(
+                                        AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
+                                    moduleCodeBuilder.AppendLine(stub);
+                                }
+
+                                module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
+                            }
+                            else
+                            {
+                                var defaultTestMethod = settings.DefaultTestStubInNewModule
+                                    ? AddTestMethodCommand.TestMethodTemplate.Replace(
+                                        AddTestMethodCommand.NamePlaceholder,
+                                        "TestMethod1")
+                                    : string.Empty;
+
+                                module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
+                            }
                         }
+
+                        component.Activate();
                     }
-
-                    component.Activate();
                 }
+            }
+            catch (Exception ex)
+            {
+                _messageBox.Show(RubberduckUI.Command_AddTestModule_Error);
+                Logger.Warn("Unable to add test module. An exception was thrown.");
+                Logger.Warn(ex);
             }
             _state.OnParseRequested(this);
         }

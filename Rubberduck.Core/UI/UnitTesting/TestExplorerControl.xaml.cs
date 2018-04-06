@@ -54,18 +54,5 @@ namespace Rubberduck.UI.UnitTesting
 
             _isDisposed = true;
         }
-
-        private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (e.Delta > 0)
-            {
-                ((ScrollViewer)sender).LineUp();
-            }
-            else
-            {
-                ((ScrollViewer)sender).LineDown();
-            }
-
-        }
     }
 }

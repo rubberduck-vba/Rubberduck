@@ -1142,6 +1142,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log..
+        /// </summary>
+        public static string Command_AddTestModule_Error {
+            get {
+                return ResourceManager.GetString("Command_AddTestModule_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The following project(s) cannot be compiled, which will most likely result in parser errors. Continue anyway? {0}.
         /// </summary>
         public static string Command_Reparse_CannotCompile {
@@ -2647,6 +2656,15 @@ namespace Rubberduck.UI {
         public static string Inspect {
             get {
                 return ResourceManager.GetString("Inspect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by Description:.
+        /// </summary>
+        public static string InspectionSettings_FilterDescription {
+            get {
+                return ResourceManager.GetString("InspectionSettings_FilterDescription", resourceCulture);
             }
         }
         

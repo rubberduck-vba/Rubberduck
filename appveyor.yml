@@ -60,18 +60,18 @@ for:
       only:
         - next
     after_test:
-      - iscc /q "Installer Build Script.iss" 
-      - move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+      - iscc /O "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" "/DConfig=Release"
+      - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
   - branches:
       only:
         - master
     after_test:
-      - iscc /q "Installer Build Script.iss" 
-      - move Installers\Rubberduck.Setup.exe Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+      - iscc /O "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" "/DConfig=Release"
+      - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
     
 # grab the installers we produce and upload them to github :)
 artifacts:
-  - path: Installers\Rubberduck.Setup.*.exe
+  - path: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.*.exe
     name: Rubberduck
 deploy:
   - provider: GitHub
@@ -80,7 +80,7 @@ deploy:
     description: AppVeyor build on [master] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-    artifact: Installers\Rubberduck.Setup.$(appveyor_build_version).exe
+    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version).exe
     draft: true
     prerelease: false
     on:
@@ -91,7 +91,7 @@ deploy:
     description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
-    artifact: Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
+    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
     draft: false
     prerelease: true
     on:

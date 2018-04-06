@@ -52,6 +52,10 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 return false;
             }
+            if (_state.IsNewOrModified(member.QualifiedModuleName))
+            {
+                return false;
+            }
 
             var parameters = _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
                 .Where(item => member.Equals(item.ParentScopeDeclaration))

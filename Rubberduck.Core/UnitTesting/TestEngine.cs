@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.UnitTesting;
@@ -21,10 +22,14 @@ namespace Rubberduck.UnitTesting
         private readonly RubberduckParserState _state;
         private readonly IFakesFactory _fakesFactory;
         private readonly IVBETypeLibsAPI _typeLibApi;
+        private readonly IUiDispatcher _uiDispatcher;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi)
+        private bool _testRequested;
+        private IEnumerable<TestMethod> _tests;
+
+        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
         {
             Debug.WriteLine("TestEngine created.");
             Model = model;
@@ -32,6 +37,26 @@ namespace Rubberduck.UnitTesting
             _state = state;
             _fakesFactory = fakesFactory;
             _typeLibApi = typeLibApi;
+            _uiDispatcher = uiDispatcher;
+
+            _state.StateChanged += StateChangedHandler;
+        }
+
+        private void StateChangedHandler(object sender, ParserStateEventArgs e)
+        {
+            if (_testRequested && (e.State == ParserState.Ready))
+            {
+                _testRequested = false;
+                _uiDispatcher.InvokeAsync(() =>
+                {
+                    RunInternal(_tests);
+                });
+            }
+
+            if (_testRequested && !e.IsError)
+            {
+                _testRequested = false;
+            }
         }
 
         public TestExplorerModel Model { get; }
@@ -51,11 +76,18 @@ namespace Rubberduck.UnitTesting
 
         public void Run()
         {
+            _testRequested = true;
+            _tests = Model.LastRun;
+            // We will run the tests once parsing has completed
             Refresh();
-            Run(Model.LastRun);
         }
 
         public void Run(IEnumerable<TestMethod> tests)
+        {
+            _uiDispatcher.InvokeAsync(() => RunInternal(tests));
+        }
+
+        private void RunInternal(IEnumerable<TestMethod> tests)
         {
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any())
@@ -74,7 +106,7 @@ namespace Rubberduck.UnitTesting
                     .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
                                 && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
 
-                var fakes = _fakesFactory.GetFakes();
+                var fakes = _fakesFactory.Create();
                 try
                 {
                     Run(module.Key.FindModuleInitializeMethods(_state));

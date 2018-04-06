@@ -74,5 +74,8 @@
   <ItemGroup>
     <Folder Include="API\Plugin\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
