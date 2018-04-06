@@ -35,7 +35,9 @@ namespace Rubberduck.UI.Command.Refactorings
 
             var target = _state.AllUserDeclarations.FindVariable(selection.Value);
 
-            return target != null && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+            return target != null 
+                && !_state.IsNewOrModified(target.QualifiedModuleName)
+                && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
         }
 
         protected override void OnExecute(object parameter)

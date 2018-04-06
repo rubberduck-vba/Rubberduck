@@ -24,7 +24,8 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready && GetTarget() != null;
+            var target = GetTarget();
+            return _state.Status == ParserState.Ready && target != null && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
         protected override void OnExecute(object parameter)
