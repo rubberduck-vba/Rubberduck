@@ -19,7 +19,6 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.Utility;
 using Windows = Rubberduck.VBEditor.SafeComWrappers.VBA.Windows;
 
 namespace Rubberduck
@@ -220,9 +219,7 @@ namespace Rubberduck
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_ide, _addin, _initialSettings));
-
-                UiContextProvider.Initialize(Assembly.GetExecutingAssembly());
-
+                
                 _app = _container.Resolve<App>();
                 _app.Startup();
 
