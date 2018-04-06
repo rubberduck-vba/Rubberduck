@@ -146,7 +146,7 @@ namespace Rubberduck.Inspections
                     return true;
                 }
 
-                var projectNames = state.DeclarationFinder.Projects.Where(project => project.IsUserDefined == false).Select(project => project.ProjectName).ToArray();
+                var projectNames = state.DeclarationFinder.Projects.Where(project => !project.IsUserDefined).Select(project => project.ProjectName).ToArray();
 
                 return requiredLibraries.All(library => projectNames.Contains(library.LibraryName));
             }

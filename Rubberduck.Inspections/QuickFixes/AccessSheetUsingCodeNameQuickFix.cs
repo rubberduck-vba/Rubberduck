@@ -24,9 +24,6 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result)
         {
             var referenceResult = (IdentifierReferenceInspectionResult)result;
-            var sheet = ((VBAParser.IndexExprContext)referenceResult.Context.Parent.Parent).argumentList().argument(0);
-            // Get rid of leading and trailing quotes
-            var sheetName = string.Concat(sheet.GetText().Skip(1).Take(sheet.GetText().Length - 2));
 
             var rewriter = _state.GetRewriter(referenceResult.QualifiedName);
 
@@ -35,7 +32,7 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 // Sheet accessed inline
 
-                rewriter.Replace(referenceResult.Context.Parent.Parent as ParserRuleContext, sheetName);
+                rewriter.Replace(referenceResult.Context.Parent.Parent as ParserRuleContext, referenceResult.Properties.CodeName);
             }
             else
             {
@@ -67,7 +64,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 foreach (var reference in sheetDeclaration.References)
                 {
-                    rewriter.Replace(reference.Context, sheetName);
+                    rewriter.Replace(reference.Context, referenceResult.Properties.CodeName);
                 }
 
                 rewriter.Remove(setStatement);

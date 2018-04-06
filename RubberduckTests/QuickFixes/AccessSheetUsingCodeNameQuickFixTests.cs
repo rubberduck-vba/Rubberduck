@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -197,11 +198,60 @@ End Sub";
             }
         }
 
+        [Test]
+        [Category("QuickFixes")]
+        public void SheetAccessedUsingString_QuickFixWorks_SheetNameDifferentThanSheetCodeName()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Worksheets(""Name"")
+    ws.Cells(1, 1) = ""foo""
+End Sub
+
+Public Sub ws()
+    Dim ws As Worksheet
+End Sub";
+
+            const string expectedCode = @"
+Public Sub Foo()
+    
+    
+    CodeName.Cells(1, 1) = ""foo""
+End Sub
+
+Public Sub ws()
+    Dim ws As Worksheet
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode, out var component))
+            {
+
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                new AccessSheetUsingCodeNameQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
         private static RubberduckParserState ArrangeParserAndParse(string inputCode, out IVBComponent component)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
+                .AddComponent("Sheet1", ComponentType.Document, "",
+                    properties: new[]
+                    {
+                        CreateVBComponentPropertyMock("Name", "Sheet1").Object,
+                        CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
+                    })
+                .AddComponent("SheetWithDifferentCodeName", ComponentType.Document, "",
+                    properties: new[]
+                    {
+                        CreateVBComponentPropertyMock("Name", "Name").Object,
+                        CreateVBComponentPropertyMock("CodeName", "CodeName").Object
+                    })
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
 
@@ -220,6 +270,15 @@ End Sub";
             }
 
             return parser.State;
+        }
+
+        private static Mock<IProperty> CreateVBComponentPropertyMock(string propertyName, string propertyValue)
+        {
+            var propertyMock = new Mock<IProperty>();
+            propertyMock.SetupGet(m => m.Name).Returns(propertyName);
+            propertyMock.SetupGet(m => m.Value).Returns(propertyValue);
+
+            return propertyMock;
         }
     }
 }
