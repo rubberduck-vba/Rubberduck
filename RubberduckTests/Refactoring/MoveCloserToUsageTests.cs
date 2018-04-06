@@ -893,7 +893,7 @@ End Sub";
             {
                 var messageBox = new Mock<IMessageBox>();
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
-                refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType == DeclarationType.Variable));
+                refactoring.Refactor(state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Variable));
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expected, rewriter.GetText());
             }
