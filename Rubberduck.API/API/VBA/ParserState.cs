@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
 using Rubberduck.Parsing.PreProcessing;
@@ -57,7 +58,7 @@ namespace Rubberduck.API.VBA
 
         public ParserState()
         {
-            UiContextProvider.Initialize();
+            UiContextProvider.Initialize(Assembly.GetExecutingAssembly());
             _dispatcher = new UiDispatcher(UiContextProvider.Instance());
         }
 

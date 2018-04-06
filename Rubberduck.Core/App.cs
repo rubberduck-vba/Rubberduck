@@ -13,9 +13,7 @@ using System.Windows.Forms;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.Utility;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 
@@ -50,8 +48,6 @@ namespace Rubberduck
             _checkVersionCommand = checkVersionCommand;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
-            
-            UiContextProvider.Initialize();
         }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)

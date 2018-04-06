@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace Rubberduck.VBEditor.Utility
         bool IsExecutingInUiContext();
         SynchronizationContext UiContext { get; }
         TaskScheduler UiTaskScheduler { get; }
+        Assembly GetEntryAssembly { get; }
     }
 
     public class UiContextProvider : IUiContextProvider
@@ -17,10 +19,11 @@ namespace Rubberduck.VBEditor.Utility
         private static TaskScheduler TaskScheduler { get; set; }
         private static readonly UiContextProvider UiContextInstance = new UiContextProvider();
         private static readonly object Lock = new object();
+        private static Assembly _entryAssembly;
 
         private UiContextProvider() { }
         
-        public static void Initialize()
+        public static void Initialize(Assembly entryAssembly)
         {
             lock (Lock)
             {
@@ -31,6 +34,7 @@ namespace Rubberduck.VBEditor.Utility
 
                 Context = SynchronizationContext.Current;
                 TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                _entryAssembly = entryAssembly;
             }
         }
 
@@ -38,6 +42,7 @@ namespace Rubberduck.VBEditor.Utility
 
         public SynchronizationContext UiContext => Context;
         public TaskScheduler UiTaskScheduler => TaskScheduler;
+        public Assembly GetEntryAssembly => _entryAssembly;
 
         public bool IsExecutingInUiContext()
         {
