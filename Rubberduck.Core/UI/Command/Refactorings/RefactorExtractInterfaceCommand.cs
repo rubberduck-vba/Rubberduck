@@ -67,7 +67,9 @@ namespace Rubberduck.UI.Command.Refactorings
             var context = ((ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
 
             // true if active code pane is for a class/document/form module
-            return !context.Any();
+            return !context.Any() 
+                && !_state.IsNewOrModified(interfaceClass.QualifiedModuleName) 
+                && !_state.IsNewOrModified(selection.Value.QualifiedName);
         }
 
         protected override void OnExecute(object parameter)
