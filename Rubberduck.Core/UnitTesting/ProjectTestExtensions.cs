@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
-using System.Reflection;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.IO;
+using System.Reflection;
+using Microsoft.Win32;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
@@ -10,12 +12,27 @@ namespace Rubberduck.UnitTesting
     {
         public static void EnsureReferenceToAddInLibrary(this IVBProject project)
         {
-            // FIXME should rely on the assembly containing the UnitTest components.
-            // Those are not necessarily the same.
-            var assembly = Assembly.GetEntryAssembly();
+            var libFolder = IntPtr.Size == 8 ? "win64" : "win32";
+            // TODO: This assumes the current assembly is same major/minor as the TLB!!!
+            var libVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            const string libGuid = RubberduckGuid.RubberduckTypeLibGuid;
+            var pathKey = Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{libVersion.Major}.{libVersion.Minor}\0\{libFolder}");
+            
+            var referencePath = pathKey?.GetValue(string.Empty, string.Empty) as string;
+            string name = null;
 
-            var name = assembly.GetName().Name.Replace('.', '_');
-            var referencePath = Path.ChangeExtension(assembly.Location, ".tlb");
+            if (!string.IsNullOrWhiteSpace(referencePath))
+            {
+                var tlbKey =
+                    Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{libVersion.Major}.{libVersion.Minor}");
+
+                name = tlbKey?.GetValue(string.Empty, string.Empty) as string;
+            }
+            
+            if (string.IsNullOrWhiteSpace(referencePath) || string.IsNullOrWhiteSpace(name))
+            {
+                throw new InvalidOperationException("Cannot locate the tlb in the registry or the entry may be corrupted. Therefore early binding is not possible");
+            }
 
             using (var references = project.References)
             {
