@@ -53,9 +53,7 @@ namespace Rubberduck.UnitTesting
                 });
             }
 
-            if (_testRequested && (e.State == ParserState.ResolverError || 
-                                   e.State == ParserState.Error ||
-                                   e.State == ParserState.UnexpectedError))
+            if (_testRequested && !e.IsError)
             {
                 _testRequested = false;
             }
