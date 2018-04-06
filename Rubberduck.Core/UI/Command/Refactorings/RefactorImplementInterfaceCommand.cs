@@ -28,17 +28,18 @@ namespace Rubberduck.UI.Command.Refactorings
             var selection = Vbe.GetActiveSelection();        
 
             if (!selection.HasValue)
-                {
-                    return false;
-                }
+            {
+                return false;
+            }
 
-                var targetInterface = _state.AllUserDeclarations.FindInterface(selection.Value);
+            var targetInterface = _state.AllUserDeclarations.FindInterface(selection.Value);
+            
+            var targetClass = _state.DeclarationFinder.Members(selection.Value.QualifiedName)
+                .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule);
 
-                var targetClass = _state.AllUserDeclarations.SingleOrDefault(d =>
-                    d.DeclarationType == DeclarationType.ClassModule &&
-                    d.QualifiedSelection.QualifiedName.Equals(selection.Value.QualifiedName));
-
-                return targetInterface != null && targetClass != null;
+            return targetInterface != null && targetClass != null
+                && !_state.IsNewOrModified(targetInterface.QualifiedModuleName)
+                && !_state.IsNewOrModified(targetClass.QualifiedModuleName);
             
         }
 

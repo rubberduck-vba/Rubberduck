@@ -2660,6 +2660,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter by Description:.
+        /// </summary>
+        public static string InspectionSettings_FilterDescription {
+            get {
+                return ResourceManager.GetString("InspectionSettings_FilterDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Introduce Field.
         /// </summary>
         public static string IntroduceField_Caption {

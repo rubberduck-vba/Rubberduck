@@ -33,7 +33,10 @@ namespace Rubberduck.UI.Command.Refactorings
                 target = _state.FindSelectedDeclaration(activePane);
             }
 
-            return _state.Status == ParserState.Ready && target != null && target.IsUserDefined;
+            return _state.Status == ParserState.Ready 
+                && target != null 
+                && target.IsUserDefined 
+                && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
         protected override void OnExecute(object parameter)

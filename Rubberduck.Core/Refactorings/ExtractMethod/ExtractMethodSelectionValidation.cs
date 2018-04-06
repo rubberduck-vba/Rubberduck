@@ -65,7 +65,6 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
             return (procEnd as Declaration).QualifiedSelection.Equals((procStart as Declaration).QualifiedSelection)
                 && (procSignatureLastLine < startLine);
-
         }
     }
 }
