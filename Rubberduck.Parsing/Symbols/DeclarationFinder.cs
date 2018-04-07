@@ -688,15 +688,21 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration FindMemberEnclosingProcedure(Declaration enclosingProcedure, string memberName, DeclarationType memberType, ParserRuleContext onSiteContext = null)
         {
-            if (memberType == DeclarationType.Variable && NameComparer.Equals(enclosingProcedure.IdentifierName, memberName))
-            {
-                return enclosingProcedure;
-            }
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
                 m.DeclarationType.HasFlag(memberType)
                 && enclosingProcedure.Equals(m.ParentDeclaration));
-            return memberMatches.FirstOrDefault();
+            if (memberMatches.Any())
+            {
+                return memberMatches.FirstOrDefault();
+            }
+
+            if (memberType == DeclarationType.Variable && NameComparer.Equals(enclosingProcedure.IdentifierName, memberName))
+            {
+                return enclosingProcedure;
+            }
+
+            return null;
         }
 
         public Declaration OnUndeclaredVariable(Declaration enclosingProcedure, string identifierName, ParserRuleContext context)

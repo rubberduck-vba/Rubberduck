@@ -615,7 +615,6 @@ End Sub
 
         [Test]
         [Category("Resolver")]
-        [Ignore("Broken feature")] // ref. https://github.com/rubberduck-vba/Rubberduck/issues/2330
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
         {
             var code =
@@ -645,7 +644,6 @@ End Sub
 
         [Test]
         [Category("Resolver")]
-        // [Ignore("Broken feature")] // bug: this test should pass... it's not all that evil
         public void AmbiguousNameSelectsSmallestScopedDeclaration()
         {
             var code =
