@@ -156,6 +156,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 AddSingleValueImpl(val);
             }
+
+            foreach (var val in newFilter.VariableSingleValues)
+            {
+                VariableSingleValues.Add(val);
+            }
             _descriptorIsDirty = true;
         }
 

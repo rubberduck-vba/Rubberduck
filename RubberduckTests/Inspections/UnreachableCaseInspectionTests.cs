@@ -596,6 +596,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expected, filteredResults);
         }
 
+        [TestCase("Range:3:55", "Single=x.Item(2)", "Range:3:55,Single=x.Item(2)")]
         [TestCase("Range=3:55", "IsLT=6", "IsLT=6,Range=6:55")]
         [TestCase("Range=3:55", "IsGT=6", "IsGT=6,Range=3:6")]
         [TestCase("IsLT=6", "Range=1:5", "IsLT=6")]
@@ -2542,6 +2543,38 @@ Public Const MY_CONSTANT As <propertyTypeAndAssignment>
             };
 
             CheckActualResultsEqualsExpected(components, unreachable: 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UciFunctional_DuplicateSelectExpressionVariableInModule()
+        {
+            string inputCode =
+@"
+Sub FirstSub(x As Long)
+    Select Case x
+        Case 55
+            MsgBox CStr(x)
+        Case 56
+            MsgBox CStr(x)
+        Case 55
+            MsgBox ""Unreachable""
+    End Select
+End Sub
+
+Sub SecondSub(x As Boolean)
+    Select Case x
+        Case 55
+            MsgBox CStr(x)
+        Case 0
+            MsgBox CStr(x)
+        Case Else
+            MsgBox ""Unreachable""
+    End Select
+End Sub
+";
+
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
         }
 
         private static void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)

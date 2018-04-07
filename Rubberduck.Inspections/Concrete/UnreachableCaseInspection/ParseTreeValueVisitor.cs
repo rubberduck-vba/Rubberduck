@@ -279,9 +279,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private bool TryGetIdentifierReferenceForContext(ParserRuleContext context, out IdentifierReference idRef)
         {
             idRef = null;
-            var nameToMatch = context.GetText();
-            var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
-            if (identifierReferences.Any(rf => rf.Context == context))
+            var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
+                .Where(rf => rf.Context == context);
+            if (identifierReferences.Count() == 1)
             {
                 idRef = identifierReferences.First();
                 return true;
