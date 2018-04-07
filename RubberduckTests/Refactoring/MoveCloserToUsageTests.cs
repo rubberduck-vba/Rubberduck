@@ -7,7 +7,6 @@ using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -891,6 +890,18 @@ End Sub";
             
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
+                // temp: get AppVeyor to spill its beans
+                var i = 0;
+                foreach(var d in state.AllUserDeclarations)
+                {
+                    TestContext.Out.WriteLine($"({i++}): {d.QualifiedName.MemberName}");
+                    TestContext.Out.WriteLine($"  DeclarationType: {System.Enum.GetName(d.DeclarationType.GetType(), d.DeclarationType)}");
+                    TestContext.Out.WriteLine($"  Scope: {d.Scope}");
+                    TestContext.Out.WriteLine($"  Selection: {d.Selection}");
+                    TestContext.Out.WriteLine($"  AsTypeName: {d.AsTypeName}");
+                    TestContext.Out.WriteLine("");
+                }
+
                 var messageBox = new Mock<IMessageBox>();
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Variable));
