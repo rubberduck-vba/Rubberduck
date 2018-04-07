@@ -611,8 +611,7 @@ End Sub
             public List<string> ExpectedResults { get; set; }
             public QualifiedSelection QualifiedSelection { get; set; }
         }
-
-
+        
         [Test]
         [Category("Resolver")]
         public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
@@ -669,6 +668,84 @@ End Sub
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Ignore("WIP")]
+        public void SameNameForProjectAndClass_ScopedDeclaration()
+        {
+            var refEditClass = @"
+Option Explicit
+
+Public Sub Something()
+  Debug.Print ""derp""
+End Sub";
+
+            var code =
+                @"
+Option Explicit
+
+Public Sub foo()
+    Dim myEdit As RefEdit.RefEdit
+    Set myEdit = New RefEdit.RefEdit
+
+    myEdit.Something()
+End Sub
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("RefEdit", ProjectProtection.Unprotected)
+                .AddComponent("RefEdit", ComponentType.ClassModule, refEditClass)
+                .AddComponent("Test", ComponentType.StandardModule, code, new Selection(6, 23))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object);
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.ClassModule).Single();
+            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+        
+        [Test]
+        [Category("Resolver")]
+        [Ignore("WIP")]
+        public void SameNameForProjectAndClassImplicit_ScopedDeclaration()
+        {
+            var refEditClass = @"
+Option Explicit
+
+Public Sub Something()
+  Debug.Print ""derp""
+End Sub";
+
+            var code =
+                @"
+Option Explicit
+
+Public Sub foo()
+    Dim myEdit As RefEdit
+    Set myEdit = New RefEdit
+
+    myEdit.Something()
+End Sub
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("RefEdit", ProjectProtection.Unprotected)
+                .AddComponent("RefEdit", ComponentType.ClassModule, refEditClass)
+                .AddComponent("Test", ComponentType.StandardModule, code, new Selection(8, 6))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object);
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = ParserState.Error;
+            var actual = parser.State.Status;
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
         }
 
         [Category("Resolver")]
