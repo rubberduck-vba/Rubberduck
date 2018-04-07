@@ -367,15 +367,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Rubberduck_AboutBuild" xml:space="preserve">
     <value>Version {0}</value>
   </data>
-  <data name="TodoMarkerBug" xml:space="preserve">
-    <value>BUG</value>
-  </data>
-  <data name="TodoMarkerNote" xml:space="preserve">
-    <value>NOTE</value>
-  </data>
-  <data name="TodoMarkerTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
     <value>Implementierungen von '{0}'</value>
   </data>
@@ -449,9 +440,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
     <value>Komponente</value>
   </data>
   <data name="Result" xml:space="preserve">
-    <value>Ergebnis</value>
-  </data>
-  <data name="Outcome" xml:space="preserve">
     <value>Ergebnis</value>
   </data>
   <data name="Language_EN" xml:space="preserve">
@@ -1111,12 +1099,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
     <value>Strg</value>
   </data>
-  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
-    <value>Modul einrücken</value>
-  </data>
-  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
-    <value>Prozedur einrücken</value>
-  </data>
   <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
     <value>Alt</value>
   </data>
@@ -1128,21 +1110,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Umschalt</value>
-  </data>
-  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
-    <value>Code Explorer</value>
-  </data>
-  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
-    <value>Test Explorer</value>
-  </data>
-  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
-    <value>Refactor / Umbenennen</value>
-  </data>
-  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
-    <value>Codeuntersuchung</value>
-  </data>
-  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
-    <value>Refactor / Methode extrahieren</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>Diese Methode wird einmal pro Modul ausgeführt</value>
@@ -1179,15 +1146,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rege&amp;x Suchen/Ersetzen</value>
-  </data>
-  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
-    <value>Suche Symbol</value>
-  </data>
-  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
-    <value>Ziehe die Deklaration näher an die Nutzung. </value>
-  </data>
-  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
-    <value>Aktualisierung des Parserstatus</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Nach Markierung</value>
@@ -1347,9 +1305,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Ein Startlogo zu Beginn zeigen</value>
-  </data>
-  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
-    <value>Refactor /  Feld kapseln</value>
   </data>
   <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
     <value>Knoten und alle Kindknoten einklappen</value>
@@ -1660,9 +1615,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Auf eigene Verantwortung und Gefahr aktivieren. Aktivierung und / oder Verwendung von Funktionalitäten in dieser Sektion kann zu unvorhergesehenen Fehlern und unwiederbringlichem Datenverlust führen.</value>
   </data>
-  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
-    <value>Aktives Projekt exportieren</value>
-  </data>
   <data name="CodeExplorer_Open" xml:space="preserve">
     <value>Öffnen</value>
   </data>
@@ -1730,5 +1682,82 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Unerwarteter Fehler</value>
+  </data>
+  <data name="TestExplorer_Outcome" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
+    <value>Modul einrücken</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
+    <value>Prozedur einrücken</value>
+  </data>
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
+    <value>Codeuntersuchungen</value>
+  </data>
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
+    <value>Refactor / Methode extrahieren</value>
+  </data>
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
+    <value>Refactor / Umbenennen</value>
+  </data>
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
+    <value>Symbol finden</value>
+  </data>
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
+    <value>Refactor / Deklaration näher an Verwendung verschieben</value>
+  </data>
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
+    <value>Parserzustand aktualisieren</value>
+  </data>
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
+    <value>Refactor / Feld kapseln</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Aktives Projekt exportieren</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
+    <value>Tastenkürzel sollten Alt und/oder Strg verwenden</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
+    <value>Die aktuellen Tastenkürzeleinstellungen könnten ungewollte Nebeneffekte erzeugen</value>
+  </data>
+  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>Folgende(s) Projekt(e) können nicht kompiliert werden. Dies führt höchstwahrscheinlich zu Parserfehlern. Trotzdem fortfahren? {0}</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>Konnte nicht vor dem Parsen kompilieren.</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
+    <value>Code vor dem Parsen kompilieren</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
+    <value>Die VBE-Einstellung "Bei Bedarf Kompilieren" ist aktuell eingeschalten. Dies ist nicht empfohlen, da Kompilierungsfehler und Probleme beim Parsen versteckt werden können. Trotzdem Parsen?</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Einstellung "Bei Bedarf Kompilieren"</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
+    <value>Die VBE-Einstellung "Bei Bedarf Kompilieren" ist aktuell eingeschalten. Wir raten stark dazu, diese Option über den Einstellungsdialog unter "Allgemein" auszuschalten, um das "Vor dem Parsen kompilieren"-Feature zu nutzen. Die Einstellung jetzt anpassen?
+
+ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>"Bei Bedarf Kompilieren" ist aktuell eingeschalten</value>
+  </data>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
+  </data>
+  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
+    <value>Nach Beschreibung filtern:</value>
   </data>
 </root>
