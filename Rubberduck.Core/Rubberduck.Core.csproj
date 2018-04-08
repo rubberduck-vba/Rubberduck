@@ -1209,9 +1209,8 @@
     <Content Include="Resources\Custom\mit_license.txt" />
     <Resource Include="Resources\folder-open.png" />
     <Resource Include="Resources\folder.png" />
-    <None Include="Resources\RD-300x250-base.png" />
     <Resource Include="Resources\magnifier-medium.png" />
-    <None Include="Resources\RD2018-Splash.png" />
+    <Resource Include="Resources\RD2018-Splash.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
