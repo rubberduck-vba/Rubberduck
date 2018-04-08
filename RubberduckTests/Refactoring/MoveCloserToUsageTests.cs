@@ -864,48 +864,68 @@ End Sub";
         [Category("Refactorings")]
         public void MoveCloser_RespectsObjectProperties_InUsages()
         {
-            const string input = @"Option Explicit
+            string inputClassCode =
+@"
+Option Explicit
+
+Private _name As Long
+Private _myOtherProperty As Long
+
+Public Property Set Name(name As String)
+    _name = name
+End Property
+
+Public Property Get Name() As String
+    Name = _name
+End Property
+
+Public Property Set OtherProperty(val As Long)
+    _myOtherProperty = val
+End Property
+
+Public Property Get OtherProperty() As Long
+    OtherProperty = _myOtherProperty
+End Property
+
+";
+            string inputCode = @"Private foo As Class1
+
 
 Public Sub Test()
-    Dim foo As Object
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
-    Set foo = CreateObject(""Some.Object"")
+    Set foo = new Class1
     foo.Name = ""FooName""
     foo.OtherProperty = 1626
 End Sub";
 
-            const string expected = @"Option Explicit
+            var selection = new Selection(1, 1);
 
-Public Sub Test()
+            const string expected = @"Public Sub Test()
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
-    Dim foo As Object
-Set foo = CreateObject(""Some.Object"")
+    Dim foo As Class1
+Set foo = new Class1
     foo.Name = ""FooName""
     foo.OtherProperty = 1626
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component, referenceStdLibs: true);
-            
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected);
+            project.AddComponent("Class1", ComponentType.ClassModule, inputClassCode);
+            project.AddComponent("Module1", ComponentType.StandardModule, inputCode);
+            builder = builder.AddProject(project.Build());
+            var vbe = builder.Build();
+
+            var testComponent = project.MockComponents.Find(mc => mc.Object.Name.Equals("Module1"));
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(testComponent.Object), selection);
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                // temp: get AppVeyor to spill its beans
-                var i = 0;
-                foreach(var d in state.AllUserDeclarations)
-                {
-                    TestContext.Out.WriteLine($"({i++}): {d.QualifiedName.MemberName}");
-                    TestContext.Out.WriteLine($"  DeclarationType: {System.Enum.GetName(d.DeclarationType.GetType(), d.DeclarationType)}");
-                    TestContext.Out.WriteLine($"  Scope: {d.Scope}");
-                    TestContext.Out.WriteLine($"  Selection: {d.Selection}");
-                    TestContext.Out.WriteLine($"  AsTypeName: {d.AsTypeName}");
-                    TestContext.Out.WriteLine("");
-                }
-
                 var messageBox = new Mock<IMessageBox>();
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
-                refactoring.Refactor(state.AllUserDeclarations.Single(d => d.DeclarationType == DeclarationType.Variable));
-                var rewriter = state.GetRewriter(component);
+                refactoring.Refactor(qualifiedSelection);
+                var rewriter = state.GetRewriter(testComponent.Object);
                 Assert.AreEqual(expected, rewriter.GetText());
             }
         }
