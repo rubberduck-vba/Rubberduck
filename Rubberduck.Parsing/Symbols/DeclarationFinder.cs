@@ -686,7 +686,7 @@ namespace Rubberduck.Parsing.Symbols
             return null;
         }
 
-        public Declaration FindMemberEnclosingProcedure(Declaration enclosingProcedure, string memberName, DeclarationType memberType, ParserRuleContext onSiteContext = null)
+        public Declaration FindMemberEnclosingProcedure(Declaration enclosingProcedure, string memberName, DeclarationType memberType)
         {
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m =>
