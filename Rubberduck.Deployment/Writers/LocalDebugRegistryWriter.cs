@@ -13,6 +13,7 @@ namespace Rubberduck.Deployment.Writers
     {
         public string Write(IOrderedEnumerable<RegistryEntry> entries)
         {
+            //System.Diagnostics.Debugger.Launch(); //uncomment if need to debug
             var sb = new StringBuilder("Windows Registry Editor Version 5.00" + Environment.NewLine + Environment.NewLine);
             var distinctKeys = new List<string>();
             
@@ -30,12 +31,14 @@ namespace Rubberduck.Deployment.Writers
                     throw new InvalidOperationException("Unexpected registry entry: " + entry.Key);
                 }
 
-                var value = ReplacePlaceholder(entry.Value, entry.Bitness);
-
-                var key = Registry.CurrentUser.CreateSubKey(entry.Key);
-                if (!(string.IsNullOrWhiteSpace(entry.Name) && string.IsNullOrWhiteSpace(value)))
+                if (Environment.Is64BitOperatingSystem)
                 {
-                    key.SetValue(entry.Name, value);
+                    MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32));
+                    MakeRegistryEntries(entry, RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64));
+                }
+                else 
+                {
+                    MakeRegistryEntries(entry, Registry.CurrentUser);
                 }
 
                 if (!distinctKeys.Contains(entry.Key))
@@ -51,6 +54,18 @@ namespace Rubberduck.Deployment.Writers
             }
 
             return sb.ToString();
+        }
+
+        private void MakeRegistryEntries(RegistryEntry entry, RegistryKey hKey) 
+        {
+            var key = hKey.CreateSubKey(entry.Key);
+
+            var value = ReplacePlaceholder(entry.Value, entry.Bitness);
+
+            if (!(string.IsNullOrWhiteSpace(entry.Name) && string.IsNullOrWhiteSpace(value)))
+            {
+                key.SetValue(entry.Name, value);
+            }
         }
 
         //Cache the string so we call the AssemblyDirectory only once

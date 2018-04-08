@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
@@ -198,7 +199,8 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 }
 
                 var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
-                rewriter.Replace(parent as ParserRuleContext, reference.IdentifierName);
+                var tokenInterval = Interval.Of(parent.SourceInterval.a, reference.Context.SourceInterval.b);
+                rewriter.Replace(tokenInterval, reference.IdentifierName);
 
                 _rewriters.Add(rewriter);
             }

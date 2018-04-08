@@ -103,15 +103,18 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 ; Use [Code] section (RegisterAddIn procedure) to register the entries instead.
 #include <Rubberduck.reg.iss>
 
-[UninstallDelete]
-Type: filesandordirs; Name: "{userappdata}\{#AppName}"
+; Commneted out because we don't want to delete users setting when they are just
+; uninstalling to install another version of Rubberduck. Considered prompting to
+; delete but not for right now. 
+; [UninstallDelete]
+; Type: filesandordirs; Name: "{userappdata}\{#AppName}"
 
 [CustomMessages]
 ; TODO add additional languages here by adding include files in \Includes folder
 ;      and uncomment or add lines to include the file.
 #include <English.CustomMessages.iss>
 ; #include <French.CustomMessages.iss>
-; #include <German.CustomMessages.iss>
+#include <German.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -1063,5 +1066,8 @@ end;
 ///</remarks>
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
-  if CurUninstallStep = usUninstall then UnregisterAddin();
+  if CurUninstallStep = usUninstall then
+  begin
+    UnregisterAddin();
+  end;
 end;
