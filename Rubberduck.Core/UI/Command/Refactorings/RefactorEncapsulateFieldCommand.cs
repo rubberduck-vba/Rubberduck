@@ -33,11 +33,10 @@ namespace Rubberduck.UI.Command.Refactorings
 
                 target = _state.FindSelectedDeclaration(pane);
             }
-            var canExecute = target != null 
+            return target != null
                 && target.DeclarationType == DeclarationType.Variable
-                && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
-
-            return canExecute;
+                && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)
+                && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
         protected override void OnExecute(object parameter)

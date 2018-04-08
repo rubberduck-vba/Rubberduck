@@ -2,7 +2,7 @@
 
 namespace Rubberduck.API.VBA
 {
-    [ComVisible(true)]
+    [ComVisible(true), Guid(RubberduckGuid.AccessibilityGuid)]
     public enum Accessibility
     {
         Implicit,

@@ -19,7 +19,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.Events;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -163,13 +162,14 @@ namespace RubberduckTests.CodeExplorer
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
                 var vbeWrapper = vbe.Object;
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var messageBox = new Mock<IMessageBox>();
+
                 var commands = new List<CommandBase>
                 {
                     new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbeWrapper,
-                        new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+                        new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
-
-                var uiDispatcher = new Mock<IUiDispatcher>();
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object);
 
@@ -204,12 +204,13 @@ namespace RubberduckTests.CodeExplorer
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
                 var vbeWrapper = vbe.Object;
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var messageBox = new Mock<IMessageBox>();
+
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
-
-                var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -241,12 +242,14 @@ namespace RubberduckTests.CodeExplorer
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
                 var vbeWrapper = vbe.Object;
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var messageBox = new Mock<IMessageBox>();
+
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
-                var uiDispatcher = new Mock<IUiDispatcher>();
-
+                
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -274,15 +277,17 @@ namespace RubberduckTests.CodeExplorer
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+            var messageBox = new Mock<IMessageBox>();
+
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
                 var vbeWrapper = vbe.Object;
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
 
-                var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -313,12 +318,13 @@ namespace RubberduckTests.CodeExplorer
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
                 var vbeWrapper = vbe.Object;
+                var uiDispatcher = new Mock<IUiDispatcher>();
+                var messageBox = new Mock<IMessageBox>();
+
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
-
-                var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);

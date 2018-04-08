@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="TARGETDIR">
+            <Directory Id="dir39B22699688E51DCD8DCBB99A47E835B" Name="Debug" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir39B22699688E51DCD8DCBB99A47E835B">
+            <Component Id="cmp731D403A1B0EB8E2848273622BF19846" Guid="PUT-GUID-HERE">
+                <File Id="fil02937BA2FD46B51B60C2AFE5D015DF78" KeyPath="yes" Source="SourceDir\Debug\Rubberduck.tlb">
+                    <TypeLib Id="{E07C841C-14B4-4890-83E9-8C80B06DD59D}" Description="Rubberduck" HelpDirectory="dir39B22699688E51DCD8DCBB99A47E835B" Language="0" MajorVersion="2" MinorVersion="1">
+                        <Interface Id="{02FA52F2-0D39-30DF-AB33-E8695C7E3A36}" Name="IParserState" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{1DF11160-2283-3ADB-A4BD-845C2CFE6CAF}" Name="_AssertClass" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{217B205D-E48E-3AE6-88AB-347DBCA07043}" Name="_FakesProvider" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{3D8EAA28-8983-44D5-83AF-2EEC4C363079}" Name="IParserStateEvents" ProxyStubClassId32="{00020420-0000-0000-C000-000000000046}" />
+                        <Interface Id="{49AA87AB-7179-317A-99CB-65F5FB6F95CB}" Name="_IdentifierReference" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{61F57435-4D9D-3871-A5E1-AF16B81BBBC8}" Name="_PermissiveAssertClass" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{69E194DB-43F0-3B33-B105-9B8188A6F040}" Name="IAssert" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{69E194DE-43F0-3B33-B105-9B8188A6F040}" Name="IFakesProvider" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{69E194DF-43F0-3B33-B105-9B8188A6F040}" Name="IFake" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{69E194E0-43F0-3B33-B105-9B8188A6F040}" Name="IVerify" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{69E194E1-43F0-3B33-B105-9B8188A6F040}" Name="IStub" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{7C9B7524-F671-3AE8-A48B-A3D88D22378B}" Name="_Declaration" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{7F0ADAD9-DC4A-3644-BE9A-C4295EDA4C11}" Name="IIdentifierReference" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{961B87A2-3148-3AC4-BECC-77ED089CC537}" Name="__Extension" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{B136613E-A139-365F-AE64-AFAF373B8995}" Name="__DockableWindowHost" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{DBA8F99B-74CF-34A4-B410-2ABEF884031E}" Name="_ParserState" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                        <Interface Id="{DDA797D0-3747-3AF9-8A3F-3474849BBE95}" Name="IDeclaration" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+                    </TypeLib>
+                </File>
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

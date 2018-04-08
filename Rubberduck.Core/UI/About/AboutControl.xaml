@@ -140,6 +140,7 @@ Ross McLean
 Ross Knudsen
 Simon Forsberg
 Stephen Bullen (Smart Indenter)
+Wayne Phillips (vbWatchdog)
                     </TextBlock>
 
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_GeneralThanks}"
