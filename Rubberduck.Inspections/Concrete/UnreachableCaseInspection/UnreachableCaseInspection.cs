@@ -18,7 +18,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private IParseTreeValueVisitorFactory _parseTreeVisitorFactory;
         private ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
         private IParseTreeValueFactory _valueFactory;
-        private IParseTreeValueVisitor _parseTreeValueVisitor;
         private enum CaseInpectionResult { Unreachable, MismatchType, CaseElse };
 
         private static Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
@@ -36,8 +35,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _selectStmtFactory = factoriesFactory.CreateISelectStmtContextWrapperFactory();
             _valueFactory = factoriesFactory.CreateIParseTreeValueFactory();
             _parseTreeVisitorFactory = factoriesFactory.CreateIParseTreeValueVisitorFactory();
-
-            _parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
         }
 
         public override IInspectionListener Listener { get; } =
@@ -45,14 +42,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private List<IInspectionResult> InspectionResults { set; get; } = new List<IInspectionResult>();
 
-        private ParseTreeVisitorResults ValueResults { get; } = new ParseTreeVisitorResults();
+        private ParseTreeVisitorResults ValueResults { set; get; } = new ParseTreeVisitorResults();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            InspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
             var parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
+            ValueResults = new ParseTreeVisitorResults();
             parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
