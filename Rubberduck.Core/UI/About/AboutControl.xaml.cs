@@ -1,8 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using System;
-using System.IO;
-using Application = System.Windows.Forms.Application;
 
 namespace Rubberduck.UI.About
 {
@@ -33,11 +30,11 @@ namespace Rubberduck.UI.About
         private void CopyVersionInfoToClipboard()
         {
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine($"Rubberduck version: {Version.Text}");
-            sb.AppendLine($"Operating System: {Environment.OSVersion.VersionString}, {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}");
-            sb.AppendLine($"Host Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}");
-            sb.AppendLine($"Host Version: {Application.ProductVersion}");
-            sb.AppendFormat($"Host Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}"); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
+            sb.AppendLine(Version.Text);
+            sb.AppendLine(OperatingSystem.Text);
+            sb.AppendLine(HostProduct.Text);
+            sb.AppendLine(HostVersion.Text);
+            sb.AppendLine(HostExecutable.Text);
 
             Clipboard.SetText(sb.ToString());
             System.Windows.MessageBox.Show(RubberduckUI.AboutWindow_CopyVersionMessage, RubberduckUI.AboutWindow_CopyVersionCaption);

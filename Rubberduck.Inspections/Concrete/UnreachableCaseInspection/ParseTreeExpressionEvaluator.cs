@@ -153,10 +153,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static string _plus;
         private static string _minusSign;
         private static string _exponent;
+        private static string _integerDivide;
 
         public static string MULTIPLY => _multiply ?? LoadSymbols(VBAParser.MULT);
         public static string DIVIDE => _divide ?? LoadSymbols(VBAParser.DIV);
-        public static string INTEGER_DIVIDE => @"\";
+        public static string INTEGER_DIVIDE => _integerDivide ?? LoadSymbols(VBAParser.INTDIV);
         public static string PLUS => _plus ?? LoadSymbols(VBAParser.PLUS);
         public static string MINUS => _minusSign ?? LoadSymbols(VBAParser.MINUS);
         public static string ADDITIVE_INVERSE => MINUS;
@@ -167,6 +168,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _multiply = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.MULT).Replace("'", "");
             _divide = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.DIV).Replace("'", "");
+            _integerDivide = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.INTDIV).Replace("'", "");
             _plus = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.PLUS).Replace("'", "");
             _minusSign = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.MINUS).Replace("'", "");
             _exponent = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.POW).Replace("'", "");

@@ -1809,6 +1809,18 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand currently enabled</value>
   </data>
+  <data name="AboutWindow_HostExecutable" xml:space="preserve">
+    <value>Host Executable: {0}</value>
+  </data>
+  <data name="AboutWindow_HostProduct" xml:space="preserve">
+    <value>Host Product: {0} {1}</value>
+  </data>
+  <data name="AboutWindow_HostVersion" xml:space="preserve">
+    <value>Host Version: {0}</value>
+  </data>
+  <data name="AboutWindow_OperatingSystem" xml:space="preserve">
+    <value>OS: {0}, {1}</value>
+  </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log.</value>
   </data>

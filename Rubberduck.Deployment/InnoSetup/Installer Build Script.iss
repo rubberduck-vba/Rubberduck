@@ -114,7 +114,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 ;      and uncomment or add lines to include the file.
 #include <English.CustomMessages.iss>
 ; #include <French.CustomMessages.iss>
-; #include <German.CustomMessages.iss>
+#include <German.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"

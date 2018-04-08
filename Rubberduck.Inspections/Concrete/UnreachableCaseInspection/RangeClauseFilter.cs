@@ -44,6 +44,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private bool _hasExtents;
         private T _minExtent;
         private T _maxExtent;
+        private string _cachedDescriptor;
+        private bool _descriptorIsDirty;
 
         public RangeClauseFilter(string typeName, IParseTreeValueFactory valueFactory, IRangeClauseFilterFactory filterFactory, TryConvertParseTreeValue<T> tConverter)
         {
@@ -61,6 +63,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _falseValue = ConvertToContainedGeneric(false);
             _trueValue = ConvertToContainedGeneric(true);
             TypeName = typeName;
+            _cachedDescriptor = string.Empty;
+            _descriptorIsDirty = true;
         }
 
         private List<Tuple<T, T>> RangeValues => _ranges;
@@ -83,6 +87,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             get
             {
+                if (ContainsBooleans && CoversTrueFalse())
+                {
+                    return true;
+                }
 
                 var coversAll = false;
                 var hasLTFilter = TryGetIsLTValue(out T ltValue);
@@ -101,10 +109,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     coversAll = gt - lt + 1 <= RangesValuesCount() + SingleValues.Count()
                         || gt == lt && RangesFilterValue(ltValue);
                 }
-                else if (ContainsBooleans && !coversAll)
-                {
-                    coversAll = SingleValues.Contains(_trueValue);
-                }
                 return coversAll;
             }
         }
@@ -115,9 +119,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return _ranges.Any() || _variableRanges.Any()
                     || _singleValues.Any() || _variableSingles.Any()
+                    || _relationalOps.Any()
                     || TryGetIsLTValue(out T isLT) && isLT.CompareTo(_minExtent) != 0
-                    || TryGetIsGTValue(out T isGT) && isGT.CompareTo(_maxExtent) != 0
-                    || _relationalOps.Any();
+                    || TryGetIsGTValue(out T isGT) && isGT.CompareTo(_maxExtent) != 0;
             }
         }
 
@@ -152,6 +156,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 AddSingleValueImpl(val);
             }
+
+            foreach (var val in newFilter.VariableSingleValues)
+            {
+                VariableSingleValues.Add(val);
+            }
+            _descriptorIsDirty = true;
         }
 
         public void AddIsClause(IParseTreeValue value, string opSymbol)
@@ -168,6 +178,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 AddRelationalOpImpl(value.ValueText);
             }
+            _descriptorIsDirty = true;
         }
 
         public void AddRelationalOp(IParseTreeValue value)
@@ -184,6 +195,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 AddRelationalOpImpl(value.ValueText);
             }
+            _descriptorIsDirty = true;
         }
 
         public void AddSingleValue(IParseTreeValue value)
@@ -200,6 +212,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 VariableSingleValues.Add(value.ValueText);
             }
+            _descriptorIsDirty = true;
         }
 
         public void AddValueRange(IParseTreeValue inputStartVal, IParseTreeValue inputEndVal)
@@ -225,6 +238,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 AddVariableRangeImpl(inputStartVal.ValueText, inputEndVal.ValueText);
             }
+            _descriptorIsDirty = true;
         }
 
         public IRangeClauseFilter FilterUnreachableClauses(IRangeClauseFilter filter)
@@ -309,6 +323,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override string ToString()
         {
+            if (!_descriptorIsDirty)
+            {
+                return _cachedDescriptor;
+            }
+
             var descriptors = new HashSet<string>
             {
                 GetIsClausesDescriptor(LogicSymbols.LT),
@@ -329,7 +348,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 descriptor.Append(descriptors.ElementAt(idx));
             }
-            return descriptor.ToString();
+            _cachedDescriptor = descriptor.ToString();
+            _descriptorIsDirty = false;
+            return _cachedDescriptor;
         }
 
         public override int GetHashCode()
@@ -357,14 +378,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (ContainsBooleans)
                 {
-                    return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
-                        || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue);
+                    return CoversTrueFalse();
                 }
                 return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
                     || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue)
                     || IsLTFiltersValue(_trueValue) && IsLTFiltersValue(_falseValue)
                     || IsGTFiltersValue(_trueValue) && IsGTFiltersValue(_falseValue);
             }
+        }
+
+        private bool CoversTrueFalse()
+        {
+            return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
+                || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue);
         }
 
         private void RemoveIsLTClause() => RemoveIsClauseImpl(LogicSymbols.LT);

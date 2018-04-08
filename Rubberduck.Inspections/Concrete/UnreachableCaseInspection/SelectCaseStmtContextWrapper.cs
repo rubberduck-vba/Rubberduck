@@ -22,7 +22,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private List<ParserRuleContext> _unreachableResults;
         private List<ParserRuleContext> _mismatchResults;
         private List<ParserRuleContext> _caseElseResults;
-        private string _evalTypeName;
 
         public SelectCaseStmtContextWrapper(VBAParser.SelectCaseStmtContext selectCaseContext, IParseTreeVisitorResults inspValues, IUnreachableCaseInspectionFactoryProvider factoryFactory)
             : base(selectCaseContext, inspValues, factoryFactory)
@@ -31,12 +30,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _unreachableResults = new List<ParserRuleContext>();
             _mismatchResults = new List<ParserRuleContext>();
             _caseElseResults = new List<ParserRuleContext>();
-            _evalTypeName = null;
             _inspectionRangeFactory = factoryFactory.CreateIRangeClauseContextWrapperFactory();
+            SetEvaluationTypeName(Context, ParseTreeValueResults, FilterFactory);
         }
 
-        public string EvaluationTypeName => _evalTypeName 
-            ?? DetermineSelectCaseEvaluationTypeName(Context, ParseTreeValueResults, FilterFactory);
+        public string EvaluationTypeName { private set; get; }
 
         public void InspectForUnreachableCases()
         {
@@ -80,28 +78,43 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> UnreachableCaseElseCases => _caseElseResults;
 
-        private static bool InspectionCanEvaluateTypeName(string typeName) => !(typeName == string.Empty || typeName == Tokens.Variant);
+        private static List<string> InspectableTypes = new List<string>()
+        {
+            Tokens.Byte,
+            Tokens.Integer,
+            Tokens.Int,
+            Tokens.Long,
+            Tokens.LongLong,
+            Tokens.Single,
+            Tokens.Double,
+            Tokens.Decimal,
+            Tokens.Currency,
+            Tokens.Boolean,
+            Tokens.String
+        };
 
-        private string DetermineSelectCaseEvaluationTypeName(ParserRuleContext context, IParseTreeVisitorResults inspValues, IRangeClauseFilterFactory factory)
+        private static bool InspectionCanEvaluateTypeName(string typeName) => InspectableTypes.Contains(typeName);
+
+        private void SetEvaluationTypeName(ParserRuleContext context, IParseTreeVisitorResults inspValues, IRangeClauseFilterFactory factory)
         {
             var selectStmt = (VBAParser.SelectCaseStmtContext)context;
-            if (TryDetectTypeHint(selectStmt.selectExpression().GetText(), out _evalTypeName))
+            if (TryDetectTypeHint(selectStmt.selectExpression().GetText(), out string evalTypName))
             {
-                return _evalTypeName;
+                EvaluationTypeName = evalTypName;
+                return;
             }
 
             var typeName = string.Empty;
             if (inspValues.TryGetValue(selectStmt.selectExpression(), out IParseTreeValue result))
             {
-                _evalTypeName = result.TypeName;
+                EvaluationTypeName = result.TypeName;
             }
 
-            if (InspectionCanEvaluateTypeName(_evalTypeName))
+            if (InspectionCanEvaluateTypeName(EvaluationTypeName))
             {
-                return _evalTypeName;
+                return;
             }
-            _evalTypeName = DeriveTypeFromCaseClauses(inspValues, selectStmt);
-            return _evalTypeName;
+            EvaluationTypeName = DeriveTypeFromCaseClauses(inspValues, selectStmt);
         }
 
         private string DeriveTypeFromCaseClauses(IParseTreeVisitorResults inspValues, VBAParser.SelectCaseStmtContext selectStmt)
@@ -118,21 +131,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     else
                     {
                         var inspRange = _inspectionRangeFactory.Create(range, inspValues);
-                        var types = inspRange.ResultContexts.Select(rc => inspValues.GetTypeName(rc));
+                        var types = inspRange.ResultContexts.Select(rc => inspValues.GetTypeName(rc))
+                            .Where(tp => InspectableTypes.Contains(tp));
                         caseClauseTypeNames.AddRange(types);
                     }
                 }
             }
 
-            if (TryDetermineEvaluationTypeFromTypes(caseClauseTypeNames, out _evalTypeName))
+            if (TryDetermineEvaluationTypeFromTypes(caseClauseTypeNames, out string evalTypeName))
             {
-                return _evalTypeName;
-            }
-
-            caseClauseTypeNames.Remove(Tokens.Variant);
-            if (TryDetermineEvaluationTypeFromTypes(caseClauseTypeNames, out _evalTypeName))
-            {
-                return _evalTypeName;
+                return evalTypeName;
             }
             return string.Empty;
         }
