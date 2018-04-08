@@ -583,7 +583,7 @@ namespace RubberduckTests.Inspections
         [TestCase("IsLT=True, IsGT=True", "RelOp=x > 6", "Single=False,RelOp=Is > True")]
         [TestCase("IsLT=False, IsGT=False", "RelOp=x > 6", "Single=False,RelOp=Is < False")]
         [TestCase("IsGT=False", "RelOp=x > 6", "Single=False")]
-        [TestCase("Single=True, Single=False", "Single=True", "")]
+        [TestCase("Single=True, Single=False", "Single=False,Single=True", "")]
         [Category("Inspections")]
         public void UciUnit_FilterBoolean(string firstCase, string secondCase, string expectedClauses)
         {
@@ -596,6 +596,7 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expected, filteredResults);
         }
 
+        [TestCase("Range:3:55", "Single=x.Item(2)", "Range:3:55,Single=x.Item(2)")]
         [TestCase("Range=3:55", "IsLT=6", "IsLT=6,Range=6:55")]
         [TestCase("Range=3:55", "IsGT=6", "IsGT=6,Range=3:6")]
         [TestCase("IsLT=6", "Range=1:5", "IsLT=6")]
@@ -802,7 +803,7 @@ End Sub";
         [TestCase("Dim Hint%\r\nHint% = 1\r\nSelect Case Hint%", "10 To 30,20", "Integer")] //Integer
         [TestCase("Dim Hint&\r\nHint& = 1\r\nSelect Case Hint&", "1000 To 3000,2000", "Long")] //Long
         [Category("Inspections")]
-        public void UciFunctional_SelectExprTypeHint(string typeHintExpr, string firstCase, string expected)
+        public void UciUnit_SelectExprTypeHint(string typeHintExpr, string firstCase, string expected)
         {
             string inputCode =
 @"
@@ -829,7 +830,7 @@ End Sub";
         [TestCase("Dim Hint%", "Hint%", "Integer")] //Integer
         [TestCase("Dim Hint&", "Hint&", "Long")] //Long
         [Category("Inspections")]
-        public void UciFunctional_CaseClauseTypeHint(string typeHintExpr, string firstCase, string expected)
+        public void UciUnit_CaseClauseTypeHint(string typeHintExpr, string firstCase, string expected)
         {
             string inputCode =
 @"
@@ -848,7 +849,7 @@ End Sub";
             inputCode = inputCode.Replace("<typeHintExprAndSelectCase>", typeHintExpr);
             inputCode = inputCode.Replace("<firstCaseVal>", firstCase);
 
-            var result = GetCaseClauseType(inputCode);
+            var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
 
@@ -859,7 +860,7 @@ End Sub";
         [TestCase("True", "x As Byte", "Boolean")]
         [TestCase("ToString(45)", "x As Byte", "String")]
         [Category("Inspections")]
-        public void UciFunctional_SelectExpressionType(string selectExpr, string argList, string expected)
+        public void UciUnit_SelectExpressionType(string selectExpr, string argList, string expected)
         {
             string inputCode =
 @"
@@ -893,9 +894,9 @@ End Sub";
         [TestCase("ToLong(True) * .0035", "45", "Double")]
         [TestCase("True", "x < 5", "Boolean")]
         [TestCase("1 To 10.0", "55 To 100.0", "Double")]
-        [TestCase("ToString(45)",@"""Bar""","String")]
+        [TestCase("ToString(45)", @"""Bar""", "String")]
         [Category("Inspections")]
-        public void UciFunctional_CaseClauseType(string rangeExpr1, string rangeExpr2, string expected)
+        public void UciUnit_CaseClauseType(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
 @"
@@ -920,7 +921,121 @@ End Sub";
 
             inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
             inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
-            var result = GetCaseClauseType(inputCode);
+            var result = GetSelectExpressionType(inputCode);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestCase("45", "55", "Long")]
+        [TestCase("45.6", "55", "Double")]
+        [TestCase(@"""Test""", @"""55""", "String")]
+        [TestCase("True", "y < 6", "Boolean")]
+        [Category("Inspections")]
+        public void UciUnit_CaseClauseTypeUnrecognizedSelectExpressionType(string rangeExpr1, string rangeExpr2, string expected)
+        {
+            string inputCode =
+@"
+        Sub Foo(x As Collection)
+            Dim y As Long
+            y = 8
+            Select Case x(1)
+                Case <rangeExpr1>
+                'OK
+                Case <rangeExpr2>
+                'OK
+                Case Else
+                'OK
+            End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
+            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
+            var result = GetSelectExpressionType(inputCode);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestCase("x.Item(2)", "55", "Long")]
+        [TestCase("x.Item(2)", "45.6", "Double")]
+        [TestCase("x.Item(2)", @"""Test""", "String")]
+        [TestCase("x.Item(2)", "False", "Boolean")]
+        [Category("Inspections")]
+        public void UciUnit_CaseClauseTypeUnrecognizedCaseExpressionType(string rangeExpr1, string rangeExpr2, string expected)
+        {
+            string inputCode =
+@"
+        Sub Foo(x As Collection)
+            Select Case x(3)
+                Case <rangeExpr1>
+                'OK
+                Case <rangeExpr2>
+                'OK
+                Case <rangeExpr2>
+                'OK
+                Case Else
+                'OK
+            End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
+            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
+            var result = GetSelectExpressionType(inputCode);
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestCase("x.Item(2)", "True", false)]
+        [TestCase("x.Item(2)", "True, False", true)]
+        [Category("Inspections")]
+        public void UciFunctional_CaseClauseTypeUnrecognizedCaseExpressionType2(string rangeExpr1, string rangeExpr2, bool triggersCaseElse)
+        {
+            string inputCode =
+@"
+        Sub Foo(x As Collection)
+            Select Case x(3)
+                Case <rangeExpr1>
+                'OK
+                Case <rangeExpr2>
+                'OK
+                Case <rangeExpr2>
+                'unreachable
+                Case Else
+                'Depends on flag
+            End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
+            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: triggersCaseElse ? 1 : 0);
+        }
+
+        [TestCase("95", "55", "Long")]
+        [TestCase("23.2", "45.6", "Double")]
+        [TestCase(@"""Foo""", @"""Test""", "String")]
+        [TestCase("x < 6", "x > 9", "Boolean")]
+        [TestCase("95.7", "55", "Double")]
+        [Category("Inspections")]
+        public void UciUnit_CaseClauseTypeVariantSelectExpression(string rangeExpr1, string rangeExpr2, string expected)
+        {
+            string inputCode =
+@"
+        Sub Foo(x As Variant)
+            Select Case x
+                Case <rangeExpr1>
+                'OK
+                Case <rangeExpr2>
+                'OK
+                Case <rangeExpr2>
+                'OK
+                Case Else
+                'OK
+            End Select
+
+        End Sub";
+
+            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
+            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
+            var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
 
@@ -1395,7 +1510,7 @@ Select Case x
         }
 
         [TestCase("True", "Is <= False", 2)]
-        [TestCase("Is >= True", "False", 2)]
+        [TestCase("Is >= True", "False", 1)]
         [Category("Inspections")]
         public void UciFunctional_BooleanRelationalOps(string firstCase, string secondCase, int expected)
         {
@@ -2430,6 +2545,38 @@ Public Const MY_CONSTANT As <propertyTypeAndAssignment>
             CheckActualResultsEqualsExpected(components, unreachable: 1);
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void UciFunctional_DuplicateSelectExpressionVariableInModule()
+        {
+            string inputCode =
+@"
+Sub FirstSub(x As Long)
+    Select Case x
+        Case 55
+            MsgBox CStr(x)
+        Case 56
+            MsgBox CStr(x)
+        Case 55
+            MsgBox ""Unreachable""
+    End Select
+End Sub
+
+Sub SecondSub(x As Boolean)
+    Select Case x
+        Case 55
+            MsgBox CStr(x)
+        Case 0
+            MsgBox CStr(x)
+        Case Else
+            MsgBox ""Unreachable""
+    End Select
+End Sub
+";
+
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+        }
+
         private static void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var components = new List<Tuple<string, string>>()
@@ -2503,13 +2650,6 @@ Public Const MY_CONSTANT As <propertyTypeAndAssignment>
         {
             var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmt);
             var iSelectStmt = InspectionSelectStmtFactory.Create(selectStmt, selectStmtValueResults);
-            return iSelectStmt.EvaluationTypeName;
-        }
-
-        private string GetCaseClauseType(string inputCode)
-        {
-            var valueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmt);
-            var iSelectStmt = InspectionSelectStmtFactory.Create(selectStmt, valueResults);
             return iSelectStmt.EvaluationTypeName;
         }
 
