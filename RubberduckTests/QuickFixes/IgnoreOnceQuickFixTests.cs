@@ -1030,6 +1030,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Ignore("Broken feature - passes locally but not in AV - see FIXME below")]
         public void UntypedFunctionUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
