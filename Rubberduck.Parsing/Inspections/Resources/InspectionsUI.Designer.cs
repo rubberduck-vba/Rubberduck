@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add step.
+        ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
         /// </summary>
         public static string AddStepOneQuickFix {
             get {
@@ -358,7 +358,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Consider the explicit use of &apos;as {0}&apos; instead of &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Consider the explicit use of &apos;As {0}&apos; instead of &apos;{1}&apos;.
         /// </summary>
         public static string DefTypeStatementInspectionResultFormat {
             get {
@@ -1951,7 +1951,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove step.
+        ///   Looks up a localized string similar to Remove redundant &apos;Step&apos; clause.
         /// </summary>
         public static string RemoveStepOneQuickFix {
             get {
@@ -2149,7 +2149,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step not specified.
+        ///   Looks up a localized string similar to &apos;Step&apos; not specified.
         /// </summary>
         public static string StepIsNotSpecifiedInspectionResultFormat {
             get {
@@ -2275,14 +2275,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable Case Else: All possible values are handled by prior Case statement(s).
-        /// </summary>
-        public static string UnreachableCaseInspection_CaseElse {
-            get {
-                return ResourceManager.GetString("UnreachableCaseInspection_CaseElse", resourceCulture);
-			}
-		}
-        /// <summary>
         ///   Looks up a localized string similar to Error handling should be restored after using &apos;On Error Resume Next&apos;..
         /// </summary>
         public static string UnhandledOnErrorResumeNextInspectionMeta {
@@ -2291,14 +2283,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid Type: Case Statement cannot be evaluated as the Select Statement Type.
-        /// </summary>
-        public static string UnreachableCaseInspection_TypeMismatch {
-            get {
-                return ResourceManager.GetString("UnreachableCaseInspection_TypeMismatch", resourceCulture);
-			}
-		}
         /// <summary>
         ///   Looks up a localized string similar to Unhandled &apos;On Error Resume Next&apos;.
         /// </summary>
@@ -2309,19 +2293,47 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement is handled by prior Case statement(s).
-        /// </summary>
-        public static string UnreachableCaseInspection_Unreachable {
-            get {
-                return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
-			}
-		}
-        /// <summary>
         ///   Looks up a localized string similar to Introduce error handling subroutine.
         /// </summary>
         public static string UnhandledOnErrorResumeNextInspectionQuickFix {
             get {
                 return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Errors are ignored but never handled again.
+        /// </summary>
+        public static string UnhandledOnErrorResumeNextInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreachable Case Else: All possible values are handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_CaseElse {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_CaseElse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Type: Case Statement cannot be evaluated as the Select Statement Type.
+        /// </summary>
+        public static string UnreachableCaseInspection_TypeMismatch {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_TypeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreachable: Case Statement is handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_Unreachable {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
             }
         }
         
@@ -2349,14 +2361,6 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string UnreachableCaseInspectionResultFormat {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspectionResultFormat", resourceCulture);
-			}
-		}
-        /// <summary>
-        ///   Looks up a localized string similar to Errors are ignored but never handled again.
-        /// </summary>
-        public static string UnhandledOnErrorResumeNextInspectionResultFormat {
-            get {
-                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionResultFormat", resourceCulture);
             }
         }
         

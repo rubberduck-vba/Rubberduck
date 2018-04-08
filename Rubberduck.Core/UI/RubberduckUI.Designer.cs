@@ -2197,7 +2197,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This hotkey configuration may cause undesirable side affects..
+        ///   Looks up a localized string similar to This hotkey configuration may cause undesirable side effects..
         /// </summary>
         public static string GeneralSettings_HotkeyRestrictionToolTip {
             get {
