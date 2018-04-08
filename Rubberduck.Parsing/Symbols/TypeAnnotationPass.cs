@@ -6,6 +6,7 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -33,14 +34,30 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var toDetermineAsTypeDeclaration = _declarationFinder
-                                                .FindDeclarationsWithNonBaseAsType()
-                                                .Where(decl => decl.AsTypeDeclaration == null 
+            var asTypesToResolve = _declarationFinder.FindDeclarationsWithNonBaseAsType()
+                                                     .Where(decl => decl.AsTypeDeclaration == null 
                                                         || modules.Contains(decl.QualifiedName.QualifiedModuleName));
-            foreach (var declaration in toDetermineAsTypeDeclaration)
+
+            foreach (var declaration in asTypesToResolve)
             {
                 AnnotateType(declaration);
+                AnnotateDefaultMember(declaration.AsTypeDeclaration as ClassModuleDeclaration);
             }
+        }
+
+        private void AnnotateDefaultMember(ClassModuleDeclaration declaration)
+        {
+            if (declaration == null || declaration.DefaultMember != null)
+            {
+                return;
+            }
+
+            var candidates = _declarationFinder.Members(declaration)
+                .Where(m => (m as ICanBeDefaultMember)?.IsDefaultMember ?? false)
+                .OrderBy(m => m.DeclarationType.ToString()); // get, let, set 
+
+            // note: if getter is default member, setter is default member too (it's the same member)
+            declaration.DefaultMember = candidates.FirstOrDefault();
         }
 
         private void AnnotateType(Declaration declaration)

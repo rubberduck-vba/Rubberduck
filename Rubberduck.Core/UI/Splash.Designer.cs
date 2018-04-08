@@ -28,32 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.statusLabel = new System.Windows.Forms.Label();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // label1
+            // statusLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(12, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "initializing...";
+            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.statusLabel.BackColor = System.Drawing.Color.Transparent;
+            this.statusLabel.Font = new System.Drawing.Font("Gill Sans MT Condensed", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.statusLabel.Location = new System.Drawing.Point(12, 188);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(426, 43);
+            this.statusLabel.TabIndex = 0;
+            this.statusLabel.Text = "initializing...";
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.statusLabel.UseWaitCursor = true;
             // 
             // VersionLabel
             // 
             this.VersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.VersionLabel.AutoSize = true;
             this.VersionLabel.BackColor = System.Drawing.Color.Transparent;
-            this.VersionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.VersionLabel.Location = new System.Drawing.Point(12, 9);
+            this.VersionLabel.Font = new System.Drawing.Font("Gill Sans MT Condensed", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VersionLabel.Location = new System.Drawing.Point(18, 9);
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(88, 13);
+            this.VersionLabel.Size = new System.Drawing.Size(420, 32);
             this.VersionLabel.TabIndex = 0;
             this.VersionLabel.Text = "version 2.0.10";
-            this.VersionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.VersionLabel.UseWaitCursor = true;
             // 
             // Splash
             // 
@@ -61,12 +65,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.BackColor = System.Drawing.Color.Black;
-            this.BackgroundImage = global::Rubberduck.Properties.Resources.RD_300x250_base;
+            this.BackgroundImage = global::Rubberduck.Properties.Resources.RD2018_Splash;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(300, 250);
+            this.ClientSize = new System.Drawing.Size(450, 240);
             this.ControlBox = false;
             this.Controls.Add(this.VersionLabel);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.statusLabel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
@@ -78,13 +82,12 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.UseWaitCursor = true;
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Label VersionLabel;
     }
 }
