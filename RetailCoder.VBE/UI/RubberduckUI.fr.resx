@@ -686,7 +686,11 @@ Attention, les valeurs personnalisées seront perdues.  L'ancien fichier sera en
   </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problèmes</value>
+<<<<<<< HEAD
     <comment>{0}=number</comment>
+=======
+    <comment>{1}=number Vteich: I made it consistent with EN version</comment>
+>>>>>>> 6ea797c4d0025042b92d31f999258dd8025f4c33
   </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Texte :</value>
