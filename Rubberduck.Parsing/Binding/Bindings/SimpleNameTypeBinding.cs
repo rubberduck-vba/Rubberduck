@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using System;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -123,6 +124,13 @@ namespace Rubberduck.Parsing.Binding
             */
             if (_declarationFinder.IsMatch(_project.ProjectName, name))
             {
+                // Ensure there is no ambiguous matches
+                var ambiguousClassModule = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ClassModule);
+                if (ambiguousClassModule != null)
+                {
+                    // We have an indeterminate result... (normally a VBA compile error)
+                    return new ResolutionFailedExpression();
+                }
                 return new SimpleNameExpression(_project, ExpressionClassification.Project, _expression);
             }
             var referencedProject = _declarationFinder.FindReferencedProject(_project, name);

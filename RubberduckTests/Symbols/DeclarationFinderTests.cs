@@ -716,7 +716,6 @@ End Sub
 
         [Test]
         [Category("Resolver")]
-        [Ignore("WIP until PR is finalized")]
         public void SameNameForProjectAndClass_ScopedDeclaration_ClassSelection()
         {
             var refEditClass = @"
@@ -761,7 +760,7 @@ End Sub
 
         [Test]
         [Category("Resolver")]
-        [Ignore("WIP until PR is finalized")]
+        [Ignore("The test should fail as this is a compile error; need to work out how to set state to ResolverError")]
         public void SameNameForProjectAndClassImplicit_ScopedDeclaration()
         {
             var refEditClass = @"
