@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ObsoleteTypeHintInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FieldWithLongTypeHintReturnsResult()
         {
             const string inputCode =
@@ -20,14 +20,14 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FieldWithIntegerTypeHintReturnsResult()
         {
             const string inputCode =
@@ -37,14 +37,14 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FieldWithDoubleTypeHintReturnsResult()
         {
             const string inputCode =
@@ -54,14 +54,14 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FieldWithSingleTypeHintReturnsResult()
         {
             const string inputCode =
@@ -71,14 +71,14 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FieldWithDecimalTypeHintReturnsResult()
         {
             const string inputCode =
@@ -88,14 +88,14 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FieldWithStringTypeHintReturnsResult()
         {
             const string inputCode =
@@ -105,14 +105,14 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FunctionReturnsResult()
         {
             const string inputCode =
@@ -123,14 +123,14 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_PropertyGetReturnsResult()
         {
             const string inputCode =
@@ -141,14 +141,14 @@ End Property";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_ParameterReturnsResult()
         {
             const string inputCode =
@@ -159,14 +159,14 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_VariableReturnsResult()
         {
             const string inputCode =
@@ -179,14 +179,14 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_ConstantReturnsResult()
         {
             const string inputCode =
@@ -199,14 +199,14 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_StringValueDoesNotReturnsResult()
         {
             const string inputCode =
@@ -219,14 +219,14 @@ End Sub";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_FieldsReturnMultipleResults()
         {
             const string inputCode =
@@ -237,14 +237,14 @@ Public Bar$";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteTypeHint_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -256,22 +256,14 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ObsoleteTypeHintInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteTypeHintInspection";

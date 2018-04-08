@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -11,7 +10,10 @@ using VB = Microsoft.VB6.Interop.VBIDE;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
+    //TODO: the event is UNTESTED, PRESUMED TO BE BROKEN
+    //if you wanna to enable vb6, please have the courtesy
+    //to fix it up right. 
+    public class VBComponents : SafeEventedComWrapper<VB.VBComponents, VB._dispVBComponentsEvents>, IVBComponents
     {
         private static readonly Guid VBComponentsEventsGuid = new Guid("0002E193-0000-0000-C000-000000000046");
 
@@ -25,8 +27,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             ItemReloaded = 6
         }
 
-        public VBComponents(VB.VBComponents target)
-            : base(target)
+        public VBComponents(VB.VBComponents target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
             AttachEvents();
         }
@@ -69,9 +71,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent)o));
+            return new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent)comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -114,8 +114,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {
                     throw new IndexOutOfRangeException($"Could not find document component named '{name}'.");
                 }
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(codeString);
+                using (var codeModule = component.CodeModule)
+                {
+                    codeModule.Clear();
+                    codeModule.AddFromString(codeString);
+                }
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
@@ -132,8 +135,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 var declarationsStartLine = nonAttributeLines + attributeLines + 1;
                 var correctCodeString = string.Join(Environment.NewLine, codeLines.Skip(declarationsStartLine - 1).ToArray());
 
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(correctCodeString);
+                using (var codeModule = component.CodeModule)
+                {
+                    codeModule.Clear();
+                    codeModule.AddFromString(correctCodeString);
+                }
             }
             else if (ext != ComponentTypeExtensions.FormBinaryExtension)
             {
@@ -159,7 +165,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     break;
                 case ComponentType.ActiveXDesigner:
                 case ComponentType.Document:
-                    component.CodeModule.Clear();
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                    }
                     break;
                 default:
                     break;
@@ -167,43 +176,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         }
 
         #region Events
-
-        private bool _eventsAttached;
-        private void AttachEvents()
-        {
-            throw new NotImplementedException("Correct the Guid (see comment above), verify the DispIds, then remove this throw.");
-            if (!_eventsAttached && !IsWrappingNullReference)
-            {
-                _componentAdded = OnComponentAdded;
-                _componentRemoved = OnComponentRemoved;
-                _componentRenamed = OnComponentRenamed;
-                _componentSelected = OnComponentSelected;
-                _componentActivated = OnComponentActivated;
-                _componentReloaded = OnComponentReloaded;
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                ComEventsHelper.Combine(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
-                _eventsAttached = true;
-            }
-        }
-
-        private void DetatchEvents()
-        {
-            if (!_eventsAttached && !IsWrappingNullReference)
-            {
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                ComEventsHelper.Remove(Target, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
-                _eventsAttached = false;
-            }
-        }
-
+        
         private delegate void ItemAddedDelegate(VB.VBComponent vbComponent);
         private ItemAddedDelegate _componentAdded;
         public event EventHandler<ComponentEventArgs> ComponentAdded;
@@ -225,8 +198,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
         private void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
         {
+            var component = new VBComponent(vbComponent);
             var handler = ComponentRenamed;
-            handler?.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, new VBComponent(vbComponent), oldName));
+            if (handler == null)
+            {
+                component.Dispose();
+                return;
+            }
+            handler.Invoke(this, new ComponentRenamedEventArgs(Parent.ProjectId, Parent, component, oldName));
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
@@ -255,8 +234,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent component)
         {
+            var vbComponent = new VBComponent(component);
             var handler = dispatched;
-            handler?.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, new VBComponent(component)));
+            if (handler == null)
+            {
+                vbComponent.Dispose();
+                return;
+            }
+            handler?.Invoke(this, new ComponentEventArgs(Parent.ProjectId, Parent, vbComponent));
         }
 
         #endregion

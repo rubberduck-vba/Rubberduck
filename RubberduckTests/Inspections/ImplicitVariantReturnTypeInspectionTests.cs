@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ImplicitVariantReturnTypeInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_Function()
         {
             const string inputCode =
@@ -21,14 +21,14 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_LibraryFunction()
         {
             const string inputCode =
@@ -48,14 +48,14 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_DoesNotReturnResult_LibraryFunction()
         {
             const string inputCode =
@@ -75,14 +75,14 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_PropertyGet()
         {
             const string inputCode =
@@ -93,14 +93,14 @@ End Property";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleFunctions()
         {
             const string inputCode =
@@ -114,14 +114,14 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_DoesNotReturnResult()
         {
             const string inputCode =
@@ -132,14 +132,14 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_ReturnsResult_MultipleSubs_SomeReturning()
         {
             const string inputCode =
@@ -153,14 +153,14 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitVariantReturnType_Ignored_DoesNotReturnResult_Function()
         {
             const string inputCode =
@@ -172,22 +172,14 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ImplicitVariantReturnTypeInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitVariantReturnTypeInspection";

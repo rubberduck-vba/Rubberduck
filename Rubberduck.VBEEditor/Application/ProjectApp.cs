@@ -16,7 +16,7 @@ namespace Rubberduck.VBEditor.Application
         protected virtual string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
         {
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
-            return string.Concat(moduleName, ".", qualifiedMemberName.MemberName);
+            return $"{moduleName}.{qualifiedMemberName.MemberName}";
         }
     }
 }

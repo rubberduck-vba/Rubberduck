@@ -27,10 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(result.Context, parameter);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.MakeSingleLineParameterQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.MakeSingleLineParameterQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

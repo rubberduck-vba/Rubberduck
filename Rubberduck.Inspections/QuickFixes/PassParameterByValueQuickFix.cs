@@ -34,10 +34,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.PassParameterByValueQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.PassParameterByValueQuickFix;
 
         private void FixMethods(Declaration target)
         {

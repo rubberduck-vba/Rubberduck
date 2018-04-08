@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class Property : SafeComWrapper<VB.Property>, IProperty
     {
-        public Property(VB.Property target) 
-            : base(target)
+        public Property(VB.Property target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

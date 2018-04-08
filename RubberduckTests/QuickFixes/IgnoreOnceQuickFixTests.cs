@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
@@ -8,16 +8,16 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
 using Rubberduck.Parsing.Inspections.Resources;
+using RubberduckTests.Common;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class IgnoreOnceQuickFixTests
     {
-
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -54,7 +54,7 @@ End Sub";
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
@@ -62,8 +62,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AssignedByValParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -82,15 +82,15 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ConstantNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -109,7 +109,7 @@ End Sub";
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
@@ -117,8 +117,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyStringLiteral_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -145,8 +145,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EncapsulatePublicField_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -161,16 +161,16 @@ Public fizz As Boolean";
             {
 
                 var inspection = new EncapsulatePublicFieldInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        [TestCategory("Unused Value")]
+        [Test]
+        [Category("QuickFixes")]
+        [Category("Unused Value")]
         public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -195,15 +195,15 @@ End Sub";
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void AnnotationListFollowedByCommentAddsAnnotationCorrectly()
         {
             const string inputCode = @"
@@ -227,16 +227,16 @@ End Function
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ImplicitActiveSheetReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -272,16 +272,16 @@ End Sub";
                 }
 
                 var inspection = new ImplicitActiveSheetReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"TestFiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -320,7 +320,7 @@ End Sub";
                 }
 
                 var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -328,8 +328,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_IgnoredQuickFixWorks()
         {
             const string inputCode =
@@ -357,8 +357,8 @@ End Sub";
 
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitPublicMember_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -379,15 +379,15 @@ End Sub";
             {
 
                 var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -404,16 +404,16 @@ End Function";
             {
 
                 var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
+        [Test]
 
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void LabelNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -432,14 +432,14 @@ End Sub";
             {
 
                 var inspection = new LineLabelNotUsedInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ModuleScopeDimKeyword_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -462,8 +462,8 @@ Dim foo";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MoveFieldCloserToUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -484,15 +484,15 @@ End Sub";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MultilineParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -526,8 +526,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MultipleDeclarations_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -554,8 +554,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -572,7 +572,7 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -580,27 +580,27 @@ End Function";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObjectVariableNotSet_IgnoreQuickFixWorks()
         {
             var inputCode =
                 @"
-Private Sub Workbook_Open()
+Private Sub DoSomething()
     
-    Dim target As Range
-    target = Range(""A1"")
+    Dim target As Object
+    target = New Object
     
     target.Value = ""forgot something?""
 
 End Sub";
             var expectedCode =
                 @"
-Private Sub Workbook_Open()
+Private Sub DoSomething()
     
-    Dim target As Range
+    Dim target As Object
 '@Ignore ObjectVariableNotSet
-    target = Range(""A1"")
+    target = New Object
     
     target.Value = ""forgot something?""
 
@@ -611,7 +611,7 @@ End Sub";
             {
 
                 var inspection = new ObjectVariableNotSetInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -619,8 +619,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCallStatement_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -661,8 +661,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteCommentSyntax_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -685,8 +685,8 @@ Rem test1";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteErrorSyntax_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -713,8 +713,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteGlobal_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -729,7 +729,7 @@ Global var1 As Integer";
             {
 
                 var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -737,8 +737,8 @@ Global var1 As Integer";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteLetStatement_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -772,8 +772,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -792,7 +792,7 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new IgnoreOnceQuickFix(state, new[] { inspection });
                 foreach (var result in inspectionResults)
@@ -804,8 +804,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void OptionBaseOneSpecified_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -829,8 +829,8 @@ Option Base 1";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -849,15 +849,15 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenPrivateSub_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -874,7 +874,7 @@ End Sub";
             {
 
                 var inspection = new ParameterNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -882,8 +882,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureNotUsed_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -900,7 +900,7 @@ End Sub";
             {
 
                 var inspection = new ProcedureNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -908,8 +908,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -935,8 +935,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void RedundantByRefModifier_IgnoredQuickFixWorks()
         {
             const string inputCode =
@@ -963,8 +963,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void SelfAssignedDeclaration_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -989,7 +989,7 @@ End Sub";
             {
 
                 var inspection = new SelfAssignedDeclarationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -997,8 +997,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariableUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1021,16 +1021,16 @@ End Sub";
             {
 
                 var inspection = new UnassignedVariableUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        [Ignore] // not sure how to handle GetBuiltInDeclarations
+        [Test]
+        [Category("QuickFixes")]
+        [Ignore("Todo")] // not sure how to handle GetBuiltInDeclarations
         public void UntypedFunctionUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1068,15 +1068,15 @@ End Sub";
                 }
 
                 var inspection = new UntypedFunctionUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UseMeaningfulName_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1098,7 +1098,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UseMeaningfulNameInspection(state, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
@@ -1106,8 +1106,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1126,14 +1126,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnusedVariable_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1152,15 +1152,15 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void VariableTypeNotDeclared_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1177,14 +1177,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults().First());
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void WriteOnlyProperty_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -1207,7 +1207,7 @@ End Property";
             {
 
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
 
@@ -1215,8 +1215,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void BooleanAssignedInIfElseInspection_IgnoreQuickFixWorks()
         {
             const string inputCode =

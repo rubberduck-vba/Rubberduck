@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -18,8 +17,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public MultipleDeclarationsInspection(RubberduckParserState state)
             : base(state) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -46,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context)
             {
-                if (context.variableSubStmt().Count > 1)
+                if (context.variableSubStmt().Length > 1)
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }
@@ -54,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void ExitConstStmt([NotNull] VBAParser.ConstStmtContext context)
             {
-                if (context.constSubStmt().Count > 1)
+                if (context.constSubStmt().Length > 1)
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }

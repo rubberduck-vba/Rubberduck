@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
@@ -12,28 +11,11 @@ using VB = Microsoft.Vbe.Interop;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBComponents : SafeComWrapper<VB.VBComponents>, IVBComponents
+    public class VBComponents : SafeEventedComWrapper<VB.VBComponents, VB._dispVBComponentsEvents>, IVBComponents, VB._dispVBComponentsEvents
     {
-        private static readonly Guid VBComponentsEventsGuid = new Guid("0002E116-0000-0000-C000-000000000046");
-        private static readonly object Locker = new object();
-        private static VB.VBComponents _components;
-
-        private enum ComponentEventDispId
+        public VBComponents(VB.VBComponents target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
-            ItemAdded = 1,
-            ItemRemoved = 2,
-            ItemRenamed = 3,
-            ItemSelected = 4,
-            ItemActivated = 5,
-            ItemReloaded = 6
-        }
-
-        public VBComponents(VB.VBComponents target) : base(target)
-        {
-            if (_components == null)
-            {
-                AttachEvents(target);
-            }
         }
 
         public int Count => IsWrappingNullReference ? 0 : Target.Count;
@@ -71,9 +53,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IVBComponent> IEnumerable<IVBComponent>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IVBComponent>(null, o => new VBComponent(null))
-                : new ComWrapperEnumerator<IVBComponent>(Target, o => new VBComponent((VB.VBComponent) o));
+            return new ComWrapperEnumerator<IVBComponent>(Target, comObject => new VBComponent((VB.VBComponent) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -111,54 +91,79 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
             if (ext == ComponentTypeExtensions.DocClassExtension)
             {
-                try
-                {
-                    var temp = this[name];
-                }
-                catch
-                {
-                    throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
-                }
+                IVBComponent component = null;
+                try {
+                    try
+                    {
+                        component = this[name];
+                    }
+                    catch
+                    {
+                        throw new IndexOutOfRangeException($"Could not find document component named '{name}'.  Try adding a document component with the same name and try again.");
+                    }
 
-                var component = this[name];
-                component.CodeModule.Clear();
-
-                var codeString = File.ReadAllText(path, Encoding.UTF8);
-                component.CodeModule.AddFromString(codeString);
+                    var codeString = File.ReadAllText(path, Encoding.UTF8);
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                        codeModule.AddFromString(codeString);
+                    }
+                }
+                finally
+                {
+                    component?.Dispose();
+                }
             }
             else if (ext == ComponentTypeExtensions.FormExtension)
             {
+                IVBComponent component = null;
                 try
-                {
-                    var temp = this[name];
+                {   
+                    try
+                    {
+                        component = this[name];
+                    }
+                    catch
+                    {
+                        component = Import(path);
+                    }
+
+                    var codeString =
+                        File.ReadAllText(path,
+                            Encoding
+                                .Default); //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                    var codeLines = codeString.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+
+                    var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
+                    var attributeLines = codeLines.Skip(nonAttributeLines)
+                        .TakeWhile(line => line.StartsWith("Attribute")).Count();
+                    var declarationsStartLine = nonAttributeLines + attributeLines + 1;
+                    var correctCodeString = string.Join(Environment.NewLine,
+                        codeLines.Skip(declarationsStartLine - 1).ToArray());
+
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                        codeModule.AddFromString(correctCodeString);
+                    }
                 }
-                catch
+                finally
                 {
-                    Import(path);
+                    component?.Dispose();
                 }
-
-                var component = this[name];
-
-                var codeString = File.ReadAllText(path, Encoding.Default);  //The VBE uses the current ANSI codepage from the windows settings to export and import.
-                var codeLines = codeString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-                var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();
-                var attributeLines = codeLines.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
-                var declarationsStartLine = nonAttributeLines + attributeLines + 1;
-                var correctCodeString = string.Join(Environment.NewLine, codeLines.Skip(declarationsStartLine - 1).ToArray());
-
-                component.CodeModule.Clear();
-                component.CodeModule.AddFromString(correctCodeString);
             }
             else if (ext != ComponentTypeExtensions.FormBinaryExtension)
             {
-                Import(path);
+                using(Import(path)){} //Nothing to do here, except properly disposing the wrapper returned from Import.
             }
         }
 
         public void RemoveSafely(IVBComponent component)
         {
-            if (component.IsWrappingNullReference) { return; }
+            if (component.IsWrappingNullReference)
+            {
+                return;
+            }
 
             switch (component.Type)
             {
@@ -169,124 +174,106 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     break;
                 case ComponentType.ActiveXDesigner:
                 case ComponentType.Document:
-                    component.CodeModule.Clear();
-                    break;
-                default:
+                    using (var codeModule = component.CodeModule)
+                    {
+                        codeModule.Clear();
+                    }
                     break;
             }
         }
 
         #region Events
-
-        private static void AttachEvents(VB.VBComponents components)
-        {
-            lock (Locker)
-            {
-                if (_components == null && components != null)
-                {
-                    _components = components;
-                    _componentAdded = OnComponentAdded;
-                    _componentRemoved = OnComponentRemoved;
-                    _componentRenamed = OnComponentRenamed;
-                    _componentSelected = OnComponentSelected;
-                    _componentActivated = OnComponentActivated;
-                    _componentReloaded = OnComponentReloaded;
-                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                    ComEventsHelper.Combine(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
-                }               
-            }
-        }
-
-        internal static void DetatchEvents()
-        {
-            lock (Locker)
-            {
-                if (_components != null)
-                {
-                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemAdded, _componentAdded);
-                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRemoved, _componentRemoved);
-                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemRenamed, _componentRenamed);
-                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemSelected, _componentSelected);
-                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemActivated, _componentActivated);
-                    ComEventsHelper.Remove(_components, VBComponentsEventsGuid, (int)ComponentEventDispId.ItemReloaded, _componentReloaded);
-                    _components = null;
-                }
-            }
-        }
-
+        
         private delegate void ItemAddedDelegate(VB.VBComponent vbComponent);
-        private static ItemAddedDelegate _componentAdded;
-        public static event EventHandler<ComponentEventArgs> ComponentAdded;
-        private static void OnComponentAdded(VB.VBComponent vbComponent)
+        public event EventHandler<ComponentEventArgs> ComponentAdded;
+        void VB._dispVBComponentsEvents.ItemAdded(VB.VBComponent VBComponent)
         {
-            OnDispatch(ComponentAdded, vbComponent);
+            OnDispatch(ComponentAdded, VBComponent);
         }
 
         private delegate void ItemRemovedDelegate(VB.VBComponent vbComponent);
-        private static ItemRemovedDelegate _componentRemoved;
-        public static event EventHandler<ComponentEventArgs> ComponentRemoved;
-        private static void OnComponentRemoved(VB.VBComponent vbComponent)
+        public event EventHandler<ComponentEventArgs> ComponentRemoved;
+        void VB._dispVBComponentsEvents.ItemRemoved(VB.VBComponent VBComponent)
         {
-            OnDispatch(ComponentRemoved, vbComponent);
+            OnDispatch(ComponentRemoved, VBComponent);
         }
 
         private delegate void ItemRenamedDelegate(VB.VBComponent vbComponent, string oldName);
-        private static ItemRenamedDelegate _componentRenamed;
-        public static event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
-        private static void OnComponentRenamed(VB.VBComponent vbComponent, string oldName)
+        public event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
+        void VB._dispVBComponentsEvents.ItemRenamed(VB.VBComponent VBComponent, string OldName)
         {
+            var component = new VBComponent(VBComponent);
             var handler = ComponentRenamed;
-            if (handler != null)
+            if (handler == null)
             {
-                var component = new VBComponent(vbComponent);
-                var project = component.Collection.Parent;
-                if (project.Protection != ProjectProtection.Locked)
-                {
-                    handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, new VBComponent(vbComponent), oldName));
-                }
+                component.Dispose();
+                return;
             }
+
+            IVBProject project;
+            using (var components = component.Collection)
+            {
+                project = components.Parent;
+            }
+
+
+            if (project.Protection == ProjectProtection.Locked)
+            {
+                project.Dispose();
+                component.Dispose();
+                return;
+            }
+
+            handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, component, OldName));
         }
 
         private delegate void ItemSelectedDelegate(VB.VBComponent vbComponent);
-        private static ItemSelectedDelegate _componentSelected;
-        public static event EventHandler<ComponentEventArgs> ComponentSelected;
-        private static void OnComponentSelected(VB.VBComponent vbComponent)
+        public event EventHandler<ComponentEventArgs> ComponentSelected;
+        void VB._dispVBComponentsEvents.ItemSelected(VB.VBComponent VBComponent)
         {
-            OnDispatch(ComponentSelected, vbComponent);
+            OnDispatch(ComponentSelected, VBComponent);
         }
 
         private delegate void ItemActivatedDelegate(VB.VBComponent vbComponent);
-        private static ItemActivatedDelegate _componentActivated;
-        public static event EventHandler<ComponentEventArgs> ComponentActivated;
-        private static void OnComponentActivated(VB.VBComponent vbComponent)
+        public event EventHandler<ComponentEventArgs> ComponentActivated;
+        void VB._dispVBComponentsEvents.ItemActivated(VB.VBComponent VBComponent)
         {
-            OnDispatch(ComponentActivated, vbComponent);
+            OnDispatch(ComponentActivated, VBComponent);
         }
 
         private delegate void ItemReloadedDelegate(VB.VBComponent vbComponent);
-        private static ItemReloadedDelegate _componentReloaded;
-        public static event EventHandler<ComponentEventArgs> ComponentReloaded;
-        private static void OnComponentReloaded(VB.VBComponent vbComponent)
+        public event EventHandler<ComponentEventArgs> ComponentReloaded;
+        void VB._dispVBComponentsEvents.ItemReloaded(VB.VBComponent VBComponent)
         {
-            OnDispatch(ComponentReloaded, vbComponent);
+            OnDispatch(ComponentReloaded, VBComponent);
         }
 
         private static void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent vbComponent)
         {
+            var component = new VBComponent(vbComponent);
             var handler = dispatched;
-            if (handler != null)
+            if (handler == null)
             {
-                var component = new VBComponent(vbComponent);
-                var project = component.Collection.Parent;
-                if (project.Protection != ProjectProtection.Locked)
-                {
-                    handler.Invoke(component, new ComponentEventArgs(project.ProjectId, project, component));
-                }
+                component.Dispose();
+                return;
             }
+
+            IVBProject project;
+            using (var components = component.Collection)
+            {
+                project = components.Parent;
+            }
+
+
+            if (project.Protection == ProjectProtection.Locked)
+            {
+                project.Dispose();
+                component.Dispose();
+                return;
+            }
+
+            var eventArgs = new ComponentEventArgs(project.ProjectId, project, component);
+            handler.Invoke(component, eventArgs);
         }
 
         #endregion

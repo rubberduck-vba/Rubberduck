@@ -1,18 +1,17 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ImplicitByRefModifierInspectionTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_ReturnsResult()
         {
             const string inputCode =
@@ -30,8 +29,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_ReturnsResult_MultipleParameters()
         {
             const string inputCode =
@@ -49,8 +48,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_DoesNotReturnResult_ByRef()
         {
             const string inputCode =
@@ -68,8 +67,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_DoesNotReturnResult_ByVal()
         {
             const string inputCode =
@@ -87,8 +86,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_ReturnsResult_SomePassedByRefImplicitly()
         {
             const string inputCode =
@@ -106,8 +105,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_DoesNotReturnResult_ParamArray()
         {
             const string inputCode =
@@ -125,8 +124,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_ReturnsResult_InterfaceImplementation()
         {
             const string inputCode1 =
@@ -157,8 +156,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_ReturnsResult_MultipleInterfaceImplementations()
         {
             const string inputCode1 =
@@ -196,8 +195,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitByRefModifier_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -216,16 +215,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        public void InspectionType()
-        {
-            var inspection = new ImplicitByRefModifierInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitByRefModifierInspection";

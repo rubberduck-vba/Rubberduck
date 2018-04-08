@@ -1,17 +1,17 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class NonReturningFunctionInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_ReturnsResult()
         {
             const string inputCode =
@@ -22,14 +22,14 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningPropertyGet_ReturnsResult()
         {
             const string inputCode =
@@ -40,14 +40,14 @@ End Property";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_ReturnsResult_MultipleFunctions()
         {
             const string inputCode =
@@ -61,14 +61,14 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_DoesNotReturnResult_Let()
         {
             const string inputCode =
@@ -80,14 +80,14 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_DoesNotReturnResult_Set()
         {
             const string inputCode =
@@ -99,14 +99,14 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -118,14 +118,14 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_ReturnsResult_MultipleSubs_SomeReturning()
         {
             const string inputCode =
@@ -140,14 +140,14 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_ReturnsResult_InterfaceImplementation()
         {
             //Input
@@ -171,22 +171,14 @@ End Function";
             {
 
                 var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new NonReturningFunctionInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "NonReturningFunctionInspection";

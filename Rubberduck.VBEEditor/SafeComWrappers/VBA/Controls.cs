@@ -8,8 +8,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Controls : SafeComWrapper<VB.Forms.Controls>, IControls
     {
-        public Controls(VB.Forms.Controls target) 
-            : base(target)
+        public Controls(VB.Forms.Controls target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -20,9 +20,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         IEnumerator<IControl> IEnumerable<IControl>.GetEnumerator()
         {
             // soft-casting because ImageClass doesn't implement IControl
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IControl>(null, o => new Control(null))
-                : new ComWrapperEnumerator<IControl>(Target, o => new Control(o as VB.Forms.Control));
+            return new ComWrapperEnumerator<IControl>(Target, comObject => new Control(comObject as VB.Forms.Control));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -31,18 +29,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IControl>) this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        //for (var i = 1; i <= Count; i++)
-        //        //{
-        //        //    this[i].Release();
-        //        //}
-        //        base.Release(final);
-        //    } 
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.Forms.Controls> other)
         {

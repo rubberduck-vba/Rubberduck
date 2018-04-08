@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -17,9 +16,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class StopKeywordInspection : ParseTreeInspectionBase
     {
         public StopKeywordInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+            : base(state) { }
 
         public override IInspectionListener Listener { get; } =
             new StopKeywordListener();

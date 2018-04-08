@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -6,12 +6,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class ImplementInterfaceTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Procedure()
         {
             //Input
@@ -52,9 +52,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Procedure_ClassHasOtherProcedure()
         {
             //Input
@@ -101,9 +101,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Procedure_WithParams()
         {
             //Input
@@ -144,9 +144,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Function()
         {
             //Input
@@ -187,9 +187,9 @@ End Function
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Function_WithImplicitType()
         {
             //Input
@@ -230,9 +230,9 @@ End Function
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Function_WithParam()
         {
             //Input
@@ -273,9 +273,9 @@ End Function
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyGet()
         {
             //Input
@@ -316,9 +316,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyGet_WithImplicitType()
         {
             //Input
@@ -359,9 +359,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyGet_WithParam()
         {
             //Input
@@ -402,9 +402,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyLet()
         {
             //Input
@@ -445,9 +445,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyLet_WithParam()
         {
             //Input
@@ -488,9 +488,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertySet()
         {
             //Input
@@ -531,9 +531,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertySet_WithParam()
         {
             //Input
@@ -574,9 +574,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertySet_AllTypes()
         {
             //Input
@@ -638,9 +638,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void CreatesMethodStubForAllProcedureKinds()
         {
             //Input
@@ -709,9 +709,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementsInterfaceInDocumentModule()
         {
             const string interfaceCode = @"Option Explicit
@@ -730,7 +730,7 @@ End Sub
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Sheet1", ComponentType.Document, initialCode, Selection.Home)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var project = vbe.Object.VBProjects[0];
@@ -749,9 +749,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementsInterfaceInUserFormModule()
         {
             const string interfaceCode = @"Option Explicit
@@ -770,7 +770,7 @@ End Sub
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Form1", ComponentType.UserForm, initialCode, Selection.Home)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var project = vbe.Object.VBProjects[0];

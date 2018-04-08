@@ -1,15 +1,15 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
 {
-    [TestClass]
+    [TestFixture]
     public class MultiSegmentLineTests
     {
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void SingleLineFunctionsNotIndented()
         {
             var code = new[]
@@ -28,8 +28,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void SingleLineEnumsNotIndented()
         {
             var code = new[]
@@ -48,8 +48,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void SingleLineTypesNotIndented()
         {
             var code = new[]
@@ -68,8 +68,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void UnmatchedEnumsNotIndent()
         {
             var code = new[]
@@ -83,8 +83,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod]        // Broken in VB6 SmartIndenter.
-        [TestCategory("Indenter")]
+        [Test]        // Broken in VB6 SmartIndenter.
+        [Category("Indenter")]
         public void IfThenElseOnSameLineWorks()
         {
             var code = new[]
@@ -110,8 +110,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void MixedSelectSyntaxWorks()
         {
             var code = new[]
@@ -146,8 +146,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void UnfinishedCaseOnNextLineWorks()
         {
             var code = new[]

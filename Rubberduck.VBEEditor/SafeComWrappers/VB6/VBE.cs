@@ -6,6 +6,7 @@ using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.VB6.Interop.VBIDE;
 
@@ -13,8 +14,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBE : SafeComWrapper<VB.VBE>, IVBE
     {
-        public VBE(VB.VBE target)
-            :base(target)
+        public VBE(VB.VBE target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
@@ -25,13 +26,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public ICodePane ActiveCodePane
         {
             get => new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane);
-            set { if (!IsWrappingNullReference) Target.ActiveCodePane = (VB.CodePane)value.Target; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.ActiveCodePane = (VB.CodePane) value.Target;
+                }
+            }
         }
 
         public IVBProject ActiveVBProject
         {
             get => new VBProject(IsWrappingNullReference ? null : Target.ActiveVBProject);
-            set { if (!IsWrappingNullReference) Target.ActiveVBProject = (VB.VBProject)value.Target; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.ActiveVBProject = (VB.VBProject) value.Target;
+                }
+            }
         }
 
         public IWindow ActiveWindow => new Window(IsWrappingNullReference ? null : Target.ActiveWindow);
@@ -62,7 +75,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
-
+        
         //public override void Release(bool final = false)
         //{
         //    if (!IsWrappingNullReference)
@@ -101,13 +114,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             const string mdiClientClass = "MDIClient";
             const int maxCaptionLength = 512;
 
-            IntPtr mainWindow = (IntPtr)MainWindow.HWnd;
+            var mainWindow = (IntPtr) MainWindow.HWnd;
 
-            IntPtr mdiClient = NativeMethods.FindWindowEx(mainWindow, IntPtr.Zero, mdiClientClass, string.Empty);
+            var mdiClient = NativeMethods.FindWindowEx(mainWindow, IntPtr.Zero, mdiClientClass, string.Empty);
 
-            IntPtr mdiChild = NativeMethods.GetTopWindow(mdiClient);
-            StringBuilder mdiChildCaption = new StringBuilder();
-            int captionLength = NativeMethods.GetWindowText(mdiChild, mdiChildCaption, maxCaptionLength);
+            var mdiChild = NativeMethods.GetTopWindow(mdiClient);
+            var mdiChildCaption = new StringBuilder();
+            var captionLength = NativeMethods.GetWindowText(mdiChild, mdiChildCaption, maxCaptionLength);
 
             if (captionLength > 0)
             {
@@ -124,7 +137,47 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public bool IsInDesignMode
         {
-            get { return VBProjects.All(project => project.Mode == EnvironmentMode.Design); }
+            get
+            {
+                var allInDesignMode = true;
+                using (var projects = VBProjects)
+                {
+                    foreach (var project in projects)
+                    {
+                        allInDesignMode = allInDesignMode && project.Mode == EnvironmentMode.Design;
+                        project.Dispose();
+                        if (!allInDesignMode)
+                        {
+                            break;
+                        }
+                    }
+                }
+                return allInDesignMode;
+            }
+        }
+
+        public int ProjectsCount
+        {
+            get
+            {
+                using (var projects = VBProjects)
+                {
+                    return projects.Count;
+                }
+            }
+        }
+
+        public QualifiedSelection? GetActiveSelection()
+        {
+            using (var activePane = ActiveCodePane)
+            {
+                if (activePane == null || activePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+
+                return activePane.GetQualifiedSelection();
+            }
         }
     }
 }

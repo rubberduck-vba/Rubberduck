@@ -22,10 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(result.Context);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveObsoleteStatementQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveObsoleteStatementQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

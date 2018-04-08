@@ -12,7 +12,10 @@ namespace Rubberduck.VBEditor.Application
         {
             var qualifiedMemberName = declaration.QualifiedName;
             var projectFileName = qualifiedMemberName.QualifiedModuleName.ProjectPath;
-            if (Application == null || string.IsNullOrEmpty(projectFileName)) { return; }
+            if (Application == null || string.IsNullOrEmpty(projectFileName))
+            {
+                return;
+            }
 
             var moduleName = qualifiedMemberName.QualifiedModuleName.ComponentName;
             var memberName = qualifiedMemberName.MemberName;

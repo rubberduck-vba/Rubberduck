@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class AddIns : SafeComWrapper<VB.Addins>, IAddIns
     {
-        public AddIns(VB.Addins target) : 
-            base(target)
+        public AddIns(VB.Addins target, bool rewrapping = false) : 
+            base(target, rewrapping)
         {
         }
 
@@ -25,18 +25,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             Target.Update();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.Addins> other)
         {
@@ -60,7 +48,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator<IAddIn> IEnumerable<IAddIn>.GetEnumerator()
         {
-            return new ComWrapperEnumerator<IAddIn>(Target, o => new AddIn((VB.AddIn)o));
+            return new ComWrapperEnumerator<IAddIn>(Target, comObject => new AddIn((VB.AddIn)comObject));
         }
     }
 }

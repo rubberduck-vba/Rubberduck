@@ -27,9 +27,6 @@ namespace Rubberduck.Inspections.QuickFixes
             _state.GetRewriter(result.Target).InsertBefore(result.Target.Context.Start.TokenIndex, instruction);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.IntroduceLocalVariableQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.IntroduceLocalVariableQuickFix;
     }
 }

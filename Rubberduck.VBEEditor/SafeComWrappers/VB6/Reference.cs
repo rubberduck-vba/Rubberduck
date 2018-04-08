@@ -5,8 +5,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class Reference : SafeComWrapper<VB.Reference>, IReference
     {
-        public Reference(VB.Reference target) 
-            : base(target)
+        public Reference(VB.Reference target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

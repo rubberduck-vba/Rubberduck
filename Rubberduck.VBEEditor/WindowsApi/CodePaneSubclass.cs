@@ -7,13 +7,11 @@ namespace Rubberduck.VBEditor.WindowsApi
     //Stub for code pane replacement.  :-)
     internal class CodePaneSubclass : FocusSource
     {
-        private readonly ICodePane _pane;
-
-        public ICodePane CodePane { get { return _pane; } }
+        public ICodePane CodePane { get; }
 
         internal CodePaneSubclass(IntPtr hwnd, ICodePane pane) : base(hwnd)
         {
-            _pane = pane;
+            CodePane = pane;
         }
 
         protected override void DispatchFocusEvent(FocusType type)
@@ -23,7 +21,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             {
                 return;
             }
-            OnFocusChange(new WindowChangedEventArgs(window.Value.Hwnd, window.Value.Window, _pane, type));
+            OnFocusChange(new WindowChangedEventArgs(window.Value.Hwnd, window.Value.Window, CodePane, type));
         }
     }
 }

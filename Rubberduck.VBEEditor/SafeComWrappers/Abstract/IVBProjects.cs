@@ -1,13 +1,14 @@
 using System;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
-    public interface IVBProjects : ISafeComWrapper, IComCollection<IVBProject>, IEquatable<IVBProjects>
+    public interface IVBProjects : ISafeEventedComWrapper, IComCollection<IVBProject>, IEquatable<IVBProjects>
     {
-        //event EventHandler<ProjectEventArgs> ProjectActivated;
-        //event EventHandler<ProjectEventArgs> ProjectAdded;
-        //event EventHandler<ProjectEventArgs> ProjectRemoved;
-        //event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
+        event EventHandler<ProjectEventArgs> ProjectActivated;
+        event EventHandler<ProjectEventArgs> ProjectAdded;
+        event EventHandler<ProjectEventArgs> ProjectRemoved;
+        event EventHandler<ProjectRenamedEventArgs> ProjectRenamed;
 
         IVBE VBE { get; }
         IVBE Parent { get; }

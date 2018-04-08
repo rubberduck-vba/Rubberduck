@@ -1,15 +1,15 @@
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Extensions;
 
 namespace RubberduckTests
 {
-    [TestClass]
+    [TestFixture]
     public class StringExtensionsTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void StripsStringLiteral()
         {
             var value = "\"Hello, World!\"";
@@ -21,8 +21,8 @@ namespace RubberduckTests
             Assert.AreEqual("Debug.Print " + replacement, result);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void StripsAllStringLiterals()
         {
             var value = "\"Hello, World!\"";
@@ -34,8 +34,8 @@ namespace RubberduckTests
             Assert.AreEqual("Debug.Print " + replacement + " & " + replacement, result);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void IsComment_StartLineWithSingleQuoteMarker()
         {
             var instruction = "'Debug.Print mwahaha this is just a comment.";
@@ -47,8 +47,8 @@ namespace RubberduckTests
             Assert.AreEqual(index, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void HasComment_EndOfLineSingleQuoteMarkerWithStringLiteral()
         {
             var comment = "'but this is one.";
@@ -61,8 +61,8 @@ namespace RubberduckTests
             Assert.AreEqual(comment, instruction.Substring(index));
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void HasComment_RemMarkerWithWhitespace()
         {
             var comment = "Rem this is a comment.";
@@ -75,8 +75,8 @@ namespace RubberduckTests
             Assert.AreEqual(comment, instruction.Substring(index));
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void HasComment_RemMarkerWithQuestionMark()
         {
             var comment = "Rem?this is a comment.";
@@ -89,8 +89,8 @@ namespace RubberduckTests
             Assert.AreEqual(comment, instruction.Substring(index));
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void CaseInsensitiveContainsShouldReturnTrue()
         {
             var searchFor = "tExt";
@@ -98,8 +98,8 @@ namespace RubberduckTests
             Assert.IsTrue(textToSearch.Contains(searchFor, StringComparison.OrdinalIgnoreCase));
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
+        [Test]
+        [Category("Refactorings")]
         public void CaseInsensitiveContainsShouldReturnFalse()
         {
             var searchFor = "tExt";

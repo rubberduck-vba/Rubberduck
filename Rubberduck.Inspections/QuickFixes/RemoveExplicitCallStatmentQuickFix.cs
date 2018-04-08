@@ -33,15 +33,10 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveObsoleteStatementQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveObsoleteStatementQuickFix;
 
         public override bool CanFixInProcedure => true;
-
         public override bool CanFixInModule => true;
-
         public override bool CanFixInProject => true;
     }
 }

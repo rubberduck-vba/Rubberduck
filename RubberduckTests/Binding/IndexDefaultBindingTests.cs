@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
-    [TestClass]
+    [TestFixture]
     public class IndexDefaultBindingTests
     {
         private const string BINDING_TARGET_LEXPRESSION = "BindingTarget";
@@ -18,8 +18,8 @@ namespace RubberduckTests.Binding
         private const string TEST_CLASS_NAME = "TestClass";
         private const string REFERENCED_PROJECT_FILEPATH = @"C:\Temp\ReferencedProjectA";
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void RecursiveDefaultMember()
         {
             string callerModule = @"
@@ -60,8 +60,8 @@ End Property
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void NormalPropertyFunctionSubroutine()
         {
             string callerModule = @"

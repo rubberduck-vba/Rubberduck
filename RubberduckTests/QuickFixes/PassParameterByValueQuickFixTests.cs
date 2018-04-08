@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,11 +8,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class PassParameterByValueQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_SubNameStartsWithParamName()
         {
             const string inputCode =
@@ -27,14 +28,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByUnspecified()
         {
             const string inputCode =
@@ -50,14 +51,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByRef()
         {
             const string inputCode =
@@ -73,14 +74,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByUnspecified_MultilineParameter()
         {
             const string inputCode =
@@ -98,14 +99,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWorks_PassedByRef_MultilineParameter()
         {
             const string inputCode =
@@ -123,14 +124,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
         {
             //Input
@@ -181,7 +182,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
                 Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
@@ -189,8 +190,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_EventMember_MultipleParams_OneCanBeByVal_QuickFixWorks()
         {
             //Input
@@ -239,7 +240,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
                 Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
@@ -248,8 +249,8 @@ End Sub";
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWithOptionalWorks()
         {
             const string inputCode =
@@ -267,15 +268,15 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWithOptionalByRefWorks()
         {
             const string inputCode =
@@ -293,15 +294,15 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2408
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ParameterCanBeByVal_QuickFixWithOptional_LineContinuationsWorks()
         {
             const string inputCode =
@@ -329,7 +330,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }

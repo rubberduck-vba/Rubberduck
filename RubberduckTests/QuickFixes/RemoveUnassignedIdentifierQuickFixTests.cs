@@ -1,16 +1,17 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveUnassignedIdentifierQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_QuickFixWorks()
         {
             const string inputCode =
@@ -27,14 +28,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_VariableOnMultipleLines_QuickFixWorks()
         {
             const string inputCode =
@@ -54,14 +55,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_MultipleVariablesOnSingleLine_QuickFixWorks()
         {
             const string inputCode =
@@ -80,14 +81,14 @@ End Sub";
 
                 var inspection = new VariableNotAssignedInspection(state);
                 new RemoveUnassignedIdentifierQuickFix(state).Fix(
-                    inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
+                    inspection.GetInspectionResults(CancellationToken.None).Single(s => s.Target.IdentifierName == "var2"));
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_MultipleVariablesOnMultipleLines_QuickFixWorks()
         {
             const string inputCode =
@@ -107,7 +108,7 @@ End Sub";
 
                 var inspection = new VariableNotAssignedInspection(state);
                 new RemoveUnassignedIdentifierQuickFix(state).Fix(
-                    inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
+                    inspection.GetInspectionResults(CancellationToken.None).Single(s => s.Target.IdentifierName == "var2"));
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }

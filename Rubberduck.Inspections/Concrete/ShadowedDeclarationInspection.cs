@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -23,11 +22,9 @@ namespace Rubberduck.Inspections.Concrete
             SameComponent = 3
         }
 
-        public ShadowedDeclarationInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.DoNotShow)
+        public ShadowedDeclarationInspection(RubberduckParserState state) : base(state)
         {
         }
-
-        public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -91,26 +88,20 @@ namespace Rubberduck.Inspections.Concrete
                 return true;
             }
 
-            var parameterDeclaration = declaration as ParameterDeclaration;
-
-            return parameterDeclaration != null && builtInEventHandlers.Contains(parameterDeclaration.ParentDeclaration);
+            return declaration is ParameterDeclaration parameterDeclaration &&
+                   builtInEventHandlers.Contains(parameterDeclaration.ParentDeclaration);
         }
 
         private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, DeclarationSite originalDeclarationSite)
         {
-            if (originalDeclarationSite == DeclarationSite.NotApplicable)
+            switch (originalDeclarationSite)
             {
-                return false;
-            }
-
-            if (originalDeclarationSite == DeclarationSite.ReferencedProject)
-            {
-                return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration);
-            }
-
-            if (originalDeclarationSite == DeclarationSite.OtherComponent)
-            {
-                return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration);
+                case DeclarationSite.NotApplicable:
+                    return false;
+                case DeclarationSite.ReferencedProject:
+                    return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration);
+                case DeclarationSite.OtherComponent:
+                    return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration);
             }
 
             return DeclarationInTheSameComponentCanBeShadowed(originalDeclaration, userDeclaration);
@@ -158,14 +149,12 @@ namespace Rubberduck.Inspections.Concrete
 
             if (userDeclaration.DeclarationType == DeclarationType.ClassModule)
             {
-                if (userDeclarationComponentType == ComponentType.UserForm && !ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.UserForm))
+                switch (userDeclarationComponentType)
                 {
-                    return false;
-                }
-
-                if (userDeclarationComponentType == ComponentType.Document && !ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.Document))
-                {
-                    return false;
+                    case ComponentType.UserForm when !ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.UserForm):
+                        return false;
+                    case ComponentType.Document when !ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.Document):
+                        return false;
                 }
             }
 
@@ -229,28 +218,20 @@ namespace Rubberduck.Inspections.Concrete
             if (originalDeclaration.DeclarationType == DeclarationType.ClassModule)
             {
                 // Syntax of instantiating a new class makes it impossible to be shadowed
-                if (originalDeclarationComponentType == ComponentType.ClassModule)
+                switch (originalDeclarationComponentType)
                 {
-                    return false;
-                }
-
-                if (originalDeclarationComponentType == ComponentType.UserForm && 
-                    !OtherComponentTypeShadowingRelations[DeclarationType.UserForm].Contains(userDeclaration.DeclarationType))
-                {
-                    return false;
-                }
-
-                if (originalDeclarationComponentType == ComponentType.Document && 
-                    !OtherComponentTypeShadowingRelations[DeclarationType.Document].Contains(userDeclaration.DeclarationType))
-                {
-                    return false;
+                    case ComponentType.ClassModule:
+                        return false;
+                    case ComponentType.UserForm when !OtherComponentTypeShadowingRelations[DeclarationType.UserForm].Contains(userDeclaration.DeclarationType):
+                        return false;
+                    case ComponentType.Document when !OtherComponentTypeShadowingRelations[DeclarationType.Document].Contains(userDeclaration.DeclarationType):
+                        return false;
                 }
             }
             else
             {
-                HashSet<DeclarationType> shadowedTypes;
                 if (!OtherComponentTypeShadowingRelations.TryGetValue(originalDeclaration.DeclarationType,
-                        out shadowedTypes)
+                        out var shadowedTypes)
                     || !shadowedTypes.Contains(userDeclaration.DeclarationType))
                 {
                     return false;
@@ -276,15 +257,13 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             // Syntax of instantiating a new UDT makes it impossible to be shadowed
-            if (originalDeclaration.DeclarationType == DeclarationType.UserDefinedType)
+            switch (originalDeclaration.DeclarationType)
             {
-                return false;
-            }
-
-            if (originalDeclaration.DeclarationType == DeclarationType.Parameter || originalDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember ||
-                originalDeclaration.DeclarationType == DeclarationType.LineLabel)
-            {
-                return false;
+                case DeclarationType.UserDefinedType:
+                case DeclarationType.Parameter:
+                case DeclarationType.UserDefinedTypeMember:
+                case DeclarationType.LineLabel:
+                    return false;
             }
 
             if ((originalDeclaration.DeclarationType == DeclarationType.Variable || originalDeclaration.DeclarationType == DeclarationType.Constant) &&

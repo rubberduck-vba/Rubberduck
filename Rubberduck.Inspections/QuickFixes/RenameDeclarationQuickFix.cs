@@ -6,29 +6,30 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class RenameDeclarationQuickFix : QuickFixBase
     {
+        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RenameDeclarationQuickFix(RubberduckParserState state, IMessageBox messageBox)
+        public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
             : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection), typeof(DefaultProjectNameInspection))
         {
+            _vbe = vbe;
             _state = state;
             _messageBox = messageBox;
         }
 
         public override void Fix(IInspectionResult result)
         {
-            var vbe = result.Target.Project.VBE;
-
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
-                var factory = new RenamePresenterFactory(vbe, view, _state);
-                var refactoring = new RenameRefactoring(vbe, factory, _messageBox, _state);
+                var factory = new RenamePresenterFactory(_vbe, view, _state);
+                var refactoring = new RenameRefactoring(_vbe, factory, _messageBox, _state);
                 refactoring.Refactor(result.Target);
             }
         }

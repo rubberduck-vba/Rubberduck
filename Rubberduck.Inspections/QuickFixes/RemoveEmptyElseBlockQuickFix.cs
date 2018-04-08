@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            IModuleRewriter rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
 
             //dynamic used since it's not known at run-time
             UpdateContext((dynamic)result.Context, rewriter);
@@ -36,13 +36,10 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
         
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveEmptyElseBlockQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveEmptyElseBlockQuickFix;
 
-        public override bool CanFixInProcedure { get; } = false;
-        public override bool CanFixInModule { get; } = false;
-        public override bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }

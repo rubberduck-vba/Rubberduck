@@ -8,7 +8,6 @@ using Antlr4.Runtime.Tree;
 using System.Diagnostics;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -133,59 +132,70 @@ namespace Rubberduck.Parsing.VBA
 
         private Declaration SupertypeForDocument(QualifiedModuleName module, RubberduckParserState state)
         {
-            if(module.ComponentType != ComponentType.Document || module.Component == null)
+            if(module.ComponentType != ComponentType.Document)
             {
                 return null;
             }
 
-            int documentPropertyCount = 0;
-            try
-            {
-                if(module.Component.IsWrappingNullReference
-                    || module.Component.Properties == null
-                    || module.Component.Properties.IsWrappingNullReference)
-                {
-                    return null;
-                }
-                documentPropertyCount = module.Component.Properties.Count;
-            }
-            catch(COMException)
+            var component = _state.ProjectsProvider.Component(module);
+            if (component == null || component.IsWrappingNullReference)
             {
                 return null;
             }
 
             Declaration superType = null;
-            foreach (var coclass in state.CoClasses)
+            // TODO: Replace with TypeLibAPI call, require a solution regarding thread synchronization or caching
+            /*
+            using (var properties = component.Properties)
             {
+                int documentPropertyCount = 0;
                 try
                 {
-                    
-
-                    if (coclass.Key.Count != documentPropertyCount)
+                    if (properties == null || properties.IsWrappingNullReference)
                     {
-                        continue;
+                        return null;
                     }
-
-                    var allNamesMatch = true;
-                    for (var i = 0; i < coclass.Key.Count; i++)
+                    documentPropertyCount = properties.Count;
+                }
+                catch(COMException)
+                {
+                    return null;
+                }
+                
+                foreach (var coclass in state.CoClasses)
+                {
+                    try
                     {
-                        if (coclass.Key[i] != module.Component.Properties[i + 1].Name)
+                        if (coclass.Key.Count != documentPropertyCount)
                         {
-                            allNamesMatch = false;
+                            continue;
+                        }
+
+                        var allNamesMatch = true;
+                        for (var i = 0; i < coclass.Key.Count; i++)
+                        {
+                            using (var property = properties[i+1])
+                            {
+                                if (coclass.Key[i] != property?.Name)
+                                {
+                                    allNamesMatch = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (allNamesMatch)
+                        {
+                            superType = coclass.Value;
                             break;
                         }
                     }
-
-                    if (allNamesMatch)
+                    catch (COMException)
                     {
-                        superType = coclass.Value;
-                        break;
                     }
                 }
-                catch (COMException)
-                {
-                }
             }
+            */
 
             return superType;
         }

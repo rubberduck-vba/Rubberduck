@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -11,15 +11,15 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
-    [TestClass]
+    [TestFixture]
     public class MemberAccessTypeBindingTests
     {
         private const string BindingTargetName = "BindingTarget";
         private const string TestClassName = "TestClass";
         private const string ReferencedProjectFilepath = @"C:\Temp\ReferencedProjectA";
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProjectAndUnrestrictedNameIsProject()
         {
             var enclosingModuleCode = string.Format("Public WithEvents anything As {0}.{0}", BindingTargetName);
@@ -42,8 +42,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProjectAndUnrestrictedNameIsProceduralModule()
         {
             const string projectName = "AnyName";
@@ -66,8 +66,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProjectAndUnrestrictedNameIsClassModule()
         {
             const string projectName = "AnyName";
@@ -90,8 +90,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsProjectAndUnrestrictedNameIsType()
         {
             var builder = new MockVbeBuilder();
@@ -121,8 +121,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void LExpressionIsModuleAndUnrestrictedNameIsType()
         {
             var builder = new MockVbeBuilder();
@@ -146,8 +146,8 @@ namespace RubberduckTests.Binding
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void NestedMemberAccessExpressions()
         {
             const string projectName = "AnyProjectName";

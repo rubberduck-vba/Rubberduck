@@ -29,10 +29,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertAfter(identifierNode.Stop.TokenIndex, " As Variant");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.DeclareAsExplicitVariantQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.DeclareAsExplicitVariantQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public sealed class PropertyGetDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
     {
-        private readonly List<Declaration> _parameters;
+        private readonly List<ParameterDeclaration> _parameters;
 
         public PropertyGetDeclaration(
             QualifiedMemberName name,
@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.Symbols
                   annotations,
                   attributes)
         {
-            _parameters = new List<Declaration>();
+            _parameters = new List<ParameterDeclaration>();
         }
 
         public PropertyGetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
@@ -67,13 +67,12 @@ namespace Rubberduck.Parsing.Symbols
         {
             _parameters =
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .Cast<Declaration>()
                     .ToList();
         } 
 
-        public IEnumerable<Declaration> Parameters => _parameters.ToList();
+        public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
 
-        public void AddParameter(Declaration parameter)
+        public void AddParameter(ParameterDeclaration parameter)
         {
             _parameters.Add(parameter);
         }

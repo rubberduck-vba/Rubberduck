@@ -174,13 +174,10 @@ namespace Rubberduck.Inspections.QuickFixes
         private bool FirstBlockStmntHasLabel(VBAParser.BlockContext block)
             => block.blockStmt()?.FirstOrDefault()?.statementLabelDefinition() != null;
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveEmptyIfBlockQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveEmptyIfBlockQuickFix;
 
-        public override bool CanFixInProcedure { get; } = false;
-        public override bool CanFixInModule { get; } = false;
-        public override bool CanFixInProject { get; } = false;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }

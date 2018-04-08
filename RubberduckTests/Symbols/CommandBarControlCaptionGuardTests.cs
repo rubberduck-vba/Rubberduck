@@ -1,10 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using System;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class CommandBarControlCaptionGuardTests
     {
         private const int MAX_CAPTION_LENGTH = 256;
@@ -13,32 +13,32 @@ namespace RubberduckTests.Symbols
         private const string FILENAME = "TheFilename";
         private const string TYPEIDENTIFIER = "(procedure)";
 
-        [TestMethod]
-        [TestCategory("Guard")]
+        [Test]
+        [Category("Guard")]
         public void CommandBarControlCaptionGuard_Regex_MeetsPattern()
         {
             string proposedCaption = GetFormattedMethodIdentifierOfLength(60);
             Assert.IsTrue(CommandBarControlCaptionGuard.IsMethodFormat(proposedCaption));
         }
 
-        [TestMethod]
-        [TestCategory("Guard")]
+        [Test]
+        [Category("Guard")]
         public void CommandBarControlCaptionGuard_Regex_TooShort()
         {
             string proposedCaption = GetFormattedMethodIdentifierOfLength(60);
             Assert.IsFalse(CommandBarControlCaptionGuard.IsMethodFormat(proposedCaption.Substring(0, 5)));
         }
 
-        [TestMethod]
-        [TestCategory("Guard")]
+        [Test]
+        [Category("Guard")]
         public void CommandBarControlCaptionGuard_Regex_ExtraChars()
         {
             string proposedCaption = GetFormattedMethodIdentifierOfLength(60);
             Assert.IsFalse(CommandBarControlCaptionGuard.IsMethodFormat(proposedCaption + "Yo!!"));
         }
 
-    [TestMethod]
-        [TestCategory("GuardFunction")]
+    [Test]
+        [Category("GuardFunction")]
         public void CommandBarControlCaptionGuard_ShortName()
         {
             string proposedCaption = GetFormattedMethodIdentifierOfLength(60);
@@ -48,8 +48,8 @@ namespace RubberduckTests.Symbols
             Assert.IsFalse(result.Contains("..."));
         }
 
-        [TestMethod]
-        [TestCategory("GuardFunction")]
+        [Test]
+        [Category("GuardFunction")]
         public void CommandBarControlCaptionGuard_TooLongSubName()
         {
             string proposedCaption = GetFormattedMethodIdentifierOfLength(260);
@@ -59,8 +59,8 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(result.Contains("..."));
         }
 
-        [TestMethod]
-        [TestCategory("GuardFunction")]
+        [Test]
+        [Category("GuardFunction")]
         public void CommandBarControlCaptionGuard_TooLongFileName()
         {
             string reallyLongFilename = GetIdentifierOfLength(200);

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -18,15 +16,12 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new SingleByRefParamArgListListener();
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

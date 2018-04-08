@@ -40,7 +40,7 @@ namespace Rubberduck.VBEditor.Application
             // https://github.com/retailcoder/Rubberduck/issues/109
 
             var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
-            return string.Concat(projectName, ".", qualifiedMemberName.MemberName);
+            return $"{projectName}.{qualifiedMemberName.MemberName}";
         }
     }
 }

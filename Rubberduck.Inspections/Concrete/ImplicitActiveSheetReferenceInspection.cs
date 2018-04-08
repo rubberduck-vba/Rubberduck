@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -15,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
             : base(state) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         private static readonly string[] Targets = 
         {

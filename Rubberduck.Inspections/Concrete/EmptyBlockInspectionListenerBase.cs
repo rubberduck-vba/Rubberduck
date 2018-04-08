@@ -35,16 +35,15 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool BlockContainsExecutableStatements(VBAParser.BlockContext block)
         {
-            return block != null && block.children != null && ContainsExecutableStatements(block);
+            return block?.children != null && ContainsExecutableStatements(block);
         }
 
         private bool ContainsExecutableStatements(VBAParser.BlockContext block)
         {
             foreach (var child in block.children)
             {
-                if (child is VBAParser.BlockStmtContext)
+                if (child is VBAParser.BlockStmtContext blockStmt)
                 {
-                    var blockStmt = (VBAParser.BlockStmtContext)child;
                     var mainBlockStmt = blockStmt.mainBlockStmt();
 
                     if (mainBlockStmt == null)

@@ -29,11 +29,8 @@ namespace Rubberduck.SmartIndenter
         private int _dimAlignment;
         public virtual int AlignDimColumn
         {
-            get { return _dimAlignment; }
-            set
-            {
-                _dimAlignment = value > MaximumAlignDimColumn ? MaximumAlignDimColumn : Math.Max(value, 0);
-            }
+            get => _dimAlignment;
+            set => _dimAlignment = value > MaximumAlignDimColumn ? MaximumAlignDimColumn : Math.Max(value, 0);
         }
 
         public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
@@ -41,20 +38,17 @@ namespace Rubberduck.SmartIndenter
         private int _commentAlignment;
         public virtual int EndOfLineCommentColumnSpaceAlignment
         {
-            get { return _commentAlignment; }
-            set
-            {
-                _commentAlignment = value > MaximumEndOfLineCommentColumnSpaceAlignment
-                    ? MaximumEndOfLineCommentColumnSpaceAlignment
-                    : value;
-            }
+            get => _commentAlignment;
+            set => _commentAlignment = value > MaximumEndOfLineCommentColumnSpaceAlignment
+                ? MaximumEndOfLineCommentColumnSpaceAlignment
+                : value;
         }
 
         private int _indentSpaces;
         public virtual int IndentSpaces
         {
-            get { return _indentSpaces; }
-            set { _indentSpaces = value > MaximumIndentSpaces ? MaximumIndentSpaces : Math.Max(value, 0); }
+            get => _indentSpaces;
+            set => _indentSpaces = value > MaximumIndentSpaces ? MaximumIndentSpaces : Math.Max(value, 0);
         }
 
         public virtual bool VerticallySpaceProcedures { get; set; }
@@ -62,8 +56,8 @@ namespace Rubberduck.SmartIndenter
         private int _procedureSpacing;
         public virtual int LinesBetweenProcedures
         {
-            get { return _procedureSpacing; }
-            set { _procedureSpacing = value > MaximumVerticalSpacing ? MaximumVerticalSpacing : Math.Max(value, 0); }
+            get => _procedureSpacing;
+            set => _procedureSpacing = value > MaximumVerticalSpacing ? MaximumVerticalSpacing : Math.Max(value, 0);
         }
 
         public IndenterSettings()

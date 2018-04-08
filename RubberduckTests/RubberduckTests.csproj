@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props')" />
+  <Import Project="..\packages\NUnit.3.10.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -18,6 +20,8 @@
     <TestProjectType>UnitTest</TestProjectType>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,7 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,21 +41,17 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime.net45">
-      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Windsor.4.0.0\lib\net45\Castle.Windsor.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.24.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LibGit2Sharp.0.24.0\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Vbe.Interop, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -64,8 +64,14 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="Moq">
+    <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -83,13 +89,7 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="Binding\IndexDefaultBindingTests.cs" />
@@ -100,10 +100,21 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Mocks\MockVbeEvents.cs" />
+    <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
+    <Compile Include="Mocks\MockExtentions.cs" />
+    <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
+    <Compile Include="Inspections\InspectionProviderTests.cs" />
+    <Compile Include="VBEditor\Utility\DisposalActionContainerTests.cs" />
+    <Compile Include="VBEditor\ComSafeManagerTests.cs" />
+    <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
+    <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
+    <Compile Include="VBEditor\ComSafeTests.cs" />
     <Compile Include="Commands\ExportAllCommandTests.cs" />
     <Compile Include="Commands\RefactorCommandTests.cs" />
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
+    <Compile Include="Common\DeploymentItemAttribute.cs" />
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
     <Compile Include="Grammar\SelectionExtensionsTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
@@ -117,8 +128,6 @@
     <Compile Include="Inspections\EmptyWhileWendBlockInspectionTests.cs" />
     <Compile Include="Inspections\InspectionsHelper.cs" />
     <Compile Include="Inspections\IntegerDataTypeInspectionTests.cs" />
-    <Compile Include="Inspections\MissingAnnotationInspectionTests.cs" />
-    <Compile Include="Inspections\MissingAttributeInspectionTests.cs" />
     <Compile Include="Inspections\ModuleScopeDimKeywordInspectionTests.cs" />
     <Compile Include="Inspections\HostSpecificExpressionInspectionTests.cs" />
     <Compile Include="Inspections\HungarianNotationInspectionTests.cs" />
@@ -126,19 +135,24 @@
     <Compile Include="Inspections\MemberNotOnInterfaceInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteErrorSyntaxInspectionTests.cs" />
     <Compile Include="Inspections\ShadowedDeclarationInspectionTests.cs" />
+    <Compile Include="Inspections\StepNotSpecifiedInspectionTests.cs" />
+    <Compile Include="Inspections\StepOneIsRedundantInspectionTests.cs" />
     <Compile Include="Inspections\StopKeywordInspectionTests.cs" />
     <Compile Include="Inspections\OptionBaseZeroInspectionTests.cs" />
+    <Compile Include="Inspections\UnreachableCaseInspectionTests.cs" />
     <Compile Include="Inspections\EmptyModuleInspectionTests.cs" />
+    <Compile Include="Inspections\UnhandledOnErrorResumeNextInspectionTest.cs" />
     <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFixTests.cs" />
     <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFixTests.cs" />
     <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\PassParameterByReferenceQuickFixTests.cs" />
     <Compile Include="QuickFixes\QuickFixProviderTests.cs" />
+    <Compile Include="QuickFixes\AddStepOneQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveStepOneQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFixTests.cs" />
-    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
+    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFixTests.cs" />
-    <Compile Include="QuickFixes\SynchronizeAttributesQuickFixTests.cs" />
     <Compile Include="Inspections\RedundantByRefModifierInspectionTests.cs" />
     <Compile Include="Inspections\UndeclaredVariableInspectionTests.cs" />
     <Compile Include="Inspections\LineLabelNotUsedInspectionTests.cs" />
@@ -171,6 +185,7 @@
     <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RestoreErrorHandlingQuickFixTests.cs" />
     <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFixTests.cs" />
     <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFixTests.cs" />
@@ -179,8 +194,8 @@
     <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFixTests.cs" />
     <Compile Include="QuickFixes\WriteOnlyPropertyQuickFixTests.cs" />
     <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
+    <Compile Include="Settings\HotkeyFactoryTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
-    <Compile Include="SourceControl\SynchrounouslyConstructedDeclarationFinderFactory.cs" />
     <Compile Include="Stats\ParseTreeMetricsAnalystTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
@@ -245,7 +260,6 @@
     <Compile Include="Mocks\MockUserFormBuilder.cs" />
     <Compile Include="Mocks\MockVbeBuilder.cs" />
     <Compile Include="Mocks\Windows.cs" />
-    <Compile Include="MultiAssert.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorTests.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorVisitorTests.cs" />
     <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
@@ -279,39 +293,49 @@
     <Compile Include="SmartIndenter\MiscAndCornerCaseTests.cs" />
     <Compile Include="SmartIndenter\MultiSegmentLineTests.cs" />
     <Compile Include="SmartIndenter\SpecificSettingTests.cs" />
-    <Compile Include="SourceControlConfig.cs" />
-    <Compile Include="SourceControl\BranchesViewModelTests.cs" />
-    <Compile Include="SourceControl\ChangesViewModelTests.cs" />
-    <Compile Include="SourceControl\SettingsViewModelTests.cs" />
-    <Compile Include="SourceControl\SourceControlViewModelTests.cs" />
-    <Compile Include="SourceControl\UnsyncedCommitsViewModelTests.cs" />
     <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegexAssistant\CharacterClassTests.cs" />
+    <Compile Include="RegexAssistant\LiteralTests.cs" />
+    <Compile Include="RegexAssistant\QuantifierTests.cs" />
+    <Compile Include="RegexAssistant\RegularExpressionTests.cs" />
     <Compile Include="TodoExplorer\TodoExplorerTests.cs" />
     <Compile Include="UnitTesting\AssertTests.cs" />
     <Compile Include="UnitTesting\EngineTests.cs" />
     <Compile Include="UnitTesting\DiscoveryTests.cs" />
     <Compile Include="UnitTesting\ViewModelTests.cs" />
+    <Compile Include="VBE\VBESettingsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="NLog.dll.nlog">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589DE8-432E-4359-9232-69EB070B7185}</Project>
-      <Name>Rubberduck</Name>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
+      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
+      <Name>Rubberduck.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
       <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
       <Name>Rubberduck.Inspections</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
+      <Project>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</Project>
+      <Name>Rubberduck.Main</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
+      <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
+      <Name>Rubberduck.RegexAssistant</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
@@ -321,16 +345,14 @@
       <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SourceControl\Rubberduck.SourceControl.csproj">
-      <Project>{0040e129-1aa2-459f-a59a-129fa4035e01}</Project>
-      <Name>Rubberduck.SourceControl</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Utility\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="IntegrationTests\FakeTests.bas" />
     <None Include="IntegrationTests\StubTests.bas" />
@@ -412,42 +434,42 @@
     <Content Include="Testfiles\Preprocessor\Reference_Module_1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Testfiles\Resolver\ADODB.6.1.xml">
+    <EmbeddedResource Include="Testfiles\Resolver\ADODB.6.1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\ADOR.6.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\ADOR.6.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Excel.1.8.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Excel.1.8.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\MSForms.2.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\MSForms.2.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\MSXML2.6.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\MSXML2.6.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Office.2.7.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Office.2.7.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\Scripting.1.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\Scripting.1.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\SHDocVw.1.1.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\SHDocVw.1.1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\stdole.2.0.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\stdole.2.0.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBA.4.2.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBA.4.2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBIDE.5.3.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBIDE.5.3.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Testfiles\Resolver\VBScript_RegExp_55.5.5.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Testfiles\Resolver\VBScript_RegExp_55.5.5.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Choose>
@@ -476,6 +498,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\NUnit.3.10.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.10.1\build\NUnit.props'))" />
+    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.10.0\build\net35\NUnit3TestAdapter.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

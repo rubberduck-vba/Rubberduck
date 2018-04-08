@@ -5,8 +5,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class AddIn : SafeComWrapper<VB.AddIn>, IAddIn
     {
-        public AddIn(VB.AddIn target) 
-            : base(target)
+        public AddIn(VB.AddIn target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -101,12 +100,10 @@ namespace Rubberduck.Inspections.Concrete
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
         public HungarianNotationInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             _settings = settings;
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -119,7 +116,7 @@ namespace Rubberduck.Inspections.Concrete
                                       HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
-                                                                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType, CultureInfo.CurrentUICulture),
+                                                                    RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),
                                                                     issue.IdentifierName),
                                                       issue));
 

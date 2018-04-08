@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -10,11 +10,11 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class QuickFixProviderTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProviderDoesNotKnowAboutInspection()
         {
             const string inputCode =
@@ -27,15 +27,15 @@ End Sub";
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { });
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(inspectionResults.First()).Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProviderKnowsAboutInspection()
         {
             const string inputCode =
@@ -57,8 +57,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ResultDisablesFix()
         {
             const string inputCode =
@@ -71,12 +71,12 @@ End Sub";
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix(state) });
 
                 var result = inspectionResults.First();
-                result.Properties.Add("DisableFixes", nameof(RemoveUnusedDeclarationQuickFix));
+                result.Properties.DisableFixes = nameof(RemoveUnusedDeclarationQuickFix);
 
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(result).Count());
             }

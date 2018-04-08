@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -15,9 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
     {
         public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

@@ -1,17 +1,17 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class EmptyModuleInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithContentNotRepresentingFunctionality_ReturnsResult()
         {
             const string inputCode =
@@ -32,14 +32,14 @@ DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: De
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ClassWithContentNotRepresentingFunctionality_ReturnsResult()
         {
             const string inputCode =
@@ -59,14 +59,14 @@ DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: De
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithFunction_DoesNotReturnResult()
         {
             const string inputCode =
@@ -79,14 +79,14 @@ End Function
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithProcedure_DoesNotReturnResult()
         {
             const string inputCode =
@@ -99,14 +99,14 @@ End Sub
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithPropertyGet_DoesNotReturnResult()
         {
             const string inputCode =
@@ -119,14 +119,14 @@ End Property
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithPropertySet_DoesNotReturnResult()
         {
             const string inputCode =
@@ -139,14 +139,14 @@ End Property
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithPropertyLet_DoesNotReturnResult()
         {
             const string inputCode =
@@ -159,14 +159,14 @@ End Property
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithEnum_DoesNotReturnResult()
         {
             const string inputCode =
@@ -180,14 +180,14 @@ End Enum
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithPrivateUDT_DoesNotReturnResult()
         {
             const string inputCode =
@@ -201,14 +201,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithPublicUDT_DoesNotReturnResult()
         {
             const string inputCode =
@@ -222,14 +222,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithInstanceVariable_DoesNotReturnResult()
         {
             const string inputCode =
@@ -240,14 +240,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithConstant_DoesNotReturnResult()
         {
             const string inputCode =
@@ -258,14 +258,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ModuleWithEvent_DoesNotReturnResult()
         {
             const string inputCode =
@@ -276,14 +276,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyDocumentModule_DoesNotReturnResult()
         {
             const string inputCode = "";
@@ -293,14 +293,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyUserForm_DoesNotReturnResult()
         {
             const string inputCode = "";
@@ -310,14 +310,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyModule_Ignored_DoesNotReturnResult()
         {
             const string inputCode = "'@Ignore EmptyModule";
@@ -327,23 +327,14 @@ End Type
             {
 
                 var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new EmptyModuleInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "EmptyModuleInspection";

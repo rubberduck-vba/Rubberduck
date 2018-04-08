@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class MoveFieldCloseToUsageInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_ReturnsResult()
         {
             const string inputCode =
@@ -23,14 +23,14 @@ End Sub";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_MultipleReferenceInDifferentScope()
         {
             const string inputCode =
@@ -46,14 +46,14 @@ End Sub";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_DoesNotReturnResult_Variable()
         {
             const string inputCode =
@@ -66,14 +66,14 @@ End Sub";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_NoReferences()
         {
             const string inputCode =
@@ -85,14 +85,14 @@ End Sub";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_ReferenceInPropertyGet()
         {
             const string inputCode =
@@ -105,14 +105,14 @@ End Property";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_ReferenceInPropertyLet()
         {
             const string inputCode =
@@ -128,14 +128,14 @@ End Property";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_DoesNotReturnsResult_ReferenceInPropertySet()
         {
             const string inputCode =
@@ -151,14 +151,14 @@ End Property";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MoveFieldCloserToUsage_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -172,22 +172,14 @@ End Sub";
             {
 
                 var inspection = new MoveFieldCloserToUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new MoveFieldCloserToUsageInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "MoveFieldCloserToUsageInspection";

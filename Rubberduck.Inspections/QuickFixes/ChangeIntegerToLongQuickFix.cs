@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
@@ -57,18 +58,11 @@ namespace Rubberduck.Inspections.QuickFixes
                         break;
                     case DeclarationType.UserDefinedTypeMember:
                         var userDefinedTypeMemberContext = (VBAParser.UdtMemberContext)result.Context;
-                        if (userDefinedTypeMemberContext.reservedNameMemberDeclaration() != null)
-                        {
-                            rewriter.Replace(
-                                userDefinedTypeMemberContext.reservedNameMemberDeclaration().asTypeClause().type(),
-                                Tokens.Long);
-                        }
-                        else
-                        {
-                            rewriter.Replace(
-                                userDefinedTypeMemberContext.untypedNameMemberDeclaration().optionalArrayClause().asTypeClause().type(),
-                                Tokens.Long);
-                        }
+                        rewriter.Replace(
+                            userDefinedTypeMemberContext.reservedNameMemberDeclaration() == null
+                                ? userDefinedTypeMemberContext.untypedNameMemberDeclaration().optionalArrayClause().asTypeClause().type()
+                                : userDefinedTypeMemberContext.reservedNameMemberDeclaration().asTypeClause().type(),
+                            Tokens.Long);
                         break;
                 }
             }
@@ -174,10 +168,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.IntegerDataTypeQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.IntegerDataTypeQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
@@ -190,7 +181,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private static void ReplaceTypeHint(RuleContext context, IModuleRewriter rewriter)
         {
-            var typeHintContext = ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(context);
+            var typeHintContext = ((ParserRuleContext)context).GetDescendent<VBAParser.TypeHintContext>();
             rewriter.Replace(typeHintContext, "&");
         }
     }

@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.VBA
             Declaration projectDeclaration;
             if (!_projectDeclarations.TryGetValue(module.ProjectId, out projectDeclaration))
             {
-                var project = module.Component.Collection.Parent;
+                var project = _state.ProjectsProvider.Project(module.ProjectId);
                 projectDeclaration = CreateProjectDeclaration(project);
 
                 if (projectDeclaration.ProjectId != module.ProjectId)

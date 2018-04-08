@@ -1,4 +1,4 @@
-<img src="http://i.stack.imgur.com/jnBEp.jpg" width=100% />
+<img src="https://user-images.githubusercontent.com/5751684/38372412-c3247d70-38bc-11e8-8eaa-2f2d19595a42.png" width=100% />
 
 <!-- campaign is no longer accepting donations
 ### Donate!
@@ -8,10 +8,10 @@ If you like this project and would like to thank its contributors, you are welco
 [![GoFundMe campaign](https://user-images.githubusercontent.com/5751684/29191799-e3d20b72-7dec-11e7-8ec6-0c69da4a3135.png)](https://www.gofundme.com/rubberduckvba)
 -->
 
-Branch     | Description | Build Status |
-|------------|---|--------------|
-| **master** | The last released build | ![master branch build status][masterBuildStatus] |
-| **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] |
+|Branch     | Description | Build Status | Download link |
+|------------|---|--------------|-|
+| **master** | The last released build | ![master branch build status][masterBuildStatus] | [stable](https://github.com/rubberduck-vba/Rubberduck/releases/latest) |
+| **next**   | The current build (dev)  | ![next branch build status][nextBuildStatus] | [dev](https://github.com/rubberduck-vba/Rubberduck/releases) |
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
@@ -19,15 +19,17 @@ Branch     | Description | Build Status |
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Percentage of issues still open")
 
 > **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/retailcoder/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
-> contact@rubberduckvba.com  
+> devs@rubberduckvba.com  
 > Follow [@rubberduckvba](https://twitter.com/rubberduckvba) on Twitter 
 
 ---
 
  * [Attributions](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/Attributions.md)
  * [About](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/About.md)
- * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md)
+ * [Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)
+ * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) using Rubberduck
  * [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
+ * [User Testimonials](https://github.com/rubberduck-vba/Rubberduck/blob/next/thanks.md)
 
 ---
 
@@ -35,7 +37,7 @@ Branch     | Description | Build Status |
 
 Rubberduck is a COM add-in for the VBA IDE (VBE).
 
-Copyright (C) 2014-2017 Mathieu Guindon & Christopher McClellan
+Copyright (C) 2014-2018 Mathieu Guindon & Christopher McClellan
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

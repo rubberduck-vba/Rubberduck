@@ -77,7 +77,7 @@ namespace Rubberduck.Inspections.ParseTreeListeners
         public override void ExitModuleDeclarations(VBAParser.ModuleDeclarationsContext context)
         {
             var firstMember = Members.Value.Values.OrderBy(d => d.Selection).FirstOrDefault();
-            if(firstMember != null)
+            if (firstMember != null)
             {
                 CurrentScopeDeclaration = firstMember;
             }

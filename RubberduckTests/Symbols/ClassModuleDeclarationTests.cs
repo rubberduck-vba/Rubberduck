@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -6,11 +6,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class ClassModuleDeclarationTests
     {
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesHaveDeclarationTypeClassModule()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -37,8 +37,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultSubtypesIsEmpty()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -48,8 +48,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void AddSupertypeAddsClassToSubtypesOfSupertype()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -61,8 +61,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultSupertypesIsEmpty()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -72,8 +72,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void AddSupertypeAddsClassToSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -84,8 +84,8 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(classModule.Supertypes.First().Equals(supertype));
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClearSupertypeRemovesAllSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -101,8 +101,8 @@ namespace RubberduckTests.Symbols
 
         //The reasoning behind this is that the names of the supertypes only depend on the module itself.
         //So, the module itself has to be changed to change them. That in turn would mean a reparse and discarding the module declaration. 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClearSupertypeDoesNotRemoveSupertypesNames()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -115,8 +115,8 @@ namespace RubberduckTests.Symbols
             Assert.AreEqual(2, supertypeNameCount);
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClearSupertypeRemovesAllSupertypesRemovesTheClassFromTheSubtypesOfTheSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -134,8 +134,8 @@ namespace RubberduckTests.Symbols
             Assert.IsFalse(supertype2.Subtypes.Any(subtype => subtype.Equals(classModule)));
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClearSupertypeRemovesAllSupertypesDoesNotRemoveOtherSubtypesFromTheSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -153,8 +153,8 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(supertype2.Subtypes.Any(subtype => subtype.Equals(otherClass)));
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultSupertypeNamesIsEmpty()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -164,8 +164,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void AddSupertypeNameAddsTypenameToSupertypeNames()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -177,8 +177,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void AddSupertypeHasNoEffectOnSupertypeNames()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -190,8 +190,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void AddSupertypeNameHasNoEffectsOnSupertypes()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -203,8 +203,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void GetSupertypesReturnsAnEmptyEnumerableForProceduralModules()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -220,8 +220,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void GetSupertypesReturnsTheSupertypesOfAClassModule()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -233,8 +233,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void GetSupertypesReturnsAnEmptyEnumerableForDeclarationsWithDeclarationTypeClassModuleWhichAreNoClassModuleDeclarations()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -251,8 +251,8 @@ namespace RubberduckTests.Symbols
 
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultDefaultMemberIsNull()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -262,8 +262,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultClassModulesNotBuiltInAreNotExposed()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -275,8 +275,8 @@ namespace RubberduckTests.Symbols
 
         // TODO: Find out if there's info about "being exposed" in type libraries.
         // We take the conservative approach of treating all type library modules as exposed.
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void BuiltInClassesAreExposed()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -286,8 +286,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesWithTheExposedAttributeAreExposed()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -299,8 +299,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultClassModulesAreNotGlobalClasses()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -310,8 +310,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesWithTheGlobalNamespaceAttributeAreGlobalClasses()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -323,8 +323,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesWithASubtypeBelowInTheHiearchyThatIsAGlobalClassAndThatHasBeenAddedBeforeCallingIsGlobalClassTheFirstTimeIsAGlobalClass()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -340,8 +340,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesBecomeAGlobalClassIfASubtypeBelowInTheHiearchyIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -358,8 +358,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesBecomeAGlobalClassIfBelowInTheHierarchyASubtypeIsAddedThatIsAGlobalClassAfterIsAGlobalClassHasAlreadyBeenCalled()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -376,8 +376,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultClassModulesDoNotHaveAPredeclaredID()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -387,8 +387,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesHaveAPredeclaredIDIfStatedInTheConstructorThatTheyHaveADefaultInstanceVariable()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -398,8 +398,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesWithThePredeclaredIDAttributeHaveAPredeclaredID()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -411,8 +411,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ByDefaultClassModulesDoNotHaveADefaultInstanceVariable()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -422,8 +422,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesThatAreGlobalClassesHaveADefaultInstanceVariable()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -435,8 +435,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesWithThePredeclaredIDAttributeHaveADefaultInstanceVariable()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -448,8 +448,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ClassModulesHaveADefaultInstanceVariableIfThisIsStated()
         {
             var projectDeclaration = GetTestProject("testProject");

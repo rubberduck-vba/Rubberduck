@@ -1,53 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error) {  }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+            : base(state) {  }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var allInterestingDeclarations =
-                VariableRequiresSetAssignmentEvaluator.GetDeclarationsPotentiallyRequiringSetAssignment(State.AllUserDeclarations);
 
-            var candidateReferencesRequiringSetAssignment = 
-                allInterestingDeclarations
-                    .SelectMany(dec => dec.References)
-                    .Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName))                    
-                    .Where(reference => reference.IsAssignment);
-
-            var referencesRequiringSetAssignment = candidateReferencesRequiringSetAssignment                  
-                .Where(reference => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State));
-
-            var objectVariableNotSetReferences = referencesRequiringSetAssignment.Where(FlagIfObjectVariableNotSet);
-
-            return objectVariableNotSetReferences
-                .Select(reference =>
+            return InterestingReferences().Select(reference =>
                 new IdentifierReferenceInspectionResult(this,
                     string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
                     State, reference));
         }
 
-        private bool FlagIfObjectVariableNotSet(IdentifierReference reference)
+        private IEnumerable<IdentifierReference> InterestingReferences()
         {
-            var allrefs = reference.Declaration.References;
-            var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+            var result = new List<IdentifierReference>();
+            foreach (var moduleReferences in State.DeclarationFinder.IdentifierReferences())
+            {
+                var module = State.DeclarationFinder.ModuleDeclaration(moduleReferences.Key);
+                if (module == null || !module.IsUserDefined || IsIgnoringInspectionResultFor(module, AnnotationName))
+                {
+                    // module isn't user code (?), or this inspection is ignored at module-level
+                    continue;
+                }
 
-            return reference.IsAssignment && (letStmtContext != null 
-                   || allrefs.Where(r => r.IsAssignment).All(r => ParserRuleContextHelper.GetParent<VBAParser.SetStmtContext>(r.Context)?.expression()?.GetText().Equals(Tokens.Nothing, StringComparison.InvariantCultureIgnoreCase) ?? false));
+                foreach (var reference in moduleReferences.Value)
+                {
+                    if (!IsIgnoringInspectionResultFor(reference, AnnotationName) 
+                        && VariableRequiresSetAssignmentEvaluator.NeedsSetKeywordAdded(reference, State))
+                    {
+                        result.Add(reference);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

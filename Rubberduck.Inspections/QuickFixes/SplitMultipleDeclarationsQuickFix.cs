@@ -74,10 +74,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return newContent.ToString();
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.SplitMultipleDeclarationsQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.SplitMultipleDeclarationsQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

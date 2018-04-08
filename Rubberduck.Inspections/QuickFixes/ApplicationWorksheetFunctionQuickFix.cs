@@ -22,13 +22,10 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(result.Context.Start.TokenIndex, "WorksheetFunction.");
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ApplicationWorksheetFunctionQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.ApplicationWorksheetFunctionQuickFix;
 
-        public override bool CanFixInProcedure { get; } = true;
-        public override bool CanFixInModule { get; } = true;
-        public override bool CanFixInProject { get; } = true;
+        public override bool CanFixInProcedure => true;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

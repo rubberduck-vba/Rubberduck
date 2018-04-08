@@ -51,7 +51,7 @@ namespace Rubberduck.VBEditor.Application
             return stopwatch.Elapsed;
         }
 
-        public string ApplicationName { get { return "(unknown)"; } }
+        public string ApplicationName => "(unknown)";
 
         public void Dispose()
         {

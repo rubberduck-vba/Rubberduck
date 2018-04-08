@@ -2,7 +2,7 @@ using System;
 
 namespace Rubberduck.VBEditor
 {
-    public struct QualifiedMemberName
+    public readonly struct QualifiedMemberName
     {
         public QualifiedMemberName(QualifiedModuleName qualifiedModuleName, string memberName)
         {
@@ -15,7 +15,7 @@ namespace Rubberduck.VBEditor
 
         public override string ToString()
         {
-            return QualifiedModuleName + "." + MemberName;
+            return $"{QualifiedModuleName}.{MemberName}";
         }
 
         public override int GetHashCode()

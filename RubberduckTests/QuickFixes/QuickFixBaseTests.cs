@@ -1,16 +1,16 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class QuickFixBaseTests
     {
-        [TestMethod]
-        [TestCategory(nameof(QuickFixes))]
+        [Test]
+        [Category(nameof(QuickFixes))]
         public void QuickFixBase_Register()
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
@@ -23,8 +23,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory(nameof(QuickFixes))]
+        [Test]
+        [Category(nameof(QuickFixes))]
         public void QuickFixBase_Unregister()
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);

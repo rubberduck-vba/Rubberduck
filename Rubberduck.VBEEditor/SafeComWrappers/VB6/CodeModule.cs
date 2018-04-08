@@ -11,8 +11,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class CodeModule : SafeComWrapper<VB.CodeModule>, ICodeModule
     {
-        public CodeModule(VB.CodeModule target) 
-            : base(target)
+        public CodeModule(VB.CodeModule target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -58,11 +58,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public QualifiedSelection? GetQualifiedSelection()
         {
-            if (IsWrappingNullReference || CodePane.IsWrappingNullReference)
+            using (var codePane = CodePane)
             {
-                return null;
+                if (IsWrappingNullReference || codePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+            
+                return codePane.GetQualifiedSelection();
             }
-            return CodePane.GetQualifiedSelection();
+        }
+
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get
+            {
+                using (var component = Parent)
+                {
+                    return component.QualifiedModuleName;
+                }
+            }
         }
 
         public string Content()
@@ -145,6 +160,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
+        public int SimpleContentHash()
+        {
+            var code = Content();
+            return string.IsNullOrEmpty(code)
+                ? 0
+                : code.GetHashCode();
+        }
+
         public bool IsDirty => _previousContentHash.Equals(ContentHash());
 
         public void AddFromString(string content)
@@ -201,8 +224,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public string GetProcOfLine(int line)
         {
-            vbext_ProcKind procKind;
-            return Target.get_ProcOfLine(line, out procKind);
+            return Target.get_ProcOfLine(line, out _);
         }
 
         public ProcKind GetProcKindOfLine(int line)

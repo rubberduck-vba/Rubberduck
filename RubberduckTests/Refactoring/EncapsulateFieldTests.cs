@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Common;
 using Rubberduck.Refactorings;
@@ -15,12 +15,12 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class EncapsulateFieldTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_WithLetter()
         {
             //Input
@@ -68,9 +68,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldIsOverMultipleLines()
         {
             //Input
@@ -121,9 +121,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_WithSetter()
         {
             //Input
@@ -171,9 +171,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_WithOnlyGetter()
         {
             //Input
@@ -217,9 +217,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherMethodsInClass()
         {
             //Input
@@ -280,9 +280,9 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherPropertiesInClass()
         {
             //Input
@@ -349,9 +349,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherFieldsInClass()
         {
             //Input
@@ -401,9 +401,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveFirst()
         {
             //Input
@@ -463,9 +463,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveSecond()
         {
             //Input
@@ -517,9 +517,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveLast()
         {
             //Input
@@ -571,9 +571,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePrivateField()
         {
             //Input
@@ -621,9 +621,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldHasReferences()
         {
             //Input
@@ -686,9 +686,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
         {
             //Input
@@ -781,9 +781,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_PassInTarget()
         {
             //Input
@@ -831,9 +831,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_PresenterIsNull()
         {
             //Input
@@ -856,9 +856,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_ModelIsNull()
         {
             //Input
@@ -884,9 +884,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void GivenNullActiveCodePane_FactoryReturnsNullPresenter()
         {
             //Input
@@ -906,9 +906,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_ParameterlessTargetReturnsNullModel()
         {
             //Input
@@ -929,9 +929,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_NullTargetReturnsNullModel()
         {
             //Input
@@ -957,9 +957,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithParameterNameChanged()
         {
             //Input
@@ -984,9 +984,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Reject_ReturnsNull()
         {
             //Input
@@ -1017,10 +1017,10 @@ End Sub";
         // SEE: https://github.com/rubberduck-vba/Rubberduck/issues/3072
 
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetChanged()
         {
             //Input
@@ -1047,10 +1047,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetChanged()
         {
             //Input
@@ -1077,10 +1077,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForPrimitiveTypes_NoReferences()
         {
             //Input
@@ -1107,10 +1107,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetNotAllowedForPrimitiveTypes_NoReferences()
         {
             //Input
@@ -1137,10 +1137,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForNonVariantNonPrimitiveTypes_NoReferences()
         {
             //Input
@@ -1167,10 +1167,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetNotAllowedForNonVariantNonPrimitiveType_NoReferences()
         {
             //Input
@@ -1197,10 +1197,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForVariant_NoReferences()
         {
             //Input
@@ -1227,10 +1227,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForVariant_NoReferences()
         {
             //Input
@@ -1257,10 +1257,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForPrimitiveTypes_References()
         {
             //Input
@@ -1290,10 +1290,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForNonVariantNonPrimitiveTypes_References()
         {
             //Input
@@ -1323,10 +1323,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForNonSetVariant_References()
         {
             //Input
@@ -1356,10 +1356,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForSetVariant_References()
         {
             //Input
@@ -1390,10 +1390,10 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_DefaultCreateGetOnly_PrimitiveType_NoReference()
         {
             //Input
@@ -1421,10 +1421,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_DefaultCreateGetOnly_NonPrimitiveTypeNonVariant_NoReference()
         {
             //Input
@@ -1452,10 +1452,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_DefaultCreateGetOnly_Variant_NoReference()
         {
             //Input

@@ -8,24 +8,18 @@ namespace Rubberduck.VBEditor
 
         public Selection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            _startLine = startLine;
-            _startColumn = startColumn;
-            _endLine = endLine;
-            _endColumn = endColumn;
+            StartLine = startLine;
+            StartColumn = startColumn;
+            EndLine = endLine;
+            EndColumn = endColumn;
         }
 
         /// <summary>
         /// The first character of the first line.
         /// </summary>
-        public static Selection Home
-        {
-            get { return new Selection(1, 1, 1, 1); }
-        }
+        public static Selection Home => new Selection(1, 1, 1, 1);
 
-        public static Selection Empty
-        {
-            get { return new Selection(); }
-        }
+        public static Selection Empty => new Selection();
 
         public bool IsEmpty()
         {
@@ -68,19 +62,15 @@ namespace Rubberduck.VBEditor
             return false;
         }
 
-        private readonly int _startLine;
-        public int StartLine { get { return _startLine; } }
-        
-        private readonly int _endLine;
-        public int EndLine { get { return _endLine; } }
+        public int StartLine { get; }
 
-        private readonly int _startColumn;
-        public int StartColumn { get { return _startColumn; } }
-        
-        private readonly int _endColumn;
-        public int EndColumn { get { return _endColumn; } }
+        public int EndLine { get; }
 
-        public int LineCount { get { return _endLine - _startLine + 1; } }
+        public int StartColumn { get; }
+
+        public int EndColumn { get; }
+
+        public int LineCount => EndLine - StartLine + 1;
 
         public bool Equals(Selection other)
         {
@@ -106,9 +96,9 @@ namespace Rubberduck.VBEditor
 
         public override string ToString()
         {
-            return (_startLine == _endLine && _startColumn == _endColumn)
-                ? string.Format(VBEEditorText.SelectionLocationPosition, _startLine, _startColumn)
-                : string.Format(VBEEditorText.SelectionLocationRange, _startLine, _startColumn, _endLine, _endColumn);
+            return (StartLine == EndLine && StartColumn == EndColumn)
+                ? string.Format(VBEEditorText.SelectionLocationPosition, StartLine, StartColumn)
+                : string.Format(VBEEditorText.SelectionLocationRange, StartLine, StartColumn, EndLine, EndColumn);
         }
 
         public static bool operator ==(Selection selection1, Selection selection2)

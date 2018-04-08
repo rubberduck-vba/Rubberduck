@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Antlr4.Runtime;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -14,11 +14,11 @@ using RubberduckTests.Mocks;
 // ReSharper disable InvokeAsExtensionMethod
 namespace RubberduckTests.PostProcessing
 {
-    [TestClass]
+    [TestFixture]
     public class ModuleRewriterTests
     {
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RewriteClearsEntireModule()
         {
             var module = new Mock<ICodeModule>();
@@ -37,8 +37,8 @@ namespace RubberduckTests.PostProcessing
             module.Verify(m => m.Clear());
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RewriteDoesNotRewriteIfNotDirty()
         {
             var module = new Mock<ICodeModule>();
@@ -52,8 +52,8 @@ namespace RubberduckTests.PostProcessing
             module.Verify(m => m.Clear(), Times.Never);
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RewriterInsertsRewriterOutputAtLine1()
         {
             const string content = @"Option Explicit";
@@ -74,8 +74,8 @@ namespace RubberduckTests.PostProcessing
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleVariableDeclarationStatement()
         {
             const string expected = @"
@@ -106,8 +106,8 @@ Private foo As String
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleConstantDeclarationStatement()
         {
             const string expected = @"
@@ -138,8 +138,8 @@ Private Const foo As String = ""Something""
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLocalVariableDeclarationStatement()
         {
             const string expected = @"
@@ -174,8 +174,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLocalConstantDeclarationStatement()
         {
             const string expected = @"
@@ -211,8 +211,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesSingleParameterDeclaration()
         {
             const string expected = @"
@@ -246,8 +246,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesEventParameterDeclaration()
         {
             const string expected = @"
@@ -279,8 +279,8 @@ Public Event SomeEvent(ByVal foo As Long)
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesDeclareFunctionParameterDeclaration()
         {
             const string expected = @"
@@ -312,8 +312,8 @@ Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" (ByVal bar As Long) As Long
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstVariableInStatement()
         {
             const string expected = @"
@@ -349,8 +349,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstConstantInStatement()
         {
             const string expected = @"
@@ -386,8 +386,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstParameterInSignature()
         {
             const string expected = @"
@@ -421,8 +421,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastVariableInStatement()
         {
             const string expected = @"
@@ -458,8 +458,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastParameterInSignature()
         {
             const string expected = @"
@@ -493,8 +493,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastConstantInStatement()
         {
             const string expected = @"
@@ -530,8 +530,8 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleVariableDeclarationWithLineContinuations()
         {
             const string expected = @"
@@ -564,8 +564,8 @@ Private foo _
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesModuleConstantDeclarationWithLineContinuations()
         {
             const string expected = @"
@@ -598,8 +598,8 @@ Private Const foo _
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstVariableInDeclarationList()
         {
             const string content = @"
@@ -631,8 +631,8 @@ Private bar As Long
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesFirstConstantInDeclarationList()
         {
             const string content = @"
@@ -664,8 +664,8 @@ Private Const bar As Long = 42
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastVariableInDeclarationList()
         {
             const string content = @"
@@ -697,8 +697,8 @@ Private foo As String
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesLastConstantInDeclarationList()
         {
             const string content = @"
@@ -730,8 +730,8 @@ Private Const foo As String = ""Something""
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleVariableInDeclarationList()
         {
             const string content = @"
@@ -763,8 +763,8 @@ Private foo As String, buzz As Integer
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleConstantInDeclarationList()
         {
             const string content = @"
@@ -796,8 +796,8 @@ Private Const foo As String = ""Something"", buzz As Integer = 12
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleVariableInDeclarationListWithLineContinuations()
         {
             const string content = @"
@@ -832,8 +832,8 @@ Private foo As String, _
             }
         }
 
-        [TestMethod]
-        [TestCategory("TokenStreamRewriter")]
+        [Test]
+        [Category("TokenStreamRewriter")]
         public void RemovesMiddleConstantInDeclarationListWithLineContinuations()
         {
             const string content = @"

@@ -6,8 +6,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBar : SafeComWrapper<Microsoft.Office.Core.CommandBar>, ICommandBar
     {
-        public CommandBar(Microsoft.Office.Core.CommandBar target) 
-            : base(target)
+        public CommandBar(Microsoft.Office.Core.CommandBar target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
@@ -20,13 +20,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public bool IsEnabled
         {
             get => !IsWrappingNullReference && Target.Enabled;
-            set { if (!IsWrappingNullReference) Target.Enabled = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Enabled = value;
+                }
+            }
         }
 
         public int Height
         {
             get => IsWrappingNullReference ? 0 : Target.Height;
-            set { if (!IsWrappingNullReference) Target.Height = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Height = value;
+                }
+            }
         }
 
         public int Index => IsWrappingNullReference ? 0 : Target.Index;
@@ -34,39 +46,75 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         public int Left
         {
             get => IsWrappingNullReference ? 0 : Target.Left;
-            set { if (!IsWrappingNullReference) Target.Left = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Left = value;
+                }
+            }
         }
 
         public string Name
         {
             get => IsWrappingNullReference ? string.Empty : Target.Name;
-            set { if (!IsWrappingNullReference) Target.Name = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Name = value;
+                }
+            }
         }
 
         public CommandBarPosition Position
         {
-            get => IsWrappingNullReference ? 0 : (CommandBarPosition)Target.Position;
-            set { if (!IsWrappingNullReference) Target.Position = (Microsoft.Office.Core.MsoBarPosition)value; }
+            get => IsWrappingNullReference ? 0 : (CommandBarPosition) Target.Position;
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Position = (Microsoft.Office.Core.MsoBarPosition) value;
+                }
+            }
         }
 
         public int Top
         {
             get => IsWrappingNullReference ? 0 : Target.Top;
-            set { if (!IsWrappingNullReference) Target.Top = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Top = value;
+                }
+            }
         }
 
-        public CommandBarType Type => IsWrappingNullReference ? 0 : (CommandBarType)Target.Type;
+        public CommandBarType Type => IsWrappingNullReference ? 0 : (CommandBarType) Target.Type;
 
         public bool IsVisible
         {
             get => !IsWrappingNullReference && Target.Visible;
-            set { if (!IsWrappingNullReference) Target.Visible = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Visible = value;
+                }
+            }
         }
 
         public int Width
         {
             get => IsWrappingNullReference ? 0 : Target.Width;
-            set { if (!IsWrappingNullReference) Target.Width = value; }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    Target.Width = value;
+                }
+            }
         }
 
         public ICommandBarControl FindControl(int id)
@@ -78,10 +126,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             return new CommandBarControl(IsWrappingNullReference ? null : Target.FindControl(type, id));
         }
-        
+
         public void Delete()
         {
-            if (!IsWrappingNullReference) Target.Delete();
+            if (!IsWrappingNullReference)
+            {
+                Target.Delete();
+            }
         }
 
         //public override void Release(bool final = false)
@@ -95,13 +146,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public override bool Equals(ISafeComWrapper<Microsoft.Office.Core.CommandBar> other)
         {
-            return IsEqualIfNull(other) || 
-                (other != null
-                && (int)other.Target.Type == (int)Type 
-                && other.Target.Id == Id 
-                && other.Target.Index == Index
-                && other.Target.BuiltIn == IsBuiltIn 
-                && ReferenceEquals(other.Target.Parent, Target.Parent));
+            return IsEqualIfNull(other) ||
+                   (other != null
+                    && (int) other.Target.Type == (int) Type
+                    && other.Target.Id == Id
+                    && other.Target.Index == Index
+                    && other.Target.BuiltIn == IsBuiltIn
+                    && ReferenceEquals(other.Target.Parent, Target.Parent));
         }
 
         public bool Equals(ICommandBar other)

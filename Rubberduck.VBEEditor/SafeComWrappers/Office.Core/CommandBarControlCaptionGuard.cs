@@ -45,7 +45,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             //Example of a caption input when a method is selected: 
             //"L23C13 | TheFilename.TheModuleName.TheMethodName (procedure)"
-            var pattern = @"^[L][0-9]+[C][0-9]+\s[|]\s[a-zA-Z0-9]+[.][a-zA-Z0-9]+[.][a-zA-Z0-9]+\s[(][a-z]+[)]\z";
+            const string pattern = @"^[L][0-9]+[C][0-9]+\s[|]\s[a-zA-Z0-9]+[.][a-zA-Z0-9]+[.][a-zA-Z0-9]+\s[(][a-z]+[)]\z";
             return Regex.IsMatch(proposedCaption, pattern);
         }
 

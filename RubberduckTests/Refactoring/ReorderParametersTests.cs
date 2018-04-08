@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
@@ -14,12 +14,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class ReorderParametersTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_SwapPositions()
         {
             //Input
@@ -46,16 +46,16 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_SwapPositions_SignatureContainsParamName()
         {
             //Input
@@ -82,16 +82,16 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_SwapPositions_ReferenceValueContainsOtherReferenceValue()
         {
             //Input
@@ -126,16 +126,16 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_RefactorDeclaration()
         {
             //Input
@@ -162,16 +162,16 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(model.TargetDeclaration);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -193,7 +193,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
 
                 try
                 {
@@ -211,9 +211,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_WithOptionalParam()
         {
             //Input
@@ -247,16 +247,16 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_SwapPositions_UpdatesCallers()
         {
             //Input
@@ -293,16 +293,16 @@ End Sub
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_ParensAroundCall()
         {
             //Input
@@ -347,16 +347,16 @@ End Function";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderNamedParams()
         {
             //Input
@@ -401,16 +401,16 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderNamedParams_Function()
         {
             //Input
@@ -440,16 +440,16 @@ End Function";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderNamedParams_WithOptionalParam()
         {
             //Input
@@ -494,16 +494,16 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderGetter()
         {
             //Input
@@ -538,16 +538,16 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderLetter()
         {
             //Input
@@ -575,16 +575,16 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderSetter()
         {
             //Input
@@ -612,16 +612,16 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderLastParamFromSetter_NotAllowed()
         {
             //Input
@@ -643,9 +643,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderLastParamFromLetter_NotAllowed()
         {
             //Input
@@ -667,9 +667,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
@@ -701,16 +701,16 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_CallOnMultipleLines()
         {
             //Input
@@ -756,16 +756,16 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ClientReferencesAreNotUpdated_ParamArray()
         {
             //Input
@@ -802,16 +802,16 @@ End Sub
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray()
         {
             //Input
@@ -873,16 +873,16 @@ End Sub
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray_CallOnMultiplelines()
         {
             //Input
@@ -958,16 +958,16 @@ End Sub
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_MoveOptionalParamBeforeNonOptionalParamFails()
         {
             //Input
@@ -999,16 +999,16 @@ End Sub";
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_ReorderCallsWithoutOptionalParams()
         {
             //Input
@@ -1052,16 +1052,16 @@ End Sub
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndSetter()
         {
             //Input
@@ -1095,16 +1095,16 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ReorderFirstParamFromGetterAndLetter()
         {
             //Input
@@ -1138,16 +1138,16 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_PresenterIsNull()
         {
             //Input
@@ -1162,16 +1162,16 @@ End Sub";
 
                 var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, null);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory, null, state.ProjectsProvider);
                 refactoring.Refactor();
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped()
         {
             //Input
@@ -1217,7 +1217,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1225,9 +1225,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames()
         {
             //Input
@@ -1273,7 +1273,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1281,9 +1281,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_ParamsHaveDifferentNames_TwoImplementations()
         {
             //Input
@@ -1341,7 +1341,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1350,9 +1350,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_InterfaceParamsSwapped_AcceptPrompt()
         {
             //Input
@@ -1404,7 +1404,7 @@ End Sub";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1412,9 +1412,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_ParamsSwapped_RejectPrompt()
         {
             //Input
@@ -1451,9 +1451,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped()
         {
             //Input
@@ -1499,7 +1499,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1507,9 +1507,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped_EventImplementationSelected()
         {
             //Input
@@ -1555,7 +1555,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1563,9 +1563,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped_DifferentParamNames()
         {
             //Input
@@ -1611,7 +1611,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1619,9 +1619,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped_DifferentParamNames_TwoHandlers()
         {
             //Input
@@ -1680,7 +1680,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1689,9 +1689,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void Presenter_ParameterlessMemberCreatesNullModel()
         {
             //Input
@@ -1718,9 +1718,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void Presenter_SingleParameterMemberCreatesNullModel()
         {
             //Input
@@ -1747,9 +1747,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void Presenter_NullTargetCreatesNullModel()
         {
             //Input
@@ -1774,9 +1774,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Reorder Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void Factory_NullSelectionCreatesNullPresenter()
         {
             //Input

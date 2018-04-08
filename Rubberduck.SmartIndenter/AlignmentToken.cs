@@ -10,8 +10,8 @@
 
     internal class AlignmentToken
     {
-        public AlignmentTokenType Type { get; private set; }
-        public int Position { get; private set; }
+        public AlignmentTokenType Type { get; }
+        public int Position { get; }
 
         public AlignmentToken(AlignmentTokenType type, int position)
         {

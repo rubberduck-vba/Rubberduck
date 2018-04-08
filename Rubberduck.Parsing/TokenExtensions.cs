@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing
         /// <returns>Zero-based column position</returns>
         public static int EndColumn(this IToken token)
         {
-            if (token.Text == Environment.NewLine)
+            if (token.Text == Environment.NewLine || token.Type == TokenConstants.Eof)
             {
                 return token.Column;
             }

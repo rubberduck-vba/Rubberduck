@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
@@ -15,9 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ParameterCanBeByValInspection : InspectionBase
     {
         public ParameterCanBeByValInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -135,7 +132,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 foreach (var declaration in calledProcedureArgs)
                 {
-                    if (((VBAParser.ArgContext)declaration.Context).BYVAL() != null)
+                    if (((VBAParser.ArgContext) declaration.Context).BYVAL() != null)
                     {
                         continue;
                     }

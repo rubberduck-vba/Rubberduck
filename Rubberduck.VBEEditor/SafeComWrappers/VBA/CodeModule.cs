@@ -11,8 +11,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     [SuppressMessage("ReSharper", "UseIndexedProperty")]
     public class CodeModule : SafeComWrapper<VB.CodeModule>, ICodeModule
     {
-        public CodeModule(VB.CodeModule target) 
-            : base(target)
+        public CodeModule(VB.CodeModule target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -59,11 +59,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public QualifiedSelection? GetQualifiedSelection()
         {
-            if (IsWrappingNullReference || CodePane.IsWrappingNullReference)
+            if (IsWrappingNullReference)
             {
                 return null;
             }
-            return CodePane.GetQualifiedSelection();
+
+            using (var codePane = CodePane)
+            {
+                if (CodePane.IsWrappingNullReference)
+                {
+                    return null;
+                }
+            
+                return codePane.GetQualifiedSelection();
+            }
+        }
+
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get
+            {
+                using (var component = Parent)
+                {
+                    return component.QualifiedModuleName;
+                }
+            }
         }
 
         public string Content()
@@ -88,6 +108,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 return _previousContentHash = new string(Encoding.Unicode.GetChars(hash.ComputeHash(stream)));
             }
+        }
+
+        public int SimpleContentHash()
+        {
+            var code = Content();
+            return string.IsNullOrEmpty(code)
+                ? 0
+                : code.GetHashCode();
         }
 
         public bool IsDirty => _previousContentHash.Equals(ContentHash());
@@ -153,9 +181,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string GetProcOfLine(int line)
         {
-            if (IsWrappingNullReference) return string.Empty;
-            vbext_ProcKind procKind;
-            return Target.get_ProcOfLine(line, out procKind);
+            return IsWrappingNullReference ? string.Empty : Target.get_ProcOfLine(line, out _);
         }
 
         public ProcKind GetProcKindOfLine(int line)

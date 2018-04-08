@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
@@ -15,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {
         public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
 
         private static readonly string[] DocumentEventHandlerPrefixes =
         {
@@ -67,7 +64,7 @@ namespace Rubberduck.Inspections.Concrete
                                                                     issue));
 
             issues = DocumentEventHandlerPrefixes
-                .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains("'" + item)));
+                .Aggregate(issues, (current, item) => current.Where(issue => !issue.Description.Contains($"'{item}")));
 
             return issues.ToList();
         }

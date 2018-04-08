@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class CodePanes : SafeComWrapper<VB.CodePanes>, ICodePanes
     {
-        public CodePanes(VB.CodePanes target) 
-            : base(target)
+        public CodePanes(VB.CodePanes target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -28,9 +28,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<ICodePane> IEnumerable<ICodePane>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<ICodePane>(null, o => new CodePane(null))
-                : new ComWrapperEnumerator<ICodePane>(Target, o => new CodePane((VB.CodePane) o));
+            return new ComWrapperEnumerator<ICodePane>(Target, comObject => new CodePane((VB.CodePane) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

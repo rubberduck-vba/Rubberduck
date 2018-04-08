@@ -1,15 +1,16 @@
 using System;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
-    public interface IVBComponents : ISafeComWrapper, IComCollection<IVBComponent>, IEquatable<IVBComponents>
+    public interface IVBComponents : ISafeEventedComWrapper, IComCollection<IVBComponent>, IEquatable<IVBComponents>
     {
-        //event EventHandler<ComponentEventArgs> ComponentAdded;
-        //event EventHandler<ComponentEventArgs> ComponentRemoved;
-        //event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
-        //event EventHandler<ComponentEventArgs> ComponentSelected;
-        //event EventHandler<ComponentEventArgs> ComponentActivated;
-        //event EventHandler<ComponentEventArgs> ComponentReloaded;
+        event EventHandler<ComponentEventArgs> ComponentAdded;
+        event EventHandler<ComponentEventArgs> ComponentRemoved;
+        event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
+        event EventHandler<ComponentEventArgs> ComponentSelected;
+        event EventHandler<ComponentEventArgs> ComponentActivated;
+        event EventHandler<ComponentEventArgs> ComponentReloaded;
 
         new IVBComponent this[object index] { get; }
 

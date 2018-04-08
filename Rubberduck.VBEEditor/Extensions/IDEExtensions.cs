@@ -71,7 +71,7 @@ namespace Rubberduck.VBEditor.Extensions
                                     result = new WordApp();
                                     break;
                                 case "Microsoft PowerPoint":
-                                    result = new PowerPointApp();
+                                    result = new PowerPointApp(vbe);
                                     break;
                                 case "Microsoft Outlook":
                                     result = new OutlookApp();
@@ -117,7 +117,7 @@ namespace Rubberduck.VBEditor.Extensions
                             case "Word":
                                 return new WordApp(vbe);
                             case "PowerPoint":
-                                return new PowerPointApp();
+                                return new PowerPointApp(vbe);
                             case "Outlook":
                                 return new OutlookApp();
                             case "MSProject":
@@ -138,71 +138,6 @@ namespace Rubberduck.VBEditor.Extensions
             }
 
             return null;
-        }
-
-        /// <summary> Returns whether the host supports unit tests.</summary>
-        public static bool HostSupportsUnitTests(this IVBE vbe)
-        {
-            var host = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath).ToUpperInvariant();
-            if (HostAppMap.ContainsKey(host)) return true;
-            //Guessing the above will work like 99.9999% of the time for supported applications.
-
-            var project = vbe.ActiveVBProject;
-            {
-                if (project.IsWrappingNullReference)
-                {
-                    const int ctlViewHost = 106;
-                    var commandBars = vbe.CommandBars;
-                    var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost);
-                    {
-                        if (hostAppControl.IsWrappingNullReference)
-                        {
-                            return false;
-                        }
-
-                        switch (hostAppControl.Caption)
-                        {
-                            case "Microsoft Excel":
-                            case "Microsoft Access":
-                            case "Microsoft Word":
-                            case "Microsoft PowerPoint":
-                            case "Microsoft Outlook":
-                            case "Microsoft Project":
-                            case "Microsoft Publisher":
-                            case "Microsoft Visio":
-                            case "AutoCAD":
-                            case "CorelDRAW":
-                            case "SolidWorks":
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                }
-
-                var references = project.References;
-                {
-                    foreach (var reference in references.Where(reference => (reference.IsBuiltIn && reference.Name != "VBA") || (reference.Name == "AutoCAD")))
-                    {
-                        switch (reference.Name)
-                        {
-                            case "Excel":
-                            case "Access":
-                            case "Word":
-                            case "PowerPoint":
-                            case "Outlook":
-                            case "MSProject":
-                            case "Publisher":
-                            case "Visio":
-                            case "AutoCAD":
-                            case "CorelDRAW":
-                            case "SolidWorks":
-                                return true;
-                        }
-                    }
-                }
-            }
-            return false;
         }
     }
 

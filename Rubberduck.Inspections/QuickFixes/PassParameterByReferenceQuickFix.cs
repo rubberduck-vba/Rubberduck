@@ -25,10 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(token, Tokens.ByRef);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.PassParameterByReferenceQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.PassParameterByReferenceQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

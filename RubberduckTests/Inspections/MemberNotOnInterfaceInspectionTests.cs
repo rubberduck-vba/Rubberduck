@@ -1,15 +1,16 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class MemberNotOnInterfaceInspectionTests
     {
         private static RubberduckParserState ArrangeParserAndParse(string inputCode, string library = "Scripting")
@@ -39,9 +40,9 @@ namespace RubberduckTests.Inspections
             return parser.State;
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredMember()
         {
             const string inputCode =
@@ -54,15 +55,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredInterfaceMember()
         {
             const string inputCode =
@@ -75,15 +76,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_ApplicationObject()
         {
             const string inputCode =
@@ -94,15 +95,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode, "Excel"))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredMemberOnParameter()
         {
             const string inputCode =
@@ -113,15 +114,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_DeclaredMember()
         {
             const string inputCode =
@@ -134,15 +135,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_NonExtensible()
         {
             const string inputCode =
@@ -154,15 +155,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_WithBlock()
         {
             const string inputCode =
@@ -176,15 +177,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_BangNotation()
         {
             const string inputCode =
@@ -197,15 +198,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_WithBlockBangNotation()
         {
             const string inputCode =
@@ -219,15 +220,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_ProjectReference()
         {
             const string inputCode =
@@ -238,15 +239,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -260,15 +261,15 @@ End Sub";
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Category("Inspections")]
         public void MemberNotOnInterface_CatchesInvalidUseOfMember()
         {
             const string userForm1Code = @"
@@ -299,7 +300,7 @@ End Sub
 ";
             var mockVbe = new MockVbeBuilder();
             var projectBuilder = mockVbe.ProjectBuilder("testproject", ProjectProtection.Unprotected);
-            projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).MockProjectBuilder()
+            projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
                 //.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
                 .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms);
@@ -321,11 +322,21 @@ End Sub
             using (var state = parser.State)
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsTrue(inspectionResults.Any());
             }
 
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "MemberNotOnInterfaceInspection";
+            var inspection = new MemberNotOnInterfaceInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
         }
     }
 }

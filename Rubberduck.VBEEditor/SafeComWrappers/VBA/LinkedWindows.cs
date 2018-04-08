@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class LinkedWindows : SafeComWrapper<VB.LinkedWindows>, ILinkedWindows
     {
-        public LinkedWindows(VB.LinkedWindows linkedWindows)
-            : base(linkedWindows)
+        public LinkedWindows(VB.LinkedWindows target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
@@ -47,22 +47,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IWindow>(null, o => new Window(null))
-                : new ComWrapperEnumerator<IWindow>(Target, o => new Window((VB.Window) o));
+            return new ComWrapperEnumerator<IWindow>(Target, comObject => new Window((VB.Window) comObject));
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
         
         public override bool Equals(ISafeComWrapper<VB.LinkedWindows> other)
         {

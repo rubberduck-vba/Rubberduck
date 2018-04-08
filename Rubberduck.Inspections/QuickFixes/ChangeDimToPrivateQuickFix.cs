@@ -25,13 +25,10 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(context.DIM(), Tokens.Private);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ChangeDimToPrivateQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.ChangeDimToPrivateQuickFix;
 
-        public override bool CanFixInProcedure { get; } = false;
-        public override bool CanFixInModule { get; } = true;
-        public override bool CanFixInProject { get; } = true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => true;
+        public override bool CanFixInProject => true;
     }
 }

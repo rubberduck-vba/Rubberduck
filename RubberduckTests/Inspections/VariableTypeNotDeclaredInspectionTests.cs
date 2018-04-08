@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class VariableTypeNotDeclaredInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_Parameter()
         {
             const string inputCode =
@@ -21,14 +21,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_MultipleParams()
         {
             const string inputCode =
@@ -39,14 +39,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_DoesNotReturnResult_Parameter()
         {
             const string inputCode =
@@ -57,14 +57,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Parameters()
         {
             const string inputCode =
@@ -75,14 +75,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_SomeTypesNotDeclared_Variables()
         {
             const string inputCode =
@@ -95,14 +95,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_Variable()
         {
             const string inputCode =
@@ -114,14 +114,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
@@ -134,14 +134,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_DoesNotReturnResult_Variable()
         {
             const string inputCode =
@@ -153,14 +153,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableTypeNotDeclared_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -172,22 +172,14 @@ End Sub";
             {
 
                 var inspection = new VariableTypeNotDeclaredInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new VariableTypeNotDeclaredInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "VariableTypeNotDeclaredInspection";

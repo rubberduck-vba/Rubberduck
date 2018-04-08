@@ -24,10 +24,8 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(0, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine + Environment.NewLine);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.OptionExplicitQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.OptionExplicitQuickFix;
+        
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;

@@ -1,15 +1,15 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class ProjectDeclarationTests
     {
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ProjectsHaveDeclarationTypeProject()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -29,8 +29,8 @@ namespace RubberduckTests.Symbols
                 }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultProjectsReferenceNoOtherProjects()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -39,8 +39,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ProjectsReferencesReturnsTheReferencesAddedViaAddProjectReference()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -53,8 +53,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ClearProjectsReferencesClearsTheProjectReferences()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -68,8 +68,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ProjectsReferencesIgnoresReferencesWithTheSameIDAsOneAlreadyPresent()
         {
             var projectDeclaration = GetTestProject("testProject");
@@ -84,8 +84,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ProjectsReferencesReturnsTheReferencesInOrderOfAscendingPriority()
         {
             var projectDeclaration = GetTestProject("testProject");

@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Diagnostics;
+using System.Threading;
 using NLog;
 
 namespace Rubberduck.Inspections.Abstract
@@ -18,30 +19,22 @@ namespace Rubberduck.Inspections.Abstract
         protected readonly RubberduckParserState State;
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly CodeInspectionSeverity _defaultSeverity;
 
-        protected InspectionBase(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
+        protected InspectionBase(RubberduckParserState state)
         {
             State = state;
-            _defaultSeverity = defaultSeverity;
-            Severity = _defaultSeverity;
             Name = GetType().Name;
         }
 
         /// <summary>
-        /// Gets a value the severity level to reset to, the "factory default" setting.
-        /// </summary>
-        public CodeInspectionSeverity DefaultSeverity => _defaultSeverity;
-
-        /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
         /// </summary>
-        public virtual string Description => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture);
+        public virtual string Description => InspectionsUI.ResourceManager.GetString($"{Name}Name", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.
         /// </summary>
-        public abstract CodeInspectionType InspectionType { get; }
+        public CodeInspectionType InspectionType { get; set; } = CodeInspectionType.CodeQualityIssues;
 
         /// <summary>
         /// The inspection type name, obtained by reflection.
@@ -51,18 +44,18 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Inspection severity level. Can control whether an inspection is enabled.
         /// </summary>
-        public CodeInspectionSeverity Severity { get; set; }
+        public CodeInspectionSeverity Severity { get; set; } = CodeInspectionSeverity.Warning;
 
         /// <summary>
         /// Meta-information about why an inspection exists.
         /// </summary>
-        public virtual string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
+        public virtual string Meta => InspectionsUI.ResourceManager.GetString($"{Name}Meta", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a localized string representing the type of inspection.
         /// <see cref="InspectionType"/>
         /// </summary>
-        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType.ToString(), CultureInfo.CurrentUICulture);
+        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString($"CodeInspectionSettings_{InspectionType.ToString()}", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a string representing the text that must be present in an 
@@ -112,9 +105,9 @@ namespace Rubberduck.Inspections.Abstract
                     return true;
                 }
 
-                if (ignoreModuleAnnotation != null &&
-                    (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName) ||
-                     !ignoreModuleAnnotation.InspectionNames.Any()))
+                if (ignoreModuleAnnotation != null
+                    && (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName)
+                    || !ignoreModuleAnnotation.InspectionNames.Any()))
                 {
                     return true;
                 }
@@ -164,8 +157,9 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// A method that inspects the parser state and returns all issues it can find.
         /// </summary>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public IEnumerable<IInspectionResult> GetInspectionResults()
+        public IEnumerable<IInspectionResult> GetInspectionResults(CancellationToken token)
         {
             var _stopwatch = new Stopwatch();
             _stopwatch.Start();

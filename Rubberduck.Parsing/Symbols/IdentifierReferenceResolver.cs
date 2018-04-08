@@ -8,7 +8,6 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -188,16 +187,16 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
 
-            var hasDefaultMember = false;
+            IParameterizedDeclaration defaultMember = null;
             if (boundExpression.ReferencedDeclaration != null 
                 && boundExpression.ReferencedDeclaration.DeclarationType != DeclarationType.Project
                 && boundExpression.ReferencedDeclaration.AsTypeDeclaration != null)
             {
                 var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
                 var members = _declarationFinder.Members(module);
-                hasDefaultMember = members.Any(m => m.Attributes.Any(a => a.Name == $"{m.IdentifierName}.VB_UserMemId" && a.Values.SingleOrDefault() == "0"));
+                defaultMember = (IParameterizedDeclaration)members.FirstOrDefault(m => m is IParameterizedDeclaration && m.Attributes.HasDefaultMemberAttribute() && (isAssignmentTarget ? m.DeclarationType.HasFlag(DeclarationType.Procedure) : m.DeclarationType.HasFlag(DeclarationType.Function)));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, (!hasDefaultMember || isSetAssignment) && isAssignmentTarget, hasExplicitLetStatement);
+            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget && (defaultMember == null || (!defaultMember.Parameters.Any() || defaultMember.Parameters.All(p => p.IsOptional)) || isSetAssignment), hasExplicitLetStatement);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -221,7 +220,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.OnGoToStmtContext context)
         {
             ResolveDefault(context.expression()[0]);
-            for (int labelIndex = 1; labelIndex < context.expression().Count; labelIndex++)
+            for (int labelIndex = 1; labelIndex < context.expression().Length; labelIndex++)
             {
                 ResolveLabel(context.expression()[labelIndex], context.expression()[labelIndex].GetText());
             }
@@ -235,7 +234,7 @@ namespace Rubberduck.Parsing.Symbols
         public void Resolve(VBAParser.OnGoSubStmtContext context)
         {
             ResolveDefault(context.expression()[0]);
-            for (int labelIndex = 1; labelIndex < context.expression().Count; labelIndex++)
+            for (int labelIndex = 1; labelIndex < context.expression().Length; labelIndex++)
             {
                 ResolveLabel(context.expression()[labelIndex], context.expression()[labelIndex].GetText());
             }
@@ -644,7 +643,7 @@ namespace Rubberduck.Parsing.Symbols
                 _qualifiedModuleName,
                 _currentScope,
                 _currentParent);
-            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
+            for (int exprIndex = 1; exprIndex < context.expression().Length; exprIndex++)
             {
                 ResolveDefault(context.expression()[exprIndex]);
             }
@@ -682,7 +681,7 @@ namespace Rubberduck.Parsing.Symbols
                 //    _currentScope,
                 //    _currentParent);
             }
-            for (int exprIndex = 1; exprIndex < context.expression().Count; exprIndex++)
+            for (int exprIndex = 1; exprIndex < context.expression().Length; exprIndex++)
             {
                 ResolveDefault(context.expression()[exprIndex]);
             }

@@ -17,7 +17,7 @@ namespace Rubberduck.VBEditor.Application
         {
             var qualifiedMemberName = declaration.QualifiedName;
             var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
-            var memberName = qualifiedMemberName.QualifiedModuleName.ComponentName + "." + qualifiedMemberName.MemberName;
+            var memberName = $"{qualifiedMemberName.QualifiedModuleName.ComponentName}.{qualifiedMemberName.MemberName}";
 
             if (Application != null)
             {

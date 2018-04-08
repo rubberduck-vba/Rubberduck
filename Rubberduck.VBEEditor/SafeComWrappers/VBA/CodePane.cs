@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class CodePane : SafeComWrapper<VB.CodePane>, ICodePane
     {
-        public CodePane(VB.CodePane codePane)
-            : base(codePane)
+        public CodePane(VB.CodePane target, bool rewrapping = false)
+            : base(target, rewrapping)
         {
         }
 
@@ -45,7 +45,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (endLine > startLine && endColumn == 1)
             {
                 endLine -= 1;
-                endColumn = CodeModule.GetLines(endLine, 1).Length;
+                using (var codeModule = CodeModule)
+                {
+                    endColumn = codeModule.GetLines(endLine, 1).Length;
+                }
             }
 
             return new Selection(startLine, startColumn, endLine, endColumn);
@@ -64,14 +67,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return null;
             }
 
-            var component = new VBComponent((VB.VBComponent)CodeModule.Parent.Target);
-            var moduleName = new QualifiedModuleName(component);
+            var moduleName = QualifiedModuleName;
             return new QualifiedSelection(moduleName, selection);
+        }
+
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get
+            {
+                using (var codeModule = CodeModule)
+                {
+                    return codeModule.QualifiedModuleName;
+                }
+            }
         }
 
         private void SetSelection(int startLine, int startColumn, int endLine, int endColumn)
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
             ForceFocus();
         }

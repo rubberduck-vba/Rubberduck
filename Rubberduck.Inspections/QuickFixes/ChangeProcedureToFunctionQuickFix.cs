@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -33,10 +34,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.ProcedureShouldBeFunctionInspectionQuickFix;
 
         private void UpdateSignature(Declaration target, ParameterDeclaration arg)
         {
@@ -59,15 +57,15 @@ namespace Rubberduck.Inspections.QuickFixes
                 rewriter.InsertBefore(argContext.unrestrictedIdentifier().Start.TokenIndex, Tokens.ByVal);
             }
 
-            var returnStmt = "    " + subStmt.subroutineName().GetText() + " = " + argContext.unrestrictedIdentifier().GetText() + Environment.NewLine;
+            var returnStmt = $"    {subStmt.subroutineName().GetText()} = {argContext.unrestrictedIdentifier().GetText()}{Environment.NewLine}";
             rewriter.InsertBefore(subStmt.END_SUB().Symbol.TokenIndex, returnStmt);
         }
 
         private void UpdateCall(IdentifierReference reference, int argIndex)
         {
             var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
-            var callStmtContext = ParserRuleContextHelper.GetParent<VBAParser.CallStmtContext>(reference.Context);
-            var argListContext = ParserRuleContextHelper.GetChild<VBAParser.ArgumentListContext>(callStmtContext);
+            var callStmtContext = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
+            var argListContext = callStmtContext.GetChild<VBAParser.ArgumentListContext>();
 
             var arg = argListContext.argument()[argIndex];
             var argName = arg.positionalArgument()?.argumentExpression() ?? arg.namedArgument().argumentExpression();

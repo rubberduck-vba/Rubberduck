@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -15,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
             : base(state) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         private static readonly string[] Targets =
         {

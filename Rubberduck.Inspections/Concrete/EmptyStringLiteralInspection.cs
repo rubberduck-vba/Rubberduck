@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -17,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public EmptyStringLiteralInspection(RubberduckParserState state)
             : base(state) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IInspectionListener Listener { get; } =
             new EmptyStringLiteralListener();

@@ -7,8 +7,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class Properties : SafeComWrapper<VB.Properties>, IProperties
     {
-        public Properties(VB.Properties target) 
-            : base(target)
+        public Properties(VB.Properties target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
         }
 
@@ -24,9 +24,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         IEnumerator<IProperty> IEnumerable<IProperty>.GetEnumerator()
         {
-            return IsWrappingNullReference
-                ? new ComWrapperEnumerator<IProperty>(null, o => new Property(null))
-                : new ComWrapperEnumerator<IProperty>(Target, o => new Property((VB.Property) o));
+            return new ComWrapperEnumerator<IProperty>(Target, comObject => new Property((VB.Property) comObject));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -35,18 +33,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 ? (IEnumerator) new List<IEnumerable>().GetEnumerator()
                 : ((IEnumerable<IProperty>) this).GetEnumerator();
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.Properties> other)
         {

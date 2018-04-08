@@ -1,14 +1,14 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class ParameterDeclarationTests
     {
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ParametersHaveDeclarationTypeParameter()
         {
             var paramter = GetTestParameter("testParam", false, false, false);
@@ -28,8 +28,8 @@ namespace RubberduckTests.Symbols
                 }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ParametersHaveImpliciteAccessibility()
         {
             var paramter = GetTestParameter("testParam", false, false, false);
@@ -38,8 +38,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void IsParamArrayCanBeSetPublicly()
         {
             var paramter = GetTestParameter("testParam", false, false, false);

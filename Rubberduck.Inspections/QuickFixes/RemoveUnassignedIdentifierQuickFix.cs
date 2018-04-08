@@ -22,10 +22,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(result.Target);
         }
 
-        public override string Description(IInspectionResult result)
-        {
-            return InspectionsUI.RemoveUnassignedIdentifierQuickFix;
-        }
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveUnassignedIdentifierQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

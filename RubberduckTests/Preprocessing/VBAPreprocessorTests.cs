@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
@@ -6,15 +6,16 @@ using System.IO;
 using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
+using RubberduckTests.Common;
 
 namespace RubberduckTests.PreProcessing
 {
-    [TestClass]
+    [TestFixture]
     public class VBAPreprocessorTests
     {
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Preprocessor")]
+        [Category("Preprocessor")]
         public void TestPreprocessor()
         {
             foreach (var testfile in GetTestFiles())
@@ -36,7 +37,7 @@ namespace RubberduckTests.PreProcessing
         {
             // Reference_Module_1 = raw, unprocessed code.
             // Reference_Module_1_Processed = result of preprocessor.
-            var all = Directory.EnumerateFiles("Preprocessor").ToList();
+            var all = Directory.EnumerateFiles("Testfiles//Preprocessor").ToList();
             var rawAndProcessed = all
                 .Where(file => !file.Contains("_Processed"))
                 .Select(file => Tuple.Create(file, all.First(f => f.Contains(Path.GetFileNameWithoutExtension(file)) && f.Contains("_Processed")))).ToList();

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -16,12 +15,11 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase
     {
         public ObsoleteCallStatementInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             Listener = new ObsoleteCallStatementListener();
         }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -30,14 +28,16 @@ namespace Rubberduck.Inspections.Concrete
 
             foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line)))
             {
-                var module = context.ModuleName.Component.CodeModule;
-                var lines = module.GetLines(context.Context.Start.Line,
-                    context.Context.Stop.Line - context.Context.Start.Line + 1);
+                string lines;
+                using (var module = State.ProjectsProvider.Component(context.ModuleName).CodeModule)
+                {
+                    lines = module.GetLines(context.Context.Start.Line,
+                        context.Context.Stop.Line - context.Context.Start.Line + 1);
+                }
 
                 var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
 
-                int commentIndex;
-                if (stringStrippedLines.HasComment(out commentIndex))
+                if (stringStrippedLines.HasComment(out var commentIndex))
                 {
                     stringStrippedLines = stringStrippedLines.Remove(commentIndex);
                 }

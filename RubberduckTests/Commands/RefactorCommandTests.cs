@@ -1,4 +1,5 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -10,11 +11,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
 {
-    [TestClass]
+    [TestFixture]
     public class RefactorCommandTests
     {
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void EncapsulateField_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -29,23 +30,23 @@ namespace RubberduckTests.Commands
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void EncapsulateField_CanExecute_NonReadyState()
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void EncapsulateField_CanExecute_LocalVariable()
         {
             var input =
@@ -63,8 +64,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void EncapsulateField_CanExecute_Proc()
         {
             var input =
@@ -82,8 +83,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void EncapsulateField_CanExecute_Field()
         {
             var input =
@@ -101,8 +102,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -117,8 +118,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -126,15 +127,15 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_NoMembers()
         {
             IVBComponent component;
@@ -146,8 +147,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_Proc_StdModule()
         {
             var input =
@@ -164,8 +165,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_Field()
         {
             IVBComponent component;
@@ -178,8 +179,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void CanExecuteNameCollision_ActiveCodePane_EmptyClass()
         {
             var input = @"
@@ -212,8 +213,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_ClassWithMembers_SameNameAsClassWithMembers()
         {
             var input =
@@ -239,8 +240,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_Proc()
         {
             var input =
@@ -258,8 +259,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_Function()
         {
             var input =
@@ -276,8 +277,8 @@ End Function";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_PropertyGet()
         {
             var input =
@@ -294,8 +295,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_PropertyLet()
         {
             var input =
@@ -312,8 +313,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExtractInterface_CanExecute_PropertySet()
         {
             var input =
@@ -330,8 +331,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ImplementInterface_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -346,8 +347,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ImplementInterface_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -355,15 +356,15 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ImplementInterface_CanExecute_ImplementsInterfaceNotSelected()
         {
             IVBComponent component;
@@ -376,8 +377,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ImplementInterface_CanExecute_ImplementsInterfaceSelected()
         {
             var builder = new MockVbeBuilder();
@@ -395,8 +396,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceField_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -411,8 +412,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceField_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -420,7 +421,7 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var msgbox = new Mock<IMessageBox>();
                 var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
@@ -428,8 +429,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceField_CanExecute_Field()
         {
             IVBComponent component;
@@ -443,8 +444,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceField_CanExecute_LocalVariable()
         {
             var input =
@@ -463,8 +464,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceParameter_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -479,8 +480,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceParameter_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -488,7 +489,7 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var msgbox = new Mock<IMessageBox>();
                 var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object);
@@ -496,8 +497,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceParameter_CanExecute_Field()
         {
             IVBComponent component;
@@ -511,8 +512,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IntroduceParameter_CanExecute_LocalVariable()
         {
             var input =
@@ -531,8 +532,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -546,8 +547,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -555,15 +556,15 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_Field_NoReferences()
         {
             IVBComponent component;
@@ -576,8 +577,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_LocalVariable_NoReferences()
         {
             var input =
@@ -595,8 +596,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_Const_NoReferences()
         {
             IVBComponent component;
@@ -609,8 +610,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_Field()
         {
             var input =
@@ -629,8 +630,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_LocalVariable()
         {
             var input =
@@ -649,8 +650,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void MoveCloserToUsage_CanExecute_Const()
         {
             var input =
@@ -670,8 +671,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -685,8 +686,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -694,15 +695,15 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_Event_NoParams()
         {
             const string input =
@@ -718,8 +719,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_Proc_NoParams()
         {
             var input =
@@ -736,8 +737,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_Function_NoParams()
         {
             var input =
@@ -754,8 +755,8 @@ End Function";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_PropertyGet_NoParams()
         {
             var input =
@@ -772,8 +773,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_PropertyLet_OneParam()
         {
             var input =
@@ -790,8 +791,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_PropertySet_OneParam()
         {
             var input =
@@ -808,8 +809,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_Event_OneParam()
         {
             const string input =
@@ -825,8 +826,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_Proc_OneParam()
         {
             var input =
@@ -843,8 +844,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_Function_OneParam()
         {
             var input =
@@ -861,8 +862,8 @@ End Function";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_PropertyGet_OneParam()
         {
             var input =
@@ -879,8 +880,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_PropertyLet_TwoParams()
         {
             var input =
@@ -897,8 +898,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void RemoveParameters_CanExecute_PropertySet_TwoParams()
         {
             var input =
@@ -915,8 +916,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -930,8 +931,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -939,15 +940,15 @@ End Property";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_Event_OneParam()
         {
             const string input =
@@ -963,8 +964,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_Proc_OneParam()
         {
             var input =
@@ -981,8 +982,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_Function_OneParam()
         {
             var input =
@@ -999,8 +1000,8 @@ End Function";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_PropertyGet_OneParam()
         {
             var input =
@@ -1017,8 +1018,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_PropertyLet_TwoParams()
         {
             var input =
@@ -1035,8 +1036,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_PropertySet_TwoParams()
         {
             var input =
@@ -1053,8 +1054,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_Event_TwoParams()
         {
             const string input =
@@ -1070,8 +1071,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_Proc_TwoParams()
         {
             var input =
@@ -1088,8 +1089,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_Function_TwoParams()
         {
             var input =
@@ -1106,8 +1107,8 @@ End Function";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_PropertyGet_TwoParams()
         {
             var input =
@@ -1124,8 +1125,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_PropertyLet_ThreeParams()
         {
             var input =
@@ -1142,8 +1143,8 @@ End Property";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ReorderParameters_CanExecute_PropertySet_ThreeParams()
         {
             var input =

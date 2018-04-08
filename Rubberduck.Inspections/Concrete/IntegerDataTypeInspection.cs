@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Common;
@@ -16,11 +15,9 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class IntegerDataTypeInspection : InspectionBase
     {
-        public IntegerDataTypeInspection(RubberduckParserState state) : base(state, CodeInspectionSeverity.Hint)
+        public IntegerDataTypeInspection(RubberduckParserState state) : base(state)
         {
         }
-
-        public override CodeInspectionType InspectionType { get; } = CodeInspectionType.CodeQualityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -38,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(issue =>
                     new DeclarationInspectionResult(this,
                         string.Format(InspectionsUI.IntegerDataTypeInspectionResultFormat,
-                            RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType, CultureInfo.CurrentUICulture), issue.IdentifierName),
+                            RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture), issue.IdentifierName),
                         issue));
 
             return result;

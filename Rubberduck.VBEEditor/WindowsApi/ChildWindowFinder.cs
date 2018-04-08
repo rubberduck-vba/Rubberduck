@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Text;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
     internal class ChildWindowFinder
     {
-        private IntPtr _resultHandle = IntPtr.Zero;
         private readonly string _caption;
 
         internal ChildWindowFinder(string caption)
@@ -22,7 +20,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             if (_caption == caption)
             {
                 // Found
-                _resultHandle = windowHandle;
+                ResultHandle = windowHandle;
 
                 // Stop enumeration after this call
                 result = 0;
@@ -30,15 +28,6 @@ namespace Rubberduck.VBEditor.WindowsApi
             return result;
         }
 
-        public IntPtr ResultHandle
-        {
-            get
-            {
-                return _resultHandle;
-            }
-        }
-
-
-
+        public IntPtr ResultHandle { get; private set; } = IntPtr.Zero;
     }
 }
