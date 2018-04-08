@@ -3,6 +3,8 @@ using System.Diagnostics;
 using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
+using Application = System.Windows.Forms.Application;
+using System.IO;
 
 namespace Rubberduck.UI.About
 {
@@ -16,6 +18,17 @@ namespace Rubberduck.UI.About
         }
 
         public string Version => string.Format(RubberduckUI.Rubberduck_AboutBuild, _version.CurrentVersion);
+
+        public string OperatingSystem => 
+            string.Format(RubberduckUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");
+
+        public string HostProduct =>
+            string.Format(RubberduckUI.AboutWindow_HostProduct, Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86");
+
+        public string HostVersion => string.Format(RubberduckUI.AboutWindow_HostVersion, Application.ProductVersion);
+
+        public string HostExecutable => string.Format(RubberduckUI.AboutWindow_HostExecutable,
+            Path.GetFileName(Application.ExecutablePath).ToUpper()); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
 
         private CommandBase _uriCommand;
         public CommandBase UriCommand
