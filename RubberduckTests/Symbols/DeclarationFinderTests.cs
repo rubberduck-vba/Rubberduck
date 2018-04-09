@@ -672,6 +672,71 @@ End Sub
 
         [Test]
         [Category("Resolver")]
+        public void AmbiguousNameSelectsParameterOverProperty()
+        {
+            var code =
+                @"
+Option Explicit
+
+Public Property Get Item()
+    Item = 12
+End Property
+
+Public Property Let Item(ByVal Item As Variant)
+    DoSomething Item
+End Property
+
+Private Sub DoSomething(ByVal value As Variant)
+    Debug.Print value
+End Sub
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(8, 18))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object);
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(d => d.IdentifierName == "Item");
+            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+
+        [Test]
+        [Category("Resolver")]
+        public void AmbiguousNameSelectsParameterOverSub()
+        {
+            var code =
+                @"
+Option Explicit
+
+Public Sub foo(ByVal foo As Bookmarks)
+    Dim bar As Bookmark
+    For Each bar In foo
+        Debug.Print bar.Name
+    Next
+End Sub
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(5, 22))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object);
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(d => d.IdentifierName == "foo");
+            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+
+        [Test]
+        [Category("Resolver")]
         public void SameNameForProjectAndClass_ScopedDeclaration_ProjectSelection()
         {
             var refEditClass = @"
