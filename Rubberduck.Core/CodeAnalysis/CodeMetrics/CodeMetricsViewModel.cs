@@ -1,12 +1,9 @@
-﻿using NLog;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Rubberduck.Navigation.CodeMetrics
+namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
     public class CodeMetricsViewModel : ViewModelBase, IDisposable
     {
@@ -25,7 +22,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             if (e.State == ParserState.Ready)
             {
                 IsBusy = true;
-                ModuleMetrics = _analyst.ModuleMetrics(_state);
+                ModuleMetrics = _analyst.GetMetrics(_state);
                 IsBusy = false;
             }
         }
@@ -35,8 +32,8 @@ namespace Rubberduck.Navigation.CodeMetrics
             _state.StateChanged -= OnStateChanged;
         }
 
-        private IEnumerable<ModuleMetricsResult> _moduleMetrics;
-        public IEnumerable<ModuleMetricsResult> ModuleMetrics {
+        private IEnumerable<IModuleMetricsResult> _moduleMetrics;
+        public IEnumerable<IModuleMetricsResult> ModuleMetrics {
             get => _moduleMetrics;
             private set
             {

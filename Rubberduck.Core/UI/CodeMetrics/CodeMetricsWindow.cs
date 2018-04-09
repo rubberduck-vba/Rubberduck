@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
-using Rubberduck.Navigation.CodeMetrics;
+using Rubberduck.CodeAnalysis.CodeMetrics;
 
 namespace Rubberduck.UI.CodeMetrics
 {

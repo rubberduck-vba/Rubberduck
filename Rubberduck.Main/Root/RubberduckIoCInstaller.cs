@@ -48,6 +48,7 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.CodeAnalysis.CodeMetrics;
 
 namespace Rubberduck.Root
 {
@@ -150,11 +151,19 @@ namespace Rubberduck.Root
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
             RegisterQuickFixes(container, assembliesToRegister);
+            RegisterCodeMetrics(container, assembliesToRegister);
 
             RegisterSpecialFactories(container);
             RegisterFactories(container, assembliesToRegister);
 
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
+        }
+
+        private void RegisterCodeMetrics(IWindsorContainer container, Assembly[] assembliesToRegister)
+        {
+            container.Register(Component.For<ICodeMetricsAnalyst>()
+                .ImplementedBy<CodeMetricsAnalyst>()
+                .LifestyleSingleton());
         }
 
         private void RegisterUnitTestingComSide(IWindsorContainer container)

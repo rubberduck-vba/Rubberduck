@@ -1,9 +1,8 @@
 ﻿using Moq;
-using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Settings;
 using System.Linq;
-using Rubberduck.Inspections;
+using Rubberduck.CodeAnalysis.Inspections;
 
 namespace RubberduckTests.Inspections
 {

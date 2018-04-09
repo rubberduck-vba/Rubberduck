@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Parsing.VBA;
 
