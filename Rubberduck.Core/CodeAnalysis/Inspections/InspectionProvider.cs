@@ -3,7 +3,7 @@ using System.Linq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Settings;
 
-namespace Rubberduck.Inspections
+namespace Rubberduck.CodeAnalysis.Inspections
 {
     public class InspectionProvider : IInspectionProvider
     {

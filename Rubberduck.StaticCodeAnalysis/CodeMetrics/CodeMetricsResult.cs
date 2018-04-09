@@ -4,16 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Navigation.CodeMetrics
+namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
-    public struct CodeMetricsResult
+    public struct CodeMetricsResult : ICodeMetricsResult
     {
         public CodeMetricsResult(int lines, int cyclomaticComplexity, int nesting)
-            : this(lines, cyclomaticComplexity, nesting, Enumerable.Empty<CodeMetricsResult>())
+            : this(lines, cyclomaticComplexity, nesting, Enumerable.Empty<ICodeMetricsResult>())
         { 
         }
 
-        public CodeMetricsResult(int lines, int cyclomaticComplexity, int nesting, IEnumerable<CodeMetricsResult> childScopeResults)
+        public CodeMetricsResult(int lines, int cyclomaticComplexity, int nesting, IEnumerable<ICodeMetricsResult> childScopeResults)
         {
             var childScopeMetric =
                 childScopeResults.Aggregate(new CodeMetricsResult(), (r1, r2) => new CodeMetricsResult(r1.Lines + r2.Lines, r1.CyclomaticComplexity + r2.CyclomaticComplexity, Math.Max(r1.MaximumNesting, r2.MaximumNesting)));
@@ -28,25 +28,25 @@ namespace Rubberduck.Navigation.CodeMetrics
 
     }
 
-    public struct MemberMetricsResult
+    public struct MemberMetricsResult : IMemberMetricsResult
     {
         public Declaration Member { get; private set; }
-        public CodeMetricsResult Result { get; private set; }
+        public ICodeMetricsResult Result { get; private set; }
 
-        public MemberMetricsResult(Declaration member, IEnumerable<CodeMetricsResult> contextResults)
+        public MemberMetricsResult(Declaration member, IEnumerable<ICodeMetricsResult> contextResults)
         {
             Member = member;
             Result = new CodeMetricsResult(0, 0, 0, contextResults);
         }
     }
 
-    public struct ModuleMetricsResult
+    public struct ModuleMetricsResult : IModuleMetricsResult
     {
         public QualifiedModuleName ModuleName { get; private set; }
-        public CodeMetricsResult Result { get; private set; }
-        public IReadOnlyDictionary<Declaration, CodeMetricsResult> MemberResults { get; private set; }
+        public ICodeMetricsResult Result { get; private set; }
+        public IReadOnlyDictionary<Declaration, ICodeMetricsResult> MemberResults { get; private set; }
 
-        public ModuleMetricsResult(QualifiedModuleName moduleName, IEnumerable<MemberMetricsResult> memberMetricsResult, IEnumerable<CodeMetricsResult> nonMemberResults)
+        public ModuleMetricsResult(QualifiedModuleName moduleName, IEnumerable<IMemberMetricsResult> memberMetricsResult, IEnumerable<ICodeMetricsResult> nonMemberResults)
         {
             ModuleName = moduleName;
             MemberResults = memberMetricsResult.ToDictionary(mmr => mmr.Member, mmr => mmr.Result);

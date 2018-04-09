@@ -7,7 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections
+namespace Rubberduck.Inspections.QuickFixes
 {
     public class QuickFixProvider : IQuickFixProvider
     {

@@ -8,13 +8,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Rubberduck.Navigation.CodeMetrics
+namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
     public class CodeMetricsAnalyst : ICodeMetricsAnalyst
     {    
-        public CodeMetricsAnalyst() { }
-
-        public IEnumerable<ModuleMetricsResult> ModuleMetrics(RubberduckParserState state)
+        public IEnumerable<IModuleMetricsResult> GetMetrics(RubberduckParserState state)
         {
             if (state == null || !state.AllUserDeclarations.Any())
             {
@@ -30,7 +28,7 @@ namespace Rubberduck.Navigation.CodeMetrics
             };
         }
 
-        public ModuleMetricsResult GetModuleResult(RubberduckParserState state, QualifiedModuleName qmn)
+        public IModuleMetricsResult GetModuleResult(RubberduckParserState state, QualifiedModuleName qmn)
         {
             return GetModuleResult(qmn, state.GetParseTree(qmn), state.DeclarationFinder);
         }
@@ -44,7 +42,6 @@ namespace Rubberduck.Navigation.CodeMetrics
             return cmListener.GetMetricsResult(qmn);
         }
 
-
         private class CodeMetricsListener : VBAParserBaseListener
         {
             private readonly DeclarationFinder _finder;
@@ -52,10 +49,10 @@ namespace Rubberduck.Navigation.CodeMetrics
             private Declaration _currentMember;
             private int _currentNestingLevel = 0;
             private int _currentMaxNesting = 0;
-            private List<CodeMetricsResult> _results = new List<CodeMetricsResult>();
-            private List<CodeMetricsResult> _moduleResults = new List<CodeMetricsResult>();
+            private List<ICodeMetricsResult> _results = new List<ICodeMetricsResult>();
+            private List<ICodeMetricsResult> _moduleResults = new List<ICodeMetricsResult>();
 
-            private List<MemberMetricsResult> _memberResults = new List<MemberMetricsResult>();
+            private List<IMemberMetricsResult> _memberResults = new List<IMemberMetricsResult>();
 
             public CodeMetricsListener(DeclarationFinder finder)
             {
@@ -168,7 +165,7 @@ namespace Rubberduck.Navigation.CodeMetrics
                 _results.Add(new CodeMetricsResult(0, 0, _currentMaxNesting));
                 _memberResults.Add(new MemberMetricsResult(_currentMember, _results));
                 // reset state
-                _results = new List<CodeMetricsResult>(); 
+                _results = new List<ICodeMetricsResult>(); 
                 _currentMaxNesting = 0;
                 _currentMember = null;
             }
