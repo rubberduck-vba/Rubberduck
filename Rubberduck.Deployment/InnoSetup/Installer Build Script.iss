@@ -113,7 +113,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 ; TODO add additional languages here by adding include files in \Includes folder
 ;      and uncomment or add lines to include the file.
 #include <English.CustomMessages.iss>
-; #include <French.CustomMessages.iss>
+#include <French.CustomMessages.iss>
 #include <German.CustomMessages.iss>
 
 [Icons]
