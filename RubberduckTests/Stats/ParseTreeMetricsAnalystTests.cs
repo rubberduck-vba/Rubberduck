@@ -11,7 +11,7 @@ namespace RubberduckTests.Stats
     [TestFixture]
     public class CodeMetricsAnalystTests
     {
-        private ICodeMetricsAnalyst cut;
+        private CodeMetricsAnalyst cut;
 
         [SetUp]
         public void Setup()

@@ -341,6 +341,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj">
+      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
+      <Name>Rubberduck.CodeAnalysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
       <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
