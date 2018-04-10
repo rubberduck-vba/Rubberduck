@@ -547,7 +547,7 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
-legalLabelIdentifier : {_input.La(1) != DOEVENTS && _input.La(1) != END && _input.La(1) != CLOSE && _input.La(1) != ELSE && _input.La(1) != LOOP && _input.La(1) != NEXT && _input.La(1) != RANDOMIZE && _input.La(1) != REM && _input.La(1) != RESUME && _input.La(1) != RETURN && _input.La(1) != RETURN && _input.La(1) != STOP && _input.La(1) != WEND}? identifier | markerKeyword;
+legalLabelIdentifier : { !(new[]{DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND}).Contains(_input.La(1))}? identifier | markerKeyword;
 identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
