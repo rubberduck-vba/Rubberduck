@@ -14,6 +14,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
     public class SheetAccessedUsingStringInspection : InspectionBase
     {

@@ -2,10 +2,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Inspections;
@@ -99,7 +101,11 @@ namespace Rubberduck.Inspections
                 }
                 token.ThrowIfCancellationRequested();
 
-                var inspectionsToRun = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow && RequiredLibrariesArePresent(inspection, state));
+                var inspectionsToRun = _inspections.Where(inspection =>
+                    inspection.Severity != CodeInspectionSeverity.DoNotShow &&
+                    RequiredLibrariesArePresent(inspection, state) &&
+                    RequiredHostIsPresent(inspection));
+
                 token.ThrowIfCancellationRequested();
 
                 try
@@ -149,6 +155,13 @@ namespace Rubberduck.Inspections
                 var projectNames = state.DeclarationFinder.Projects.Where(project => !project.IsUserDefined).Select(project => project.ProjectName).ToArray();
 
                 return requiredLibraries.All(library => projectNames.Contains(library.LibraryName));
+            }
+
+            private static bool RequiredHostIsPresent(IInspection inspection)
+            {
+                var requiredHost = inspection.GetType().GetCustomAttribute<RequiredHostAttribute>();
+
+                return requiredHost == null || requiredHost.HostNames.Contains(Path.GetFileName(Application.ExecutablePath).ToUpper());
             }
 
             private static void RunInspectionsInParallel(IEnumerable<IInspection> inspectionsToRun,
