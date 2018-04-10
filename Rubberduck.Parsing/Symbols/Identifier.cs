@@ -96,6 +96,11 @@ namespace Rubberduck.Parsing.Symbols
             return GetName(context);
         }
 
+        public static string GetName(VBAParser.LegalLabelIdentifierContext context)
+        {
+            return GetName(context.identifier());
+        }
+
         public static string GetName(VBAParser.UnrestrictedIdentifierContext context)
         {
             if (context.identifier() != null)
@@ -151,14 +156,14 @@ namespace Rubberduck.Parsing.Symbols
 
         public static string GetName(VBAParser.IdentifierStatementLabelContext context, out Interval tokenInterval)
         {
-            var nameContext = context.unrestrictedIdentifier();
+            var nameContext = context.legalLabelIdentifier();
             tokenInterval = Interval.Of(nameContext.Start.TokenIndex, nameContext.Stop.TokenIndex);
             return GetName(context);
         }
 
         public static string GetName(VBAParser.IdentifierStatementLabelContext context)
         {
-            return GetName(context.unrestrictedIdentifier());
+            return GetName(context.legalLabelIdentifier());
         }
 
         public static string GetName(VBAParser.SimpleNameExprContext context, out Interval tokenInterval)
