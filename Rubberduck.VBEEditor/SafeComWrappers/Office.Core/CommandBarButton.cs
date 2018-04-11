@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
 using MSO = Microsoft.Office.Core;
 using NLog;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -24,7 +25,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         
         private MSO.CommandBarButton Button => Target;
 
-        public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
+        public static CommandBarButton FromCommandBarControl(ICommandBarControl control)
         {
             return new CommandBarButton((MSO.CommandBarButton)control.Target, rewrapping: true);
         }
@@ -336,6 +337,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             if (!IsWrappingNullReference)
             {
+                DetachEvents();
                 Target.Delete(AddCommandBarControlsTemporarily);
             }
         }
@@ -377,7 +379,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 lock (_eventLock)
                 {
-                    AttachEvents();
+                    if (_click != null && _click.GetInvocationList().Length == 0)
+                    {
+                        AttachEvents();
+                    }
                     _click += value;
                 }
             }
@@ -385,11 +390,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 lock (_eventLock)
                 {
+                    if (_click != null && _click.GetInvocationList().Length == 0)
+                    {
+                        DetachEvents();
+                    }
                     _click -= value;
-                    DetachEvents();
                 }
             }
         }
+
         void MSO.ICommandBarButtonEvents.Click(MSO.CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var button = new CommandBarButton(Ctrl);
@@ -405,6 +414,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             var args = new CommandBarButtonClickEventArgs(button);
             handler.Invoke(this, args);
             CancelDefault = args.Cancel;
+        }
+
+        public event EventHandler Disposing;
+        protected override void Dispose(bool disposing)
+        {
+            Disposing?.Invoke(this, EventArgs.Empty);
+            base.Dispose(disposing);
         }
     }
 }

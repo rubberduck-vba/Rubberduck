@@ -1,17 +1,46 @@
+using System.Collections.Generic;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
-    internal static class CommandBarButtonFactory
+    public interface ICommandBarButtonFactory
     {
-        public static ICommandBarButton Create<TParent>(TParent parent, int? beforeIndex = null)
+        ICommandBarButton Create<TParent>(TParent parent, int? beforeIndex = null)
+            where TParent : ICommandBarControls;
+    }
+
+    public class CommandBarButtonFactory : ICommandBarButtonFactory
+    {
+        private readonly IVBEEvents _vbeEvents;
+        private readonly List<CommandBarButton> _buttons;
+
+        internal CommandBarButtonFactory(IVBEEvents vbeEvents)
+        {
+            _vbeEvents = vbeEvents;
+            _vbeEvents.EventsTerminated += EventsTerminated;
+        }
+
+        private void EventsTerminated(object sender, System.EventArgs e)
+        {
+            _buttons.ForEach(b => b.DetachEvents());
+        }
+
+        public ICommandBarButton Create<TParent>(TParent parent, int? beforeIndex = null)
             where TParent : ICommandBarControls
         {
-            return CommandBarButton.FromCommandBarControl(beforeIndex.HasValue
+            var button = CommandBarButton.FromCommandBarControl(beforeIndex.HasValue
                 ? parent.Add(ControlType.Button, beforeIndex.Value)
                 : parent.Add(ControlType.Button));
+            if (!button.IsWrappingNullReference)
+            {
+                _buttons.Add(button);
+            }
+
+            return button;
         }
     }
 }
