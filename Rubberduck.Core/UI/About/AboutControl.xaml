@@ -18,7 +18,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="64" />
+            <RowDefinition Height="75" />
             <RowDefinition Height="Auto" MinHeight="250" />
             <RowDefinition Height="64" />
         </Grid.RowDefinitions>
@@ -27,8 +27,24 @@
                 MouseLeftButtonDown="CopyVersionInfo_MouseLeftButtonDown">
             <StackPanel>
                 <TextBlock x:Name="Version"
-                           Margin="5,10,5,0" Text="{Binding Version}" Foreground="Black"
-                           FontWeight="Bold" FontSize="14"
+                           Margin="0,5" Text="{Binding Version}" Foreground="Black"
+                           FontWeight="Bold" FontSize="10"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="OperatingSystem"
+                           Margin="0" Text="{Binding OperatingSystem}" Foreground="Black"
+                           FontWeight="Bold" FontSize="8"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="HostProduct"
+                           Margin="0" Text="{Binding HostProduct}" Foreground="Black"
+                           FontWeight="Bold" FontSize="8"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="HostVersion"
+                           Margin="0" Text="{Binding HostVersion}" Foreground="Black"
+                           FontWeight="Bold" FontSize="8"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="HostExecutable"
+                           Margin="0" Text="{Binding HostExecutable}" Foreground="Black"
+                           FontWeight="Bold" FontSize="8"
                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <Label Name="CopyVersionInfo"
                        Foreground="Gray"
@@ -47,7 +63,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Margin="5,0,0,5" Height="316" Width="175">
-            <Image Source="{StaticResource Ducky}" Stretch="UniformToFill" Height="250" />
+            <Image Source="{StaticResource Ducky}" Stretch="UniformToFill" Height="250" HorizontalAlignment="Center"/>
             <TextBlock HorizontalAlignment="Center" Margin="0,30,0,0">
                 <Hyperlink Name="WebpageHyperlink"
                            NavigateUri="http://rubberduckvba.com/"
@@ -65,7 +81,7 @@
         <StackPanel Grid.Column="1"
                     Grid.Row="1"
                     Background="White"
-                    Margin="0,0,5,5"
+                    Margin="0,0,5,25"
                     Grid.RowSpan="2">
 
             <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionsLabel}"
@@ -124,6 +140,7 @@ Ross McLean
 Ross Knudsen
 Simon Forsberg
 Stephen Bullen (Smart Indenter)
+Wayne Phillips (vbWatchdog)
                     </TextBlock>
 
                     <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_GeneralThanks}"
@@ -183,7 +200,7 @@ Stephen Bullen (Smart Indenter)
         </Border>
         <TextBlock Grid.Row="2" Grid.Column="1"
                    Text="{Binding AboutCopyright}"
-                   FontSize="8" Margin="10"
+                   FontSize="8" Margin="15"
                    VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="11" Width="237" />
     </Grid>
 </UserControl>

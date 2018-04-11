@@ -50,6 +50,10 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 return false;
             }
+            if (_state.IsNewOrModified(member.QualifiedModuleName))
+            {
+                return false;
+            }
 
             var parameters = _state.AllUserDeclarations.Where(item => item.DeclarationType == DeclarationType.Parameter && member.Equals(item.ParentScopeDeclaration)).ToList();
             var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)

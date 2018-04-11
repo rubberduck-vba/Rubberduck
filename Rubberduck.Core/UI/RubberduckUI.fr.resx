@@ -1728,4 +1728,96 @@ les projets dans le VBE.</value>
   <data name="CodeMetrics_Lines" xml:space="preserve">
     <value>Lignes</value>
   </data>
+  <data name="TestExplorer_Outcome" xml:space="preserve">
+    <value>Résultat</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
+    <value>Indenter le module</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
+    <value>Indenter la procédure</value>
+  </data>
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
+    <value>Explorateur de Code</value>
+  </data>
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
+    <value>Inspections</value>
+  </data>
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
+    <value>Extraire une méthode</value>
+  </data>
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
+    <value>Renommer</value>
+  </data>
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
+    <value>Explorateur de tests</value>
+  </data>
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
+    <value>Rechercher un symbole</value>
+  </data>
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
+    <value>Rapprocher la déclaration de son utilisation</value>
+  </data>
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
+    <value>Rafraîchir l'arborescence</value>
+  </data>
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
+    <value>Encapsuler le champ</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
+    <value>Les raccourcis doivent inclure Alt et/ou Ctrl.</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
+    <value>Cette configuration peut entraîner des effets indésirables.</value>
+  </data>
+  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>Les projets suivants ne peuvent être compilés, ce qui causera probablement des erreurs d'analyse. Continuer? {0}</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>La compilation a échoué.</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
+    <value>Compiler le code avant d'analyser</value>
+  </data>
+  <data name="ParserState_Started" xml:space="preserve">
+    <value>Initiée</value>
+  </data>
+  <data name="ParserState_UnexpectedError" xml:space="preserve">
+    <value>Erreur inattendue</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
+    <value>L'option VBE "Compile on demand" est présentement activée. Cette configuration n'est pas recommandée, puisqu'elle peut masquer des erreurs de compilation in interférer avec l'analyse. Poursuivre l'analyse?</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Paramètre "Compile on demand"</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
+    <value>L'option VBE "Compile on demand" est activée. Il est fortement recommandé de désactiver cette option afin d'utiliser l'option "Compiler avant l'analyse". Voulez-vous désactiver "Compile on demand"?
+
+NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configuration prenne effet.</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>'Compile on demand' est activé</value>
+  </data>
+  <data name="AboutWindow_HostExecutable" xml:space="preserve">
+    <value>Exécutable hôte : {0}</value>
+  </data>
+  <data name="AboutWindow_HostProduct" xml:space="preserve">
+    <value>Produit hôte : {0} {1}</value>
+  </data>
+  <data name="AboutWindow_HostVersion" xml:space="preserve">
+    <value>Version hôte : {0}</value>
+  </data>
+  <data name="AboutWindow_OperatingSystem" xml:space="preserve">
+    <value>Système d'exploitation : {0}, {1}</value>
+  </data>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
+  </data>
+  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
+    <value>Filtrer par description :</value>
+  </data>
 </root>

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using NLog;
@@ -52,6 +54,17 @@ namespace Rubberduck.UI.Settings
                 {
                     _inspectionSettingsFilter = value;
                     OnPropertyChanged(nameof(InspectionSettings));
+
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        InspectionSettings.Filter = null;
+                    }
+                    else
+                    {
+                        InspectionSettings.Filter = item => (item as CodeInspectionSetting)?
+                            .Description.ToUpper()
+                            .Contains(value.ToUpper()) ?? true;
+                    }
                 }
             }
         }
@@ -61,14 +74,6 @@ namespace Rubberduck.UI.Settings
         {
             get
             {
-                if (string.IsNullOrEmpty(_inspectionSettingsFilter))
-                {
-                    _inspectionSettings.Filter = null;
-                }
-                else
-                {
-                    _inspectionSettings.Filter = filter => FilterInspectionSettings(filter);
-                }
                 return _inspectionSettings;
             }
 
@@ -80,12 +85,6 @@ namespace Rubberduck.UI.Settings
                     OnPropertyChanged();
                 }
             }
-        }
-
-        private bool FilterInspectionSettings(object filter)
-        {
-            var cis = filter as CodeInspectionSetting;
-            return cis.Description.ToUpper().Contains(_inspectionSettingsFilter.ToUpper());
         }
 
         private bool _runInspectionsOnSuccessfulParse;

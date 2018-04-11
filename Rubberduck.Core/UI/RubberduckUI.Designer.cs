@@ -168,6 +168,42 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Host Executable: {0}.
+        /// </summary>
+        public static string AboutWindow_HostExecutable {
+            get {
+                return ResourceManager.GetString("AboutWindow_HostExecutable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host Product: {0} {1}.
+        /// </summary>
+        public static string AboutWindow_HostProduct {
+            get {
+                return ResourceManager.GetString("AboutWindow_HostProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host Version: {0}.
+        /// </summary>
+        public static string AboutWindow_HostVersion {
+            get {
+                return ResourceManager.GetString("AboutWindow_HostVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OS: {0}, {1}.
+        /// </summary>
+        public static string AboutWindow_OperatingSystem {
+            get {
+                return ResourceManager.GetString("AboutWindow_OperatingSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Special Thanks.
         /// </summary>
         public static string AboutWindow_SpecialThanksLabel {
@@ -2161,7 +2197,7 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This hotkey configuration may cause undesirable side affects..
+        ///   Looks up a localized string similar to This hotkey configuration may cause undesirable side effects..
         /// </summary>
         public static string GeneralSettings_HotkeyRestrictionToolTip {
             get {
@@ -2656,6 +2692,15 @@ namespace Rubberduck.UI {
         public static string Inspect {
             get {
                 return ResourceManager.GetString("Inspect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by Description:.
+        /// </summary>
+        public static string InspectionSettings_FilterDescription {
+            get {
+                return ResourceManager.GetString("InspectionSettings_FilterDescription", resourceCulture);
             }
         }
         
