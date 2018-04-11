@@ -122,6 +122,10 @@ namespace Rubberduck.Root
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
+            container.Register(Component.For<ICommandBarButtonFactory>()
+                .ImplementedBy<CommandBarButtonFactory>()
+                .LifestyleSingleton());
+
             RegisterCommands(container);
             RegisterCommandMenuItems(container);
             RegisterParentMenus(container);
