@@ -18,8 +18,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private readonly IVBEEvents _vbeEvents;
         private readonly List<CommandBarButton> _buttons;
 
-        internal CommandBarButtonFactory(IVBEEvents vbeEvents)
+        public CommandBarButtonFactory(IVBEEvents vbeEvents)
         {
+            _buttons = new List<CommandBarButton>();
             _vbeEvents = vbeEvents;
             _vbeEvents.EventsTerminated += EventsTerminated;
         }

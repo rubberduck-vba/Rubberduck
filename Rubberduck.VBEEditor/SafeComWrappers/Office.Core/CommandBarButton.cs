@@ -13,7 +13,7 @@ using ButtonState = Rubberduck.VBEditor.SafeComWrappers.MSForms.ButtonState;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO.ICommandBarsEvents>, ICommandBarButton, MSO.ICommandBarButtonEvents
+    public class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO._CommandBarButtonEvents>, ICommandBarButton, MSO._CommandBarButtonEvents
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public const bool AddCommandBarControlsTemporarily = false;
@@ -371,7 +371,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                     && ReferenceEquals(other.Target.Parent, Target.Parent));
         }
 
-        private object _eventLock = new object();
+        private readonly object _eventLock = new object();
         private event EventHandler<CommandBarButtonClickEventArgs> _click;
         public event EventHandler<CommandBarButtonClickEventArgs> Click
         {
@@ -379,11 +379,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 lock (_eventLock)
                 {
-                    if (_click != null && _click.GetInvocationList().Length == 0)
+                    _click += value;
+                    if (_click != null && _click.GetInvocationList().Length != 0)
                     {
                         AttachEvents();
                     }
-                    _click += value;
                 }
             }
             remove
@@ -399,7 +399,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             }
         }
 
-        void MSO.ICommandBarButtonEvents.Click(MSO.CommandBarButton Ctrl, ref bool CancelDefault)
+        void MSO._CommandBarButtonEvents.Click(MSO.CommandBarButton Ctrl, ref bool CancelDefault)
         {
             var button = new CommandBarButton(Ctrl);
             var handler = _click;
