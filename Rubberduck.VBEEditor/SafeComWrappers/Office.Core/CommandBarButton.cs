@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
 using MSO = Microsoft.Office.Core;
 using NLog;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
@@ -15,12 +14,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
     public class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO._CommandBarButtonEvents>, ICommandBarButton, MSO._CommandBarButtonEvents
     {
+        private readonly CommandBarControl _control;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public const bool AddCommandBarControlsTemporarily = false;
 
         public CommandBarButton(MSO.CommandBarButton target, bool rewrapping = false) 
             : base(target, rewrapping)
         {
+            _control = new CommandBarControl(target, rewrapping);
         }
         
         private MSO.CommandBarButton Button => Target;
@@ -175,200 +176,119 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 
         public bool BeginsGroup
         {
-            get => !IsWrappingNullReference && Target.BeginGroup;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.BeginGroup = value;
-                }
-            }
+            get => _control.BeginsGroup;
+            set => _control.BeginsGroup = value;
         }
 
-        public bool IsBuiltIn => !IsWrappingNullReference && Target.BuiltIn;
+        public bool IsBuiltIn => _control.IsBuiltIn;
 
         public string Caption
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Caption;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Caption = CommandBarControlCaptionGuard.ApplyGuard(value);
-                }
-            }
+            get => _control.Caption;
+            set => _control.Caption = value;
         }
 
         public string DescriptionText
         {
-            get => IsWrappingNullReference ? string.Empty : Target.DescriptionText;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.DescriptionText = value;
-                }
-            }
+            get => _control.DescriptionText;
+            set => _control.DescriptionText=value;
         }
 
         public bool IsEnabled
         {
-            get => !IsWrappingNullReference && Target.Enabled;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Enabled = value;
-                }
-            }
+            get => _control.IsEnabled;
+            set=> _control.IsEnabled = value;
         }
 
         public int Height
         {
-            get => Target.Height;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Height = value;
-                }
-            }
+            get => _control.Height;
+            set => _control.Height = value;
         }
 
-        public int Id => IsWrappingNullReference ? 0 : Target.Id;
+        public int Id => _control.Id;
 
-        public int Index => IsWrappingNullReference ? 0 : Target.Index;
+        public int Index => _control.Index;
 
-        public int Left => IsWrappingNullReference ? 0 : Target.Left;
+        public int Left => _control.Left;
 
         public string OnAction
         {
-            get => IsWrappingNullReference ? string.Empty : Target.OnAction;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.OnAction = value;
-                }
-            }
+            get => _control.OnAction;
+            set => _control.OnAction = value;
         }
 
-        public ICommandBar Parent => new CommandBar(IsWrappingNullReference ? null : Target.Parent);
+        public ICommandBar Parent => _control.Parent;
 
         public string Parameter
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Parameter;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Parameter = value;
-                }
-            }
+            get => _control.Parameter;
+            set => _control.Parameter = value;
         }
 
         public int Priority
         {
-            get => IsWrappingNullReference ? 0 : Target.Priority;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Priority = value;
-                }
-            }
+            get => _control.Priority;
+            set => _control.Priority = value;
         }
 
         public string Tag
         {
-            get => Target?.Tag;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Tag = value;
-                }
-            }
+            get => _control.Tag;
+            set => _control.Tag = value;
         }
 
         public string TooltipText
         {
-            get => IsWrappingNullReference ? string.Empty : Target.TooltipText;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.TooltipText = value;
-                }
-            }
+            get => _control.TooltipText;
+            set => _control.TooltipText = value;
         }
 
-        public int Top => IsWrappingNullReference ? 0 : Target.Top;
+        public int Top => _control.Top;
 
-        public ControlType Type => IsWrappingNullReference ? 0 : (ControlType)Target.Type;
+        public ControlType Type => _control.Type;
 
         public bool IsVisible
         {
-            get => !IsWrappingNullReference && Target.Visible;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Visible = value;
-                }
-            }
+            get => _control.IsVisible;
+            set => _control.IsVisible = value;
         }
 
         public int Width
         {
-            get => IsWrappingNullReference ? 0 : Target.Width;
-            set
-            {
-                if (!IsWrappingNullReference)
-                {
-                    Target.Width = value;
-                }
-            }
+            get => _control.Width;
+            set => _control.Width = value;
         }
 
-        public bool IsPriorityDropped => (!IsWrappingNullReference) && Target.IsPriorityDropped;
+        public bool IsPriorityDropped => _control.IsPriorityDropped;
 
         public void Delete()
         {
             if (!IsWrappingNullReference)
             {
                 DetachEvents();
-                Target.Delete(AddCommandBarControlsTemporarily);
             }
+            _control.Delete();
         }
 
         public void Execute()
         {
-            if (!IsWrappingNullReference)
-            {
-                Target.Execute();
-            }
+            _control.Execute();
         }
         
         public bool Equals(ICommandBarControl other)
         {
-            return Equals(other as SafeComWrapper<MSO.CommandBarControl>);
-        }
-
-        public override int GetHashCode()
-        {
-            return IsWrappingNullReference ? 0 : HashCode.Compute(Type, Id, Index, IsBuiltIn, Target.Parent);
+            return _control.Equals(other);
         }
 
         public override bool Equals(ISafeComWrapper<MSO.CommandBarButton> other)
         {
-            return IsEqualIfNull(other) ||
-                   (other != null
-                    && (int)other.Target.Type == (int)Type
-                    && other.Target.Id == Id
-                    && other.Target.Index == Index
-                    && other.Target.BuiltIn == IsBuiltIn
-                    && ReferenceEquals(other.Target.Parent, Target.Parent));
+            return _control.Equals(other);
+        }
+        
+        public override int GetHashCode()
+        {
+            return _control.GetHashCode();
         }
 
         private readonly object _eventLock = new object();
@@ -390,11 +310,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 lock (_eventLock)
                 {
-                    if (_click != null && _click.GetInvocationList().Length == 0)
+                    _click -= value;
+                    if (_click == null || _click.GetInvocationList().Length == 0)
                     {
                         DetachEvents();
-                    }
-                    _click -= value;
+                    };
                 }
             }
         }
@@ -421,6 +341,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
         {
             Disposing?.Invoke(this, EventArgs.Empty);
             base.Dispose(disposing);
+            _control.Dispose();
         }
     }
 }

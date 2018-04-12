@@ -68,6 +68,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 if (_cookie != NotAdvising)
                 {
                     _icp.Unadvise(_cookie);
+                    _cookie = NotAdvising;
                 }
 
                 Marshal.ReleaseComObject(_icp);

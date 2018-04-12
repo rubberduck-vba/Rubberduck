@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
@@ -16,18 +16,21 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
     public class CommandBarButtonFactory : ICommandBarButtonFactory
     {
         private readonly IVBEEvents _vbeEvents;
-        private readonly List<CommandBarButton> _buttons;
+        private readonly Dictionary<int, CommandBarButton> _buttons;
 
         public CommandBarButtonFactory(IVBEEvents vbeEvents)
         {
-            _buttons = new List<CommandBarButton>();
+            _buttons = new Dictionary<int, CommandBarButton>();
             _vbeEvents = vbeEvents;
             _vbeEvents.EventsTerminated += EventsTerminated;
         }
 
         private void EventsTerminated(object sender, System.EventArgs e)
         {
-            _buttons.ForEach(b => b.DetachEvents());
+            foreach (var kvp in _buttons)
+            {
+                kvp.Value.DetachEvents();
+            }
         }
 
         public ICommandBarButton Create<TParent>(TParent parent, int? beforeIndex = null)
@@ -38,10 +41,18 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 : parent.Add(ControlType.Button));
             if (!button.IsWrappingNullReference)
             {
-                _buttons.Add(button);
+                button.Disposing += ButtonDisposing;
+                _buttons.Add(button.GetHashCode(), button);
             }
 
             return button;
+        }
+
+        private void ButtonDisposing(object sender, System.EventArgs e)
+        {
+            var button = (CommandBarButton) sender;
+            button.Disposing -= ButtonDisposing;
+            _buttons.Remove(button.GetHashCode());
         }
     }
 }

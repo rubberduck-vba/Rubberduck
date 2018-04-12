@@ -1,10 +1,11 @@
 using System;
 using System.Drawing;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract
 {
-    public interface ICommandBarButton : ICommandBarControl
+    public interface ICommandBarButton : ISafeEventedComWrapper, ICommandBarControl
     {
         event EventHandler<CommandBarButtonClickEventArgs> Click;
         bool IsBuiltInFace { get; set; }
