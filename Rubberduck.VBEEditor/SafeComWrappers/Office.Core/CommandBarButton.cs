@@ -3,90 +3,34 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.CSharp.RuntimeBinder;
+using MSO = Microsoft.Office.Core;
 using NLog;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using ButtonState = Rubberduck.VBEditor.SafeComWrappers.MSForms.ButtonState;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
 {
-    public class CommandBarButton : CommandBarControl, ICommandBarButton
+    public class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO._CommandBarButtonEvents>, ICommandBarButton, MSO._CommandBarButtonEvents
     {
+        private readonly CommandBarControl _control;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        public const bool AddCommandBarControlsTemporarily = false;
 
-        public CommandBarButton(Microsoft.Office.Core.CommandBarButton target, bool rewrapping = false) 
+        public CommandBarButton(MSO.CommandBarButton target, bool rewrapping = false) 
             : base(target, rewrapping)
         {
+            _control = new CommandBarControl(target, rewrapping);
         }
+        
+        private MSO.CommandBarButton Button => Target;
 
-        private Microsoft.Office.Core.CommandBarButton Button => (Microsoft.Office.Core.CommandBarButton)Target;
-
-        public static ICommandBarButton FromCommandBarControl(ICommandBarControl control)
+        public static CommandBarButton FromCommandBarControl(ICommandBarControl control)
         {
-            return new CommandBarButton((Microsoft.Office.Core.CommandBarButton)control.Target, rewrapping: true);
+            return new CommandBarButton((MSO.CommandBarButton)control.Target, rewrapping: true);
         }
-
-        private EventHandler<CommandBarButtonClickEventArgs> _clickHandler; 
-        public event EventHandler<CommandBarButtonClickEventArgs> Click
-        {
-            add
-            {
-                if (_clickHandler == null)
-                {
-                    ((Microsoft.Office.Core.CommandBarButton)Target).Click += Target_Click;
-                }
-                _clickHandler += value;
-                using (var parent = Parent)
-                {
-                    _logger.Trace($"Added handler for: {parent.Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
-                }
-            }
-            remove
-            {
-                _clickHandler -= value;
-                try
-                {
-                    if (_clickHandler == null)
-                    {
-                        ((Microsoft.Office.Core.CommandBarButton)Target).Click -= Target_Click;
-                    }
-                }
-                catch
-                {
-                    // he's gone, dave.
-                }
-                using (var parent = Parent)
-                {
-                    _logger.Trace($"Removed handler for: {parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
-                }
-            }
-        }
-
-        private void Target_Click(Microsoft.Office.Core.CommandBarButton control, ref bool cancelDefault)
-        {
-            var button = new CommandBarButton(control);
-
-            var handler = _clickHandler;
-            if (handler == null || IsWrappingNullReference)
-            {
-                button.Dispose();
-                return;
-            }
-
-            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
-
-            //note: event is fired for every parent the command exists under. not sure why.
-            using (var parent = Parent)
-            {
-                _logger.Trace($"Executing handler for: {parent.GetType().Name} '{Target.Caption}' (tag: {Tag}, hashcode:{Target.GetHashCode()})");
-            }
-
-            var args = new CommandBarButtonClickEventArgs(button);
-            handler.Invoke(this, args);
-            cancelDefault = args.Cancel;
-            //button.Release(final:true);
-        }
-
+        
         public bool IsBuiltInFace
         {
             get => !IsWrappingNullReference && Button.BuiltInFace;
@@ -130,7 +74,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 if (!IsWrappingNullReference)
                 {
-                    Button.State = (Microsoft.Office.Core.MsoButtonState)value;
+                    Button.State = (MSO.MsoButtonState)value;
                 }
             }
         }
@@ -142,7 +86,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             {
                 if (!IsWrappingNullReference)
                 {
-                    Button.Style = (Microsoft.Office.Core.MsoButtonStyle)value;
+                    Button.Style = (MSO.MsoButtonStyle)value;
                 }
             }
         }
@@ -228,6 +172,176 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
                 g.DrawImage(image, 0, 0);
             }
             return output;
+        }
+
+        public bool BeginsGroup
+        {
+            get => _control.BeginsGroup;
+            set => _control.BeginsGroup = value;
+        }
+
+        public bool IsBuiltIn => _control.IsBuiltIn;
+
+        public string Caption
+        {
+            get => _control.Caption;
+            set => _control.Caption = value;
+        }
+
+        public string DescriptionText
+        {
+            get => _control.DescriptionText;
+            set => _control.DescriptionText=value;
+        }
+
+        public bool IsEnabled
+        {
+            get => _control.IsEnabled;
+            set=> _control.IsEnabled = value;
+        }
+
+        public int Height
+        {
+            get => _control.Height;
+            set => _control.Height = value;
+        }
+
+        public int Id => _control.Id;
+
+        public int Index => _control.Index;
+
+        public int Left => _control.Left;
+
+        public string OnAction
+        {
+            get => _control.OnAction;
+            set => _control.OnAction = value;
+        }
+
+        public ICommandBar Parent => _control.Parent;
+
+        public string Parameter
+        {
+            get => _control.Parameter;
+            set => _control.Parameter = value;
+        }
+
+        public int Priority
+        {
+            get => _control.Priority;
+            set => _control.Priority = value;
+        }
+
+        public string Tag
+        {
+            get => _control.Tag;
+            set => _control.Tag = value;
+        }
+
+        public string TooltipText
+        {
+            get => _control.TooltipText;
+            set => _control.TooltipText = value;
+        }
+
+        public int Top => _control.Top;
+
+        public ControlType Type => _control.Type;
+
+        public bool IsVisible
+        {
+            get => _control.IsVisible;
+            set => _control.IsVisible = value;
+        }
+
+        public int Width
+        {
+            get => _control.Width;
+            set => _control.Width = value;
+        }
+
+        public bool IsPriorityDropped => _control.IsPriorityDropped;
+
+        public void Delete()
+        {
+            if (!IsWrappingNullReference)
+            {
+                DetachEvents();
+            }
+            _control.Delete();
+        }
+
+        public void Execute()
+        {
+            _control.Execute();
+        }
+        
+        public bool Equals(ICommandBarControl other)
+        {
+            return _control.Equals(other);
+        }
+
+        public override bool Equals(ISafeComWrapper<MSO.CommandBarButton> other)
+        {
+            return _control.Equals(other);
+        }
+        
+        public override int GetHashCode()
+        {
+            return _control.GetHashCode();
+        }
+
+        private readonly object _eventLock = new object();
+        private event EventHandler<CommandBarButtonClickEventArgs> _click;
+        public event EventHandler<CommandBarButtonClickEventArgs> Click
+        {
+            add
+            {
+                lock (_eventLock)
+                {
+                    _click += value;
+                    if (_click != null && _click.GetInvocationList().Length != 0)
+                    {
+                        AttachEvents();
+                    }
+                }
+            }
+            remove
+            {
+                lock (_eventLock)
+                {
+                    _click -= value;
+                    if (_click == null || _click.GetInvocationList().Length == 0)
+                    {
+                        DetachEvents();
+                    };
+                }
+            }
+        }
+
+        void MSO._CommandBarButtonEvents.Click(MSO.CommandBarButton Ctrl, ref bool CancelDefault)
+        {
+            var button = new CommandBarButton(Ctrl);
+            var handler = _click;
+            if (handler == null || IsWrappingNullReference)
+            {
+                button.Dispose();
+                return;
+            }
+
+            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
+
+            var args = new CommandBarButtonClickEventArgs(button);
+            handler.Invoke(this, args);
+            CancelDefault = args.Cancel;
+        }
+
+        public event EventHandler Disposing;
+        protected override void Dispose(bool disposing)
+        {
+            Disposing?.Invoke(this, EventArgs.Empty);
+            base.Dispose(disposing);
+            _control.Dispose();
         }
     }
 }

@@ -6,6 +6,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
@@ -16,8 +17,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly IParseCoordinator _parser;
         private readonly ISelectionChangeService _selectionService;
 
-        public RubberduckCommandBar(IParseCoordinator parser, IEnumerable<ICommandMenuItem> items, IContextFormatter formatter, ISelectionChangeService selectionService, IUiDispatcher uiDispatcher) 
-            : base("Rubberduck", CommandBarPosition.Top, items, uiDispatcher)
+        public RubberduckCommandBar(IParseCoordinator parser, IEnumerable<ICommandMenuItem> items, IContextFormatter formatter, ISelectionChangeService selectionService, IUiDispatcher uiDispatcher, ICommandBarButtonFactory buttonFactory) 
+            : base("Rubberduck", CommandBarPosition.Top, items, uiDispatcher, buttonFactory)
         {
             _parser = parser;
             _formatter = formatter;
