@@ -10,7 +10,7 @@ namespace RubberduckTests.VBEditor.Utility
         public void ValueReturnsValuePassedIn()
         {
             var testValue = 42;
-            var dac = DisposalActionContainer.Create(testValue, () => { });
+            var dac = DisposalActionContainer.Create(testValue, (a) => { });
             var returnedValue = dac.Value;
 
             Assert.AreEqual(testValue, returnedValue);
@@ -20,7 +20,7 @@ namespace RubberduckTests.VBEditor.Utility
         public void FirstDisposeTriggersActionPassedIn()
         {
             var useCount = 0;
-            var dac = DisposalActionContainer.Create(42, () => useCount++);
+            var dac = DisposalActionContainer.Create(42, (a) => useCount++);
             dac.Dispose();
             var expectedUseCount = 1;
 
@@ -31,7 +31,7 @@ namespace RubberduckTests.VBEditor.Utility
         public void MultipleCallsOfDisposeTriggerTheActionPassedInOnce()
         {
             var useCount = 0;
-            var dac = DisposalActionContainer.Create(42, () => useCount++);
+            var dac = DisposalActionContainer.Create(42, (a) => useCount++);
             dac.Dispose();
             dac.Dispose();
             dac.Dispose();
@@ -41,6 +41,17 @@ namespace RubberduckTests.VBEditor.Utility
             var expectedUseCount = 1;
 
             Assert.AreEqual(expectedUseCount, useCount);
+        }
+
+        [Test()]
+        public void ArgumentForActionPassedInIsTheValuePassedIn()
+        {
+            var actualArgumentValue = 0;
+            var dac = DisposalActionContainer.Create(42, (a) => actualArgumentValue = a);
+            dac.Dispose();
+            var expectedArgumentValue = 42;
+
+            Assert.AreEqual(expectedArgumentValue, actualArgumentValue);
         }
     }
 }
