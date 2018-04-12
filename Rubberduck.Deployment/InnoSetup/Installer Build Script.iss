@@ -236,7 +236,7 @@ function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
 ///</remarks>
 function IsElevated: Boolean;
 begin
-  Result := IsAdminLoggedOn or IsPowerUserLoggedOn;
+  Result := IsAdminLoggedOn;
 end;
 
 ///<remarks>
@@ -775,6 +775,7 @@ end;
 procedure InitializeWizard();
 begin
   HasElevateSwitch := CmdLineParamExists('/ELEVATE');
+
   Log(Format('HasElevateSwitch: %d', [HasElevateSwitch]));
   Log(Format('IsElevated: %d', [IsElevated()]));
 
