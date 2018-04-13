@@ -9,6 +9,5 @@
     public interface IFakesFactory
     {
         IFakes Create();
-        void Release(IFakes fakes);
     }
 }
