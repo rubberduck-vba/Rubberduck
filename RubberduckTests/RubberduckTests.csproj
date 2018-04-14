@@ -102,6 +102,7 @@
     <Compile Include="Binding\SimpleNameProcedurePointerBindingTests.cs" />
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\CyclomaticComplexityTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
@@ -202,7 +203,7 @@
     <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
     <Compile Include="Settings\HotkeyFactoryTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
-    <Compile Include="Stats\ParseTreeMetricsAnalystTests.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\ParseTreeMetricsAnalystTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\CommandBarControlCaptionGuardTests.cs" />

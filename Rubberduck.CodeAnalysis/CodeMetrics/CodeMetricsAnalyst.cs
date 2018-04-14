@@ -11,8 +11,16 @@ using System.Linq;
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
     public class CodeMetricsAnalyst : ICodeMetricsAnalyst
-    {    
-        public IEnumerable<IModuleMetricsResult> GetMetrics(RubberduckParserState state)
+    {
+
+        private readonly CodeMetric[] metrics;
+
+        public CodeMetricsAnalyst(IEnumerable<CodeMetric> supportedMetrics)
+        {
+            metrics = supportedMetrics.ToArray();
+        }
+
+        public IEnumerable<ICodeMetricResult> GetMetrics(RubberduckParserState state)
         {
             if (state == null || !state.AllUserDeclarations.Any())
             {
@@ -22,15 +30,30 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
 
             var trees = state.ParseTrees;
 
-            foreach (var moduleTree in trees)
+            foreach (var result in trees.SelectMany(moduleTree => TraverseModuleTree(moduleTree.Value, state.DeclarationFinder, moduleTree.Key)))
             {
-                yield return GetModuleResult(moduleTree.Key, moduleTree.Value, state.DeclarationFinder);
-            };
+                yield return result;
+            }
         }
 
-        public IModuleMetricsResult GetModuleResult(RubberduckParserState state, QualifiedModuleName qmn)
+
+        public IEnumerable<ICodeMetricResult> ModuleResults(QualifiedModuleName moduleName, RubberduckParserState state)
         {
-            return GetModuleResult(qmn, state.GetParseTree(qmn), state.DeclarationFinder);
+            return TraverseModuleTree(state.GetParseTree(moduleName), state.DeclarationFinder, moduleName);
+        }
+
+        private IEnumerable<ICodeMetricResult> TraverseModuleTree(IParseTree parseTree, DeclarationFinder declarationFinder, QualifiedModuleName moduleName)
+        {
+            var listeners = metrics.Select(metric => metric.TreeListener).ToList();
+            foreach (var l in listeners)
+            {
+                l.Reset();
+                l.InjectContext((declarationFinder, moduleName));
+            }
+            var combinedMetricListener = new CombinedParseTreeListener(listeners);
+
+            ParseTreeWalker.Default.Walk(combinedMetricListener, parseTree);
+            return listeners.SelectMany(l => l.Results());
         }
 
         private ModuleMetricsResult GetModuleResult(QualifiedModuleName qmn, IParseTree moduleTree, DeclarationFinder declarationFinder)

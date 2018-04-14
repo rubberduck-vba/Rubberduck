@@ -32,8 +32,9 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             _state.StateChanged -= OnStateChanged;
         }
 
-        private IEnumerable<IModuleMetricsResult> _moduleMetrics;
-        public IEnumerable<IModuleMetricsResult> ModuleMetrics {
+        // FIXME map this hierarchy!
+        private IEnumerable<ICodeMetricResult> _moduleMetrics;
+        public IEnumerable<ICodeMetricResult> ModuleMetrics {
             get => _moduleMetrics;
             private set
             {
