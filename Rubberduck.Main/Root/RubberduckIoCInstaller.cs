@@ -39,7 +39,6 @@ using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.ComManagement;
@@ -121,10 +120,6 @@ namespace Rubberduck.Root
             
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
-
-            container.Register(Component.For<ICommandBarButtonFactory>()
-                .ImplementedBy<CommandBarButtonFactory>()
-                .LifestyleSingleton());
 
             RegisterCommands(container);
             RegisterCommandMenuItems(container);

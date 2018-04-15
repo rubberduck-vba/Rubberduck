@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Parsing.Annotations;
-using Rubberduck.VBEditor.Application;
 using System.Collections.Generic;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {

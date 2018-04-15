@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA;
 
@@ -127,7 +126,7 @@ namespace Rubberduck.Parsing.Symbols
                 );
             actions.Add(() => 
                 _declarationsByName = declarations
-                    .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
+                    .GroupBy(declaration => declaration.IdentifierName?.ToLowerInvariant() ?? string.Empty) // VB6 has no IdentifierName
                     .ToDictionary()
                 );
             actions.Add(() =>
