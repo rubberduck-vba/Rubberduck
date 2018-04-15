@@ -241,7 +241,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             expressionValue = string.Empty;
             declaredTypeName = string.Empty;
-
             if (lExprContext.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess))
             {
                 var member = memberAccess.GetChild<VBAParser.UnrestrictedIdentifierContext>();
@@ -280,9 +279,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private bool TryGetIdentifierReferenceForContext(ParserRuleContext context, out IdentifierReference idRef)
         {
             idRef = null;
-            var nameToMatch = context.GetText();
-            var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf);
-            if (identifierReferences.Any(rf => rf.Context == context))
+            var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
+                .Where(rf => rf.Context == context);
+            if (identifierReferences.Count() == 1)
             {
                 idRef = identifierReferences.First();
                 return true;
@@ -320,11 +319,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var localDeclaration = declaration;
             var iterationGuard = 0;
-            while (!localDeclaration.AsTypeIsBaseType && iterationGuard++ < 5)
+            while (!(localDeclaration is null) 
+                && !localDeclaration.AsTypeIsBaseType 
+                && iterationGuard++ < 5)
             {
                 localDeclaration = localDeclaration.AsTypeDeclaration;
             }
-            return localDeclaration.AsTypeName;
+            return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
         private static bool IsBinaryMathContext<T>(T context)

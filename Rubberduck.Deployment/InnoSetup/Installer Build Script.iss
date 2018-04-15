@@ -113,8 +113,8 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 ; TODO add additional languages here by adding include files in \Includes folder
 ;      and uncomment or add lines to include the file.
 #include <English.CustomMessages.iss>
-; #include <French.CustomMessages.iss>
-; #include <German.CustomMessages.iss>
+#include <French.CustomMessages.iss>
+#include <German.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -236,7 +236,7 @@ function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
 ///</remarks>
 function IsElevated: Boolean;
 begin
-  Result := IsAdminLoggedOn or IsPowerUserLoggedOn;
+  Result := IsAdminLoggedOn;
 end;
 
 ///<remarks>
@@ -775,6 +775,7 @@ end;
 procedure InitializeWizard();
 begin
   HasElevateSwitch := CmdLineParamExists('/ELEVATE');
+
   Log(Format('HasElevateSwitch: %d', [HasElevateSwitch]));
   Log(Format('IsElevated: %d', [IsElevated()]));
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -876,5 +876,71 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="EmptyModuleInspectionMeta" xml:space="preserve">
     <value>Les modules et classes vides démontrent des fonctionnalités pas encore implémentées ou représentent un fardeau non nécessaire pouvant nuire à la maintenance du projet.</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspectionName" xml:space="preserve">
+    <value>Utilisation de l'instruction obsolète 'Error'</value>
+  </data>
+  <data name="UnreachableCaseInspectionMeta" xml:space="preserve">
+    <value>Détecte les clauses 'Case' qui ne peuvent être exécutées.</value>
+  </data>
+  <data name="UnreachableCaseInspectionName" xml:space="preserve">
+    <value>Bloc 'Case' inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspectionResultFormat" xml:space="preserve">
+    <value>Le bloc '{0}' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Le bloc 'Case Else' est inatteignable : toutes les valeurs possibles sont prises en charge par les blocs 'Case' précédents.</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>Type invalide : l'expression 'Case' ne peut être évaluée selon le type de l'expression 'Select'.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Bloc inatteignable : l'expression 'Case' est prise en charge par un bloc 'Case' précédent.</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionMeta" xml:space="preserve">
+    <value>La gestion d'erreurs devrait être restaurée après l'utilisation de 'On Error Resume Next'</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionName" xml:space="preserve">
+    <value>Suppression d'erreurs</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionQuickFix" xml:space="preserve">
+    <value>Introduire une routine de gestion d'erreurs</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionResultFormat" xml:space="preserve">
+    <value>La gestion d'erreurs est désactivée sans être réactivée.</value>
+  </data>
+  <data name="DefTypeStatementInspectionMeta" xml:space="preserve">
+    <value>L'utilisation d'instructions 'Def[Type]' permet le typage implicite d'après un préfixe. Ce type de nommage est fortement découragé dans du code moderne.</value>
+  </data>
+  <data name="DefTypeStatementInspectionName" xml:space="preserve">
+    <value>Utilisation d'instruction 'Def[Type]'</value>
+  </data>
+  <data name="DefTypeStatementInspectionResultFormat" xml:space="preserve">
+    <value>Considérez l'utilisation de clause explicite 'As {0}' plutôt que '{1}'.</value>
+  </data>
+  <data name="StepOneIsRedundantInspectionResultFormat" xml:space="preserve">
+    <value>1 est la valeur d'incrémentation par défaut pour toute boucle 'For...Next'</value>
+  </data>
+  <data name="RemoveStepOneQuickFix" xml:space="preserve">
+    <value>Supprimer le 'Step' redondant.</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspectionResultFormat" xml:space="preserve">
+    <value>Clause 'Step' non spécifiée</value>
+  </data>
+  <data name="AddStepOneQuickFix" xml:space="preserve">
+    <value>Ajouter une clause 'Step' explicite</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspectionMeta" xml:space="preserve">
+    <value>La clause 'Step' d'une boucle 'For...Next' est implicite.</value>
+  </data>
+  <data name="StepOneIsRedundantInspectionMeta" xml:space="preserve">
+    <value>1 est la valeur d'incrémentation par défaut pour toute boucle 'For...Next'</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspectionName" xml:space="preserve">
+    <value>Clause 'Step' implicite</value>
+  </data>
+  <data name="StepOneIsRedundantInspectionName" xml:space="preserve">
+    <value>Clause 'Step' redondante</value>
   </data>
 </root>

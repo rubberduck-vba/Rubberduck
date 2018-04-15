@@ -93,6 +93,11 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
+            boundExpression = ResolveLExpressionIsIndexExpression(lExpression);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
             boundExpression = ResolveLExpressionIsPropertyFunctionSubroutine(lExpression);
             if (boundExpression != null)
             {
@@ -125,9 +130,35 @@ namespace Rubberduck.Parsing.Binding
                     empty, and one of the following is true (see below):
              */
             bool isVariable = lExpression.Classification == ExpressionClassification.Variable;
-            bool propertyWithParameters = lExpression.Classification == ExpressionClassification.Property && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
-            bool functionWithParameters = lExpression.Classification == ExpressionClassification.Function && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
-            if (lExpression.ReferencedDeclaration != null && (isVariable || ((propertyWithParameters || functionWithParameters) && _argumentList.HasArguments)))
+            bool propertyWithoutParameters = lExpression.Classification == ExpressionClassification.Property && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
+            bool functionWithoutParameters = lExpression.Classification == ExpressionClassification.Function && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
+            if (lExpression.ReferencedDeclaration != null && (isVariable || ((propertyWithoutParameters || functionWithoutParameters) && _argumentList.HasArguments)))
+            {
+                IBoundExpression boundExpression = null;
+                var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
+                var asTypeDeclaration = lExpression.ReferencedDeclaration.AsTypeDeclaration;
+                boundExpression = ResolveDefaultMember(lExpression, asTypeName, asTypeDeclaration);
+                if (boundExpression != null)
+                {
+                    return boundExpression;
+                }
+                boundExpression = ResolveLExpressionDeclaredTypeIsArray(lExpression, asTypeDeclaration);
+                if (boundExpression != null)
+                {
+                    return boundExpression;
+                }
+                return boundExpression;
+            }
+            return null;
+        }
+
+        private IBoundExpression ResolveLExpressionIsIndexExpression(IBoundExpression lExpression)
+        {
+            /*
+             <l-expression> is classified as an index expression and the argument list is not empty.
+                Thus, me must be dealing with a default member access or an array access.
+             */
+            if (lExpression is IndexExpression && _argumentList.HasArguments && lExpression.ReferencedDeclaration != null)
             {
                 IBoundExpression boundExpression = null;
                 var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;

@@ -205,9 +205,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office.Core
             return Equals(other as SafeComWrapper<Microsoft.Office.Core.CommandBarControl>);
         }
 
+        private int _hashCode;
         public override int GetHashCode()
         {
-            return IsWrappingNullReference ? 0 : HashCode.Compute(Type, Id, Index, IsBuiltIn, Target.Parent);
+            if (_hashCode == 0)
+            {
+                _hashCode = IsWrappingNullReference ? 0 : HashCode.Compute(Type, Id, Index, IsBuiltIn, Target.Parent);
+            }
+
+            return _hashCode;
         }
     }
 }
