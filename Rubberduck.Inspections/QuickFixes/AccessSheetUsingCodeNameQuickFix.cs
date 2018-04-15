@@ -32,7 +32,11 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 // Sheet accessed inline
 
-                rewriter.Replace(referenceResult.Context.Parent.Parent as ParserRuleContext, referenceResult.Properties.CodeName);
+                // Second case accounts for global modules
+                var indexExprContext = referenceResult.Context.Parent.Parent as VBAParser.IndexExprContext ??
+                                       referenceResult.Context.Parent as VBAParser.IndexExprContext;
+
+                rewriter.Replace(indexExprContext, referenceResult.Properties.CodeName);
             }
             else
             {

@@ -16,11 +16,59 @@ namespace RubberduckTests.QuickFixes
     {
         [Test]
         [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetInline()
+        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetThroughWorkbookModule()
         {
             const string inputCode = @"
 Public Sub Foo()
     ThisWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""foo""
+End Sub";
+
+            const string expectedCode = @"
+Public Sub Foo()
+    Sheet1.Range(""A1"") = ""foo""
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode, out var component))
+            {
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                new AccessSheetUsingCodeNameQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetThroughApplicationModule()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Application.Sheets(""Sheet1"").Range(""A1"") = ""foo""
+End Sub";
+
+            const string expectedCode = @"
+Public Sub Foo()
+    Sheet1.Range(""A1"") = ""foo""
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode, out var component))
+            {
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                new AccessSheetUsingCodeNameQuickFix(state).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetThroughGlobalModule()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Sheets(""Sheet1"").Range(""A1"") = ""foo""
 End Sub";
 
             const string expectedCode = @"
@@ -102,7 +150,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_AssigningSheetVariableDeclaredInList()
+        public void SheetAccessedUsingString_QuickFixWorks_AssigningSheetToVariableDeclaredInList()
         {
             const string inputCode = @"
 Public Sub Foo()
@@ -130,7 +178,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_AssigningSheetVariableDeclaredLastInList()
+        public void SheetAccessedUsingString_QuickFixWorks_AssigningSheetToVariableDeclaredLastInList()
         {
             const string inputCode = @"
 Public Sub Foo()

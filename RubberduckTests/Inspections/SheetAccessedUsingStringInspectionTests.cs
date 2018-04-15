@@ -15,7 +15,7 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingStringLiteral()
+        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingWorkbookModule()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -29,6 +29,63 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingApplicationModule()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    Application.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    Application.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingGlobalModule()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbooksProperty()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    Workbooks(""Foo"").Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    Workbooks(""Foo"").Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
@@ -61,6 +118,7 @@ End Sub";
     ThisWorkbook.Sheets(""SheetFromOtherProject"").Range(""A1"") = ""Foo""
 End Sub";
 
+            // Referenced project is created inside helper method
             using (var state = ArrangeParserAndParse(inputCode))
             {
                 var inspection = new SheetAccessedUsingStringInspection(state);
