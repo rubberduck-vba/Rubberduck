@@ -30,26 +30,6 @@ namespace RubberduckTests.CodeAnalysis.CodeMetrics
 
         [Test, Ignore("under rewrite")]
         [Category("Code Metrics")]
-        public void ModuleHas_AsManyLines_AsPhysicalLines()
-        {
-            foreach (var lineCount in new int[]{ 0, 10, 15, 200, 1020 })
-            {
-                var builder = new StringBuilder();
-                for (int i = 0; i < lineCount; i++)
-                {
-                    builder.Append(Environment.NewLine);
-                }
-                var code = builder.ToString();
-
-                var state = MockParser.ParseString(code, out var _);
-                var metric = cut.GetMetrics(state).First();
-                //Assert.AreEqual(lineCount, metric.Result.Lines);
-            }
-        }
-
-
-        [Test, Ignore("under rewrite")]
-        [Category("Code Metrics")]
         public void SimpleSub_HasNestingLevel_One()
         {
             var code = @"
