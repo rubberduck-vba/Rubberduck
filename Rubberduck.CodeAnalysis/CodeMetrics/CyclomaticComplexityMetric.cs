@@ -9,9 +9,7 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
     internal class CyclomaticComplexityMemberMetric : CodeMetric
     {
-        public CyclomaticComplexityMemberMetric() : base("Cyclomatic Complexity", AggregationLevel.Member)
-        {
-        }
+        public CyclomaticComplexityMemberMetric() : base("Cyclomatic Complexity", AggregationLevel.Member) { }
 
         public override ICodeMetricsParseTreeListener TreeListener
         {
@@ -19,49 +17,34 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
         }
     }
 
-    internal class CyclomaticComplexityMetricResult : ICodeMetricResult
+    internal class CyclomaticComplexityMetricResult : CodeMetricResultBase
     {
-        private readonly CodeMetric metricReference;
-        private readonly Declaration declaration;
         private readonly int value;
-        public CyclomaticComplexityMetricResult(Declaration declaration, CodeMetric metricReference, int value)
+        public CyclomaticComplexityMetricResult(Declaration declaration, CodeMetric metricReference, int value) : base (declaration, metricReference)
         {
-            this.declaration = declaration;
-            this.metricReference = metricReference;
             this.value = value;
         }
 
-        public Declaration Declaration => declaration;
-
-        public CodeMetric Metric => metricReference;
-
-        public string Value => value.ToString();
+        public override string Value => value.ToString();
     }
 
-    internal class CyclomaticComplexityListener : VBAParserBaseListener, ICodeMetricsParseTreeListener
+    internal class CyclomaticComplexityListener : CodeMetricListenerBase
     {
-        private readonly CodeMetric ownerReference;
         private List<ICodeMetricResult> _results = new List<ICodeMetricResult>();
-        private DeclarationFinder _finder;
-        private QualifiedModuleName _qmn;
 
         private int workingValue;
 
-        public CyclomaticComplexityListener(CodeMetric owner)
+        public CyclomaticComplexityListener(CodeMetric owner) : base(owner)
         {
-            ownerReference = owner;
         }
 
-        public void InjectContext((DeclarationFinder, QualifiedModuleName) context) => (_finder, _qmn) = context;
-
-        public void Reset()
+        public override void Reset()
         {
+            base.Reset();
             _results = new List<ICodeMetricResult>();
-            _finder = null;
-            _qmn = default;
         }
 
-        public IEnumerable<ICodeMetricResult> Results() => _results;
+        public override IEnumerable<ICodeMetricResult> Results() => _results;
 
         public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context) => workingValue++;
         public override void EnterElseIfBlock([NotNull] VBAParser.ElseIfBlockContext context) => workingValue++;
