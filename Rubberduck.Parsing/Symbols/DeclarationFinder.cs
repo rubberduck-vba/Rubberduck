@@ -126,7 +126,7 @@ namespace Rubberduck.Parsing.Symbols
                 );
             actions.Add(() => 
                 _declarationsByName = declarations
-                    .GroupBy(declaration => declaration.IdentifierName?.ToLowerInvariant())
+                    .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
                     .ToDictionary()
                 );
             actions.Add(() =>
