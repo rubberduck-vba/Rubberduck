@@ -51,7 +51,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public ICodePanes CodePanes => new CodePanes(IsWrappingNullReference ? null : Target.CodePanes);
 
-        public ICommandBars CommandBars => new CommandBars(IsWrappingNullReference ? null : Target.CommandBars, Target);
+        public ICommandBars CommandBars => new CommandBars(IsWrappingNullReference ? null : Target.CommandBars, this);
 
         public IWindow MainWindow
         {

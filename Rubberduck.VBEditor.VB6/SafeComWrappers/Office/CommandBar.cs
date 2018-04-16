@@ -8,9 +8,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 {
     public class CommandBar : SafeComWrapper<MSO.CommandBar>, ICommandBar
     {
-        private readonly VB.VBE _vbe;
+        private readonly IVBE _vbe;
 
-        public CommandBar(MSO.CommandBar target, VB.VBE vbe, bool rewrapping = false)
+        public CommandBar(MSO.CommandBar target, IVBE vbe, bool rewrapping = false)
             : base(target, rewrapping)
         {
             _vbe = vbe;

@@ -11,9 +11,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 {
     public class CommandBarControls : SafeComWrapper<MSO.CommandBarControls>, ICommandBarControls
     {
-        private readonly VB.VBE _vbe;
+        private readonly IVBE _vbe;
 
-        public CommandBarControls(MSO.CommandBarControls target, VB.VBE vbe, bool rewrapping = false) 
+        public CommandBarControls(MSO.CommandBarControls target, IVBE vbe, bool rewrapping = false) 
             : base(target, rewrapping)
         {
             _vbe = vbe;

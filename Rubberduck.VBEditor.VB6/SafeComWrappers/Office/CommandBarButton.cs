@@ -15,14 +15,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
     public class CommandBarButton : SafeRedirectedEventedComWrapper<MSO.CommandBarButton, VB.CommandBarEvents, VB._dispCommandBarControlEvents>, ICommandBarButton, VB._dispCommandBarControlEvents
     {
         private readonly CommandBarControl _control;
-        private readonly VB.VBE _vbe;
+        private readonly IVBE _vbe;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public const bool AddCommandBarControlsTemporarily = false;        
 
         // Command bar click event is sourced from VBE.Events.CommandBarEvents[index]
         // where index is the command bar button COM object.
-        public CommandBarButton(MSO.CommandBarButton target, VB.VBE vbe, bool rewrapping = false) 
-            : base(target, vbe.Events.CommandBarEvents[target], rewrapping)
+        public CommandBarButton(MSO.CommandBarButton target, IVBE vbe, bool rewrapping = false) 
+            : base(target, ((VB.VBE)vbe.HardReference).Events.CommandBarEvents[target], rewrapping)
         {
             _control = new CommandBarControl(target, vbe, rewrapping);
             _vbe = vbe;
