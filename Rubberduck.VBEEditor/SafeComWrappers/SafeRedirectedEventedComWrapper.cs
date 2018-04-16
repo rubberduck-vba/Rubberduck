@@ -23,6 +23,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         protected override void Dispose(bool disposing)
         {
             DetachEvents();
+            Marshal.ReleaseComObject(_eventSource);
             base.Dispose(disposing);
         }
 
@@ -41,7 +42,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 }
 
                 // Call QueryInterface for IConnectionPointContainer
-                var icpc = (IConnectionPointContainer) _eventSource;    // TODO - HELP!!! This is gonna leak like a sieve :-(
+                var icpc = (IConnectionPointContainer) _eventSource;
 
                 // Find the connection point for the source interface
                 var g = typeof(TEventInterface).GUID;
