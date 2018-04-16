@@ -7,9 +7,9 @@ using Microsoft.CSharp.RuntimeBinder;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Office_v8::Office;
-using Office_CommandBarButton = Office_v8::Office.CommandBarButton;
 using VB = Microsoft.Vbe.Interop.VB6;
 
+// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 {
     public class CommandBarButton : SafeRedirectedEventedComWrapper<MSO.CommandBarButton, VB.CommandBarEvents, VB._dispCommandBarControlEvents>, ICommandBarButton, VB._dispCommandBarControlEvents
@@ -19,6 +19,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public const bool AddCommandBarControlsTemporarily = false;        
 
+        // Command bar click event is sourced from VBE.Events.CommandBarEvents[index]
+        // where index is the command bar button COM object.
         public CommandBarButton(MSO.CommandBarButton target, VB.VBE vbe, bool rewrapping = false) 
             : base(target, vbe.Events.CommandBarEvents[target], rewrapping)
         {
@@ -312,6 +314,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
             }
         }
 
+        // Event is routed here from VBE.Events.CommandBarEvents[] - see ctor comment.
         void VB._dispCommandBarControlEvents.Click(object Ctrl, ref bool Handled, ref bool CancelDefault)
         {            
             var handler = _click;

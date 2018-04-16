@@ -239,7 +239,11 @@ namespace Rubberduck
                 VBENativeServices.UnhookEvents();
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
-                _vbe.Windows.ReleaseDockableHosts();
+
+                using (var windows = _vbe.Windows)
+                {
+                    windows.ReleaseDockableHosts();   
+                }
 
                 if (_app != null)
                 {

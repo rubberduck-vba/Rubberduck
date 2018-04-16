@@ -3,6 +3,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Office_v8::Office;
 using VB = Microsoft.Vbe.Interop.VB6;
 
+// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 {
     public class CommandBar : SafeComWrapper<MSO.CommandBar>, ICommandBar
@@ -138,15 +139,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
                 Target.Delete();
             }
         }
-
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        Controls.Release();
-        //        base.Release(final);
-        //    }
-        //}
 
         public override bool Equals(ISafeComWrapper<MSO.CommandBar> other)
         {

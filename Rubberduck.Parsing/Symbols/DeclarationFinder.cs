@@ -126,7 +126,7 @@ namespace Rubberduck.Parsing.Symbols
                 );
             actions.Add(() => 
                 _declarationsByName = declarations
-                    .GroupBy(declaration => declaration.IdentifierName?.ToLowerInvariant() ?? string.Empty) // VB6 has no IdentifierName
+                    .GroupBy(declaration => declaration.IdentifierName?.ToLowerInvariant())
                     .ToDictionary()
                 );
             actions.Add(() =>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
+// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class References : SafeEventedComWrapper<VB.References, VB._dispReferencesEvents>, IReferences, VB._dispReferencesEvents

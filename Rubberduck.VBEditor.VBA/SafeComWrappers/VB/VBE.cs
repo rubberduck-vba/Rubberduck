@@ -9,6 +9,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Office12;
 using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 
+// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VBE : SafeComWrapper<VB.VBE>, IVBE

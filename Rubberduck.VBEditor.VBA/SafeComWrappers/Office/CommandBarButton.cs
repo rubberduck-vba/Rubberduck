@@ -7,6 +7,7 @@ using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Microsoft.Office.Core;
 
+// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 {
     public class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO._CommandBarButtonEvents>, ICommandBarButton, MSO._CommandBarButtonEvents

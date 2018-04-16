@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
+// ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class VBProject : SafeComWrapper<VB.VBProject>, IVBProject
@@ -43,14 +45,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             {
                 if (IsWrappingNullReference) {return 0; }
 
-                //// Yes, this is a hack. Go ask Microsoft why they created a Mode enum and then didn't use it.
-                var caption = Target.VBE.MainWindow.Caption;
-
-                if (caption.EndsWith("[design]")) { return EnvironmentMode.Design; }
-                if (caption.EndsWith("[break]")) { return EnvironmentMode.Break; }
-                if (caption.EndsWith("[run]")) { return EnvironmentMode.Run; }
-
-                return 0;
+                return (EnvironmentMode) EbMode();
             }
         }                   
 
@@ -202,5 +197,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 }
             }
         }
+
+        private const string DllName = "vba6.dll";
+        [DllImport(DllName)]
+        private static extern int EbMode();
     }
 }
