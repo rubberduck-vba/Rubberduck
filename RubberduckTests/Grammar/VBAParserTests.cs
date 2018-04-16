@@ -14,6 +14,215 @@ namespace RubberduckTests.Grammar
     public class VBAParserTests
     {
         [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void DoEventsKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+DoEvents: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void EndKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+End: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void CloseKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Close: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void DoKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Do: MsgBox : Loop
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//doLoopStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void ElseKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+If True Then
+Else: MsgBox
+End If
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//ifStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void LoopKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Do Until False
+Loop: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//doLoopStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void NextKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+For i = 1 To 10
+Next: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//forNextStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void RandomizeKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Randomize: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void RemKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Rem: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//remComment");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void ResumeKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Resume: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//resumeStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void ReturnKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Return: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//returnStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void StopKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Stop: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//stopStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void WendKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+While True
+Wend: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//whileWendStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
         [Test]
         public void ParsesWithLineNumbers_EndSub()
         {
@@ -2228,16 +2437,16 @@ End Type
             return Tuple.Create(parser, tree);
         }
 
-        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath)
+        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, string message = "")
         {
-            AssertTree(parser, root, xpath, matches => matches.Count >= 1);
+            AssertTree(parser, root, xpath, matches => matches.Count >= 1, message);
         }
 
-        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, Predicate<ICollection<IParseTree>> assertion)
+        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, Predicate<ICollection<IParseTree>> assertion, string message = "")
         {
             var matches = new XPath(parser, xpath).Evaluate(root);
             var actual = matches.Count;
-            Assert.IsTrue(assertion(matches), $"{actual} matches found.");
+            Assert.IsTrue(assertion(matches), $"{actual} matches found. {message}");
         }
     }
 }

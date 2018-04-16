@@ -547,6 +547,7 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
+legalLabelIdentifier : { !(new[]{DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND}).Contains(_input.La(1))}? identifier | markerKeyword;
 identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
@@ -575,7 +576,7 @@ fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
 //Statement labels can only appear at the start of a line.
 statementLabelDefinition : {_input.La(-1) == NEWLINE}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
-identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON; 
+identifierStatementLabel : legalLabelIdentifier whiteSpace? COLON;
 standaloneLineNumberLabel : 
 	lineNumberLabel whiteSpace? COLON
 	| lineNumberLabel;
@@ -769,6 +770,7 @@ keyword :
      | BINARY
      | OUTPUT
      | RANDOM
+	 | RANDOMIZE
      | ACCESS
      | READ
      | WRITE
