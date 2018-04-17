@@ -44,12 +44,18 @@ moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatemen
 
 moduleConfig :
     BEGIN (whiteSpace (GUIDLITERAL | expression) whiteSpace unrestrictedIdentifier whiteSpace?)? endOfStatement
-    (moduleConfig | moduleConfigElement)+
+        (moduleConfig | moduleConfigProperty | moduleConfigElement)+
     END endOfStatement
 ;
 
+moduleConfigProperty :
+    BEGINPROPERTY whiteSpace unrestrictedIdentifier (whiteSpace GUIDLITERAL)? endOfStatement
+        (moduleConfigProperty | moduleConfigElement)+
+    ENDPROPERTY endOfStatement
+;
+
 moduleConfigElement :
-    unrestrictedIdentifier whiteSpace* EQ whiteSpace* expression (COLON numberLiteral)? endOfStatement
+    unrestrictedIdentifier whiteSpace? EQ whiteSpace? expression (COLON numberLiteral)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)*;
