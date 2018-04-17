@@ -11,9 +11,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     {
         private const int NotAdvising = 0;
         private readonly object _lock = new object();
+        private TEventSource _eventSource; // The event source
         private IConnectionPoint _icp; // The connection point
         private int _cookie = NotAdvising;     // The cookie for the connection
-        private readonly TEventSource _eventSource;
 
         protected SafeRedirectedEventedComWrapper(TSource target, TEventSource eventSource, bool rewrapping = false) : base(target, rewrapping)
         {
@@ -23,7 +23,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         protected override void Dispose(bool disposing)
         {
             DetachEvents();
-            Marshal.ReleaseComObject(_eventSource);
             base.Dispose(disposing);
         }
 
@@ -75,7 +74,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 }
 
                 Marshal.ReleaseComObject(_icp);
+                Marshal.ReleaseComObject(_eventSource);
                 _icp = null;
+                _eventSource = null;
             }
         }
     }

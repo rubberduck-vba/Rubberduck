@@ -107,50 +107,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
                 return;
             }
 
-            if (!HasPictureProperty)
+            using (var image = CreateTransparentImage(Picture))
             {
-                using (var image = CreateTransparentImage(Picture))
-                {
-                    Clipboard.SetImage(image);
-                    Button.PasteFace();
-                    Clipboard.Clear();
-                }
-                return;
-            }            
-        }
-
-        private bool? _hasPictureProperty;
-        private bool HasPictureProperty
-        {
-            get
-            {
-                if (IsWrappingNullReference)
-                {
-                    return false;
-                }
-
-                if (_hasPictureProperty.HasValue)
-                {
-                    return _hasPictureProperty.Value;
-                }
-
-                try
-                {
-                    dynamic button = Button;
-                    var picture = button.Picture;
-                    _hasPictureProperty = true;
-                }
-                catch (RuntimeBinderException)
-                {
-                    _hasPictureProperty = false;
-                }
-
-                catch (COMException)
-                {
-                    _hasPictureProperty = false;
-                }
-
-                return _hasPictureProperty.Value;
+                Clipboard.SetImage(image);
+                Button.PasteFace();
+                Clipboard.Clear();
             }
         }
 
