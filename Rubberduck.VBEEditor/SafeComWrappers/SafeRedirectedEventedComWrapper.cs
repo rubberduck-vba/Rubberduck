@@ -7,6 +7,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public abstract class SafeRedirectedEventedComWrapper<TSource, TEventSource, TEventInterface> : SafeComWrapper<TSource>, ISafeEventedComWrapper
         where TSource : class
+        where TEventSource : class
         where TEventInterface : class
     {
         private const int NotAdvising = 0;
