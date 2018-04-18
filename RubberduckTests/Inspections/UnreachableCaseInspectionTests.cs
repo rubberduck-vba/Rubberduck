@@ -203,7 +203,7 @@ namespace RubberduckTests.Inspections
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-            Assert.AreEqual(result.ValueText, expected);
+            Assert.AreEqual(expected, result.ValueText);
             Assert.AreEqual(typeName, result.TypeName);
             Assert.IsFalse(result.ParsesToConstantValue);
         }
