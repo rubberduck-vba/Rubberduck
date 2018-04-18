@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,6 +41,7 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
         {
             base.Reset();
             _results = new List<ICodeMetricResult>();
+            workingValue = 0;
         }
 
         public override IEnumerable<ICodeMetricResult> Results() => _results;
@@ -53,26 +53,15 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
         public override void EnterCaseClause([NotNull] VBAParser.CaseClauseContext context) => workingValue++;
 
         public override void ExitPropertySetStmt([NotNull] VBAParser.PropertySetStmtContext context)
-        {
-            ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.PropertySet).Where(d => d.Context == context).First());
-        }
+            => ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.PropertySet).Where(d => d.Context == context).First());
         public override void ExitPropertyLetStmt([NotNull] VBAParser.PropertyLetStmtContext context)
-        {
-            ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.PropertyLet).Where(d => d.Context == context).First());
-        }
+            => ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.PropertyLet).Where(d => d.Context == context).First());
         public override void ExitPropertyGetStmt([NotNull] VBAParser.PropertyGetStmtContext context)
-        {
-            ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.PropertyGet).Where(d => d.Context == context).First());
-        }
+            => ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.PropertyGet).Where(d => d.Context == context).First());
         public override void ExitFunctionStmt([NotNull] VBAParser.FunctionStmtContext context)
-        {
-            ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.Function).Where(d => d.Context == context).First());
-        }
-
+            => ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.Function).Where(d => d.Context == context).First());
         public override void ExitSubStmt([NotNull] VBAParser.SubStmtContext context)
-        {
-            ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.Procedure).Where(d => d.Context == context).First());
-        }
+            => ExitMeasurableMember(_finder.UserDeclarations(DeclarationType.Procedure).Where(d => d.Context == context).First());
 
         private void ExitMeasurableMember(Declaration declaration)
         {
