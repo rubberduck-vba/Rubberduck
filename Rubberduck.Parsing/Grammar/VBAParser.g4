@@ -30,6 +30,7 @@ module :
     moduleAttributes
     moduleHeader?
     moduleAttributes
+	moduleConfigReferences?
     moduleConfig?
     moduleAttributes
     moduleDeclarations
@@ -41,6 +42,10 @@ module :
 ;
 
 moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatement;
+
+moduleConfigReferences: moduleConfigReferenceElement+;
+
+moduleConfigReferenceElement: unrestrictedIdentifier whiteSpace? EQ whiteSpace? STRINGLITERAL whiteSpace? SEMICOLON whiteSpace? STRINGLITERAL endOfStatement;
 
 moduleConfig :
     BEGIN (whiteSpace (GUIDLITERAL | expression) whiteSpace unrestrictedIdentifier whiteSpace?)? endOfStatement
