@@ -61,6 +61,7 @@
     <Compile Include="CodeMetrics\CodeMetricsResult.cs" />
     <Compile Include="CodeMetrics\CyclomaticComplexityMetric.cs" />
     <Compile Include="CodeMetrics\LineCountMetric.cs" />
+    <Compile Include="CodeMetrics\NestingLevelMetric.cs" />
     <Compile Include="Inspections\Abstract\InspectionBase.cs" />
     <Compile Include="Inspections\Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Inspections\Concrete\ApplicationWorksheetFunctionInspection.cs" />
