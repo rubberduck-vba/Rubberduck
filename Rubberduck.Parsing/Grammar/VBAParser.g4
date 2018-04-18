@@ -698,6 +698,7 @@ keyword :
      | ARRAY
      | ATTRIBUTE
      | BEGIN
+	 | BEGINPROPERTY
      | BOOLEAN
      | BYREF
      | BYTE
@@ -724,6 +725,7 @@ keyword :
      | DOEVENTS
      | DOUBLE
      | END
+	 | ENDPROPERTY
      | EQV
      | FALSE
      | FIX
