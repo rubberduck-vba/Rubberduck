@@ -2,10 +2,8 @@
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using RubberduckTests.Mocks;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RubberduckTests.CodeAnalysis.CodeMetrics
 {
@@ -27,9 +25,11 @@ namespace RubberduckTests.CodeAnalysis.CodeMetrics
         public void EmptyModule_HasMetricsZeroed()
         {
             var code = @"";
-            var state = MockParser.ParseString(code, out var qmn);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("0", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("0", metricResult.Value);
+            }
         }
 
 
@@ -46,9 +46,11 @@ namespace RubberduckTests.CodeAnalysis.CodeMetrics
                 }
                 var code = builder.ToString();
 
-                var state = MockParser.ParseString(code, out var _);
-                var metricResult = analyst.GetMetrics(state).First();
-                Assert.AreEqual(lineCount.ToString(), metricResult.Value);
+                using (var state = MockParser.ParseString(code, out var _))
+                {
+                    var metricResult = analyst.GetMetrics(state).First();
+                    Assert.AreEqual(lineCount.ToString(), metricResult.Value);
+                }
             }
         }
     }

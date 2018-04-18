@@ -200,7 +200,7 @@
     <Compile Include="QuickFixes\QuickFixBaseTests.cs" />
     <Compile Include="Settings\HotkeyFactoryTests.cs" />
     <Compile Include="SmartIndenter\VerticalSpacingTests.cs" />
-    <Compile Include="CodeAnalysis\CodeMetrics\ParseTreeMetricsAnalystTests.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\NestingLevelTests.cs" />
     <Compile Include="Symbols\AccessibilityCheckTests.cs" />
     <Compile Include="Symbols\ClassModuleDeclarationTests.cs" />
     <Compile Include="Symbols\CommandBarControlCaptionGuardTests.cs" />

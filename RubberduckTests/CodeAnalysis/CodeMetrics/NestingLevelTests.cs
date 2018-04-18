@@ -8,27 +8,29 @@ using System.Text;
 namespace RubberduckTests.CodeAnalysis.CodeMetrics
 {
     [TestFixture]
-    public class CodeMetricsAnalystTests
+    public class NestingLevelTests
     {
-        private CodeMetricsAnalyst cut;
+        private CodeMetricsAnalyst analyst;
 
         [SetUp]
         public void Setup()
         {
-            cut = new CodeMetricsAnalyst(new CodeMetric[] { });
+            analyst = new CodeMetricsAnalyst(new CodeMetric[] { new NestingLevelMetric() });
         }
 
-        [Test, Ignore("under rewrite")]
+        [Test]
         [Category("Code Metrics")]
-        public void EmptyModule_HasMetricsZeroed()
+        public void EmtpyModule_HasNoNestingLevelMetrics()
         {
             var code = @"";
-            var state = MockParser.ParseString(code, out var qmn);
-            var metrics = cut.GetMetrics(state).First();
-            //Assert.AreEqual(new CodeMetricsResult(), metrics.Result);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metrics = analyst.GetMetrics(state).ToList();
+                Assert.AreEqual(0, metrics.Count);
+            }
         }
 
-        [Test, Ignore("under rewrite")]
+        [Test]
         [Category("Code Metrics")]
         public void SimpleSub_HasNestingLevel_One()
         {
@@ -41,12 +43,14 @@ Public Sub SimpleSub()
 End Sub
 ";
 
-            var state = MockParser.ParseString(code, out var _);
-            var metrics = cut.GetMetrics(state).First();
-            //Assert.AreEqual(1, metrics.Result.MaximumNesting);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("1", metricResult.Value);
+            }
         }
 
-        [Test, Ignore("under rewrite")]
+        [Test]
         [Category("Code Metrics")]
         public void WeirdSub_HasNestingLevel_One()
         {
@@ -64,8 +68,8 @@ End Sub
 ";
             using (var state = MockParser.ParseString(code, out var _))
             {
-                var metrics = cut.GetMetrics(state).First();
-                //Assert.AreEqual(1, metrics.Result.MaximumNesting);
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("1", metricResult.Value);
             }
         }
 

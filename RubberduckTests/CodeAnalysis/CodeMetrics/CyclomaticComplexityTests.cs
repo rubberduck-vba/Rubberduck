@@ -26,9 +26,11 @@ namespace RubberduckTests.CodeAnalysis.CodeMetrics
         public void EmptyModule_HasNoMemberMetricResults()
         {
             var code = @"";
-            var state = MockParser.ParseString(code, out var qmn);
-            var metrics = analyst.GetMetrics(state).ToList();
-            Assert.AreEqual(0, metrics.Count);
+            using (var state = MockParser.ParseString(code, out var qmn))
+            {
+                var metrics = analyst.GetMetrics(state).ToList();
+                Assert.AreEqual(0, metrics.Count);
+            }
         }
 
         [Test]
@@ -39,12 +41,14 @@ namespace RubberduckTests.CodeAnalysis.CodeMetrics
 Sub NoCode()
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metrics = analyst.GetMetrics(state).ToList();
-            Assert.AreEqual(1, metrics.Count);
-            Assert.AreEqual("1", metrics[0].Value);
-            Assert.AreEqual(state.DeclarationFinder.UserDeclarations(Rubberduck.Parsing.Symbols.DeclarationType.Procedure).First()
-                , metrics[0].Declaration);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metrics = analyst.GetMetrics(state).ToList();
+                Assert.AreEqual(1, metrics.Count);
+                Assert.AreEqual("1", metrics[0].Value);
+                Assert.AreEqual(state.DeclarationFinder.UserDeclarations(Rubberduck.Parsing.Symbols.DeclarationType.Procedure).First()
+                    , metrics[0].Declaration);
+            }
         }
 
         [Test]
@@ -56,9 +60,11 @@ Function NoCode()
 End Function
 ";
 
-            var state = MockParser.ParseString(code, out var _);
-            var metric = analyst.GetMetrics(state).First();
-            Assert.AreEqual("1", metric.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metric = analyst.GetMetrics(state).First();
+                Assert.AreEqual("1", metric.Value);
+            }
         }
 
         [Test]
@@ -71,9 +77,11 @@ Sub IfStatement()
     End If
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("2", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("2", metricResult.Value);
+            }
         }
 
         [Test]
@@ -87,9 +95,11 @@ Sub IfElseStatement()
     End If
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("2", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("2", metricResult.Value);
+            }
         }
 
         [Test]
@@ -103,9 +113,11 @@ Sub IfElseifStatement()
     End If
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("3", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("3", metricResult.Value);
+            }
         }
 
         [Test]
@@ -120,9 +132,11 @@ Sub IfElseifStatement()
     End If
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("3", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("3", metricResult.Value);
+            }
         }
 
         [Test]
@@ -137,9 +151,11 @@ Sub IfElseifStatement()
     End If
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("3", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("3", metricResult.Value);
+            }
         }
 
         [Test]
@@ -153,9 +169,11 @@ Sub ForeachLoop(ByRef iterable As Object)
     Next stuff
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("2", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("2", metricResult.Value);
+            }
         }
 
         [Test]
@@ -170,9 +188,11 @@ Sub ForToNextLoop(ByVal ubound As Long)
     Next i
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("2", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("2", metricResult.Value);
+            }
         }
 
         [Test]
@@ -186,9 +206,11 @@ Sub CaseOnlyElse(ByVal number As Long)
     End Select
 End Sub
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("1", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("1", metricResult.Value);
+            }
         }
 
         [Test]
@@ -210,9 +232,11 @@ Sub CaseBlockWithCounts(ByVal number As Long)
     End Select
 End Sub
 ";
-                var state = MockParser.ParseString(code, out var _);
-                var metricResult = analyst.GetMetrics(state).First();
-                Assert.AreEqual((blockCount + 1).ToString(), metricResult.Value);
+                using (var state = MockParser.ParseString(code, out var _))
+                {
+                    var metricResult = analyst.GetMetrics(state).First();
+                    Assert.AreEqual((blockCount + 1).ToString(), metricResult.Value);
+                }
             }
         }
 
@@ -225,9 +249,11 @@ Public Property Get Complexity() As Long
     Complexity = 1
 End Property
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("1", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("1", metricResult.Value);
+            }
         }
 
         [Test]
@@ -243,9 +269,11 @@ Public Property Let Complexity(ByVal complexity As Long)
     mComplexity = complexity
 End Property
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("1", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("1", metricResult.Value);
+            }
         }
 
         [Test]
@@ -261,9 +289,11 @@ Public Property Set Complexity(ByRef complexity As Object)
     mComplexity = complexity
 End Property
 ";
-            var state = MockParser.ParseString(code, out var _);
-            var metricResult = analyst.GetMetrics(state).First();
-            Assert.AreEqual("1", metricResult.Value);
+            using (var state = MockParser.ParseString(code, out var _))
+            {
+                var metricResult = analyst.GetMetrics(state).First();
+                Assert.AreEqual("1", metricResult.Value);
+            }
         }
 
 
