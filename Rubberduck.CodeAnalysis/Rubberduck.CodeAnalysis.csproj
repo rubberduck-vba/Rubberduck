@@ -76,6 +76,7 @@
     <Compile Include="Inspections\Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Inspections\Concrete\EmptyWhileWendBlockInspection.cs" />
     <Compile Include="Inspections\Concrete\ObsoleteErrorSyntaxInspection.cs" />
+    <Compile Include="Inspections\Concrete\SheetAccessedUsingStringInspection.cs" />
     <Compile Include="Inspections\Concrete\StepIsNotSpecifiedInspection.cs" />
     <Compile Include="Inspections\Concrete\StepOneIsRedundantInspection.cs" />
     <Compile Include="Inspections\Concrete\StopKeywordInspection.cs" />
