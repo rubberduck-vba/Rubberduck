@@ -119,7 +119,7 @@ try
 			$writer = New-Object Rubberduck.Deployment.Writers.LocalDebugRegistryWriter
 			$content = $writer.Write($entries);
 
-			$encoding = New-Object System.Text.ASCIIEncoding;
+			$encoding = New-Object System.Text.UTF8Encoding($true);
 			[System.IO.File]::WriteAllLines($regFile, $content, $encoding);
 		}
 	}
