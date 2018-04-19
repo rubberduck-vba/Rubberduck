@@ -37,7 +37,6 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             _finder = null;
             _qmn = default;
         }
-
         public abstract IEnumerable<ICodeMetricResult> Results();
     }
 }

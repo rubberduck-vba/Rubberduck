@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="CodeMetrics\CodeMetricBase.cs" />
     <Compile Include="CodeMetrics\CodeMetricsAnalyst.cs" />
-    <Compile Include="CodeMetrics\CodeMetricsResult.cs" />
     <Compile Include="CodeMetrics\CyclomaticComplexityMetric.cs" />
     <Compile Include="CodeMetrics\LineCountMetric.cs" />
     <Compile Include="CodeMetrics\NestingLevelMetric.cs" />
