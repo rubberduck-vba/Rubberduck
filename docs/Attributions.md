@@ -12,20 +12,6 @@ As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
 
 We're not doing half of what we could be doing with this amazing tool. Try it, see for yourself!
 
-### [LibGit2Sharp](https://github.com/libgit2/libgit2sharp)
-
-**What is LibGit2Sharp?**
-
-LibGit2Sharp is the library that has allowed us to integrate Git right into the VBA IDE (and as a nice bonus, expose a nice API that handles the nitty gritty of importing source files to and from the IDE to a repo for you).
-
-> LibGit2Sharp brings all the might and speed of libgit2, a native Git implementation, to the managed world of .Net and Mono.
-
-**Okay, so what is [libgit2](https://libgit2.github.com/)?**
-
-> libgit2 is a portable, pure C implementation of the Git core methods provided as a re-entrant linkable library with a solid API, allowing you to write native speed custom Git applications in any language which supports C bindings.
-
-Which basically means it's a reimplementation of Git in C. It also [happens to be the technology Microsoft uses for their own Git integration with Visual Studio](http://www.hanselman.com/blog/GitSupportForVisualStudioGitTFSAndVSPutIntoContext.aspx).
-
 ### [AvalonEdit](http://avalonedit.net)
 
 Source code looks a lot better with syntax highlighting, and AvalonEdit excels at it. 

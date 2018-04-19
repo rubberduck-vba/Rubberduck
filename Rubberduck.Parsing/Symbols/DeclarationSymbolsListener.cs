@@ -648,8 +648,8 @@ namespace Rubberduck.Parsing.Symbols
 
         private void AddIdentifierStatementLabelDeclaration(VBAParser.IdentifierStatementLabelContext context)
         {
-            var statementText = context.unrestrictedIdentifier().GetText();
-            var statementSelection = context.unrestrictedIdentifier().GetSelection();
+            var statementText = context.legalLabelIdentifier().GetText();
+            var statementSelection = context.legalLabelIdentifier().GetSelection();
 
             AddDeclaration(
                 CreateDeclaration(

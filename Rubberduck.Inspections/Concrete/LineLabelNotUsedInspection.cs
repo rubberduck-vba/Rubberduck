@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
                 new DeclarationInspectionResult(this,
                                      string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
                                      issue,
-                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((IdentifierStatementLabelContext)issue.Context).unrestrictedIdentifier())));
+                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((IdentifierStatementLabelContext)issue.Context).legalLabelIdentifier())));
         }
     }
 }

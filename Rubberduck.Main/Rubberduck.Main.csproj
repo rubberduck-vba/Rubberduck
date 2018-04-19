@@ -235,6 +235,7 @@
   <ItemGroup>
     <Compile Include="ComClientLibrary\UI\DockableWindowHost.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\AssertClass.cs" />
+    <Compile Include="ComClientLibrary\UnitTesting\FakesProviderFactory.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\FakesProvider.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IAssert.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IFake.cs" />

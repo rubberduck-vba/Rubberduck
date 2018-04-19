@@ -61,7 +61,16 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
+        ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
+        /// </summary>
+        public static string AccessSheetUsingCodeNameQuickFix {
+            get {
+                return ResourceManager.GetString("AccessSheetUsingCodeNameQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add step.
         /// </summary>
         public static string AddStepOneQuickFix {
             get {
@@ -2109,6 +2118,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string ShadowedDeclarationInspectionResultFormat {
             get {
                 return ResourceManager.GetString("ShadowedDeclarationInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Excel already defines a globally scoped object variable with this reference. Consider using the sheet&apos;s &apos;CodeName&apos; property..
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionMeta {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statically accessible sheet accessed using string.
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionName {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statically accessible sheet can be referred to by its code name.
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionResultFormat", resourceCulture);
             }
         }
         

@@ -10,6 +10,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Navigation.CodeExplorer;
@@ -154,11 +155,8 @@ namespace Rubberduck.Root
         private void RegisterUnitTestingComSide(IWindsorContainer container)
         {
             container.Register(Component.For<IFakesFactory>()
-                .AsFactory()
+                .ImplementedBy<FakesProviderFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IFakes>()
-                .ImplementedBy<FakesProvider>()
-                .LifestyleTransient());
         }
 
         // note: settings namespace classes are injected in singleton scope
@@ -207,6 +205,7 @@ namespace Rubberduck.Root
                             && !type.Name.Equals("SelectionChangeService")
                             && !type.Name.EndsWith("Factory")
                             && !type.Name.EndsWith("ConfigProvider")
+                            && !type.Name.EndsWith("FakesProvider")
                             && !type.GetInterfaces().Contains(typeof(IInspection))
                             && type.NotDisabledExperimental(_initialSettings))
                     .WithService.DefaultInterfaces()
@@ -221,7 +220,10 @@ namespace Rubberduck.Root
             {
                 container.Register(Types.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
-                    .Where(type => type.IsInterface && type.Name.EndsWith("Factory") && type.NotDisabledExperimental(_initialSettings))
+                    .Where(type => type.IsInterface 
+                                   && type.Name.EndsWith("Factory") 
+                                   && !type.Name.Equals("IFakesFactory")
+                                   && type.NotDisabledExperimental(_initialSettings))
                     .WithService.Self()
                     .Configure(c => c.AsFactory())
                     .LifestyleSingleton());
