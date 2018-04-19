@@ -1,3 +1,4 @@
+using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
@@ -11,10 +12,54 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
+        public IProperties Properties => new Properties(IsWrappingNullReference? null : Target.Properties);
+        
         public string Name
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Properties.Item("Name").Value.ToString();
-            set { if (!IsWrappingNullReference) Target.Properties.Item("Name").Value = value; }
+            get
+            {
+                if (IsWrappingNullReference)
+                {
+                    return string.Empty;
+                }
+
+                using (var properties = this.Properties)
+                {
+                    foreach (var property in properties)
+                    {
+                        using (property)
+                        {
+                            if (property.Name == "Name")
+                            {
+                                return (string)property.Value;
+                            }
+                        }
+                    }
+                }
+                // Should never happen - all VB controls are required to be named.
+                return null;
+            }
+            set
+            {
+                if (!IsWrappingNullReference)
+                {
+                    using (var properties = this.Properties)
+                    {
+                        foreach (var property in properties)
+                        {
+                            using (property)
+                            {
+                                if (property.Name == "Name")
+                                {
+                                    property.Value = value;
+                                    return;
+                                }
+                            }
+                        }                        
+                    }
+                    // Should never happen - all VB controls are required to be named.                    
+                }                
+            }
         }
 
         public override bool Equals(ISafeComWrapper<VB.VBControl> other)

@@ -125,19 +125,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             using (var components = vbProject.VBComponents)
             {
-                using (var component = components.SingleOrDefault(c => ComponentHasName(c, name))) 
+                using (var component = components.SingleOrDefault(c => ComponentHasName(c, name)))
                 {
-            if (component == null || component.IsWrappingNullReference)
-            {
-                return;
-            }
+                    if (component == null || component.IsWrappingNullReference)
+                    {
+                        return;
+                    }
 
                     using (var module = component.CodeModule)
                     {
                         using (var pane = module.CodePane)
                         {
-            pane.Selection = selection;
-        }
+                            pane.Selection = selection;
+                        }
                     }
                 }
             }

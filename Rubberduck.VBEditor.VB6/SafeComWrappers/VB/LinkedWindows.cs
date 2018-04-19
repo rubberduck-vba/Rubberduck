@@ -43,7 +43,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return IsWrappingNullReference ? new List<IEnumerable>().GetEnumerator() : Target.GetEnumerator();
+            return IsWrappingNullReference
+                ? (IEnumerator)new List<IEnumerable>().GetEnumerator()
+                : ((IEnumerable<IWindow>)this).GetEnumerator();
         }
 
         IEnumerator<IWindow> IEnumerable<IWindow>.GetEnumerator()

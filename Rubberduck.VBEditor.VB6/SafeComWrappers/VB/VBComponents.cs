@@ -124,10 +124,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                         component = Import(path);
                     }
 
-                    var codeString =
-                        File.ReadAllText(path,
-                            Encoding
-                                .Default); //The VBE uses the current ANSI codepage from the windows settings to export and import.
+                    var codeString = File.ReadAllText(path, Encoding.Default); //The VBE uses the current ANSI codepage from the windows settings to export and import.
                     var codeLines = codeString.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
 
                     var nonAttributeLines = codeLines.TakeWhile(line => !line.StartsWith("Attribute")).Count();

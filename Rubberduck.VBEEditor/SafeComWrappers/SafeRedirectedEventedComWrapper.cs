@@ -24,6 +24,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         protected override void Dispose(bool disposing)
         {
             DetachEvents();
+
+            Marshal.ReleaseComObject(_eventSource);
+            _eventSource = null;
+
             base.Dispose(disposing);
         }
 
@@ -74,10 +78,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     _cookie = NotAdvising;
                 }
 
-                Marshal.ReleaseComObject(_icp);
-                Marshal.ReleaseComObject(_eventSource);
-                _icp = null;
-                _eventSource = null;
+                Marshal.ReleaseComObject(_icp);                
+                _icp = null;                
             }
         }
     }

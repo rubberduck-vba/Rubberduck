@@ -52,18 +52,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
                 : ((IEnumerable<ICommandBarControl>) this).GetEnumerator();
         }
 
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        for (var i = 1; i <= Count; i++)
-        //        {
-        //            this[i].Release();
-        //        }
-        //        base.Release(final);
-        //    }
-        //}
-
         public override bool Equals(ISafeComWrapper<MSO.CommandBarControls> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));

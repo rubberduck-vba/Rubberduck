@@ -43,7 +43,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             get
             {
-                if (IsWrappingNullReference) {return 0; }
+                if (IsWrappingNullReference)
+                {
+                    return 0;
+                }
 
                 return (EnvironmentMode) EbMode();
             }

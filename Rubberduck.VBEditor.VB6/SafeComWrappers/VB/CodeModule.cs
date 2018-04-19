@@ -66,7 +66,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
             using (var codePane = CodePane)
             {
-                if (CodePane.IsWrappingNullReference)
+                if (codePane.IsWrappingNullReference)
                 {
                     return null;
                 }

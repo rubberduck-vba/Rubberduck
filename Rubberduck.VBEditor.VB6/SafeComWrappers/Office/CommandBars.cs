@@ -2,11 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Office_v8::Office;
-using VB = Microsoft.Vbe.Interop.VB6;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office8
@@ -34,21 +31,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
         }
 
         private void DeleteExistingCommandBar(string name)
-        {
-            try
+        {            
+            foreach (var commandBar in (IEnumerable<ICommandBar>) this)
             {
-                var existing = Target.Cast<MSO.CommandBar>().FirstOrDefault(bar => bar.Name == name);
-                if (existing != null)
+                using (commandBar)
                 {
-                    existing.Delete();
-                    Marshal.FinalReleaseComObject(existing);
+                    if (commandBar.Name == name)
+                    {
+                        commandBar.Delete();
+                    }
                 }
             }
-            catch
-            {
-                // specified commandbar didn't exist
-            }
         }
+
 
         public ICommandBarControl FindControl(int id)
         {
