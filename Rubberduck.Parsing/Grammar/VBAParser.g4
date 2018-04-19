@@ -30,7 +30,7 @@ module :
     moduleAttributes
     moduleHeader?
     moduleAttributes
-	moduleConfigReferences?
+    moduleConfigReferences?
     moduleConfig?
     moduleAttributes
     moduleDeclarations
