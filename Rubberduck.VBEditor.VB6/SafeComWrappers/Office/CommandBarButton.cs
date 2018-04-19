@@ -107,12 +107,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
                 return;
             }
 
-            using (var image = CreateTransparentImage(Picture))
-            {
-                Clipboard.SetImage(image);
-                Button.PasteFace();
-                Clipboard.Clear();
-            }
+            // TODO - find a solution that doesn't rely on .Picture (unavailable) or .PasteFace (no-op, exception-prone and destructive)
+            // For now, menu and commandbar icons will be absent in VB6.
         }
 
         private static Image CreateTransparentImage(Image image)
