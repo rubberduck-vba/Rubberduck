@@ -1,6 +1,8 @@
-﻿using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
@@ -22,7 +24,24 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             if (e.State == ParserState.Ready)
             {
                 IsBusy = true;
-                ModuleMetrics = _analyst.GetMetrics(_state);
+
+                var metricResults = _analyst.GetMetrics(_state);
+
+                metricResultContainer = metricResults
+                    .GroupBy(r => r.Metric.Level)
+                    .ToDictionary(g => g.Key,
+                       levelGrouping => levelGrouping.GroupBy(r => r.Declaration)
+                         .ToDictionary(g => g.Key,
+                            declarationGrouping => declarationGrouping.ToDictionary(r => r.Metric)
+                         )
+                    );
+
+                metricsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Metric).ToList());
+                declarationsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Declaration).ToList());
+                declarationsByParent = metricResults.Select(r => r.Declaration).GroupBy(decl => decl.ParentDeclaration).ToDictionary(g => g.Key, g => g.ToList());
+                resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
+                
+
                 IsBusy = false;
             }
         }
@@ -32,16 +51,17 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             _state.StateChanged -= OnStateChanged;
         }
 
-        // FIXME map this hierarchy!
-        private IEnumerable<ICodeMetricResult> _moduleMetrics;
-        public IEnumerable<ICodeMetricResult> ModuleMetrics {
-            get => _moduleMetrics;
-            private set
-            {
-                _moduleMetrics = value;
-                OnPropertyChanged();
-            }
-        }
+        // TBD: use these dictionaries to populate the GridView
+        private Dictionary<AggregationLevel, List<CodeMetric>> metricsByLevel;
+        private Dictionary<AggregationLevel, List<Declaration>> declarationsByLevel;
+        private Dictionary<Declaration, List<Declaration>> declarationsByParent;
+        private Dictionary<Declaration, List<ICodeMetricResult>> resultsByDeclaration; 
+
+        private Dictionary<AggregationLevel, Dictionary<Declaration, Dictionary<CodeMetric, ICodeMetricResult>>>
+            metricResultContainer;
+        public Dictionary<AggregationLevel, Dictionary<Declaration, Dictionary<CodeMetric, ICodeMetricResult>>>
+            MetricResults
+        { get => metricResultContainer; }
 
         private bool _isBusy;
         public bool IsBusy
