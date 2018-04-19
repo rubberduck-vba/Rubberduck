@@ -50,7 +50,7 @@
 
         <controls:EmptyUIRefresh Grid.Row="1" />
 
-        <DataGrid Grid.Row="1" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_ModuleName}" Width="*"/>
                 <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeMetrics_Lines}" Width="Auto" x:Name="LinesColumn"/>

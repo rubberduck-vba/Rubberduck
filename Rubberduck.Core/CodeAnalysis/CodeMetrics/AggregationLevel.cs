@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rubberduck.CodeAnalysis.CodeMetrics
+﻿namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
     public enum AggregationLevel
     {
