@@ -22,22 +22,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {
                     return string.Empty;
                 }
-
-                using (var properties = this.Properties)
+                try
                 {
-                    foreach (var property in properties)
+                    using (var properties = this.Properties)
+                    using (var property = properties["Name"])
                     {
-                        using (property)
-                        {
-                            if (property.Name == "Name")
-                            {
-                                return (string)property.Value;
-                            }
-                        }
+                        return property.Value as string;
                     }
                 }
-                // Should never happen - all VB controls are required to be named.
-                return null;
+                catch (Exception exception)
+                {
+                    // Assumption - all VB controls are required to be named.
+                    System.Diagnostics.Debug.Assert(false, "VBControl.get_Name failed.", $"{exception}");
+                }
+                return string.Empty;
             }
             set
             {
@@ -57,7 +55,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                             }
                         }                        
                     }
-                    // Should never happen - all VB controls are required to be named.                    
+                    // All VB controls are required to be named.   
+                    System.Diagnostics.Debug.Assert(false, "VBControl.set_Name failed: Name property not found.");
                 }                
             }
         }
