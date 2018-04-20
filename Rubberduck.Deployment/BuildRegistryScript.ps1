@@ -76,7 +76,8 @@ try
 		
 		$writer = New-Object Rubberduck.Deployment.Writers.InnoSetupRegistryWriter;
 		$content = $writer.Write($entries);
-		 
+		
+		# The file must be encoded in UTF-8 BOM
 		$regFile = ($includeDir + ($file -replace ".dll", ".reg.iss"));
 		$encoding = New-Object System.Text.UTF8Encoding $true;
 		[System.IO.File]::WriteAllLines($regFile, $content, $encoding);

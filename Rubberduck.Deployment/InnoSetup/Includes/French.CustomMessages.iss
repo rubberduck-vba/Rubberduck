@@ -1,4 +1,4 @@
-﻿; French Custom Messages Include
+﻿; French Custom Messages Include -- Must be encoded in UTF-8 BOM
 French.PerUser=Utilisateur courant
 French.Everyone=Tous les utilisateurs
 French.RegisterAddin=Réparer l'enregistrement du complément VBE
