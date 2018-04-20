@@ -1,3 +1,5 @@
+﻿;The file must be encoded in UTF-8 BOM
+
 #pragma include __INCLUDE__ + ";" + SourcePath + "\Includes\"
 
 #define protected
