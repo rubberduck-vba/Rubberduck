@@ -692,7 +692,7 @@ End Sub
 ";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(8, 18))
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(9, 18))
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -722,7 +722,7 @@ End Sub
 ";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(5, 22))
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 22))
                 .AddProjectToVbeBuilder()
                 .Build();
 

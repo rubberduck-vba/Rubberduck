@@ -95,17 +95,17 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
+            var parameter = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Parameter);
+            if (IsValidMatch(parameter, _name))
+            {
+                return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _context);
+            }
             var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
                 ?? _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
                 ;
             if (IsValidMatch(localVariable, _name))
             {
                 return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _context);
-            }
-            var parameter = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Parameter);
-            if (IsValidMatch(parameter, _name))
-            {
-                return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _context);
             }
             var constant = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Constant);
             if (IsValidMatch(constant, _name))
