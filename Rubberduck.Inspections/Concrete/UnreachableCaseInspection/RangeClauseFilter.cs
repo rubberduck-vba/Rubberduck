@@ -252,7 +252,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return filteredCoverage;
             }
 
-            return RemoveClausesCoveredBy(filteredCoverage, (RangeClauseFilter<T>)filter);
+            filteredCoverage.RemoveClausesCoveredBy((RangeClauseFilter<T>)filter);
+
+            return filteredCoverage;
         }
 
         public bool TryGetIsLessThanValue(out T isLessThanValue)
@@ -361,7 +363,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private bool FiltersAllRelationalOps
+        private bool FiltersAllRelationalOperators
         {
             get
             {
@@ -394,164 +396,162 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private IRangeClauseFilter RemoveClausesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveClausesCoveredBy(RangeClauseFilter<T> removalSpec)
         {
-            var newFilter = RemoveIsClausesCoveredBy(removeFrom, removalSpec);
-            newFilter = RemoveRangesCoveredBy(removeFrom, removalSpec);
-            newFilter = RemoveSingleValuesCoveredBy(removeFrom, removalSpec);
-            newFilter = RemoveRelationalOpsCoveredBy(removeFrom, removalSpec);
-            return newFilter;
+            RemoveIsClausesCoveredBy(removalSpec);
+            RemoveRangesCoveredBy(removalSpec);
+            RemoveSingleValuesCoveredBy(removalSpec);
+            RemoveRelationalOperatorsCoveredBy(removalSpec);
         }
 
-        private static RangeClauseFilter<T> RemoveIsClausesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveIsClausesCoveredBy(RangeClauseFilter<T> removalSpec)
         {
-            if (removeFrom.TryGetIsLessThanValue(out T isLT) 
-                && removalSpec.TryGetIsLessThanValue(out T removalSpecLT)
-                && removalSpecLT.CompareTo(isLT) >= 0)
+            if (TryGetIsLessThanValue(out T isLessThanValue) 
+                && removalSpec.TryGetIsLessThanValue(out T removalSpecLessThanValue)
+                && removalSpecLessThanValue.CompareTo(isLessThanValue) >= 0)
             {
-                removeFrom.RemoveIsLessThanClause();
+                RemoveIsLessThanClause();
             }
 
-            if (removeFrom.TryGetIsGreaterThanValue(out T isGT)
-                && removalSpec.TryGetIsGreaterThanValue(out T removalSpecGT)
-                && removalSpecGT.CompareTo(isGT) <= 0)
+            if (TryGetIsGreaterThanValue(out T isGreaterThanValue)
+                && removalSpec.TryGetIsGreaterThanValue(out T removalSpecGreaterThan)
+                && removalSpecGreaterThan.CompareTo(isGreaterThanValue) <= 0)
             {
-                removeFrom.RemoveIsGreaterThanClause();
+                RemoveIsGreaterThanClause();
             }
-
-            return removeFrom;
         }
 
-        private RangeClauseFilter<T> RemoveRangesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveRangesCoveredBy(RangeClauseFilter<T> removalSpec)
         {
-            if (!(removeFrom.RangeValues.Any() || removeFrom.VariableRanges.Any()))
+            if (!(RangeValues.Any() || VariableRanges.Any()))
             {
-                return removeFrom;
+                return;
             }
 
             var rangesToRemove = new List<(T Start, T End)>();
-            if (removalSpec.TryGetIsLessThanValue(out T removalSpecLT))
+            foreach (var range in RangeValues)
             {
-                foreach (var range in removeFrom.RangeValues)
+                if (removalSpec.TryGetIsLessThanValue(out T removalSpecLessThanValue))
                 {
-                    if (removalSpecLT.CompareTo(range.Start) > 0 && removalSpecLT.CompareTo(range.End) > 0)
+                    if (removalSpecLessThanValue.CompareTo(range.Start) > 0
+                        && removalSpecLessThanValue.CompareTo(range.End) > 0)
                     {
                         rangesToRemove.Add(range);
+                        continue;
                     }
                 }
-            }
 
-            if (removalSpec.TryGetIsGreaterThanValue(out T removalSpecGT))
-            {
-                foreach (var tup in removeFrom.RangeValues)
+                if (removalSpec.TryGetIsGreaterThanValue(out T removalSpecGreaterThanValue))
                 {
-                    if (removalSpecGT.CompareTo(tup.Item1) < 0 && removalSpecGT.CompareTo(tup.Item2) < 0)
+                    if (removalSpecGreaterThanValue.CompareTo(range.Start) < 0
+                        && removalSpecGreaterThanValue.CompareTo(range.End) < 0)
                     {
-                        rangesToRemove.Add(tup);
+                        rangesToRemove.Add(range);
+                        continue;
                     }
                 }
-            }
 
-            foreach (var tup in removeFrom.RangeValues)
-            {
-                foreach (var rem in removalSpec.RangeValues)
+                foreach (var removalRange in removalSpec.RangeValues)
                 {
-                    if (rem.Item1.CompareTo(tup.Item1) <= 0 && rem.Item2.CompareTo(tup.Item2) >= 0)
+                    if (removalRange.Start.CompareTo(range.Start) <= 0 
+                        && removalRange.End.CompareTo(range.End) >= 0)
                     {
-                        rangesToRemove.Add(tup);
+                        rangesToRemove.Add(range);
+                        break;
                     }
                 }
             }
-            removeFrom.RemoveRangeValues(rangesToRemove);
+            RemoveRangeValues(rangesToRemove);
 
-            var varRangesToRemove = new List<string>();
-            foreach(var value in removeFrom.VariableRanges)
+            var variableRangesToRemove = new List<string>();
+            foreach(var variableRange in VariableRanges)
             {
-                if (removalSpec.VariableRanges.Contains(value))
+                if (removalSpec.VariableRanges.Contains(variableRange))
                 {
-                    varRangesToRemove.Add(value);
+                    variableRangesToRemove.Add(variableRange);
                 }
             }
 
-            varRangesToRemove.ForEach(vr => removeFrom.VariableRanges.Remove(vr));
-            return removeFrom;
+            foreach (var variableRange in variableRangesToRemove)
+            {
+                VariableRanges.Remove(variableRange);
+            }
         }
 
-        private RangeClauseFilter<T> RemoveSingleValuesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveSingleValuesCoveredBy(RangeClauseFilter<T> removalSpec)
         {
             List<T> toRemove = new List<T>();
-            if (removalSpec.TryGetIsLessThanValue(out T removalSpecLT))
+            foreach (var singleValue in SingleValues)
             {
-                foreach (var sv in removeFrom.SingleValues)
+                if (removalSpec.TryGetIsLessThanValue(out T removalSpecLessThanValue))
                 {
-                    if (removalSpecLT.CompareTo(sv) > 0)
+                    if (removalSpecLessThanValue.CompareTo(singleValue) > 0)
                     {
-                        toRemove.Add(sv);
+                        toRemove.Add(singleValue);
+                        continue;
+                    }
+                }
+
+                if (removalSpec.TryGetIsGreaterThanValue(out T removalSpecGreaterThanValue))
+                {
+                    if (removalSpecGreaterThanValue.CompareTo(singleValue) < 0)
+                    {
+                        toRemove.Add(singleValue);
+                        continue;
+                    }
+                }
+
+                foreach (var removalRange in removalSpec.RangeValues)
+                {
+                    if (removalRange.Item1.CompareTo(singleValue) <= 0
+                        && removalRange.Item2.CompareTo(singleValue) >= 0)
+                    {
+                        toRemove.Add(singleValue);
+                        break;
                     }
                 }
             }
-
-            if (removalSpec.TryGetIsGreaterThanValue(out T removalSpecGT))
-            {
-                foreach (var sv in removeFrom.SingleValues)
-                {
-                    if (removalSpecGT.CompareTo(sv) < 0)
-                    {
-                        toRemove.Add(sv);
-                    }
-                }
-            }
-
-            foreach (var tup in removalSpec.RangeValues)
-            {
-                foreach (var val in removeFrom.SingleValues)
-                {
-                    if (tup.Item1.CompareTo(val) <= 0 && tup.Item2.CompareTo(val) >= 0)
-                    {
-                        toRemove.Add(val);
-                    }
-                }
-            }
-
             toRemove.AddRange(removalSpec.SingleValues);
 
-            foreach (var rem in toRemove)
+            foreach (var singleValue in toRemove)
             {
-                removeFrom.SingleValues.Remove(rem);
+                SingleValues.Remove(singleValue);
             }
 
             var toRemoveVariables = new List<string>();
-            foreach(var value in removalSpec.VariableSingleValues)
+            foreach(var variable in VariableSingleValues)
             {
-                if (removeFrom.VariableSingleValues.Contains(value))
+                if (removalSpec.VariableSingleValues.Contains(variable))
                 {
-                    toRemoveVariables.Add(value);
+                    toRemoveVariables.Add(variable);
                 }
             }
-            toRemoveVariables.ForEach(rv => removeFrom.VariableSingleValues.Remove(rv));
-            return removeFrom;
+
+            foreach (var variable in toRemoveVariables)
+            {
+                VariableSingleValues.Remove(variable);
+            }
         }
 
-        private RangeClauseFilter<T> RemoveRelationalOpsCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveRelationalOperatorsCoveredBy(RangeClauseFilter<T> removalSpec)
         {
             List<string> toRemove = new List<string>();
-            if (removalSpec.FiltersAllRelationalOps)
+            if (removalSpec.FiltersAllRelationalOperators)
             {
-                removeFrom.RelationalOperators.Clear();
+                RelationalOperators.Clear();
             }
-            foreach (var rem in removalSpec.RelationalOperators)
+            foreach (var removalOperators in removalSpec.RelationalOperators)
             {
-                if (removeFrom.RelationalOperators.Contains(rem))
+                if (RelationalOperators.Contains(removalOperators))
                 {
-                    toRemove.Add(rem);
+                    toRemove.Add(removalOperators);
                 }
             }
 
-            foreach (var rem in toRemove)
+            foreach (var relationalOperator in toRemove)
             {
-                removeFrom.RelationalOperators.Remove(rem);
+                RelationalOperators.Remove(relationalOperator);
             }
-            return removeFrom;
         }
 
         private void AddIsClauseImpl(T val, string opSymbol)
@@ -659,10 +659,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void AddRelationalOperatorImpl(string value)
         {
-            if (!FiltersAllRelationalOps)
+            if (!FiltersAllRelationalOperators)
             {
                 RelationalOperators.Add(value);
-                return;
             }
         }
 
