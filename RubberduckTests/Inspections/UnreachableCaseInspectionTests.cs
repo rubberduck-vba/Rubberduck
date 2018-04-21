@@ -2635,7 +2635,7 @@ End Sub
 
         private void CheckExtents<T>(IRangeClauseFilterTestSupport<T> check, T min, T max) where T : IComparable<T>
         {
-            if (check.TryGetIsLTValue(out T ltResult) && check.TryGetIsGTValue(out T gtResult))
+            if (check.TryGetIsLessThanValue(out T ltResult) && check.TryGetIsGreaterThanValue(out T gtResult))
             {
                 Assert.AreEqual(min.ToString().Substring(0, 8), ltResult.ToString().Substring(0, 8), "LT result failed");
                 Assert.AreEqual(max.ToString().Substring(0, 8), gtResult.ToString().Substring(0, 8));
@@ -2765,7 +2765,7 @@ End Sub
                             clauseExpression = RestoreModifieStringForRelationalOps(clauseExpression);
                         }
                         var uciVal = ValueFactory.Create(clauseExpression, typeName);
-                        result.AddRelationalOp(uciVal);
+                        result.AddRelationalOperator(uciVal);
                     }
                     else
                     {

@@ -154,7 +154,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 else if (_isRelationalOp)
                 {
-                    rangeClauseFilter.AddRelationalOp(ParseTreeValueResults.GetValue(resultContext));
+                    rangeClauseFilter.AddRelationalOperator(ParseTreeValueResults.GetValue(resultContext));
                 }
             }
             catch (ArgumentException)
