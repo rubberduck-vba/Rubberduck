@@ -825,7 +825,7 @@ End Sub
 
         [Test]
         [Category("Resolver")]
-        [Ignore("The test should fail as this is a compile error; need to work out how to set state to ResolverError")]
+        //[Ignore("The test is supposed to fail ; need to figure out how to set resolver to error state")]
         public void SameNameForProjectAndClassImplicit_ScopedDeclaration()
         {
             var refEditClass = @"

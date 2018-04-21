@@ -73,7 +73,7 @@ namespace Rubberduck.Parsing.VBA
             PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
-            ExecuteCompilationPasses(_toResolve.AsReadOnly());
+            ExecuteCompilationPasses(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
             AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
@@ -101,7 +101,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
         }
 
-        private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules)
+        private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             var passes = new List<ICompilationPass>
                 {
@@ -110,7 +110,15 @@ namespace Rubberduck.Parsing.VBA
                     new TypeHierarchyPass(_state.DeclarationFinder, new VBAExpressionParser()),
                     new TypeAnnotationPass(_state.DeclarationFinder, new VBAExpressionParser())
                 };
-            passes.ForEach(p => p.Execute(modules));
+            try
+            {
+                passes.ForEach(p => p.Execute(modules));
+            }
+            catch (Exception e)
+            {
+                _parserStateManager.SetModuleStates(modules, ParserState.ResolverError, token);
+                Console.WriteLine(e);
+            }
         }
 
         private void AddSupertypesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
@@ -202,7 +210,8 @@ namespace Rubberduck.Parsing.VBA
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
-            Debug.Assert(_state.GetModuleState(module) == ParserState.ResolvingReferences || token.IsCancellationRequested);
+            // This assert is no longer true now that we throw resolver error when resolving references
+            // Debug.Assert(_state.GetModuleState(module) == ParserState.ResolvingReferences || token.IsCancellationRequested);
 
             token.ThrowIfCancellationRequested();
 
