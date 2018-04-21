@@ -2,11 +2,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using NLog;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -97,7 +101,11 @@ namespace Rubberduck.Inspections
                 }
                 token.ThrowIfCancellationRequested();
 
-                var inspectionsToRun = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
+                var inspectionsToRun = _inspections.Where(inspection =>
+                    inspection.Severity != CodeInspectionSeverity.DoNotShow &&
+                    RequiredLibrariesArePresent(inspection, state) &&
+                    RequiredHostIsPresent(inspection));
+
                 token.ThrowIfCancellationRequested();
 
                 try
@@ -133,6 +141,27 @@ namespace Rubberduck.Inspections
 
                 state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, CultureInfo.CurrentUICulture)); // should be "Ready"
                 return results;
+            }
+
+            private static bool RequiredLibrariesArePresent(IInspection inspection, RubberduckParserState state)
+            {
+                var requiredLibraries = inspection.GetType().GetCustomAttributes<RequiredLibraryAttribute>().ToArray();
+
+                if (!requiredLibraries.Any())
+                {
+                    return true;
+                }
+
+                var projectNames = state.DeclarationFinder.Projects.Where(project => !project.IsUserDefined).Select(project => project.ProjectName).ToArray();
+
+                return requiredLibraries.All(library => projectNames.Contains(library.LibraryName));
+            }
+
+            private static bool RequiredHostIsPresent(IInspection inspection)
+            {
+                var requiredHost = inspection.GetType().GetCustomAttribute<RequiredHostAttribute>();
+
+                return requiredHost == null || requiredHost.HostNames.Contains(Path.GetFileName(Application.ExecutablePath).ToUpper());
             }
 
             private static void RunInspectionsInParallel(IEnumerable<IInspection> inspectionsToRun,

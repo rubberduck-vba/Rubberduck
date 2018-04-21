@@ -16,15 +16,17 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly string _name;
         private readonly CommandBarPosition _position;
         private readonly IDictionary<ICommandMenuItem, ICommandBarControl> _items;
+        private readonly ICommandBarButtonFactory _buttonFactory;
         protected readonly IUiDispatcher _uiDispatcher;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        protected AppCommandBarBase(string name, CommandBarPosition position, IEnumerable<ICommandMenuItem> items, IUiDispatcher uiDispatcher)
+        protected AppCommandBarBase(string name, CommandBarPosition position, IEnumerable<ICommandMenuItem> items, IUiDispatcher uiDispatcher, ICommandBarButtonFactory buttonFactory)
         {
             _name = name;
             _position = position;
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
             _uiDispatcher = uiDispatcher;
+            _buttonFactory = buttonFactory;
         }
 
         protected ICommandMenuItem FindChildByTag(string tag)
@@ -120,7 +122,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             ICommandBarButton child;
             using (var controls = Item.Controls)
             {
-                child = CommandBarButtonFactory.Create(controls);
+                child = _buttonFactory.Create(controls);
             }
             child.Style = item.ButtonStyle;
             child.Picture = item.Image;

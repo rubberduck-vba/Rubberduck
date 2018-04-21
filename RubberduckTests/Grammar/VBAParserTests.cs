@@ -14,6 +14,215 @@ namespace RubberduckTests.Grammar
     public class VBAParserTests
     {
         [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void DoEventsKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+DoEvents: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void EndKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+End: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void CloseKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Close: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void DoKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Do: MsgBox : Loop
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//doLoopStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void ElseKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+If True Then
+Else: MsgBox
+End If
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//ifStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void LoopKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Do Until False
+Loop: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//doLoopStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void NextKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+For i = 1 To 10
+Next: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//forNextStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void RandomizeKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Randomize: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void RemKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Rem: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//remComment");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void ResumeKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Resume: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//resumeStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void ReturnKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Return: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//returnStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void StopKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+Stop: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//stopStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
+        [Category("LineLabels")]
+        [Test]
+        public void WendKeywordDoesNotParseAsLineLabel()
+        {
+            var code = @"
+Sub DoSomething()
+While True
+Wend: MsgBox
+End Sub
+";
+            var result = Parse(code);
+            AssertTree(result.Item1, result.Item2, "//statementLabelDefinition", e => e.Count == 0);
+            AssertTree(result.Item1, result.Item2, "//whileWendStmt");
+            AssertTree(result.Item1, result.Item2, "//subStmt");
+        }
+
+        [Category("Parser")]
         [Test]
         public void ParsesWithLineNumbers_EndSub()
         {
@@ -261,6 +470,7 @@ Private this As TProgressIndicator
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
+
         [Category("Parser")]
         [Test]
         public void TestAttributeInsideModuleDeclarations()
@@ -434,6 +644,278 @@ BEGIN
 END";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigElement");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestVBFormModuleConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestNestedVbFormModuleConfig()
+        {
+            string code = @"
+VERSION 5.00
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin VB.CommandButton cmdDelete
+      Caption = ""Delete""
+      Height = 495
+      Left = 1320
+      TabIndex = 9
+      Top = 2280
+      Width = 1215
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestNestedVbFormModuleConfigWithObjectDeclarations()
+        {
+            string code = @"
+VERSION 5.00
+Object = ""{67397AA1-7FB1-11D0-B148-00A0C922E820}#6.0#0""; ""MSADODC.OCX""
+Object = ""{CDE57A40-8B86-11D0-B3C6-00A0C90AEA82}#1.0#0""; ""MSDATGRD.OCX""
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin VB.CommandButton cmdDelete
+      Caption = ""Delete""
+      Height = 495
+      Left = 1320
+      TabIndex = 9
+      Top = 2280
+      Width = 1215
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestNestedVbFormModuleConfigWithMultipleChildren()
+        {
+            string code = @"
+VERSION 5.00
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin VB.CommandButton cmdDelete
+      Caption = ""Delete""
+      Height = 495
+      Left = 1320
+      TabIndex = 9
+      Top = 2280
+      Width = 1215
+   End
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 3);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestNestedVbFormModuleConfigWithProperty()
+        {
+            string code = @"
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851}
+            Name = ""MS Sans Serif""
+         Size = 8.25
+         Charset = 0
+         Weight = 400
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestNestedVbFormModuleConfigWithMultipleProperties()
+        {
+            string code = @"
+VERSION 5.00
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851}
+         Name = ""MS Sans Serif""
+         Size = 8.25
+         Charset = 0
+         Weight = 400
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name = ""MS Sans Serif""
+         Size = 8.25
+         Charset = 0
+         Weight = 400
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestNestedVbFormModuleConfigWithNestedProperties()
+        {
+            string code = @"
+VERSION 5.00
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty Column00 
+         DataField       =   """"
+         Caption         =   """"
+         BeginProperty DataFormat {6D835690-900B-11D0-9484-00A0C91110ED} 
+            Type            =   0
+            Format          =   """"
+            HaveTrueFalseNull=   0
+            FirstDayOfWeek  =   0
+            FirstWeekOfYear =   0
+            LCID            =   1033
+            SubFormatType   =   0
+         EndProperty
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 2);
         }
 
         [Category("Parser")]
@@ -2228,16 +2710,16 @@ End Type
             return Tuple.Create(parser, tree);
         }
 
-        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath)
+        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, string message = "")
         {
-            AssertTree(parser, root, xpath, matches => matches.Count >= 1);
+            AssertTree(parser, root, xpath, matches => matches.Count >= 1, message);
         }
 
-        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, Predicate<ICollection<IParseTree>> assertion)
+        private void AssertTree(VBAParser parser, ParserRuleContext root, string xpath, Predicate<ICollection<IParseTree>> assertion, string message = "")
         {
             var matches = new XPath(parser, xpath).Evaluate(root);
             var actual = matches.Count;
-            Assert.IsTrue(assertion(matches), $"{actual} matches found.");
+            Assert.IsTrue(assertion(matches), $"{actual} matches found. {message}");
         }
     }
 }

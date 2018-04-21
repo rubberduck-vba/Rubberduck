@@ -14,13 +14,15 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private readonly string _key;
         private readonly int? _beforeIndex;
         private readonly IDictionary<IMenuItem, ICommandBarControl> _items;
+        private readonly ICommandBarButtonFactory _buttonFactory;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
+        
+        protected ParentMenuItemBase(ICommandBarButtonFactory buttonFactory, string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
             _key = key;
             _beforeIndex = beforeIndex;
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
+            _buttonFactory = buttonFactory;
         }
 
         public ICommandBarControls Parent { get; set; }
@@ -159,7 +161,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             ICommandBarButton child;
             using (var controls = Item.Controls)
             {
-                child = CommandBarButtonFactory.Create(controls);
+                child = _buttonFactory.Create(controls);
             }
             child.Picture = item.Image;
             child.Mask = item.Mask;

@@ -235,7 +235,8 @@ namespace Rubberduck.Parsing.ComReflection
                     _declarations.AddRange(hasParams.Parameters);
                     memberTree.AddChildren(hasParams.Parameters);
                 }
-                var coClass = memberDeclaration as ClassModuleDeclaration;
+
+                var coClass = memberDeclaration.ParentDeclaration as ClassModuleDeclaration;
                 if (coClass != null && item == defaultMember)
                 {
                     coClass.DefaultMember = memberDeclaration;

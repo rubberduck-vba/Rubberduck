@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.VBEditor;
-using System;
+using System.Linq;
 
 namespace Rubberduck.Parsing
 {
@@ -11,6 +11,14 @@ namespace Rubberduck.Parsing
     /// </summary>
     public static class SelectionExtensions
     {
+        /// <summary>
+        /// Exposes LINQ method to semantic predicates.
+        /// </summary>
+        public static bool Contains(this int[] values, int value)
+        {
+            return Enumerable.Contains(values, value);
+        }
+
         /// <summary>
         /// Validates whether a token is contained within a given Selection
         /// </summary>

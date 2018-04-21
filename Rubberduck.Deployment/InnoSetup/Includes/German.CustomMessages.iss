@@ -1,4 +1,4 @@
-﻿; German Custom Messages Include
+﻿; German Custom Messages Include -- Must be encoded in UTF-8 BOM
 German.PerUser=Aktueller Benutzer
 German.Everyone=Alle Benutzer
 German.RegisterAddin=VBE AddIn Registrierung reparieren

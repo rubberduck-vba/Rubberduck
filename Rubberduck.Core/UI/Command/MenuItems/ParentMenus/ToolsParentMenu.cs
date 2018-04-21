@@ -4,8 +4,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class ToolsParentMenu : ParentMenuItemBase
     {
-        public ToolsParentMenu(IEnumerable<IMenuItem> items)
-            : base("ToolsMenu", items)
+        public ToolsParentMenu(ICommandBarButtonFactory buttonFactory, IEnumerable<IMenuItem> items)
+            : base(buttonFactory, "ToolsMenu", items)
         {
         }
 

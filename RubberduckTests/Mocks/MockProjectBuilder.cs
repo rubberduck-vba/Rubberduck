@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Moq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -78,10 +77,11 @@ namespace RubberduckTests.Mocks
         /// <param name="type">The type of component to create.</param>
         /// <param name="content">The VBA code associated to the component.</param>
         /// <param name="selection"></param>
+        /// <param name="properties">A collection of properties that will be available when calling the component's Properties property.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddComponent(string name, ComponentType type, string content, Selection selection = new Selection())
+        public MockProjectBuilder AddComponent(string name, ComponentType type, string content, Selection selection = new Selection(), IEnumerable<IProperty> properties = null)
         {
-            var component = CreateComponentMock(name, type, content, selection, out var codeModule);
+            var component = CreateComponentMock(name, type, content, selection, properties, out var codeModule);
             return AddComponent(component, codeModule);
         }
 
@@ -132,7 +132,7 @@ namespace RubberduckTests.Mocks
         /// <param name="content">The VBA code associated to the component.</param>
         public MockUserFormBuilder MockUserFormBuilder(string name, string content)
         {
-            var component = CreateComponentMock(name, ComponentType.UserForm, content, new Selection(), out var codeModule);
+            var component = CreateComponentMock(name, ComponentType.UserForm, content, new Selection(), null, out var codeModule);
             return new MockUserFormBuilder(component, codeModule, this);
         }
 
@@ -190,7 +190,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
                 .Callback((ComponentType c) =>
                 {
-                    _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection(), out var codeModule));
+                    _componentsMock.Add(CreateComponentMock("test", c, string.Empty, new Selection(), null, out var codeModule));
                     _codeModuleMocks.Add(codeModule);
                 })
                 .Returns(() =>
@@ -218,7 +218,7 @@ namespace RubberduckTests.Mocks
                 ComponentType type;
                 types.TryGetValue(parts.Last(), out type);
 
-                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection(), out var codeModule));
+                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection(), null, out var codeModule));
                 _codeModuleMocks.Add(codeModule);
             });
 
@@ -260,7 +260,8 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<IVBComponent> CreateComponentMock(string name, ComponentType type, string content, Selection selection, out Mock<ICodeModule> moduleMock)
+        private Mock<IVBComponent> CreateComponentMock(string name, ComponentType type, string content, Selection selection, 
+            IEnumerable<IProperty> properties, out Mock<ICodeModule> moduleMock)
         {
             var result = new Mock<IVBComponent>();
 
@@ -274,6 +275,10 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
+
+            var propertiesMock = new Mock<IProperties>();
+            propertiesMock.Setup(m => m.GetEnumerator()).Returns(() => properties?.GetEnumerator());
+            result.SetupGet(m => m.Properties).Returns(propertiesMock.Object);
 
             var module = CreateCodeModuleMock(name, content, selection, result);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);

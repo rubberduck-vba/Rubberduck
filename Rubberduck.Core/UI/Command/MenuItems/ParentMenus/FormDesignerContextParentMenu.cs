@@ -4,8 +4,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class FormDesignerContextParentMenu : ParentMenuItemBase
     {
-        public FormDesignerContextParentMenu(IEnumerable<IMenuItem> items, int beforeIndex)
-            : base("RubberduckMenu", items, beforeIndex)
+        public FormDesignerContextParentMenu(ICommandBarButtonFactory buttonFactory, IEnumerable<IMenuItem> items, int beforeIndex)
+            : base(buttonFactory, "RubberduckMenu", items, beforeIndex)
         {
         }
 
@@ -14,8 +14,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
     public class FormDesignerControlContextParentMenu : ParentMenuItemBase
     {
-        public FormDesignerControlContextParentMenu(IEnumerable<IMenuItem> items, int beforeIndex)
-            : base("RubberduckMenu", items, beforeIndex)
+        public FormDesignerControlContextParentMenu(ICommandBarButtonFactory buttonFactory, IEnumerable<IMenuItem> items, int beforeIndex)
+            : base(buttonFactory, "RubberduckMenu", items, beforeIndex)
         {
         }
 
