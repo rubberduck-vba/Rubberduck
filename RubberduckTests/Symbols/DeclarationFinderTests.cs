@@ -825,7 +825,6 @@ End Sub
 
         [Test]
         [Category("Resolver")]
-        //[Ignore("The test is supposed to fail ; need to figure out how to set resolver to error state")]
         public void SameNameForProjectAndClassImplicit_ScopedDeclaration()
         {
             var refEditClass = @"
@@ -977,6 +976,91 @@ End Function";
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void Identify_NamedParameter_Parameter()
+        {
+            const string code = @"
+Public Function Foo(Item As String) As Boolean
+    MsgBox (Item)
+End Function
+
+Public Sub DoIt()
+    Dim Result As Boolean
+    Dim Item As String
+    
+    Item = ""abc""
+    Result = Foo(Item:=Item)
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(11, 19))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object);
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single();
+            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void Identify_NamedParameter_LocalVariable()
+        {
+            const string code = @"
+Public Function Foo(Item As String) As Boolean
+    MsgBox (Item)
+End Function
+
+Public Sub DoIt()
+    Dim Result As Boolean
+    Dim Item As String
+    
+    Item = ""abc""
+    Result = Foo(Item:=Item)
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(11, 25))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var parser = MockParser.Create(vbe.Object);
+            parser.Parse(new CancellationTokenSource());
+
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                .Single(p => p.IdentifierName == "Item");
+            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void Identify_NamedParameter_Parameter_FromExcel()
+        {
+            const string code = @"
+Public Sub DoIt()
+    foo = ActiveSheet.Cells(ColumnIndex:=12).Value
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(3, 30))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var state = MockParser.CreateAndParse(vbe.Object, serializedDeclarationsPath: null, testLibraries:new[] { "Excel.1.8.xml" });
+
+            var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName=="ColumnIndex" && p.ParentScope == "EXCEL.EXE;Excel.Range._Default");
+            var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
         }
 
         [Category("Resolver")]
