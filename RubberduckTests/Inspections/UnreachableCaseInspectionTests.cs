@@ -463,7 +463,7 @@ namespace RubberduckTests.Inspections
             foreach (var clause in clauses)
             {
                 GetBinaryOpValues(clause, out IParseTreeValue start, out IParseTreeValue end, out string symbol);
-                UUT.AddValueRange(start, end);
+                UUT.AddValueRange((start, end));
             }
 
             clauses = expectedClauses.Split(new string[] { "," }, StringSplitOptions.None);
@@ -2751,7 +2751,7 @@ End Sub
                         var startEnd = clauseExpression.Split(new string[] { ":" }, StringSplitOptions.None);
                         var uciValStart = ValueFactory.Create(startEnd[0], typeName);
                         var uciValEnd = ValueFactory.Create(startEnd[1], typeName);
-                        result.AddValueRange(uciValStart, uciValEnd);
+                        result.AddValueRange((uciValStart, uciValEnd));
                     }
                     else if (clauseType.Equals("Single"))
                     {

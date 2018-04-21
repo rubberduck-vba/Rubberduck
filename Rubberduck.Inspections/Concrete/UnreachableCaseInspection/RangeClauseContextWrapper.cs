@@ -146,7 +146,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 else if (_isValueRange)
                 {
-                    rangeClauseFilter.AddValueRange(ParseTreeValueResults.GetValue(SelectStartValue), ParseTreeValueResults.GetValue(SelectEndValue));
+                    rangeClauseFilter.AddValueRange((ParseTreeValueResults.GetValue(SelectStartValue), ParseTreeValueResults.GetValue(SelectEndValue)));
                 }
                 else if (_isLTorGT)
                 {
