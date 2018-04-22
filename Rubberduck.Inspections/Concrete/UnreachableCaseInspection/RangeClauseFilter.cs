@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -591,8 +594,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             FilterExistingRanges();
             FilterExistingSingles();
-            TrimExistingRanges(true);
-            TrimExistingRanges(false);
+            TrimStartOfExistingRanges();
+            TrimEndOfExistingRanges();
         }
 
         private void StoreIsClauseValue(T value, string operatorSymbol)
@@ -673,7 +676,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static long ToLong(T value)
         {
-            return long.Parse(value.ToString());
+            return long.Parse(ValueText(value));
         }
 
         private bool IsClausesFilterValue(T value) => IsLessThanFiltersValue(value) || IsGreaterThanFiltersValue(value);
@@ -767,34 +770,37 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            if (RangeValues.Count > 1)
+            while (RangeValues.Count > 1 && TryConcatenateRanges())
             {
-                int preConcatentateCount;
-                do
-                {
-                    preConcatentateCount = RangeValues.Count;
-                    ConcatenateRanges();
-                } while (RangeValues.Count < preConcatentateCount && RangeValues.Count > 1);
+                //Noting to do; TryConcatenateAPairOfRanges does the job.
             }
         }
 
-        private void TrimExistingRanges(bool trimStart)
+        private void TrimStartOfExistingRanges()
         {
-            var rangesToTrim = (trimStart  
-                 ? RangeValues.Where(rg => IsLessThanFiltersValue(rg.Start))
-                 : RangeValues.Where(rg => IsGreaterThanFiltersValue(rg.End)))
-                .ToList();
+            var rangesToTrim = RangeValues.Where(range => IsLessThanFiltersValue(range.Start)).ToList();
 
             var replacementRanges = new List<(T Start, T End)>();
             foreach (var range in rangesToTrim)
             {
-                var newRange = trimStart 
-                    ? (_isClause[LogicSymbols.LT].Max(), range.End)
-                    : (range.Start, _isClause[LogicSymbols.GT].Min());
-
+                var newRange = (_isClause[LogicSymbols.LT].Max(), range.End);
                 replacementRanges.Add(newRange);
             }
-            rangesToTrim.ForEach(rg => RangeValues.Remove(rg));
+            rangesToTrim.ForEach(range => RangeValues.Remove(range));
+            RangeValues.AddRange(replacementRanges);
+        }
+
+        private void TrimEndOfExistingRanges()
+        {
+            var rangesToTrim = RangeValues.Where(range => IsGreaterThanFiltersValue(range.End)).ToList();
+
+            var replacementRanges = new List<(T Start, T End)>();
+            foreach (var range in rangesToTrim)
+            {
+                var newRange = (range.Start, _isClause[LogicSymbols.GT].Min());
+                replacementRanges.Add(newRange);
+            }
+            rangesToTrim.ForEach(range => RangeValues.Remove(range));
             RangeValues.AddRange(replacementRanges);
         }
 
@@ -812,20 +818,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             => IsLessThanFiltersValue(range.End) || IsGreaterThanFiltersValue(range.Start);
 
         private bool RangesFilterRange((T Start, T End) range)
-            => RangeValues.Any(storedRange => storedRange.Start.CompareTo(range.Start) <= 0 && storedRange.End.CompareTo(range.End) >= 0);
+            => RangeValues.Any(storedRange => storedRange.Contains(range));
 
         private bool RangesFilterValue(T value) 
-            => RangeValues.Any(range => range.Start.CompareTo(value) <= 0 && range.End.CompareTo(value) >= 0);
+            => RangeValues.Any(range => range.Contains(value));
 
-        private void ConcatenateRanges()
+        private bool TryConcatenateRanges()
         {
             if (!ContainsIntegralNumbers)
             {
-                return;
+                return false;
             }
+
             var concatenatedRanges = new List<(long Start, long End)>();
             var indexesToRemove = new List<int>();
-            var sortedRanges = RangeValues.Select(range => ((long Start, long End))(ToLong(range.Start), ToLong(range.End)))
+            var sortedRanges = RangeValues.Select(ApplyToRange<T,long>(ToLong))
                                             .OrderBy(integralRange => integralRange.Start)
                                             .ToList();
             for (var idx = sortedRanges.Count - 1; idx > 0;)
@@ -835,44 +842,46 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     concatenatedRanges.Add((sortedRanges[idx - 1].Start, sortedRanges[idx].End));
                     indexesToRemove.Add(idx);
                     indexesToRemove.Add(idx - 1);
-                    break;
+                    idx--; //The lower range must not participate as upper range in the next iteration.
                 }
                 idx--;
             }
-            //rebuild _ranges retaining the original order except placing the concatenated
-            //range added to the end
-            if (concatenatedRanges.Any())
+
+            if (!concatenatedRanges.Any())
             {
-                var allRanges = new Dictionary<int, (T Start, T End)>();
-                for (int idx = 0; idx < RangeValues.Count; idx++)
-                {
-                    allRanges.Add(idx, RangeValues[idx]);
-                }
-
-                indexesToRemove.ForEach(idx => sortedRanges.RemoveAt(idx));
-
-                var tRanges = new List<(T Start, T End)>();
-                foreach (var ral in sortedRanges)
-                {
-                    tRanges.Add((ConvertToContainedGeneric(ral.Start), ConvertToContainedGeneric(ral.End)));
-                }
-
-                foreach (var ral in concatenatedRanges)
-                {
-                    tRanges.Add((ConvertToContainedGeneric(ral.Start), ConvertToContainedGeneric(ral.End)));
-                }
-
-                RangeValues.Clear();
-                foreach (var key in allRanges.Keys)
-                {
-                    if (tRanges.Contains(allRanges[key]))
-                    {
-                        RangeValues.Add(allRanges[key]);
-                        tRanges.Remove(allRanges[key]);
-                    }
-                }
-                RangeValues.AddRange(tRanges); //what's left is the concatenated result
+                return false;
             }
+
+            //rebuild _ranges retaining the original order except placing the concatenated
+            //ranges added to the end
+            var allRanges = new List<(T Start, T End)>();
+            allRanges.AddRange(RangeValues);
+
+            indexesToRemove.ForEach(idx => sortedRanges.RemoveAt(idx));
+
+            var sortedRangesAsT = sortedRanges.Select(ApplyToRange<long,T>(ConvertToContainedGeneric)).ToHashSet();
+
+            foreach (var concatenatedRange in concatenatedRanges)
+            {
+                sortedRangesAsT.Add(ApplyToRange<long,T>(ConvertToContainedGeneric)(concatenatedRange));
+            }
+
+            RangeValues.Clear();
+            foreach (var range in allRanges)
+            {
+                if (sortedRangesAsT.Contains(range))
+                {
+                    RangeValues.Add(range);
+                    sortedRangesAsT.Remove(range);
+                }
+            }
+            RangeValues.AddRange(sortedRangesAsT); //what's left is the concatenated result
+            return true;
+        }
+
+        private Func<(TSource Start, TSource End), (TTarget Start, TTarget End)> ApplyToRange<TSource, TTarget>(Func<TSource, TTarget> func)
+        {
+            return range => (func(range.Start), func(range.End));
         }
 
         private int RangesValuesCount()
@@ -880,20 +889,35 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             int result = 0;
             foreach (var range in RangeValues)
             {
-                result = result + (int)(ToLong(range.Item2) - ToLong(range.Item1) + 1);
+                result = result + (int)(ToLong(range.End) - ToLong(range.Start) + 1);
             }
             return result;
         }
 
         private T ConvertToContainedGeneric<K>(K value)
         {
-            var parseTreeValue = _valueFactory.Create(value.ToString(), TypeName);
-            if (_valueConverter(parseTreeValue, out T tValue))
+            var parseTreeValue = _valueFactory.Create(ValueText(value), TypeName);
+            if (_valueConverter(parseTreeValue, out T convertedValue))
             {
-                return tValue;
+                return convertedValue;
             }
-            throw new ArgumentException($"Unable to convert {value.ToString()} to {typeof(T)}");
+            throw new ArgumentException($"Unable to convert {value} to {typeof(T)}");
         }
+
+        private static string ValueText<K>(K value)
+        {
+            switch (value)
+            {
+                case IConvertible convertibleValue:
+                    return convertibleValue.ToString(CultureInfo.InvariantCulture);
+                case IFormattable formattableValue:
+                    return formattableValue.ToString("{0}", CultureInfo.InvariantCulture);
+                default:
+                    return value.ToString();
+            }            
+        }
+
+        private static string ValueText(string value) => value;
 
         private bool TryMergeWithOverlappingRange((T Start, T End) range)
         {
@@ -928,26 +952,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private void RemoveIsClauseImpl(string opSymbol)
+        private void RemoveIsClauseImpl(string operatorSymbol)
         {
-            if (_isClause.Keys.Contains(opSymbol))
+            if (_isClause.Keys.Contains(operatorSymbol))
             {
                 if (_hasExtents)
                 {
-                    _isClause.Remove(opSymbol);
-                    var extentVal = opSymbol.Equals(LogicSymbols.LT) ? _minExtent : _maxExtent;
-                    AddIsClauseImpl(extentVal, opSymbol);
+                    _isClause.Remove(operatorSymbol);
+                    var extentVal = operatorSymbol.Equals(LogicSymbols.LT) ? _minExtent : _maxExtent;
+                    AddIsClauseImpl(extentVal, operatorSymbol);
                 }
                 else
                 {
-                    _isClause.Remove(opSymbol);
+                    _isClause.Remove(operatorSymbol);
                 }
             }
         }
 
         private string GetSingleValuesDescriptor()
         {
-            var singleValueTexts = SingleValues.Select(singleValue => singleValue.ToString()).ToList();
+            var singleValueTexts = SingleValues.Select(ValueText).ToList();
             singleValueTexts.AddRange(VariableSingleValues);
             return GetSingleValueTypeDescriptor(singleValueTexts, "Single=");
         }
@@ -957,40 +981,46 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return GetSingleValueTypeDescriptor(RelationalOperators.ToList(), "RelOp=");
         }
 
-        private string GetSingleValueTypeDescriptor<K>(List<K> values, string prefix)
+        private string GetSingleValueTypeDescriptor<K>(ICollection<K> values, string prefix)
         {
-            if (!values.Any()){ return string.Empty; }
-
-            StringBuilder series = new StringBuilder();
-            foreach (var val in values)
+            if (!values.Any())
             {
-                series.Append($"{val},");
+                return string.Empty;
+            }
+
+            var series = new StringBuilder();
+            foreach (var value in values)
+            {
+                series.Append($"{ValueText(value)},");
             }
             return $"{prefix}{series.ToString().Substring(0, series.Length - 1)}";
         }
 
         private string GetRangesDescriptor()
         {
-            if (!(RangeValues.Any() || VariableRanges.Any())) { return string.Empty; }
-
-            StringBuilder series = new StringBuilder();
-            foreach (var val in RangeValues)
+            if (!(RangeValues.Any() || VariableRanges.Any()))
             {
-                series.Append($"{val.Item1}:{val.Item2},");
+                return string.Empty;
             }
-            foreach (var val in VariableRanges)
+
+            var series = new StringBuilder();
+            foreach (var range in RangeValues)
             {
-                series.Append(val.ToString() + ",");
+                series.Append($"{ValueText(range.Start)}:{ValueText(range.End)},");
+            }
+            foreach (var variableRange in VariableRanges)
+            {
+                series.Append(variableRange + ",");
             }
             return $"Range={series.ToString().Substring(0, series.Length - 1)}";
         }
 
-        private string GetIsClausesDescriptor(string opSymbol)
+        private string GetIsClausesDescriptor(string operatorSymbol)
         {
             var result = string.Empty;
-            if (_isClause.TryGetValue(opSymbol, out List<T> values))
+            if (_isClause.TryGetValue(operatorSymbol, out List<T> values))
             {
-                var isLT = opSymbol.Equals(LogicSymbols.LT);
+                var isLT = operatorSymbol.Equals(LogicSymbols.LT);
                 var value = isLT ? values.Max() : values.Min();
                 var extentToCompare = isLT ? _minExtent : _maxExtent;
                 var prefix = isLT ? "IsLT=" : "IsGT=";
