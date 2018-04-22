@@ -20,18 +20,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public class RangeClauseContextWrapper : ContextWrapperBase, IRangeClauseContextWrapper
     {
         private readonly bool _isValueRange;
-        private readonly bool _isLTorGT;
+        private readonly bool _isLessThanOrGreaterThan;
         private readonly bool _isSingleValue;
-        private readonly bool _isRelationalOp;
+        private readonly bool _isRelationalOperator;
         private string _evalTypeName;
 
         public RangeClauseContextWrapper(VBAParser.RangeClauseContext context, IParseTreeVisitorResults inspValues, IUnreachableCaseInspectionFactoryProvider factoryFactory)
             : base(context, inspValues, factoryFactory)
         {
             _isValueRange = !(context.TO() is null);
-            _isLTorGT = !(context.IS() is null);
-            _isRelationalOp = Context.children.Any(ch => ch is ParserRuleContext && ParseTreeValueVisitor.IsLogicalContext(ch));
-            _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
+            _isLessThanOrGreaterThan = !(context.IS() is null);
+            _isRelationalOperator = Context.children.Any(child => child is ParserRuleContext && ParseTreeValueVisitor.IsLogicalContext(child));
+            _isSingleValue = !(_isValueRange || _isLessThanOrGreaterThan || _isRelationalOperator);
             _evalTypeName = string.Empty;
             IsUnreachable = false;
             AsFilter = FilterFactory.Create(Tokens.Long, ValueFactory);
@@ -41,10 +41,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             : base(context, inspValues, factoryFactory)
         {
             _isValueRange = !(context.TO() is null);
-            _isLTorGT = !(context.IS() is null);
-            _isRelationalOp = Context.children.Any(ch => ch is ParserRuleContext && ParseTreeValueVisitor.IsLogicalContext(ch));
-
-            _isSingleValue = !(_isValueRange || _isLTorGT || _isRelationalOp);
+            _isLessThanOrGreaterThan = !(context.IS() is null);
+            _isRelationalOperator = Context.children.Any(child => child is ParserRuleContext && ParseTreeValueVisitor.IsLogicalContext(child));
+            _isSingleValue = !(_isValueRange || _isLessThanOrGreaterThan || _isRelationalOperator);
             IsUnreachable = false;
             AsFilter = FilterFactory.Create(evalTypeName, ValueFactory);
             _evalTypeName = evalTypeName;
@@ -148,11 +147,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     rangeClauseFilter.AddValueRange((ParseTreeValueResults.GetValue(SelectStartValue), ParseTreeValueResults.GetValue(SelectEndValue)));
                 }
-                else if (_isLTorGT)
+                else if (_isLessThanOrGreaterThan)
                 {
                     rangeClauseFilter.AddIsClause(ParseTreeValueResults.GetValue(resultContext), IsClauseSymbol);
                 }
-                else if (_isRelationalOp)
+                else if (_isRelationalOperator)
                 {
                     rangeClauseFilter.AddRelationalOperator(ParseTreeValueResults.GetValue(resultContext));
                 }

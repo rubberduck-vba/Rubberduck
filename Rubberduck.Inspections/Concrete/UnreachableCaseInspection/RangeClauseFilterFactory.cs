@@ -14,8 +14,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     //The following MIN/MAX values relate to VBA types
     internal static class CompareExtents
     {
-        public static long LONGMIN = Int32.MinValue; //- 2147486648;
-        public static long LONGMAX = Int32.MaxValue; //2147486647
+        public static long LONGMIN = Int32.MinValue; //- 2147483648;
+        public static long LONGMAX = Int32.MaxValue; //2147483647
         public static long INTEGERMIN = Int16.MinValue; //- 32768;
         public static long INTEGERMAX = Int16.MaxValue; //32767
         public static long BYTEMIN = byte.MinValue;  //0

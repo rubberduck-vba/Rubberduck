@@ -49,6 +49,7 @@ namespace Rubberduck.Parsing
         {
             { "%", Tokens.Integer },
             { "&", Tokens.Long },
+            { "^", Tokens.LongLong },
             { "@", Tokens.Decimal },
             { "!", Tokens.Single },
             { "#", Tokens.Double },

@@ -165,6 +165,13 @@ namespace RubberduckTests.Inspections
         [TestCase("45#", "Double", "45")]
         [TestCase("45@", "Decimal", "45")]
         [TestCase("45!", "Single", "45")]
+        [TestCase("45^", "LongLong", "45")]
+        [TestCase("32767", "Integer", "32767")]
+        [TestCase("32768", "Long", "32768")]
+        [TestCase("2147483647", "Long", "2147483647")]
+        [TestCase("2147483648", "Double", "2147483648")]
+        [TestCase("&H10", "Integer", "16")]
+        [TestCase("&o10", "Integer", "8")]
         [Category("Inspections")]
         public void UciUnit_VariableTypes(string operands, string expectedTypeName, string expectedValueText)
         {
@@ -180,6 +187,22 @@ namespace RubberduckTests.Inspections
         [TestCase(@"""95E-2""?Byte", "Byte", "1")]
         [TestCase("True?Double", "Double", "-1")]
         [TestCase("True?Long", "Long", "-1")]
+        [TestCase("&H10", "Integer", "16")]
+        [TestCase("&o10", "Integer", "8")]
+        [TestCase("&H8000", "Integer", "-32768")]
+        [TestCase("&o100000", "Integer", "-32768")]
+        [TestCase("&H8000&", "Long", "32768")]
+        [TestCase("&o100000&", "Long", "32768")]
+        [TestCase("&H10", "Long", "16")]
+        [TestCase("&o10", "Long", "8")]
+        [TestCase("&H80000000", "Long", "-2147483648")]
+        [TestCase("&o20000000000", "Long", "-2147483648")]
+        [TestCase("&H80000000^", "LongLong", "2147483648")]
+        [TestCase("&o20000000000^", "LongLong", "2147483648")]
+        [TestCase("&H10^", "LongLong", "16")]
+        [TestCase("&o10^", "LongLong", "8")]
+        [TestCase("&HFFFFFFFFFFFFFFFF^", "LongLong", "-1")]
+        [TestCase("&o1777777777777777777777^", "LongLong", "-1")]
         [Category("Inspections")]
         public void UciUnit_ConformToType(string operands, string conformToType, string expectedValueText)
         {
@@ -925,7 +948,7 @@ End Sub";
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase("45", "55", "Long")]
+        [TestCase("45", "55", "Integer")]
         [TestCase("45.6", "55", "Double")]
         [TestCase(@"""Test""", @"""55""", "String")]
         [TestCase("True", "y < 6", "Boolean")]
@@ -933,14 +956,14 @@ End Sub";
         public void UciUnit_CaseClauseTypeUnrecognizedSelectExpressionType(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Collection)
             Dim y As Long
             y = 8
             Select Case x(1)
-                Case <rangeExpr1>
+                Case {rangeExpr1}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'OK
                 Case Else
                 'OK
@@ -948,13 +971,11 @@ End Sub";
 
         End Sub";
 
-            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
-            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase("x.Item(2)", "55", "Long")]
+        [TestCase("x.Item(2)", "55", "Integer")]
         [TestCase("x.Item(2)", "45.6", "Double")]
         [TestCase("x.Item(2)", @"""Test""", "String")]
         [TestCase("x.Item(2)", "False", "Boolean")]
@@ -1009,7 +1030,7 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: triggersCaseElse ? 1 : 0);
         }
 
-        [TestCase("95", "55", "Long")]
+        [TestCase("95", "55", "Integer")]
         [TestCase("23.2", "45.6", "Double")]
         [TestCase(@"""Foo""", @"""Test""", "String")]
         [TestCase("x < 6", "x > 9", "Boolean")]
