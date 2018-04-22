@@ -213,7 +213,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestCase("x?Byte_-_2?Long", "x - 2", "Long")]
-        [TestCase("2_-_x?Byte?Long", "2 - x", "Long")]
+        [TestCase("2_-_x?Byte", "2 - x", "Integer")]
         [TestCase("x?Byte_+_2?Long", "x + 2", "Long")]
         [TestCase("x?Double_/_11.2?Double", "x / 11.2", "Double")]
         [TestCase("x?Double_*_11.2?Double", "x * 11.2", "Double")]

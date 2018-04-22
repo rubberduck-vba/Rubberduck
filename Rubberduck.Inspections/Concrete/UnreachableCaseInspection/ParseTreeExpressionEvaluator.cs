@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -74,14 +75,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Debug.Assert(isMathOp || isLogicOp);
 
             var opResultTypeName = isMathOp ? DetermineMathResultType(LHS, RHS) : Tokens.Boolean;
-            var operands = PrepareOperands(new string[] { LHS.ValueText, RHS.ValueText });
+            var operands = PrepareOperands(new IParseTreeValue[] { LHS, RHS });
 
             if (operands.Count == 2)
             {
                 if (isMathOp)
                 {
                     var mathResult = MathOpsBinary[opSymbol](operands[0], operands[1]);
-                    return _valueFactory.Create(mathResult.ToString(), opResultTypeName);
+                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), opResultTypeName);
                 }
                 var logicResult = LogicOpsBinary[opSymbol](operands[0], operands[1]);
                 return _valueFactory.Create(logicResult.ToString(), opResultTypeName);
@@ -95,13 +96,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var isLogicOp = LogicOpsUnary.ContainsKey(opSymbol);
             Debug.Assert(isMathOp || isLogicOp);
 
-            var operands = PrepareOperands(new string[] { value.ValueText });
+            var operands = PrepareOperands(new IParseTreeValue[] { value });
             if (operands.Count == 1)
             {
                 if (isMathOp)
                 {
                     var mathResult = MathOpsUnary[opSymbol](operands[0]);
-                    return _valueFactory.Create(mathResult.ToString(), requestedResultType);
+                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), requestedResultType);
                 }
 
                 //Unary Not (!) operator
@@ -110,7 +111,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     var bitwiseComplement = ~opValue;
                     return _valueFactory.Create(Convert.ToBoolean(bitwiseComplement).ToString(), requestedResultType);
                 }
-                else if  (value.TypeName.Equals(Tokens.Boolean))
+
+                if  (value.TypeName.Equals(Tokens.Boolean))
                 {
                     var logicResult = LogicOpsUnary[opSymbol](operands[0]);
                     return _valueFactory.Create(logicResult.ToString(), requestedResultType);
@@ -137,9 +139,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     parseArg = arg.Equals(Tokens.True) ? "-1" : "0";
                 }
 
-                if (double.TryParse(parseArg, out double result))
+                if (double.TryParse(parseArg, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
                 {
                     results.Add(result);
+                }
+            }
+            return results;
+        }
+
+        private static List<double> PrepareOperands(IParseTreeValue[] args)
+        {
+            var results = new List<double>();
+            foreach (var arg in args)
+            {
+                if (ParseTreeValue.TryConvertValue(arg, out double value))
+                {
+                    results.Add(value);
                 }
             }
             return results;
