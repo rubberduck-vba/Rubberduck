@@ -1,4 +1,5 @@
 
+using System.CodeDom;
 using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -1047,17 +1048,48 @@ End Sub";
         {
             const string code = @"
 Public Sub DoIt()
-    foo = ActiveSheet.Cells(ColumnIndex:=12).Value
+    Dim sht As WorkSheet
+
+    sht.Paste Link:=True
 End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(3, 30))
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(5, 16))
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
                 .AddProjectToVbeBuilder()
                 .Build();
 
             var state = MockParser.CreateAndParse(vbe.Object, serializedDeclarationsPath: null, testLibraries:new[] { "Excel.1.8.xml" });
+            
+            var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName=="Link" && p.ParentScope == "EXCEL.EXE;Excel.Worksheet.Paste");
+            var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
-            var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName=="ColumnIndex" && p.ParentScope == "EXCEL.EXE;Excel.Range._Default");
+            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+        }
+        [Category("Resolver")]
+        [Test]
+        [Ignore("Need to fix the default member access for function calls; see case #3937")]
+        public void Identify_NamedParameter_Parameter_FromExcel_DefaultAccess()
+        {
+            // Note that ColumnIndex is actually a parameter of the _Default default member
+            // of the Excel.Range object.
+            const string code = @"
+Public Sub DoIt()
+    Dim foo As Variant
+    Dim sht As WorkSheet
+
+    foo = sht.Cells(ColumnIndex:=12).Value
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 22))
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var state = MockParser.CreateAndParse(vbe.Object, serializedDeclarationsPath: null, testLibraries: new[] { "Excel.1.8.xml" });
+
+            var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName == "ColumnIndex" && p.ParentScope == "EXCEL.EXE;Excel.Range._Default");
             var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
