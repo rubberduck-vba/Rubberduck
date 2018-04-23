@@ -2,11 +2,11 @@
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
-    internal class ChildWindowFinder
+    public class ChildWindowFinder
     {
         private readonly string _caption;
 
-        internal ChildWindowFinder(string caption)
+        public ChildWindowFinder(string caption)
         {
             _caption = caption;
         }

@@ -11,15 +11,14 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Castle.Windsor;
-using Microsoft.Vbe.Interop;
 using NLog;
+using Rubberduck.Common;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Windows = Rubberduck.VBEditor.SafeComWrappers.VBA.Windows;
 
 namespace Rubberduck
 {
@@ -33,7 +32,7 @@ namespace Rubberduck
     // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class _Extension : IDTExtensibility2
     {
-        private IVBE _ide;
+        private IVBE _vbe;
         private IAddIn _addin;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
@@ -51,27 +50,16 @@ namespace Rubberduck
         {
             try
             {
-                if (Application is Microsoft.Vbe.Interop.VBE vbe1)
-                {
-                    _ide = new VBEditor.SafeComWrappers.VBA.VBE(vbe1);
-                    VBENativeServices.HookEvents(_ide);
-                    
-                    var addin = (AddIn)AddInInst;
-                    _addin = new VBEditor.SafeComWrappers.VBA.AddIn(addin) { Object = this };
+                _vbe = RootComWrapperFactory.GetVbeWrapper(Application);
+                _addin = RootComWrapperFactory.GetAddInWrapper(AddInInst);
+                _addin.Object = this;
+
+                VBENativeServices.HookEvents(_vbe);
 
 #if DEBUG
-                    // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-                    _addin.Object = new Rubberduck.VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI_Object(_ide);
+                // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+                _addin.Object = new VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI_Object(_vbe);
 #endif
-                }
-                else if (Application is Microsoft.VB6.Interop.VBIDE.VBE vbe2)
-                {
-                    _ide = new VBEditor.SafeComWrappers.VB6.VBE(vbe2);
-
-                    var addin = (Microsoft.VB6.Interop.VBIDE.AddIn) AddInInst;
-                    _addin = new VBEditor.SafeComWrappers.VB6.AddIn(addin);
-                }
-
 
                 switch (ConnectMode)
                 {
@@ -218,7 +206,7 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandlAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_ide, _addin, _initialSettings));
+                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings));
                 
                 _app = _container.Resolve<App>();
                 _app.Startup();
@@ -251,7 +239,11 @@ namespace Rubberduck
                 VBENativeServices.UnhookEvents();
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
-                Windows.ReleaseDockableHosts();
+
+                using (var windows = _vbe.Windows)
+                {
+                    windows.ReleaseDockableHosts();   
+                }
 
                 if (_app != null)
                 {
@@ -280,7 +272,7 @@ namespace Rubberduck
                     _logger.Log(LogLevel.Trace, "Disposing COM safe...");
                     ComSafeManager.DisposeAndResetComSafe();
                     _addin = null;
-                    _ide = null;
+                    _vbe = null;
 
                     _isInitialized = false;
                     _logger.Log(LogLevel.Info, "No exceptions were thrown.");

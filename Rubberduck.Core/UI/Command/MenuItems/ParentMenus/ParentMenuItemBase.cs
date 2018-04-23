@@ -4,8 +4,8 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
@@ -14,15 +14,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         private readonly string _key;
         private readonly int? _beforeIndex;
         private readonly IDictionary<IMenuItem, ICommandBarControl> _items;
-        private readonly ICommandBarButtonFactory _buttonFactory;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
-        protected ParentMenuItemBase(ICommandBarButtonFactory buttonFactory, string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
+
+        protected ParentMenuItemBase(string key, IEnumerable<IMenuItem> items, int? beforeIndex = null)
         {
             _key = key;
             _beforeIndex = beforeIndex;
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
-            _buttonFactory = buttonFactory;
         }
 
         public ICommandBarControls Parent { get; set; }
@@ -74,9 +72,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
-            Item = _beforeIndex.HasValue
-                ? CommandBarPopupFactory.Create(Parent, _beforeIndex.Value)
-                : CommandBarPopupFactory.Create(Parent);
+            Item =  Parent.AddPopup(_beforeIndex);                
 
             Item.Tag = _key;
 
@@ -161,7 +157,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             ICommandBarButton child;
             using (var controls = Item.Controls)
             {
-                child = _buttonFactory.Create(controls);
+                child = controls.AddButton();                
             }
             child.Picture = item.Image;
             child.Mask = item.Mask;
