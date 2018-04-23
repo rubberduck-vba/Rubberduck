@@ -911,6 +911,12 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="requestor">The object requesting a reparse.</param>
         public void OnParseRequested(object requestor)
         {
+            if (Status == ParserState.Busy)
+            {
+                _queuedRequestors.Add(requestor);
+                return;
+            }
+
             var handler = ParseRequest;
             if (handler != null && IsEnabled)
             {
@@ -976,6 +982,28 @@ namespace Rubberduck.Parsing.VBA
         {
             var key = module;
             _moduleStates[key].SetAttributesRewriter(attributesRewriter);
+        }
+
+        private List<object> _queuedRequestors => new List<object>();
+        public void SuspendParser(object requestor, Action busyAction)
+        {
+            if (Status != ParserState.Ready)
+            {
+                throw new InvalidOperationException("Cannot suspend the parser while it is running. Either cancel or wait for Ready status");
+            }
+
+            SetStatusAndFireStateChanged(requestor, ParserState.Busy, CancellationToken.None);
+            busyAction.Invoke();
+            if (_queuedRequestors.Any())
+            {
+                var lastRequestor = _queuedRequestors.Last();
+                _queuedRequestors.Clear();
+                OnParseRequested(lastRequestor);;
+            }
+            else
+            {
+                SetStatusAndFireStateChanged(requestor, ParserState.Ready, CancellationToken.None);
+            }
         }
 
         private bool _isDisposed;

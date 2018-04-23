@@ -38,7 +38,7 @@ namespace Rubberduck.UnitTesting
             _fakesFactory = fakesFactory;
             _typeLibApi = typeLibApi;
             _uiDispatcher = uiDispatcher;
-
+            
             _state.StateChanged += StateChangedHandler;
         }
 
@@ -89,66 +89,77 @@ namespace Rubberduck.UnitTesting
 
         private void RunInternal(IEnumerable<TestMethod> tests)
         {
-            var testMethods = tests as IList<TestMethod> ?? tests.ToList();
-            if (!testMethods.Any())
+            if (_state.Status != ParserState.Ready)
             {
                 return;
             }
 
-            var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
-            foreach (var module in modules)
+            _state.SuspendParser(this, () =>
             {
-                var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
-                var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
-
-                var capturedModule = module;
-                var moduleTestMethods = testMethods
-                    .Where(test => test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
-                                && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName == capturedModule.Key.ComponentName);
-
-                var fakes = _fakesFactory.Create();
-                Run(module.Key.FindModuleInitializeMethods(_state));
-                foreach (var test in moduleTestMethods)
+                var testMethods = tests as IList<TestMethod> ?? tests.ToList();
+                if (!testMethods.Any())
                 {
-                    // no need to run setup/teardown for ignored tests
-                    if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
-                    {
-                        test.UpdateResult(TestOutcome.Ignored);
-                        OnTestCompleted();
-                        continue;
-                    }
-
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
-
-                    try
-                    {
-                        fakes.StartTest();
-                        Run(testInitialize);
-                        test.Run();
-                        Run(testCleanup);
-                    }
-                    catch (COMException ex)
-                    {
-                        Logger.Error(ex, "Unexpected COM exception while running tests.", test.Declaration?.QualifiedName);
-                        test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
-                    }
-                    finally
-                    {
-                        fakes.StopTest();
-                    }
-
-                    stopwatch.Stop();
-                    test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
-
-                    OnTestCompleted();
-                    Model.AddExecutedTest(test);
+                    return;
                 }
-                Run(module.Key.FindModuleCleanupMethods(_state));
-            }
+
+                var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
+                foreach (var module in modules)
+                {
+                    var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
+                    var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
+
+                    var capturedModule = module;
+                    var moduleTestMethods = testMethods
+                        .Where(test =>
+                            test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
+                            && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName ==
+                            capturedModule.Key.ComponentName);
+
+                    var fakes = _fakesFactory.Create();
+                    RunInternal(module.Key.FindModuleInitializeMethods(_state));
+                    foreach (var test in moduleTestMethods)
+                    {
+                        // no need to run setup/teardown for ignored tests
+                        if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
+                        {
+                            test.UpdateResult(TestOutcome.Ignored);
+                            OnTestCompleted();
+                            continue;
+                        }
+
+                        var stopwatch = new Stopwatch();
+                        stopwatch.Start();
+
+                        try
+                        {
+                            fakes.StartTest();
+                            RunInternal(testInitialize);
+                            test.Run();
+                            RunInternal(testCleanup);
+                        }
+                        catch (COMException ex)
+                        {
+                            Logger.Error(ex, "Unexpected COM exception while running tests.",
+                                test.Declaration?.QualifiedName);
+                            test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
+                        }
+                        finally
+                        {
+                            fakes.StopTest();
+                        }
+
+                        stopwatch.Stop();
+                        test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
+
+                        OnTestCompleted();
+                        Model.AddExecutedTest(test);
+                    }
+                    RunInternal(module.Key.FindModuleCleanupMethods(_state));
+                }
+            });
         }
 
-        private void Run(IEnumerable<Declaration> members)
+        private void RunInternal(IEnumerable<Declaration> members)
         {
             var groupedMembers = members.GroupBy(m => m.ProjectName);
             foreach (var group in groupedMembers)

@@ -1827,4 +1827,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filter by Description:</value>
   </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Busy</value>
+  </data>
 </root>
