@@ -39,6 +39,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 ValueText = value.Replace("\"", "");
             }
+
             var conformToTypeName = _declaredType ?? _derivedType;
             ConformValueTextToType(conformToTypeName);
         }
@@ -47,7 +48,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public string TypeName => _declaredType ?? _derivedType ?? string.Empty;
 
-        public string ValueText { private set;  get; }
+        public string ValueText { private set; get; }
 
         public bool ParsesToConstantValue { set; get; }
 
@@ -61,8 +62,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var endingCharacter = inputValue.Last().ToString();
-            return SymbolList.TypeHintToTypeName.ContainsKey(endingCharacter) 
-                ? inputValue.Substring(0,inputValue.Length - 1)
+            return SymbolList.TypeHintToTypeName.ContainsKey(endingCharacter)
+                ? inputValue.Substring(0, inputValue.Length - 1)
                 : inputValue;
         }
 
@@ -78,7 +79,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             if (SymbolList.TypeHintToTypeName.TryGetValue(inputString.Last().ToString(), out string hintResult))
             {
                 derivedFromTypeHint = true;
-                return  hintResult;
+                return hintResult;
             }
 
             if (IsStringConstant(inputString))
@@ -156,7 +157,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (!valueString.StartsWith("&H"))
             {
-                return false; 
+                return false;
             }
 
             var hexString = valueString.Substring(2);
@@ -278,14 +279,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void ConformValueTextToType(string conformTypeName)
         {
-            if (ValueText.Equals(double.NaN.ToString(CultureInfo.InvariantCulture)) && !conformTypeName.Equals(Tokens.String))
+            if (ValueText.Equals(double.NaN.ToString(CultureInfo.InvariantCulture)) &&
+                !conformTypeName.Equals(Tokens.String))
             {
                 return;
             }
 
-            if (conformTypeName.Equals(Tokens.LongLong) || conformTypeName.Equals(Tokens.Long) || conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
+            if (conformTypeName.Equals(Tokens.LongLong) || conformTypeName.Equals(Tokens.Long) ||
+                conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
             {
-                if (TryConvertValue(this, out long newVal))
+                if (this.TryConvertValue(out long newVal))
                 {
                     ValueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -346,7 +349,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Double) || conformTypeName.Equals(Tokens.Single))
             {
-                if (TryConvertValue(this, out double newVal))
+                if (this.TryConvertValue(out double newVal))
                 {
                     ValueText = newVal.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
@@ -356,7 +359,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Boolean))
             {
-                if (TryConvertValue(this, out bool newVal))
+                if (this.TryConvertValue(out bool newVal))
                 {
                     ValueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -372,7 +375,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Currency))
             {
-                if (TryConvertValue(this, out decimal newVal))
+                if (this.TryConvertValue(out decimal newVal))
                 {
                     ValueText = newVal.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
@@ -380,8 +383,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
         }
+    }
 
-        public static bool TryConvertValue(IParseTreeValue parseTreeValue, out long value)
+    public static class ParseTreeValueExtensions
+    { 
+        public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out long value)
         {
             value = default;
             var valueText = parseTreeValue.ValueText;
@@ -400,7 +406,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }    
 
-        public static bool TryConvertValue(IParseTreeValue parseTreeValue, out double value)
+        public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out double value)
         {
             value = default;
             var valueText = parseTreeValue.ValueText;
@@ -417,7 +423,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertValue(IParseTreeValue parseTreeValue, out decimal value)
+        public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out decimal value)
         {
             value = default;
             var inspVal = parseTreeValue.ValueText;
@@ -434,7 +440,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertValue(IParseTreeValue parseTreeValue, out bool value)
+        public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out bool value)
         {
             value = default;
             var valueText = parseTreeValue.ValueText;
@@ -451,7 +457,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertValue(IParseTreeValue parseTreeValue, out string value)
+        public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out string value)
         {
             value = parseTreeValue.ValueText;
             return true;

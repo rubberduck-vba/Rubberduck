@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly IParseTreeValueFactory _valueFactory;
 
-        private static Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
+        private static readonly Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
         {
             [MathSymbols.MULTIPLY] = delegate (double LHS, double RHS) { return LHS * RHS; },
             [MathSymbols.DIVIDE] = delegate (double LHS, double RHS) { return LHS / RHS; },
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [MathSymbols.MODULO] = delegate (double LHS, double RHS) { return LHS % RHS; },
         };
 
-        private static Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
+        private static readonly Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
         {
             [LogicSymbols.EQ] = delegate (double LHS, double RHS) { return LHS == RHS; },
             [LogicSymbols.NEQ] = delegate (double LHS, double RHS) { return LHS != RHS; },
@@ -42,17 +42,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [LogicSymbols.IMP] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS).Equals(Convert.ToBoolean(RHS)) || Convert.ToBoolean(RHS); },
         };
 
-        private static Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
+        private static readonly Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
         {
             [MathSymbols.ADDITIVE_INVERSE] = delegate (double value) { return value * -1.0; }
         };
 
-        private static Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
+        private static readonly Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
         {
             [LogicSymbols.NOT] = delegate (double value) { return !(Convert.ToBoolean(value)); }
         };
 
-        private static List<string> ResultTypeRanking = new List<string>()
+        private static readonly List<string> ResultTypeRanking = new List<string>()
         {
             Tokens.Currency,
             Tokens.Double,
@@ -106,7 +106,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
 
                 //Unary Not (!) operator
-                if  (!value.TypeName.Equals(Tokens.Boolean) &&  ParseTreeValue.TryConvertValue(value, out long opValue))
+                if  (!value.TypeName.Equals(Tokens.Boolean) &&  value.TryConvertValue(out long opValue))
                 {
                     var bitwiseComplement = ~opValue;
                     return _valueFactory.Create(Convert.ToBoolean(bitwiseComplement).ToString(), requestedResultType);
@@ -152,7 +152,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var results = new List<double>();
             foreach (var arg in args)
             {
-                if (ParseTreeValue.TryConvertValue(arg, out double value))
+                if (arg.TryConvertValue(out double value))
                 {
                     results.Add(value);
                 }

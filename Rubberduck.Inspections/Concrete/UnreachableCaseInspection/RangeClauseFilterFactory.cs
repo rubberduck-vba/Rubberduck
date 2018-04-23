@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (IntegralNumberExtents.Keys.Contains(typeName))
             {
-                var integerTypeFilter = new RangeClauseFilter<long>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+                var integerTypeFilter = new RangeClauseFilter<long>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
                 var minExtent = valueFactory.Create(IntegralNumberExtents[typeName].MinValue.ToString(), typeName);
                 var maxExtent = valueFactory.Create(IntegralNumberExtents[typeName].MaxValue.ToString(), typeName);
                 integerTypeFilter.AddExtents(minExtent, maxExtent);
@@ -56,7 +56,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
             {
-                var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+                var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
                 if (typeName.Equals(Tokens.Single))
                 {
                     var minExtent = valueFactory.Create(CompareExtents.SINGLEMIN.ToString(CultureInfo.InvariantCulture), typeName);
@@ -68,20 +68,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (typeName.Equals(Tokens.Boolean))
             {
-                var boolTypeFilter = new RangeClauseFilter<bool>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+                var boolTypeFilter = new RangeClauseFilter<bool>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
                 return boolTypeFilter;
             }
 
             if (typeName.Equals(Tokens.Currency))
             {
-                var decimalTypeFilter = new RangeClauseFilter<decimal>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+                var decimalTypeFilter = new RangeClauseFilter<decimal>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
                 var minExtent = valueFactory.Create(CompareExtents.CURRENCYMIN.ToString(CultureInfo.InvariantCulture), typeName);
                 var maxExtent = valueFactory.Create(CompareExtents.CURRENCYMAX.ToString(CultureInfo.InvariantCulture), typeName);
                 decimalTypeFilter.AddExtents(minExtent, maxExtent);
                 return decimalTypeFilter;
             }
 
-            var filter = new RangeClauseFilter<string>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+            var filter = new RangeClauseFilter<string>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
             return filter;
         }
 
