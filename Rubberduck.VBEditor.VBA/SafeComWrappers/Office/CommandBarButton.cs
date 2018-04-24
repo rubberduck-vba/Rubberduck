@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using MSO = Microsoft.Office.Core;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -86,6 +87,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         public Image Picture { get; set; }
         public Image Mask { get; set; }
+        public LowColorImage LowColorImage { get; set; }
 
         public void ApplyIcon()
         {

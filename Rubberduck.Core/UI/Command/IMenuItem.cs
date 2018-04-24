@@ -23,5 +23,6 @@ namespace Rubberduck.UI.Command
         CommandBase Command { get; }
         Image Image { get; }
         Image Mask { get; }
+        byte[] LowColorImageBytes { get; }
     }
 }

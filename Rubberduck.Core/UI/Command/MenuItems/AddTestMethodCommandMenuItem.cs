@@ -16,5 +16,6 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override Image Image => Resources.flask;
         public override Image Mask => Resources.flask_mask;
+        public override byte[] LowColorImageBytes => Resources.Flask_LowColor;
     }
 }

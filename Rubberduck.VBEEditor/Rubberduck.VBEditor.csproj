@@ -62,6 +62,7 @@
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />
+    <Compile Include="Utility\LowColorImage.cs" />
     <Compile Include="Utility\UiContext.cs" />
     <Compile Include="VBERuntime\IVBERuntime.cs" />
     <Compile Include="VBERuntime\Settings\IVBESettings.cs" />

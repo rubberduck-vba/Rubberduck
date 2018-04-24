@@ -1,11 +1,12 @@
 extern alias Office_v8;
 using System;
+using System.Diagnostics;
 using System.Drawing;
-using System.Runtime.InteropServices;
+using System.IO;
 using System.Windows.Forms;
-using Microsoft.CSharp.RuntimeBinder;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using MSO = Office_v8::Office;
 using VB = Microsoft.Vbe.Interop.VB6;
 
@@ -17,7 +18,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
         private readonly CommandBarControl _control;
         private readonly IVBE _vbe;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public const bool AddCommandBarControlsTemporarily = false;        
+        public const bool AddCommandBarControlsTemporarily = false;
 
         // Command bar click event is sourced from VBE.Events.CommandBarEvents[index]
         // where index is the command bar button COM object.
@@ -93,6 +94,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 
         public Image Picture { get; set; }
         public Image Mask { get; set; }
+        public LowColorImage LowColorImage { get; set; }
+
 
         public void ApplyIcon()
         {
@@ -102,13 +105,39 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
             }
 
             Button.FaceId = 0;
-            if (Picture == null || Mask == null)
+            if (!(LowColorImage?.IsValid ?? false))
             {
                 return;
             }
 
-            // TODO - find a solution that doesn't rely on .Picture (unavailable) or .PasteFace (no-op, exception-prone and destructive)
-            // For now, menu and commandbar icons will be absent in VB6.
+            try
+            {
+                var clipboardData = new DataObject();
+
+                using (var buttonFaceStream = new MemoryStream(LowColorImage.ButtonFace))
+                using (var buttonMaskStream = new MemoryStream(LowColorImage.ButtonMask))
+                using (var deviceIndependentBitmapStream = new MemoryStream(LowColorImage.DeviceIndependentBitmap))
+                using (var systemDrawingBitmapStream = new MemoryStream(LowColorImage.SystemDrawingBitmap))
+                using (var bitmapStream = new MemoryStream(LowColorImage.Bitmap))
+                using (var format17Stream = new MemoryStream(LowColorImage.Format17))
+                {
+                    clipboardData.SetData("Toolbar Button Face", buttonFaceStream);
+                    clipboardData.SetData("Toolbar Button Mask", buttonMaskStream);
+                    clipboardData.SetData("DeviceIndependentBitmap", deviceIndependentBitmapStream);
+                    clipboardData.SetData("System.Drawing.Bitmap", new Bitmap(systemDrawingBitmapStream));
+                    clipboardData.SetData("Bitmap", new Bitmap(bitmapStream));
+                    clipboardData.SetData("Format17", format17Stream);
+
+                    Clipboard.SetDataObject(clipboardData);
+                    Button.PasteFace();
+
+                }
+            }
+            catch (Exception exception)
+            {
+                // Cosmetic defect, assert and move on
+                Debug.Assert(false, "Unable to paste low color image", exception.ToString());
+            }                
         }
 
         private static Image CreateTransparentImage(Image image)

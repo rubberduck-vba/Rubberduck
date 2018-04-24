@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -13,6 +14,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         ButtonStyle Style { get; set; }
         Image Picture { get; set; }
         Image Mask { get; set; }
+        LowColorImage LowColorImage { get; set; }
         void ApplyIcon();
     }
 }

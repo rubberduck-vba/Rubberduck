@@ -16,5 +16,6 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override Image Image => Resources.flask_exclamation;
         public override Image Mask => Resources.flask_exclamation_mask;
+        public override byte[] LowColorImageBytes => Resources.Flask_Exclamation__LowColor;
     }
 }
