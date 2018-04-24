@@ -182,7 +182,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         void Placeholder12();
         void CompileComponent();
         void Placeholder14();
-        void Placeholder15();
+        IDispatch GetStdModAccessor()
         void Placeholder16();
         void Placeholder17();
         void Placeholder18();
@@ -202,39 +202,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         void Placeholder32();
         void Placeholder33();
         void GetSomeRelatedTypeInfoPtrs(out IntPtr A, out IntPtr B);        // returns 2 TypeInfos, seemingly related to this ITypeInfo, but slightly different.
-    }
-
-    /// <summary>
-    /// An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModAccessor
-    /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221696(v=vs.85).aspx
-    /// </summary>
-    /// <remarks>This extended interface is known to be supported since the very earliest version of VBA6</remarks>
-    [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVBETypeInfo
-    {
-        void GetTypeAttr(out IntPtr ppTypeAttr);
-        void GetTypeComp(out IntPtr ppTComp);
-        void GetFuncDesc(int index, out IntPtr ppFuncDesc);
-        void GetVarDesc(int index, out IntPtr ppVarDesc);
-        void GetNames(int memid, [Out] out string rgBstrNames, int cMaxNames, out int pcNames);
-        void GetRefTypeOfImplType(int index, out int href);
-        void GetImplTypeFlags(int index, out ComTypes.IMPLTYPEFLAGS pImplTypeFlags);
-        void GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId);
-        void Invoke(object pvInstance, int memid, short wFlags, ref ComTypes.DISPPARAMS pDispParams, IntPtr pVarResult, IntPtr pExcepInfo, out int puArgErr);
-        void GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile);
-        void GetDllEntry(int memid, ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal);
-        void GetRefTypeInfo(int hRef, out IntPtr ppTI);
-        void AddressOfMember(int memid, ComTypes.INVOKEKIND invKind, out IntPtr ppv);
-        void CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj);
-        void GetMops(int memid, out string pBstrMops);
-        void GetContainingTypeLib(out IntPtr ppTLB, out int pIndex);
-        void ReleaseTypeAttr(IntPtr pTypeAttr);
-        void ReleaseFuncDesc(IntPtr pFuncDesc);
-        void ReleaseVarDesc(IntPtr pVarDesc);
-
-        void Placeholder1();
-        IDispatch GetStdModAccessor();            // a handy extra vtable entry we can use to invoke members in standard modules.
     }
 
     /// <summary>
