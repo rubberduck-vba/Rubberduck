@@ -102,6 +102,7 @@
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
+    <Compile Include="ParserState\ParserStateTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Mocks\MockExtentions.cs" />
