@@ -182,7 +182,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         void Placeholder12();
         void CompileComponent();
         void Placeholder14();
-        IDispatch GetStdModAccessor()
+        IDispatch GetStdModAccessor();
         void Placeholder16();
         void Placeholder17();
         void Placeholder18();
