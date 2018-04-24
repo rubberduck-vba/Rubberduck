@@ -2,11 +2,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using NLog;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
@@ -61,23 +65,27 @@ namespace Rubberduck.Inspections
                 {
                     return new IInspectionResult[] { };
                 }
+                token.ThrowIfCancellationRequested();
 
                 state.OnStatusMessageUpdate(RubberduckUI.CodeInspections_Inspecting);
                 var allIssues = new ConcurrentBag<IInspectionResult>();
+                token.ThrowIfCancellationRequested();
 
                 var config = _configService.LoadConfiguration();
                 UpdateInspectionSeverity(config);
+                token.ThrowIfCancellationRequested();
 
                 var parseTreeInspections = _inspections
                     .Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow)
                     .OfType<IParseTreeInspection>()
                     .ToArray();
+                token.ThrowIfCancellationRequested();
 
-                foreach(var listener in parseTreeInspections.Select(inspection => inspection.Listener))
+                foreach (var listener in parseTreeInspections.Select(inspection => inspection.Listener))
                 {
                     listener.ClearContexts();
                 }
-                
+
                 // Prepare ParseTreeWalker based inspections
                 var passes = Enum.GetValues(typeof (ParsePass)).Cast<ParsePass>();
                 foreach (var parsePass in passes)
@@ -91,8 +99,14 @@ namespace Rubberduck.Inspections
                         LogManager.GetCurrentClassLogger().Warn(e);
                     }
                 }
+                token.ThrowIfCancellationRequested();
 
-                var inspectionsToRun = _inspections.Where(inspection => inspection.Severity != CodeInspectionSeverity.DoNotShow);
+                var inspectionsToRun = _inspections.Where(inspection =>
+                    inspection.Severity != CodeInspectionSeverity.DoNotShow &&
+                    RequiredLibrariesArePresent(inspection, state) &&
+                    RequiredHostIsPresent(inspection));
+
+                token.ThrowIfCancellationRequested();
 
                 try
                 {
@@ -102,12 +116,15 @@ namespace Rubberduck.Inspections
                 {
                     if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                     {
-                        LogManager.GetCurrentClassLogger().Debug("Inspections got canceled.");
+                        //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                        throw exception.InnerException ?? exception;
                     }
-                    else
-                    {
-                        LogManager.GetCurrentClassLogger().Error(exception);
-                    }
+
+                    LogManager.GetCurrentClassLogger().Error(exception);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception e)
                 {
@@ -126,6 +143,27 @@ namespace Rubberduck.Inspections
                 return results;
             }
 
+            private static bool RequiredLibrariesArePresent(IInspection inspection, RubberduckParserState state)
+            {
+                var requiredLibraries = inspection.GetType().GetCustomAttributes<RequiredLibraryAttribute>().ToArray();
+
+                if (!requiredLibraries.Any())
+                {
+                    return true;
+                }
+
+                var projectNames = state.DeclarationFinder.Projects.Where(project => !project.IsUserDefined).Select(project => project.ProjectName).ToArray();
+
+                return requiredLibraries.All(library => projectNames.Contains(library.LibraryName));
+            }
+
+            private static bool RequiredHostIsPresent(IInspection inspection)
+            {
+                var requiredHost = inspection.GetType().GetCustomAttribute<RequiredHostAttribute>();
+
+                return requiredHost == null || requiredHost.HostNames.Contains(Path.GetFileName(Application.ExecutablePath).ToUpper());
+            }
+
             private static void RunInspectionsInParallel(IEnumerable<IInspection> inspectionsToRun,
                 ConcurrentBag<IInspectionResult> allIssues, CancellationToken token)
             {
@@ -137,20 +175,26 @@ namespace Rubberduck.Inspections
 
                 Parallel.ForEach(inspectionsToRun,
                     options,
-                    inspection => RunInspection(inspection, allIssues)
+                    inspection => RunInspection(inspection, allIssues, token)
                 );
             }
 
-            private static void RunInspection(IInspection inspection, ConcurrentBag<IInspectionResult> allIssues)
+            private static void RunInspection(IInspection inspection, ConcurrentBag<IInspectionResult> allIssues, CancellationToken token)
             {
                 try
                 {
-                    var inspectionResults = inspection.GetInspectionResults();
+                    var inspectionResults = inspection.GetInspectionResults(token);
+
+                    token.ThrowIfCancellationRequested();
 
                     foreach (var inspectionResult in inspectionResults)
                     {
                         allIssues.Add(inspectionResult);
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception e)
                 {

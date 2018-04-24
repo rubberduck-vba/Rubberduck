@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
@@ -19,7 +20,7 @@ namespace RubberduckTests.Inspections
             {
 
                 var inspection = new EncapsulatePublicFieldInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -38,7 +39,7 @@ Public buzz As Integer, _
             {
 
                 var inspection = new EncapsulatePublicFieldInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(3, inspectionResults.Count());
             }
@@ -55,7 +56,7 @@ Public buzz As Integer, _
             {
 
                 var inspection = new EncapsulatePublicFieldInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -73,7 +74,7 @@ End Sub";
             {
 
                 var inspection = new EncapsulatePublicFieldInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
@@ -91,7 +92,7 @@ Public fizz As Boolean";
             {
 
                 var inspection = new EncapsulatePublicFieldInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }

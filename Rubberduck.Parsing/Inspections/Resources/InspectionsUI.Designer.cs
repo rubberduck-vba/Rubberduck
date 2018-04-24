@@ -61,6 +61,15 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
+        /// </summary>
+        public static string AccessSheetUsingCodeNameQuickFix {
+            get {
+                return ResourceManager.GetString("AccessSheetUsingCodeNameQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add step.
         /// </summary>
         public static string AddStepOneQuickFix {
@@ -358,7 +367,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Consider the explicit use of &apos;as {0}&apos; instead of &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Consider the explicit use of &apos;As {0}&apos; instead of &apos;{1}&apos;.
         /// </summary>
         public static string DefTypeStatementInspectionResultFormat {
             get {
@@ -1951,7 +1960,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove step.
+        ///   Looks up a localized string similar to Remove redundant &apos;Step&apos; clause.
         /// </summary>
         public static string RemoveStepOneQuickFix {
             get {
@@ -2113,6 +2122,33 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Excel already defines a globally scoped object variable with this reference. Consider using the sheet&apos;s &apos;CodeName&apos; property..
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionMeta {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statically accessible sheet accessed using string.
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionName {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statically accessible sheet can be referred to by its code name.
+        /// </summary>
+        public static string SheetAccessedUsingStringInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("SheetAccessedUsingStringInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specify Public access modifier explicitly.
         /// </summary>
         public static string SpecifyExplicitPublicModifierQuickFix {
@@ -2149,7 +2185,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Step not specified.
+        ///   Looks up a localized string similar to &apos;Step&apos; not specified.
         /// </summary>
         public static string StepIsNotSpecifiedInspectionResultFormat {
             get {
@@ -2307,6 +2343,60 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         public static string UnhandledOnErrorResumeNextInspectionResultFormat {
             get {
                 return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionResultFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreachable Case Else: All possible values are handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_CaseElse {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_CaseElse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Type: Case Statement cannot be evaluated as the Select Statement Type.
+        /// </summary>
+        public static string UnreachableCaseInspection_TypeMismatch {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_TypeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unreachable: Case Statement is handled by prior Case statement(s).
+        /// </summary>
+        public static string UnreachableCaseInspection_Unreachable {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detects Case Clauses that will never execute. .
+        /// </summary>
+        public static string UnreachableCaseInspectionMeta {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Case Clause(s) cannot be reached.
+        /// </summary>
+        public static string UnreachableCaseInspectionName {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Case Clause &apos;{0}&apos; cannot be reached.
+        /// </summary>
+        public static string UnreachableCaseInspectionResultFormat {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspectionResultFormat", resourceCulture);
             }
         }
         

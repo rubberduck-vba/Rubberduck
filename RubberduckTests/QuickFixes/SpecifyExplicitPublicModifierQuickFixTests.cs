@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -30,7 +31,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new SpecifyExplicitPublicModifierQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());

@@ -52,7 +52,7 @@ End Sub";
                 }
 
                 var inspection = new UntypedFunctionUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new UntypedFunctionUsageQuickFix(state).Fix(inspectionResults.First());
 

@@ -1,12 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace RubberduckTests.Mocks
 {
@@ -18,6 +17,7 @@ namespace RubberduckTests.Mocks
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
+        private readonly Mock<IVBEEvents> _vbeEvents;
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
         public static readonly string LibraryPathVBA = @"C:\PROGRA~2\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
@@ -190,6 +190,7 @@ namespace RubberduckTests.Mocks
             vbe.SetupProperty(m => m.ActiveVBProject);
             
             vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane?.CodeModule?.Parent);
+            vbe.Setup(m => m.GetActiveSelection()).Returns(() => vbe.Object.ActiveCodePane?.GetQualifiedSelection());
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
             var mainWindow = new Mock<IWindow>();

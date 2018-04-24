@@ -11,6 +11,7 @@ namespace RubberduckTests.Settings
     public class HotkeyFactoryTests
     {
         [Test]
+        [Category("Hotkeys")]
         public void CreatingHotkeyReturnsNullWhenNoSettingProvided()
         {
             var factory = new HotkeyFactory(null);
@@ -21,6 +22,7 @@ namespace RubberduckTests.Settings
         }
 
         [Test]
+        [Category("Hotkeys")]
         public void CreatingHotkeyReturnsNullWhenNoMatchingCommandExists()
         {
             var mockCommand = new Mock<CommandBase>(null).Object;
@@ -33,6 +35,7 @@ namespace RubberduckTests.Settings
         }
 
         [Test]
+        [Category("Hotkeys")]
         public void CreatingHotkeyReturnsCorrectResult()
         {
             var mockCommand = new Mock<CommandBase>(null).Object;

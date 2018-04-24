@@ -75,8 +75,24 @@
     <Compile Include="Concrete\StopKeywordInspection.cs" />
     <Compile Include="Concrete\LineLabelNotUsedInspection.cs" />
     <Compile Include="Concrete\IntegerDataTypeInspection.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValueFactory.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\ContextWrapperBase.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionFactoryProvider.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseContextWrapper.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseContextWrapperFactory.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\SelectCaseStmtContextWrapper.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeExpressionEvaluator.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeVisitorResults.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValueVisitor.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseFilterFactory.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspection.cs" />
     <Compile Include="Concrete\ShadowedDeclarationInspection.cs" />
     <Compile Include="Concrete\UnhandledOnErrorResumeNextInspection.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseFilter.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValue.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValueVisitorFactory.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\SelectCaseStmtContextWrapperFactory.cs" />
+    <Compile Include="Concrete\SheetAccessedUsingStringInspection.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />
@@ -119,6 +135,7 @@
     <Compile Include="Concrete\ProcedureCanBeWrittenAsFunctionInspection.cs" />
     <Compile Include="Concrete\ProcedureNotUsedInspection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFix.cs" />
     <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
     <Compile Include="QuickFixes\AddStepOneQuickFix.cs" />
@@ -181,10 +198,9 @@
     <Compile Include="Concrete\WriteOnlyPropertyInspection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RetailCoder.VBE\Rubberduck.csproj">
-      <Project>{20589de8-432e-4359-9232-69eb070b7185}</Project>
-      <Name>Rubberduck</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
+      <Project>{A1587EAC-7B54-407E-853F-4C7493D0323E}</Project>
+      <Name>Rubberduck.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
@@ -217,12 +233,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if "$(Configuration)" == "Debug" (
-   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Debug" /Y
-)
-if "$(Configuration)" == "Release" (
-   copy "$(TargetPath)" "$(SolutionDir)RetailCoder.VBE\bin\Release" /Y
-)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -43,7 +43,7 @@ End Sub";
                 }
 
                 var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
@@ -82,7 +82,7 @@ End Sub";
                 }
 
                 var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }

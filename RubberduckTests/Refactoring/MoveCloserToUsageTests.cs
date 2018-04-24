@@ -35,8 +35,7 @@ End Sub";
 bar = True
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -73,8 +72,7 @@ End Sub";
 bar = True
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -160,8 +158,7 @@ End Sub";
 bar = True
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -200,8 +197,7 @@ End Sub";
 bar = True
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -240,9 +236,8 @@ Private Sub Foo()
     Dim bat As Boolean
 bat = True
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -282,8 +277,7 @@ Private Sub Foo()
 bar = 3
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -323,8 +317,7 @@ Private Sub Foo()
 bat = True
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -363,9 +356,8 @@ Private Sub Foo()
     Dim bay As Date
 bay = #1/13/2004#
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -406,9 +398,8 @@ End Sub";
     Dim bar As Integer
 bar = 3
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -450,8 +441,7 @@ End Sub";
 bat = True
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -493,8 +483,7 @@ End Sub";
 bay = #1/13/2004#
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -520,8 +509,7 @@ Private Sub Foo()
 End Sub";
             var selection = new Selection(1, 1);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -559,8 +547,7 @@ Private Sub Bar()
 End Sub";
             var selection = new Selection(1, 1);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -600,8 +587,7 @@ bat = bar
 End Sub";
             var selection = new Selection(1, 1);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -637,9 +623,8 @@ End Sub
 Sub Baz(ByVal bat As Boolean)
 End Sub";
             var selection = new Selection(1, 1);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -679,9 +664,8 @@ End Sub
 Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean)
 End Sub";
             var selection = new Selection(1, 1);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var  component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -713,9 +697,8 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
                 @"Private Sub Foo(): Dim bar As Boolean
 Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -758,9 +741,8 @@ End Sub
 Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -797,9 +779,8 @@ SomeSub someParam:=foo: End Sub
 Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -824,9 +805,8 @@ End Sub";
 Private Sub Foo()
     bar = True
 End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+           
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -858,8 +838,7 @@ Private Sub Foo()
 End Sub";
             var selection = new Selection(2, 15);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -878,6 +857,77 @@ End Sub";
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());
+            }
+        }
+
+        [Test]
+        [Category("Move Closer")]
+        [Category("Refactorings")]
+        public void MoveCloser_RespectsObjectProperties_InUsages()
+        {
+            string inputClassCode =
+@"
+Option Explicit
+
+Private _name As Long
+Private _myOtherProperty As Long
+
+Public Property Set Name(name As String)
+    _name = name
+End Property
+
+Public Property Get Name() As String
+    Name = _name
+End Property
+
+Public Property Set OtherProperty(val As Long)
+    _myOtherProperty = val
+End Property
+
+Public Property Get OtherProperty() As Long
+    OtherProperty = _myOtherProperty
+End Property
+
+";
+            string inputCode = @"Private foo As Class1
+
+
+Public Sub Test()
+    Debug.Print ""Some statements between""
+    Debug.Print ""Declaration and first usage!""
+    Set foo = new Class1
+    foo.Name = ""FooName""
+    foo.OtherProperty = 1626
+End Sub";
+
+            var selection = new Selection(1, 1);
+
+            const string expected = @"Public Sub Test()
+    Debug.Print ""Some statements between""
+    Debug.Print ""Declaration and first usage!""
+    Dim foo As Class1
+Set foo = new Class1
+    foo.Name = ""FooName""
+    foo.OtherProperty = 1626
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected);
+            project.AddComponent("Class1", ComponentType.ClassModule, inputClassCode);
+            project.AddComponent("Module1", ComponentType.StandardModule, inputCode);
+            builder = builder.AddProject(project.Build());
+            var vbe = builder.Build();
+
+            var testComponent = project.MockComponents.Find(mc => mc.Object.Name.Equals("Module1"));
+            var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(testComponent.Object), selection);
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var messageBox = new Mock<IMessageBox>();
+                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
+                refactoring.Refactor(qualifiedSelection);
+                var rewriter = state.GetRewriter(testComponent.Object);
+                Assert.AreEqual(expected, rewriter.GetText());
             }
         }
     }

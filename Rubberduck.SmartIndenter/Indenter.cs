@@ -25,7 +25,7 @@ namespace Rubberduck.SmartIndenter
         {
             using (var pane = _vbe.ActiveCodePane)
             {
-                if (pane == null)
+                if (pane == null || pane.IsWrappingNullReference)
                 {
                     return;
                 }
@@ -59,12 +59,14 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         public void IndentCurrentModule()
         {
-            var pane = _vbe.ActiveCodePane;
-            if (pane == null)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                return;
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+                Indent(pane.CodeModule.Parent);
             }
-            Indent(pane.CodeModule.Parent);
         }
 
         /// <summary>

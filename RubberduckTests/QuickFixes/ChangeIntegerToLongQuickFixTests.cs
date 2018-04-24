@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -28,7 +29,7 @@ End Function";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -53,7 +54,7 @@ End Function";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -78,7 +79,7 @@ End Property";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -103,7 +104,7 @@ End Property";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -128,7 +129,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -153,7 +154,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -180,7 +181,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -207,7 +208,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -234,7 +235,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -261,7 +262,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -288,7 +289,7 @@ End Type";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -315,7 +316,7 @@ End Type";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -358,7 +359,7 @@ End Function";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -406,7 +407,7 @@ End Function";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -454,7 +455,7 @@ End Function";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -502,7 +503,7 @@ End Function";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -550,7 +551,7 @@ End Property";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -598,7 +599,7 @@ End Property";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -646,7 +647,7 @@ End Property";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -694,7 +695,7 @@ End Property";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -742,7 +743,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -790,7 +791,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -838,7 +839,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -886,7 +887,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -934,7 +935,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(inspectionResults.First());
 
@@ -982,7 +983,7 @@ End Sub";
             {
 
                 var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ChangeIntegerToLongQuickFix(state).Fix(
                     inspectionResults.First(

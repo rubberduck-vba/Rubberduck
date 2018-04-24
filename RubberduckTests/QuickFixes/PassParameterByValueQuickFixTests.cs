@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -27,7 +28,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -50,7 +51,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -73,7 +74,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -98,7 +99,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -123,7 +124,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -181,7 +182,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
                 Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
@@ -239,7 +240,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode1, state.GetRewriter(component1).GetText());
                 Assert.AreEqual(expectedCode2, state.GetRewriter(component2).GetText());
@@ -267,7 +268,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -293,7 +294,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -329,7 +330,7 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new PassParameterByValueQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }

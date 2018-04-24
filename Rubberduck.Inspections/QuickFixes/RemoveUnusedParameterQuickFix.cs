@@ -29,8 +29,7 @@ namespace Rubberduck.Inspections.QuickFixes
             using (var dialog = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {
                 var refactoring = new RemoveParametersRefactoring(_vbe,
-                    new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox),
-                    _state.ProjectsProvider);
+                    new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox));
 
                 refactoring.QuickFix(_state, result.QualifiedSelection);
             }

@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.ComReflection;
+﻿using System;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class ProjectDeclaration : Declaration
+    public sealed class ProjectDeclaration : Declaration, IDisposable
     {
         private readonly List<ProjectReference> _projectReferences;
 
@@ -60,7 +61,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <remarks>
         /// This property is intended to differenciate identically-named VBProjects.
         /// </remarks>
-        public override IVBProject Project => _project;
+        public override IVBProject Project => IsDisposed ? null : _project;
 
         public void AddProjectReference(string referencedProjectId, int priority)
         {
@@ -89,9 +90,17 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return _displayName;
                 }
-                _displayName = _project != null ? _project.ProjectDisplayName : string.Empty;
+                _displayName = !IsDisposed && _project != null ? _project.ProjectDisplayName : string.Empty;
                 return _displayName;
             }
+        }
+
+
+        public bool IsDisposed { get; private set; }
+
+        public void Dispose()
+        {
+            IsDisposed = true;
         }
     }
 }

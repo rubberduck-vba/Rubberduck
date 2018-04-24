@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Diagnostics;
+using System.Threading;
 using NLog;
 
 namespace Rubberduck.Inspections.Abstract
@@ -156,8 +157,9 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// A method that inspects the parser state and returns all issues it can find.
         /// </summary>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public IEnumerable<IInspectionResult> GetInspectionResults()
+        public IEnumerable<IInspectionResult> GetInspectionResults(CancellationToken token)
         {
             var _stopwatch = new Stopwatch();
             _stopwatch.Start();

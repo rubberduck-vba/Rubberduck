@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -27,7 +28,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -54,7 +55,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotAssignedInspection(state);
-                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnassignedIdentifierQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -80,7 +81,7 @@ End Sub";
 
                 var inspection = new VariableNotAssignedInspection(state);
                 new RemoveUnassignedIdentifierQuickFix(state).Fix(
-                    inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
+                    inspection.GetInspectionResults(CancellationToken.None).Single(s => s.Target.IdentifierName == "var2"));
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
@@ -107,7 +108,7 @@ End Sub";
 
                 var inspection = new VariableNotAssignedInspection(state);
                 new RemoveUnassignedIdentifierQuickFix(state).Fix(
-                    inspection.GetInspectionResults().Single(s => s.Target.IdentifierName == "var2"));
+                    inspection.GetInspectionResults(CancellationToken.None).Single(s => s.Target.IdentifierName == "var2"));
 
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }

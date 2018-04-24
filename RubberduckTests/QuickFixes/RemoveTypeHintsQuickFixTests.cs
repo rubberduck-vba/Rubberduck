@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
@@ -25,7 +26,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -52,7 +53,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -79,7 +80,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -106,7 +107,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -133,7 +134,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -160,7 +161,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -191,7 +192,7 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -222,7 +223,7 @@ End Property";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -253,7 +254,7 @@ End Sub";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -284,7 +285,7 @@ End Sub";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -315,7 +316,7 @@ End Sub";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)

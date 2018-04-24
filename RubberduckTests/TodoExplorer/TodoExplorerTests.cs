@@ -34,7 +34,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -69,7 +69,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -104,7 +104,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TO-DO", "N@TE", "BUG " });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -138,7 +138,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -172,7 +172,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -206,11 +206,6 @@ namespace RubberduckTests.TodoExplorer
 
             var userSettings = new UserSettings(null, null, todoSettings, null, null, null, null);
             return new Configuration(userSettings);
-        }
-
-        private Mock<IOperatingSystem> GetOperatingSystemMock()
-        {
-            return new Mock<IOperatingSystem>();
         }
     }
 }
