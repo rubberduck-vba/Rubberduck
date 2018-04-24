@@ -120,6 +120,7 @@ namespace Rubberduck.Parsing.VBA
             _projectRepository = projectRepository;
             _declarationFinderFactory = declarationFinderFactory;
             _vbeEvents = vbeEvents;
+            _queuedRequestors = new List<object>();
 
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
@@ -984,7 +985,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[key].SetAttributesRewriter(attributesRewriter);
         }
 
-        private List<object> _queuedRequestors => new List<object>();
+        private List<object> _queuedRequestors;
         public void SuspendParser(object requestor, Action busyAction)
         {
             if (Status != ParserState.Ready)
@@ -998,6 +999,9 @@ namespace Rubberduck.Parsing.VBA
             {
                 var lastRequestor = _queuedRequestors.Last();
                 _queuedRequestors.Clear();
+                // don't fire the event; we just need to make it ready
+                // to ensure it don't go into the busy subroutine.
+                _status = ParserState.Ready;
                 OnParseRequested(lastRequestor);;
             }
             else
