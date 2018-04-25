@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing
             { "%", Tokens.Integer },
             { "&", Tokens.Long },
             { "^", Tokens.LongLong },
-            { "@", Tokens.Decimal },
+            { "@", Tokens.Currency },
             { "!", Tokens.Single },
             { "#", Tokens.Double },
             { "$", Tokens.String }

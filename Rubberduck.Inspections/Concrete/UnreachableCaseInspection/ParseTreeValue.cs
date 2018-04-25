@@ -93,11 +93,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return Tokens.Double;
                 }
-
-                if (decimal.TryParse(inputString, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
-                {
-                    return Tokens.Currency;
-                }
             }
 
             if (inputString.Count(ch => ch.Equals('E')) == 1)

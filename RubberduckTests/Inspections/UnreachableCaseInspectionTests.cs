@@ -157,13 +157,13 @@ namespace RubberduckTests.Inspections
         [TestCase(@"""What#""", "String", "What#")]
         [TestCase("What%", "Integer", "What")]
         [TestCase("What&", "Long", "What")]
-        [TestCase("What@", "Decimal", "What")]
+        [TestCase("What@", "Currency", "What")]
         [TestCase("What!", "Single", "What")]
         [TestCase("What#", "Double", "What")]
         [TestCase("What$", "String", "What")]
         [TestCase("345%", "Integer", "345")]
         [TestCase("45#", "Double", "45")]
-        [TestCase("45@", "Decimal", "45")]
+        [TestCase("45@", "Currency", "45")]
         [TestCase("45!", "Single", "45")]
         [TestCase("45^", "LongLong", "45")]
         [TestCase("32767", "Integer", "32767")]
@@ -172,6 +172,20 @@ namespace RubberduckTests.Inspections
         [TestCase("2147483648", "Double", "2147483648")]
         [TestCase("&H10", "Integer", "16")]
         [TestCase("&o10", "Integer", "8")]
+        [TestCase("&H8000", "Integer", "-32768")]
+        [TestCase("&o100000", "Integer", "-32768")]
+        [TestCase("&H8000&", "Long", "32768")]
+        [TestCase("&o100000&", "Long", "32768")]
+        [TestCase("&H10&", "Long", "16")]
+        [TestCase("&o10&", "Long", "8")]
+        [TestCase("&H80000000", "Long", "-2147483648")]
+        [TestCase("&o20000000000", "Long", "-2147483648")]
+        [TestCase("&H80000000^", "LongLong", "2147483648")]
+        [TestCase("&o20000000000^", "LongLong", "2147483648")]
+        [TestCase("&H10^", "LongLong", "16")]
+        [TestCase("&o10^", "LongLong", "8")]
+        [TestCase("&HFFFFFFFFFFFFFFFF^", "LongLong", "-1")]
+        [TestCase("&o1777777777777777777777^", "LongLong", "-1")]
         [Category("Inspections")]
         public void UciUnit_VariableTypes(string operands, string expectedTypeName, string expectedValueText)
         {
@@ -191,18 +205,18 @@ namespace RubberduckTests.Inspections
         [TestCase("&o10", "Integer", "8")]
         [TestCase("&H8000", "Integer", "-32768")]
         [TestCase("&o100000", "Integer", "-32768")]
-        [TestCase("&H8000&", "Long", "32768")]
-        [TestCase("&o100000&", "Long", "32768")]
+        [TestCase("&H8000", "Long", "32768")]
+        [TestCase("&o100000", "Long", "32768")]
         [TestCase("&H10", "Long", "16")]
         [TestCase("&o10", "Long", "8")]
         [TestCase("&H80000000", "Long", "-2147483648")]
         [TestCase("&o20000000000", "Long", "-2147483648")]
-        [TestCase("&H80000000^", "LongLong", "2147483648")]
-        [TestCase("&o20000000000^", "LongLong", "2147483648")]
-        [TestCase("&H10^", "LongLong", "16")]
-        [TestCase("&o10^", "LongLong", "8")]
-        [TestCase("&HFFFFFFFFFFFFFFFF^", "LongLong", "-1")]
-        [TestCase("&o1777777777777777777777^", "LongLong", "-1")]
+        [TestCase("&H80000000", "LongLong", "2147483648")]
+        [TestCase("&o20000000000", "LongLong", "2147483648")]
+        [TestCase("&H10", "LongLong", "16")]
+        [TestCase("&o10", "LongLong", "8")]
+        [TestCase("&HFFFFFFFFFFFFFFFF", "LongLong", "-1")]
+        [TestCase("&o1777777777777777777777", "LongLong", "-1")]
         [Category("Inspections")]
         public void UciUnit_ConformToType(string operands, string conformToType, string expectedValueText)
         {
@@ -1063,16 +1077,16 @@ $@"
         [TestCase("Long", "2147486648#", "-2147486649#")]
         [TestCase("Integer", "40000", "-50000")]
         [TestCase("Byte", "256", "-1")]
-        [TestCase("Currency", "922337203685490.5808", "-922337203685477.5809")]
+        [TestCase("Currency", "922337203685490.5808@", "-922337203685477.5809@")]
         [TestCase("Single", "3402824E38", "-3402824E38")]
         [Category("Inspections")]
         public void UciFunctional_ExceedsLimits(string type, string value1, string value2)
         {
             string inputCode =
-@"Sub Foo(x As <Type>)
+$@"Sub Foo(x As {type})
 
-        Const firstVal As <Type> = <Value1>
-        Const secondVal As <Type> = <Value2>
+        Const firstVal As {type} = {value1}
+        Const secondVal As {type} = {value2}
 
         Select Case x
             Case firstVal
@@ -1082,9 +1096,6 @@ $@"
         End Select
 
         End Sub";
-            inputCode = inputCode.Replace("<Type>", type);
-            inputCode = inputCode.Replace("<Value1>", value1);
-            inputCode = inputCode.Replace("<Value2>", value2);
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
