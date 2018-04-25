@@ -150,12 +150,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             value = default;
 
-            if (!valueString.StartsWith("&H"))
+            if (!valueString.StartsWith("&H") && !valueString.StartsWith("&h"))
             {
                 return false;
             }
 
-            var hexString = valueString.Substring(2);
+            var hexString = valueString.Substring(2).ToUpperInvariant();
             try
             {
                 value = Convert.ToInt16(hexString, fromBase: 16);
@@ -171,12 +171,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             value = default;
 
-            if (!valueString.StartsWith("&H"))
+            if (!valueString.StartsWith("&H") && !valueString.StartsWith("&h"))
             {
                 return false;
             }
 
-            var hexString = valueString.Substring(2);
+            var hexString = valueString.Substring(2).ToUpperInvariant();
             try
             {
                 value = Convert.ToInt32(hexString, fromBase: 16);
@@ -192,12 +192,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             value = default;
 
-            if (!valueString.StartsWith("&H"))
+            if (!valueString.StartsWith("&H") && !valueString.StartsWith("&h"))
             {
                 return false;
             }
 
-            var hexString = valueString.Substring(2);
+            var hexString = valueString.Substring(2).ToUpperInvariant();
             try
             {
                 value = Convert.ToInt64(hexString, fromBase: 16);
@@ -213,15 +213,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             value = default;
 
-            if (!valueString.StartsWith("&o"))
+            if (!valueString.StartsWith("&o") && !valueString.StartsWith("&O"))
             {
                 return false;
             }
 
-            var hexString = valueString.Substring(2);
+            var octalString = valueString.Substring(2);
             try
             {
-                value = Convert.ToInt16(hexString, fromBase: 8);
+                value = Convert.ToInt16(octalString, fromBase: 8);
                 return true;
             }
             catch (OverflowException)
@@ -234,15 +234,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             value = default;
 
-            if (!valueString.StartsWith("&o"))
+            if (!valueString.StartsWith("&o") && !valueString.StartsWith("&O"))
             {
                 return false;
             }
 
-            var hexString = valueString.Substring(2);
+            var octalString = valueString.Substring(2);
             try
             {
-                value = Convert.ToInt32(hexString, fromBase: 8);
+                value = Convert.ToInt32(octalString, fromBase: 8);
                 return true;
             }
             catch (OverflowException)
@@ -255,15 +255,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             value = default;
 
-            if (!valueString.StartsWith("&o"))
+            if (!valueString.StartsWith("&o") && !valueString.StartsWith("&O"))
             {
                 return false;
             }
 
-            var hexString = valueString.Substring(2);
+            var octalString = valueString.Substring(2);
             try
             {
-                value = Convert.ToInt64(hexString, fromBase: 8);
+                value = Convert.ToInt64(octalString, fromBase: 8);
                 return true;
             }
             catch (OverflowException)
@@ -392,9 +392,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return true;
             }
 
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rational))
+            var typeName = parseTreeValue.TypeName;
+            if ((typeName == Tokens.Byte
+                    || typeName == Tokens.Integer
+                    || typeName == Tokens.Long
+                    || typeName == Tokens.LongLong)
+                && long.TryParse(valueText, out var integralValue))
             {
-                value = Convert.ToInt64(rational);
+                value = integralValue;
+                return true;
+            }
+
+            if (typeName == Tokens.Currency && decimal.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                value = Convert.ToInt64(decimalValue);
+                return true;
+            }
+
+            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
+            {
+                value = Convert.ToInt64(rationalValue);
                 return true;
             }
 
@@ -427,11 +444,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 value = inspVal.Equals(Tokens.True) ? -1 : 0;
                 return true;
             }
-            if (decimal.TryParse(inspVal, NumberStyles.Any, CultureInfo.InvariantCulture, out var rational))
+
+            if (decimal.TryParse(inspVal, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                value = rational;
+                value = decimalValue;
                 return true;
             }
+
+            if (double.TryParse(inspVal, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
+            {
+                value = Convert.ToDecimal(rationalValue);
+                return true;
+            }
+
             return false;
         }
 
