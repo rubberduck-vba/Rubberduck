@@ -4,8 +4,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class UnitTestingParentMenu : ParentMenuItemBase
     {
-        public UnitTestingParentMenu(ICommandBarButtonFactory buttonFactory, IEnumerable<IMenuItem> items) 
-            : base(buttonFactory, "RubberduckMenu_UnitTests", items)
+        public UnitTestingParentMenu(IEnumerable<IMenuItem> items) 
+            : base("RubberduckMenu_UnitTests", items)
         {
         }
 

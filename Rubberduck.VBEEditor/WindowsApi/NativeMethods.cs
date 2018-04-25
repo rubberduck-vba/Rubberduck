@@ -21,7 +21,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <param name="lParam">   The parameter. </param>
         /// <returns>   An IntPtr handle. </returns>
         [DllImport("user32", EntryPoint = "SendMessageW", ExactSpelling = true)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>   EnumChildWindows delegate. </summary>
         ///
@@ -37,7 +37,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <param name="lParam">               The parameter. </param>
         /// <returns>   An int. </returns>
         [DllImport("user32", ExactSpelling = true, CharSet = CharSet.Unicode)]
-        internal static extern int EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate lpEnumFunction, IntPtr lParam);
+        public static extern int EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate lpEnumFunction, IntPtr lParam);
 
         /// <summary>   Gets window text. </summary>
         ///
@@ -46,7 +46,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <param name="nMaxCount">    Number of maximums. </param>
         /// <returns>   Integer Success Code </returns>
         [DllImport("user32", EntryPoint = "GetWindowTextW", ExactSpelling = true, CharSet = CharSet.Unicode)]
-        internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
 
 
         /// <summary>   Gets the child window at the top of the Z order. </summary>
@@ -54,10 +54,10 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <param name="hWnd"> The window handle. </param>
         /// <returns>   The child window IntPtr handle. </returns>
         [DllImport("user32.dll")]
-        internal static extern IntPtr GetTopWindow(IntPtr hWnd);
+        public static extern IntPtr GetTopWindow(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        internal static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
 
         /// <summary>   Gets window caption text by handle. </summary>
         ///
@@ -83,7 +83,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         ///
         /// <param name="windowHandle">         Handle of the window to be activated. </param>
         /// <param name="parentWindowHandle">   Handle of the parent window. </param>
-        internal static void ActivateWindow(IntPtr windowHandle, IntPtr parentWindowHandle)
+        public static void ActivateWindow(IntPtr windowHandle, IntPtr parentWindowHandle)
         {
             const int WM_MOUSEACTIVATE = 0x21;
             const int HTCAPTION = 2;
@@ -92,7 +92,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             SendMessage(windowHandle, WM_MOUSEACTIVATE, parentWindowHandle, new IntPtr(HTCAPTION + WM_LBUTTONDOWN * 0x10000));
         }
 
-        internal static void EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate callBackEnumWindows)
+        public static void EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate callBackEnumWindows)
         {
             var result = EnumChildWindows(parentWindowHandle, callBackEnumWindows, IntPtr.Zero);
             if (result != 0)
