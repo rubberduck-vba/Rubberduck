@@ -262,6 +262,7 @@
     <Compile Include="ComClientLibrary\UnitTesting\Verifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extension.cs" />
+    <Compile Include="Root\RootComWrapperFactory.cs" />
     <Compile Include="Root\RubberduckIoCInstaller.cs" />
     <Compile Include="Root\TypeExtensions.cs" />
   </ItemGroup>
@@ -358,6 +359,14 @@
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
+      <Project>{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}</Project>
+      <Name>Rubberduck.VBEditor.VB6</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
+      <Project>{D488071E-EDCB-4601-B734-1A3109ED903C}</Project>
+      <Name>Rubberduck.VBEditor.VBA</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>

@@ -305,7 +305,6 @@
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
-    <Compile Include="Common\RootComWrapperFactory.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\VariableNameValidator.cs" />
     <Compile Include="Common\WinAPI\RegistryAccess.cs" />
@@ -1258,14 +1257,6 @@
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
-      <Project>{5d683117-21f1-4a01-a0c7-6ae6f30a16a7}</Project>
-      <Name>Rubberduck.VBEditor.VB6</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
-      <Project>{d488071e-edcb-4601-b734-1a3109ed903c}</Project>
-      <Name>Rubberduck.VBEditor.VBA</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>

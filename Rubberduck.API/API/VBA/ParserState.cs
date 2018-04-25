@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Root;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

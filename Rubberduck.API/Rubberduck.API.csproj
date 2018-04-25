@@ -48,6 +48,10 @@
       <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
+      <Project>{e8ab5d93-2d0f-423d-bc15-5ee118673e48}</Project>
+      <Name>Rubberduck.Main</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
