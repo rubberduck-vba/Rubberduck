@@ -496,12 +496,16 @@ end;
 ///Used by <see cref="RegisterAddIn" />, passing in parameters to actually create
 ///the per-user registry entries to enable VBE addin for that user.
 ///<remarks>
-procedure RegisterAddinForIDE(const iRootKey: Integer; const sAddinSubKey: String; const sProgIDConnect: String);
+procedure RegisterAddinForIDE(const iRootKey: Integer; const sAddinSubKey: String; const sProgIDConnect: String; const bIncludeCommandLine: boolean);
 begin
    RegWriteStringValue(iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'FriendlyName', '{#AppName}');
    RegWriteStringValue(iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'Description' , '{#AppName}');
    RegWriteDWordValue (iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'LoadBehavior', 3);
-end;
+   if bIncludeCommandLine then
+   begin
+    RegWriteDWordValue (iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'CommandLineSafe', 0);
+   end;
+ end;
 
 ///<remarks>
 ///Unregisters the same keys, similar to <see cref="RegisterAddinForIDE" />
@@ -520,12 +524,14 @@ procedure RegisterAddin();
 begin
     if IsWin64() then 
     begin
-      RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
-      RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
+      RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}', false);
+      RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}', false);
+      RegisterAddinForIDE(HKCU32, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}', true);
     end
       else
     begin
-      RegisterAddinForIDE(HKCU, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+      RegisterAddinForIDE(HKCU, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}', false);
+      RegisterAddinForIDE(HKCU, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}', true);
     end;
 end;
 
@@ -534,9 +540,17 @@ end;
 ///</remarks>
 procedure UnregisterAddin();
 begin
-  UnregisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
   if IsWin64() then 
+  begin
     UnregisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
+    UnregisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+    UnRegisterAddinForIDE(HKCU32, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}');
+  end
+    else
+  begin
+    UnregisterAddinForIDE(HKCU, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+    UnRegisterAddinForIDE(HKCU, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}');
+  end;
 end;
 
 ///<remarks>
