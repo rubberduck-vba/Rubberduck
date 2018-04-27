@@ -1,5 +1,13 @@
 ; Delete all old registration keys from any previous installations that should not be used anymore
 
+; Old API TypeLib GUID -- Software\Classes\TypeLib\{{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}
+Root: "HKCU64"; Subkey: "Software\Classes\TypeLib\{{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: IsWin64
+Root: "HKCU32"; Subkey: "Software\Classes\TypeLib\{{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: IsWin64
+Root: "HKCU"; Subkey: "Software\Classes\TypeLib\{{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: not IsWin64
+Root: "HKLM64"; Subkey: "Software\Classes\TypeLib\{{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: IsWin64
+Root: "HKLM32"; Subkey: "Software\Classes\TypeLib\{{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: IsWin64
+Root: "HKLM"; Subkey: "Software\Classes\TypeLib\{{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: not IsWin64
+
 ; Old DeclarationClassGuid
 Root: "HKCU64"; Subkey: "Software\Classes\CLSID\{{67940D0B-081A-45BE-B0B9-CAEAFE034BC0}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: IsWin64
 Root: "HKCU32"; Subkey: "Software\Classes\CLSID\{{67940D0B-081A-45BE-B0B9-CAEAFE034BC0}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: deletekey dontcreatekey; Check: IsWin64
