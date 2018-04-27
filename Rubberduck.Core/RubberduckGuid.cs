@@ -4,40 +4,44 @@ namespace Rubberduck
 {
     public static class RubberduckGuid
     {
-        // TypeLib Guid:
-        private const string TypeLibGuidspace = "e07c841c-14b4-4890-83e9-";
-        public const string RubberduckTypeLibGuid = TypeLibGuidspace + "8c80b06dd59d";
-        public const string RubberduckApiTypeLibGuid = TypeLibGuidspace + "8c80b06dd59e";
+        // Guid Suffix
+        private const string GuidSuffix = "-43F0-3B33-B105-9B8188A6F040";
 
+        // TypeLib Guid:
+        private const string TypeLibGuidspace = "E07C84";
+        public const string RubberduckTypeLibGuid = TypeLibGuidspace + "1C" + GuidSuffix;
+        public const string RubberduckApiTypeLibGuid = TypeLibGuidspace + "1D" + GuidSuffix;
+        
         // Addin Guids:
-        private const string AddinGuidspace = "69E194DA-43F0-3B33-A105-";
-        public const string ExtensionGuid = AddinGuidspace + "F697CA1F8A66"; 
-        public const string DockableWindowHostGuid = AddinGuidspace + "F697CA1F8A67";
+        private const string AddinGuidspace = "69E0F6";
+        public const string ExtensionGuid = AddinGuidspace + "97" + GuidSuffix;
+        public const string IDockableWindowHostGuid = AddinGuidspace + "98" + GuidSuffix;
+        public const string DockableWindowHostGuid = AddinGuidspace + "99" + GuidSuffix;
 
         // Unit testing Guids:
-        private const string UnitTestingGuidspace = "69E194DA-43F0-3B33-B105-";
-        public const string AssertClassGuid = UnitTestingGuidspace + "9B8188A6F040";
-        public const string IAssertGuid = UnitTestingGuidspace + "9B8188A6F041";
-        public const string PermissiveAssertClassGuid = UnitTestingGuidspace + "9B8188A6F042";
-        public const string FakesProviderClassGuid = UnitTestingGuidspace + "9B8188A6F043";
-        public const string IFakesProviderGuid = UnitTestingGuidspace + "9B8188A6F044";
-        public const string IFakeGuid = UnitTestingGuidspace + "9B8188A6F045";
-        public const string IVerifyGuid = UnitTestingGuidspace + "9B8188A6F046";
-        public const string IStubGuid = UnitTestingGuidspace + "9B8188A6F047";
+        private const string UnitTestingGuidspace = "69E0F7";
+        public const string AssertClassGuid = UnitTestingGuidspace + "DA" + GuidSuffix;
+        public const string IAssertGuid = UnitTestingGuidspace + "DB" + GuidSuffix;
+        public const string PermissiveAssertClassGuid = UnitTestingGuidspace + "DC" + GuidSuffix;
+        public const string FakesProviderClassGuid = UnitTestingGuidspace + "DD" + GuidSuffix;
+        public const string IFakesProviderGuid = UnitTestingGuidspace + "DE" + GuidSuffix;
+        public const string IFakeGuid = UnitTestingGuidspace + "DF" + GuidSuffix;
+        public const string IVerifyGuid = UnitTestingGuidspace + "E0" + GuidSuffix;
+        public const string IStubGuid = UnitTestingGuidspace + "E1" + GuidSuffix;
 
         // Rubberduck API Guids:
-        private const string ApiGuidspace = "69E194DA-43F0-3B33-B106-";
-        public const string IDeclarationGuid = ApiGuidspace + "9B8188A6F040";
-        public const string DeclarationClassGuid = ApiGuidspace + "9B8188A6F041";
-        public const string IIdentifierReferenceGuid = ApiGuidspace + "9B8188A6F042";
-        public const string IdentifierReferenceClassGuid = ApiGuidspace + "9B8188A6F043";
-        public const string IParserStateGuid = ApiGuidspace + "9B8188A6F044";
-        public const string ParserStateClassGuid = ApiGuidspace + "9B8188A6F045";
-        public const string IParserStateEventsGuid = ApiGuidspace + "9B8188A6F046";
+        private const string ApiGuidspace = "69E0F7";
+        public const string IDeclarationGuid = ApiGuidspace + "81" + GuidSuffix;
+        public const string DeclarationClassGuid = ApiGuidspace + "82" + GuidSuffix;
+        public const string IIdentifierReferenceGuid = ApiGuidspace + "83" + GuidSuffix;
+        public const string IdentifierReferenceClassGuid = ApiGuidspace + "84" + GuidSuffix;
+        public const string IParserStateGuid = ApiGuidspace + "85" + GuidSuffix;
+        public const string ParserStateClassGuid = ApiGuidspace + "86" + GuidSuffix;
+        public const string IParserStateEventsGuid = ApiGuidspace + "87" + GuidSuffix;
         
         // Enum Guids:
-        private const string RecordGuidspace = "69E194DA-43F0-3B33-C105-";
-        public const string DeclarationTypeGuid = RecordGuidspace + "FEABE42C9725";
-        public const string AccessibilityGuid = RecordGuidspace + "FEABE42C9726";
+        private const string RecordGuidspace = "69E100";
+        public const string DeclarationTypeGuid = RecordGuidspace + "23" + GuidSuffix;
+        public const string AccessibilityGuid = RecordGuidspace + "24" + GuidSuffix;
     }
 }

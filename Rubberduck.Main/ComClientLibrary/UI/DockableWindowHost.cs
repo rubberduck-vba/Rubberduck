@@ -53,16 +53,33 @@ namespace Rubberduck.UI
     // Note that the wrapper infrastructure has been moved to the namespace Rubberduck.VBEditor.CustomComWrappers.
     //
     //
-    
 
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.DockableWindowHostGuid)]
-    [ProgId(RubberduckProgId.DockableWindowHostProgId)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IDockableWindowHostGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Never)
+    ]
+    public interface IDockableWindowHost
+    {
+        [DispId(1)]
+        void AddUserControl(UserControl control, IntPtr vbeHwnd);
+        [DispId(2)]
+        void Release();
+    }
+
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.DockableWindowHostGuid),
+        ProgId(RubberduckProgId.DockableWindowHostProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IDockableWindowHost)),
+        EditorBrowsable(EditorBrowsableState.Never)
+    ]
     //Nothing breaks because we declare a ProgId
     // ReSharper disable once InconsistentNaming
     //Underscores make classes invisible to VB6 object explorer
-    public class _DockableWindowHost : COM_IOleObject, COM_IOleInPlaceObject, COM_IOleWindow
+    public class _DockableWindowHost : COM_IOleObject, COM_IOleInPlaceObject, COM_IOleWindow, IDockableWindowHost
     {
         public static string RegisteredProgId => RubberduckProgId.DockableWindowHostProgId;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();

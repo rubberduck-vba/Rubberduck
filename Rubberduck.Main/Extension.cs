@@ -12,7 +12,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Castle.Windsor;
 using NLog;
-using Rubberduck.Common;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
@@ -25,10 +24,14 @@ namespace Rubberduck
     /// <remarks>
     /// Special thanks to Carlos Quintero (MZ-Tools) for providing the general structure here.
     /// </remarks>
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.ExtensionGuid)]
-    [ProgId(RubberduckProgId.ExtensionProgId)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.ExtensionGuid),
+        ProgId(RubberduckProgId.ExtensionProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IDTExtensibility2)),
+        EditorBrowsable(EditorBrowsableState.Never)
+    ]
     // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class _Extension : IDTExtensibility2
     {

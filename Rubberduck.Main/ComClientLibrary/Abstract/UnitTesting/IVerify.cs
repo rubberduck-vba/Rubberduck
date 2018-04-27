@@ -7,9 +7,12 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IVerifyGuid)]
-    [EditorBrowsable(EditorBrowsableState.Always)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IVerifyGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public interface IVerify
     {
         /// <summary>

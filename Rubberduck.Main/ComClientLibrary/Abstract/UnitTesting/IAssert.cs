@@ -7,8 +7,12 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IAssertGuid)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IAssertGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public interface IAssert
     {
         /// <summary>

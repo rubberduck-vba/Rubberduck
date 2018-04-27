@@ -9,10 +9,12 @@ namespace Rubberduck.UnitTesting
 {
     // IMPORTANT - C# doesn't support interface inheritance in its exported type libraries, so any members on this interface
     // should also be on the IFake interface with matching DispIds due to the inheritance of the concrete classes.
-
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IStubGuid)]
-    [EditorBrowsable(EditorBrowsableState.Always)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IStubGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public interface IStub
     {
         [DispId(1)]
