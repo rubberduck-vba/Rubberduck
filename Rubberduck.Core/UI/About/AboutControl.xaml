@@ -11,6 +11,11 @@
         <BitmapImage x:Key="RD" UriSource="../../Resources/Rubberduck.png" />
     </UserControl.Resources>
     <Grid Background="#F6F6F6F6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto"/>
@@ -20,54 +25,46 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0"  Grid.Column="0" 
+        <Border Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="3"
                 Background="White" 
                 Margin="10">
             <Image Source="{StaticResource RD}" Stretch="Uniform" />
         </Border>
-
-        <Grid Grid.Row="1"
-              HorizontalAlignment="Center">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Background="White"
-                        Height="100" Width="250"
-                        VerticalAlignment="Center"
-                            MouseLeftButtonDown="CopyVersionInfo_MouseLeftButtonDown">
-                <TextBlock x:Name="Version"
-                               Margin="0,5" Text="{Binding Version}" Foreground="Black"
-                               FontWeight="Bold" FontSize="12"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="OperatingSystem"
-                               Margin="0" Text="{Binding OperatingSystem}" Foreground="Black"
-                               FontWeight="Bold" FontSize="10"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="HostProduct"
-                               Margin="0" Text="{Binding HostProduct}" Foreground="Black"
-                               FontWeight="Bold" FontSize="10"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="HostVersion"
-                               Margin="0" Text="{Binding HostVersion}" Foreground="Black"
-                               FontWeight="Bold" FontSize="10"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="HostExecutable"
-                               Margin="0" Text="{Binding HostExecutable}" Foreground="Black"
-                               FontWeight="Bold" FontSize="10"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <Label Name="CopyVersionInfo"
-                               Foreground="Gray"
-                               FontSize="8"
-                               HorizontalAlignment="Center"
-                               Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_CopyVersionLabel}"/>
-            </StackPanel>
-            <TextBlock Grid.Column="2"
-                       VerticalAlignment="Center"
-                       TextAlignment="Center"
-                       Height="100" Width="250"
-                       Background="White">
+        <StackPanel Grid.Column="0" Grid.Row="1" Background="White"
+                    Height="100" Width="250"
+                    VerticalAlignment="Center"
+                    MouseLeftButtonDown="CopyVersionInfo_MouseLeftButtonDown">
+            <TextBlock x:Name="Version"
+                       Margin="0,5" Text="{Binding Version}" Foreground="Black"
+                       FontWeight="Bold" FontSize="12"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="OperatingSystem"
+                       Margin="0" Text="{Binding OperatingSystem}" Foreground="Black"
+                       FontWeight="Bold" FontSize="10"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="HostProduct"
+                       Margin="0" Text="{Binding HostProduct}" Foreground="Black"
+                       FontWeight="Bold" FontSize="10"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="HostVersion"
+                       Margin="0" Text="{Binding HostVersion}" Foreground="Black"
+                       FontWeight="Bold" FontSize="10"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="HostExecutable"
+                       Margin="0" Text="{Binding HostExecutable}" Foreground="Black"
+                       FontWeight="Bold" FontSize="10"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Name="CopyVersionInfo"
+                   Foreground="Gray"
+                   FontSize="8"
+                   HorizontalAlignment="Center"
+                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_CopyVersionLabel}"/>
+        </StackPanel>
+        <TextBlock Grid.Column="2" Grid.Row="1"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center"
+                   Height="100" Width="250"
+                   Background="White">
                 <StackPanel Orientation="Vertical"
                             HorizontalAlignment="Center"
                             Margin="10">
@@ -94,9 +91,7 @@
                     </TextBlock>
                 </StackPanel>
             </TextBlock>
-        </Grid>
-
-        <ScrollViewer Grid.Row="2" Grid.Column="0"
+        <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                       Margin="5" Height="150">
             <StackPanel VerticalAlignment="Top"
                         Background="White"
@@ -169,9 +164,9 @@ Wayne Phillips (vbWatchdog)
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
-        
 
-        <Border Grid.Row="3" Grid.Column="0">
+
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Center">
                 <StackPanel HorizontalAlignment="Center" 
@@ -225,7 +220,7 @@ Wayne Phillips (vbWatchdog)
             </StackPanel>
         </Border>
 
-        <TextBlock Grid.Row="4" Grid.Column="0"
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                    Text="{Binding AboutCopyright}"
                    FontSize="8" 
                    Margin="15,10"
