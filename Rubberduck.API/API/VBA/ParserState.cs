@@ -18,37 +18,50 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.API.VBA
 {
-    [ComVisible(true)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IParserStateGuid)
+    ]
     public interface IParserState
     {
         // vbe is the com coclass interface from the interop assembly.
         // There is no shared interface between VBA and VB6 types, hence object.
+        [DispId(1)]
         void Initialize(object vbe); 
-
+        [DispId(2)]
         void Parse();
+        [DispId(3)]
         void BeginParse();
-
+        [DispId(4)]
         Declaration[] AllDeclarations { get; }
+        [DispId(5)]
         Declaration[] UserDeclarations { get; }
     }
 
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IParserStateEventsGuid)]
-    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IParserStateEventsGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsIDispatch)
+    ]
     public interface IParserStateEvents
     {
+        [DispId(1)]
         void OnParsed();
+        [DispId(2)]
         void OnReady();
+        [DispId(3)]
         void OnError();
     }
 
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.ParserStateClassGuid)]
-    [ProgId(RubberduckProgId.ParserStateProgId)]
-    [ClassInterface(ClassInterfaceType.AutoDual)]
-    [ComDefaultInterface(typeof(IParserState))]
-    [ComSourceInterfaces(typeof(IParserStateEvents))]
-    [EditorBrowsable(EditorBrowsableState.Always)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.ParserStateClassGuid),
+        ProgId(RubberduckProgId.ParserStateProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IParserState)),
+        ComSourceInterfaces(typeof(IParserStateEvents)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public sealed class ParserState : IParserState, IDisposable
     {
         private RubberduckParserState _state;
