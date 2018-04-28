@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -7,10 +8,11 @@ using TestHelper;
 namespace RubberduckCodeAnalysis.Test
 {
     [TestClass]
-    public class UnitTest : CodeFixVerifier
+    public class ComVisibilityUnitTests : ComManagementAnalyzer
     {
         //No diagnostics expected to show up
         [TestMethod]
+        [TestCategory("ComVisible")]
         public void NoCode()
         {
             var test = @"";
@@ -20,14 +22,14 @@ namespace RubberduckCodeAnalysis.Test
 
         //No diagnostics expected to show up
         [TestMethod]
-        public void GoodCode()
+        [TestCategory("ComVisible")]
+        public void NotComVisible()
         {
             var test = @"using System.Runtime.InteropServices;
 
 namespace Foo
 {
-  [ComVisible(true)]
-  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  [ComVisible(false)]
   public class Bar
   {
   }
@@ -39,75 +41,8 @@ namespace Foo
 
         //No diagnostics expected to show up
         [TestMethod]
-        public void GoodCode2()
-        {
-            var test = @"using System.Runtime.InteropServices;
-
-namespace Foo
-{
-  [ComVisible(true), Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
-  public class Bar
-  {
-  }
-}
-";
-
-            VerifyCSharpDiagnostic(test);
-        }
-
-        //No diagnostics expected to show up
-        [TestMethod]
-        public void GoodCode3()
-        {
-            var test = @"using System.Runtime.InteropServices;
-
-namespace Foo
-{
-  
-    [
-        ComVisible(true), 
-        Guid(RubberduckGuid.AccessibilityGuid)
-    ]
-    public class Bar
-    {
-    }
-}
-";
-
-            VerifyCSharpDiagnostic(test);
-        }
-
-        //No diagnostics expected to show up
-        [TestMethod]
-        public void GoodCode4()
-        {
-            var test = @"using System.Runtime.InteropServices;
-using Source = Rubberduck.Parsing.Symbols;
-
-namespace Rubberduck.API.VBA
-{
-    [
-        ComVisible(true), 
-        Guid(RubberduckGuid.AccessibilityGuid)
-    ]
-    public enum Accessibility
-    {
-        Private = Source.Accessibility.Private,
-        Friend = Source.Accessibility.Friend,
-        Global = Source.Accessibility.Global,
-        Implicit = Source.Accessibility.Implicit,
-        Public = Source.Accessibility.Public,
-        Static = Source.Accessibility.Static
-    }
-}
-";
-
-            VerifyCSharpDiagnostic(test);
-        }
-        
-        //No diagnostics expected to show up
-        [TestMethod]
-        public void NotComVisible2()
+        [TestCategory("ComVisible")]
+        public void NoComVisibleAttribute()
         {
             var test = @"using Rubberduck.RegexAssistant.i18n;
 using System;
@@ -320,26 +255,121 @@ namespace Rubberduck.RegexAssistant
 
             VerifyCSharpDiagnostic(test);
         }
+    }
+
+    [TestClass]
+    public class MissingGuidUnitTests : ComManagementAnalyzer
+    {
         //No diagnostics expected to show up
         [TestMethod]
-        public void NotComVisible()
+        [TestCategory("MissingGuid")]
+        public void ClassContainsGuid_SeparateAttribute()
         {
             var test = @"using System.Runtime.InteropServices;
 
 namespace Foo
 {
-  [ComVisible(false)]
+  [ComVisible(true)]
+  [Guid(RubberduckGuid.BarGuid)]
   public class Bar
   {
   }
 }
 ";
+            var diagnostics = GetSortedDiagnostics(new[] {test}, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.All(d => d.Descriptor.Id != "MissingGuid"));
+        }
 
+        //No diagnostics expected to show up
+        [TestMethod]
+        [TestCategory("MissingGuid")]
+        public void ClassContainsGuid_AttributesOneLine()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true), Guid(RubberduckGuid.BarGuid)]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] {test}, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.All(d => d.Descriptor.Id != "MissingGuid"));
+        }
+
+        //No diagnostics expected to show up
+        [TestMethod]
+        [TestCategory("MissingGuid")]
+        public void ClassContainsGuid_AttributesMultipleLines()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  
+    [
+        ComVisible(true), 
+        Guid(RubberduckGuid.AccessibilityGuid)
+    ]
+    public class Bar
+    {
+    }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] {test}, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.All(d => d.Descriptor.Id != "MissingGuid"));
+        }
+
+        //No diagnostics expected to show up
+        [TestMethod]
+        [TestCategory("MissingGuid")]
+        public void ClassContainsGuid_ConstantReference()
+        {
+            var test = @"using System.Runtime.InteropServices;
+using Source = Rubberduck.Parsing.Symbols;
+
+namespace Rubberduck.API.VBA
+{
+    [
+        ComVisible(true), 
+        Guid(RubberduckGuid.AccessibilityGuid)
+    ]
+    public enum Accessibility
+    {
+        Private = Source.Accessibility.Private,
+        Friend = Source.Accessibility.Friend,
+        Global = Source.Accessibility.Global,
+        Implicit = Source.Accessibility.Implicit,
+        Public = Source.Accessibility.Public,
+        Static = Source.Accessibility.Static
+    }
+}
+";
             VerifyCSharpDiagnostic(test);
         }
 
-        //Diagnostic triggered
         [TestMethod]
+        [TestCategory("MissingGuid")]
+        public void LiteralGuid()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true), Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingGuid"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingGuid")]
         public void MissingGuid()
         {
             var test = @"using System.Runtime.InteropServices;
@@ -351,19 +381,9 @@ namespace Foo
   {
   }
 }
-"; 
-            var expected = new DiagnosticResult
-            {
-                Id = "ComVisibleClassMustHaveGuidAnalyzer",
-                Message = string.Format("COM-visible type '{0}' does not have an explicit Guid attribute", "Bar"),
-                Severity = DiagnosticSeverity.Error,
-                Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 6, 16)
-                        }
-            };
-
-            VerifyCSharpDiagnostic(test, expected);
+";
+            var diagnostics = GetSortedDiagnostics(new[] {test}, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingGuid"));
             /*
             var fixtest = @"
     using System;
@@ -383,9 +403,10 @@ namespace Foo
             */
         }
 
-        //No diagnostics expected to show up
+        //Diganostic triggered
         [TestMethod]
-        public void MissingGuid2()
+        [TestCategory("MissingGuid")]
+        public void MissingGuid_CommentedOut()
         {
             var test = @"using System.Runtime.InteropServices;
 using Source = Rubberduck.Parsing.Symbols;
@@ -409,18 +430,282 @@ namespace Rubberduck.API.VBA
 ";
             var expected = new DiagnosticResult
             {
-                Id = "ComVisibleClassMustHaveGuidAnalyzer",
-                Message = string.Format("COM-visible type '{0}' does not have an explicit Guid attribute", "Accessibility"),
+                Id = "MissingGuid",
+                Message = string.Format("COM-visible type '{0}' does not have an explicit Guid attribute that references a RubberduckGuid constant.",
+                    "Accessibility"),
                 Severity = DiagnosticSeverity.Error,
                 Locations =
-                    new[] {
+                    new[]
+                    {
                         new DiagnosticResultLocation("Test0.cs", 10, 17)
                     }
             };
 
             VerifyCSharpDiagnostic(test, expected);
         }
+    }
 
+    [TestClass]
+    public class MissingClassInterfaceUnitTests : ComManagementAnalyzer
+    {
+        //No diagnostics expected to show up
+        [TestMethod]
+        [TestCategory("MissingGuid")]
+        public void ClassContainsInterfaceType()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  [ClassInterface(ClassInterfaceType.None)]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] {test}, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.All(d => d.Descriptor.Id != "MissingClassInterface"));
+        }
+        
+        [TestMethod]
+        [TestCategory("MissingGuid")]
+        public void ClassContainsInterfaceType_Wrong()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  [ClassInterface(ClassInterfaceType.AutoDual)]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingClassInterface"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingGuid")]
+        public void ClassDoesNotContainsInterfaceType()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingClassInterface"));
+        }
+    }
+
+    [TestClass]
+    public class MissingProgIdUnitTests : ComManagementAnalyzer
+    {
+        //No diagnostics expected to show up
+        [TestMethod]
+        [TestCategory("MissingProgId")]
+        public void ClassContainsProgId()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(RubberduckGuid.BarGuid)]
+  [ClassInterface(ClassInterfaceType.None)]
+  [ProgId(RubberduckProgId.BarProgId)]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.All(d => d.Descriptor.Id != "MissingProgId"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingProgId")]
+        public void ClassContainsProgId_Wrong()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  [ProgId(""derp.derp"")]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingProgId"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingProgId")]
+        public void ClassDoesNotContainsProgId()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingProgId"));
+        }
+    }
+
+    [TestClass]
+    public class MissingComDefaultInterfaceUnitTests : ComManagementAnalyzer
+    {
+        //No diagnostics expected to show up
+        [TestMethod]
+        [TestCategory("MissingComDefaultInterface")]
+        public void ClassContainsComDefaultInterface()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(RubberduckGuid.BarGuid)]
+  [ClassInterface(ClassInterfaceType.None)]
+  [ProgId(RubberduckProgId.BarProgId)]
+  [ComDefaultInterface(typeof(IBar))]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.All(d => d.Descriptor.Id != "MissingComDefaultInterface"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingComDefaultInterface")]
+        public void ClassContainsComDefaultInterface_Wrong()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  [ProgId(""derp.derp"")]
+  [ComDefaultInterface(""IBar"")
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingComDefaultInterface"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingComDefaultInterface")]
+        public void ClassDoesNotContainsComDefaultInterface()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  public class Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingComDefaultInterface"));
+        }
+    }
+
+    [TestClass]
+    public class MissingInterfaceTypeUnitTests : ComManagementAnalyzer
+    {
+        //No diagnostics expected to show up
+        [TestMethod]
+        [TestCategory("MissingInterfaceType")]
+        public void InterfaceContainsInterfaceType()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(RubberduckGuid.BarGuid)]
+  [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+  public interface Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.All(d => d.Descriptor.Id != "MissingInterfaceType"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingInterfaceType")]
+        public void InterfaceContainsInterfaceType_Wrong()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [InterfaceType(blah)]
+  public interface Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingInterfaceType"));
+        }
+
+        [TestMethod]
+        [TestCategory("MissingInterfaceType")]
+        public void InterfaceDoesNotContainsInterfaceType()
+        {
+            var test = @"using System.Runtime.InteropServices;
+
+namespace Foo
+{
+  [ComVisible(true)]
+  [Guid(""69E0F697-43F0-3B33-B105-9B8188A6F040"")]
+  public interface Bar
+  {
+  }
+}
+";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == "MissingInterfaceType"));
+        }
+    }
+
+    public class ComManagementAnalyzer : CodeFixVerifier
+    {
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return null;
@@ -428,7 +713,8 @@ namespace Rubberduck.API.VBA
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new ComVisibleClassMustHaveGuidAnalyzer();
+            return new ComVisibleTypeAnalyzer();
+
         }
     }
 }

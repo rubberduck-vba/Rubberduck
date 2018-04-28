@@ -71,29 +71,182 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to COM-visible types must have an explicit Guid attribute. This is required to avoid verisoning problems..
+        ///   Looks up a localized string similar to COM-visible classes must have an explicit ClassInterface attribute and be set to `None`. This is required to avoid verisoning problems..
         /// </summary>
-        internal static string AnalyzerDescription {
+        internal static string MissingClassInterfaceDescription {
             get {
-                return ResourceManager.GetString("AnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("MissingClassInterfaceDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to COM-visible type &apos;{0}&apos; does not have an explicit Guid attribute.
+        ///   Looks up a localized string similar to MissingClassInterface.
         /// </summary>
-        internal static string AnalyzerMessageFormat {
+        internal static string MissingClassInterfaceId {
             get {
-                return ResourceManager.GetString("AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("MissingClassInterfaceId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible class &apos;{0}&apos; does not have an explicit ClassInterface attribute that is also set to &apos;ClassInterfaceType.None&apos;..
+        /// </summary>
+        internal static string MissingClassInterfaceMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingClassInterfaceMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing ClassInterface Attribute.
+        /// </summary>
+        internal static string MissingClassInterfaceTitle {
+            get {
+                return ResourceManager.GetString("MissingClassInterfaceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible classes must have an explicit ComDefaultInterface attribute referring to a COM-visible interface..
+        /// </summary>
+        internal static string MissingComDefaultInterfaceDescription {
+            get {
+                return ResourceManager.GetString("MissingComDefaultInterfaceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MissingComDefaultInterface.
+        /// </summary>
+        internal static string MissingComDefaultInterfaceId {
+            get {
+                return ResourceManager.GetString("MissingComDefaultInterfaceId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible class &apos;{0}&apos; must have an explicit ComDefaultInterface attribute using a typeof reference to a COM-visible interface. Do not use string to provide the interface name. .
+        /// </summary>
+        internal static string MissingComDefaultInterfaceMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingComDefaultInterfaceMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing ComDefaultInterface Attribute.
+        /// </summary>
+        internal static string MissingComDefaultInterfaceTitle {
+            get {
+                return ResourceManager.GetString("MissingComDefaultInterfaceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible types must have an explicit Guid attribute. This is required to avoid verisoning problems. Refer to RubberduckGuid constants..
+        /// </summary>
+        internal static string MissingGuidDescription {
+            get {
+                return ResourceManager.GetString("MissingGuidDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MissingGuid.
+        /// </summary>
+        internal static string MissingGuidId {
+            get {
+                return ResourceManager.GetString("MissingGuidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible type &apos;{0}&apos; does not have an explicit Guid attribute that references a RubberduckGuid constant..
+        /// </summary>
+        internal static string MissingGuidMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingGuidMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Missing Guid Attribute.
         /// </summary>
-        internal static string AnalyzerTitle {
+        internal static string MissingGuidTitle {
             get {
-                return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("MissingGuidTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible interfaces must have an explicit InterfaceType attribute, typically set to Dual or Dispatch for event interfaces. .
+        /// </summary>
+        internal static string MissingInterfaceTypeDescription {
+            get {
+                return ResourceManager.GetString("MissingInterfaceTypeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MissingInterfaceType.
+        /// </summary>
+        internal static string MissingInterfaceTypeId {
+            get {
+                return ResourceManager.GetString("MissingInterfaceTypeId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible interface &apos;{0}&apos; does not have an explicit InterfaceType attribute with the type of interface set. InterfaceIsDual is the recommended choice, unless it&apos;s an event, in which case, InterfaceIsIDispatch is recommended instead..
+        /// </summary>
+        internal static string MissingInterfaceTypeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingInterfaceTypeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing InterfaceType Attribute.
+        /// </summary>
+        internal static string MissingInterfaceTypeTitle {
+            get {
+                return ResourceManager.GetString("MissingInterfaceTypeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible classes must have an explicit ProgId attribute. This is required to avoid verisoning problems. Refer to RubberduckProgId constants..
+        /// </summary>
+        internal static string MissingProgIdDescription {
+            get {
+                return ResourceManager.GetString("MissingProgIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MissingProgId.
+        /// </summary>
+        internal static string MissingProgIdId {
+            get {
+                return ResourceManager.GetString("MissingProgIdId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM-visible class &apos;{0}&apos; does not have an explicit ProgId attribute that references a RubberduckProgId constant..
+        /// </summary>
+        internal static string MissingProgIdMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingProgIdMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing ProgId Attribute.
+        /// </summary>
+        internal static string MissingProgIdTitle {
+            get {
+                return ResourceManager.GetString("MissingProgIdTitle", resourceCulture);
             }
         }
     }
