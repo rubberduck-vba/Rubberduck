@@ -28,18 +28,19 @@ namespace RubberduckCodeAnalysis
 
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
-            var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
+            var namedTypeSymbol = (INamedTypeSymbol) context.Symbol;
             var attributes = namedTypeSymbol.GetAttributes();
-            
-            if (attributes.Any(a => a.AttributeClass.Name == nameof(ComVisibleAttribute)))
-            {
-                var data = attributes.Single(a => a.AttributeClass.Name == nameof(ComVisibleAttribute));
-                var rawText = data.ApplicationSyntaxReference.GetSyntax().GetText();
 
-                if (!rawText.ToString().Contains("ComVisible(true)"))
-                {
-                    return;
-                }
+            if (!attributes.Any(a => a.AttributeClass.Name == nameof(ComVisibleAttribute)))
+            {
+                return;
+            }
+            var data = attributes.Single(a => a.AttributeClass.Name == nameof(ComVisibleAttribute));
+            var rawText = data.ApplicationSyntaxReference.GetSyntax().GetText();
+
+            if (!rawText.ToString().Contains("ComVisible(true)"))
+            {
+                return;
             }
 
             if (attributes.Any(a => a.AttributeClass.Name == nameof(GuidAttribute)))
