@@ -168,9 +168,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             var insertionIndex = (expression as ParserRuleContext).Start.TokenIndex;
+            var firstReferenceLine = _vbe.ActiveCodePane.CodeModule.GetLines((expression as ParserRuleContext).Start.Line, 1);
+            var indentLength = firstReferenceLine.Length - firstReferenceLine.TrimStart().Length;
+            var padding = new string(' ', indentLength);
 
             var rewriter = _state.GetRewriter(firstReference.QualifiedModuleName);
-            rewriter.InsertBefore(insertionIndex, newVariable);
+            rewriter.InsertBefore(insertionIndex, newVariable + padding);
 
             _rewriters.Add(rewriter);
         }
