@@ -342,8 +342,6 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
-    <Compile Include="RubberduckGuid.cs" />
-    <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\ExperimentalFeatures.cs" />
     <Compile Include="Settings\DefaultSettings.cs" />
@@ -1253,6 +1251,10 @@
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SharedResources\Rubberduck.SharedResources.csproj">
+      <Project>{8039defa-60c9-4511-8160-7969b40b3e4c}</Project>
+      <Name>Rubberduck.SharedResources</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>

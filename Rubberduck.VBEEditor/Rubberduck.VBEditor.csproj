@@ -191,6 +191,12 @@
   <ItemGroup>
     <Analyzer Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis\bin\Release\netstandard1.3\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.SharedResources\Rubberduck.SharedResources.csproj">
+      <Project>{8039defa-60c9-4511-8160-7969b40b3e4c}</Project>
+      <Name>Rubberduck.SharedResources</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -358,6 +358,10 @@
       <Project>{E85E1253-86D6-45EE-968B-F37348D44132}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.SharedResources\Rubberduck.SharedResources.csproj">
+      <Project>{8039defa-60c9-4511-8160-7969b40b3e4c}</Project>
+      <Name>Rubberduck.SharedResources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>

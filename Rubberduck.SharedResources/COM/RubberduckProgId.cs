@@ -1,4 +1,4 @@
-﻿namespace Rubberduck
+﻿namespace Rubberduck.SharedResources.COM
 {
     public static class RubberduckProgId
     {
@@ -14,5 +14,7 @@
         public const string AssertClassProgId = BaseNamespace + "AssertClass";
         public const string PermissiveAssertClassProgId = BaseNamespace + "PermissiveAssertClass";
         public const string FakesProviderProgId = BaseNamespace + "FakesProvider";
+
+        public const string DebugAddinObject = BaseNamespace + "VBETypeLibsAPI";
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.SharedResources.COM;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -20,7 +21,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
     */
     [
         ComVisible(true),
-        Guid("69E194DA-43F0-3B33-FFFF-FEABE42C9725"),
+        Guid(RubberduckGuid.DebugAddinObjectInterfaceGuid),
         InterfaceType(ComInterfaceType.InterfaceIsDual),
         EditorBrowsable(EditorBrowsableState.Always)
     ]
@@ -50,8 +51,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 
     [
         ComVisible(true),
-        Guid("69E194DA-43F0-3B33-FFFF-FEABE42C9726"),
-        ProgId("Rubberduck.VBETypeLibsAPI_Object"),
+        Guid(RubberduckGuid.DebugAddinObjectClassGuid),
+        ProgId(RubberduckProgId.DebugAddinObject),
         ClassInterface(ClassInterfaceType.None),
         ComDefaultInterface(typeof(IVBETypeLibsAPI_Object)),
         EditorBrowsable(EditorBrowsableState.Always)

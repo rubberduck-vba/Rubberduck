@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.SharedResources.COM;
 
 namespace Rubberduck.API.VBA
 {

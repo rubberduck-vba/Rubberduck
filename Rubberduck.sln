@@ -5,6 +5,7 @@ VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Parsing", "Rubberduck.Parsing\Rubberduck.Parsing.csproj", "{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}"
 	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
 		{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0} = {8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}
 	EndProjectSection
 EndProject
@@ -28,8 +29,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor", "Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj", "{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SmartIndenter", "Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj", "{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTests", "RubberduckTests\RubberduckTests.csproj", "{ADADE971-75E3-40C4-8C19-AB7409372F2E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -38,17 +45,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTests", "Rubberdu
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SettingsProvider", "Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj", "{E85E1253-86D6-45EE-968B-F37348D44132}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RegexAssistant", "Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj", "{40CC03E3-756C-4674-AF07-384115DEAEE2}"
 	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
 		{E85E1253-86D6-45EE-968B-F37348D44132} = {E85E1253-86D6-45EE-968B-F37348D44132}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Inspections", "Rubberduck.Inspections\Rubberduck.Inspections.csproj", "{AC4F1D22-D74B-45FF-AB0C-CC2A104FE023}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Main", "Rubberduck.Main\Rubberduck.Main.csproj", "{E8AB5D93-2D0F-423D-BC15-5EE118673E48}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB} = {B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
 		{E85E1253-86D6-45EE-968B-F37348D44132} = {E85E1253-86D6-45EE-968B-F37348D44132}
 		{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0} = {8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}
 		{A4A618E1-CBCA-435F-9C6C-5181E030ADFC} = {A4A618E1-CBCA-435F-9C6C-5181E030ADFC}
@@ -56,18 +71,38 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Main", "Rubberdu
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Core", "Rubberduck.Core\Rubberduck.Core.csproj", "{A1587EAC-7B54-407E-853F-4C7493D0323E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.API", "Rubberduck.API\Rubberduck.API.csproj", "{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Deployment", "Rubberduck.Deployment\Rubberduck.Deployment.csproj", "{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor.VB6", "Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj", "{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.VBEditor.VBA", "Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj", "{D488071E-EDCB-4601-B734-1A3109ED903C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RubberduckCodeAnalysis", "RubberduckCodeAnalysis\RubberduckCodeAnalysis\RubberduckCodeAnalysis.csproj", "{A2B4E037-A446-41B9-A304-F91C7C7A6972}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RubberduckCodeAnalysis.Test", "RubberduckCodeAnalysis\RubberduckCodeAnalysis.Test\RubberduckCodeAnalysis.Test.csproj", "{664C6E7B-F79B-4574-9EDD-CBB07A9B13C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.SharedResources", "Rubberduck.SharedResources\Rubberduck.SharedResources.csproj", "{8039DEFA-60C9-4511-8160-7969B40B3E4C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972} = {A2B4E037-A446-41B9-A304-F91C7C7A6972}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -449,12 +484,12 @@ Global
 		{D488071E-EDCB-4601-B734-1A3109ED903C}.Release64|x64.Build.0 = Release|Any CPU
 		{D488071E-EDCB-4601-B734-1A3109ED903C}.Release64|x86.ActiveCfg = Release|Any CPU
 		{D488071E-EDCB-4601-B734-1A3109ED903C}.Release64|x86.Build.0 = Release|Any CPU
-		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x64.Build.0 = Debug|Any CPU
-		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x86.Build.0 = Debug|Any CPU
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x64.ActiveCfg = Release|Any CPU
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x64.Build.0 = Release|Any CPU
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x86.ActiveCfg = Release|Any CPU
+		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug|x86.Build.0 = Release|Any CPU
 		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug64|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug64|Any CPU.Build.0 = Debug|Any CPU
 		{A2B4E037-A446-41B9-A304-F91C7C7A6972}.Debug64|x64.ActiveCfg = Debug|Any CPU
@@ -509,6 +544,36 @@ Global
 		{664C6E7B-F79B-4574-9EDD-CBB07A9B13C7}.Release64|x64.Build.0 = Release|Any CPU
 		{664C6E7B-F79B-4574-9EDD-CBB07A9B13C7}.Release64|x86.ActiveCfg = Release|Any CPU
 		{664C6E7B-F79B-4574-9EDD-CBB07A9B13C7}.Release64|x86.Build.0 = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug|x64.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug|x86.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug64|Any CPU.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug64|Any CPU.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug64|x64.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug64|x64.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug64|x86.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Debug64|x86.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.DebugAccess|Any CPU.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.DebugAccess|Any CPU.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.DebugAccess|x64.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.DebugAccess|x64.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.DebugAccess|x86.ActiveCfg = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.DebugAccess|x86.Build.0 = Debug|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release|x64.ActiveCfg = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release|x64.Build.0 = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release|x86.ActiveCfg = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release|x86.Build.0 = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release64|Any CPU.ActiveCfg = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release64|Any CPU.Build.0 = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release64|x64.ActiveCfg = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release64|x64.Build.0 = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release64|x86.ActiveCfg = Release|Any CPU
+		{8039DEFA-60C9-4511-8160-7969B40B3E4C}.Release64|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

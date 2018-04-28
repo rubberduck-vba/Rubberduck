@@ -1,6 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace Rubberduck
+﻿namespace Rubberduck.SharedResources.COM
 {
     public static class RubberduckGuid
     {
@@ -43,5 +41,10 @@ namespace Rubberduck
         private const string RecordGuidspace = "69E100";
         public const string DeclarationTypeGuid = RecordGuidspace + "23" + GuidSuffix;
         public const string AccessibilityGuid = RecordGuidspace + "24" + GuidSuffix;
+
+        // Debug Guids:
+        private const string DebugGuidspace = "69E101";
+        public const string DebugAddinObjectInterfaceGuid = DebugGuidspace + "23" + GuidSuffix;
+        public const string DebugAddinObjectClassGuid = DebugGuidspace + "24" + GuidSuffix;
     }
 }

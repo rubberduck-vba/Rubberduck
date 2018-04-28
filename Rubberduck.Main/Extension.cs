@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Castle.Windsor;
 using NLog;
+using Rubberduck.SharedResources.COM;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;

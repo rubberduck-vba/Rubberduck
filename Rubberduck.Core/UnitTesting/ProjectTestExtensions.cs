@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Reflection;
 using Microsoft.Win32;
+using Rubberduck.SharedResources.COM;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
