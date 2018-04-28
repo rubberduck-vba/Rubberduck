@@ -6,6 +6,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Symbols;
 using Antlr4.Runtime.Tree;
 using System.Diagnostics;
+using System.Text;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -114,10 +115,11 @@ namespace Rubberduck.Parsing.VBA
             {
                 passes.ForEach(p => p.Execute(modules));
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
+                var names = string.Join(",", modules.Select(m => m.Name));
+                Logger.Error(exception, "Exception thrown on resolving those modules: '{0}' (thread {1}).", names, Thread.CurrentThread.ManagedThreadId);
                 _parserStateManager.SetModuleStates(modules, ParserState.ResolverError, token);
-                Console.WriteLine(e);
             }
         }
 
@@ -210,9 +212,6 @@ namespace Rubberduck.Parsing.VBA
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
-            // This assert is no longer true now that we throw resolver error when resolving references
-            // Debug.Assert(_state.GetModuleState(module) == ParserState.ResolvingReferences || token.IsCancellationRequested);
-
             token.ThrowIfCancellationRequested();
 
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", module.Name, Thread.CurrentThread.ManagedThreadId);

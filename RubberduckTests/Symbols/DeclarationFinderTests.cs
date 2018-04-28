@@ -1,5 +1,3 @@
-
-using System.CodeDom;
 using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
