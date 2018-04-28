@@ -34,6 +34,7 @@ function Get-ScriptDirectory
 
 Set-StrictMode -Version latest;
 $ErrorActionPreference = "Stop";
+$DebugUnregisterRun = $false;
 
 try
 {
@@ -44,12 +45,16 @@ try
 
 	foreach($file in $files)
 	{
+		$dllFile = [System.String]$file;
+		$tlb32File = [System.String]($file -replace ".dll", ".x32.tlb");
+		$tlb64File = [System.String]($file -replace ".dll", ".x64.tlb");
+
 		$sourceDll = $sourceDir + $file;
 		$targetDll = $targetDir + $file;
-		$sourceTlb32 = $sourceDir + ($file -replace ".dll", ".x32.tlb");
-		$targetTlb32 = $targetDir + ($file -replace ".dll", ".x32.tlb");
-		$sourceTlb64 = $sourceDir + ($file -replace ".dll", ".x64.tlb");
-		$targetTlb64 = $targetDir + ($file -replace ".dll", ".x64.tlb");
+		$sourceTlb32 = $sourceDir + $tlb32File;
+		$targetTlb32 = $targetDir + $tlb32File;
+		$sourceTlb64 = $sourceDir + $tlb64File;
+		$targetTlb64 = $targetDir + $tlb64File;
 		$dllXml = $targetDll + ".xml";
 		$tlbXml = $targetTlb32 + ".xml";
 
@@ -75,53 +80,59 @@ try
 		# $entries | Format-Table | Out-String |% {Write-Host $_};
 		
 		$writer = New-Object Rubberduck.Deployment.Writers.InnoSetupRegistryWriter;
-		$content = $writer.Write($entries);
+		$content = $writer.Write($entries, $dllFile, $tlb32File, $tlb64File);
 		
 		# The file must be encoded in UTF-8 BOM
 		$regFile = ($includeDir + ($file -replace ".dll", ".reg.iss"));
 		$encoding = New-Object System.Text.UTF8Encoding $true;
 		[System.IO.File]::WriteAllLines($regFile, $content, $encoding);
+		$content = $null;
 
 		# Register the debug build on the local machine
 		if($config -eq "Debug")
 		{
-			# First see if there are registry script from the previous build
-			# If so, execute them to delete previous build's keys (which may
-		    # no longer exist for the current build and thus won't be overwritten)
-			$dir = ((Get-ScriptDirectory) + "\LocalRegistryEntries");
-			$regFile = $dir + "\DebugRegistryEntries.reg";
+			if(!$DebugUnregisterRun) 
+			{
+				# First see if there are registry script from the previous build
+				# If so, execute them to delete previous build's keys (which may
+				# no longer exist for the current build and thus won't be overwritten)
+				$dir = ((Get-ScriptDirectory) + "\LocalRegistryEntries");
+				$regFileDebug = $dir + "\DebugRegistryEntries.reg";
 
-			if (Test-Path -Path $dir -PathType Container)
-			{
-				if (Test-Path -Path $regFile -PathType Leaf)
+				if (Test-Path -Path $dir -PathType Container)
 				{
-					$datetime = Get-Date;
-					if ([Environment]::Is64BitOperatingSystem)
+					if (Test-Path -Path $regFileDebug -PathType Leaf)
 					{
-						& reg.exe import $regFile /reg:32;
-						& reg.exe import $regFile /reg:64;
+						$datetime = Get-Date;
+						if ([Environment]::Is64BitOperatingSystem)
+						{
+							& reg.exe import $regFileDebug /reg:32;
+							& reg.exe import $regFileDebug /reg:64;
+						}
+						else 
+						{
+							& reg.exe import $regFileDebug;
+						}
+						& reg.exe import ($dir + "\RubberduckAddinRegistry.reg");
+						Move-Item -Path $regFileDebug -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" );
 					}
-					else 
-					{
-						& reg.exe import $regFile;
-					}
-					& reg.exe import ($dir + "\RubberduckAddinRegistry.reg");
-					Move-Item -Path $regFile -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" );
 				}
+				else
+				{
+					New-Item $dir -ItemType Directory;
+				}
+
+				$DebugUnregisterRun = $true;
 			}
-			else
-			{
-				New-Item $dir -ItemType Directory;
-			}
-			
+
 			# NOTE: The local writer will perform the actual registry changes; the return
 			# is a registry script with deletion instructions for the keys to be deleted
 			# in the next build.
 			$writer = New-Object Rubberduck.Deployment.Writers.LocalDebugRegistryWriter;
-			$content = $writer.Write($entries);
+			$content = $writer.Write($entries, $dllFile, $tlb32File, $tlb64File);
 
 			$encoding = New-Object System.Text.ASCIIEncoding;
-			[System.IO.File]::WriteAllLines($regFile, $content, $encoding);
+			[System.IO.File]::AppendAllText($regFileDebug, $content, $encoding);
 		}
 	}
 }

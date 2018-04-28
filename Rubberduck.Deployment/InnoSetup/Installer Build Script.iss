@@ -105,6 +105,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 ; Use [Code] section (RegisterAddIn procedure) to register the entries instead.
 #include <RegistryCleanup.reg.iss>
 #include <Rubberduck.reg.iss>
+#include <Rubberduck.API.reg.iss>
 
 ; Commneted out because we don't want to delete users setting when they are just
 ; uninstalling to install another version of Rubberduck. Considered prompting to
