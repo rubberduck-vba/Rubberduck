@@ -125,6 +125,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 rewriter.Rewrite();
             }
+            Reparse();
         }
 
         private void UpdateOtherModules()
@@ -207,6 +208,11 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 _rewriters.Add(rewriter);
             }
+        }
+
+        private void Reparse()
+        {
+            _state.OnParseRequested(this);
         }
     }
 }
