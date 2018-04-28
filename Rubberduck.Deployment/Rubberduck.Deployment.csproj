@@ -105,6 +105,9 @@
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis\bin\Release\netstandard1.3\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -command "$(ProjectDir)BuildRegistryScript.ps1 -config '$(ConfigurationName)' -builderAssemblyPath '$(TargetPath)' -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' -wixToolsDir '$(ProjectDir)WixToolset\' -sourceDir '$(TargetDir)' -targetDir '$(TargetDir)' -includeDir '$(ProjectDir)InnoSetup\Includes\' -filesToExtract 'Rubberduck.dll'"</PostBuildEvent>

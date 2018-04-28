@@ -67,5 +67,8 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis\bin\Release\netstandard1.3\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

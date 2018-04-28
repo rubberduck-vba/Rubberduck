@@ -1373,6 +1373,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis\bin\Release\netstandard1.3\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

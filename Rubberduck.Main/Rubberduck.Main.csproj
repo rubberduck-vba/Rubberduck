@@ -275,7 +275,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis\bin\Release\netstandard1.3\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Ducky.ico" />
     <Content Include="EasyHook32.dll">
