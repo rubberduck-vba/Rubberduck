@@ -1,7 +1,7 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
@@ -14,8 +14,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     //The following MIN/MAX values relate to VBA types
     internal static class CompareExtents
     {
-        public static long LONGMIN = Int32.MinValue; //- 2147486648;
-        public static long LONGMAX = Int32.MaxValue; //2147486647
+        public static long LONGMIN = Int32.MinValue; //- 2147483648;
+        public static long LONGMAX = Int32.MaxValue; //2147483647
         public static long INTEGERMIN = Int16.MinValue; //- 32768;
         public static long INTEGERMAX = Int16.MaxValue; //32767
         public static long BYTEMIN = byte.MinValue;  //0
@@ -30,7 +30,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         public IRangeClauseFilter Create(string typeName, IParseTreeValueFactory valueFactory)
         {
-            if (valueFactory is null) { throw new ArgumentNullException(); }
+            if (valueFactory is null)
+            {
+                throw new ArgumentNullException(nameof(valueFactory));
+            }
 
             if (!(IntegralNumberExtents.Keys.Contains(typeName)
                 || typeName.Equals(Tokens.Double)
@@ -44,46 +47,50 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (IntegralNumberExtents.Keys.Contains(typeName))
             {
-                var integerTypeFilter = new RangeClauseFilter<long>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
-                var minExtent = valueFactory.Create(IntegralNumberExtents[typeName].Item1.ToString(), typeName);
-                var maxExtent = valueFactory.Create(IntegralNumberExtents[typeName].Item2.ToString(), typeName);
+                var integerTypeFilter = new RangeClauseFilter<long>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
+                var minExtent = valueFactory.Create(IntegralNumberExtents[typeName].MinValue.ToString(), typeName);
+                var maxExtent = valueFactory.Create(IntegralNumberExtents[typeName].MaxValue.ToString(), typeName);
                 integerTypeFilter.AddExtents(minExtent, maxExtent);
                 return integerTypeFilter;
             }
-            else if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
+
+            if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
             {
-                var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+                var doubleTypeFilter = new RangeClauseFilter<double>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
                 if (typeName.Equals(Tokens.Single))
                 {
-                    var minExtent = valueFactory.Create(CompareExtents.SINGLEMIN.ToString(), typeName);
-                    var maxExtent = valueFactory.Create(CompareExtents.SINGLEMAX.ToString(), typeName);
+                    var minExtent = valueFactory.Create(CompareExtents.SINGLEMIN.ToString(CultureInfo.InvariantCulture), typeName);
+                    var maxExtent = valueFactory.Create(CompareExtents.SINGLEMAX.ToString(CultureInfo.InvariantCulture), typeName);
                     doubleTypeFilter.AddExtents(minExtent, maxExtent);
                 }
                 return doubleTypeFilter;
             }
-            else if (typeName.Equals(Tokens.Boolean))
+
+            if (typeName.Equals(Tokens.Boolean))
             {
-                var boolTypeFilter = new RangeClauseFilter<bool>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+                var boolTypeFilter = new RangeClauseFilter<bool>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
                 return boolTypeFilter;
             }
-            else if (typeName.Equals(Tokens.Currency))
+
+            if (typeName.Equals(Tokens.Currency))
             {
-                var decimalTypeFilter = new RangeClauseFilter<decimal>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
-                var minExtent = valueFactory.Create(CompareExtents.CURRENCYMIN.ToString(), typeName);
-                var maxExtent = valueFactory.Create(CompareExtents.CURRENCYMAX.ToString(), typeName);
+                var decimalTypeFilter = new RangeClauseFilter<decimal>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
+                var minExtent = valueFactory.Create(CompareExtents.CURRENCYMIN.ToString(CultureInfo.InvariantCulture), typeName);
+                var maxExtent = valueFactory.Create(CompareExtents.CURRENCYMAX.ToString(CultureInfo.InvariantCulture), typeName);
                 decimalTypeFilter.AddExtents(minExtent, maxExtent);
                 return decimalTypeFilter;
             }
-            var filter = new RangeClauseFilter<string>(typeName, valueFactory, this, ParseTreeValue.TryConvertValue);
+
+            var filter = new RangeClauseFilter<string>(typeName, valueFactory, this, ParseTreeValueExtensions.TryConvertValue);
             return filter;
         }
 
-        internal static Dictionary<string, Tuple<long, long>> IntegralNumberExtents = new Dictionary<string, Tuple<long, long>>()
+        internal static Dictionary<string, (long MinValue, long MaxValue)> IntegralNumberExtents = new Dictionary<string, (long MinValue, long MaxValue)>()
         {
-            [Tokens.Long] = new Tuple<long, long>(CompareExtents.LONGMIN, CompareExtents.LONGMAX),
-            [Tokens.Integer] = new Tuple<long, long>(CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
-            [Tokens.Int] = new Tuple<long, long>(CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
-            [Tokens.Byte] = new Tuple<long, long>(CompareExtents.BYTEMIN, CompareExtents.BYTEMAX)
+            [Tokens.Long] = (CompareExtents.LONGMIN, CompareExtents.LONGMAX),
+            [Tokens.Integer] = (CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
+            [Tokens.Int] = (CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
+            [Tokens.Byte] = (CompareExtents.BYTEMIN, CompareExtents.BYTEMAX)
         };
     }
 }

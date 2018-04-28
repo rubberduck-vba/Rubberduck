@@ -1,8 +1,10 @@
-﻿using Rubberduck.Parsing;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -13,16 +15,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string TypeName { set; get; }
         IRangeClauseFilter FilterUnreachableClauses(IRangeClauseFilter filter);
         void Add(IRangeClauseFilter filter);
-        void AddValueRange(IParseTreeValue startVal, IParseTreeValue endVal);
-        void AddIsClause(IParseTreeValue value, string opSymbol);
+        void AddValueRange((IParseTreeValue StartValue, IParseTreeValue EndValue) valueRange);
+        void AddIsClause(IParseTreeValue value, string operatorSymbol);
         void AddSingleValue(IParseTreeValue value);
-        void AddRelationalOp(IParseTreeValue value);
+        void AddRelationalOperator(IParseTreeValue value);
     }
 
     public interface IRangeClauseFilterTestSupport<T>
     {
-        bool TryGetIsLTValue(out T isLT);
-        bool TryGetIsGTValue(out T isGT);
+        bool TryGetIsLessThanValue(out T isLessThanValue);
+        bool TryGetIsGreaterThanValue(out T isGreaterThanValue);
         HashSet<T> SingleValues { get; }
     }
 
@@ -34,12 +36,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly T _trueValue;
         private readonly T _falseValue;
 
-        private readonly List<Tuple<T, T>> _ranges;
         private readonly Dictionary<string, List<T>> _isClause;
-        private readonly HashSet<T> _singleValues;
-        private readonly HashSet<string> _relationalOps;
-        private readonly HashSet<string> _variableRanges;
-        private readonly HashSet<string> _variableSingles;
 
         private bool _hasExtents;
         private T _minExtent;
@@ -53,12 +50,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _filterFactory = filterFactory;
             _valueConverter = tConverter;
 
-            _ranges = new List<Tuple<T, T>>();
-            _singleValues = new HashSet<T>();
             _isClause = new Dictionary<string, List<T>>();
-            _relationalOps = new HashSet<string>();
-            _variableRanges = new HashSet<string>();
-            _variableSingles = new HashSet<string>();
             _hasExtents = false;
             _falseValue = ConvertToContainedGeneric(false);
             _trueValue = ConvertToContainedGeneric(true);
@@ -67,19 +59,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _descriptorIsDirty = true;
         }
 
-        private List<Tuple<T, T>> RangeValues => _ranges;
+        public HashSet<T> SingleValues { get; } = new HashSet<T>();
 
-        private HashSet<string> VariableRanges => _variableRanges;
-
-        private HashSet<string> RelationalOps => _relationalOps;
-
-        public HashSet<T> SingleValues => _singleValues;
-
-        private HashSet<string> VariableSingleValues => _variableSingles;
+        private List<(T Start, T End)> RangeValues { get; } = new List<(T Start, T End)>();
+        private HashSet<string> VariableRanges { get; } = new HashSet<string>();
+        private HashSet<string> RelationalOperators { get; } = new HashSet<string>();
+        private HashSet<string> VariableSingleValues { get; } = new HashSet<string>();
 
         private static bool ContainsBooleans => typeof(T) == typeof(bool);
 
-        private static bool ContainsIntegralNumbers => typeof(T) == typeof(long) || typeof(T) == typeof(Int32) || typeof(T) == typeof(byte);
+        private static bool ContainsIntegralNumbers => typeof(T) == typeof(long) 
+                                                       || typeof(T) == typeof(int) 
+                                                       || typeof(T) == typeof(short) 
+                                                       || typeof(T) == typeof(byte);
 
         public string TypeName { get; set; }
 
@@ -93,78 +85,76 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
 
                 var coversAll = false;
-                var hasLTFilter = TryGetIsLTValue(out T ltValue);
-                var hasGTFilter = TryGetIsGTValue(out T gtValue);
-                if (hasLTFilter && hasGTFilter)
+                var hasLessThanFilter = TryGetIsLessThanValue(out T lessThanValue);
+                var hasGreaterThanFilter = TryGetIsGreaterThanValue(out T greaterThanValue);
+
+                if (hasLessThanFilter && hasGreaterThanFilter)
                 {
-                    coversAll = ltValue.CompareTo(gtValue) > 0
-                        || ltValue.CompareTo(gtValue) == 0 && (SingleValues.Contains(ltValue))
-                        || RangeValues.Any(rv => rv.Item1.CompareTo(ltValue) <= 0 && rv.Item2.CompareTo(gtValue) >= 0);
+                    coversAll = lessThanValue.CompareTo(greaterThanValue) > 0
+                        || lessThanValue.CompareTo(greaterThanValue) == 0 && SingleValues.Contains(lessThanValue)
+                        || RangeValues.Any(range => range.Contains((lessThanValue, greaterThanValue)));
                 }
 
-                if (ContainsIntegralNumbers && hasLTFilter && hasGTFilter && !coversAll)
+                if (ContainsIntegralNumbers && hasLessThanFilter && hasGreaterThanFilter && !coversAll)
                 {
-                    var lt = ToLong(ltValue);
-                    var gt = ToLong(gtValue);
-                    coversAll = gt - lt + 1 <= RangesValuesCount() + SingleValues.Count()
-                        || gt == lt && RangesFilterValue(ltValue);
+                    var lessThanIntegralNumber = ToLong(lessThanValue);
+                    var greaterThanIntegralNumber = ToLong(greaterThanValue);
+                    coversAll = greaterThanIntegralNumber - lessThanIntegralNumber + 1 <= RangesValuesCount() + SingleValues.Count
+                        || greaterThanIntegralNumber == lessThanIntegralNumber && RangesFilterValue(lessThanValue);
                 }
                 return coversAll;
             }
         }
 
-        public bool ContainsFilters
-        {
-            get
-            {
-                return _ranges.Any() || _variableRanges.Any()
-                    || _singleValues.Any() || _variableSingles.Any()
-                    || _relationalOps.Any()
-                    || TryGetIsLTValue(out T isLT) && isLT.CompareTo(_minExtent) != 0
-                    || TryGetIsGTValue(out T isGT) && isGT.CompareTo(_maxExtent) != 0;
-            }
-        }
+        public bool ContainsFilters => RangeValues.Any() 
+                                       || VariableRanges.Any()
+                                       || SingleValues.Any() || VariableSingleValues.Any()
+                                       || RelationalOperators.Any()
+                                       || TryGetIsLessThanValue(out T isLessThanValue) && isLessThanValue.CompareTo(_minExtent) != 0
+                                       || TryGetIsGreaterThanValue(out T isGreaterThanValue) && isGreaterThanValue.CompareTo(_maxExtent) != 0;
 
         public void Add(IRangeClauseFilter filter)
         {
             var newFilter = (RangeClauseFilter<T>)filter;
-            if (newFilter.TryGetIsLTValue(out T isLT))
+
+            if (newFilter.TryGetIsLessThanValue(out T isLessThanValue))
             {
-                AddIsClauseImpl(isLT, LogicSymbols.LT);
-            }
-            if (newFilter.TryGetIsGTValue(out T isGT))
-            {
-                AddIsClauseImpl(isGT, LogicSymbols.GT);
+                AddIsClauseImpl(isLessThanValue, LogicSymbols.LT);
             }
 
-            foreach (var tuple in newFilter.RangeValues)
+            if (newFilter.TryGetIsGreaterThanValue(out T isGreaterThanValue))
             {
-                AddValueRangeImpl(tuple.Item1, tuple.Item2);
+                AddIsClauseImpl(isGreaterThanValue, LogicSymbols.GT);
             }
 
-            foreach (var val in newFilter.VariableRanges)
+            foreach (var range in newFilter.RangeValues)
             {
-                _variableRanges.Add(val);
+                AddValueRangeImpl(range);
             }
 
-            foreach (var op in newFilter.RelationalOps)
+            foreach (var range in newFilter.VariableRanges)
             {
-                AddRelationalOpImpl(op);
+                VariableRanges.Add(range);
             }
 
-            foreach (var val in newFilter.SingleValues)
+            foreach (var relationalOperator in newFilter.RelationalOperators)
             {
-                AddSingleValueImpl(val);
+                AddRelationalOperatorImpl(relationalOperator);
             }
 
-            foreach (var val in newFilter.VariableSingleValues)
+            foreach (var value in newFilter.SingleValues)
             {
-                VariableSingleValues.Add(val);
+                AddSingleValueImpl(value);
+            }
+
+            foreach (var value in newFilter.VariableSingleValues)
+            {
+                VariableSingleValues.Add(value);
             }
             _descriptorIsDirty = true;
         }
 
-        public void AddIsClause(IParseTreeValue value, string opSymbol)
+        public void AddIsClause(IParseTreeValue value, string operatorSymbol)
         {
             if (value.ParsesToConstantValue)
             {
@@ -172,28 +162,28 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     throw new ArgumentException();
                 }
-                AddIsClauseImpl(result, opSymbol);
+                AddIsClauseImpl(result, operatorSymbol);
             }
             else
             {
-                AddRelationalOpImpl(value.ValueText);
+                AddRelationalOperatorImpl(value.ValueText);
             }
             _descriptorIsDirty = true;
         }
 
-        public void AddRelationalOp(IParseTreeValue value)
+        public void AddRelationalOperator(IParseTreeValue value)
         {
             if (value.ParsesToConstantValue)
             {
                 if (!_valueConverter(value, out T result))
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(nameof(value));
                 }
                 AddSingleValueImpl(result);
             }
             else
             {
-                AddRelationalOpImpl(value.ValueText);
+                AddRelationalOperatorImpl(value.ValueText);
             }
             _descriptorIsDirty = true;
         }
@@ -215,78 +205,88 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _descriptorIsDirty = true;
         }
 
-        public void AddValueRange(IParseTreeValue inputStartVal, IParseTreeValue inputEndVal)
+        public void AddValueRange((IParseTreeValue StartValue, IParseTreeValue EndValue) valueRange)
         {
-            var currentRanges = new List<Tuple<T, T>>();
-            currentRanges.AddRange(_ranges);
-            _ranges.Clear();
+            var currentRanges = new List<(T Start, T End)>();
+            currentRanges.AddRange(RangeValues);
+            RangeValues.Clear();
 
             foreach (var range in currentRanges)
             {
-                AddValueRangeImpl(range.Item1, range.Item2);
+                AddValueRangeImpl(range);
             }
 
-            if (inputStartVal.ParsesToConstantValue && inputEndVal.ParsesToConstantValue)
+            if (valueRange.StartValue.ParsesToConstantValue && valueRange.EndValue.ParsesToConstantValue)
             {
-                if (!(_valueConverter(inputStartVal, out T startVal) && _valueConverter(inputEndVal, out T endVal)))
-                {
-                    throw new ArgumentException();
-                }
-                AddValueRangeImpl(startVal, endVal);
+                AddValueRangeImpl(RangeFromValueRange(valueRange));
             }
             else
             {
-                AddVariableRangeImpl(inputStartVal.ValueText, inputEndVal.ValueText);
+                AddVariableRangeImpl(VariableRangeFromValueRange(valueRange));
             }
             _descriptorIsDirty = true;
+        }
+
+        private (T Start, T End) RangeFromValueRange((IParseTreeValue StartValue, IParseTreeValue EndValue) valueRange)
+        {
+            if (!(_valueConverter(valueRange.StartValue, out T startValue) && _valueConverter(valueRange.EndValue, out T endValue)))
+            {
+                throw new ArgumentException();
+            }
+
+            return (startValue, endValue);
+        }
+
+        private (string Start, string End) VariableRangeFromValueRange((IParseTreeValue StartValue, IParseTreeValue EndValue) valueRange)
+        {
+            return (valueRange.StartValue.ValueText, valueRange.EndValue.ValueText);
         }
 
         public IRangeClauseFilter FilterUnreachableClauses(IRangeClauseFilter filter)
         {
             if (filter is null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(filter));
             }
 
             if (!(filter is RangeClauseFilter<T>))
             {
-                throw new ArgumentException($"Argument is not of type UCIRangeClauseFilter<{typeof(T).ToString()}>", "filter");
+                throw new ArgumentException($"Argument is not of type UCIRangeClauseFilter<{typeof(T)}>", "filter");
             }
 
-            var filteredCoverage = _filterFactory.Create(TypeName, _valueFactory);
-
-            filteredCoverage = (RangeClauseFilter<T>)MemberwiseClone();
             if (!ContainsFilters || filter.FiltersAllValues)
             {
                 return _filterFactory.Create(TypeName, _valueFactory);
             }
 
+            var filteredCoverage = (RangeClauseFilter<T>)MemberwiseClone();
             if (!filter.ContainsFilters && !_hasExtents)
             {
                 return filteredCoverage;
             }
 
-            filteredCoverage = RemoveClausesCoveredBy((RangeClauseFilter<T>)filteredCoverage, (RangeClauseFilter<T>)filter);
+            filteredCoverage.RemoveClausesCoveredBy((RangeClauseFilter<T>)filter);
+
             return filteredCoverage;
         }
 
-        public bool TryGetIsLTValue(out T isLT)
+        public bool TryGetIsLessThanValue(out T isLessThanValue)
         {
-            isLT = default;
-            if (_isClause.TryGetValue(LogicSymbols.LT, out List<T> isLTValues) && isLTValues.Any())
+            isLessThanValue = default;
+            if (_isClause.TryGetValue(LogicSymbols.LT, out List<T> isLessThanValues) && isLessThanValues.Any())
             {
-                isLT = isLTValues.Max();
+                isLessThanValue = isLessThanValues.Max();
                 return true;
             }
             return false;
         }
 
-        public bool TryGetIsGTValue(out T isGT)
+        public bool TryGetIsGreaterThanValue(out T isGreaterThanValue)
         {
-            isGT = default;
-            if (_isClause.TryGetValue(LogicSymbols.GT, out List<T> isGTValues) && isGTValues.Any())
+            isGreaterThanValue = default;
+            if (_isClause.TryGetValue(LogicSymbols.GT, out List<T> isGreaterThanValues) && isGreaterThanValues.Any())
             {
-                isGT = isGTValues.Min();
+                isGreaterThanValue = isGreaterThanValues.Min();
                 return true;
             }
             return false;
@@ -302,23 +302,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || filter.VariableSingleValues.Count != VariableSingleValues.Count
                 || filter.RangeValues.Count != RangeValues.Count
                 || filter.VariableRanges.Count != VariableRanges.Count
-                || filter.RelationalOps.Count != RelationalOps.Count)
+                || filter.RelationalOperators.Count != RelationalOperators.Count)
             {
                 return false;
             }
 
-            if (filter.TryGetIsLTValue(out T isLT) && TryGetIsLTValue(out T myLT) && isLT.CompareTo(myLT) != 0
-                || filter.TryGetIsGTValue(out T isGT) && TryGetIsGTValue(out T myGT) && isGT.CompareTo(myGT) != 0)
+            if (filter.TryGetIsLessThanValue(out T isLessThanValue) 
+                    && TryGetIsLessThanValue(out T myLessThanValue) 
+                    && isLessThanValue.CompareTo(myLessThanValue) != 0
+                || filter.TryGetIsGreaterThanValue(out T isGreaterThanValue) 
+                    && TryGetIsGreaterThanValue(out T myGreaterThan) 
+                    && isGreaterThanValue.CompareTo(myGreaterThan) != 0)
             {
                 return false;
             }
 
-            var theRanges = filter._ranges.All(rg => _ranges.Contains(rg))
-                    && filter._variableRanges.All(vrg => _variableRanges.Contains(vrg));
+            var hasSameRanges = filter.RangeValues.All(range => RangeValues.Contains(range))
+                    && filter.VariableRanges.All(variableRange => VariableRanges.Contains(variableRange));
 
-            var singles = filter._singleValues.All(rg => _singleValues.Contains(rg));
-            var relOps = filter._relationalOps.All(ro => _relationalOps.Contains(ro));
-            return theRanges && relOps && singles;
+            var hasSameSingleValues = filter.SingleValues.All(value => SingleValues.Contains(value));
+            var hasSameRelationalOperators = filter.RelationalOperators.All(relationalOperator => RelationalOperators.Contains(relationalOperator));
+            return hasSameRanges && hasSameRelationalOperators && hasSameSingleValues;
         }
 
         public override string ToString()
@@ -333,8 +337,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 GetIsClausesDescriptor(LogicSymbols.LT),
                 GetIsClausesDescriptor(LogicSymbols.GT),
                 GetRangesDescriptor(),
-                GetSinglesDescriptor(),
-                GetRelOpDescriptor()
+                GetSingleValuesDescriptor(),
+                GetRelationalOperatorDescriptor()
             };
 
             descriptors.Remove(string.Empty);
@@ -372,7 +376,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private bool FiltersAllRelationalOps
+        private bool FiltersAllRelationalOperators
         {
             get
             {
@@ -380,239 +384,233 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return CoversTrueFalse();
                 }
-                return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
+                return SingleValues.Contains(_trueValue) && SingleValues.Contains(_falseValue)
                     || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue)
-                    || IsLTFiltersValue(_trueValue) && IsLTFiltersValue(_falseValue)
-                    || IsGTFiltersValue(_trueValue) && IsGTFiltersValue(_falseValue);
+                    || IsLessThanFiltersValue(_trueValue) && IsLessThanFiltersValue(_falseValue)
+                    || IsGreaterThanFiltersValue(_trueValue) && IsGreaterThanFiltersValue(_falseValue);
             }
         }
 
         private bool CoversTrueFalse()
         {
-            return _singleValues.Contains(_trueValue) && _singleValues.Contains(_falseValue)
+            return SingleValues.Contains(_trueValue) && SingleValues.Contains(_falseValue)
                 || RangesFilterValue(_trueValue) && RangesFilterValue(_falseValue);
         }
 
-        private void RemoveIsLTClause() => RemoveIsClauseImpl(LogicSymbols.LT);
+        private void RemoveIsLessThanClause() => RemoveIsClauseImpl(LogicSymbols.LT);
 
-        private void RemoveIsGTClause() => RemoveIsClauseImpl(LogicSymbols.GT);
+        private void RemoveIsGreaterThanClause() => RemoveIsClauseImpl(LogicSymbols.GT);
 
-        private void RemoveRangeValues(List<Tuple<T, T>> toRemove)
+        private void RemoveRangeValues(List<(T Start, T End)> toRemove)
         {
-            foreach (var tp in toRemove)
+            foreach (var range in toRemove)
             {
-                _ranges.Remove(tp);
+                RangeValues.Remove(range);
             }
         }
 
-        private IRangeClauseFilter RemoveClausesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveClausesCoveredBy(RangeClauseFilter<T> removalSpec)
         {
-            var newFilter = RemoveIsClausesCoveredBy(removeFrom, removalSpec);
-            newFilter = RemoveRangesCoveredBy(removeFrom, removalSpec);
-            newFilter = RemoveSingleValuesCoveredBy(removeFrom, removalSpec);
-            newFilter = RemoveRelationalOpsCoveredBy(removeFrom, removalSpec);
-            return newFilter;
+            RemoveIsClausesCoveredBy(removalSpec);
+            RemoveRangesCoveredBy(removalSpec);
+            RemoveSingleValuesCoveredBy(removalSpec);
+            RemoveRelationalOperatorsCoveredBy(removalSpec);
         }
 
-        private static RangeClauseFilter<T> RemoveIsClausesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveIsClausesCoveredBy(RangeClauseFilter<T> removalSpec)
         {
-            if (removeFrom.TryGetIsLTValue(out T isLT) 
-                && removalSpec.TryGetIsLTValue(out T removalSpecLT)
-                && removalSpecLT.CompareTo(isLT) >= 0)
+            if (TryGetIsLessThanValue(out T isLessThanValue) 
+                && removalSpec.TryGetIsLessThanValue(out T removalSpecLessThanValue)
+                && removalSpecLessThanValue.CompareTo(isLessThanValue) >= 0)
             {
-                removeFrom.RemoveIsLTClause();
+                RemoveIsLessThanClause();
             }
 
-            if (removeFrom.TryGetIsGTValue(out T isGT)
-                && removalSpec.TryGetIsGTValue(out T removalSpecGT)
-                && removalSpecGT.CompareTo(isGT) <= 0)
+            if (TryGetIsGreaterThanValue(out T isGreaterThanValue)
+                && removalSpec.TryGetIsGreaterThanValue(out T removalSpecGreaterThan)
+                && removalSpecGreaterThan.CompareTo(isGreaterThanValue) <= 0)
             {
-                removeFrom.RemoveIsGTClause();
+                RemoveIsGreaterThanClause();
             }
-
-            return removeFrom;
         }
 
-        private RangeClauseFilter<T> RemoveRangesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
+        private void RemoveRangesCoveredBy(RangeClauseFilter<T> removalSpec)
         {
-            if (!(removeFrom.RangeValues.Any() || removeFrom.VariableRanges.Any()))
+            if (!(RangeValues.Any() || VariableRanges.Any()))
             {
-                return removeFrom;
-            }
-
-            var rangesToRemove = new List<Tuple<T, T>>();
-            if (removalSpec.TryGetIsLTValue(out T removalSpecLT))
-            {
-                foreach (var tup in removeFrom.RangeValues)
-                {
-                    if (removalSpecLT.CompareTo(tup.Item1) > 0 && removalSpecLT.CompareTo(tup.Item2) > 0)
-                    {
-                        rangesToRemove.Add(tup);
-                    }
-                }
-            }
-
-            if (removalSpec.TryGetIsGTValue(out T removalSpecGT))
-            {
-                foreach (var tup in removeFrom.RangeValues)
-                {
-                    if (removalSpecGT.CompareTo(tup.Item1) < 0 && removalSpecGT.CompareTo(tup.Item2) < 0)
-                    {
-                        rangesToRemove.Add(tup);
-                    }
-                }
-            }
-
-            foreach (var tup in removeFrom.RangeValues)
-            {
-                foreach (var rem in removalSpec.RangeValues)
-                {
-                    if (rem.Item1.CompareTo(tup.Item1) <= 0 && rem.Item2.CompareTo(tup.Item2) >= 0)
-                    {
-                        rangesToRemove.Add(tup);
-                    }
-                }
-            }
-            removeFrom.RemoveRangeValues(rangesToRemove);
-
-            var varRangesToRemove = new List<string>();
-            foreach(var value in removeFrom.VariableRanges)
-            {
-                if (removalSpec.VariableRanges.Contains(value))
-                {
-                    varRangesToRemove.Add(value);
-                }
-            }
-
-            varRangesToRemove.ForEach(vr => removeFrom._variableRanges.Remove(vr));
-            return removeFrom;
-        }
-
-        private RangeClauseFilter<T> RemoveSingleValuesCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
-        {
-            List<T> toRemove = new List<T>();
-            if (removalSpec.TryGetIsLTValue(out T removalSpecLT))
-            {
-                foreach (var sv in removeFrom.SingleValues)
-                {
-                    if (removalSpecLT.CompareTo(sv) > 0)
-                    {
-                        toRemove.Add(sv);
-                    }
-                }
-            }
-
-            if (removalSpec.TryGetIsGTValue(out T removalSpecGT))
-            {
-                foreach (var sv in removeFrom.SingleValues)
-                {
-                    if (removalSpecGT.CompareTo(sv) < 0)
-                    {
-                        toRemove.Add(sv);
-                    }
-                }
-            }
-
-            foreach (var tup in removalSpec.RangeValues)
-            {
-                foreach (var val in removeFrom.SingleValues)
-                {
-                    if (tup.Item1.CompareTo(val) <= 0 && tup.Item2.CompareTo(val) >= 0)
-                    {
-                        toRemove.Add(val);
-                    }
-                }
-            }
-
-            toRemove.AddRange(removalSpec.SingleValues);
-
-            foreach (var rem in toRemove)
-            {
-                removeFrom.SingleValues.Remove(rem);
-            }
-
-            var toRemoveVariables = new List<string>();
-            foreach(var value in removalSpec.VariableSingleValues)
-            {
-                if (removeFrom.VariableSingleValues.Contains(value))
-                {
-                    toRemoveVariables.Add(value);
-                }
-            }
-            toRemoveVariables.ForEach(rv => removeFrom.VariableSingleValues.Remove(rv));
-            return removeFrom;
-        }
-
-        private RangeClauseFilter<T> RemoveRelationalOpsCoveredBy(RangeClauseFilter<T> removeFrom, RangeClauseFilter<T> removalSpec)
-        {
-            List<string> toRemove = new List<string>();
-            if (removalSpec.FiltersAllRelationalOps)
-            {
-                removeFrom.RelationalOps.Clear();
-            }
-            foreach (var rem in removalSpec.RelationalOps)
-            {
-                if (removeFrom.RelationalOps.Contains(rem))
-                {
-                    toRemove.Add(rem);
-                }
-            }
-
-            foreach (var rem in toRemove)
-            {
-                removeFrom.RelationalOps.Remove(rem);
-            }
-            return removeFrom;
-        }
-
-        private void AddIsClauseImpl(T val, string opSymbol)
-        {
-            if (ContainsBooleans)
-            {
-                AddIsClauseBoolean(val, opSymbol);
                 return;
             }
 
-            if (opSymbol.Equals(LogicSymbols.LT) || opSymbol.Equals(LogicSymbols.GT))
+            var rangesToRemove = new List<(T Start, T End)>();
+            foreach (var range in RangeValues)
             {
-                StoreIsClauseValue(val, opSymbol);
-            }
-            else if (opSymbol.Equals(LogicSymbols.LTE) || opSymbol.Equals(LogicSymbols.GTE))
-            {
-                var ltOrGtSymbol = opSymbol.Substring(0, opSymbol.Length - 1);
-                StoreIsClauseValue(val, ltOrGtSymbol);
+                if (removalSpec.TryGetIsLessThanValue(out T removalSpecLessThanValue))
+                {
+                    if (removalSpecLessThanValue.IsGreaterThan(range))
+                    {
+                        rangesToRemove.Add(range);
+                        continue;
+                    }
+                }
 
-                AddSingleValueImpl(val);
+                if (removalSpec.TryGetIsGreaterThanValue(out T removalSpecGreaterThanValue))
+                {
+                    if (removalSpecGreaterThanValue.IsLessThan(range))
+                    {
+                        rangesToRemove.Add(range);
+                        continue;
+                    }
+                }
+
+                foreach (var removalRange in removalSpec.RangeValues)
+                {
+                    if (removalRange.Contains(range))
+                    {
+                        rangesToRemove.Add(range);
+                        break;
+                    }
+                }
             }
-            else if (opSymbol.Equals(LogicSymbols.EQ))
+            RemoveRangeValues(rangesToRemove);
+
+            var variableRangesToRemove = new List<string>();
+            foreach(var variableRange in VariableRanges)
             {
-                AddSingleValueImpl(val);
+                if (removalSpec.VariableRanges.Contains(variableRange))
+                {
+                    variableRangesToRemove.Add(variableRange);
+                }
             }
-            else if (opSymbol.Equals(LogicSymbols.NEQ))
+
+            foreach (var variableRange in variableRangesToRemove)
             {
-                StoreIsClauseValue(val, LogicSymbols.LT);
-                StoreIsClauseValue(val, LogicSymbols.GT);
+                VariableRanges.Remove(variableRange);
+            }
+        }
+
+        private void RemoveSingleValuesCoveredBy(RangeClauseFilter<T> removalSpec)
+        {
+            List<T> toRemove = new List<T>();
+            foreach (var singleValue in SingleValues)
+            {
+                if (removalSpec.TryGetIsLessThanValue(out T removalSpecLessThanValue))
+                {
+                    if (removalSpecLessThanValue.CompareTo(singleValue) > 0)
+                    {
+                        toRemove.Add(singleValue);
+                        continue;
+                    }
+                }
+
+                if (removalSpec.TryGetIsGreaterThanValue(out T removalSpecGreaterThanValue))
+                {
+                    if (removalSpecGreaterThanValue.CompareTo(singleValue) < 0)
+                    {
+                        toRemove.Add(singleValue);
+                        continue;
+                    }
+                }
+
+                foreach (var removalRange in removalSpec.RangeValues)
+                {
+                    if (removalRange.Contains(singleValue))
+                    {
+                        toRemove.Add(singleValue);
+                        break;
+                    }
+                }
+            }
+            toRemove.AddRange(removalSpec.SingleValues);
+
+            foreach (var singleValue in toRemove)
+            {
+                SingleValues.Remove(singleValue);
+            }
+
+            var toRemoveVariables = new List<string>();
+            foreach(var variable in VariableSingleValues)
+            {
+                if (removalSpec.VariableSingleValues.Contains(variable))
+                {
+                    toRemoveVariables.Add(variable);
+                }
+            }
+
+            foreach (var variable in toRemoveVariables)
+            {
+                VariableSingleValues.Remove(variable);
+            }
+        }
+
+        private void RemoveRelationalOperatorsCoveredBy(RangeClauseFilter<T> removalSpec)
+        {
+            List<string> toRemove = new List<string>();
+            if (removalSpec.FiltersAllRelationalOperators)
+            {
+                RelationalOperators.Clear();
+            }
+            foreach (var removalOperators in removalSpec.RelationalOperators)
+            {
+                if (RelationalOperators.Contains(removalOperators))
+                {
+                    toRemove.Add(removalOperators);
+                }
+            }
+
+            foreach (var relationalOperator in toRemove)
+            {
+                RelationalOperators.Remove(relationalOperator);
+            }
+        }
+
+        private void AddIsClauseImpl(T value, string operatorSymbol)
+        {
+            if (ContainsBooleans)
+            {
+                AddIsClauseBoolean(value, operatorSymbol);
+                return;
+            }
+
+            if (operatorSymbol.Equals(LogicSymbols.LT) || operatorSymbol.Equals(LogicSymbols.GT))
+            {
+                StoreIsClauseValue(value, operatorSymbol);
+            }
+            else if (operatorSymbol.Equals(LogicSymbols.LTE) || operatorSymbol.Equals(LogicSymbols.GTE))
+            {
+                var lessThanOrGreaterThanSymbol = operatorSymbol.Substring(0, operatorSymbol.Length - 1);
+                StoreIsClauseValue(value, lessThanOrGreaterThanSymbol);
+
+                AddSingleValueImpl(value);
+            }
+            else if (operatorSymbol.Equals(LogicSymbols.EQ))
+            {
+                AddSingleValueImpl(value);
+            }
+            else if (operatorSymbol.Equals(LogicSymbols.NEQ))
+            {
+                StoreIsClauseValue(value, LogicSymbols.LT);
+                StoreIsClauseValue(value, LogicSymbols.GT);
             }
 
             FilterExistingRanges();
             FilterExistingSingles();
-            TrimExistingRanges(true);
-            TrimExistingRanges(false);
+            TrimStartOfExistingRanges();
+            TrimEndOfExistingRanges();
         }
 
-        private void StoreIsClauseValue(T value, string opSymbol)
+        private void StoreIsClauseValue(T value, string operatorSymbol)
         {
-            if (_isClause.ContainsKey(opSymbol))
+            if (_isClause.ContainsKey(operatorSymbol))
             {
-                _isClause[opSymbol].Add(value);
+                _isClause[operatorSymbol].Add(value);
             }
             else
             {
-                _isClause.Add(opSymbol, new List<T>() { value });
+                _isClause.Add(operatorSymbol, new List<T>() { value });
             }
         }
 
-        private void AddIsClauseBoolean(T val, string opSymbol)
+        private void AddIsClauseBoolean(T value, string operatorSymbol)
         {
             /*
              * Indeterminant cases are added as unresolved Relational Ops
@@ -636,25 +634,25 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             *   Is <> False             True    False
             */
 
-            var bVal = bool.Parse(val.ToString());
+            var booleanValue = bool.Parse(value.ToString());
 
-            if (opSymbol.Equals(LogicSymbols.NEQ)
-                || opSymbol.Equals(LogicSymbols.EQ)
-                || (opSymbol.Equals(LogicSymbols.GT) && bVal)
-                || (opSymbol.Equals(LogicSymbols.LT) && !bVal)
-                || (opSymbol.Equals(LogicSymbols.GTE) && !bVal)
-                || (opSymbol.Equals(LogicSymbols.LTE) && bVal)
+            if (operatorSymbol.Equals(LogicSymbols.NEQ)
+                || operatorSymbol.Equals(LogicSymbols.EQ)
+                || (operatorSymbol.Equals(LogicSymbols.GT) && booleanValue)
+                || (operatorSymbol.Equals(LogicSymbols.LT) && !booleanValue)
+                || (operatorSymbol.Equals(LogicSymbols.GTE) && !booleanValue)
+                || (operatorSymbol.Equals(LogicSymbols.LTE) && booleanValue)
                 )
             {
-                AddRelationalOpImpl($"Is {opSymbol} {val}");
+                AddRelationalOperatorImpl($"Is {operatorSymbol} {value}");
             }
-            else if (opSymbol.Equals(LogicSymbols.GT) || opSymbol.Equals(LogicSymbols.GTE))
+            else if (operatorSymbol.Equals(LogicSymbols.GT) || operatorSymbol.Equals(LogicSymbols.GTE))
             {
-                AddSingleValueImpl(ConvertToContainedGeneric(bVal));
+                AddSingleValueImpl(ConvertToContainedGeneric(booleanValue));
             }
-            else if (opSymbol.Equals(LogicSymbols.LT) || opSymbol.Equals(LogicSymbols.LTE))
+            else if (operatorSymbol.Equals(LogicSymbols.LT) || operatorSymbol.Equals(LogicSymbols.LTE))
             {
-                AddSingleValueImpl(ConvertToContainedGeneric(!bVal));
+                AddSingleValueImpl(ConvertToContainedGeneric(!booleanValue));
             }
         }
 
@@ -665,88 +663,104 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return;
             }
-            _singleValues.Add(value);
+            SingleValues.Add(value);
         }
 
-        private void AddRelationalOpImpl(string value)
+        private void AddRelationalOperatorImpl(string value)
         {
-            if (!FiltersAllRelationalOps)
+            if (!FiltersAllRelationalOperators)
             {
-                _relationalOps.Add(value);
-                return;
+                RelationalOperators.Add(value);
             }
         }
 
         private static long ToLong(T value)
         {
-            return long.Parse(value.ToString());
+            return long.Parse(ValueText(value));
         }
 
-        private bool IsClausesFilterValue(T value) => IsLTFiltersValue(value) || IsGTFiltersValue(value);
+        private bool IsClausesFilterValue(T value) => IsLessThanFiltersValue(value) || IsGreaterThanFiltersValue(value);
 
-        private bool IsLTFiltersValue(T value)
+        private bool IsLessThanFiltersValue(T value)
         {
-            if (TryGetIsLTValue(out T isLT))
+            if (TryGetIsLessThanValue(out T isLessThanValue))
             {
-                return value.CompareTo(isLT) < 0;
+                return value.CompareTo(isLessThanValue) < 0;
             }
             return false;
         }
 
-        private bool IsGTFiltersValue(T value)
+        private bool IsGreaterThanFiltersValue(T value)
         {
-            if (TryGetIsGTValue(out T isGT))
+            if (TryGetIsGreaterThanValue(out T isGreaterThanValue))
             {
-                return value.CompareTo(isGT) > 0;
+                return value.CompareTo(isGreaterThanValue) > 0;
             }
             return false;
         }
 
-        private void AddVariableRangeImpl(string inputStart, string inputEnd)
+        private void AddVariableRangeImpl((string Start, string End) variableRange)
         {
-            _variableRanges.Add($"{inputStart}:{inputEnd}");
+            VariableRanges.Add($"{variableRange.Start}:{variableRange.End}");
         }
 
-        private void AddValueRangeImpl(T inputStart, T inputEnd)
+        private void AddValueRangeImpl((T Start, T End) range)
         {
-            if (ContainsBooleans || inputStart.CompareTo(inputEnd) == 0)
+            if (ContainsBooleans || range.Start.CompareTo(range.End) == 0)
             {
-                SingleValues.Add(inputStart);
-                SingleValues.Add(inputEnd);
+                SingleValues.Add(range.Start);
+                SingleValues.Add(range.End);
                 return;
             }
 
-            var swapValueOrder = inputStart.CompareTo(inputEnd) > 0;
-            T start = swapValueOrder ? inputEnd : inputStart;
-            T end = swapValueOrder ? inputStart : inputEnd;
+            var orderedRange = OrderedRange(range);
 
-            if (IsClausesFilterRange(start, end) || RangesFilterRange(start, end))
+            if (IsClausesFilterRange(orderedRange) || RangesFilterRange(orderedRange))
             {
                 return;
             }
 
-            start = IsLTFiltersValue(start) ? _isClause[LogicSymbols.LT].Max() : start;
-            end = IsGTFiltersValue(end) ? _isClause[LogicSymbols.GT].Min() : end;
+            var extendedRange = RangeExtendedToIsClauseBoundaries(orderedRange);
 
-            if (!_ranges.Any())
+            if (!RangeValues.Any())
             {
-                var range = new Tuple<T, T>(start, end);
-                _ranges.Add(range);
+                RangeValues.Add(extendedRange);
             }
             else
             {
-                var rangesToRemove = _ranges.Where(rg => start.CompareTo(rg.Item1) <= 0 && end.CompareTo(rg.Item2) >= 0).ToList();
-                rangesToRemove.ForEach(rtr => _ranges.Remove(rtr));
+                var rangesToRemove = RangeValues.Where(storedRange => 
+                                                    extendedRange.Start.CompareTo(storedRange.Start) <= 0 
+                                                    && extendedRange.End.CompareTo(storedRange.End) >= 0)
+                                                .ToList();
+                rangesToRemove.ForEach(rangeToRemove => RangeValues.Remove(rangeToRemove));
 
-                if (!TryMergeWithOverlappingRange(start, end))
+                if (!TryMergeWithOverlappingRange(extendedRange))
                 {
-                    _ranges.Add(new Tuple<T, T>(start, end));
+                    RangeValues.Add(extendedRange);
                 }
             }
 
             ConcatenateExistingRanges();
             FilterExistingRanges();
             FilterExistingSingles();
+        }
+
+        private (T Start, T End) OrderedRange((T Start, T End) range)
+        {
+            if (range.Start.CompareTo(range.End) > 0)
+            {
+                return (range.End, range.Start);
+            }
+
+            return range;
+        }
+
+        private (T Start, T End) RangeExtendedToIsClauseBoundaries((T Start, T End) range)
+        {
+            var start = IsLessThanFiltersValue(range.Start) ? _isClause[LogicSymbols.LT].Max() : range.Start;
+            var end = IsGreaterThanFiltersValue(range.End) ? _isClause[LogicSymbols.GT].Min() : range.End;
+
+            return (start, end);
         }
 
         private void ConcatenateExistingRanges()
@@ -756,219 +770,257 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            if (_ranges.Count() > 1)
+            while (RangeValues.Count > 1 && TryConcatenateRanges())
             {
-                int preConcatentateCount;
-                do
-                {
-                    preConcatentateCount = _ranges.Count();
-                    ConcatenateRanges();
-                } while (_ranges.Count() < preConcatentateCount && _ranges.Count() > 1);
+                //Noting to do; TryConcatenateAPairOfRanges does the job.
             }
         }
 
-        private void TrimExistingRanges(bool trimStart)
+        private void TrimStartOfExistingRanges()
         {
-            var rangesToTrim = trimStart ? 
-                 _ranges.Where(rg => IsLTFiltersValue(rg.Item1))
-                 : _ranges.Where(rg => IsGTFiltersValue(rg.Item2));
+            var rangesToTrim = RangeValues.Where(range => IsLessThanFiltersValue(range.Start)).ToList();
 
-            var replacementRanges = new List<Tuple<T, T>>();
+            var replacementRanges = new List<(T Start, T End)>();
             foreach (var range in rangesToTrim)
             {
-                var newRange = trimStart ?
-                    new Tuple<T, T>(_isClause[LogicSymbols.LT].Max(), range.Item2)
-                        : new Tuple<T, T>(range.Item1, _isClause[LogicSymbols.GT].Min());
-
+                var newRange = (_isClause[LogicSymbols.LT].Max(), range.End);
                 replacementRanges.Add(newRange);
             }
-            rangesToTrim.ToList().ForEach(rg => _ranges.Remove(rg));
-            _ranges.AddRange(replacementRanges);
+            rangesToTrim.ForEach(range => RangeValues.Remove(range));
+            RangeValues.AddRange(replacementRanges);
+        }
+
+        private void TrimEndOfExistingRanges()
+        {
+            var rangesToTrim = RangeValues.Where(range => IsGreaterThanFiltersValue(range.End)).ToList();
+
+            var replacementRanges = new List<(T Start, T End)>();
+            foreach (var range in rangesToTrim)
+            {
+                var newRange = (range.Start, _isClause[LogicSymbols.GT].Min());
+                replacementRanges.Add(newRange);
+            }
+            rangesToTrim.ForEach(range => RangeValues.Remove(range));
+            RangeValues.AddRange(replacementRanges);
         }
 
         private void FilterExistingRanges()
-            => _ranges.Where(rg => IsClausesFilterRange(rg.Item1, rg.Item2))
-            .ToList().ForEach(tr => _ranges.Remove(tr));
+            => RangeValues.Where(range => IsClausesFilterRange(range))
+                            .ToList()
+                            .ForEach(filteredRange => RangeValues.Remove(filteredRange));
 
         private void FilterExistingSingles()
-            => _singleValues.Where(sv => IsClausesFilterValue(sv) || RangesFilterValue(sv))
-            .ToList().ForEach(tr => _singleValues.Remove(tr));
+            => SingleValues.Where(singleValue => IsClausesFilterValue(singleValue) || RangesFilterValue(singleValue))
+                            .ToList()
+                            .ForEach(filteredSingleValue => SingleValues.Remove(filteredSingleValue));
 
-        private bool IsClausesFilterRange(T start, T end)
-            => IsLTFiltersValue(end) || IsGTFiltersValue(start);
+        private bool IsClausesFilterRange((T Start, T End) range)
+            => IsLessThanFiltersValue(range.End) || IsGreaterThanFiltersValue(range.Start);
 
-        private bool RangesFilterRange(T start, T end)
-            => _ranges.Any(t => t.Item1.CompareTo(start) <= 0 && t.Item2.CompareTo(end) >= 0);
+        private bool RangesFilterRange((T Start, T End) range)
+            => RangeValues.Any(storedRange => storedRange.Contains(range));
 
         private bool RangesFilterValue(T value) 
-            => _ranges.Any(rg => rg.Item1.CompareTo(value) <= 0 && rg.Item2.CompareTo(value) >= 0);
+            => RangeValues.Any(range => range.Contains(value));
 
-        private void ConcatenateRanges()
+        private bool TryConcatenateRanges()
         {
             if (!ContainsIntegralNumbers)
             {
-                return;
+                return false;
             }
-            var concatenatedRanges = new List<Tuple<long, long>>();
+
+            var concatenatedRanges = new List<(long Start, long End)>();
             var indexesToRemove = new List<int>();
-            var sortedRanges = _ranges.Select(rg => new Tuple<long, long>(ToLong(rg.Item1), ToLong(rg.Item2))).OrderBy(k => k.Item1).ToList();
-            for (int idx = sortedRanges.Count() - 1; idx > 0;)
+            var sortedRanges = RangeValues.Select(ApplyToRange<T,long>(ToLong))
+                                            .OrderBy(integralRange => integralRange.Start)
+                                            .ToList();
+            for (var idx = sortedRanges.Count - 1; idx > 0;)
             {
-                if (sortedRanges[idx].Item1 - sortedRanges[idx - 1].Item2 <= 1)
+                if (sortedRanges[idx].Start - sortedRanges[idx - 1].End <= 1)
                 {
-                    concatenatedRanges.Add(new Tuple<long, long>(sortedRanges[idx - 1].Item1, sortedRanges[idx].Item2));
+                    concatenatedRanges.Add((sortedRanges[idx - 1].Start, sortedRanges[idx].End));
                     indexesToRemove.Add(idx);
                     indexesToRemove.Add(idx - 1);
-                    idx = -1;
+                    idx--; //The lower range must not participate as upper range in the next iteration.
                 }
                 idx--;
             }
-            //rebuild _ranges retaining the original order except placing the concatenated
-            //range added to the end
-            if (concatenatedRanges.Any())
+
+            if (!concatenatedRanges.Any())
             {
-                var allRanges = new Dictionary<int, Tuple<T, T>>();
-                for (int idx = 0; idx < _ranges.Count; idx++)
-                {
-                    allRanges.Add(idx, _ranges[idx]);
-                }
-
-                indexesToRemove.ForEach(idx => sortedRanges.RemoveAt(idx));
-
-                var tRanges = new List<Tuple<T, T>>();
-                foreach (var ral in sortedRanges)
-                {
-                    tRanges.Add(new Tuple<T, T>(ConvertToContainedGeneric(ral.Item1), ConvertToContainedGeneric(ral.Item2)));
-                }
-
-                foreach (var ral in concatenatedRanges)
-                {
-                    tRanges.Add(new Tuple<T, T>(ConvertToContainedGeneric(ral.Item1), ConvertToContainedGeneric(ral.Item2)));
-                }
-
-                _ranges.Clear();
-                foreach (var key in allRanges.Keys)
-                {
-                    if (tRanges.Contains(allRanges[key]))
-                    {
-                        _ranges.Add(allRanges[key]);
-                        tRanges.Remove(allRanges[key]);
-                    }
-                }
-                _ranges.AddRange(tRanges); //what's left is the concatenated result
+                return false;
             }
+
+            //rebuild _ranges retaining the original order except placing the concatenated
+            //ranges added to the end
+            var allRanges = new List<(T Start, T End)>();
+            allRanges.AddRange(RangeValues);
+
+            indexesToRemove.ForEach(idx => sortedRanges.RemoveAt(idx));
+
+            var sortedRangesAsT = sortedRanges.Select(ApplyToRange<long,T>(ConvertToContainedGeneric)).ToHashSet();
+
+            foreach (var concatenatedRange in concatenatedRanges)
+            {
+                sortedRangesAsT.Add(ApplyToRange<long,T>(ConvertToContainedGeneric)(concatenatedRange));
+            }
+
+            RangeValues.Clear();
+            foreach (var range in allRanges)
+            {
+                if (sortedRangesAsT.Contains(range))
+                {
+                    RangeValues.Add(range);
+                    sortedRangesAsT.Remove(range);
+                }
+            }
+            RangeValues.AddRange(sortedRangesAsT); //what's left is the concatenated result
+            return true;
+        }
+
+        private Func<(TSource Start, TSource End), (TTarget Start, TTarget End)> ApplyToRange<TSource, TTarget>(Func<TSource, TTarget> func)
+        {
+            return range => (func(range.Start), func(range.End));
         }
 
         private int RangesValuesCount()
         {
             int result = 0;
-            foreach (var range in _ranges)
+            foreach (var range in RangeValues)
             {
-                result = result + (int)(ToLong(range.Item2) - ToLong(range.Item1) + 1);
+                result = result + (int)(ToLong(range.End) - ToLong(range.Start) + 1);
             }
             return result;
         }
 
         private T ConvertToContainedGeneric<K>(K value)
         {
-            var parseTreeValue = _valueFactory.Create(value.ToString(), TypeName);
-            if (_valueConverter(parseTreeValue, out T tValue))
+            var parseTreeValue = _valueFactory.Create(ValueText(value), TypeName);
+            if (_valueConverter(parseTreeValue, out T convertedValue))
             {
-                return tValue;
+                return convertedValue;
             }
-            throw new ArgumentException($"Unable to convert {value.ToString()} to {typeof(T).ToString()}");
+            throw new ArgumentException($"Unable to convert {value} to {typeof(T)}");
         }
 
-        private bool TryMergeWithOverlappingRange(T start, T end)
+        private static string ValueText<K>(K value)
         {
-            var endIsWithin = _ranges.Where(t => t.Item1.CompareTo(end) < 0 && t.Item2.CompareTo(end) > 0);
-            var startIsWithin = _ranges.Where(t => t.Item1.CompareTo(start) < 0 && t.Item2.CompareTo(start) > 0);
-
-            var rangeIsAdded = false;
-            if (endIsWithin.Any() || startIsWithin.Any())
+            switch (value)
             {
-                if (endIsWithin.Any())
-                {
-                    var original = endIsWithin.First();
-                    _ranges.Remove(endIsWithin.First());
-                    _ranges.Add(new Tuple<T, T>(start, original.Item2));
-                    rangeIsAdded = true;
-                }
-                else
-                {
-                    var original = startIsWithin.First();
-                    _ranges.Remove(startIsWithin.First());
-                    _ranges.Add(new Tuple<T, T>(original.Item1, end));
-                    rangeIsAdded = true;
-                }
-            }
-
-            return rangeIsAdded;
+                case IConvertible convertibleValue:
+                    return convertibleValue.ToString(CultureInfo.InvariantCulture);
+                case IFormattable formattableValue:
+                    return formattableValue.ToString("{0}", CultureInfo.InvariantCulture);
+                default:
+                    return value.ToString();
+            }            
         }
 
-        private void RemoveIsClauseImpl(string opSymbol)
+        private static string ValueText(string value) => value;
+
+        private bool TryMergeWithOverlappingRange((T Start, T End) range)
         {
-            if (_isClause.Keys.Contains(opSymbol))
+            if (RangeValues.Any(storedRange => storedRange.Contains(range)))
+            {
+                //Nothing to do here; merge with the containing range will result in the containing range.
+                return true;
+            }
+
+            var originalRangeEnclosingEnd = RangeValues.Where(storedRange => storedRange.Encloses(range.End))
+                                                        .Cast<(T Start, T End)?>()
+                                                        .FirstOrDefault();
+            if (originalRangeEnclosingEnd != null)
+            {
+                var original = originalRangeEnclosingEnd.Value;
+                RangeValues.Remove(original);
+                RangeValues.Add((range.Start, original.End));
+                return true;
+            }
+
+            var originalRangeEnclosingStart = RangeValues.Where(storedRange => storedRange.Encloses(range.Start))
+                                                            .Cast<(T Start, T End)?>()
+                                                            .FirstOrDefault();
+            if (originalRangeEnclosingStart != null)
+            {
+                var original = originalRangeEnclosingStart.Value;
+                RangeValues.Remove(original);
+                RangeValues.Add((original.Start, range.End));
+                return true;
+            }
+
+            return false;
+        }
+
+        private void RemoveIsClauseImpl(string operatorSymbol)
+        {
+            if (_isClause.Keys.Contains(operatorSymbol))
             {
                 if (_hasExtents)
                 {
-                    _isClause.Remove(opSymbol);
-                    var extentVal = opSymbol.Equals(LogicSymbols.LT) ? _minExtent : _maxExtent;
-                    AddIsClauseImpl(extentVal, opSymbol);
+                    _isClause.Remove(operatorSymbol);
+                    var extentVal = operatorSymbol.Equals(LogicSymbols.LT) ? _minExtent : _maxExtent;
+                    AddIsClauseImpl(extentVal, operatorSymbol);
                 }
                 else
                 {
-                    _isClause.Remove(opSymbol);
+                    _isClause.Remove(operatorSymbol);
                 }
             }
         }
 
-        private string GetSinglesDescriptor()
+        private string GetSingleValuesDescriptor()
         {
-            var singles = _singleValues.Select(sv => sv.ToString()).ToList();
-            singles.AddRange(_variableSingles);
-            return GetSingleValueTypeDescriptor(singles, "Single=");
+            var singleValueTexts = SingleValues.Select(ValueText).ToList();
+            singleValueTexts.AddRange(VariableSingleValues);
+            return GetSingleValueTypeDescriptor(singleValueTexts, "Single=");
         }
 
-        private string GetRelOpDescriptor()
+        private string GetRelationalOperatorDescriptor()
         {
-            return GetSingleValueTypeDescriptor(_relationalOps.ToList(), "RelOp=");
+            return GetSingleValueTypeDescriptor(RelationalOperators.ToList(), "RelOp=");
         }
 
-        private string GetSingleValueTypeDescriptor<K>(List<K> values, string prefix)
+        private string GetSingleValueTypeDescriptor<K>(ICollection<K> values, string prefix)
         {
-            if (!values.Any()){ return string.Empty; }
-
-            StringBuilder series = new StringBuilder();
-            foreach (var val in values)
+            if (!values.Any())
             {
-                series.Append($"{val},");
+                return string.Empty;
+            }
+
+            var series = new StringBuilder();
+            foreach (var value in values)
+            {
+                series.Append($"{ValueText(value)},");
             }
             return $"{prefix}{series.ToString().Substring(0, series.Length - 1)}";
         }
 
         private string GetRangesDescriptor()
         {
-            if (!(_ranges.Any() || _variableRanges.Any())) { return string.Empty; }
-
-            StringBuilder series = new StringBuilder();
-            foreach (var val in _ranges)
+            if (!(RangeValues.Any() || VariableRanges.Any()))
             {
-                series.Append($"{val.Item1}:{val.Item2},");
+                return string.Empty;
             }
-            foreach (var val in _variableRanges)
+
+            var series = new StringBuilder();
+            foreach (var range in RangeValues)
             {
-                series.Append(val.ToString() + ",");
+                series.Append($"{ValueText(range.Start)}:{ValueText(range.End)},");
+            }
+            foreach (var variableRange in VariableRanges)
+            {
+                series.Append(variableRange + ",");
             }
             return $"Range={series.ToString().Substring(0, series.Length - 1)}";
         }
 
-        private string GetIsClausesDescriptor(string opSymbol)
+        private string GetIsClausesDescriptor(string operatorSymbol)
         {
             var result = string.Empty;
-            if (_isClause.TryGetValue(opSymbol, out List<T> values))
+            if (_isClause.TryGetValue(operatorSymbol, out List<T> values))
             {
-                var isLT = opSymbol.Equals(LogicSymbols.LT);
+                var isLT = operatorSymbol.Equals(LogicSymbols.LT);
                 var value = isLT ? values.Max() : values.Min();
                 var extentToCompare = isLT ? _minExtent : _maxExtent;
                 var prefix = isLT ? "IsLT=" : "IsGT=";
@@ -978,6 +1030,61 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
             return result;
+        }
+    }
+
+    public static class ComparisonExtensions
+    {
+        public static bool IsContainedIn<T>(this T value, (T Start, T End) range) where T: IComparable<T>
+        {
+            return range.Start.CompareTo(value) <= 0 && range.End.CompareTo(value) >= 0;
+        }
+
+        public static bool IsContainedIn<T>(this (T Start, T End) range, (T Start, T End) otherRange) where T : IComparable<T>
+        {
+            return otherRange.Start.CompareTo(range.Start) <= 0 && otherRange.End.CompareTo(range.End) >= 0;
+        }
+
+        public static bool IsEnclosedBy<T>(this T value, (T Start, T End) range) where T : IComparable<T>
+        {
+            return range.Start.CompareTo(value) < 0 && range.End.CompareTo(value) > 0;
+        }
+
+        public static bool IsEnclosedBy<T>(this (T Start, T End) range, (T Start, T End) otherRange) where T : IComparable<T>
+        {
+            return otherRange.Start.CompareTo(range.Start) < 0 && otherRange.End.CompareTo(range.End) > 0;
+        }
+
+
+        public static bool Contains<T>(this (T Start, T End) range, T value) where T : IComparable<T>
+        {
+            return value.IsContainedIn(range);
+        }
+
+        public static bool Contains<T>(this (T Start, T End) range, (T Start, T End) otherRange) where T : IComparable<T>
+        {
+            return otherRange.IsContainedIn(range);
+        }
+
+        public static bool Encloses<T>(this (T Start, T End) range, T value) where T : IComparable<T>
+        {
+            return value.IsEnclosedBy(range);
+        }
+
+        public static bool Encloses<T>(this (T Start, T End) range, (T Start, T End) otherRange) where T : IComparable<T>
+        {
+            return otherRange.IsEnclosedBy(range);
+        }
+
+
+        public static bool IsLessThan<T>(this T value, (T Start, T End) range) where T : IComparable<T>
+        {
+            return range.Start.CompareTo(value) > 0 && range.End.CompareTo(value) > 0;
+        }
+
+        public static bool IsGreaterThan<T>(this T value, (T Start, T End) range) where T : IComparable<T>
+        {
+            return range.Start.CompareTo(value) < 0 && range.End.CompareTo(value) < 0;
         }
     }
 }

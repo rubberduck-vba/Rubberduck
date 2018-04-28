@@ -4,8 +4,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class NavigateParentMenu : ParentMenuItemBase
     {
-        public NavigateParentMenu(ICommandBarButtonFactory buttonFactory, IEnumerable<IMenuItem> items) 
-            : base(buttonFactory, "RubberduckMenu_Navigate", items)
+        public NavigateParentMenu(IEnumerable<IMenuItem> items) 
+            : base("RubberduckMenu_Navigate", items)
         {
         }
 

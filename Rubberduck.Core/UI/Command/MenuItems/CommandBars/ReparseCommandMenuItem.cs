@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using Rubberduck.Properties;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {

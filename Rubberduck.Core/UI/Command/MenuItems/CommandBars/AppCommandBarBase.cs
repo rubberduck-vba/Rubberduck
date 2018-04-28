@@ -5,9 +5,8 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command.MenuItems.ParentMenus;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
@@ -16,17 +15,15 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly string _name;
         private readonly CommandBarPosition _position;
         private readonly IDictionary<ICommandMenuItem, ICommandBarControl> _items;
-        private readonly ICommandBarButtonFactory _buttonFactory;
         protected readonly IUiDispatcher _uiDispatcher;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        protected AppCommandBarBase(string name, CommandBarPosition position, IEnumerable<ICommandMenuItem> items, IUiDispatcher uiDispatcher, ICommandBarButtonFactory buttonFactory)
+        protected AppCommandBarBase(string name, CommandBarPosition position, IEnumerable<ICommandMenuItem> items, IUiDispatcher uiDispatcher)
         {
             _name = name;
             _position = position;
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
             _uiDispatcher = uiDispatcher;
-            _buttonFactory = buttonFactory;
         }
 
         protected ICommandMenuItem FindChildByTag(string tag)
@@ -122,7 +119,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             ICommandBarButton child;
             using (var controls = Item.Controls)
             {
-                child = _buttonFactory.Create(controls);
+                child = controls.AddButton();
             }
             child.Style = item.ButtonStyle;
             child.Picture = item.Image;
