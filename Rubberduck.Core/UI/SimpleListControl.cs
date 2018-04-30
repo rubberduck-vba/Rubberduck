@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Resources;
 using Rubberduck.UI.IdentifierReferences;
 
 namespace Rubberduck.UI

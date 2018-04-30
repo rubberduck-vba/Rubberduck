@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Rubberduck.UI {
+namespace Rubberduck.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Rubberduck.UI {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.UI.RubberduckUI", typeof(RubberduckUI).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Resources.RubberduckUI", typeof(RubberduckUI).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

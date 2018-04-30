@@ -9,8 +9,8 @@
              d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}"
              KeyDown="OnKeyDownHandler">
     <UserControl.Resources>
-        <BitmapImage x:Key="Ducky" UriSource="../../Resources/AboutBanner.png" />
-        <BitmapImage x:Key="RD" UriSource="../../Resources/Rubberduck.png" />
+        <BitmapImage x:Key="Ducky" UriSource="../../../Rubberduck.Resources/AboutBanner.png" />
+        <BitmapImage x:Key="RD" UriSource="../../../Rubberduck.Resources/Rubberduck.png" />
     </UserControl.Resources>
     <Grid Background="#F6F6F6F6">
         <Grid.ColumnDefinitions>

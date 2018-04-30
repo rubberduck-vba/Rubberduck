@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
+using resx = Rubberduck.Resources.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;

@@ -5,6 +5,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 using System.IO;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.About
 {

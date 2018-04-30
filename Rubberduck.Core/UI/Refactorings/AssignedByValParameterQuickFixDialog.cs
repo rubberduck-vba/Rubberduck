@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 using Rubberduck.Common;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings
 {

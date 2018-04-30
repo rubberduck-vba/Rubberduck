@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
 using NLog;
+using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.VBERuntime.Settings;

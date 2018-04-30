@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings

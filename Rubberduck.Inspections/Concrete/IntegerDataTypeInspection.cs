@@ -9,7 +9,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Inspections.Concrete
 {

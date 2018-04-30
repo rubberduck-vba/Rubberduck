@@ -5,7 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.Resources;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.UnitTesting
 {

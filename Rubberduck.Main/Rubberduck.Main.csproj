@@ -141,7 +141,8 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Ducky.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug64|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -276,7 +277,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Ducky.ico" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -295,7 +295,6 @@
     <Content Include="EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
@@ -350,6 +349,10 @@
     <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
       <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
       <Name>Rubberduck.RegexAssistant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
+      <Name>Rubberduck.Resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{E85E1253-86D6-45EE-968B-F37348D44132}</Project>

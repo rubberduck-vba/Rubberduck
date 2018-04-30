@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 
 // ReSharper disable InconsistentNaming
 // The parameters on RD's public interfaces are following VBA conventions not C# conventions to stop the

@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;

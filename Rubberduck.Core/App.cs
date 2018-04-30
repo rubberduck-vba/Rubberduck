@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;

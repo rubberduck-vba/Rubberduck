@@ -1,4 +1,4 @@
-﻿namespace Rubberduck
+﻿namespace Rubberduck.Resources.Registration
 {
     public static class RubberduckProgId
     {

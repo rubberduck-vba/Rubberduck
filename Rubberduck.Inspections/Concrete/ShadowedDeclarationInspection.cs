@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.SafeComWrappers;
 

@@ -30,8 +30,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public override ButtonStyle ButtonStyle => ButtonStyle.Icon;
 
         public override string Key => string.Empty;
-        public override Image Image => Resources.cross_circle;
-        public override Image Mask => Resources.circle_mask;
+        public override Image Image => Resources.Resources.cross_circle;
+        public override Image Mask => Resources.Resources.circle_mask;
         public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.ShowErrors;
     }
 }

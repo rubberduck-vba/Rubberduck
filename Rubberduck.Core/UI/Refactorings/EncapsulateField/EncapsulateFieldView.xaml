@@ -17,8 +17,8 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="White">
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=EncapsulateField_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=EncapsulateField_InstructionText}"
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_InstructionText}"
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Margin="5,0">
@@ -41,7 +41,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
-                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=EncapsulateField_PropertyName}" />
+                        <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_PropertyName}" />
                         <TextBox Grid.Row="1"
                                  Margin="5,-2,0,0"
                                  Height="22"
@@ -49,7 +49,7 @@
                                  VerticalContentAlignment="Center"
                                  Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <Image Grid.Row="1"
-                               Source="../../../Resources/cross-circle.png"
+                               Source="../../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/cross-circle.png"
                                Height="16"
                                Margin="0,-10,-8,0"
                                HorizontalAlignment="Right"
@@ -61,7 +61,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
-                        <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=EncapsulateField_ParameterName}" />
+                        <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_ParameterName}" />
                         <TextBox Grid.Row="1"
                                  Margin="5,-2,0,0"
                                  Height="22"
@@ -69,7 +69,7 @@
                                  VerticalContentAlignment="Center"
                                  Text="{Binding ParameterName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <Image Grid.Row="1"
-                               Source="../../../Resources/cross-circle.png"
+                               Source="../../../../Rubberduck.Resources/Icons/Fugue/cross-circle.png"
                                Height="16"
                                Margin="0,-10,-8,0"
                                HorizontalAlignment="Right"
@@ -81,7 +81,7 @@
                           Height="55"
                           Margin="5"
                           VerticalAlignment="Top"
-                          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=EncapsulateField_SetterType}">
+                          Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_SetterType}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
@@ -109,7 +109,7 @@
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">
-                        <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="Preview"/>
+                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="Preview"/>
                     </Label>
                 </Expander.Header>
                 <controls:BindableTextEditor Margin="10,10,10,10"
@@ -128,14 +128,14 @@
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                 </Grid.ColumnDefinitions>
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
                             Grid.Column="0"
                             Height="20"
                             Margin="5,0"
                             Padding="10,0"
                             IsEnabled="{Binding HasValidNames}"
                             Command="{Binding OkButtonCommand}" />
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
                             Grid.Column="1"
                             Height="20"
                             Margin="5,0"

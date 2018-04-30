@@ -7,7 +7,7 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.UI;
+using Rubberduck.Resources;
 
 namespace RubberduckTests.Inspections
 {
@@ -22,6 +22,7 @@ namespace RubberduckTests.Inspections
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
             InspectionsUI.Culture = Thread.CurrentThread.CurrentUICulture;
             RubberduckUI.Culture = Thread.CurrentThread.CurrentUICulture;
+            Rubberduck.Resources.CodeExplorer.Culture = Thread.CurrentThread.CurrentUICulture;
         }
 
         private static List<Type> GetAllBaseTypes(Type type)

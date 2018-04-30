@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;

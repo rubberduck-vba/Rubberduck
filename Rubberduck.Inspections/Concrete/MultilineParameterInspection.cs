@@ -9,7 +9,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete

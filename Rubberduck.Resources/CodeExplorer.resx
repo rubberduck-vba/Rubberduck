@@ -118,145 +118,145 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="lock__exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\lock--exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="document_excel" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\document-excel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\document-excel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="document_office" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\document-office.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\document-office.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="document_outlook" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\document-outlook.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\document-outlook.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="document_powerpoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\document-powerpoint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\document-powerpoint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="document_smiley_sad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\document-smiley-sad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\document-smiley-sad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="document_word" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\document-word.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\document-word.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Error" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Fugue\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DisplayFullSignature" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\displayfullsignature.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\DisplayFullSignature.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DisplayName" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\displayname.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\DisplayName.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FolderClosed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\folderclosed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\FolderClosed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FolderClosedVirtual" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\folderclosedvirtual.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\FolderClosedVirtual.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FolderOpen" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\folderopen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\FolderOpen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FolderOpenVirtual" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\folderopenvirtual.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\FolderOpenVirtual.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectClass" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectclass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectClass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectConstant" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectconstant.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectConstant.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectConstantFriend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectconstantfriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectConstantFriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectConstantPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectconstantprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectConstantPrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectEnum" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectenum.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectEnum.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectEnumItem" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectenumitem.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectEnumItem.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectEnumPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectenumprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectEnumPrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectEvent" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectevent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectEvent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectEventFriend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objecteventfriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectEventFriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectEventPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objecteventprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectEventPrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectField" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectfield.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectField.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectFieldFriend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectfieldfriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectFieldFriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectFieldPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectfieldprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectFieldPrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectLibrary" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectlibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectLibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectmethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectMethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectMethodFriend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectmethodfriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectMethodFriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectMethodPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectmethodprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectMethodPrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectMethodShortcut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectmethodshortcut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectMethodShortcut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectModule" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectmodule.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectModule.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectModulePrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectmoduleprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectModulePrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectProperties" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectproperties.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectProperties.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectPropertiesFriend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectpropertiesfriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectPropertiesFriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectPropertiesPrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectpropertiesprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectPropertiesPrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectStructure" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectstructure.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectStructure.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectStructureFriend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectstructurefriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectStructureFriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectStructurePrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectstructureprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectStructurePrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectValueType" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectvaluetype.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectValueType.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectValueTypeFriend" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectvaluetypefriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectValueTypeFriend.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ObjectValueTypePrivate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\objectvaluetypeprivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ObjectValueTypePrivate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ProjectForm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\projectform.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ProjectForm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ProjectReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\projectreference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\ProjectReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TestMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\resources\custom\png\testmethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Icons\Custom\PNG\TestMethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lock__exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>icons\fugue\lock--exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
