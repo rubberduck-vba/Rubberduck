@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -15,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly IParseTreeValueFactory _valueFactory;
 
-        private static Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
+        private static readonly Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
         {
             [MathSymbols.MULTIPLY] = delegate (double LHS, double RHS) { return LHS * RHS; },
             [MathSymbols.DIVIDE] = delegate (double LHS, double RHS) { return LHS / RHS; },
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [MathSymbols.MODULO] = delegate (double LHS, double RHS) { return LHS % RHS; },
         };
 
-        private static Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
+        private static readonly Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
         {
             [LogicSymbols.EQ] = delegate (double LHS, double RHS) { return LHS == RHS; },
             [LogicSymbols.NEQ] = delegate (double LHS, double RHS) { return LHS != RHS; },
@@ -41,17 +42,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [LogicSymbols.IMP] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS).Equals(Convert.ToBoolean(RHS)) || Convert.ToBoolean(RHS); },
         };
 
-        private static Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
+        private static readonly Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
         {
             [MathSymbols.ADDITIVE_INVERSE] = delegate (double value) { return value * -1.0; }
         };
 
-        private static Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
+        private static readonly Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
         {
             [LogicSymbols.NOT] = delegate (double value) { return !(Convert.ToBoolean(value)); }
         };
 
-        private static List<string> ResultTypeRanking = new List<string>()
+        private static readonly List<string> ResultTypeRanking = new List<string>()
         {
             Tokens.Currency,
             Tokens.Double,
@@ -74,14 +75,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Debug.Assert(isMathOp || isLogicOp);
 
             var opResultTypeName = isMathOp ? DetermineMathResultType(LHS, RHS) : Tokens.Boolean;
-            var operands = PrepareOperands(new string[] { LHS.ValueText, RHS.ValueText });
+            var operands = PrepareOperands(new IParseTreeValue[] { LHS, RHS });
 
             if (operands.Count == 2)
             {
                 if (isMathOp)
                 {
                     var mathResult = MathOpsBinary[opSymbol](operands[0], operands[1]);
-                    return _valueFactory.Create(mathResult.ToString(), opResultTypeName);
+                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), opResultTypeName);
                 }
                 var logicResult = LogicOpsBinary[opSymbol](operands[0], operands[1]);
                 return _valueFactory.Create(logicResult.ToString(), opResultTypeName);
@@ -95,22 +96,23 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var isLogicOp = LogicOpsUnary.ContainsKey(opSymbol);
             Debug.Assert(isMathOp || isLogicOp);
 
-            var operands = PrepareOperands(new string[] { value.ValueText });
+            var operands = PrepareOperands(new IParseTreeValue[] { value });
             if (operands.Count == 1)
             {
                 if (isMathOp)
                 {
                     var mathResult = MathOpsUnary[opSymbol](operands[0]);
-                    return _valueFactory.Create(mathResult.ToString(), requestedResultType);
+                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), requestedResultType);
                 }
 
                 //Unary Not (!) operator
-                if  (!value.TypeName.Equals(Tokens.Boolean) &&  ParseTreeValue.TryConvertValue(value, out long opValue))
+                if  (!value.TypeName.Equals(Tokens.Boolean) &&  value.TryConvertValue(out long opValue))
                 {
                     var bitwiseComplement = ~opValue;
                     return _valueFactory.Create(Convert.ToBoolean(bitwiseComplement).ToString(), requestedResultType);
                 }
-                else if  (value.TypeName.Equals(Tokens.Boolean))
+
+                if  (value.TypeName.Equals(Tokens.Boolean))
                 {
                     var logicResult = LogicOpsUnary[opSymbol](operands[0]);
                     return _valueFactory.Create(logicResult.ToString(), requestedResultType);
@@ -137,9 +139,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     parseArg = arg.Equals(Tokens.True) ? "-1" : "0";
                 }
 
-                if (double.TryParse(parseArg, out double result))
+                if (double.TryParse(parseArg, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
                 {
                     results.Add(result);
+                }
+            }
+            return results;
+        }
+
+        private static List<double> PrepareOperands(IParseTreeValue[] args)
+        {
+            var results = new List<double>();
+            foreach (var arg in args)
+            {
+                if (arg.TryConvertValue(out double value))
+                {
+                    results.Add(value);
                 }
             }
             return results;

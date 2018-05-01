@@ -32,7 +32,41 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-bar = True
+    bar = True
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
+
+                var rewriter = state.GetRewriter(component);
+                Assert.AreEqual(expectedCode, rewriter.GetText());
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_LineNumbers()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+Private Sub Foo()
+100 bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+Dim bar As Boolean
+100 bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -69,7 +103,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-bar = True
+    bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -155,7 +189,7 @@ End Sub";
                 @"Private Sub Foo()
     Dim bat As Integer
     Dim bar As Boolean
-bar = True
+    bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -194,7 +228,7 @@ End Sub";
                 @"Private Sub Foo()
     Dim bat As Integer
     Dim bar As Boolean
-bar = True
+    bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -234,7 +268,7 @@ Private bay As Date
 
 Private Sub Foo()
     Dim bat As Boolean
-bat = True
+    bat = True
 End Sub";
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -274,7 +308,7 @@ End Sub";
 
 Private Sub Foo()
     Dim bar As Integer
-bar = 3
+    bar = 3
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -314,7 +348,7 @@ End Sub";
 
 Private Sub Foo()
     Dim bat As Boolean
-bat = True
+    bat = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -354,7 +388,7 @@ End Sub";
 
 Private Sub Foo()
     Dim bay As Date
-bay = #1/13/2004#
+    bay = #1/13/2004#
 End Sub";
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -396,7 +430,7 @@ End Sub";
 
     bat = True
     Dim bar As Integer
-bar = 3
+    bar = 3
 End Sub";
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -438,7 +472,7 @@ End Sub";
 
     bar = 1
     Dim bat As Boolean
-bat = True
+    bat = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -480,7 +514,7 @@ End Sub";
 
     bar = 4
     Dim bay As Date
-bay = #1/13/2004#
+    bay = #1/13/2004#
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -583,7 +617,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo(ByRef bat As Boolean)
     Dim bar As Boolean
-bat = bar
+    bat = bar
 End Sub";
             var selection = new Selection(1, 1);
 
@@ -618,7 +652,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-Baz bar
+    Baz bar
 End Sub
 Sub Baz(ByVal bat As Boolean)
 End Sub";
@@ -657,7 +691,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-Baz True, _
+    Baz True, _
         True, _
         bar
 End Sub
@@ -735,7 +769,7 @@ End Sub";
                 @"
 Public Sub Test()
     Dim foo As Long
-SomeSub someParam:=foo
+    SomeSub someParam:=foo
 End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
@@ -906,7 +940,7 @@ End Sub";
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
     Dim foo As Class1
-Set foo = new Class1
+    Set foo = new Class1
     foo.Name = ""FooName""
     foo.OtherProperty = 1626
 End Sub";
