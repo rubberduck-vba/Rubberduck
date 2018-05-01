@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="VBA\Accessibility.cs" />
     <Compile Include="VBA\Declaration.cs" />
+    <Compile Include="VBA\Declarations.cs" />
     <Compile Include="VBA\DeclarationType.cs" />
     <Compile Include="VBA\IdentifierReference.cs" />
     <Compile Include="VBA\Parser.cs" />
