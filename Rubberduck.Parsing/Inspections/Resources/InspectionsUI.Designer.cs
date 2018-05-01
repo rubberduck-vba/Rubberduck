@@ -70,7 +70,7 @@ namespace Rubberduck.Parsing.Inspections.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add step.
+        ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
         /// </summary>
         public static string AddStepOneQuickFix {
             get {
