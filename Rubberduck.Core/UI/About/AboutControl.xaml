@@ -86,11 +86,11 @@
                                Foreground="WhiteSmoke"
                                Width="120"
                                FontSize="13"
-                               Content="Report an issue"/>
+                               Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_ReportAnIssue}"/>
                         </Hyperlink>
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Center" 
-                               Text="You can also find us at:" />
+                               Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_FindRubberduckAt}" />
                     <StackPanel HorizontalAlignment="Center" 
                                 Orientation="Horizontal">
                         <!-- Circle logos created with Ai->XAML Export Plug-In Version 0.2 (PC/64) -->
