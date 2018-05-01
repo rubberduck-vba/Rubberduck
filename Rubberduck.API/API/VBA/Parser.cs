@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Rubberduck.Common;
 using Rubberduck.SharedResources.COM;
 using Rubberduck.Parsing.PreProcessing;
@@ -16,6 +17,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Root;
+using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.API.VBA
 {
@@ -169,20 +171,70 @@ namespace Rubberduck.API.VBA
         }
 
         public event Action<ParserState> OnStateChanged;
+        private const uint RPC_E_SERVERCALL_RETRYLATER = 0x8001010A;
+        private const uint VBA_E_IGNORE = 0x800AC472;
+        private const uint VBA_E_CANTEXECCODEINBREAKMODE = 0x800ADF09;
 
         private void _state_StateChanged(object sender, EventArgs e)
         {
             AllDeclarations = _state.AllDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
-            
-            UserDeclarations = _state.AllUserDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
+                .Select(item => new Declaration(item))
+                .ToArray();
 
-            var state = (ParserState)_state.Status;
+            UserDeclarations = _state.AllUserDeclarations
+                .Select(item => new Declaration(item))
+                .ToArray();
+
+            var state = (ParserState) _state.Status;
             var stateHandler = OnStateChanged;
-            _dispatcher.Invoke(() => stateHandler?.Invoke(state));
+            if (stateHandler != null)
+            {
+                _dispatcher.Invoke(() =>
+                {
+                    var runtime = new VBERuntimeAccessor(_vbe);
+                    var currentCount = 0;
+                    var retryCount = 100;
+                    var timeSleep = 10;
+                    for (;;)
+                    {
+                        try
+                        {
+                            stateHandler.Invoke(state);
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            if (currentCount < retryCount)
+                            {
+                                var cex = (COMException) ex;
+                                switch ((uint) cex.ErrorCode)
+                                {
+                                    case VBA_E_CANTEXECCODEINBREAKMODE:
+                                        runtime.DoEvents();
+                                        Thread.Sleep(timeSleep);
+                                        break;
+                                    case RPC_E_SERVERCALL_RETRYLATER:
+                                        runtime.DoEvents();
+                                        Thread.Sleep(timeSleep);
+                                        break;
+                                    case VBA_E_IGNORE:
+                                        runtime.DoEvents();
+                                        Thread.Sleep(timeSleep);
+                                        break;
+                                    default:
+                                        throw;
+                                }
+
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                            currentCount++;
+                        }
+                    }
+                });
+            }
         }
 
         public Declaration[] AllDeclarations { get; private set; }
