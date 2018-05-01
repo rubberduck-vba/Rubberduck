@@ -36,12 +36,12 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\VBA\Accessibility.cs" />
-    <Compile Include="API\VBA\Declaration.cs" />
-    <Compile Include="API\VBA\DeclarationType.cs" />
-    <Compile Include="API\VBA\IdentifierReference.cs" />
-    <Compile Include="API\VBA\Parser.cs" />
-    <Compile Include="API\VBA\ParserState.cs" />
+    <Compile Include="VBA\Accessibility.cs" />
+    <Compile Include="VBA\Declaration.cs" />
+    <Compile Include="VBA\DeclarationType.cs" />
+    <Compile Include="VBA\IdentifierReference.cs" />
+    <Compile Include="VBA\Parser.cs" />
+    <Compile Include="VBA\ParserState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,7 +67,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="API\Plugin\" />
+    <Folder Include="Plugin\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
