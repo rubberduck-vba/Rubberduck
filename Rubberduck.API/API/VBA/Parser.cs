@@ -48,11 +48,7 @@ namespace Rubberduck.API.VBA
     public interface IParserEvents
     {
         [DispId(1)]
-        void OnParsed();
-        [DispId(2)]
-        void OnReady();
-        [DispId(3)]
-        void OnError();
+        void OnStateChanged(ParserState ParserState);
     }
 
     [
@@ -172,9 +168,7 @@ namespace Rubberduck.API.VBA
             _dispatcher.Invoke(() => _state.OnParseRequested(this));
         }
 
-        public event Action OnParsed;
-        public event Action OnReady;
-        public event Action OnError;
+        public event Action<ParserState> OnStateChanged;
 
         private void _state_StateChanged(object sender, EventArgs e)
         {
@@ -186,23 +180,9 @@ namespace Rubberduck.API.VBA
                                      .Select(item => new Declaration(item))
                                      .ToArray();
 
-            var errorHandler = OnError;
-            if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
-            {
-                _dispatcher.Invoke(errorHandler.Invoke);
-            }
-
-            var parsedHandler = OnParsed;
-            if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
-            {
-                _dispatcher.Invoke(parsedHandler.Invoke);
-            }
-
-            var readyHandler = OnReady;
-            if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
-            {
-                _dispatcher.Invoke(readyHandler.Invoke);
-            }
+            var state = (ParserState)_state.Status;
+            var stateHandler = OnStateChanged;
+            _dispatcher.Invoke(() => stateHandler?.Invoke(state));
         }
 
         public Declaration[] AllDeclarations { get; private set; }
@@ -221,9 +201,7 @@ namespace Rubberduck.API.VBA
             {
                 _state.StateChanged -= _state_StateChanged;
             }
-
-
-            //_vbe.Release();            
+            
             _disposed = true;
         }
     }

@@ -41,6 +41,7 @@
     <Compile Include="API\VBA\DeclarationType.cs" />
     <Compile Include="API\VBA\IdentifierReference.cs" />
     <Compile Include="API\VBA\Parser.cs" />
+    <Compile Include="API\VBA\ParserState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
