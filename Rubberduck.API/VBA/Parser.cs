@@ -37,9 +37,9 @@ namespace Rubberduck.API.VBA
         [DispId(3)]
         void BeginParse();
         [DispId(4)]
-        Declaration[] AllDeclarations { get; }
+        Declarations AllDeclarations { get; }
         [DispId(5)]
-        Declaration[] UserDeclarations { get; }
+        Declarations UserDeclarations { get; }
     }
 
     [
@@ -177,13 +177,11 @@ namespace Rubberduck.API.VBA
 
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            AllDeclarations = _state.AllDeclarations
-                .Select(item => new Declaration(item))
-                .ToArray();
+            AllDeclarations = new Declarations(_state.AllDeclarations
+                .Select(item => new Declaration(item)));
 
-            UserDeclarations = _state.AllUserDeclarations
-                .Select(item => new Declaration(item))
-                .ToArray();
+            UserDeclarations = new Declarations(_state.AllUserDeclarations
+                .Select(item => new Declaration(item)));
 
             var state = (ParserState) _state.Status;
             var stateHandler = OnStateChanged;
@@ -237,9 +235,9 @@ namespace Rubberduck.API.VBA
             }
         }
 
-        public Declaration[] AllDeclarations { get; private set; }
+        public Declarations AllDeclarations { get; private set; }
 
-        public Declaration[] UserDeclarations { get; private set; }
+        public Declarations UserDeclarations { get; private set; }
 
         private bool _disposed;
         public void Dispose()

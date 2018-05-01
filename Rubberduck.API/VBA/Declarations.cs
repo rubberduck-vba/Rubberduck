@@ -36,7 +36,7 @@ namespace Rubberduck.API.VBA
 
         public int Count => _declarations.Count();
 
-        private Declarations(IEnumerable<Declaration> declarations)
+        internal Declarations(IEnumerable<Declaration> declarations)
         {
             _declarations = declarations;
         }
