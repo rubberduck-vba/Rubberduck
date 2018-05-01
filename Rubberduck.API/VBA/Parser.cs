@@ -170,7 +170,8 @@ namespace Rubberduck.API.VBA
             _dispatcher.Invoke(() => _state.OnParseRequested(this));
         }
 
-        public event Action<ParserState> OnStateChanged;
+        public delegate void OnStateChangedDelegate(ParserState ParserState);
+        public event OnStateChangedDelegate OnStateChanged;
         private const uint RPC_E_SERVERCALL_RETRYLATER = 0x8001010A;
         private const uint VBA_E_IGNORE = 0x800AC472;
         private const uint VBA_E_CANTEXECCODEINBREAKMODE = 0x800ADF09;

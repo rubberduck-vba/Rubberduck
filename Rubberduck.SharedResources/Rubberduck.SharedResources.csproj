@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="COM\RubberduckGuid.cs" />
     <Compile Include="COM\RubberduckProgId.cs" />
+    <Compile Include="COM\WellKnownDispIds.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

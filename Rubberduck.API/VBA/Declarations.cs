@@ -13,13 +13,13 @@ namespace Rubberduck.API.VBA
     ]
     public interface IDeclarations : IEnumerable
     {
-        [DispId(0)]
+        [DispId(WellKnownDispIds.Value)]
         Declaration Item(int Index);
 
         [DispId(1)]
         int Count { get; }
 
-        [DispId(-4)]
+        [DispId(WellKnownDispIds.NewEnum)]
         IEnumerator _GetEnumerator();
     }
 
