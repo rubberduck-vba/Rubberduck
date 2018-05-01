@@ -157,6 +157,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Found an issue?.
+        /// </summary>
+        public static string AboutWindow_FoundAnIssue {
+            get {
+                return ResourceManager.GetString("AboutWindow_FoundAnIssue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All contributors to our GitHub repository
         ///All our stargazers, likers &amp; followers, for the warm fuzzies
         ///...and anyone reading this!.
@@ -164,6 +173,15 @@ namespace Rubberduck.UI {
         public static string AboutWindow_GeneralThanks {
             get {
                 return ResourceManager.GetString("AboutWindow_GeneralThanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help us improve RD!.
+        /// </summary>
+        public static string AboutWindow_HelpImproveRubberduck {
+            get {
+                return ResourceManager.GetString("AboutWindow_HelpImproveRubberduck", resourceCulture);
             }
         }
         

@@ -1827,4 +1827,10 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filter by Description:</value>
   </data>
+  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
+    <value>Found an issue?</value>
+  </data>
+  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
+    <value>Help us improve RD!</value>
+  </data>
 </root>

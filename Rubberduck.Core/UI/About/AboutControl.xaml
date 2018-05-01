@@ -32,7 +32,7 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     MouseLeftButtonDown="CopyVersionInfo_MouseLeftButtonDown"
-                    Margin="0">
+                    Margin="5">
             <TextBlock x:Name="Version"
                        Margin="0,5" Text="{Binding Version}" Foreground="Black"
                        FontWeight="Bold" FontSize="12"
@@ -69,9 +69,9 @@
                             HorizontalAlignment="Center"
                             Margin="10">
                     <TextBlock HorizontalAlignment="Center"
-                               Text="Found an issue?"/>
+                               Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_FoundAnIssue}"/>
                     <TextBlock HorizontalAlignment="Center"
-                               Text="Help us improve RD!"/>
+                               Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_HelpImproveRubberduck}"/>
                     <TextBlock>
                         <Hyperlink Name="GitHubIssueUrl"
                                    NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new"
@@ -140,7 +140,7 @@
                 </StackPanel>
             </TextBlock>
         <ScrollViewer Grid.Row="1" Grid.Column="1" Grid.RowSpan="2"
-                      Margin="0" Height="350"
+                      Margin="5" Height="350"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Visible"
                       BorderThickness="1" BorderBrush="Black">
