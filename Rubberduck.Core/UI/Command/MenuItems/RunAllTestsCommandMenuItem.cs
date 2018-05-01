@@ -16,6 +16,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.RunAllTests;
         public override Image Image => Resources.AllLoadedTests;
         public override Image Mask => Resources.AllLoadedTestsMask;
+        public override byte[] LowColorImageBytes => Resources.AllLoadedTests_LowColor;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

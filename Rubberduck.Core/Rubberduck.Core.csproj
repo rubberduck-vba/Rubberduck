@@ -1043,6 +1043,18 @@
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\Custom\LowColorImage\AllLoadedTests-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\DoubleArrow-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\ExtractInterface-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\ExtractMethod-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\FindSymbol-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\Flask-Exclamation.-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\Flask-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\ImplementInterface-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\IntroduceField-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\IntroduceParameter-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\RemoveParameters-LowColor.dat" />
+    <None Include="Resources\Custom\LowColorImage\ReorderParameters-LowColor.dat" />
     <None Include="Resources\document-smiley-sad.png" />
     <None Include="Resources\document-word.png" />
     <None Include="Resources\document-office.png" />

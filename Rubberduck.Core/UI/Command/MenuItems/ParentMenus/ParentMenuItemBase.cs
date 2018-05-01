@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
@@ -161,6 +162,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             }
             child.Picture = item.Image;
             child.Mask = item.Mask;
+            child.LowColorImage = new LowColorImage(item.LowColorImageBytes);
             child.ApplyIcon();
 
             child.BeginsGroup = item.BeginGroup;

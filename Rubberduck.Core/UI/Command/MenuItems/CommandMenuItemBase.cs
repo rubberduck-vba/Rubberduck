@@ -56,5 +56,6 @@ namespace Rubberduck.UI.Command.MenuItems
         public virtual int DisplayOrder => default(int);
         public virtual Image Image => null;
         public virtual Image Mask => null;
+        public virtual byte[] LowColorImageBytes => null;
     }
 }

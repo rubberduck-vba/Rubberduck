@@ -15,6 +15,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ReorderParameters;
         public override Image Image => Resources.ReorderParameters;
         public override Image Mask => Resources.ReorderParametersMask;
+        public override byte[] LowColorImageBytes => Resources.ReorderParameters_LowColor;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

@@ -16,6 +16,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ExtractInterface;
         public override Image Image => Resources.ExtractInterface;
         public override Image Mask => Resources.ExtractInterfaceMask;
+        public override byte[] LowColorImageBytes => Resources.ExtractInterface_LowColor;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

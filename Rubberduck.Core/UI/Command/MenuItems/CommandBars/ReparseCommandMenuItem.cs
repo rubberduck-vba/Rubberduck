@@ -29,6 +29,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public override string Key => "HotkeyDescription_ParseAll";
         public override Image Image => Resources.arrow_circle_double;
         public override Image Mask => Resources.arrow_circle_double_mask;
+        public override byte[] LowColorImageBytes => Resources.DoubleArrow_LowColor;
+
         public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.RequestReparse;
     }
 }

@@ -19,6 +19,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override Image Image => Resources.ExtractMethod;
         public override Image Mask => Resources.ExtractMethodMask;
+        public override byte[] LowColorImageBytes => Resources.ExtractMethod_LowColor;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

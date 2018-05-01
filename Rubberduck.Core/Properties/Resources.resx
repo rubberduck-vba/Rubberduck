@@ -412,4 +412,40 @@
   <data name="RD2018_Splash" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RD2018-Splash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AllLoadedTests_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\AllLoadedTests-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Flask_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\Flask-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DoubleArrow_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\DoubleArrow-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ExtractInterface_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\ExtractInterface-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ExtractMethod_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\ExtractMethod-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="FindSymbol_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\FindSymbol-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Flask_Exclamation__LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\Flask-Exclamation.-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ImplementInterface_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\ImplementInterface-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="IntroduceField_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\IntroduceField-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="IntroduceParameter_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\IntroduceParameter-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RemoveParameters_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\RemoveParameters-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ReorderParameters_LowColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Custom\LowColorImage\ReorderParameters-LowColor.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

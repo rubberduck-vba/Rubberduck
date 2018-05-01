@@ -161,6 +161,16 @@ namespace Rubberduck.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] AllLoadedTests_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("AllLoadedTests_LowColor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap AllLoadedTestsMask {
@@ -461,6 +471,16 @@ namespace Rubberduck.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] DoubleArrow_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("DoubleArrow_LowColor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap drive_download {
@@ -521,6 +541,16 @@ namespace Rubberduck.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ExtractInterface_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("ExtractInterface_LowColor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ExtractInterfaceMask {
@@ -537,6 +567,16 @@ namespace Rubberduck.Properties {
             get {
                 object obj = ResourceManager.GetObject("ExtractMethod", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ExtractMethod_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("ExtractMethod_LowColor", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -577,6 +617,16 @@ namespace Rubberduck.Properties {
             get {
                 object obj = ResourceManager.GetObject("FindSymbol", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] FindSymbol_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("FindSymbol_LowColor", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -631,12 +681,32 @@ namespace Rubberduck.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Flask_Exclamation__LowColor {
+            get {
+                object obj = ResourceManager.GetObject("Flask_Exclamation__LowColor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap flask_exclamation_mask {
             get {
                 object obj = ResourceManager.GetObject("flask_exclamation_mask", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Flask_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("Flask_LowColor", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -771,6 +841,16 @@ namespace Rubberduck.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ImplementInterface_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("ImplementInterface_LowColor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ImplementInterfaceMask {
@@ -797,6 +877,26 @@ namespace Rubberduck.Properties {
             get {
                 object obj = ResourceManager.GetObject("information_white", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] IntroduceField_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("IntroduceField_LowColor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] IntroduceParameter_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("IntroduceParameter_LowColor", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
@@ -941,6 +1041,16 @@ namespace Rubberduck.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] RemoveParameters_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("RemoveParameters_LowColor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap RemoveParametersMask {
@@ -957,6 +1067,16 @@ namespace Rubberduck.Properties {
             get {
                 object obj = ResourceManager.GetObject("ReorderParameters", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ReorderParameters_LowColor {
+            get {
+                object obj = ResourceManager.GetObject("ReorderParameters_LowColor", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

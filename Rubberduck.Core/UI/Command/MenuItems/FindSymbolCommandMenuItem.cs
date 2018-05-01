@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override Image Image => Resources.FindSymbol;
         public override Image Mask => Resources.FindSymbolMask;
+        public override byte[] LowColorImageBytes => Resources.FindSymbol_LowColor;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

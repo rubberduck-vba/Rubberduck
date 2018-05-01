@@ -18,6 +18,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override Image Image => Resources.PromoteLocal;
         public override Image Mask => Resources.PromoteLocalMask;
+        public override byte[] LowColorImageBytes => Resources.IntroduceParameter_LowColor;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

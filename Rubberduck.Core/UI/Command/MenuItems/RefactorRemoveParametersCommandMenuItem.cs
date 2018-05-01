@@ -17,6 +17,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override Image Image => Resources.RemoveParameters;
         public override Image Mask => Resources.RemoveParametersMask;
+        public override byte[] LowColorImageBytes => Resources.RemoveParameters_LowColor;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

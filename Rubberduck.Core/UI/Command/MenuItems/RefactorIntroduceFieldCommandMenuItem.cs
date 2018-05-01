@@ -17,6 +17,7 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override Image Image => Resources.AddVariable;
         public override Image Mask => Resources.AddVariableMask;
+        public override byte[] LowColorImageBytes => Resources.IntroduceField_LowColor;
 
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
