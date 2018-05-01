@@ -33,9 +33,9 @@
         public const string DeclarationClassGuid = ApiGuidspace + "82" + GuidSuffix;
         public const string IIdentifierReferenceGuid = ApiGuidspace + "83" + GuidSuffix;
         public const string IdentifierReferenceClassGuid = ApiGuidspace + "84" + GuidSuffix;
-        public const string IParserStateGuid = ApiGuidspace + "85" + GuidSuffix;
-        public const string ParserStateClassGuid = ApiGuidspace + "86" + GuidSuffix;
-        public const string IParserStateEventsGuid = ApiGuidspace + "87" + GuidSuffix;
+        public const string IParserGuid = ApiGuidspace + "85" + GuidSuffix;
+        public const string ParserClassGuid = ApiGuidspace + "86" + GuidSuffix;
+        public const string IParserEventsGuid = ApiGuidspace + "87" + GuidSuffix;
         
         // Enum Guids:
         private const string RecordGuidspace = "69E100";

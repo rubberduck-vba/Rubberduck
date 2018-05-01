@@ -40,7 +40,7 @@
     <Compile Include="API\VBA\Declaration.cs" />
     <Compile Include="API\VBA\DeclarationType.cs" />
     <Compile Include="API\VBA\IdentifierReference.cs" />
-    <Compile Include="API\VBA\ParserState.cs" />
+    <Compile Include="API\VBA\Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -49,7 +49,7 @@
       <Name>Rubberduck.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
-      <Project>{e8ab5d93-2d0f-423d-bc15-5ee118673e48}</Project>
+      <Project>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</Project>
       <Name>Rubberduck.Main</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
