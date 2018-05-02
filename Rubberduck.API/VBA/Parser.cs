@@ -17,7 +17,6 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Root;
-using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.API.VBA
 {
@@ -168,10 +167,7 @@ namespace Rubberduck.API.VBA
 
         public delegate void OnStateChangedDelegate(ParserState ParserState);
         public event OnStateChangedDelegate OnStateChanged;
-        private const uint RPC_E_SERVERCALL_RETRYLATER = 0x8001010A;
-        private const uint VBA_E_IGNORE = 0x800AC472;
-        private const uint VBA_E_CANTEXECCODEINBREAKMODE = 0x800ADF09;
-
+        
         private void _state_StateChanged(object sender, EventArgs e)
         {
             AllDeclarations = new Declarations(_state.AllDeclarations
@@ -184,50 +180,9 @@ namespace Rubberduck.API.VBA
             var stateHandler = OnStateChanged;
             if (stateHandler != null)
             {
-                _dispatcher.Invoke(() =>
+                _dispatcher.RaiseComEvent(() =>
                 {
-                    var runtime = new VBERuntimeAccessor(_vbe);
-                    var currentCount = 0;
-                    var retryCount = 100;
-                    var timeSleep = 10;
-                    for (;;)
-                    {
-                        try
-                        {
-                            stateHandler.Invoke(state);
-                            break;
-                        }
-                        catch (Exception ex)
-                        {
-                            if (currentCount < retryCount)
-                            {
-                                var cex = (COMException) ex;
-                                switch ((uint) cex.ErrorCode)
-                                {
-                                    case VBA_E_CANTEXECCODEINBREAKMODE:
-                                        runtime.DoEvents();
-                                        Thread.Sleep(timeSleep);
-                                        break;
-                                    case RPC_E_SERVERCALL_RETRYLATER:
-                                        runtime.DoEvents();
-                                        Thread.Sleep(timeSleep);
-                                        break;
-                                    case VBA_E_IGNORE:
-                                        runtime.DoEvents();
-                                        Thread.Sleep(timeSleep);
-                                        break;
-                                    default:
-                                        throw;
-                                }
-
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                            currentCount++;
-                        }
-                    }
+                    stateHandler.Invoke(state);
                 });
             }
         }
