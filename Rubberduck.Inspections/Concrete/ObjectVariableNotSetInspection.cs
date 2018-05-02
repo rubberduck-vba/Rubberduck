@@ -3,10 +3,9 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -20,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return InterestingReferences().Select(reference =>
                 new IdentifierReferenceInspectionResult(this,
-                    string.Format(InspectionsUI.ObjectVariableNotSetInspectionResultFormat, reference.Declaration.IdentifierName),
+                    string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.Declaration.IdentifierName),
                     State, reference));
         }
 
