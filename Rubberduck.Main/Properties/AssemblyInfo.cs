@@ -7,7 +7,7 @@ using Rubberduck.SharedResources.COM;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rubberduck")]
-[assembly: AssemblyDescription("The Rubberduck AddIn")]
+[assembly: AssemblyDescription("Rubberduck AddIn")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rubberduck-VBA")]
 [assembly: AssemblyProduct("Rubberduck")]

@@ -38,6 +38,8 @@
         public const string IParserEventsGuid = ApiGuidspace + "87" + GuidSuffix;
         public const string IDeclarationsGuid = ApiGuidspace + "88" + GuidSuffix;
         public const string DeclarationsClassGuid = ApiGuidspace + "89" + GuidSuffix;
+        public const string IApiProviderGuid = ApiGuidspace + "8A" + GuidSuffix;
+        public const string ApiProviderClassGuid = ApiGuidspace + "8B" + GuidSuffix;
 
         // Enum Guids:
         private const string RecordGuidspace = "69E100";

@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.API</RootNamespace>
-    <AssemblyName>Rubberduck.API</AssemblyName>
+    <AssemblyName>RubberduckAPI</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -36,6 +36,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VBA\ApiProvider.cs" />
     <Compile Include="VBA\Accessibility.cs" />
     <Compile Include="VBA\Declaration.cs" />
     <Compile Include="VBA\Declarations.cs" />

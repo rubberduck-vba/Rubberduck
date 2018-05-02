@@ -6,8 +6,8 @@ using Rubberduck.SharedResources.COM;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rubberduck.API")]
-[assembly: AssemblyDescription("API for programmatic access to Rubberduck's Code Analysis features.")]
+[assembly: AssemblyTitle("RubberduckAPI")]
+[assembly: AssemblyDescription("Rubberduck Reflection API")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rubberduck-VBA")]
 [assembly: AssemblyProduct("Rubberduck.API")]

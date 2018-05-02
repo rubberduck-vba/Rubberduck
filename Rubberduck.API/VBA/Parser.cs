@@ -28,17 +28,13 @@ namespace Rubberduck.API.VBA
     ]
     public interface IParser
     {
-        // vbe is the com coclass interface from the interop assembly.
-        // There is no shared interface between VBA and VB6 types, hence object.
         [DispId(1)]
-        void Initialize(object vbe); 
-        [DispId(2)]
         void Parse();
-        [DispId(3)]
+        [DispId(2)]
         void BeginParse();
-        [DispId(4)]
+        [DispId(3)]
         Declarations AllDeclarations { get; }
-        [DispId(5)]
+        [DispId(4)]
         Declarations UserDeclarations { get; }
     }
 
@@ -71,7 +67,7 @@ namespace Rubberduck.API.VBA
         private IVBEEvents _vbeEvents;
         private readonly IUiDispatcher _dispatcher;
 
-        public Parser()
+        internal Parser()
         {
             UiContextProvider.Initialize();
             _dispatcher = new UiDispatcher(UiContextProvider.Instance());
@@ -79,7 +75,7 @@ namespace Rubberduck.API.VBA
 
         // vbe is the com coclass interface from the interop assembly.
         // There is no shared interface between VBA and VB6 types, hence object.
-        public void Initialize(object vbe)
+        internal Parser(object vbe) : this()
         {
             if (_parser != null)
             {
