@@ -10,7 +10,7 @@ using Rubberduck.SharedResources.COM;
 [assembly: AssemblyDescription("Rubberduck Reflection API")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rubberduck-VBA")]
-[assembly: AssemblyProduct("Rubberduck.API")]
+[assembly: AssemblyProduct("RubberduckAPI")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyCulture("en")]
 [assembly: AssemblyTrademark("")]

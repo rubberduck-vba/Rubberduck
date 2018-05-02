@@ -10,6 +10,7 @@
         public const string DeclarationProgId = BaseNamespace + "Declaration";
         public const string DeclarationsProgId = BaseNamespace + "Declarations";
         public const string IdentifierReferenceProgId = BaseNamespace + "IdentifierReference";
+        public const string IdentifierReferencesProgId = BaseNamespace + "IdentifierReferences";
         public const string ParserStateProgId = BaseNamespace + "ParserState";
         public const string ApiProviderProgId = BaseNamespace + "ApiProvider";
 

@@ -40,6 +40,8 @@
         public const string DeclarationsClassGuid = ApiGuidspace + "89" + GuidSuffix;
         public const string IApiProviderGuid = ApiGuidspace + "8A" + GuidSuffix;
         public const string ApiProviderClassGuid = ApiGuidspace + "8B" + GuidSuffix;
+        public const string IIdentifierReferencesGuid = ApiGuidspace + "8C" + GuidSuffix;
+        public const string IdentifierReferencesClassGuid = ApiGuidspace + "8D" + GuidSuffix;
 
         // Enum Guids:
         private const string RecordGuidspace = "69E100";

@@ -27,7 +27,7 @@ namespace Rubberduck.API.VBA
         [DispId(6)]
         Declaration ParentDeclaration { get; }
         [DispId(7)]
-        IdentifierReference[] References { get; }
+        IdentifierReferences References { get; }
     }
 
     [
@@ -83,12 +83,12 @@ namespace Rubberduck.API.VBA
         private Declaration _parentDeclaration;
         public Declaration ParentDeclaration => _parentDeclaration ?? (_parentDeclaration = new Declaration(Instance.ParentDeclaration));
 
-        private IdentifierReference[] _references;
-        public IdentifierReference[] References
+        private IdentifierReferences _references;
+        public IdentifierReferences References
         {
             get
             {
-                return _references ?? (_references = Instance.References.Select(item => new IdentifierReference(item)).ToArray());
+                return _references ?? (_references = new IdentifierReferences(Instance.References.Select(item => new IdentifierReference(item))));
             }
         }
     }

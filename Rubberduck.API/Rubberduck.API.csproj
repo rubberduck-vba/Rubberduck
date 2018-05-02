@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.API</RootNamespace>
-    <AssemblyName>RubberduckAPI</AssemblyName>
+    <AssemblyName>Rubberduck.API</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -42,6 +42,7 @@
     <Compile Include="VBA\Declarations.cs" />
     <Compile Include="VBA\DeclarationType.cs" />
     <Compile Include="VBA\IdentifierReference.cs" />
+    <Compile Include="VBA\IdentifierReferences.cs" />
     <Compile Include="VBA\Parser.cs" />
     <Compile Include="VBA\ParserState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
