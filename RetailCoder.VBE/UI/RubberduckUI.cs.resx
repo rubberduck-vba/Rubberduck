@@ -193,7 +193,7 @@
     <value>Odstranit parametry</value>
   </data>
   <data name="ExtractMethod_InvalidSelectionMessage" xml:space="preserve">
-    <value>Aktuální výběr není platný</value>
+    <value>Aktuální výběr není platný.</value>
   </data>
   <data name="ExtractMethod_PreviewLabel" xml:space="preserve">
     <value>Náhled:</value>
@@ -356,5 +356,278 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Popisek</value>
+  </data>
+  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
+    <value>Nastavení inspekce kódu</value>
+  </data>
+  <data name="DeclarationType_LineLabel" xml:space="preserve">
+    <value>označení řádku</value>
+  </data>
+  <data name="ReorderParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Přeuspořádat parametry</value>
+  </data>
+  <data name="DeclarationType_Control" xml:space="preserve">
+    <value>VBDesigner-Objekt</value>
+  </data>
+  <data name="ReorderParamsDialog_TitleText" xml:space="preserve">
+    <value>Přeuspořádat parametry</value>
+  </data>
+  <data name="ReorderPresenter_LessThanTwoParametersError" xml:space="preserve">
+    <value>V metodě '{0}' je méně než 2 parametry.</value>
+  </data>
+  <data name="AllReferences_NoneFound" xml:space="preserve">
+    <value>V ukazateli '{0}' nebyly nalezeny žádné reference.</value>
+  </data>
+  <data name="ReorderPresenter_ParamArrayError" xml:space="preserve">
+    <value>Parametr ParamArray musí být specifikován naposled.</value>
+  </data>
+  <data name="RemovePresenter_NoParametersError" xml:space="preserve">
+    <value>V metodě '{0}' nejsou žádné parametry.</value>
+  </data>
+  <data name="AllReferences_Caption" xml:space="preserve">
+    <value>Všechny reference: '{0}'</value>
+  </data>
+  <data name="RemoveParamsDialog_RemoveIllegalSetterLetterParameter" xml:space="preserve">
+    <value>Nelze odstranit poslední parametr ze setteru nebo letteru.</value>
+  </data>
+  <data name="ExtractMethod_AccessibilityLabel" xml:space="preserve">
+    <value>Přístupnost:</value>
+  </data>
+  <data name="ExtractMethod_Caption" xml:space="preserve">
+    <value>Rubberduck - Metoda extrakce</value>
+  </data>
+  <data name="ExtractMethod_InstructionsText" xml:space="preserve">
+    <value>Prosím specifikujte jméno metody, return typ a/nebo parametry (pokud je možné aplikovat) a další možnosti.</value>
+  </data>
+  <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
+    <value>Parametry:</value>
+  </data>
+  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
+    <value>&amp;Inspekce kódu</value>
+  </data>
+  <data name="RubberduckMenu_Refactor" xml:space="preserve">
+    <value>&amp;Refactor</value>
+  </data>
+  <data name="ToolsMenu_SourceControl" xml:space="preserve">
+    <value>&amp;Source Control</value>
+  </data>
+  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
+    <value>Unit &amp;Testy</value>
+  </data>
+  <data name="TestMenu_RunAllTests" xml:space="preserve">
+    <value>Spustit &amp;všechny test</value>
+  </data>
+  <data name="TestMenu_TextExplorer" xml:space="preserve">
+    <value>&amp;Test Explorer</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
+    <value>{0} (parsuji...)</value>
+  </data>
+  <data name="LoadConfigError" xml:space="preserve">
+    <value>Chyba při načítání konfigurace Rubberducku</value>
+  </data>
+  <data name="RubberduckLoadFailure" xml:space="preserve">
+    <value>Nebylo možno načíst Rubberduck Add-In</value>
+  </data>
+  <data name="CodeInspections" xml:space="preserve">
+    <value>Inspekce kódu</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
+    <value>{0} ({1} problém}</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
+    <value>{0} problém</value>
+  </data>
+  <data name="CodeInspections_Run" xml:space="preserve">
+    <value>Spustit inspekce kódu</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>V pořádku</value>
+  </data>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>{0} selhal</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>{0} neprůkazný</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>{0} v pořádku</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="TodoExplorer_Caption" xml:space="preserve">
+    <value>Todo Explorer</value>
+  </data>
+  <data name="EasterEgg_Continuator" xml:space="preserve">
+    <value>Získali jste odznak "Continuator"!</value>
+  </data>
+  <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
+    <value>Nastavení modulu by měly být specifikovány jako první</value>
+  </data>
+  <data name="RemoveParamsDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Odstranit Parametry</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="ParseErrors_Caption" xml:space="preserve">
+    <value>Rubberduck - Chyby parseru</value>
+  </data>
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
+    <value>Modul třídy (.cls)</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>UserForm (.frm)</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>Standardní modul (.bas)</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>Testovací modul</value>
+  </data>
+  <data name="Inspect" xml:space="preserve">
+    <value>Zkontrolovat</value>
+  </data>
+  <data name="Navigate" xml:space="preserve">
+    <value>Navigovat</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>Přepnout složky</value>
+  </data>
+  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
+    <value>Zkopírovat do schránky</value>
+  </data>
+  <data name="CodeInspections_CopyToolTip" xml:space="preserve">
+    <value>Zkopírovat výsledky kontroly do schránky</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Go</value>
+  </data>
+  <data name="CodeInspections_GoToolTip" xml:space="preserve">
+    <value>Navigovat na vybraný problém</value>
+  </data>
+  <data name="CodeInspections_NextToolTip" xml:space="preserve">
+    <value>Navigovat na následující problém</value>
+  </data>
+  <data name="CodeInspections_PreviousToolTip" xml:space="preserve">
+    <value>Navigovat na předchozí problém</value>
+  </data>
+  <data name="CodeInspections_QuickFixToolTip" xml:space="preserve">
+    <value>Řešit problém</value>
+  </data>
+  <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
+    <value>Spustit inspekci kódu</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>Přidat</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Testovací metoda (Očekávaný error)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>Testovací metoda</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>Testovací modul</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>Trvání</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>Navigovat na výběr</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>Zpráva</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>Název metody</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>Název modulu</value>
+  </data>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Modul</value>
+  </data>
+  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+    <value>Všechny testy</value>
+  </data>
+  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+    <value>Spustit</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Spustit</value>
+  </data>
+  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+    <value>Spustit poslední běh</value>
+  </data>
+  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+    <value>Testy, které prošly</value>
+  </data>
+  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+    <value>Vybrané testy</value>
+  </data>
+  <data name="Line" xml:space="preserve">
+    <value>Řádek</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="DeclarationType_Project" xml:space="preserve">
+    <value>projekt</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Přidat</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Změnit</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="Settings_Caption" xml:space="preserve">
+    <value>Rubberduck nastavení</value>
+  </data>
+  <data name="Navigation" xml:space="preserve">
+    <value>Navigace</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>TODO Explorer</value>
+  </data>
+  <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Metoda '{0}' implementuje '{1}.{2}'. Přejmenovat člena rozhraní?</value>
+  </data>
+  <data name="OK_AllCaps" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nový</value>
+  </data>
+  <data name="Settings_ResetSettings" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
+    <value>Resetovat nastavení do defaultní konfigurace?</value>
+  </data>
+  <data name="Rename_DeclarationType" xml:space="preserve">
+    <value>Přejmenovat {0}</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
+    <value>Přirazení</value>
+  </data>
+  <data name="AboutWindow_Caption" xml:space="preserve">
+    <value>O Rubberducku</value>
+  </data>
+  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
+    <value>Speciální Poděkování</value>
+  </data>
+  <data name="SourceControlPanel_Caption" xml:space="preserve">
+    <value>Source Control</value>
+  </data>
+  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
+    <value>Zrušit</value>
   </data>
 </root>

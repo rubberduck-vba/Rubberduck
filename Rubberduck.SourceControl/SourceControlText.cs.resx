@@ -159,4 +159,25 @@
   <data name="GitNoInitialCommit" xml:space="preserve">
     <value>Nelze udělat počáteční commit.</value>
   </data>
+  <data name="GitUndoFailed" xml:space="preserve">
+    <value>Vrácení změn se nezdařilo</value>
+  </data>
+  <data name="GitFileStageFailed" xml:space="preserve">
+    <value>Stage souboru se nezdařil.</value>
+  </data>
+  <data name="GitFileStageFailedMsg" xml:space="preserve">
+    <value>Stage souboru {0} se nezdařil.</value>
+  </data>
+  <data name="GitRepoStatusFailed" xml:space="preserve">
+    <value>Nepodařilo se vyvolat status repositáře.</value>
+  </data>
+  <data name="GitRevertConflict" xml:space="preserve">
+    <value>Navrácení změn (Revert) vyústil v konflikt. Revert se nezdařil.</value>
+  </data>
+  <data name="GitRemoveFileStaging" xml:space="preserve">
+    <value>Odstranění souboru '{0}' ze stage prostoru se nezdařilo.</value>
+  </data>
+  <data name="NoProjectOpen" xml:space="preserve">
+    <value>Aby mohl Rubberduck inicializovat repozitář, musí existovat aktivní projekt.</value>
+  </data>
 </root>

@@ -118,9 +118,354 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IgnoreOnce" xml:space="preserve">
-    <value>Jednou ignorovat</value>
+    <value>Ignorovat jednou</value>
   </data>
   <data name="AssignedByValParameterInspectionName" xml:space="preserve">
     <value>ByVal parametr je přidělen</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionName" xml:space="preserve">
+    <value>Implicitní ByRef parametr</value>
+  </data>
+  <data name="NonReturningFunctionInspectionName" xml:space="preserve">
+    <value>Funkce, která nic nevrací. Případně Property getter.</value>
+  </data>
+  <data name="ConstantNotUsedInspectionName" xml:space="preserve">
+    <value>Constanta není použita</value>
+  </data>
+  <data name="DefaultProjectNameInspectionMeta" xml:space="preserve">
+    <value>Zvažte, zda nepojmenovat VBA projekt</value>
+  </data>
+  <data name="DefaultProjectNameInspectionName" xml:space="preserve">
+    <value>Jméno projektu není specifikováno</value>
+  </data>
+  <data name="EmptyStringLiteralInspection" xml:space="preserve">
+    <value>Preferuj 'vbNullString' oproti písmenu prázdného řetězce</value>
+  </data>
+  <data name="OptionExplicitInspectionName" xml:space="preserve">
+    <value>'Option Explicit' není specifikováno</value>
+  </data>
+  <data name="ParameterCanBeByValInspectionName" xml:space="preserve">
+    <value>Parametr může být předán jako hodnota</value>
+  </data>
+  <data name="UseMeaningfulNameInspectionName" xml:space="preserve">
+    <value>Použijte smysluplná pojmenování</value>
+  </data>
+  <data name="EmptyModuleInspectionResultFormat" xml:space="preserve">
+    <value>Modul/třída {0} je prázdný</value>
+  </data>
+  <data name="EmptyModuleInspectionName" xml:space="preserve">
+    <value>Prázdný modul</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionResultFormat" xml:space="preserve">
+    <value>Booleanovské písmeno '{0}' je  přiřazeno jako podmiňovací způsob</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspectionName" xml:space="preserve">
+    <value>Booleanovské písmeno je  přiřazeno jako podmiňovací způsob</value>
+  </data>
+  <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
+    <value>Zaměň 'Error' na 'Err.Raise'</value>
+  </data>
+  <data name="ShadowedDeclarationInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' skryje {2} '{3}'</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspectionName" xml:space="preserve">
+    <value>Loop 'While...Wend' je prázdný</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionName" xml:space="preserve">
+    <value>Loop 'For...Next' je prázdný</value>
+  </data>
+  <data name="EmptyForLoopBlockInspectionResultFormat" xml:space="preserve">
+    <value>Loop 'For...Next' neobsahuje žádné spustitelné příkazy</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspectionName" xml:space="preserve">
+    <value>Loop 'Do...While' je prázdný</value>
+  </data>
+  <data name="EmptyCaseBlockInspectionName" xml:space="preserve">
+    <value>Blok 'Case' je prázdný</value>
+  </data>
+  <data name="StopKeywordInspectionName" xml:space="preserve">
+    <value>Klíčové slovo 'Stop'</value>
+  </data>
+  <data name="StopKeywordInspectionResultFormat" xml:space="preserve">
+    <value>Klíčové slovo 'Stop' zdržuje exekuci</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix" xml:space="preserve">
+    <value>Zaměň typ za 'Long'</value>
+  </data>
+  <data name="IntegerDataTypeInspectionName" xml:space="preserve">
+    <value>Použij 16-bit celé číslo</value>
+  </data>
+  <data name="EmptyElseBlockInspectionName" xml:space="preserve">
+    <value>Blok 'Else' je prázdný</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>Varování</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>Rada</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>Doporučení</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>Neukazovat</value>
+  </data>
+  <data name="CodeInspectionSettings_Performance" xml:space="preserve">
+    <value>Výkon</value>
+  </data>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>Problémy s kvalitou kódu</value>
+  </data>
+  <data name="RemoveCommentQuickFix" xml:space="preserve">
+    <value>Odstranit komentář</value>
+  </data>
+  <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
+    <value>Odstranit zastaralé statementy</value>
+  </data>
+  <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
+    <value>Odstranit nepřidělenou proměnnou</value>
+  </data>
+  <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
+    <value>Odstranit nepoužitou deklaraci</value>
+  </data>
+  <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
+    <value>Odstranit nepoužitý parametr</value>
+  </data>
+  <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
+    <value>Vrátit explicitní 'Variant'</value>
+  </data>
+  <data name="VariableNotAssignedInspectionResultFormat" xml:space="preserve">
+    <value>Proměnná '{0}' není přidělena</value>
+  </data>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value>Zakázat tuto inspekci</value>
+  </data>
+  <data name="QualifiedSelectionInspection" xml:space="preserve">
+    <value>{0}: {1} - {2} {3},{4}, řádek {5}</value>
+  </data>
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
+    <value>Použít klíčové slovo 'Set'</value>
+  </data>
+  <data name="DefaultProjectNameInspectionResultFormat" xml:space="preserve">
+    <value>Projekt '{0}' má výchozí jméno</value>
+  </data>
+  <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
+    <value>Zaměnit 'Dim' za 'Private'</value>
+  </data>
+  <data name="EmptyStringLiteralInspectionName" xml:space="preserve">
+    <value>Prázdné písmeno řetězce</value>
+  </data>
+  <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
+    <value>Zaměň prázdný řetězec konstantou 'vbNullString'</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionResultFormat" xml:space="preserve">
+    <value>Veřejné pole '{0}' porušuje enkapsulaci</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionMeta" xml:space="preserve">
+    <value>Zvaž, zda radši neodhalit tuto Property</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionName" xml:space="preserve">
+    <value>Veřejné pole porušuje enkapsulaci</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Enkapsuluj pole '{0}'' pomocí Property</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspectionName" xml:space="preserve">
+    <value>Implicitní reference na 'ActiveSheet'</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspectionName" xml:space="preserve">
+    <value>Implicitní reference na 'ActiveWorkbook'</value>
+  </data>
+  <data name="ImplicitPublicMemberInspectionName" xml:space="preserve">
+    <value>Implicitně veřejný člen</value>
+  </data>
+  <data name="ImplicitVariantReturnTypeInspectionName" xml:space="preserve">
+    <value>Typ proměnné, které vrací člen, je implicitně 'Variant'</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspectionName" xml:space="preserve">
+    <value>Rozsah proměnné je širší, než je třeba</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspectionResultFormat" xml:space="preserve">
+    <value>Přesuň proměnnou '{0}' na úrovni modulu do menšího rozsahu.</value>
+  </data>
+  <data name="MultilineParameterInspectionName" xml:space="preserve">
+    <value>Deklarace parametru je rozdělena na více řádcích.</value>
+  </data>
+  <data name="MultipleDeclarationsInspectionMeta" xml:space="preserve">
+    <value>Deklarování více proměnných v té samé instrukci je povoleno, ale mělo by se používat šetrně. Zvaž deklaraci proměnné blíže k místo jejího prvního použití, uvnitř jedné instrukce pro každou deklaraci.</value>
+  </data>
+  <data name="MultipleDeclarationsInspectionName" xml:space="preserve">
+    <value>Mnohonásobné deklarace jedné instrukce</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionResultFormat" xml:space="preserve">
+    <value>'{0}' má více jak jednu '@Folder' anotaci</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspectionName" xml:space="preserve">
+    <value>Modul má více jak jednu '@Folder' anotaci</value>
+  </data>
+  <data name="ObsoleteCallStatementInspectionName" xml:space="preserve">
+    <value>Použití 'Call' předpisu</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspectionName" xml:space="preserve">
+    <value>Použití 'Rem' předpisu</value>
+  </data>
+  <data name="ObsoleteGlobalInspectionName" xml:space="preserve">
+    <value>Použití 'Global' přístupového modifikátoru</value>
+  </data>
+  <data name="ObsoleteLetStatementInspectionName" xml:space="preserve">
+    <value>Použití explicitního 'Let' předpisu</value>
+  </data>
+  <data name="OptionBaseInspectionName" xml:space="preserve">
+    <value>Je specifikován předpis 'Option Base 1'</value>
+  </data>
+  <data name="OptionExplicitInspectionMeta" xml:space="preserve">
+    <value>VBA s radostí zkompiluje překlep: použij 'Option Explicit' pro zabránění úspěšné kompilace programu s chybou.</value>
+  </data>
+  <data name="ParameterCanBeByValInspectionMeta" xml:space="preserve">
+    <value>Paremetr předaný referencí 'ByRef' a není mu přiřazena nová hodnota/reference, může být místo toho předaný hodnotou 'ByVal'.</value>
+  </data>
+  <data name="ParameterNotUsedInspectionMeta" xml:space="preserve">
+    <value>Parametr je předaný členovi, který ho nevyužívá. Zvaž odstranění tohoto parametru.</value>
+  </data>
+  <data name="ParameterNotUsedInspectionName" xml:space="preserve">
+    <value>Na parametr se nic neodkazuje</value>
+  </data>
+  <data name="ProcedureNotUsedInspectionName" xml:space="preserve">
+    <value>Na proceduru se nic neodkazuje</value>
+  </data>
+  <data name="UnassignedVariableUsageInspectionName" xml:space="preserve">
+    <value>Proměnná je použita, avšak není přiřazena</value>
+  </data>
+  <data name="ProcedureCanBeWrittenAsFunctionInspectionResultFormat" xml:space="preserve">
+    <value>Procedura '{0}' může být napsána jako funkce.</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Implementuj jako funkci a obnov veškerá použití.</value>
+  </data>
+  <data name="IdentifierNameInspectionResultFormat" xml:space="preserve">
+    <value>Zvaž přejmenování {0} na '{1}'</value>
+  </data>
+  <data name="VariableNotAssignedInspectionName" xml:space="preserve">
+    <value>Proměnná není přidělena</value>
+  </data>
+  <data name="VariableNotUsedInspectionMeta" xml:space="preserve">
+    <value>Na proměnnou se nic neodkazuje</value>
+  </data>
+  <data name="VariableNotUsedInspectionName" xml:space="preserve">
+    <value>Na proměnnou se nic neodkazuje</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspectionName" xml:space="preserve">
+    <value>Proměnná je implicitně typu 'Variant'</value>
+  </data>
+  <data name="WriteOnlyPropertyInspectionName" xml:space="preserve">
+    <value>Vlastnost je pouze zapisovatelná</value>
+  </data>
+  <data name="ProcedureCanBeWrittenAsFunctionInspectionName" xml:space="preserve">
+    <value>Procedura může být napsána jako funkce</value>
+  </data>
+  <data name="WriteOnlyPropertyInspectionResultFormat" xml:space="preserve">
+    <value>Vlastnost '{0}' nemá žádný getter</value>
+  </data>
+  <data name="IdentifierNotUsedInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' není použito</value>
+  </data>
+  <data name="ImplicitByRefModifierInspectionResultFormat" xml:space="preserve">
+    <value>Parametr '{0}' je implicitně předán jako reference 'ByRef'</value>
+  </data>
+  <data name="ImplicitPublicMemberInspectionResultFormat" xml:space="preserve">
+    <value>Člen '{0}' je implicitně veřejný</value>
+  </data>
+  <data name="ImplicitVariantDeclarationInspectionResultFormat" xml:space="preserve">
+    <value>{0} '{1}' je implicitně typu 'Variant'</value>
+  </data>
+  <data name="Inspections_Declaration" xml:space="preserve">
+    <value>Deklarace</value>
+  </data>
+  <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
+    <value>Zkonvertovat funkci na proceduru</value>
+  </data>
+  <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
+    <value>Deklarovat jako explicitní 'Variant'</value>
+  </data>
+  <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
+    <value>Předat parametr explicitně pomocí reference 'ByRef'</value>
+  </data>
+  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="Inspections_Usage" xml:space="preserve">
+    <value>Použití</value>
+  </data>
+  <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
+    <value>Zapište proměnnou na jeden řádek</value>
+  </data>
+  <data name="OptionExplicitQuickFix" xml:space="preserve">
+    <value>Specifikovat 'Option Explicit'</value>
+  </data>
+  <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
+    <value>Předat parametr pomocí reference 'ByRef'</value>
+  </data>
+  <data name="PassParameterByValueQuickFix" xml:space="preserve">
+    <value>Předatparametr pomocí hodnoty 'ByVal'</value>
+  </data>
+  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
+    <value>Změnit '{0}' na '{1}'</value>
+  </data>
+  <data name="QuickFix_ThisModule" xml:space="preserve">
+    <value>Opravit všechny výskyty v modulu</value>
+  </data>
+  <data name="QuickFix_ThisProject" xml:space="preserve">
+    <value>Opravit všechny výskyty v projektu</value>
+  </data>
+  <data name="WhiteListIdentifierQuickFix" xml:space="preserve">
+    <value>Přidat do WhiteListu</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspectionName" xml:space="preserve">
+    <value>Člen nenalezen</value>
+  </data>
+  <data name="QuickFix_All" xml:space="preserve">
+    <value>Opravit veškeré výskyty</value>
+  </data>
+  <data name="QuickFix_ThisProcedure" xml:space="preserve">
+    <value>Opravit veškeré výskyty v proceduře</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
+    <value>Odstranit předpis 'Option Base'</value>
+  </data>
+  <data name="IllegalAnnotationInspectionName" xml:space="preserve">
+    <value>Nepovolená anotace</value>
+  </data>
+  <data name="IllegalAnnotationInspectionResultFormat" xml:space="preserve">
+    <value>Anotace '{0}' není v tomto kontextu povolena</value>
+  </data>
+  <data name="MissingAnnotationInspectionName" xml:space="preserve">
+    <value>Chybějící anotace</value>
+  </data>
+  <data name="OptionBaseZeroInspectionMeta" xml:space="preserve">
+    <value>Toto je výchozí nastavení, není třeba ho specifikovat.</value>
+  </data>
+  <data name="OptionBaseZeroInspectionResultFormat" xml:space="preserve">
+    <value>Komponenta '{0}' používá 'Option Base 0'</value>
+  </data>
+  <data name="MissingAttributeInspectionName" xml:space="preserve">
+    <value>Chybějící atribut</value>
+  </data>
+  <data name="RedundantOptionInspectionResultFormat" xml:space="preserve">
+    <value>'{0}' nemá žádný efekt</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionName" xml:space="preserve">
+    <value>Zbytečný 'ByRef' modifikátor</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
+    <value>Odstranit prázdný 'If' blok</value>
+  </data>
+  <data name="RedundantByRefModifierInspectionResultFormat" xml:space="preserve">
+    <value>Parametr '{0}' má zbytečný ByRef modifikátor</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
+    <value>Odstranit 'ByRef' modifikátor</value>
   </data>
 </root>
