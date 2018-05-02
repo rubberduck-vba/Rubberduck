@@ -114,7 +114,7 @@ try
 							& reg.exe import $regFileDebug;
 						}
 						& reg.exe import ($dir + "\RubberduckAddinRegistry.reg");
-						Move-Item -Path $regFileDebug -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" );
+						Move-Item -Path $regFileDebug -Destination ($regFileDebug + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" );
 					}
 				}
 				else
