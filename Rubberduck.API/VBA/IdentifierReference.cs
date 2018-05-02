@@ -13,19 +13,19 @@ namespace Rubberduck.API.VBA
     {
         [DispId(1)]
         Declaration Declaration { get; }
-        [DispId(1)]
-        Declaration ParentScope { get; }
         [DispId(2)]
-        Declaration ParentNonScoping { get; }
+        Declaration ParentScope { get; }
         [DispId(3)]
-        bool IsAssignment { get; }
+        Declaration ParentNonScoping { get; }
         [DispId(4)]
-        int StartLine { get; }
+        bool IsAssignment { get; }
         [DispId(5)]
-        int StartColumn { get; }
+        int StartLine { get; }
         [DispId(6)]
-        int EndLine { get; }
+        int StartColumn { get; }
         [DispId(7)]
+        int EndLine { get; }
+        [DispId(8)]
         int EndColumn { get; }
     }
 
