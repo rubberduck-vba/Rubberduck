@@ -5,8 +5,8 @@ using Source = Rubberduck.Parsing.Symbols;
 namespace Rubberduck.API.VBA
 {
     [
-        ComVisible(true) 
-        // Guid(RubberduckGuid.AccessibilityGuid)
+        ComVisible(true),
+        Guid(RubberduckGuid.AccessibilityGuid)
     ]
     public enum Accessibility
     {
