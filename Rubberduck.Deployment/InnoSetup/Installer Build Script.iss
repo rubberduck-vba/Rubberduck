@@ -496,12 +496,16 @@ end;
 ///Used by <see cref="RegisterAddIn" />, passing in parameters to actually create
 ///the per-user registry entries to enable VBE addin for that user.
 ///<remarks>
-procedure RegisterAddinForIDE(const iRootKey: Integer; const sAddinSubKey: String; const sProgIDConnect: String);
+procedure RegisterAddinForIDE(const iRootKey: Integer; const sAddinSubKey: String; const sProgIDConnect: String; const bIncludeCommandLine: boolean);
 begin
    RegWriteStringValue(iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'FriendlyName', '{#AppName}');
    RegWriteStringValue(iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'Description' , '{#AppName}');
    RegWriteDWordValue (iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'LoadBehavior', 3);
-end;
+   if bIncludeCommandLine then
+   begin
+    RegWriteDWordValue (iRootKey, sAddinSubKey + '\' + sProgIDConnect, 'CommandLineSafe', 0);
+   end;
+ end;
 
 ///<remarks>
 ///Unregisters the same keys, similar to <see cref="RegisterAddinForIDE" />
@@ -514,18 +518,21 @@ end;
 
 ///<remarks>
 ///Called after successfully installing, including via the elevated installer
-///to register the VBE addin. Should be never run under elevated context
-///or the registration may not work as expected.
+///to register the VBE addin.
 ///</remarks>
 procedure RegisterAddin();
 begin
-  if not IsElevated() then
-  begin
-    RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
-
     if IsWin64() then 
-      RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
-  end;
+    begin
+      RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}', false);
+      RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}', false);
+      RegisterAddinForIDE(HKCU32, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}', true);
+    end
+      else
+    begin
+      RegisterAddinForIDE(HKCU, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}', false);
+      RegisterAddinForIDE(HKCU, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}', true);
+    end;
 end;
 
 ///<remarks>
@@ -533,9 +540,17 @@ end;
 ///</remarks>
 procedure UnregisterAddin();
 begin
-  UnregisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
   if IsWin64() then 
+  begin
     UnregisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
+    UnregisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+    UnRegisterAddinForIDE(HKCU32, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}');
+  end
+    else
+  begin
+    UnregisterAddinForIDE(HKCU, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
+    UnRegisterAddinForIDE(HKCU, 'Software\Microsoft\Visual Basic\6.0\Addins', '{#AddinProgId}');
+  end;
 end;
 
 ///<remarks>
@@ -816,11 +831,10 @@ begin
       ExpandConstant('{cm:RegisterAddInCaption}'),
       ExpandConstant('{cm:RegisterAddInMessage}'),
       ExpandConstant('{cm:RegisterAddInDescription}'),
-      False, False);
+      false, false);
 
   RegisterAddInOptionPage.Add(ExpandConstant('{cm:RegisterAddInButtonCaption}'));
-  RegisterAddInOptionPage.CheckListBox.ItemEnabled[0] := not IsElevated();
-  RegisterAddInOptionPage.Values[0] := not IsElevated();
+  RegisterAddInOptionPage.Values[0] := true;
 end;
 
 ///<remarks>
@@ -845,14 +859,6 @@ begin
   begin
     Log('PageSkipped set to true now');
     PagesSkipped := True;
-  end;
-
-  // If the installer is elevated, we cannot register the addin so we must skip the
-  // custom page.
-  if (PageID = RegisterAddInOptionPage.ID) and IsElevated() then
-  begin
-    Log('RegisterAddInOptionPage skipped because we are running elevated.');
-    Result := true;
   end;
 
   // We don't need to show the users finished panel from the elevated installer
@@ -998,14 +1004,14 @@ begin
     // custom page we should run RegisterAdd()
     else if CurPageID = RegisterAddInOptionPage.ID then
   begin
-    if not IsElevated() and RegisterAddInOptionPage.Values[0] then
+    if RegisterAddInOptionPage.Values[0] then
     begin
       Log('Addin registration was requested and will be performed');
       RegisterAddIn();
     end
       else
     begin
-      Log('Addin registration was declined because either we are elevated or the user unchecked the checkbox');
+      Log('Addin registration was declined because the user unchecked the checkbox');
     end;
   end;
 

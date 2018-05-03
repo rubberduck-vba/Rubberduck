@@ -1827,6 +1827,18 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filter by Description:</value>
   </data>
+  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
+    <value>Found an issue?</value>
+  </data>
+  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
+    <value>Help us improve Rubberduck!</value>
+  </data>
+  <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
+    <value>You can also find us at.</value>
+  </data>
+  <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
+    <value>Report an issue</value>
+  </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Busy</value>
   </data>

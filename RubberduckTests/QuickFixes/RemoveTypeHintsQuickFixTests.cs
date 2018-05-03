@@ -127,7 +127,7 @@ namespace RubberduckTests.QuickFixes
                 @"Public Foo@";
 
             const string expectedCode =
-                @"Public Foo As Decimal";
+                @"Public Foo As Currency";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))

@@ -4,8 +4,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
     public class SmartIndenterParentMenu : ParentMenuItemBase
     {
-        public SmartIndenterParentMenu(ICommandBarButtonFactory buttonFactory, IEnumerable<IMenuItem> items)
-            : base(buttonFactory, "SmartIndenterMenu", items)
+        public SmartIndenterParentMenu(IEnumerable<IMenuItem> items)
+            : base("SmartIndenterMenu", items)
         {
         }
 

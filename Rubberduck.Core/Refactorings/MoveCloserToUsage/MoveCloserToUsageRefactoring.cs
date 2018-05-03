@@ -125,6 +125,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             {
                 rewriter.Rewrite();
             }
+            Reparse();
         }
 
         private void UpdateOtherModules()
@@ -168,9 +169,19 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             }
 
             var insertionIndex = (expression as ParserRuleContext).Start.TokenIndex;
+            int indentLength;
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                using (var codeModule = pane.CodeModule)
+                {
+                    var firstReferenceLine = codeModule.GetLines((expression as ParserRuleContext).Start.Line, 1);
+                    indentLength = firstReferenceLine.Length - firstReferenceLine.TrimStart().Length;
+                }
+            }
+            var padding = new string(' ', indentLength);
 
             var rewriter = _state.GetRewriter(firstReference.QualifiedModuleName);
-            rewriter.InsertBefore(insertionIndex, newVariable);
+            rewriter.InsertBefore(insertionIndex, newVariable + padding);
 
             _rewriters.Add(rewriter);
         }
@@ -204,6 +215,11 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 _rewriters.Add(rewriter);
             }
+        }
+
+        private void Reparse()
+        {
+            _state.OnParseRequested(this);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers;
 using System;
 
 namespace RubberduckTests.Symbols

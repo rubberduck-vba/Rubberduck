@@ -15,12 +15,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
-        private IParseTreeValueVisitorFactory _parseTreeVisitorFactory;
-        private ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
-        private IParseTreeValueFactory _valueFactory;
+        private readonly IParseTreeValueVisitorFactory _parseTreeVisitorFactory;
+        private readonly ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
+        private readonly IParseTreeValueFactory _valueFactory;
         private enum CaseInpectionResult { Unreachable, MismatchType, CaseElse };
 
-        private static Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
+        private static readonly Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
         {
             [CaseInpectionResult.Unreachable] = InspectionsUI.UnreachableCaseInspection_Unreachable,
             [CaseInpectionResult.MismatchType] = InspectionsUI.UnreachableCaseInspection_TypeMismatch,
@@ -40,24 +40,23 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public override IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
 
-        private List<IInspectionResult> InspectionResults { set; get; } = new List<IInspectionResult>();
-
-        private ParseTreeVisitorResults ValueResults { set; get; } = new ParseTreeVisitorResults();
+        private List<IInspectionResult> _inspectionResults = new List<IInspectionResult>();
+        private ParseTreeVisitorResults _valueResults = new ParseTreeVisitorResults();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            InspectionResults = new List<IInspectionResult>();
+            _inspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
             var parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
-            ValueResults = new ParseTreeVisitorResults();
-            parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
+            _valueResults = new ParseTreeVisitorResults();
+            parseTreeValueVisitor.OnValueResultCreated += _valueResults.OnNewValueResult;
 
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
             {
                 qualifiedSelectCaseStmt.Context.Accept(parseTreeValueVisitor);
-                var selectStmt = _selectStmtFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults);
+                var selectStmt = _selectStmtFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, _valueResults);
 
                 selectStmt.InspectForUnreachableCases();
 
@@ -65,7 +64,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 selectStmt.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.MismatchType]));
                 selectStmt.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInpectionResult.CaseElse]));
             }
-            return InspectionResults;
+            return _inspectionResults;
         }
 
         private void CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)
@@ -73,7 +72,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var result = new QualifiedContextInspectionResult(this,
                         message,
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
-            InspectionResults.Add(result);
+            _inspectionResults.Add(result);
         }
 
         #region UnreachableCaseInspectionListeners

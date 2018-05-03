@@ -179,9 +179,7 @@
     <Compile Include="SafeComWrappers\Abstract\IVBProject.cs" />
     <Compile Include="SafeComWrappers\Abstract\IVBProjects.cs" />
     <Compile Include="HashCode.cs" />
-    <Compile Include="SafeComWrappers\Office.Core\AxHostConverter.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="SafeComWrappers\Office.Core\AxHostConverter.cs" />
     <Compile Include="SafeComWrappers\MSForms\ButtonState.cs" />
     <Compile Include="SafeComWrappers\MSForms\ButtonStyle.cs" />
     <Compile Include="SafeComWrappers\Office.Core\CommandBar.cs" />
