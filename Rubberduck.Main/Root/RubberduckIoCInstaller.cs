@@ -13,6 +13,7 @@ using Castle.Windsor;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
+using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.ComReflection;
@@ -750,48 +751,24 @@ namespace Rubberduck.Root
 
         public static IEnumerable<Assembly> AssembliesToRegister()
         {
-            return Assembly.GetExecutingAssembly()
-                .GetReferencedAssemblies()
-                .Where(name => name.FullName.StartsWith("Rubberduck"))
-                .Select(Assembly.Load)
-                .Concat(FindPlugins())
-                // theoretically we shouldn't have anything to register here, but better safe than sorry
-                .Concat(new[] { Assembly.GetExecutingAssembly() });
+            return GetDistinctTransitivelyReferencedAssemblies(Assembly.GetExecutingAssembly(), name => name.FullName.StartsWith("Rubberduck"))
+                //For some reason the inspections assembly is not referenced transitively.
+                .Concat(new [] { Assembly.GetAssembly(typeof(Inspector)) })
+                //Theoretically we shouldn't have anything to register here, but better safe than sorry.
+                .Concat(new[] { Assembly.GetExecutingAssembly() })
+                .Distinct();
         }
 
-        private static IEnumerable<Assembly> FindPlugins()
+        private static IEnumerable<Assembly> GetDistinctTransitivelyReferencedAssemblies(Assembly assembly, Predicate<AssemblyName> filterPredicate)
         {
-            var assemblies = new List<Assembly>();
-            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            // should be loaded already...
-            var inspectionsAssembly = Path.Combine(basePath, "Rubberduck.Inspections.dll");
-            if (File.Exists(inspectionsAssembly))
-            {
-                assemblies.Add(Assembly.LoadFile(inspectionsAssembly));
-            }
-
-            /* Commented out as we don't want to support the plugins right now...
-            var path = Path.Combine(basePath, "Plug-ins");
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            foreach (var library in Directory.EnumerateFiles(path, "*.dll"))
-            {
-                try
-                {
-                    assemblies.Add(Assembly.LoadFile(library));
-                }
-                catch (Exception)
-                {
-                    // can we log yet?
-                }
-            }
-            */
-
-            return assemblies;
+            var referencedAssemblies = assembly.GetReferencedAssemblies()
+                                                .Where(asmbly => filterPredicate(asmbly))
+                                                .Distinct().Select(Assembly.Load)
+                                                .ToList();
+            //This terminates because circular assembly references are illegal.
+            var transitiveReferences = referencedAssemblies.SelectMany(asmbly => GetDistinctTransitivelyReferencedAssemblies(asmbly, filterPredicate)).ToList();
+            referencedAssemblies.AddRange(transitiveReferences);
+            return referencedAssemblies.Distinct();
         }
 
         private static void RegisterAppWithSpecialDependencies(IWindsorContainer container)
