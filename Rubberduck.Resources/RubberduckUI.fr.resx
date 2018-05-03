@@ -368,7 +368,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Une erreur est survenue lors du chargement du complément Rubberduck.</value>
   </data>
-  <data name="Rubberduck_AboutBuild" xml:space="preserve">
+  <data name="Rubberduck_BuildVersion" xml:space="preserve">
     <value>Version {0}</value>
   </data>
   <data name="TodoMarkerBug" xml:space="preserve">
@@ -957,9 +957,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value>Forcer les directives du préprocesseur à la colonne 1</value>
   </data>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Attributions</value>
-  </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rechercher/remplacer avec une RegE&amp;x</value>
   </data>
@@ -1041,9 +1038,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Options spéciales</value>
   </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>À propos de Rubberduck</value>
-  </data>
   <data name="RubberduckMenu_Settings" xml:space="preserve">
     <value>&amp;Paramètres</value>
   </data>
@@ -1056,25 +1050,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
     <value>Nombre d'espaces:</value>
   </data>
-  <data name="AboutWindow_AttributionList" xml:space="preserve">
-    <value>Analyse du code propulsée par ANTLR
-Intégration GitHub propulsée par LibGit2Sharp
-Présentation du code par AvalonEdit
-Icônes "Fugue" par Yusuke Kamiyamane
-Icônes IDE de SharpDevelop
-Support localisation WPF par Grant Frisken</value>
-  </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Clé invalide</value>
   </data>
-  <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>cette procédure s'exécute une seule fois par module</value>
-  </data>
-  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
-    <value>Contributeurs et supporters:</value>
   </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Sévérité:</value>
@@ -1103,17 +1083,11 @@ Support localisation WPF par Grant Frisken</value>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
   </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Remerciements</value>
-  </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
   </data>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>la procédure externe</value>
-  </data>
-  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
-    <value>Communauté:</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Inconnu</value>
@@ -1157,9 +1131,6 @@ Support localisation WPF par Grant Frisken</value>
   <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
   </data>
-  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
-    <value>Blogues:</value>
-  </data>
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>Par type d'inspection</value>
   </data>
@@ -1174,11 +1145,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="SearchResults_Location" xml:space="preserve">
     <value>Emplacement</value>
-  </data>
-  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>Tous les contributeurs à notre repository sur GitHub
-Tous ceux qui nous ont donné une étoile ou un "like"
-...et quiconque lit ceci!</value>
   </data>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Tests unitaires</value>
@@ -1716,15 +1682,6 @@ les projets dans le VBE.</value>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Statistiques</value>
   </data>
-  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
-    <value>Les informations ont été copiées dans le presse-papier.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Cliquer ici pour copier les informations dans le presse-papier.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Copie complétée.</value>
-  </data>
   <data name="CodeMetrics_Lines" xml:space="preserve">
     <value>Lignes</value>
   </data>
@@ -1801,18 +1758,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>'Compile on demand' est activé</value>
-  </data>
-  <data name="AboutWindow_HostExecutable" xml:space="preserve">
-    <value>Exécutable hôte : {0}</value>
-  </data>
-  <data name="AboutWindow_HostProduct" xml:space="preserve">
-    <value>Produit hôte : {0} {1}</value>
-  </data>
-  <data name="AboutWindow_HostVersion" xml:space="preserve">
-    <value>Version hôte : {0}</value>
-  </data>
-  <data name="AboutWindow_OperatingSystem" xml:space="preserve">
-    <value>Système d'exploitation : {0}, {1}</value>
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>

@@ -364,7 +364,7 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="RubberduckLoadFailure" xml:space="preserve">
     <value>Konnte das Rubberduck Add-In nicht laden</value>
   </data>
-  <data name="Rubberduck_AboutBuild" xml:space="preserve">
+  <data name="Rubberduck_BuildVersion" xml:space="preserve">
     <value>Version {0}</value>
   </data>
   <data name="AllImplementations_Caption" xml:space="preserve">
@@ -848,18 +848,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Modul</value>
   </data>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Beiträge</value>
-  </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>Über Rubberduck</value>
-  </data>
-  <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Spezieller Dank</value>
-  </data>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Einstellung für die Unit Tests</value>
   </data>
@@ -1022,15 +1010,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="Settings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
-  <data name="AboutWindow_AttributionList" xml:space="preserve">
-    <value>Parsing ermöglicht durch ANTLR
-GitHub Integration ermöglicht durch LibGit2Sharp
-Syntaxhervorhebung ermöglicht durch AvalonEdit
-Native Hooks ermöglicht durch EasyHook
-Fugue Icons von Yusuke Kamiyamane
-IDE Icons von SharpDevelop
-WPF Lokalisierungsunterstützung von Grant Frisken</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Suchergebnis</value>
   </data>
@@ -1058,11 +1037,6 @@ WPF Lokalisierungsunterstützung von Grant Frisken</value>
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>Allen, die zu unserem GitHub Repositoty beigetragen haben
-Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
-… und jedem der dies leist.</value>
-  </data>
   <data name="ParserState_Error" xml:space="preserve">
     <value>Fehler beim Parsen</value>
   </data>
@@ -1083,15 +1057,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   </data>
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Fehler beim Auflösen</value>
-  </data>
-  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
-    <value>Blogs:</value>
-  </data>
-  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
-    <value>Community:</value>
-  </data>
-  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
-    <value>Beitragende &amp; Unterstützer:</value>
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse alle offenen Projekte</value>
@@ -1652,15 +1617,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck TODO Markierungen - {0}
 {1} Markierungen gefunden.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Erfolgreich Kopiert</value>
-  </data>
-  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Hier klicken, um Versionsinformation in Zwischenablage zu kopieren.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
-    <value>Versionsinformation in Zwischenablage kopiert.</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Codemetrikergebnisse</value>
