@@ -630,4 +630,112 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
     <value>Zrušit</value>
   </data>
+  <data name="DeclarationType_UserDefinedType" xml:space="preserve">
+    <value>uživatelsky-definovaný typ</value>
+  </data>
+  <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
+    <value>uživatelsky-definovaný člen</value>
+  </data>
+  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
+    <value>Klikněte [Ok] pro uzavření okna a aplikování změn, nebo [Zrušit] pro jejich zrušení.</value>
+  </data>
+  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+    <value>Testy, které neproběhly</value>
+  </data>
+  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+    <value>Testy, které neprošly</value>
+  </data>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Text tokenu:</value>
+  </data>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Seznam tokenu:</value>
+  </data>
+  <data name="ExtractInterface_TitleLabel" xml:space="preserve">
+    <value>Extrahovat interface</value>
+  </data>
+  <data name="SelectAll_Button" xml:space="preserve">
+    <value>Označ vše</value>
+  </data>
+  <data name="DeselectAll_Button" xml:space="preserve">
+    <value>Odznač vše</value>
+  </data>
+  <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
+    <value>Členové</value>
+  </data>
+  <data name="ExtractInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Extrahovat interface</value>
+  </data>
+  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+    <value>Neplatný výběr.</value>
+  </data>
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
+    <value>&amp;Implementovat interface</value>
+  </data>
+  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
+    <value>E&amp;xtrahovat interface</value>
+  </data>
+  <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
+    <value>Absolutní</value>
+  </data>
+  <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
+    <value>Zarovnej ve sloupci</value>
+  </data>
+  <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
+    <value>Povoleno</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
+    <value>Klíč1</value>
+  </data>
+  <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
+    <value>Zarovnat komenty s kódem</value>
+  </data>
+  <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
+    <value>Odsadit mezery:</value>
+  </data>
+  <data name="IndenterSettings_IndentOptionsLabel" xml:space="preserve">
+    <value>Nastavení odsazení</value>
+  </data>
+  <data name="CodeInspectionResults_Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+  <data name="SearchResults_MemberName" xml:space="preserve">
+    <value>Člen</value>
+  </data>
+  <data name="SearchResults_ModuleName" xml:space="preserve">
+    <value>Modul</value>
+  </data>
+  <data name="SearchResults_AllReferencesTabFormat" xml:space="preserve">
+    <value>Všechny reference: '{0}'</value>
+  </data>
+  <data name="Rubberduck" xml:space="preserve">
+    <value>Rubberduck</value>
+  </data>
+  <data name="SearchResults_MemberType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
+    <value>Lokální adresář:</value>
+  </data>
+  <data name="CodeExplorer_Commit" xml:space="preserve">
+    <value>Commit...</value>
+  </data>
+  <data name="CodeExplorer_Indent" xml:space="preserve">
+    <value>Odsazení</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
+    <value>Testovací M&amp;odul</value>
+  </data>
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Testovací Metoda (&amp;Expected Error)</value>
+  </data>
+  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
+    <value>Testovací &amp;Metoda</value>
+  </data>
 </root>
