@@ -1,6 +1,5 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -13,8 +12,8 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override string Key => "RefactorMenu_ReorderParameters";
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ReorderParameters;
-        public override Image Image => Resources.ReorderParameters;
-        public override Image Mask => Resources.ReorderParametersMask;
+        public override Image Image => Resources.Resources.ReorderParameters;
+        public override Image Mask => Resources.Resources.ReorderParametersMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

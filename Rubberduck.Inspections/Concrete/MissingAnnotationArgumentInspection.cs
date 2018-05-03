@@ -7,7 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -19,9 +18,7 @@ namespace Rubberduck.Inspections.Concrete
             : base(state) { }
 
         public override ParsePass Pass => ParsePass.AttributesPass;
-
-        public override IInspectionListener Listener { get; } =
-            new InvalidAnnotationStatementListener();
+        public override IInspectionListener Listener { get; } = new InvalidAnnotationStatementListener();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -30,23 +27,16 @@ namespace Rubberduck.Inspections.Concrete
                     where context.annotationName().GetText() == AnnotationType.Ignore.ToString() 
                        || context.annotationName().GetText() == AnnotationType.Folder.ToString() 
                     where context.annotationArgList() == null 
-                    select new QualifiedContextInspectionResult(this,
-                                                string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat,
-                                                              ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
-                                                result));
+                    select new QualifiedContextInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.MissingAnnotationArgumentInspection, ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()), result));
         }
 
         public class InvalidAnnotationStatementListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
             public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public void ClearContexts() => _contexts.Clear();
 
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {

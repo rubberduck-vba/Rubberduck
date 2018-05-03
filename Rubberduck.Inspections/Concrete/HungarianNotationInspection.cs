@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -115,7 +115,7 @@ namespace Rubberduck.Inspections.Concrete
                                       TargetDeclarationTypes.Contains(declaration.DeclarationType) &&
                                       HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
                 .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
+                                                      string.Format(InspectionResults.IdentifierNameInspection,
                                                                     RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),
                                                                     issue.IdentifierName),
                                                       issue));

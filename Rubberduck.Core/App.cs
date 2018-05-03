@@ -10,8 +10,8 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -148,9 +148,19 @@ namespace Rubberduck
             var currentCulture = RubberduckUI.Culture;
             try
             {
-                CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
-                RubberduckUI.Culture = CultureInfo.CurrentUICulture;
-                InspectionsUI.Culture = CultureInfo.CurrentUICulture;
+                var culture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
+
+                CultureManager.UICulture = culture;
+                RubberduckUI.Culture = culture;
+
+                Resources.CodeExplorer.Culture = culture;
+                Resources.Inspections.InspectionNames.Culture = culture;
+                Resources.Inspections.InspectionResults.Culture = culture;
+                Resources.Inspections.InspectionsUI.Culture = culture;
+                Resources.Inspections.InspectionInfo.Culture = culture;
+                Resources.Inspections.QuickFixes.Culture = culture;
+                Resources.RegexAssistant.RegexAssistantUI.Culture = culture;
+
                 _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)

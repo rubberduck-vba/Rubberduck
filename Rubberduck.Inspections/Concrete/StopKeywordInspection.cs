@@ -7,7 +7,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -18,29 +17,22 @@ namespace Rubberduck.Inspections.Concrete
         public StopKeywordInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override IInspectionListener Listener { get; } =
-            new StopKeywordListener();
+        public override IInspectionListener Listener { get; } = new StopKeywordListener();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       InspectionsUI.StopKeywordInspectionResultFormat,
-                                                       result));
+                .Select(result => new QualifiedContextInspectionResult(this, Resources.Inspections.InspectionResults.StopKeywordInspection, result));
         }
 
         public class StopKeywordListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-            
-            public QualifiedModuleName CurrentModuleName { get; set; }
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;            
+            public QualifiedModuleName CurrentModuleName { get; set; }
+            public void ClearContexts() => _contexts.Clear();
 
             public override void ExitStopStmt([NotNull] VBAParser.StopStmtContext context)
             {

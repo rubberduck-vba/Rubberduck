@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Resources;
 using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting

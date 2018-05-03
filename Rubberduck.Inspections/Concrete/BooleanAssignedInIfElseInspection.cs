@@ -6,7 +6,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -24,23 +23,19 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       string.Format(InspectionsUI.BooleanAssignedInIfElseInspectionResultFormat,
-                                                            (((VBAParser.IfStmtContext)result.Context).block().GetDescendent<VBAParser.LetStmtContext>()).lExpression().GetText().Trim()),
-                                                       result));
+                .Select(result => 
+                    new QualifiedContextInspectionResult(this, 
+                        string.Format(Resources.Inspections.InspectionResults.BooleanAssignedInIfElseInspection,
+                        ((VBAParser.IfStmtContext)result.Context).block().GetDescendent<VBAParser.LetStmtContext>().lExpression().GetText().Trim()), result));
         }
 
         public class BooleanAssignedInIfElseListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-            
-            public QualifiedModuleName CurrentModuleName { get; set; }
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+            public QualifiedModuleName CurrentModuleName { get; set; }
+            public void ClearContexts() => _contexts.Clear();
 
             public override void ExitIfStmt(VBAParser.IfStmtContext context)
             {

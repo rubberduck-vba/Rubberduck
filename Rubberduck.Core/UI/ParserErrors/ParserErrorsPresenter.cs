@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

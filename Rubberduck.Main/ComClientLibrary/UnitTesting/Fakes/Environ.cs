@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources;
 using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting.Fakes

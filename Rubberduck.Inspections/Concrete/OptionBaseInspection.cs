@@ -6,7 +6,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -26,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                 .Select(context => new QualifiedContextInspectionResult(this,
-                                                        string.Format(InspectionsUI.OptionBaseInspectionResultFormat, context.ModuleName.ComponentName),
+                                                        string.Format(Resources.Inspections.InspectionResults.OptionBaseInspection, context.ModuleName.ComponentName),
                                                         context));
         }
 

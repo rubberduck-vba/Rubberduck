@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -11,11 +10,8 @@ namespace Rubberduck.UI.Inspections
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var inspection = value as IInspection;
-            if (inspection == null)
-            {
-                return null;
-            }
-            return InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + inspection.InspectionType.ToString(), CultureInfo.CurrentUICulture);
+            if (inspection == null) { return null; }
+            return Resources.Inspections.InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + inspection.InspectionType, CultureInfo.CurrentUICulture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -29,11 +25,8 @@ namespace Rubberduck.UI.Inspections
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var inspection = value as IInspection;
-            if (inspection == null)
-            {
-                return null;
-            }
-            return InspectionsUI.ResourceManager.GetString(inspection.Name + "Name", CultureInfo.CurrentUICulture);
+            if (inspection == null) { return null; }
+            return Resources.Inspections.InspectionNames.ResourceManager.GetString(inspection.Name, CultureInfo.CurrentUICulture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

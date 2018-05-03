@@ -1,7 +1,7 @@
-﻿using Rubberduck.RegexAssistant.i18n;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Rubberduck.Resources.RegexAssistant;
 
 namespace Rubberduck.RegexAssistant
 {
@@ -69,8 +69,8 @@ namespace Rubberduck.RegexAssistant
         }
 
         public string Description => string.Format(InverseMatching 
-                ? AssistantResources.AtomDescription_CharacterClass_Inverted 
-                : AssistantResources.AtomDescription_CharacterClass
+                ? RegexAssistantUI.AtomDescription_CharacterClass_Inverted 
+                : RegexAssistantUI.AtomDescription_CharacterClass
             , HumanReadableClass());
 
         private string HumanReadableClass()
@@ -118,7 +118,7 @@ namespace Rubberduck.RegexAssistant
 
         public string Specifier { get; }
 
-        public string Description => string.Format(AssistantResources.AtomDescription_Group, Specifier);
+        public string Description => string.Format(RegexAssistantUI.AtomDescription_Group, Specifier);
 
         public override bool Equals(object obj)
         {
@@ -144,19 +144,19 @@ namespace Rubberduck.RegexAssistant
             {
                 EscapeLiterals.Add(escape);
             }
-            _escapeDescriptions.Add('d', AssistantResources.AtomDescription_Digit);
-            _escapeDescriptions.Add('D', AssistantResources.AtomDescription_NonDigit);
-            _escapeDescriptions.Add('b', AssistantResources.AtomDescription_WordBoundary);
-            _escapeDescriptions.Add('B', AssistantResources.AtomDescription_NonWordBoundary);
-            _escapeDescriptions.Add('w', AssistantResources.AtomDescription_WordCharacter);
-            _escapeDescriptions.Add('W', AssistantResources.AtomDescription_NonWordCharacter);
-            _escapeDescriptions.Add('s', AssistantResources.AtomDescription_Whitespace);
-            _escapeDescriptions.Add('S', AssistantResources.AtomDescription_NonWhitespace);
-            _escapeDescriptions.Add('n', AssistantResources.AtomDescription_Newline);
-            _escapeDescriptions.Add('r', AssistantResources.AtomDescription_CarriageReturn);
-            _escapeDescriptions.Add('f', AssistantResources.AtomDescription_FormFeed);
-            _escapeDescriptions.Add('v', AssistantResources.AtomDescription_VTab);
-            _escapeDescriptions.Add('t', AssistantResources.AtomDescription_HTab);
+            _escapeDescriptions.Add('d', RegexAssistantUI.AtomDescription_Digit);
+            _escapeDescriptions.Add('D', RegexAssistantUI.AtomDescription_NonDigit);
+            _escapeDescriptions.Add('b', RegexAssistantUI.AtomDescription_WordBoundary);
+            _escapeDescriptions.Add('B', RegexAssistantUI.AtomDescription_NonWordBoundary);
+            _escapeDescriptions.Add('w', RegexAssistantUI.AtomDescription_WordCharacter);
+            _escapeDescriptions.Add('W', RegexAssistantUI.AtomDescription_NonWordCharacter);
+            _escapeDescriptions.Add('s', RegexAssistantUI.AtomDescription_Whitespace);
+            _escapeDescriptions.Add('S', RegexAssistantUI.AtomDescription_NonWhitespace);
+            _escapeDescriptions.Add('n', RegexAssistantUI.AtomDescription_Newline);
+            _escapeDescriptions.Add('r', RegexAssistantUI.AtomDescription_CarriageReturn);
+            _escapeDescriptions.Add('f', RegexAssistantUI.AtomDescription_FormFeed);
+            _escapeDescriptions.Add('v', RegexAssistantUI.AtomDescription_VTab);
+            _escapeDescriptions.Add('t', RegexAssistantUI.AtomDescription_HTab);
         }
 
         public Literal(string specifier, Quantifier quantifier)
@@ -197,24 +197,24 @@ namespace Rubberduck.RegexAssistant
                     {
                         if (relevant.StartsWith("u"))
                         {
-                            return string.Format(AssistantResources.AtomDescription_Literal_UnicodePoint, relevant.Substring(1)); //skip u
+                            return string.Format(RegexAssistantUI.AtomDescription_Literal_UnicodePoint, relevant.Substring(1)); //skip u
                         }
                         else if (relevant.StartsWith("x"))
                         {
-                            return string.Format(AssistantResources.AtomDescription_Literal_HexCodepoint, relevant.Substring(1)); // skip x
+                            return string.Format(RegexAssistantUI.AtomDescription_Literal_HexCodepoint, relevant.Substring(1)); // skip x
                         }
                         else
                         {
-                            return string.Format(AssistantResources.AtomDescription_Literal_OctalCodepoint, relevant); // no format specifier to skip
+                            return string.Format(RegexAssistantUI.AtomDescription_Literal_OctalCodepoint, relevant); // no format specifier to skip
                         }
                     }
                     else if (EscapeLiterals.Contains(relevant[0]))
                     {
-                        return string.Format(AssistantResources.AtomDescription_Literal_EscapedLiteral, relevant);
+                        return string.Format(RegexAssistantUI.AtomDescription_Literal_EscapedLiteral, relevant);
                     }
                     else if (char.IsDigit(relevant[0]))
                     {
-                        return string.Format(AssistantResources.AtomDescription_Literal_Backreference, relevant);
+                        return string.Format(RegexAssistantUI.AtomDescription_Literal_Backreference, relevant);
                     }
                     else
                     {
@@ -223,8 +223,8 @@ namespace Rubberduck.RegexAssistant
                 }
 
                 return Specifier.Equals(".") 
-                    ? AssistantResources.AtomDescription_Dot 
-                    : string.Format(AssistantResources.AtomDescription_Literal_ActualLiteral, Specifier);
+                    ? RegexAssistantUI.AtomDescription_Dot 
+                    : string.Format(RegexAssistantUI.AtomDescription_Literal_ActualLiteral, Specifier);
             }
         }
 

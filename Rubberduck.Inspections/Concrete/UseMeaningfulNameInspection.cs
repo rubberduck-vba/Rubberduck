@@ -6,12 +6,12 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.UI;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
@@ -66,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             return new DeclarationInspectionResult(inspection,
-                string.Format(InspectionsUI.IdentifierNameInspectionResultFormat,
+                string.Format(InspectionResults.IdentifierNameInspection,
                     RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType,
                         CultureInfo.CurrentUICulture), issue.IdentifierName),
                 issue, properties: properties);

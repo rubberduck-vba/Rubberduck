@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
+using Rubberduck.Resources;
 using Rubberduck.UI;
 
 namespace Rubberduck.Common.Hotkeys

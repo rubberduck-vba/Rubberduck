@@ -6,7 +6,7 @@ using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
+using resx = Rubberduck.Resources.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {

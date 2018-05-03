@@ -12,6 +12,7 @@ using Microsoft.CSharp.RuntimeBinder;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Refactorings.Rename

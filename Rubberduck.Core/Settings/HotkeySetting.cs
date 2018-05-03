@@ -1,7 +1,8 @@
 ﻿using System.Globalization;
 using System.Xml.Serialization;
-using Rubberduck.UI;
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Settings
 {
@@ -29,14 +30,9 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string Prompt => RubberduckUI.ResourceManager.GetString($"CommandDescription_{CommandTypeName}", CultureInfo.CurrentUICulture);
 
-        public override string ToString()
-        {
-            return string.Format("{0}{1}{2}{3}",
-                HasCtrlModifier ? KeyModifierCtrl : string.Empty,
-                HasShiftModifier ? KeyModifierShift : string.Empty,
-                HasAltModifier ? KeyModifierAlt : string.Empty,
-                Key1);
-        }
+        public override string ToString() => string.Format("{0}{1}{2}{3}",
+            HasCtrlModifier ? KeyModifierCtrl : string.Empty, HasShiftModifier ? KeyModifierShift : string.Empty,
+            HasAltModifier ? KeyModifierAlt : string.Empty, Key1);
 
         public override bool Equals(object obj)
         {
@@ -50,6 +46,7 @@ namespace Rubberduck.Settings
                    hotkey.IsEnabled == IsEnabled;
         }
 
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")] /* setters for serialization */
         public override int GetHashCode()
         {
             unchecked

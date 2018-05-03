@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -16,19 +17,10 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         private readonly TestExplorerViewModel _viewModel;
-        public TestExplorerViewModel ViewModel
-        {
-            get { return _viewModel; }
-        }
+        public TestExplorerViewModel ViewModel => _viewModel;
 
-        public string ClassId
-        {
-            get { return "9CF1392A-2DC9-48A6-AC0B-E601A9802608"; }
-        }
+        public string ClassId => "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
-        public string Caption
-        {
-            get { return RubberduckUI.TestExplorerWindow_Caption; }
-        }
+        public string Caption => RubberduckUI.TestExplorerWindow_Caption;
     }
 }

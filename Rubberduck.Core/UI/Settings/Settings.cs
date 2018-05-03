@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Threading;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.Settings

@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Resources;
 using Rubberduck.UI.CodeExplorer.Commands;
 
 namespace Rubberduck.UI.Command

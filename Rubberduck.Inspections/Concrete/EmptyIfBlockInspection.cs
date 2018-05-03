@@ -6,7 +6,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,20 +15,16 @@ namespace Rubberduck.Inspections.Concrete
     [Experimental]
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyIfBlockInspection(RubberduckParserState state)
-            : base(state) { }
+        public EmptyIfBlockInspection(RubberduckParserState state) : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionsUI.EmptyIfBlockInspectionResultFormat,
-                                                        result));
+                .Select(result => new QualifiedContextInspectionResult(this, Resources.Inspections.InspectionResults.EmptyIfBlockInspection, result));
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyIfBlockListener();
+        public override IInspectionListener Listener { get; } = new EmptyIfBlockListener();
 
         public class EmptyIfBlockListener : EmptyBlockInspectionListenerBase
         {

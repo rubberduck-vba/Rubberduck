@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -15,8 +14,8 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key => "RefactorMenu_IntroduceField";
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.IntroduceField;
 
-        public override Image Image => Resources.AddVariable;
-        public override Image Mask => Resources.AddVariableMask;
+        public override Image Image => Resources.Resources.AddVariable;
+        public override Image Mask => Resources.Resources.AddVariableMask;
 
 
         public override bool EvaluateCanExecute(RubberduckParserState state)

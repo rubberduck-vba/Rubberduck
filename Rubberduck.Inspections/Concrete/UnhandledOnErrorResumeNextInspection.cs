@@ -7,7 +7,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -37,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
                     properties.Label = _errorHandlerLabelsMap[result];
                     properties.BodyElement = _bodyElementContextsMap[result];
 
-                    return new QualifiedContextInspectionResult(this, InspectionsUI.UnhandledOnErrorResumeNextInspectionResultFormat, result, properties);
+                    return new QualifiedContextInspectionResult(this, Resources.Inspections.InspectionResults.UnhandledOnErrorResumeNextInspection, result, properties);
                 });
         }
     }

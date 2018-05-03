@@ -2,7 +2,6 @@
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Antlr4.Runtime;
@@ -15,8 +14,7 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
     {
-        public DefTypeStatementInspection(RubberduckParserState state)
-            : base(state)
+        public DefTypeStatementInspection(RubberduckParserState state) : base(state)
         {
             Listener = new DefTypeStatementInspectionListener();
         }
@@ -25,13 +23,13 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var results = Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
-                .Select(context => new QualifiedContextInspectionResult(this,
-                                                                        string.Format(InspectionsUI.DefTypeStatementInspectionResultFormat,
-                                                                                      GetTypeOfDefType(context.Context.start.Text),
-                                                                                      context.Context.start.Text),
-                                                                        context));
-            return results;
+            return Listener.Contexts
+                .Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+                .Select(context =>
+                    new QualifiedContextInspectionResult(this,
+                        string.Format(Resources.Inspections.InspectionResults.DefTypeStatementInspection,
+                            GetTypeOfDefType(context.Context.start.Text),
+                            context.Context.start.Text), context));
         }
 
         public class DefTypeStatementInspectionListener : VBAParserBaseListener, IInspectionListener

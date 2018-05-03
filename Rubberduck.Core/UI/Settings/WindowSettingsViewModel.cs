@@ -1,4 +1,5 @@
 ﻿using NLog;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;

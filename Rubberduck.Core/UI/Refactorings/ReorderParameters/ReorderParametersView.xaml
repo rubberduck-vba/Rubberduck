@@ -95,8 +95,8 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="White">
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_InstructionsLabelText}"
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Grid.IsSharedSizeScope="True">
@@ -141,8 +141,8 @@
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../Resources/arrow-090.png" Margin="0,0,5,0" />
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
+                        <Image Height="10" Source="../../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/arrow-090.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
                     </StackPanel>
                 </Button>
                 <Button Grid.Row="1"
@@ -165,8 +165,8 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../Resources/arrow-270.png" Margin="0,0,5,0" />
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
+                        <Image Height="10" Source="../../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/arrow-270.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
                     </StackPanel>
                 </Button>
             </Grid>
@@ -179,7 +179,7 @@
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">
-                        <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="Preview"/>
+                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="Preview"/>
                     </Label>
                 </Expander.Header>
                 <controls:BindableTextEditor Margin="10,10,10,10"
@@ -198,13 +198,13 @@
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                 </Grid.ColumnDefinitions>
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
                         Grid.Column="0"
                         Height="20"
                         Margin="5,0"
                         Padding="10,0"
                         Command="{Binding OkButtonCommand}" />
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
                         Grid.Column="1"
                         Height="20"
                         Margin="5,0"

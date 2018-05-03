@@ -3,7 +3,6 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
@@ -21,16 +20,16 @@ namespace Rubberduck.Inspections.Concrete
                 where item.HasTypeHint
                 select
                     new DeclarationInspectionResult(this,
-                        string.Format(InspectionsUI.ObsoleteTypeHintInspectionResultFormat,
-                            InspectionsUI.Inspections_Declaration, item.DeclarationType.ToString().ToLower(),
+                        string.Format(Resources.Inspections.InspectionResults.ObsoleteTypeHintInspection,
+                            Resources.Inspections.InspectionsUI.Inspections_Declaration, item.DeclarationType.ToString().ToLower(),
                             item.IdentifierName), item);
 
             var references = from item in results.SelectMany(d => d.References)
                 where item.HasTypeHint()
                 select
                     new IdentifierReferenceInspectionResult(this,
-                        string.Format(InspectionsUI.ObsoleteTypeHintInspectionResultFormat,
-                            InspectionsUI.Inspections_Usage, item.Declaration.DeclarationType.ToString().ToLower(),
+                        string.Format(Resources.Inspections.InspectionResults.ObsoleteTypeHintInspection,
+                            Resources.Inspections.InspectionsUI.Inspections_Usage, item.Declaration.DeclarationType.ToString().ToLower(),
                             item.IdentifierName),
                         State,
                         item);

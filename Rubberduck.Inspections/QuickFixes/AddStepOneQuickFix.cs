@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using System;
@@ -27,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result)
         {
-            return InspectionsUI.AddStepOneQuickFix;
+            return Resources.Inspections.QuickFixes.AddStepOneQuickFix;
         }
 
         public override void Fix(IInspectionResult result)

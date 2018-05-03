@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.API.VBA
 {

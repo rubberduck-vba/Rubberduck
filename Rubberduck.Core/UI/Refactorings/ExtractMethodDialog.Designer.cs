@@ -141,7 +141,7 @@ namespace Rubberduck.UI.Refactorings
             // 
             // InvalidNameValidationIcon
             // 
-            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.InvalidNameValidationIcon.Image = global::Rubberduck.Resources.Resources.cross_circle;
             this.InvalidNameValidationIcon.Location = new System.Drawing.Point(577, 1);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);

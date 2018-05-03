@@ -7,7 +7,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -26,22 +25,16 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .SelectMany(result => result.Context.GetDescendents<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       string.Format(InspectionsUI.ModuleScopeDimKeywordInspectionResultFormat, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),
-                                                       result));
+                .Select(result => new QualifiedContextInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.ModuleScopeDimKeywordInspection, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()), result));
         }
 
         public class ModuleScopedDimListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
             public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public void ClearContexts() => _contexts.Clear();
 
             public override void ExitVariableStmt([NotNull] VBAParser.VariableStmtContext context)
             {

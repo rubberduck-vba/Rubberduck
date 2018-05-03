@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using Rubberduck.Resources;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting

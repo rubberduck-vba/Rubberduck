@@ -3,13 +3,13 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Resources.Inspections;
 
 namespace RubberduckTests.Inspections
 {
@@ -2623,9 +2623,9 @@ End Sub
         {
             var expected = new Dictionary<string, int>
             {
-                { InspectionsUI.UnreachableCaseInspection_Unreachable, unreachable },
-                { InspectionsUI.UnreachableCaseInspection_TypeMismatch, mismatch },
-                { InspectionsUI.UnreachableCaseInspection_CaseElse, caseElse },
+                { InspectionResults.UnreachableCaseInspection_Unreachable, unreachable },
+                { InspectionResults.UnreachableCaseInspection_TypeMismatch, mismatch },
+                { InspectionResults.UnreachableCaseInspection_CaseElse, caseElse },
             };
 
             var builder = new MockVbeBuilder();
@@ -2641,12 +2641,12 @@ End Sub
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }
-            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_Unreachable));
-            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_TypeMismatch));
-            var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_CaseElse));
+            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
+            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_TypeMismatch));
+            var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_CaseElse));
 
             var actualMsg = BuildResultString(actualUnreachable.Count(), actualMismatches.Count(), actualUnreachableCaseElses.Count());
-            var expectedMsg = BuildResultString(expected[InspectionsUI.UnreachableCaseInspection_Unreachable], expected[InspectionsUI.UnreachableCaseInspection_TypeMismatch], expected[InspectionsUI.UnreachableCaseInspection_CaseElse]);
+            var expectedMsg = BuildResultString(expected[InspectionResults.UnreachableCaseInspection_Unreachable], expected[InspectionResults.UnreachableCaseInspection_TypeMismatch], expected[InspectionResults.UnreachableCaseInspection_CaseElse]);
 
             Assert.AreEqual(expectedMsg, actualMsg);
         }

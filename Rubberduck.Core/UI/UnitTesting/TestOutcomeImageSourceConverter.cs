@@ -15,11 +15,11 @@ namespace Rubberduck.UI.UnitTesting
         private static readonly IDictionary<TestOutcome,ImageSource> Icons = 
             new Dictionary<TestOutcome, ImageSource>
             {
-                { TestOutcome.Unknown, ToImageSource(Properties.Resources.question_white) },
-                { TestOutcome.Succeeded, ToImageSource(Properties.Resources.tick_circle) },
-                { TestOutcome.Failed, ToImageSource(Properties.Resources.cross_circle) },
-                { TestOutcome.Inconclusive, ToImageSource(Properties.Resources.exclamation) },
-                { TestOutcome.Ignored, ToImageSource(Properties.Resources.minus_white) },
+                { TestOutcome.Unknown, ToImageSource(Resources.Resources.question_white) },
+                { TestOutcome.Succeeded, ToImageSource(Resources.Resources.tick_circle) },
+                { TestOutcome.Failed, ToImageSource(Resources.Resources.cross_circle) },
+                { TestOutcome.Inconclusive, ToImageSource(Resources.Resources.exclamation) },
+                { TestOutcome.Ignored, ToImageSource(Resources.Resources.minus_white) },
             };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
