@@ -145,6 +145,33 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ParameterNotUsed_AmbiguousName_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Property Get Item()
+    Item = 12
+End Property
+
+Public Property Let Item(ByVal Item As Variant)
+    DoSomething Item
+End Property
+
+Private Sub DoSomething(ByVal value As Variant)
+    Msgbox(value)
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterNotUsedInspection";
