@@ -221,11 +221,6 @@
     <Compile Include="Binding\Bindings\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
     <Compile Include="IParseCoordinator.cs" />
-    <Compile Include="ParsingText.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ParsingText.resx</DependentUpon>
-    </Compile>
     <Compile Include="PreProcessing\AbsLibraryFunctionExpression.cs" />
     <Compile Include="PreProcessing\BinaryMinusExpression.cs" />
     <Compile Include="PreProcessing\BinaryPlusExpression.cs" />
@@ -416,14 +411,6 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ParsingText.de.resx" />
-    <EmbeddedResource Include="ParsingText.fr.resx" />
-    <EmbeddedResource Include="ParsingText.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ParsingText.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.xsd">
