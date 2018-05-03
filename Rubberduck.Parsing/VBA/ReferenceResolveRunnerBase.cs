@@ -6,6 +6,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Symbols;
 using Antlr4.Runtime.Tree;
 using System.Diagnostics;
+using System.Text;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -73,7 +74,7 @@ namespace Rubberduck.Parsing.VBA
             PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
-            ExecuteCompilationPasses(_toResolve.AsReadOnly());
+            ExecuteCompilationPasses(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
             AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
@@ -101,7 +102,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
         }
 
-        private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules)
+        private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             var passes = new List<ICompilationPass>
                 {
@@ -110,7 +111,16 @@ namespace Rubberduck.Parsing.VBA
                     new TypeHierarchyPass(_state.DeclarationFinder, new VBAExpressionParser()),
                     new TypeAnnotationPass(_state.DeclarationFinder, new VBAExpressionParser())
                 };
-            passes.ForEach(p => p.Execute(modules));
+            try
+            {
+                passes.ForEach(p => p.Execute(modules));
+            }
+            catch (Exception exception)
+            {
+                var names = string.Join(",", modules.Select(m => m.Name));
+                Logger.Error(exception, "Exception thrown on resolving those modules: '{0}' (thread {1}).", names, Thread.CurrentThread.ManagedThreadId);
+                _parserStateManager.SetModuleStates(modules, ParserState.ResolverError, token);
+            }
         }
 
         private void AddSupertypesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
@@ -202,8 +212,6 @@ namespace Rubberduck.Parsing.VBA
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
-            Debug.Assert(_state.GetModuleState(module) == ParserState.ResolvingReferences || token.IsCancellationRequested);
-
             token.ThrowIfCancellationRequested();
 
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", module.Name, Thread.CurrentThread.ManagedThreadId);

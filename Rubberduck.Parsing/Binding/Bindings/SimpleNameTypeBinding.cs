@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using System;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Binding
@@ -123,6 +124,19 @@ namespace Rubberduck.Parsing.Binding
             */
             if (_declarationFinder.IsMatch(_project.ProjectName, name))
             {
+                
+                // Ensure there is no ambiguous matches
+                var ambiguousClassModule = _declarationFinder.FindModuleEnclosingProjectWithoutEnclosingModule(_project, _module, name, DeclarationType.ClassModule);
+                if (ambiguousClassModule != null)
+                {
+                    // We have an indeterminate result; let's check if this is a part of member access first...
+                    if (_expression.Parent.GetType().Name != nameof(VBAParser.MemberAccessExprContext))
+                    {
+                        // There is no qualifier -- this is normally a VBA compile error
+                        throw new InvalidOperationException($"There cannot be a unqualified reference where the name '{name}' is ambiguous.");
+                    }
+                }
+                
                 return new SimpleNameExpression(_project, ExpressionClassification.Project, _expression);
             }
             var referencedProject = _declarationFinder.FindReferencedProject(_project, name);

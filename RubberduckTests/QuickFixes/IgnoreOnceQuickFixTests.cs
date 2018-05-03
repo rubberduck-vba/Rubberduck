@@ -1030,7 +1030,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        [Ignore("Todo")] // not sure how to handle GetBuiltInDeclarations
+        [Ignore("Broken feature - passes locally but not in AV - see FIXME below")]
         public void UntypedFunctionUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =
