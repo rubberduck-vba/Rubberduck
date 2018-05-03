@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -17,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(item => item.IsUndeclared && !IsIgnoringInspectionResultFor(item, AnnotationName))
-                .Select(item => new DeclarationInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.UndeclaredVariableInspection, item.IdentifierName), item));
+                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionsUI.UndeclaredVariableInspectionResultFormat, item.IdentifierName), item));
         }
     }
 }

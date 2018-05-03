@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
@@ -21,9 +22,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static readonly Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
         {
-            [CaseInpectionResult.Unreachable] = Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable,
-            [CaseInpectionResult.MismatchType] = Resources.Inspections.InspectionResults.UnreachableCaseInspection_TypeMismatch,
-            [CaseInpectionResult.CaseElse] = Resources.Inspections.InspectionResults.UnreachableCaseInspection_CaseElse
+            [CaseInpectionResult.Unreachable] = InspectionsUI.UnreachableCaseInspection_Unreachable,
+            [CaseInpectionResult.MismatchType] = InspectionsUI.UnreachableCaseInspection_TypeMismatch,
+            [CaseInpectionResult.CaseElse] = InspectionsUI.UnreachableCaseInspection_CaseElse
         };
 
         public UnreachableCaseInspection(RubberduckParserState state) : base(state)

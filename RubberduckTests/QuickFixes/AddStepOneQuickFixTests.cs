@@ -1,10 +1,10 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 using System.Threading;
-using Rubberduck.Parsing.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {

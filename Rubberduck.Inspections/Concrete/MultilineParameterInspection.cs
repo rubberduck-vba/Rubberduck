@@ -7,9 +7,9 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.UI;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(context => new QualifiedContextInspectionResult(this,
                                                   string.Format(context.Context.GetSelection().LineCount > 3
                                                         ? RubberduckUI.EasterEgg_Continuator
-                                                        : InspectionResults.MultilineParameterInspection, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
+                                                        : InspectionsUI.MultilineParameterInspectionResultFormat, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
                                                   context));
         }
 

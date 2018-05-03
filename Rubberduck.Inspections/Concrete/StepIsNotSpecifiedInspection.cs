@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
 using Antlr4.Runtime.Misc;
@@ -21,10 +22,13 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(result => new QualifiedContextInspectionResult(this, Resources.Inspections.InspectionResults.StepIsNotSpecifiedInspection, result));
+                .Select(result => new QualifiedContextInspectionResult(this,
+                                                        InspectionsUI.StepIsNotSpecifiedInspectionResultFormat,
+                                                        result));
         }
 
-        public override IInspectionListener Listener { get; } = new StepIsNotSpecifiedListener();
+        public override IInspectionListener Listener { get; } =
+            new StepIsNotSpecifiedListener();
     }
 
     public class StepIsNotSpecifiedListener : VBAParserBaseListener, IInspectionListener

@@ -1,5 +1,4 @@
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ExtractMethod

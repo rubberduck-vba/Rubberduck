@@ -1,6 +1,7 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
@@ -35,7 +36,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result)
         {
-            return string.Format(Resources.Inspections.QuickFixes.EncapsulatePublicFieldInspectionQuickFix, result.Target.IdentifierName);
+            return string.Format(InspectionsUI.EncapsulatePublicFieldInspectionQuickFix, result.Target.IdentifierName);
         }
 
         public override bool CanFixInProcedure => false;

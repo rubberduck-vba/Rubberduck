@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Settings
 {

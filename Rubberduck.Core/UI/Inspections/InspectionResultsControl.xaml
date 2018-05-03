@@ -6,7 +6,7 @@
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:abstract1="clr-namespace:Rubberduck.Parsing.Inspections.Abstract;assembly=Rubberduck.Parsing"
-             ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
+             ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" 
@@ -42,7 +42,7 @@
             </CollectionViewSource>
 
 
-            <BitmapImage x:Key="SettingsImage" UriSource="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/gear.png" />
+            <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -59,16 +59,16 @@
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/arrow-circle-double.png" />
+                    <Image Height="16" Source="../../Resources/arrow-circle-double.png" />
                 </Button>
 
                 <Separator />
                 <Menu>
                     <MenuItem VerticalAlignment="Center" 
-                          Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}"
+                          Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Fix}"
                           ItemsSource="{Binding QuickFixes}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/tick.png" />
+                            <Image Height="16" Source="../../Resources/tick.png" />
                         </MenuItem.Icon>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="{x:Type MenuItem}">
@@ -81,15 +81,15 @@
                 </Menu>
 
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Custom/PNG/GroupBy.png" />
+                            <Image Height="16" Source="../../Resources/Custom/PNG/GroupBy.png" />
                         </MenuItem.Icon>
 
                         <MenuItem x:Name="GroupByInspectionType"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
                                   IsChecked="{Binding GroupByInspectionType, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True"
                                   Command="{Binding SetInspectionTypeGroupingCommand}"
@@ -98,7 +98,7 @@
                         <MenuItem x:Name="GroupByLocation"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}" 
+                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
                                   IsChecked="{Binding GroupByLocation, UpdateSourceTrigger=PropertyChanged}"
                                   Command="{Binding SetLocationGroupingCommand}"
                                   CommandParameter="{Binding ElementName=GroupByLocation, Path=IsChecked}"
@@ -110,12 +110,12 @@
                 <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/document-copy.png" />
+                    <Image Height="16" Source="../../Resources/document-copy.png" />
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
-                <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
+                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
                     <Image Height="16" Source="{StaticResource SettingsImage}" />
                 </Button>
             </ToolBar>
@@ -129,15 +129,15 @@
                                Visibility="{Binding IsChecked, ElementName=GroupByInspectionType, Converter={StaticResource BoolToVisibility}}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="{Binding}">
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="{Binding}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
@@ -148,15 +148,15 @@
                                Visibility="{Binding IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
+                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
                             <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
 

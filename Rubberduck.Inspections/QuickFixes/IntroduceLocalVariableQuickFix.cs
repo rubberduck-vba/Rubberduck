@@ -2,6 +2,7 @@ using System;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -26,6 +27,6 @@ namespace Rubberduck.Inspections.QuickFixes
             _state.GetRewriter(result.Target).InsertBefore(result.Target.Context.Start.TokenIndex, instruction);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IntroduceLocalVariableQuickFix;
+        public override string Description(IInspectionResult result) => InspectionsUI.IntroduceLocalVariableQuickFix;
     }
 }

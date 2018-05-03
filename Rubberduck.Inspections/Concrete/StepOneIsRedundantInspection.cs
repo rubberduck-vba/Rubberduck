@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Grammar;
 using Antlr4.Runtime.Misc;
@@ -21,19 +22,30 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
-                .Select(result => new QualifiedContextInspectionResult(this, Resources.Inspections.InspectionResults.StepOneIsRedundantInspection, result));
+                .Select(result => new QualifiedContextInspectionResult(this,
+                                                        InspectionsUI.StepOneIsRedundantInspectionResultFormat,
+                                                        result));
         }
 
-        public override IInspectionListener Listener { get; } = new StepOneIsRedundantListener();
+        public override IInspectionListener Listener { get; } =
+            new StepOneIsRedundantListener();
     }
 
     public class StepOneIsRedundantListener : VBAParserBaseListener, IInspectionListener
     {
         private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-
         public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-        public QualifiedModuleName CurrentModuleName { get; set; }
-        public void ClearContexts() => _contexts.Clear();
+
+        public QualifiedModuleName CurrentModuleName
+        {
+            get;
+            set;
+        }
+
+        public void ClearContexts()
+        {
+            _contexts.Clear();
+        }
 
         public override void EnterForNextStmt([NotNull] ForNextStmtContext context)
         {
@@ -44,7 +56,7 @@ namespace Rubberduck.Inspections.Concrete
                 return;
             }
 
-            var stepText = stepStatement.expression().GetText();
+            string stepText = stepStatement.expression().GetText();
 
             if(stepText == "1")
             {

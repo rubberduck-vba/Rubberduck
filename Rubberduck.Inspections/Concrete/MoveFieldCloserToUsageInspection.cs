@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -51,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
                            }.Contains(parentDeclaration.DeclarationType);
                 })
                 .Select(issue =>
-                        new DeclarationInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.MoveFieldCloserToUsageInspection, issue.IdentifierName), issue));
+                        new DeclarationInspectionResult(this, string.Format(InspectionsUI.MoveFieldCloserToUsageInspectionResultFormat, issue.IdentifierName), issue));
         }
 
         private Declaration ParentDeclaration(IdentifierReference reference)

@@ -10,7 +10,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Text;
 using Rubberduck.Parsing.Symbols;
 using System;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Command
 {

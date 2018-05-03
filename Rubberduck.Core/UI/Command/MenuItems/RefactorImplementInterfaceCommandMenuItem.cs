@@ -1,5 +1,6 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -13,8 +14,8 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override string Key => "RefactorMenu_ImplementInterface";
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ImplementInterface;
-        public override Image Image => Resources.Resources.ImplementInterface;
-        public override Image Mask => Resources.Resources.ImplementInterfaceMask;
+        public override Image Image => Resources.ImplementInterface;
+        public override Image Mask => Resources.ImplementInterfaceMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

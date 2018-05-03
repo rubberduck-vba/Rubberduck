@@ -11,6 +11,7 @@ using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
@@ -47,7 +48,7 @@ namespace Rubberduck.Inspections.QuickFixes
             InsertLocalVariableDeclarationAndAssignment(rewriter, result.Target, localIdentifier);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AssignedByValParameterMakeLocalCopyQuickFix;
+        public override string Description(IInspectionResult result) => InspectionsUI.AssignedByValParameterMakeLocalCopyQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;

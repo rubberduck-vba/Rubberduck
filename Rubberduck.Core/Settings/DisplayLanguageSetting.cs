@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Xml.Serialization;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 
 namespace Rubberduck.Settings

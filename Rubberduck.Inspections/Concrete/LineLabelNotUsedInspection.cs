@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using static Rubberduck.Parsing.Grammar.VBAParser;
@@ -27,9 +28,10 @@ namespace Rubberduck.Inspections.Concrete
                     && (!declaration.References.Any() || declaration.References.All(reference => reference.IsAssignment)));
 
             return declarations.Select(issue => 
-                new DeclarationInspectionResult(this, 
-                    string.Format(Resources.Inspections.InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName), 
-                    issue, new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((IdentifierStatementLabelContext)issue.Context).legalLabelIdentifier())));
+                new DeclarationInspectionResult(this,
+                                     string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
+                                     issue,
+                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((IdentifierStatementLabelContext)issue.Context).legalLabelIdentifier())));
         }
     }
 }

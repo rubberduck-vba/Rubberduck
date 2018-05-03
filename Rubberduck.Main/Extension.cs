@@ -13,14 +13,12 @@ using System.Windows.Threading;
 using Castle.Windsor;
 using NLog;
 using Rubberduck.Common;
-using Rubberduck.Resources;
 using Rubberduck.Root;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Resources.Registration;
 
 namespace Rubberduck
 {

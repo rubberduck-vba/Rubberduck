@@ -1,12 +1,12 @@
-﻿using System;
-using Rubberduck.Resources.RegexAssistant;
+﻿using Rubberduck.RegexAssistant.i18n;
+using System;
 
 namespace Rubberduck.RegexAssistant
 {
     public class Pattern : IDescribable
     {
         public IRegularExpression RootExpression;
-        private readonly MatcherFlags _flags;
+        readonly MatcherFlags Flags;
 
         public string Description { get; }
 
@@ -17,8 +17,8 @@ namespace Rubberduck.RegexAssistant
                 throw new ArgumentNullException();
             }
 
-            _flags = ignoreCase ? MatcherFlags.IgnoreCase : 0;
-            _flags = global ? _flags | MatcherFlags.Global : _flags;
+            Flags = ignoreCase ? MatcherFlags.IgnoreCase : 0;
+            Flags = global ? Flags | MatcherFlags.Global : Flags;
 
             AnchoredAtEnd = expression[expression.Length - 1].Equals('$');
             AnchoredAtStart = expression[0].Equals('^');
@@ -45,9 +45,9 @@ namespace Rubberduck.RegexAssistant
             {
                 if (AnchoredAtStart)
                 {
-                    return _flags.HasFlag(MatcherFlags.Global) 
-                        ? RegexAssistantUI.PatternDescription_AnchorStart_GlobalEnabled 
-                        : RegexAssistantUI.PatternDescription_AnchorStart;
+                    return Flags.HasFlag(MatcherFlags.Global) 
+                        ? AssistantResources.PatternDescription_AnchorStart_GlobalEnabled 
+                        : AssistantResources.PatternDescription_AnchorStart;
                 }
                 return string.Empty;
             }
@@ -59,21 +59,21 @@ namespace Rubberduck.RegexAssistant
             {
                 if (AnchoredAtEnd)
                 {
-                    return _flags.HasFlag(MatcherFlags.Global) 
-                        ? RegexAssistantUI.PatternDescription_AnchorEnd_GlobalEnabled 
-                        : RegexAssistantUI.PatternDescription_AnchorEnd;
+                    return Flags.HasFlag(MatcherFlags.Global) 
+                        ? AssistantResources.PatternDescription_AnchorEnd_GlobalEnabled 
+                        : AssistantResources.PatternDescription_AnchorEnd;
                 }
                 return string.Empty;
             }
         }
 
-        public bool IgnoreCase => _flags.HasFlag(MatcherFlags.IgnoreCase);
-        public bool Global => _flags.HasFlag(MatcherFlags.Global);
+        public bool IgnoreCase => Flags.HasFlag(MatcherFlags.IgnoreCase);
+        public bool Global => Flags.HasFlag(MatcherFlags.Global);
         public bool AnchoredAtStart { get; }
 
         public bool AnchoredAtEnd { get; }
 
-        public string CasingDescription => IgnoreCase ? RegexAssistantUI.PatternDescription_IgnoreCase : string.Empty;
+        public string CasingDescription => IgnoreCase ? AssistantResources.PatternDescription_IgnoreCase : string.Empty;
     }
 
     [Flags]

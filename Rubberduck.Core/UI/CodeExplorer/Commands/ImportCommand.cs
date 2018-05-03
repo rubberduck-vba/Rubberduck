@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

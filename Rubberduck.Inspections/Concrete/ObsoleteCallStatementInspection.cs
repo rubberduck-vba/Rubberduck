@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -43,7 +44,9 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (!stringStrippedLines.Contains(":"))
                 {
-                    results.Add(new QualifiedContextInspectionResult(this, Resources.Inspections.InspectionResults.ObsoleteCallStatementInspection, context));
+                    results.Add(new QualifiedContextInspectionResult(this,
+                                                     InspectionsUI.ObsoleteCallStatementInspectionResultFormat,
+                                                     context));
                 }
             }
 

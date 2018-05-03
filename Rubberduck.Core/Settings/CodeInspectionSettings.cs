@@ -4,9 +4,8 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Settings
 {
@@ -86,12 +85,12 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string Description
         {
-            get => _description ?? (_description = InspectionNames.ResourceManager.GetString(Name));
+            get => _description ?? (_description = InspectionsUI.ResourceManager.GetString(Name + "Name"));
             set => _description = value;
         }// not serialized because culture-dependent
 
         [XmlIgnore]
-        public string LocalizedName => InspectionNames.ResourceManager.GetString(Name, CultureInfo.CurrentUICulture); // not serialized because culture-dependent
+        public string LocalizedName => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture); // not serialized because culture-dependent
 
         [XmlIgnore]
         public string AnnotationName => Name.Replace("Inspection", string.Empty);
@@ -103,7 +102,7 @@ namespace Rubberduck.Settings
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlIgnore]
-        public string Meta => Resources.Inspections.InspectionInfo.ResourceManager.GetString(Name, CultureInfo.CurrentUICulture);
+        public string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         // ReSharper disable once UnusedMember.Global; used in string literal to define collection groupings

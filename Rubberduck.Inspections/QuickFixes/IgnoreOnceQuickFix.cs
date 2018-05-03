@@ -8,6 +8,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -87,7 +88,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IgnoreOnce;
+        public override string Description(IInspectionResult result) => InspectionsUI.IgnoreOnce;
 
         private class AnnotationListener : VBAParserBaseListener
         {

@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -29,7 +30,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(assignmentContext);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnassignedVariableUsageQuickFix;
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveUnassignedVariableUsageQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

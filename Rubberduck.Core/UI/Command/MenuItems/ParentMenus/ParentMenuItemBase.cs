@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

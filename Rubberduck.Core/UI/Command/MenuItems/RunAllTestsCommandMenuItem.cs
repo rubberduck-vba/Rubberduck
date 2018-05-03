@@ -1,5 +1,6 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -13,8 +14,8 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override string Key => "TestMenu_RunAllTests";
         public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.RunAllTests;
-        public override Image Image => Resources.Resources.AllLoadedTests;
-        public override Image Mask => Resources.Resources.AllLoadedTestsMask;
+        public override Image Image => Resources.AllLoadedTests;
+        public override Image Mask => Resources.AllLoadedTestsMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

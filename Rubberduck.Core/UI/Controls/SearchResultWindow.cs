@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Controls
 {
@@ -13,7 +12,7 @@ namespace Rubberduck.UI.Controls
         private ISearchResultsWindowViewModel _viewModel;
         public ISearchResultsWindowViewModel ViewModel
         {
-            get => _viewModel;
+            get { return _viewModel; }
             set
             {
                 _viewModel = value;
@@ -21,8 +20,14 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        public string ClassId => "BFD04A86-CACA-4F95-9656-A0BF7D3AE254";
+        public string ClassId
+        {
+            get { return "BFD04A86-CACA-4F95-9656-A0BF7D3AE254"; }
+        }
 
-        public string Caption => RubberduckUI.SearchResults_Caption;
+        public string Caption
+        {
+            get { return RubberduckUI.SearchResults_Caption; }
+        }
     }
 }

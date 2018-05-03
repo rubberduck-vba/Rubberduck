@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Resources;
 using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.UI.Settings.Converters

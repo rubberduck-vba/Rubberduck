@@ -1,6 +1,5 @@
 using System;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {

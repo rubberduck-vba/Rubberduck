@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Replace(((ParserRuleContext)result.Context.Parent.Parent).GetDescendent<VBAParser.VisibilityContext>(), Tokens.Public);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ObsoleteGlobalInspectionQuickFix;
+        public override string Description(IInspectionResult result) => InspectionsUI.ObsoleteGlobalInspectionQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

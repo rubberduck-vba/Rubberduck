@@ -7,6 +7,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -38,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
                     .identifier();
 
                 return new QualifiedContextInspectionResult(this,
-                    string.Format(Resources.Inspections.InspectionResults.RedundantByRefModifierInspection,
+                    string.Format(InspectionsUI.RedundantByRefModifierInspectionResultFormat,
                         identifier.untypedIdentifier() != null
                             ? identifier.untypedIdentifier().identifierValue().GetText()
                             : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText()), issue);

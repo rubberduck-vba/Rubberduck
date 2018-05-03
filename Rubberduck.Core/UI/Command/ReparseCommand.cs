@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.CodeExplorer.Commands;

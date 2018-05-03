@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings
 {

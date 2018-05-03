@@ -2,8 +2,8 @@
 using Moq;
 using NUnit.Framework;
 using Rubberduck.Inspections;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Settings;
 
 namespace RubberduckTests.Inspections
