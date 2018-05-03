@@ -103,7 +103,7 @@ namespace Rubberduck.Settings
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlIgnore]
-        public string Meta => Resources.Inspections.Meta.ResourceManager.GetString(Name, CultureInfo.CurrentUICulture);
+        public string Meta => Resources.Inspections.InspectionInfo.ResourceManager.GetString(Name, CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         // ReSharper disable once UnusedMember.Global; used in string literal to define collection groupings

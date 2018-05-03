@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Meta-information about why an inspection exists.
         /// </summary>
-        public virtual string Meta => Resources.Inspections.Meta.ResourceManager.GetString($"{Name}", CultureInfo.CurrentUICulture);
+        public virtual string Meta => Resources.Inspections.InspectionInfo.ResourceManager.GetString($"{Name}", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a localized string representing the type of inspection.

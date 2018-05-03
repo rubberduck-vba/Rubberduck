@@ -157,7 +157,7 @@ namespace Rubberduck
                 Resources.Inspections.InspectionNames.Culture = culture;
                 Resources.Inspections.InspectionResults.Culture = culture;
                 Resources.Inspections.InspectionsUI.Culture = culture;
-                Resources.Inspections.Meta.Culture = culture;
+                Resources.Inspections.InspectionInfo.Culture = culture;
                 Resources.Inspections.QuickFixes.Culture = culture;
                 Resources.RegexAssistant.RegexAssistantUI.Culture = culture;
 

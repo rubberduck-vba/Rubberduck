@@ -73,18 +73,18 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\Meta.Designer.cs">
-      <DependentUpon>Meta.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionInfo.Designer.cs">
+      <DependentUpon>InspectionInfo.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\Meta.de.Designer.cs">
-      <DependentUpon>Meta.de.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionInfo.de.Designer.cs">
+      <DependentUpon>InspectionInfo.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\Meta.fr.Designer.cs">
-      <DependentUpon>Meta.fr.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionInfo.fr.Designer.cs">
+      <DependentUpon>InspectionInfo.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -188,19 +188,19 @@
       <LastGenOutput>InspectionResults.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\Meta.resx">
+    <EmbeddedResource Include="Inspections\InspectionInfo.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Meta.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\Meta.de.resx">
+    <EmbeddedResource Include="Inspections\InspectionInfo.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Meta.de.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionInfo.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\Meta.fr.resx">
+    <EmbeddedResource Include="Inspections\InspectionInfo.fr.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Meta.fr.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionInfo.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\QuickFixes.resx">

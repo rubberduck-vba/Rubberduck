@@ -23,7 +23,7 @@ namespace RubberduckTests.Inspections
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
             Rubberduck.Resources.Inspections.InspectionsUI.Culture = Thread.CurrentThread.CurrentUICulture;
             Rubberduck.Resources.Inspections.InspectionNames.Culture = Thread.CurrentThread.CurrentUICulture;
-            Rubberduck.Resources.Inspections.Meta.Culture = Thread.CurrentThread.CurrentUICulture;
+            Rubberduck.Resources.Inspections.InspectionInfo.Culture = Thread.CurrentThread.CurrentUICulture;
             Rubberduck.Resources.Inspections.InspectionResults.Culture = Thread.CurrentThread.CurrentUICulture;
             Rubberduck.Resources.Inspections.QuickFixes.Culture = Thread.CurrentThread.CurrentUICulture;
             RubberduckUI.Culture = Thread.CurrentThread.CurrentUICulture;
@@ -68,7 +68,7 @@ namespace RubberduckTests.Inspections
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
-                          .Where(i => string.IsNullOrWhiteSpace(Meta.ResourceManager.GetString(i.Name, CultureInfo.InvariantCulture)))
+                          .Where(i => string.IsNullOrWhiteSpace(InspectionInfo.ResourceManager.GetString(i.Name, CultureInfo.InvariantCulture)))
                           .Select(i => i.Name)
                           .ToList();
             
