@@ -1,9 +1,13 @@
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Navigation.RegexSearchReplace;
+using Rubberduck.Parsing.Common;
 
 namespace Rubberduck.UI.Command
 {
+#if !DEBUG
+    [Experimental]
+#endif
     [ComVisible(false)]
     public class RegexSearchReplaceCommand : CommandBase
     {

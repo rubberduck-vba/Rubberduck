@@ -4,10 +4,14 @@ using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
+#if !DEBUG
+    [Experimental]
+#endif
     [ComVisible(false)]
     public class RefactorExtractMethodCommand : RefactorCommandBase
     {
