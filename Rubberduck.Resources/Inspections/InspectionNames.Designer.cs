@@ -63,630 +63,630 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Late bound WorksheetFunction call..
         /// </summary>
-        public static string ApplicationWorksheetFunction {
+        public static string ApplicationWorksheetFunctionInspection {
             get {
-                return ResourceManager.GetString("ApplicationWorksheetFunction", resourceCulture);
+                return ResourceManager.GetString("ApplicationWorksheetFunctionInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ByVal parameter is assigned.
         /// </summary>
-        public static string AssignedByValParameter {
+        public static string AssignedByValParameterInspection {
             get {
-                return ResourceManager.GetString("AssignedByValParameter", resourceCulture);
+                return ResourceManager.GetString("AssignedByValParameterInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Boolean literal assignment in conditional.
         /// </summary>
-        public static string BooleanAssignedInIfElse {
+        public static string BooleanAssignedInIfElseInspection {
             get {
-                return ResourceManager.GetString("BooleanAssignedInIfElse", resourceCulture);
+                return ResourceManager.GetString("BooleanAssignedInIfElseInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Constant is not used.
         /// </summary>
-        public static string ConstantNotUsed {
+        public static string ConstantNotUsedInspection {
             get {
-                return ResourceManager.GetString("ConstantNotUsed", resourceCulture);
+                return ResourceManager.GetString("ConstantNotUsedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Project name is not specified.
         /// </summary>
-        public static string DefaultProjectName {
+        public static string DefaultProjectNameInspection {
             get {
-                return ResourceManager.GetString("DefaultProjectName", resourceCulture);
+                return ResourceManager.GetString("DefaultProjectNameInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Usage of &apos;Def[Type]&apos; statement.
         /// </summary>
-        public static string DefTypeStatement {
+        public static string DefTypeStatementInspection {
             get {
-                return ResourceManager.GetString("DefTypeStatement", resourceCulture);
+                return ResourceManager.GetString("DefTypeStatementInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty &apos;Case&apos; block.
         /// </summary>
-        public static string EmptyCaseBlock {
+        public static string EmptyCaseBlockInspection {
             get {
-                return ResourceManager.GetString("EmptyCaseBlock", resourceCulture);
+                return ResourceManager.GetString("EmptyCaseBlockInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty &apos;Do...While&apos; Loop.
         /// </summary>
-        public static string EmptyDoWhileBlock {
+        public static string EmptyDoWhileBlockInspection {
             get {
-                return ResourceManager.GetString("EmptyDoWhileBlock", resourceCulture);
+                return ResourceManager.GetString("EmptyDoWhileBlockInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty &apos;Else&apos; block.
         /// </summary>
-        public static string EmptyElseBlock {
+        public static string EmptyElseBlockInspection {
             get {
-                return ResourceManager.GetString("EmptyElseBlock", resourceCulture);
+                return ResourceManager.GetString("EmptyElseBlockInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty &apos;For Each...Next&apos; Loop.
         /// </summary>
-        public static string EmptyForEachBlock {
+        public static string EmptyForEachBlockInspection {
             get {
-                return ResourceManager.GetString("EmptyForEachBlock", resourceCulture);
+                return ResourceManager.GetString("EmptyForEachBlockInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty &apos;For...Next&apos; Loop.
         /// </summary>
-        public static string EmptyForLoopBlock {
+        public static string EmptyForLoopBlockInspection {
             get {
-                return ResourceManager.GetString("EmptyForLoopBlock", resourceCulture);
+                return ResourceManager.GetString("EmptyForLoopBlockInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty conditional branch.
         /// </summary>
-        public static string EmptyIfBlock {
+        public static string EmptyIfBlockInspection {
             get {
-                return ResourceManager.GetString("EmptyIfBlock", resourceCulture);
+                return ResourceManager.GetString("EmptyIfBlockInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty module.
         /// </summary>
-        public static string EmptyModule {
+        public static string EmptyModuleInspection {
             get {
-                return ResourceManager.GetString("EmptyModule", resourceCulture);
+                return ResourceManager.GetString("EmptyModuleInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty string literal.
         /// </summary>
-        public static string EmptyStringLiteral {
+        public static string EmptyStringLiteralInspection {
             get {
-                return ResourceManager.GetString("EmptyStringLiteral", resourceCulture);
+                return ResourceManager.GetString("EmptyStringLiteralInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Empty &apos;While...Wend&apos; loop.
         /// </summary>
-        public static string EmptyWhileWendBlock {
+        public static string EmptyWhileWendBlockInspection {
             get {
-                return ResourceManager.GetString("EmptyWhileWendBlock", resourceCulture);
+                return ResourceManager.GetString("EmptyWhileWendBlockInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Public field breaks encapsulation.
         /// </summary>
-        public static string EncapsulatePublicField {
+        public static string EncapsulatePublicFieldInspection {
             get {
-                return ResourceManager.GetString("EncapsulatePublicField", resourceCulture);
+                return ResourceManager.GetString("EncapsulatePublicFieldInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Function return value is never used.
         /// </summary>
-        public static string FunctionReturnValueNotUsed {
+        public static string FunctionReturnValueNotUsedInspection {
             get {
-                return ResourceManager.GetString("FunctionReturnValueNotUsed", resourceCulture);
+                return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Host-specific bracketed expression is only evaluated at runtime.
         /// </summary>
-        public static string HostSpecificExpression {
+        public static string HostSpecificExpressionInspection {
             get {
-                return ResourceManager.GetString("HostSpecificExpression", resourceCulture);
+                return ResourceManager.GetString("HostSpecificExpressionInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Variable uses Hungarian notation..
         /// </summary>
-        public static string HungarianNotation {
+        public static string HungarianNotationInspection {
             get {
-                return ResourceManager.GetString("HungarianNotation", resourceCulture);
+                return ResourceManager.GetString("HungarianNotationInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Illegal annotation.
         /// </summary>
-        public static string IllegalAnnotation {
+        public static string IllegalAnnotationInspection {
             get {
-                return ResourceManager.GetString("IllegalAnnotation", resourceCulture);
+                return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicit reference to ActiveSheet.
         /// </summary>
-        public static string ImplicitActiveSheetReference {
+        public static string ImplicitActiveSheetReferenceInspection {
             get {
-                return ResourceManager.GetString("ImplicitActiveSheetReference", resourceCulture);
+                return ResourceManager.GetString("ImplicitActiveSheetReferenceInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicit reference to ActiveWorkbook.
         /// </summary>
-        public static string ImplicitActiveWorkbookReference {
+        public static string ImplicitActiveWorkbookReferenceInspection {
             get {
-                return ResourceManager.GetString("ImplicitActiveWorkbookReference", resourceCulture);
+                return ResourceManager.GetString("ImplicitActiveWorkbookReferenceInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicit ByRef parameter.
         /// </summary>
-        public static string ImplicitByRefModifier {
+        public static string ImplicitByRefModifierInspection {
             get {
-                return ResourceManager.GetString("ImplicitByRefModifier", resourceCulture);
+                return ResourceManager.GetString("ImplicitByRefModifierInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicit default member assignment.
         /// </summary>
-        public static string ImplicitDefaultMemberAssignment {
+        public static string ImplicitDefaultMemberAssignmentInspection {
             get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignment", resourceCulture);
+                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicitly public member.
         /// </summary>
-        public static string ImplicitPublicMember {
+        public static string ImplicitPublicMemberInspection {
             get {
-                return ResourceManager.GetString("ImplicitPublicMember", resourceCulture);
+                return ResourceManager.GetString("ImplicitPublicMemberInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Member return type is implicitly &apos;Variant&apos;.
         /// </summary>
-        public static string ImplicitVariantReturnType {
+        public static string ImplicitVariantReturnTypeInspection {
             get {
-                return ResourceManager.GetString("ImplicitVariantReturnType", resourceCulture);
+                return ResourceManager.GetString("ImplicitVariantReturnTypeInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of 16-bit integer type.
         /// </summary>
-        public static string IntegerDataType {
+        public static string IntegerDataTypeInspection {
             get {
-                return ResourceManager.GetString("IntegerDataType", resourceCulture);
+                return ResourceManager.GetString("IntegerDataTypeInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Line label is not used.
         /// </summary>
-        public static string LineLabelNotUsed {
+        public static string LineLabelNotUsedInspection {
             get {
-                return ResourceManager.GetString("LineLabelNotUsed", resourceCulture);
+                return ResourceManager.GetString("LineLabelNotUsedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Member not found.
         /// </summary>
-        public static string MemberNotOnInterface {
+        public static string MemberNotOnInterfaceInspection {
             get {
-                return ResourceManager.GetString("MemberNotOnInterface", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing annotation.
-        /// </summary>
-        public static string MissingAnnotation {
-            get {
-                return ResourceManager.GetString("MissingAnnotation", resourceCulture);
+                return ResourceManager.GetString("MemberNotOnInterfaceInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Missing annotation parameter.
         /// </summary>
-        public static string MissingAnnotationArgument {
+        public static string MissingAnnotationArgumentInspection {
             get {
-                return ResourceManager.GetString("MissingAnnotationArgument", resourceCulture);
+                return ResourceManager.GetString("MissingAnnotationArgumentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing annotation.
+        /// </summary>
+        public static string MissingAnnotationInspection {
+            get {
+                return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Missing attribute.
         /// </summary>
-        public static string MissingAttribute {
+        public static string MissingAttributeInspection {
             get {
-                return ResourceManager.GetString("MissingAttribute", resourceCulture);
+                return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of &apos;Dim&apos; keyword at module level.
         /// </summary>
-        public static string ModuleScopeDimKeyword {
+        public static string ModuleScopeDimKeywordInspection {
             get {
-                return ResourceManager.GetString("ModuleScopeDimKeyword", resourceCulture);
+                return ResourceManager.GetString("ModuleScopeDimKeywordInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Scope of variable is broader than it needs to be.
         /// </summary>
-        public static string MoveFieldCloserToUsage {
+        public static string MoveFieldCloserToUsageInspection {
             get {
-                return ResourceManager.GetString("MoveFieldCloserToUsage", resourceCulture);
+                return ResourceManager.GetString("MoveFieldCloserToUsageInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Parameter declaration is split on multiple lines.
         /// </summary>
-        public static string MultilineParameter {
+        public static string MultilineParameterInspection {
             get {
-                return ResourceManager.GetString("MultilineParameter", resourceCulture);
+                return ResourceManager.GetString("MultilineParameterInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Multiple declarations in single instruction.
         /// </summary>
-        public static string MultipleDeclarations {
+        public static string MultipleDeclarationsInspection {
             get {
-                return ResourceManager.GetString("MultipleDeclarations", resourceCulture);
+                return ResourceManager.GetString("MultipleDeclarationsInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Module has more than one folder annotation..
         /// </summary>
-        public static string MultipleFolderAnnotations {
+        public static string MultipleFolderAnnotationsInspection {
             get {
-                return ResourceManager.GetString("MultipleFolderAnnotations", resourceCulture);
+                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Non-returning function or property getter.
         /// </summary>
-        public static string NonReturningFunction {
+        public static string NonReturningFunctionInspection {
             get {
-                return ResourceManager.GetString("NonReturningFunction", resourceCulture);
+                return ResourceManager.GetString("NonReturningFunctionInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Object variable assignment requires &apos;Set&apos; keyword.
         /// </summary>
-        public static string ObjectVariableNotSet {
+        public static string ObjectVariableNotSetInspection {
             get {
-                return ResourceManager.GetString("ObjectVariableNotSet", resourceCulture);
+                return ResourceManager.GetString("ObjectVariableNotSetInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of obsolete &apos;Call&apos; statement.
         /// </summary>
-        public static string ObsoleteCallStatement {
+        public static string ObsoleteCallStatementInspection {
             get {
-                return ResourceManager.GetString("ObsoleteCallStatement", resourceCulture);
+                return ResourceManager.GetString("ObsoleteCallStatementInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of obsolete &apos;Rem&apos; statement.
         /// </summary>
-        public static string ObsoleteCommentSyntax {
+        public static string ObsoleteCommentSyntaxInspection {
             get {
-                return ResourceManager.GetString("ObsoleteCommentSyntax", resourceCulture);
+                return ResourceManager.GetString("ObsoleteCommentSyntaxInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of obsolete &apos;Error&apos; statement.
         /// </summary>
-        public static string ObsoleteErrorSyntax {
+        public static string ObsoleteErrorSyntaxInspection {
             get {
-                return ResourceManager.GetString("ObsoleteErrorSyntax", resourceCulture);
+                return ResourceManager.GetString("ObsoleteErrorSyntaxInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of obsolete &apos;Global&apos; access modifier.
         /// </summary>
-        public static string ObsoleteGlobal {
+        public static string ObsoleteGlobalInspection {
             get {
-                return ResourceManager.GetString("ObsoleteGlobal", resourceCulture);
+                return ResourceManager.GetString("ObsoleteGlobalInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of obsolete explicit &apos;Let&apos; statement.
         /// </summary>
-        public static string ObsoleteLetStatement {
+        public static string ObsoleteLetStatementInspection {
             get {
-                return ResourceManager.GetString("ObsoleteLetStatement", resourceCulture);
+                return ResourceManager.GetString("ObsoleteLetStatementInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Obsolete Type hint usage.
         /// </summary>
-        public static string ObsoleteTypeHint {
+        public static string ObsoleteTypeHintInspection {
             get {
-                return ResourceManager.GetString("ObsoleteTypeHint", resourceCulture);
+                return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;Option Base 1&apos; is specified.
         /// </summary>
-        public static string OptionBase {
+        public static string OptionBaseInspection {
             get {
-                return ResourceManager.GetString("OptionBase", resourceCulture);
+                return ResourceManager.GetString("OptionBaseInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;Option Base 0&apos; is redundant.
         /// </summary>
-        public static string OptionBaseZero {
+        public static string OptionBaseZeroInspection {
             get {
-                return ResourceManager.GetString("OptionBaseZero", resourceCulture);
+                return ResourceManager.GetString("OptionBaseZeroInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;Option Explicit&apos; is not specified.
         /// </summary>
-        public static string OptionExplicit {
+        public static string OptionExplicitInspection {
             get {
-                return ResourceManager.GetString("OptionExplicit", resourceCulture);
+                return ResourceManager.GetString("OptionExplicitInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Parameter can be passed by value.
         /// </summary>
-        public static string ParameterCanBeByVal {
+        public static string ParameterCanBeByValInspection {
             get {
-                return ResourceManager.GetString("ParameterCanBeByVal", resourceCulture);
+                return ResourceManager.GetString("ParameterCanBeByValInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Parameter is not referred to.
         /// </summary>
-        public static string ParameterNotUsed {
+        public static string ParameterNotUsedInspection {
             get {
-                return ResourceManager.GetString("ParameterNotUsed", resourceCulture);
+                return ResourceManager.GetString("ParameterNotUsedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Procedure can be written as a function.
         /// </summary>
-        public static string ProcedureCanBeWrittenAsFunction {
+        public static string ProcedureCanBeWrittenAsFunctionInspection {
             get {
-                return ResourceManager.GetString("ProcedureCanBeWrittenAsFunction", resourceCulture);
+                return ResourceManager.GetString("ProcedureCanBeWrittenAsFunctionInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Procedure is not referred to.
         /// </summary>
-        public static string ProcedureNotUsed {
+        public static string ProcedureNotUsedInspection {
             get {
-                return ResourceManager.GetString("ProcedureNotUsed", resourceCulture);
+                return ResourceManager.GetString("ProcedureNotUsedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Redundant &apos;ByRef&apos; modifier.
         /// </summary>
-        public static string RedundantByRefModifier {
+        public static string RedundantByRefModifierInspection {
             get {
-                return ResourceManager.GetString("RedundantByRefModifier", resourceCulture);
+                return ResourceManager.GetString("RedundantByRefModifierInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Redundant module option.
         /// </summary>
-        public static string RedundantOption {
+        public static string RedundantOptionInspection {
             get {
-                return ResourceManager.GetString("RedundantOption", resourceCulture);
+                return ResourceManager.GetString("RedundantOptionInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Object variable reference is auto-instantiated.
         /// </summary>
-        public static string SelfAssignedDeclaration {
+        public static string SelfAssignedDeclarationInspection {
             get {
-                return ResourceManager.GetString("SelfAssignedDeclaration", resourceCulture);
+                return ResourceManager.GetString("SelfAssignedDeclarationInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Shadowed declaration.
         /// </summary>
-        public static string ShadowedDeclaration {
+        public static string ShadowedDeclarationInspection {
             get {
-                return ResourceManager.GetString("ShadowedDeclaration", resourceCulture);
+                return ResourceManager.GetString("ShadowedDeclarationInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Statically accessible sheet accessed using string.
         /// </summary>
-        public static string SheetAccessedUsingString {
+        public static string SheetAccessedUsingStringInspection {
             get {
-                return ResourceManager.GetString("SheetAccessedUsingString", resourceCulture);
+                return ResourceManager.GetString("SheetAccessedUsingStringInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;For...Next&apos; loop step is not specified.
         /// </summary>
-        public static string StepIsNotSpecified {
+        public static string StepIsNotSpecifiedInspection {
             get {
-                return ResourceManager.GetString("StepIsNotSpecified", resourceCulture);
+                return ResourceManager.GetString("StepIsNotSpecifiedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;For...Next&apos; loop step 1 is redundant.
         /// </summary>
-        public static string StepOneIsRedundant {
+        public static string StepOneIsRedundantInspection {
             get {
-                return ResourceManager.GetString("StepOneIsRedundant", resourceCulture);
+                return ResourceManager.GetString("StepOneIsRedundantInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;Stop&apos; keyword.
         /// </summary>
-        public static string StopKeyword {
+        public static string StopKeywordInspection {
             get {
-                return ResourceManager.GetString("StopKeyword", resourceCulture);
+                return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Variable is used but not assigned.
         /// </summary>
-        public static string UnassignedVariableUsage {
+        public static string UnassignedVariableUsageInspection {
             get {
-                return ResourceManager.GetString("UnassignedVariableUsage", resourceCulture);
+                return ResourceManager.GetString("UnassignedVariableUsageInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Undeclared variable.
         /// </summary>
-        public static string UndeclaredVariable {
+        public static string UndeclaredVariableInspection {
             get {
-                return ResourceManager.GetString("UndeclaredVariable", resourceCulture);
+                return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unhandled &apos;On Error Resume Next&apos;.
         /// </summary>
-        public static string UnhandledOnErrorResumeNext {
+        public static string UnhandledOnErrorResumeNextInspection {
             get {
-                return ResourceManager.GetString("UnhandledOnErrorResumeNext", resourceCulture);
+                return ResourceManager.GetString("UnhandledOnErrorResumeNextInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Case Clause(s) cannot be reached.
         /// </summary>
-        public static string UnreachableCase {
+        public static string UnreachableCaseInspection {
             get {
-                return ResourceManager.GetString("UnreachableCase", resourceCulture);
+                return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of variant-returning string function.
         /// </summary>
-        public static string UntypedFunctionUsage {
+        public static string UntypedFunctionUsageInspection {
             get {
-                return ResourceManager.GetString("UntypedFunctionUsage", resourceCulture);
+                return ResourceManager.GetString("UntypedFunctionUsageInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use meaningful names.
         /// </summary>
-        public static string UseMeaningfulName {
+        public static string UseMeaningfulNameInspection {
             get {
-                return ResourceManager.GetString("UseMeaningfulName", resourceCulture);
+                return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Variable is not assigned.
         /// </summary>
-        public static string VariableNotAssigned {
+        public static string VariableNotAssignedInspection {
             get {
-                return ResourceManager.GetString("VariableNotAssigned", resourceCulture);
+                return ResourceManager.GetString("VariableNotAssignedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Variable is not referred to.
         /// </summary>
-        public static string VariableNotUsed {
+        public static string VariableNotUsedInspection {
             get {
-                return ResourceManager.GetString("VariableNotUsed", resourceCulture);
+                return ResourceManager.GetString("VariableNotUsedInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Implicitly &apos;Variant&apos; variable.
         /// </summary>
-        public static string VariableTypeNotDeclared {
+        public static string VariableTypeNotDeclaredInspection {
             get {
-                return ResourceManager.GetString("VariableTypeNotDeclared", resourceCulture);
+                return ResourceManager.GetString("VariableTypeNotDeclaredInspection", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Write-only property.
         /// </summary>
-        public static string WriteOnlyProperty {
+        public static string WriteOnlyPropertyInspection {
             get {
-                return ResourceManager.GetString("WriteOnlyProperty", resourceCulture);
+                return ResourceManager.GetString("WriteOnlyPropertyInspection", resourceCulture);
             }
         }
     }

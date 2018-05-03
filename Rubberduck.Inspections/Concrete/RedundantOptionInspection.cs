@@ -21,29 +21,25 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public override string Meta => Resources.Inspections.Meta.RedundantOptionInspection;
-        public override string Description => Resources.Inspections.InspectionNames.RedundantOption;
+        public override string Description => Resources.Inspections.InspectionNames.RedundantOptionInspection;
 
         public override IInspectionListener Listener { get; }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
-                                   .Select(context => new QualifiedContextInspectionResult(this,
-                                                                           string.Format(Resources.Inspections.InspectionResults.RedundantOptionInspection, context.Context.GetText()),
-                                                                           context));
+            return Listener.Contexts
+                .Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+                .Select(context => 
+                    new QualifiedContextInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.RedundantOptionInspection, context.Context.GetText()), context));
         }
 
         public class RedundantModuleOptionListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
             public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public void ClearContexts() => _contexts.Clear();
 
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {

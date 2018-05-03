@@ -117,214 +117,214 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AssignedByValParameter" xml:space="preserve">
+  <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>ByVal parameter is assigned</value>
   </data>
-  <data name="ConstantNotUsed" xml:space="preserve">
+  <data name="ConstantNotUsedInspection" xml:space="preserve">
     <value>Constant is not used</value>
   </data>
-  <data name="DefaultProjectName" xml:space="preserve">
+  <data name="DefaultProjectNameInspection" xml:space="preserve">
     <value>Project name is not specified</value>
   </data>
-  <data name="EmptyStringLiteral" xml:space="preserve">
+  <data name="EmptyStringLiteralInspection" xml:space="preserve">
     <value>Empty string literal</value>
   </data>
-  <data name="EncapsulatePublicField" xml:space="preserve">
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
     <value>Public field breaks encapsulation</value>
   </data>
-  <data name="ImplicitActiveSheetReference" xml:space="preserve">
+  <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
     <value>Implicit reference to ActiveSheet</value>
   </data>
-  <data name="ImplicitActiveWorkbookReference" xml:space="preserve">
+  <data name="ImplicitActiveWorkbookReferenceInspection" xml:space="preserve">
     <value>Implicit reference to ActiveWorkbook</value>
   </data>
-  <data name="ImplicitByRefModifier" xml:space="preserve">
+  <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Implicit ByRef parameter</value>
   </data>
-  <data name="ImplicitPublicMember" xml:space="preserve">
+  <data name="ImplicitPublicMemberInspection" xml:space="preserve">
     <value>Implicitly public member</value>
   </data>
-  <data name="ImplicitVariantReturnType" xml:space="preserve">
+  <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
     <value>Member return type is implicitly 'Variant'</value>
   </data>
-  <data name="MoveFieldCloserToUsage" xml:space="preserve">
+  <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Scope of variable is broader than it needs to be</value>
   </data>
-  <data name="MultilineParameter" xml:space="preserve">
+  <data name="MultilineParameterInspection" xml:space="preserve">
     <value>Parameter declaration is split on multiple lines</value>
   </data>
-  <data name="MultipleDeclarations" xml:space="preserve">
+  <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Multiple declarations in single instruction</value>
   </data>
-  <data name="MultipleFolderAnnotations" xml:space="preserve">
+  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
     <value>Module has more than one folder annotation.</value>
   </data>
-  <data name="NonReturningFunction" xml:space="preserve">
+  <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Non-returning function or property getter</value>
   </data>
-  <data name="ObsoleteCallStatement" xml:space="preserve">
+  <data name="ObsoleteCallStatementInspection" xml:space="preserve">
     <value>Use of obsolete 'Call' statement</value>
   </data>
-  <data name="ObsoleteCommentSyntax" xml:space="preserve">
+  <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
     <value>Use of obsolete 'Rem' statement</value>
   </data>
-  <data name="ObsoleteGlobal" xml:space="preserve">
+  <data name="ObsoleteGlobalInspection" xml:space="preserve">
     <value>Use of obsolete 'Global' access modifier</value>
   </data>
-  <data name="ObsoleteLetStatement" xml:space="preserve">
+  <data name="ObsoleteLetStatementInspection" xml:space="preserve">
     <value>Use of obsolete explicit 'Let' statement</value>
   </data>
-  <data name="ObsoleteTypeHint" xml:space="preserve">
+  <data name="ObsoleteTypeHintInspection" xml:space="preserve">
     <value>Obsolete Type hint usage</value>
   </data>
-  <data name="OptionBase" xml:space="preserve">
+  <data name="OptionBaseInspection" xml:space="preserve">
     <value>'Option Base 1' is specified</value>
   </data>
-  <data name="OptionExplicit" xml:space="preserve">
+  <data name="OptionExplicitInspection" xml:space="preserve">
     <value>'Option Explicit' is not specified</value>
   </data>
-  <data name="ParameterCanBeByVal" xml:space="preserve">
+  <data name="ParameterCanBeByValInspection" xml:space="preserve">
     <value>Parameter can be passed by value</value>
   </data>
-  <data name="ParameterNotUsed" xml:space="preserve">
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
     <value>Parameter is not referred to</value>
   </data>
-  <data name="ProcedureNotUsed" xml:space="preserve">
+  <data name="ProcedureNotUsedInspection" xml:space="preserve">
     <value>Procedure is not referred to</value>
   </data>
-  <data name="UnassignedVariableUsage" xml:space="preserve">
+  <data name="UnassignedVariableUsageInspection" xml:space="preserve">
     <value>Variable is used but not assigned</value>
   </data>
-  <data name="UntypedFunctionUsage" xml:space="preserve">
+  <data name="UntypedFunctionUsageInspection" xml:space="preserve">
     <value>Use of variant-returning string function</value>
   </data>
-  <data name="UseMeaningfulName" xml:space="preserve">
+  <data name="UseMeaningfulNameInspection" xml:space="preserve">
     <value>Use meaningful names</value>
   </data>
-  <data name="VariableNotAssigned" xml:space="preserve">
+  <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>Variable is not assigned</value>
   </data>
-  <data name="VariableNotUsed" xml:space="preserve">
+  <data name="VariableNotUsedInspection" xml:space="preserve">
     <value>Variable is not referred to</value>
   </data>
-  <data name="VariableTypeNotDeclared" xml:space="preserve">
+  <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
     <value>Implicitly 'Variant' variable</value>
   </data>
-  <data name="WriteOnlyProperty" xml:space="preserve">
+  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
     <value>Write-only property</value>
   </data>
-  <data name="ProcedureCanBeWrittenAsFunction" xml:space="preserve">
+  <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>Procedure can be written as a function</value>
   </data>
-  <data name="SelfAssignedDeclaration" xml:space="preserve">
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Object variable reference is auto-instantiated</value>
   </data>
-  <data name="FunctionReturnValueNotUsed" xml:space="preserve">
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
     <value>Function return value is never used</value>
   </data>
-  <data name="ObjectVariableNotSet" xml:space="preserve">
+  <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Object variable assignment requires 'Set' keyword</value>
   </data>
-  <data name="MissingAnnotationArgument" xml:space="preserve">
+  <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Missing annotation parameter</value>
   </data>
-  <data name="ModuleScopeDimKeyword" xml:space="preserve">
+  <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
     <value>Use of 'Dim' keyword at module level</value>
   </data>
-  <data name="UndeclaredVariable" xml:space="preserve">
+  <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Undeclared variable</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignment" xml:space="preserve">
+  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
     <value>Implicit default member assignment</value>
   </data>
-  <data name="HungarianNotation" xml:space="preserve">
+  <data name="HungarianNotationInspection" xml:space="preserve">
     <value>Variable uses Hungarian notation.</value>
   </data>
-  <data name="MemberNotOnInterface" xml:space="preserve">
+  <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>Member not found</value>
   </data>
-  <data name="HostSpecificExpression" xml:space="preserve">
+  <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Host-specific bracketed expression is only evaluated at runtime</value>
   </data>
-  <data name="ApplicationWorksheetFunction" xml:space="preserve">
+  <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Late bound WorksheetFunction call.</value>
   </data>
-  <data name="OptionBaseZero" xml:space="preserve">
+  <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>'Option Base 0' is redundant</value>
   </data>
-  <data name="IllegalAnnotation" xml:space="preserve">
+  <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Illegal annotation</value>
   </data>
-  <data name="MissingAnnotation" xml:space="preserve">
+  <data name="MissingAnnotationInspection" xml:space="preserve">
     <value>Missing annotation</value>
   </data>
-  <data name="MissingAttribute" xml:space="preserve">
+  <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Missing attribute</value>
   </data>
-  <data name="EmptyIfBlock" xml:space="preserve">
+  <data name="EmptyIfBlockInspection" xml:space="preserve">
     <value>Empty conditional branch</value>
   </data>
-  <data name="RedundantOption" xml:space="preserve">
+  <data name="RedundantOptionInspection" xml:space="preserve">
     <value>Redundant module option</value>
   </data>
-  <data name="RedundantByRefModifier" xml:space="preserve">
+  <data name="RedundantByRefModifierInspection" xml:space="preserve">
     <value>Redundant 'ByRef' modifier</value>
   </data>
-  <data name="LineLabelNotUsed" xml:space="preserve">
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
     <value>Line label is not used</value>
   </data>
-  <data name="EmptyElseBlock" xml:space="preserve">
+  <data name="EmptyElseBlockInspection" xml:space="preserve">
     <value>Empty 'Else' block</value>
   </data>
-  <data name="IntegerDataType" xml:space="preserve">
+  <data name="IntegerDataTypeInspection" xml:space="preserve">
     <value>Use of 16-bit integer type</value>
   </data>
-  <data name="StopKeyword" xml:space="preserve">
+  <data name="StopKeywordInspection" xml:space="preserve">
     <value>'Stop' keyword</value>
   </data>
-  <data name="EmptyCaseBlock" xml:space="preserve">
+  <data name="EmptyCaseBlockInspection" xml:space="preserve">
     <value>Empty 'Case' block</value>
   </data>
-  <data name="EmptyDoWhileBlock" xml:space="preserve">
+  <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
     <value>Empty 'Do...While' Loop</value>
   </data>
-  <data name="EmptyForEachBlock" xml:space="preserve">
+  <data name="EmptyForEachBlockInspection" xml:space="preserve">
     <value>Empty 'For Each...Next' Loop</value>
   </data>
-  <data name="EmptyForLoopBlock" xml:space="preserve">
+  <data name="EmptyForLoopBlockInspection" xml:space="preserve">
     <value>Empty 'For...Next' Loop</value>
   </data>
-  <data name="EmptyWhileWendBlock" xml:space="preserve">
+  <data name="EmptyWhileWendBlockInspection" xml:space="preserve">
     <value>Empty 'While...Wend' loop</value>
   </data>
-  <data name="ShadowedDeclaration" xml:space="preserve">
+  <data name="ShadowedDeclarationInspection" xml:space="preserve">
     <value>Shadowed declaration</value>
   </data>
-  <data name="BooleanAssignedInIfElse" xml:space="preserve">
+  <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
     <value>Boolean literal assignment in conditional</value>
   </data>
-  <data name="EmptyModule" xml:space="preserve">
+  <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Empty module</value>
   </data>
-  <data name="ObsoleteErrorSyntax" xml:space="preserve">
+  <data name="ObsoleteErrorSyntaxInspection" xml:space="preserve">
     <value>Use of obsolete 'Error' statement</value>
   </data>
-  <data name="UnreachableCase" xml:space="preserve">
+  <data name="UnreachableCaseInspection" xml:space="preserve">
     <value>Case Clause(s) cannot be reached</value>
   </data>
-  <data name="UnhandledOnErrorResumeNext" xml:space="preserve">
+  <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Unhandled 'On Error Resume Next'</value>
   </data>
-  <data name="DefTypeStatement" xml:space="preserve">
+  <data name="DefTypeStatementInspection" xml:space="preserve">
     <value>Usage of 'Def[Type]' statement</value>
   </data>
-  <data name="StepIsNotSpecified" xml:space="preserve">
+  <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
     <value>'For...Next' loop step is not specified</value>
   </data>
-  <data name="StepOneIsRedundant" xml:space="preserve">
+  <data name="StepOneIsRedundantInspection" xml:space="preserve">
     <value>'For...Next' loop step 1 is redundant</value>
   </data>
-  <data name="SheetAccessedUsingString" xml:space="preserve">
+  <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Statically accessible sheet accessed using string</value>
   </data>
 </root>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using Castle.Core.Internal;
 using NUnit.Framework;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
@@ -48,12 +49,17 @@ namespace RubberduckTests.Inspections
         public void InspectionNameStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
-                          .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
-                          .Where(i => string.IsNullOrWhiteSpace(InspectionNames.ResourceManager.GetString(i.Name)))
-                          .Select(i => i.Name)
-                          .ToList();
+                .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
+                .ToList();
+            var resources = inspections
+                .ToDictionary(i => i.Name, i => InspectionNames.ResourceManager.GetString(i.Name, CultureInfo.InvariantCulture))
+                .ToList();
+            var missingKeys = resources
+                .Where(r => r.Value.IsNullOrEmpty())
+                .Select(i => i.Key)
+                .ToList();
 
-            Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
+            Assert.IsFalse(missingKeys.Any(), string.Join(Environment.NewLine, inspections));
         }
 
         [Test]
@@ -62,7 +68,7 @@ namespace RubberduckTests.Inspections
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
-                          .Where(i => string.IsNullOrWhiteSpace(Meta.ResourceManager.GetString(i.Name)))
+                          .Where(i => string.IsNullOrWhiteSpace(Meta.ResourceManager.GetString(i.Name, CultureInfo.InvariantCulture)))
                           .Select(i => i.Name)
                           .ToList();
             

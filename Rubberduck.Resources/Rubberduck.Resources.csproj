@@ -267,7 +267,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="About\" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Ducky.ico" />
   </ItemGroup>
