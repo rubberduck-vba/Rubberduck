@@ -3,7 +3,6 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -28,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return setters.Select(setter =>
                 new DeclarationInspectionResult(this,
-                                                string.Format(InspectionsUI.WriteOnlyPropertyInspectionResultFormat, setter.IdentifierName),
+                                                string.Format(Resources.Inspections.InspectionResults.WriteOnlyPropertyInspection, setter.IdentifierName),
                                                 setter));
         }
     }

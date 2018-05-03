@@ -7,7 +7,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -21,8 +20,8 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new RedundantModuleOptionListener();
         }
 
-        public override string Meta => InspectionsUI.RedundantOptionInspectionMeta;
-        public override string Description => InspectionsUI.RedundantOptionInspectionName;
+        public override string Meta => Resources.Inspections.Meta.RedundantOptionInspection;
+        public override string Description => Resources.Inspections.InspectionNames.RedundantOption;
 
         public override IInspectionListener Listener { get; }
 
@@ -30,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
                                    .Select(context => new QualifiedContextInspectionResult(this,
-                                                                           string.Format(InspectionsUI.RedundantOptionInspectionResultFormat, context.Context.GetText()),
+                                                                           string.Format(Resources.Inspections.InspectionResults.RedundantOptionInspection, context.Context.GetText()),
                                                                            context));
         }
 

@@ -5,7 +5,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -40,11 +39,8 @@ namespace Rubberduck.Inspections.Concrete
                              select function)
                              .ToList();
 
-            return unassigned
-                .Select(issue =>
-                    new DeclarationInspectionResult(this,
-                                         string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, issue.IdentifierName),
-                                         issue));
+            return unassigned.Select(issue =>
+                new DeclarationInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.NonReturningFunctionInspection, issue.IdentifierName), issue));
         }
 
         private bool IsReturningUserDefinedType(Declaration member)

@@ -8,7 +8,7 @@
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             xmlns:resources1="clr-namespace:Rubberduck.Parsing.Inspections.Resources;assembly=Rubberduck.Parsing"
+             xmlns:inspections="clr-namespace:Rubberduck.Parsing.Inspections;assembly=Rubberduck.Parsing"
              mc:Ignorable="d" 
              d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -35,7 +35,7 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type Type="resources1:CodeInspectionSeverity"/>
+                <x:Type Type="inspections:CodeInspectionSeverity"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 

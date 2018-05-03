@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -40,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
                                         && !IsIgnoringInspectionResultFor(declaration, AnnotationName));
 
             return emptyModuleDeclarations.Select(declaration =>
-                new DeclarationInspectionResult(this, string.Format(InspectionsUI.EmptyModuleInspectionResultFormat, declaration.IdentifierName), declaration));
+                new DeclarationInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.EmptyModuleInspection, declaration.IdentifierName), declaration));
         }
     }
 

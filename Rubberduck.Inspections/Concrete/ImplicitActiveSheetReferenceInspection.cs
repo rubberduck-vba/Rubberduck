@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
@@ -39,10 +38,7 @@ namespace Rubberduck.Inspections.Concrete
             return members
                 .SelectMany(declaration => declaration.References)
                 .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName))
-                .Select(issue => new IdentifierReferenceInspectionResult(this,
-                                                      string.Format(InspectionsUI.ImplicitActiveSheetReferenceInspectionResultFormat, issue.Declaration.IdentifierName),
-                                                      State,
-                                                      issue))
+                .Select(issue => new IdentifierReferenceInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.ImplicitActiveSheetReferenceInspection, issue.Declaration.IdentifierName), State, issue))
                 .ToList();
         }
     }

@@ -4,8 +4,8 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Settings

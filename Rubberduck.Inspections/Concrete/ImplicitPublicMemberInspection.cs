@@ -3,7 +3,6 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -25,13 +24,10 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var issues = from item in UserDeclarations
-                         where ProcedureTypes.Contains(item.DeclarationType)
-                               && item.Accessibility == Accessibility.Implicit
-                         select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionsUI.ImplicitPublicMemberInspectionResultFormat, item.IdentifierName),
-                                                     item);
-            return issues;
+            return from item in UserDeclarations
+                   where ProcedureTypes.Contains(item.DeclarationType)
+                   && item.Accessibility == Accessibility.Implicit
+                   select new DeclarationInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.ImplicitPublicMemberInspection, item.IdentifierName), item);
         }
     }
 }

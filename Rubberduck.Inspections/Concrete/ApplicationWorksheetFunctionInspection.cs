@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -35,10 +34,7 @@ namespace Rubberduck.Inspections.Concrete
             return from usage in usages
                    from reference in usage.References.Where(use => !IsIgnoringInspectionResultFor(use, AnnotationName))
                    let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
-                   select new IdentifierReferenceInspectionResult(this,
-                                               string.Format(InspectionsUI.ApplicationWorksheetFunctionInspectionResultFormat, usage.IdentifierName),
-                                               State,
-                                               reference);
+                   select new IdentifierReferenceInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.ApplicationWorksheetFunctionInspection, usage.IdentifierName), State, reference);
         }
     }
 }

@@ -150,7 +150,7 @@
   <data name="PassParameterByValueQuickFix" xml:space="preserve">
     <value>Passer le paramètre par valeur</value>
   </data>
-  <data name="QuickFixUseTypedFunction_" xml:space="preserve">
+  <data name="UseTypedFunctionQuickFix" xml:space="preserve">
     <value>Changer '{0}' pour '{1}'</value>
   </data>
   <data name="RemoveCommentQuickFix" xml:space="preserve">

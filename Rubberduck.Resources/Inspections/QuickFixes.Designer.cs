@@ -79,7 +79,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Application.WorksheetFunction explicitly..
+        ///   Looks up a localized string similar to Use early-bound Application.WorksheetFunction method..
         /// </summary>
         public static string ApplicationWorksheetFunctionQuickFix {
             get {
@@ -124,7 +124,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace empty string with the &apos;vbNullString&apos; constant.
+        ///   Looks up a localized string similar to Replace empty string literal with the &apos;vbNullString&apos; constant.
         /// </summary>
         public static string EmptyStringLiteralInspectionQuickFix {
             get {
@@ -237,15 +237,6 @@ namespace Rubberduck.Resources.Inspections {
         public static string ProcedureShouldBeFunctionInspectionQuickFix {
             get {
                 return ResourceManager.GetString("ProcedureShouldBeFunctionInspectionQuickFix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change &apos;{0}&apos; to &apos;{1}&apos;.
-        /// </summary>
-        public static string QuickFixUseTypedFunction_ {
-            get {
-                return ResourceManager.GetString("QuickFixUseTypedFunction_", resourceCulture);
             }
         }
         
@@ -444,6 +435,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UnhandledOnErrorResumeNextInspectionQuickFix {
             get {
                 return ResourceManager.GetString("UnhandledOnErrorResumeNextInspectionQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change &apos;{0}&apos; to &apos;{1}&apos;.
+        /// </summary>
+        public static string UseTypedFunctionQuickFix {
+            get {
+                return ResourceManager.GetString("UseTypedFunctionQuickFix", resourceCulture);
             }
         }
         

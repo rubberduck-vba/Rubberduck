@@ -1,7 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Xml.Serialization;
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using Rubberduck.Resources;
 
 namespace Rubberduck.Settings
@@ -46,6 +46,7 @@ namespace Rubberduck.Settings
                    hotkey.IsEnabled == IsEnabled;
         }
 
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")] /* setters for serialization */
         public override int GetHashCode()
         {
             unchecked

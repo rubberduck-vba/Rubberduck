@@ -4,7 +4,6 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -60,7 +59,7 @@ namespace Rubberduck.Inspections.Concrete
             var items = declarations
                 .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules)).ToList();
             var issues = items.Select(issue => new DeclarationInspectionResult(this,
-                                                                    string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
+                                                                    string.Format(Resources.Inspections.InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
                                                                     issue));
 
             issues = DocumentEventHandlerPrefixes

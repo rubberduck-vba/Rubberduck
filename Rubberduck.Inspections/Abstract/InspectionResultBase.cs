@@ -3,7 +3,6 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
@@ -74,7 +73,7 @@ namespace Rubberduck.Inspections.Abstract
             }
 
             return string.Format(
-                InspectionsUI.QualifiedSelectionInspection,
+                Resources.Inspections.InspectionsUI.QualifiedSelectionInspection,
                 Inspection.Severity,
                 Description,
                 $"({documentName})",

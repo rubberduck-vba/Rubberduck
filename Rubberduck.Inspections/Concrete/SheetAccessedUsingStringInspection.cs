@@ -5,7 +5,6 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -51,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
                     .Where(reference =>
                         !IsIgnoringInspectionResultFor(reference, AnnotationName) && IsAccessedWithStringLiteralParameter(reference))
                     .Select(reference => new IdentifierReferenceInspectionResult(this,
-                        InspectionsUI.SheetAccessedUsingStringInspectionResultFormat, State, reference)));
+                        Resources.Inspections.InspectionResults.SheetAccessedUsingStringInspection, State, reference)));
 
             var issues = new List<IdentifierReferenceInspectionResult>();
 
@@ -71,8 +70,8 @@ namespace Rubberduck.Inspections.Concrete
         private static bool IsAccessedWithStringLiteralParameter(IdentifierReference reference)
         {
             // Second case accounts for global modules
-            var indexExprContext = reference.Context.Parent.Parent as VBAParser.IndexExprContext ??
-                                   reference.Context.Parent as VBAParser.IndexExprContext;
+            var indexExprContext = reference.Context.Parent.Parent as VBAParser.IndexExprContext 
+                                ?? reference.Context.Parent as VBAParser.IndexExprContext;
 
             var literalExprContext = indexExprContext
                 ?.argumentList()
@@ -86,33 +85,27 @@ namespace Rubberduck.Inspections.Concrete
         private IVBComponent GetVBComponentMatchingSheetName(IdentifierReferenceInspectionResult reference)
         {
             // Second case accounts for global modules
-            var indexExprContext = reference.Context.Parent.Parent as VBAParser.IndexExprContext ??
-                                   reference.Context.Parent as VBAParser.IndexExprContext;
-
-            if (indexExprContext == null)
-            {
-                return null;
-            }
+            var indexExprContext = reference.Context.Parent.Parent as VBAParser.IndexExprContext 
+                                ?? reference.Context.Parent as VBAParser.IndexExprContext;
+            if (indexExprContext == null) { return null; }
 
             var sheetArgumentContext = indexExprContext.argumentList().argument(0);
             var sheetName = FormatSheetName(sheetArgumentContext.GetText());
             var project = State.Projects.First(p => p.ProjectId == reference.QualifiedName.ProjectId);
 
             return project.VBComponents.FirstOrDefault(c =>
-                c.Type == ComponentType.Document &&
-                (string) c.Properties.First(property => property.Name == "Name").Value == sheetName);
+                c.Type == ComponentType.Document 
+                && (string)c.Properties.First(property => property.Name == "Name").Value == sheetName);
         }
 
         private static string FormatSheetName(string sheetName)
         {
-            var formattedName = sheetName.First() == '"' ? sheetName.Skip(1) : sheetName;
-
+            var formattedName = sheetName.First() == '"' ? sheetName.Remove(0, 1) : sheetName;
             if (sheetName.Last() == '"')
             {
-                formattedName = formattedName.Take(formattedName.Count() - 1);
+                formattedName = formattedName.Substring(0, formattedName.Length - 1);
             }
-
-            return string.Concat(formattedName);
+            return formattedName;
         }
     }
 }

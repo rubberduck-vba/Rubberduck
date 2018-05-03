@@ -12,7 +12,6 @@ using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.Settings;

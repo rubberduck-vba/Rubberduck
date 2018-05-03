@@ -3,7 +3,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -29,7 +28,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertAfter(identifierNode.Stop.TokenIndex, " As Variant");
         }
 
-        public override string Description(IInspectionResult result) => InspectionsUI.DeclareAsExplicitVariantQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.DeclareAsExplicitVariantQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
