@@ -157,6 +157,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can also find us at..
+        /// </summary>
+        public static string AboutWindow_FindRubberduckAt {
+            get {
+                return ResourceManager.GetString("AboutWindow_FindRubberduckAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found an issue?.
+        /// </summary>
+        public static string AboutWindow_FoundAnIssue {
+            get {
+                return ResourceManager.GetString("AboutWindow_FoundAnIssue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All contributors to our GitHub repository
         ///All our stargazers, likers &amp; followers, for the warm fuzzies
         ///...and anyone reading this!.
@@ -164,6 +182,15 @@ namespace Rubberduck.Resources {
         public static string AboutWindow_GeneralThanks {
             get {
                 return ResourceManager.GetString("AboutWindow_GeneralThanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help us improve Rubberduck!.
+        /// </summary>
+        public static string AboutWindow_HelpImproveRubberduck {
+            get {
+                return ResourceManager.GetString("AboutWindow_HelpImproveRubberduck", resourceCulture);
             }
         }
         
@@ -200,6 +227,15 @@ namespace Rubberduck.Resources {
         public static string AboutWindow_OperatingSystem {
             get {
                 return ResourceManager.GetString("AboutWindow_OperatingSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report an issue.
+        /// </summary>
+        public static string AboutWindow_ReportAnIssue {
+            get {
+                return ResourceManager.GetString("AboutWindow_ReportAnIssue", resourceCulture);
             }
         }
         
