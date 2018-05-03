@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Rubberduck.Resources.Registration;
 using Rubberduck.UnitTesting.Fakes;
 
 namespace Rubberduck.UnitTesting

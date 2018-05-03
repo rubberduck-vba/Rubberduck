@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
-using Rubberduck.Resources.Registration;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

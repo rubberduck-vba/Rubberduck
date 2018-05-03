@@ -52,6 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Atom.cs" />
+    <Compile Include="i18n\AssistantResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AssistantResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="IDescribable.cs" />
     <Compile Include="IRegularExpression.cs" />
     <Compile Include="Pattern.cs" />
@@ -63,16 +68,17 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="i18n\AssistantResources.de.resx" />
+    <EmbeddedResource Include="i18n\AssistantResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AssistantResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

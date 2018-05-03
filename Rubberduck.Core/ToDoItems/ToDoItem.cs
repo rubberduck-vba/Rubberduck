@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;

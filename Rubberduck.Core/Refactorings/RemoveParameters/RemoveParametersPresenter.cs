@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.RemoveParameters;

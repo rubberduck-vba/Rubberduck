@@ -4,13 +4,13 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Threading;
 using NLog;
-using Rubberduck.Parsing.Inspections;
 
 namespace Rubberduck.Inspections.Abstract
 {
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
         /// </summary>
-        public virtual string Description => Resources.Inspections.InspectionNames.ResourceManager.GetString($"{Name}", CultureInfo.CurrentUICulture);
+        public virtual string Description => InspectionsUI.ResourceManager.GetString($"{Name}Name", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.
@@ -49,13 +49,13 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Meta-information about why an inspection exists.
         /// </summary>
-        public virtual string Meta => Resources.Inspections.InspectionInfo.ResourceManager.GetString($"{Name}", CultureInfo.CurrentUICulture);
+        public virtual string Meta => InspectionsUI.ResourceManager.GetString($"{Name}Meta", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a localized string representing the type of inspection.
         /// <see cref="InspectionType"/>
         /// </summary>
-        public virtual string InspectionTypeName => Resources.Inspections.InspectionsUI.ResourceManager.GetString($"CodeInspectionSettings_{InspectionType}", CultureInfo.CurrentUICulture);
+        public virtual string InspectionTypeName => InspectionsUI.ResourceManager.GetString($"CodeInspectionSettings_{InspectionType.ToString()}", CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// Gets a string representing the text that must be present in an 

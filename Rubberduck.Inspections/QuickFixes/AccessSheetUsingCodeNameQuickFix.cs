@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -76,7 +77,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result)
         {
-            return Resources.Inspections.QuickFixes.AccessSheetUsingCodeNameQuickFix;
+            return InspectionsUI.AccessSheetUsingCodeNameQuickFix;
         }
 
         public override bool CanFixInProcedure => true;

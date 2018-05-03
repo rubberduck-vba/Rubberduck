@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -15,8 +16,8 @@ namespace Rubberduck.UI.Command.MenuItems
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.IntroduceParameter;
         public override bool BeginGroup => true;
 
-        public override Image Image => Resources.Resources.PromoteLocal;
-        public override Image Mask => Resources.Resources.PromoteLocalMask;
+        public override Image Image => Resources.PromoteLocal;
+        public override Image Mask => Resources.PromoteLocalMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

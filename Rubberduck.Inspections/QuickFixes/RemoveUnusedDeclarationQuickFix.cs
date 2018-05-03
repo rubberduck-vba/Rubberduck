@@ -1,6 +1,7 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -24,7 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(result.Target);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedDeclarationQuickFix;
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveUnusedDeclarationQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

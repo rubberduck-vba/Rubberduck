@@ -17,12 +17,12 @@
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <BitmapImage x:Key="RefreshImage" UriSource="../Rubberduck.Resources/FugueIcons/arrow-circle-double.png" />
-            <BitmapImage x:Key="CollaseNodesImage" UriSource="../Rubberduck.Resources/FugueIcons/folder.png" />
-            <BitmapImage x:Key="ExpandNodesImage" UriSource="../Rubberduck.Resources/FugueIcons/folder-open.png" />
-            <BitmapImage x:Key="UndoImage" UriSource="../Rubberduck.Resources/FugueIcons/arrow-circle-left.png" />
-            <BitmapImage x:Key="PrintImage" UriSource="../Rubberduck.Resources/FugueIcons/printer.png" />
-            <BitmapImage x:Key="SearchImage" UriSource="../Rubberduck.Resources/FugueIcons/magnifier-medium.png" />
+            <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
+            <BitmapImage x:Key="CollaseNodesImage" UriSource="../../Resources/folder.png" />
+            <BitmapImage x:Key="ExpandNodesImage" UriSource="../../Resources/folder-open.png" />
+            <BitmapImage x:Key="UndoImage" UriSource="../../Resources/arrow-circle-left.png" />
+            <BitmapImage x:Key="PrintImage" UriSource="../../Resources/printer.png" />
+            <BitmapImage x:Key="SearchImage" UriSource="../../Resources/magnifier-medium.png" />
 
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />

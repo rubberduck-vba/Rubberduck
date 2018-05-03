@@ -5,8 +5,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
 using System.IO;
-using Rubberduck.Resources;
-using Rubberduck.Resources.About;
 
 namespace Rubberduck.UI.About
 {
@@ -19,17 +17,17 @@ namespace Rubberduck.UI.About
             _version = version;
         }
 
-        public string Version => string.Format(RubberduckUI.Rubberduck_BuildVersion, _version.CurrentVersion);
+        public string Version => string.Format(RubberduckUI.Rubberduck_AboutBuild, _version.CurrentVersion);
 
         public string OperatingSystem => 
-            string.Format(AboutUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");
+            string.Format(RubberduckUI.AboutWindow_OperatingSystem, Environment.OSVersion.VersionString, Environment.Is64BitOperatingSystem ? "x64" : "x86");
 
         public string HostProduct =>
-            string.Format(AboutUI.AboutWindow_HostProduct, Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86");
+            string.Format(RubberduckUI.AboutWindow_HostProduct, Application.ProductName, Environment.Is64BitProcess ? "x64" : "x86");
 
-        public string HostVersion => string.Format(AboutUI.AboutWindow_HostVersion, Application.ProductVersion);
+        public string HostVersion => string.Format(RubberduckUI.AboutWindow_HostVersion, Application.ProductVersion);
 
-        public string HostExecutable => string.Format(AboutUI.AboutWindow_HostExecutable,
+        public string HostExecutable => string.Format(RubberduckUI.AboutWindow_HostExecutable,
             Path.GetFileName(Application.ExecutablePath).ToUpper()); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
 
         private CommandBase _uriCommand;
@@ -48,6 +46,7 @@ namespace Rubberduck.UI.About
             }
         }
 
-        public string AboutCopyright => string.Format(AboutUI.AboutWindow_Copyright, DateTime.Now.Year);
+        public string AboutCopyright =>
+            string.Format(RubberduckUI.AboutWindow_Copyright, DateTime.Now.Year);
     }
 }

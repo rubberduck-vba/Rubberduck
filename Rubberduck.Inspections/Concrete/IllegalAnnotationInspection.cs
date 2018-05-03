@@ -9,6 +9,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -29,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context => 
                 new QualifiedContextInspectionResult(this, 
-                string.Format(Resources.Inspections.InspectionResults.IllegalAnnotationInspection, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
+                string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
         }
 
         public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener
@@ -44,8 +45,14 @@ namespace Rubberduck.Inspections.Concrete
             private Lazy<Declaration> _module;
             private Lazy<IDictionary<string, Declaration>> _members;
 
-            public IllegalAttributeAnnotationsListener(RubberduckParserState state) => _state = state;
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
+            public IllegalAttributeAnnotationsListener(RubberduckParserState state)
+            {
+                _state = state;
+            }
+
+            private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
+                new List<QualifiedContext<ParserRuleContext>>();
+
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
             public QualifiedModuleName CurrentModuleName

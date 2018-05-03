@@ -4,7 +4,6 @@ using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;

@@ -64,7 +64,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.BackColor = System.Drawing.Color.Black;
-            this.BackgroundImage = global::Rubberduck.Resources.Resources.RD2018_Splash;
+            this.BackgroundImage = global::Rubberduck.Properties.Resources.RD2018_Splash;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(450, 240);
             this.ControlBox = false;

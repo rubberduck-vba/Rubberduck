@@ -207,10 +207,6 @@
       <Name>Rubberduck.Parsing</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
       <Name>Rubberduck.SettingsProvider</Name>

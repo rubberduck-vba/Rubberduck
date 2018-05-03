@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Parsing.Inspections.Abstract
+﻿using Rubberduck.Parsing.Inspections.Resources;
+
+namespace Rubberduck.Parsing.Inspections.Abstract
 {
     /// <summary>
     /// An interface that abstracts the data structure for a code inspection

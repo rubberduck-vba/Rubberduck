@@ -1,5 +1,6 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -16,8 +17,8 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override bool BeginGroup => true;
 
-        public override Image Image => Resources.Resources.ExtractMethod;
-        public override Image Mask => Resources.Resources.ExtractMethodMask;
+        public override Image Image => Resources.ExtractMethod;
+        public override Image Mask => Resources.ExtractMethodMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

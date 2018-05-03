@@ -163,6 +163,11 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
+    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionsUI.resx</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\PropertyBag.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprocessorExceptionErrorListener.cs" />
@@ -177,8 +182,18 @@
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
-    <Compile Include="Inspections\CodeInspectionSeverity.cs" />
-    <Compile Include="Inspections\CodeInspectionType.cs" />
+    <Compile Include="Inspections\Resources\CodeInspectionSeverity.cs" />
+    <Compile Include="Inspections\Resources\CodeInspectionType.cs" />
+    <Compile Include="Inspections\Resources\InspectionsUI.de.Designer.cs">
+      <DependentUpon>InspectionsUI.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Inspections\Resources\InspectionsUI.fr.Designer.cs">
+      <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Rewriter\MemberAttributesRewriter.cs" />
     <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
@@ -221,6 +236,11 @@
     <Compile Include="Binding\Bindings\SimpleNameTypeBinding.cs" />
     <Compile Include="ComHelper.cs" />
     <Compile Include="IParseCoordinator.cs" />
+    <Compile Include="ParsingText.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ParsingText.resx</DependentUpon>
+    </Compile>
     <Compile Include="PreProcessing\AbsLibraryFunctionExpression.cs" />
     <Compile Include="PreProcessing\BinaryMinusExpression.cs" />
     <Compile Include="PreProcessing\BinaryPlusExpression.cs" />
@@ -411,6 +431,29 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.de.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.fr.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParsingText.de.resx" />
+    <EmbeddedResource Include="ParsingText.fr.resx" />
+    <EmbeddedResource Include="ParsingText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ParsingText.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.xsd">

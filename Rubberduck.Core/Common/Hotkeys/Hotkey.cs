@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.Common.WinAPI;
 using NLog;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
 

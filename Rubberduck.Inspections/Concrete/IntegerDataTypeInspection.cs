@@ -6,10 +6,10 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.UI;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
                     (declaration.DeclarationType != DeclarationType.Parameter || IncludeParameterDeclaration(declaration, excludeParameterMembers)))
                 .Select(issue =>
                     new DeclarationInspectionResult(this,
-                        string.Format(InspectionResults.IntegerDataTypeInspection,
+                        string.Format(InspectionsUI.IntegerDataTypeInspectionResultFormat,
                             RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture), issue.IdentifierName),
                         issue));
 

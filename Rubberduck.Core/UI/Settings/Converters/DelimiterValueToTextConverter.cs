@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Settings.Converters
 {

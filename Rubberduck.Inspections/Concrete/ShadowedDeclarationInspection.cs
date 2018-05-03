@@ -4,10 +4,10 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.UI;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete
                     if (shadowedDeclaration != null)
                     {
                         issues.Add(new DeclarationInspectionResult(this,
-                            string.Format(InspectionResults.ShadowedDeclarationInspection,
+                            string.Format(InspectionsUI.ShadowedDeclarationInspectionResultFormat,
                                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + userDeclaration.DeclarationType, CultureInfo.CurrentUICulture),
                                 userDeclaration.QualifiedName,
                                 RubberduckUI.ResourceManager.GetString("DeclarationType_" + shadowedDeclaration.DeclarationType, CultureInfo.CurrentUICulture),

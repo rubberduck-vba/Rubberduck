@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using resx = Rubberduck.Resources.CodeExplorer;
+using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {

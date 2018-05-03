@@ -14,7 +14,6 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.ToDoItems
 {

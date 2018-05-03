@@ -3,6 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -16,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)
-                .Select(item => new DeclarationInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.HostSpecificExpressionInspection, item.IdentifierName), item));
+                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionsUI.HostSpecificExpressionInspectionResultFormat, item.IdentifierName), item));
         }
     }
 }

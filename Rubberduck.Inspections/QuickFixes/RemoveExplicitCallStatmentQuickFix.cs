@@ -2,6 +2,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -32,7 +33,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveObsoleteStatementQuickFix;
+        public override string Description(IInspectionResult result) => InspectionsUI.RemoveObsoleteStatementQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

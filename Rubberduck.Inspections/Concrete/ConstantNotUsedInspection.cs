@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -26,8 +27,9 @@ namespace Rubberduck.Inspections.Concrete
 
             return results.Select(issue => 
                 new DeclarationInspectionResult(this,
-                    string.Format(Resources.Inspections.InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                    issue, new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier())));
+                                     string.Format(InspectionsUI.IdentifierNotUsedInspectionResultFormat, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
+                                     issue,
+                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier())));
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 
 namespace Rubberduck.UnitTesting

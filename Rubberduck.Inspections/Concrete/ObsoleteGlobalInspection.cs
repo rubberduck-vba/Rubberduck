@@ -4,6 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -16,9 +17,13 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return from item in UserDeclarations
-                   where item.Accessibility == Accessibility.Global && item.Context != null
-                   select new DeclarationInspectionResult(this, string.Format(Resources.Inspections.InspectionResults.ObsoleteGlobalInspection, item.DeclarationType.ToLocalizedString(), item.IdentifierName), item);
+            var issues = from item in UserDeclarations
+                         where item.Accessibility == Accessibility.Global && item.Context != null
+                         select new DeclarationInspectionResult(this,
+                                                     string.Format(InspectionsUI.ObsoleteGlobalInspectionResultFormat, item.DeclarationType.ToLocalizedString(), item.IdentifierName),
+                                                     item);
+
+            return issues;
         }
     }
 }

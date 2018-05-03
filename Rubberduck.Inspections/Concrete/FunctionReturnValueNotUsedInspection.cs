@@ -8,6 +8,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -62,7 +63,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(function =>
                         new DeclarationInspectionResult(
                             this,
-                            string.Format(Resources.Inspections.InspectionResults.FunctionReturnValueNotUsedInspection, function.IdentifierName),
+                            string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, function.IdentifierName),
                             function));
             return nonInterfaceIssues;
         }
@@ -136,12 +137,14 @@ namespace Rubberduck.Inspections.Concrete
         private bool IsLet(IdentifierReference usage)
         {
             var letStmt = usage.Context.GetAncestor<VBAParser.LetStmtContext>();
+
             return letStmt != null && letStmt == usage.Context;
         }
 
         private bool IsSet(IdentifierReference usage)
         {
             var setStmt = usage.Context.GetAncestor<VBAParser.SetStmtContext>();
+
             return setStmt != null && setStmt == usage.Context;
         }
 
@@ -150,8 +153,9 @@ namespace Rubberduck.Inspections.Concrete
             dynamic properties = new PropertyBag();
             properties.DisableFixes = nameof(QuickFixes.ConvertToProcedureQuickFix);
 
-            return new DeclarationInspectionResult(inspection, 
-                string.Format(Resources.Inspections.InspectionResults.FunctionReturnValueNotUsedInspection, interfaceMember.IdentifierName), 
+            return new DeclarationInspectionResult(inspection,
+                string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat,
+                    interfaceMember.IdentifierName),
                 interfaceMember, properties: properties);
         }
     }

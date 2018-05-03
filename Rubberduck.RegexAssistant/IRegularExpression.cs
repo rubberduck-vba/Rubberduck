@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Rubberduck.RegexAssistant.i18n;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Rubberduck.Resources.RegexAssistant;
 
 namespace Rubberduck.RegexAssistant
 {
@@ -18,7 +18,7 @@ namespace Rubberduck.RegexAssistant
             Subexpressions = subexpressions ?? throw new ArgumentNullException();
         }
 
-        public string Description => RegexAssistantUI.ExpressionDescription_ConcatenatedExpression;
+        public string Description => AssistantResources.ExpressionDescription_ConcatenatedExpression;
 
         public IList<IRegularExpression> Subexpressions { get; }
     }
@@ -30,7 +30,7 @@ namespace Rubberduck.RegexAssistant
             Subexpressions = subexpressions ?? throw new ArgumentNullException();
         }
 
-        public string Description => string.Format(RegexAssistantUI.ExpressionDescription_AlternativesExpression, Subexpressions.Count);
+        public string Description => string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, Subexpressions.Count);
 
         public IList<IRegularExpression> Subexpressions { get; }
     }
@@ -70,7 +70,7 @@ namespace Rubberduck.RegexAssistant
             _errorToken = errorToken ?? throw new ArgumentNullException();
         }
 
-        public string Description => string.Format(RegexAssistantUI.ExpressionDescription_ErrorExpression, _errorToken);
+        public string Description => string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
 
         public IList<IRegularExpression> Subexpressions => new List<IRegularExpression>();
     }

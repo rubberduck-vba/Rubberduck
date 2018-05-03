@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -24,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
-                .Select(context => new QualifiedContextInspectionResult(this, Resources.Inspections.InspectionResults.ObsoleteCommentSyntaxInspection, context));
+                .Select(context => new QualifiedContextInspectionResult(this, InspectionsUI.ObsoleteCommentSyntaxInspectionResultFormat, context));
         }
 
         public class ObsoleteCommentSyntaxListener : VBAParserBaseListener, IInspectionListener
@@ -33,7 +34,11 @@ namespace Rubberduck.Inspections.Concrete
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
             public QualifiedModuleName CurrentModuleName { get; set; }
-            public void ClearContexts() => _contexts.Clear();
+
+            public void ClearContexts()
+            {
+                _contexts.Clear();
+            }
 
             public override void ExitRemComment(VBAParser.RemCommentContext context)
             {

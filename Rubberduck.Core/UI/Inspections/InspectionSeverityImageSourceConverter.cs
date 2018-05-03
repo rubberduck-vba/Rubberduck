@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -16,10 +16,10 @@ namespace Rubberduck.UI.Inspections
         private static readonly IDictionary<CodeInspectionSeverity,ImageSource> Icons = 
             new Dictionary<CodeInspectionSeverity, ImageSource>
             {
-                { CodeInspectionSeverity.Hint, ToImageSource(Resources.Resources.information_white) },
-                { CodeInspectionSeverity.Suggestion, ToImageSource(Resources.Resources.information) },
-                { CodeInspectionSeverity.Warning, ToImageSource(Resources.Resources.exclamation) },
-                { CodeInspectionSeverity.Error, ToImageSource(Resources.Resources.cross_circle) },
+                { CodeInspectionSeverity.Hint, ToImageSource(Properties.Resources.information_white) },
+                { CodeInspectionSeverity.Suggestion, ToImageSource(Properties.Resources.information) },
+                { CodeInspectionSeverity.Warning, ToImageSource(Properties.Resources.exclamation) },
+                { CodeInspectionSeverity.Error, ToImageSource(Properties.Resources.cross_circle) },
             };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
