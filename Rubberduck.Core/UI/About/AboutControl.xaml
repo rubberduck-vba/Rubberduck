@@ -95,7 +95,7 @@
                                 Orientation="Horizontal">
                         <!-- Circle logos created with Ai->XAML Export Plug-In Version 0.2 (PC/64) -->
                         <!-- By Mike Swanson (http://blog.mikeswanson.com/)           -->
-                        <TextBlock Margin="10,5" TextAlignment="Center" HorizontalAlignment="Center" Width="25" Height="25">
+                        <TextBlock Margin="10,5" TextAlignment="Center" HorizontalAlignment="Center">
                                 <Hyperlink Name="GitHubUrl"
                                            NavigateUri="https://github.com/rubberduck-vba/Rubberduck"
                                            Command="{Binding UriCommand}"
