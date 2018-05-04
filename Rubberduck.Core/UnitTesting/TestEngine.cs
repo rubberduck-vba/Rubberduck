@@ -102,59 +102,92 @@ namespace Rubberduck.UnitTesting
                     return;
                 }
 
-                var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
-                foreach (var module in modules)
+                try
                 {
-                    var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
-                    var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
-
-                    var capturedModule = module;
-                    var moduleTestMethods = testMethods
-                        .Where(test =>
-                            test.Declaration.QualifiedName.QualifiedModuleName.ProjectId == capturedModule.Key.ProjectId
-                            && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName ==
-                            capturedModule.Key.ComponentName);
-
-                    var fakes = _fakesFactory.Create();
-                    RunInternal(module.Key.FindModuleInitializeMethods(_state));
-                    foreach (var test in moduleTestMethods)
+                    var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
+                    foreach (var module in modules)
                     {
-                        // no need to run setup/teardown for ignored tests
-                        if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
-                        {
-                            test.UpdateResult(TestOutcome.Ignored);
-                            OnTestCompleted();
-                            continue;
-                        }
+                        var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
+                        var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
 
-                        var stopwatch = new Stopwatch();
-                        stopwatch.Start();
+                        var capturedModule = module;
+                        var moduleTestMethods = testMethods
+                            .Where(test =>
+                                test.Declaration.QualifiedName.QualifiedModuleName.ProjectId ==
+                                capturedModule.Key.ProjectId
+                                && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName ==
+                                capturedModule.Key.ComponentName);
 
+                        var fakes = _fakesFactory.Create();
+                        var initializeMethods = module.Key.FindModuleInitializeMethods(_state);
                         try
                         {
-                            fakes.StartTest();
-                            RunInternal(testInitialize);
-                            test.Run();
-                            RunInternal(testCleanup);
+                            RunInternal(initializeMethods);
                         }
                         catch (COMException ex)
                         {
-                            Logger.Error(ex, "Unexpected COM exception while running tests.",
-                                test.Declaration?.QualifiedName);
-                            test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
+                            Logger.Error(ex,
+                                "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.",
+                                module.Key.Name);
+                            foreach (var method in moduleTestMethods)
+                            {
+                                method.UpdateResult(TestOutcome.Unknown, RubberduckUI.Assert_ComException);
+                            }
+                            continue;
                         }
-                        finally
+                        foreach (var test in moduleTestMethods)
                         {
-                            fakes.StopTest();
+                            // no need to run setup/teardown for ignored tests
+                            if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
+                            {
+                                test.UpdateResult(TestOutcome.Ignored);
+                                OnTestCompleted();
+                                continue;
+                            }
+
+                            var stopwatch = new Stopwatch();
+                            stopwatch.Start();
+
+                            try
+                            {
+                                fakes.StartTest();
+                                RunInternal(testInitialize);
+                                test.Run();
+                                RunInternal(testCleanup);
+                            }
+                            catch (COMException ex)
+                            {
+                                Logger.Error(ex, "Unexpected COM exception while running tests.");
+                                test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
+                            }
+                            finally
+                            {
+                                fakes.StopTest();
+                            }
+
+                            stopwatch.Stop();
+                            test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
+
+                            OnTestCompleted();
+                            Model.AddExecutedTest(test);
                         }
-
-                        stopwatch.Stop();
-                        test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
-
-                        OnTestCompleted();
-                        Model.AddExecutedTest(test);
+                        var cleanupMethods = module.Key.FindModuleCleanupMethods(_state);
+                        try
+                        {
+                            RunInternal(cleanupMethods);
+                        }
+                        catch (COMException ex)
+                        {
+                            Logger.Error(ex,
+                                "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
+                                module.Key.Name);
+                            break;
+                        }
                     }
-                    RunInternal(module.Key.FindModuleCleanupMethods(_state));
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
                 }
             });
         }
