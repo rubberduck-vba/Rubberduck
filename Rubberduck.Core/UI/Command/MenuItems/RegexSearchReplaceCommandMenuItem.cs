@@ -4,7 +4,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 namespace Rubberduck.UI.Command.MenuItems
 {
 #if !DEBUG
-    [Experimental]
+    [Disabled]
 #endif
     public class RegexSearchReplaceCommandMenuItem : CommandMenuItemBase
     {

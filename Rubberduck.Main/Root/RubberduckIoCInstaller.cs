@@ -168,7 +168,7 @@ namespace Rubberduck.Root
             {
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
-                    .Where(type => type.Namespace == typeof(Configuration).Namespace && type.NotDisabledExperimental(_initialSettings))
+                    .Where(type => type.Namespace == typeof(Configuration).Namespace && type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.AllInterfaces()
                     .LifestyleSingleton());
 
@@ -208,7 +208,7 @@ namespace Rubberduck.Root
                             && !type.Name.EndsWith("ConfigProvider")
                             && !type.Name.EndsWith("FakesProvider")
                             && !type.GetInterfaces().Contains(typeof(IInspection))
-                            && type.NotDisabledExperimental(_initialSettings))
+                            && type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.DefaultInterfaces()
                     .LifestyleTransient()
                 );
@@ -224,7 +224,7 @@ namespace Rubberduck.Root
                     .Where(type => type.IsInterface 
                                    && type.Name.EndsWith("Factory") 
                                    && !type.Name.Equals("IFakesFactory")
-                                   && type.NotDisabledExperimental(_initialSettings))
+                                   && type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Self()
                     .Configure(c => c.AsFactory())
                     .LifestyleSingleton());
@@ -245,7 +245,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .BasedOn<IQuickFix>()
-                    .If(type => type.NotDisabledExperimental(_initialSettings))
+                    .If(type => type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Base() 
                     .LifestyleSingleton());
             }
@@ -258,7 +258,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .BasedOn<IInspection>()
-                    .If(type => type.NotDisabledExperimental(_initialSettings))
+                    .If(type => type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Base()
                     .LifestyleTransient());
             }
@@ -271,7 +271,7 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .BasedOn<IParseTreeInspection>()
-                    .If(type => type.NotDisabledExperimental(_initialSettings))
+                    .If(type => type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Select(new[] { typeof(IInspection) })
                     .LifestyleTransient());
             }
@@ -288,7 +288,7 @@ namespace Rubberduck.Root
 
         private void RegisterMenu<TMenu>(IWindsorContainer container, ICommandBarControls controls, int beforeIndex, Type[] menuItemTypes) where TMenu : IParentMenuItem
         {
-            var nonExperimentalMenuItems = menuItemTypes.Where(type => type.NotDisabledExperimental(_initialSettings)).ToArray();
+            var nonExperimentalMenuItems = menuItemTypes.Where(type => type.NotDisabledOrExperimental(_initialSettings)).ToArray();
             container.Register(Component.For<IParentMenuItem>()
                 .ImplementedBy<TMenu>()
                 .LifestyleTransient()
@@ -445,7 +445,7 @@ namespace Rubberduck.Root
 
         private void RegisterParentMenu<TParentMenu>(IWindsorContainer container, Type[] menuItemTypes) where TParentMenu : IParentMenuItem
         {
-            var nonExperimentalMenuItems = menuItemTypes.Where(type => type.NotDisabledExperimental(_initialSettings)).ToArray();
+            var nonExperimentalMenuItems = menuItemTypes.Where(type => type.NotDisabledOrExperimental(_initialSettings)).ToArray();
             container.Register(Component.For<IMenuItem, TParentMenu>()
                 .ImplementedBy<TParentMenu>()
                 .LifestyleTransient()
@@ -523,7 +523,7 @@ namespace Rubberduck.Root
             var codeExplorerCommands = Assembly.GetAssembly(typeof(CommandBase)).GetTypes()
                 .Where(type => type.IsClass && type.Namespace != null
                                && type.CustomAttributes.Any(a => a.AttributeType == typeof(CodeExplorerCommandAttribute))
-                               && type.NotDisabledExperimental(_initialSettings));
+                               && type.NotDisabledOrExperimental(_initialSettings));
             container.Register(Component.For<CodeExplorerViewModel>()
                 .DependsOn(Dependency.OnComponentCollection<List<CommandBase>>(codeExplorerCommands.ToArray()))
                 .LifestyleSingleton());
@@ -542,7 +542,7 @@ namespace Rubberduck.Root
             container.Register(Classes.FromAssemblyContaining<ICommandMenuItem>()
                 .IncludeNonPublicTypes()
                 .BasedOn<ICommandMenuItem >()
-                .If(type => type.NotDisabledExperimental(_initialSettings))
+                .If(type => type.NotDisabledOrExperimental(_initialSettings))
                 .WithService.Base() 
                 .Configure(item => item.DependsOn(Dependency.OnComponent(typeof(CommandBase),
                     CommandNameFromCommandMenuName(item.Implementation.Name))))
@@ -566,7 +566,7 @@ namespace Rubberduck.Root
             var commandsForCommandMenuItems = Assembly.GetAssembly(typeof(CommandBase)).GetTypes()
                 .Where(type => type.IsClass 
                                && typeof(ICommandMenuItem).IsAssignableFrom(type) 
-                               && type.NotDisabledExperimental(_initialSettings))
+                               && type.NotDisabledOrExperimental(_initialSettings))
                 .Select(type => CommandNameFromCommandMenuName(type.Name))
                 .ToHashSet();
 
@@ -575,7 +575,7 @@ namespace Rubberduck.Root
                             && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty)
                             && (type.BaseType == typeof(CommandBase) || type.BaseType == typeof(RefactorCommandBase))
                             && type.Name.EndsWith("Command")
-                            && type.NotDisabledExperimental(_initialSettings)
+                            && type.NotDisabledOrExperimental(_initialSettings)
                             && commandsForCommandMenuItems.Contains(type.Name))
                 .WithService.Self()
                 .WithService.Select(new[] { typeof(CommandBase) })
@@ -754,6 +754,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
         }
 
+        //note: We assume that the full names of all assemblies belonging to Rubberduck start with 'Rubberduck'.
         public IEnumerable<Assembly> AssembliesToRegister()
         {
             return GetDistinctTransitivelyReferencedAssemblies(Assembly.GetExecutingAssembly(), name => name.FullName.StartsWith("Rubberduck"))
@@ -764,6 +765,11 @@ namespace Rubberduck.Root
                 .Distinct();
         }
 
+        /// <summary>
+        /// Recursively finds all assemblies referenced by the <parameref name="assembly"/> directly or indirectly through a path of assemblies satisfying the <paramref name="filterPredicate"/>.
+        /// </summary>
+        /// <param name="assembly">The assembly for which to find all transitive references</param>
+        /// <param name="filterPredicate">Filter to restrict the assemblies considered</param>
         private IEnumerable<Assembly> GetDistinctTransitivelyReferencedAssemblies(Assembly assembly, Predicate<AssemblyName> filterPredicate)
         {
             var referencedAssemblies = assembly.GetReferencedAssemblies()
