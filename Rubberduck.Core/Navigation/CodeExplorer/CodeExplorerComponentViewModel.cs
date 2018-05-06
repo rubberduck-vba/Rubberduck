@@ -50,7 +50,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
                                 .ToList<CodeExplorerItemViewModel>();
 
-            _name = Declaration.IdentifierName;
+            _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
+                ? "Resources"
+                : Declaration.IdentifierName;
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
             try
@@ -126,6 +128,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name => _name;
+  
         public override string NameWithSignature => _name;
 
         public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
