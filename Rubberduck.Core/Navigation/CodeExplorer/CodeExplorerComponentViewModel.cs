@@ -41,7 +41,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             Parent = parent;
             Declaration = declaration;
             _projectsProvider = projectsProvider;
-            _icon = Icons[DeclarationType];
+            
+            _icon = Icons.ContainsKey(DeclarationType) 
+                ? Icons[DeclarationType]
+                : GetImageSource(resx.status_offline);
+
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
                                                 && item.ParentScope == declaration.Scope

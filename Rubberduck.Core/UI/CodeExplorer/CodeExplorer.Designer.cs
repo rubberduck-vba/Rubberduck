@@ -553,6 +553,16 @@ namespace Rubberduck.UI.CodeExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap status_offline {
+            get {
+                object obj = ResourceManager.GetObject("status_offline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap TestMethod {
             get {
                 object obj = ResourceManager.GetObject("TestMethod", resourceCulture);

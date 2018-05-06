@@ -999,6 +999,7 @@
     <Content Include="Resources\document-block.png" />
     <Content Include="Resources\document-globe.png" />
     <Content Include="Resources\pencil-ruler.png" />
+    <Content Include="Resources\status-offline.png" />
     <Content Include="Resources\ui-scroll-pane-form.png" />
     <Content Include="Resources\ui-tab-content.png" />
     <Resource Include="Resources\Rubberduck.png" />
