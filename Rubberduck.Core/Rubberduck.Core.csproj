@@ -996,12 +996,12 @@
     <Resource Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\document-block.png" />
-    <Content Include="Resources\document-globe.png" />
-    <Content Include="Resources\pencil-ruler.png" />
-    <Content Include="Resources\status-offline.png" />
-    <Content Include="Resources\ui-scroll-pane-form.png" />
-    <Content Include="Resources\ui-tab-content.png" />
+    <Resource Include="Resources\document-block.png" />
+    <Resource Include="Resources\document-globe.png" />
+    <Resource Include="Resources\pencil-ruler.png" />
+    <Resource Include="Resources\status-offline.png" />
+    <Resource Include="Resources\ui-scroll-pane-form.png" />
+    <Resource Include="Resources\ui-tab-content.png" />
     <Resource Include="Resources\Rubberduck.png" />
     <Resource Include="Resources\hourglass.png" />
     <Resource Include="Resources\arrow-090.png" />
