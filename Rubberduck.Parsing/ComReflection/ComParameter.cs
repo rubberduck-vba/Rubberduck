@@ -56,6 +56,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public ComParameter(ELEMDESC elemDesc, ITypeInfo info, string name)
         {
+            Debug.Assert(name != null, "Parameter name is null");
+
             Name = name;
             var paramDesc = elemDesc.desc.paramdesc;
             GetParameterType(elemDesc.tdesc, info);
