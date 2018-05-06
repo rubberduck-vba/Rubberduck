@@ -51,7 +51,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .ToList<CodeExplorerItemViewModel>();
 
             _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
-                ? "Resources"
+                ? UI.RubberduckUI.CodeExplorer_ResourceFileText
                 : Declaration.IdentifierName;
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;

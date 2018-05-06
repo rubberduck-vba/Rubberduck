@@ -1839,4 +1839,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
     <value>Report an issue</value>
   </data>
+  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
+    <value>Resources</value>
+  </data>
 </root>
