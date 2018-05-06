@@ -259,4 +259,22 @@
   <data name="TestMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\resources\custom\png\testmethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MdiForm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\Custom\PNG\MdiForm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ui_scroll_pane_form" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ui-scroll-pane-form.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_block" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-block.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="document_globe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\document-globe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pencil_ruler" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\pencil-ruler.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ui_tab_content" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ui-tab-content.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
