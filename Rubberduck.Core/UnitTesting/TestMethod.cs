@@ -22,12 +22,12 @@ namespace Rubberduck.UnitTesting
         private readonly IVBETypeLibsAPI _typeLibApi;
         private readonly RubberduckParserState _state;
 
-        public TestMethod(Declaration declaration, IVBE vbe, IVBETypeLibsAPI typeLibApi, RubberduckParserState state)
+        public TestMethod(RubberduckParserState state, Declaration declaration, IVBE vbe, IVBETypeLibsAPI typeLibApi)
         {
+            _state = state;
             _declaration = declaration;
             _vbe = vbe;
             _typeLibApi = typeLibApi;
-            _state = state;
         }
 
         private Declaration _declaration;
