@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
@@ -19,12 +20,14 @@ namespace Rubberduck.UnitTesting
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
         private readonly IVBE _vbe;
         private readonly IVBETypeLibsAPI _typeLibApi;
+        private readonly RubberduckParserState _state;
 
-        public TestMethod(Declaration declaration, IVBE vbe, IVBETypeLibsAPI typeLibApi)
+        public TestMethod(Declaration declaration, IVBE vbe, IVBETypeLibsAPI typeLibApi, RubberduckParserState state)
         {
             _declaration = declaration;
             _vbe = vbe;
             _typeLibApi = typeLibApi;
+            _state = state;
         }
 
         private Declaration _declaration;
@@ -46,7 +49,8 @@ namespace Rubberduck.UnitTesting
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
-                _typeLibApi.ExecuteCode(_vbe, Declaration.ProjectName, Declaration.QualifiedModuleName.ComponentName,
+                var project = _state.ProjectsProvider.Project(Declaration.ProjectId);
+                _typeLibApi.ExecuteCode(project, Declaration.QualifiedModuleName.ComponentName,
                     Declaration.QualifiedName.MemberName);
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
                 
