@@ -861,6 +861,15 @@ namespace Rubberduck.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resources.
+        /// </summary>
+        public static string CodeExplorer_ResourceFileText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ResourceFileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run All &amp;Tests.
         /// </summary>
         public static string CodeExplorer_RunAllTestsText {

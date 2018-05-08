@@ -996,6 +996,12 @@
     <Resource Include="Resources\plus-circle.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\document-block.png" />
+    <Resource Include="Resources\document-globe.png" />
+    <Resource Include="Resources\pencil-ruler.png" />
+    <Resource Include="Resources\status-offline.png" />
+    <Resource Include="Resources\ui-scroll-pane-form.png" />
+    <Resource Include="Resources\ui-tab-content.png" />
     <Resource Include="Resources\Rubberduck.png" />
     <Resource Include="Resources\hourglass.png" />
     <Resource Include="Resources\arrow-090.png" />
@@ -1194,6 +1200,7 @@
     <Resource Include="Resources\folder.png" />
     <None Include="Resources\RD-300x250-base.png" />
     <Resource Include="Resources\magnifier-medium.png" />
+    <Content Include="Resources\Custom\PNG\MdiForm.png" />
     <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
     <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
     <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
