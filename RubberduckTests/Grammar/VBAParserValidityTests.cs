@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using System;
@@ -9,16 +9,17 @@ using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Symbols;
+using RubberduckTests.Common;
 
 namespace RubberduckTests.Grammar
 {
-    [TestClass]
+    [TestFixture]
     public class VBAParserValidityTests
     {
-        [TestMethod]
-        [TestCategory("LongRunning")]
-        [TestCategory("Grammar")]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("LongRunning")]
+        [Category("Grammar")]
+        [Category("Parser")]
         [DeploymentItem(@"Testfiles\")]
         public void TestParser()
         {
@@ -37,7 +38,7 @@ namespace RubberduckTests.Grammar
 
         private IEnumerable<Tuple<string, string>> GetTestFiles()
         {
-            return Directory.EnumerateFiles("Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
+            return Directory.EnumerateFiles("Testfiles//Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
         }
 
         private static string Parse(string code, string filename)

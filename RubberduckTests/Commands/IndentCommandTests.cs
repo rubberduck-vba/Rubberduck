@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -7,11 +7,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
 {
-    [TestClass]
+    [TestFixture]
     public class IndentCommandTests
     {
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddNoIndentAnnotation()
         {
             IVBComponent component;
@@ -26,8 +26,8 @@ namespace RubberduckTests.Commands
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddNoIndentAnnotation_ModuleContainsCode()
         {
             var input =
@@ -57,8 +57,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddNoIndentAnnotation_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -73,8 +73,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddNoIndentAnnotation_CanExecute_ModuleAlreadyHasAnnotation()
         {
             IVBComponent component;
@@ -89,8 +89,8 @@ End Sub";
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IndentModule_IndentsModule()
         {
             var input =
@@ -146,8 +146,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IndentModule_CanExecute_NullActiveCodePane()
         {
             IVBComponent component;
@@ -162,8 +162,8 @@ End Sub
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void IndentModule_CanExecute()
         {
             IVBComponent component;

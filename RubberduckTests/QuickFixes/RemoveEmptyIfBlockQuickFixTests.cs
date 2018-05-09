@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
@@ -8,11 +8,11 @@ using RubberduckTests.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass, Ignore]
+    [TestFixture]
     public class RemoveEmptyIfBlockQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesLoneIf()
         {
             const string inputCode =
@@ -39,8 +39,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesSingleLineIf()
         {
             const string inputCode =
@@ -73,8 +73,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesLoneIf_WithComment()
         {
             const string inputCode =
@@ -102,8 +102,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesIf_WithElseIfAndElse()
         {
             const string inputCode =
@@ -142,8 +142,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElseIf()
         {
             const string inputCode =
@@ -182,8 +182,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElseIf_HasComment()
         {
             const string inputCode =
@@ -223,8 +223,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesIf_HasVariable()
         {
             const string inputCode =
@@ -260,8 +260,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesIf_HasVariable_WithComment()
         {
             const string inputCode =
@@ -299,8 +299,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesIf_HasVariable_WithLabel()
         {
             const string inputCode =
@@ -342,8 +342,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesIf_HasConst()
         {
             const string inputCode =
@@ -380,8 +380,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElseIf_HasVariable()
         {
             const string inputCode =
@@ -416,8 +416,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElseIf_HasConst()
         {
             const string inputCode =
@@ -452,8 +452,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesIf_UpdatesElseIf()
         {
             const string inputCode =
@@ -486,8 +486,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_SimpleCondition()
         {
             const string inputCode =
@@ -517,8 +517,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Equals()
         {
             const string inputCode =
@@ -548,8 +548,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_NotEquals()
         {
             const string inputCode =
@@ -579,8 +579,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_LessThan()
         {
             const string inputCode =
@@ -610,8 +610,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_LessThanEquals()
         {
             const string inputCode =
@@ -641,8 +641,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_GreaterThan()
         {
             const string inputCode =
@@ -672,8 +672,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_GreaterThanEquals()
         {
             const string inputCode =
@@ -703,8 +703,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Not()
         {
             const string inputCode =
@@ -734,8 +734,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Not_NoWhitespace()
         {
             const string inputCode =
@@ -765,8 +765,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_And()
         {
             const string inputCode =
@@ -796,8 +796,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Or()
         {
             const string inputCode =
@@ -827,8 +827,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_Xor()
         {
             const string inputCode =
@@ -858,8 +858,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition()
         {
             const string inputCode =
@@ -889,8 +889,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition1()
         {
             const string inputCode =
@@ -920,8 +920,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition_WithParentheses()
         {
             const string inputCode =
@@ -951,8 +951,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void EmptyIfBlock_QuickFixRemovesElse_InvertsIf_ComplexCondition2()
         {
             const string inputCode =

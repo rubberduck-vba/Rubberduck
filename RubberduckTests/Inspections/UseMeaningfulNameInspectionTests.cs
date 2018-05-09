@@ -1,11 +1,9 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -13,11 +11,11 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class UseMeaningfulNameInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_NoResultForLineNumberLabels()
         {
             const string inputCode = @"
@@ -30,14 +28,14 @@ End Sub
             using(var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UseMeaningfulNameInspection(state, GetInspectionSettings().Object);
-                var inspectionResults = inspection.GetInspectionResults().Where(i => i.Target.DeclarationType == DeclarationType.LineLabel);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None).Where(i => i.Target.DeclarationType == DeclarationType.LineLabel);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameWithAllTheSameLetters()
         {
             const string inputCode =
@@ -60,8 +58,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameWithoutVowels()
         {
             const string inputCode =
@@ -70,8 +68,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameUnderThreeLetters()
         {
             const string inputCode =
@@ -80,8 +78,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_ReturnsResult_NameEndsWithDigit()
         {
             const string inputCode =
@@ -91,8 +89,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 1);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_DoesNotReturnsResult_GoodName_LowerCaseVowels()
         {
             const string inputCode =
@@ -102,8 +100,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_DoesNotReturnsResult_GoodName_UpperCaseVowels()
         {
             const string inputCode =
@@ -113,8 +111,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_DoesNotReturnsResult_OptionBase()
         {
             const string inputCode =
@@ -123,8 +121,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_DoesNotReturnResult_NameWithoutVowels_NameIsInWhitelist()
         {
             const string inputCode =
@@ -134,8 +132,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UseMeaningfulName_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -146,16 +144,8 @@ End Sub";
             AssertVbaFragmentYieldsExpectedInspectionResultCount(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new UseMeaningfulNameInspection(null, null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "UseMeaningfulNameInspection";
@@ -175,7 +165,7 @@ End Sub";
             using(var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UseMeaningfulNameInspection(state, GetInspectionSettings().Object);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(expectedCount, inspectionResults.Count());
             }

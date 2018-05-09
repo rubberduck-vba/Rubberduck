@@ -1,17 +1,16 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ObsoleteCommentSyntaxInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCommentSyntax_ReturnsResult()
         {
             const string inputCode = @"Rem test";
@@ -27,8 +26,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCommentSyntax_DoesNotReturnResult_QuoteComment()
         {
             const string inputCode = @"' test";
@@ -44,8 +43,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCommentSyntax_DoesNotReturnResult_OtherParseInspectionFires()
         {
             const string inputCode = @"
@@ -66,8 +65,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCommentSyntax_DoesNotReturnResult_RemInStringLiteral()
         {
             const string inputCode =
@@ -87,8 +86,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCommentSyntax_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -106,8 +105,8 @@ Rem test2";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCommentSyntax_ReturnsResults_SomeObsoleteCommentSyntax()
         {
             const string inputCode =
@@ -125,8 +124,8 @@ Rem test2";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCommentSyntax_Ignored_DoesNotReturnResult()
         {
             const string inputCode = @"
@@ -144,16 +143,8 @@ Rem test";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ObsoleteCommentSyntaxInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ObsoleteCommentSyntaxInspection";

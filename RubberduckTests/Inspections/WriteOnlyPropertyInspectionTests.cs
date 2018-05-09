@@ -1,19 +1,17 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class WriteOnlyPropertyInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void WriteOnlyProperty_ReturnsResult_Let()
         {
             const string inputCode =
@@ -29,14 +27,14 @@ End Property";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void WriteOnlyProperty_ReturnsResult_Set()
         {
             const string inputCode =
@@ -52,14 +50,14 @@ End Property";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void WriteOnlyProperty_ReturnsResult_LetAndSet()
         {
             const string inputCode =
@@ -78,14 +76,14 @@ End Property";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void WriteOnlyProperty_DoesNotReturnsResult_Get()
         {
             const string inputCode =
@@ -101,14 +99,14 @@ End Property";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void WriteOnlyProperty_DoesNotReturnsResult_GetAndLetAndSet()
         {
             const string inputCode =
@@ -130,14 +128,14 @@ End Property";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void WriteOnlyProperty_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -154,22 +152,14 @@ End Property";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new WriteOnlyPropertyInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new WriteOnlyPropertyInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "WriteOnlyPropertyInspection";

@@ -1,15 +1,15 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
 {
-    [TestClass]
+    [TestFixture]
     public class SpecificSettingTests
     {
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentEntireProcedureBodyOffWorks()
         {
             var code = new[]
@@ -40,8 +40,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentEntireProcedureBodyOnWorks()
         {
             var code = new[]
@@ -72,8 +72,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentFirstCommentBlockOffWorks()
         {
             var code = new[]
@@ -108,8 +108,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentFirstCommentBlockOnWorks()
         {
             var code = new[]
@@ -144,8 +144,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentEnumTypeCommentBlockOffWorks()
         {
             var code = new[]
@@ -179,8 +179,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentEnumTypeCommentBlockOnWorks()
         {
             var code = new[]
@@ -214,8 +214,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentFirstCommentBlockOffOnlyOnFirst()
         {
             var code = new[]
@@ -252,8 +252,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentFirstDeclarationBlockOffWorks()
         {
             var code = new[]
@@ -288,8 +288,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentFirstDeclarationBlockOnWorks()
         {
             var code = new[]
@@ -324,8 +324,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentFirstDeclarationBlockOffOnlyOnFirst()
         {
             var code = new[]
@@ -362,8 +362,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ForceDebugStatementsInColumn1OnWorks()
         {
             var code = new[]
@@ -394,8 +394,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void AlignCommentsWithCodeOnWorks()
         {
             var code = new[]
@@ -428,8 +428,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void AlignCommentsWithCodeOffWorks()
         {
             var code = new[]
@@ -463,8 +463,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ForceDebugStatementsInColumn1OffWorks()
         {
             var code = new[]
@@ -495,8 +495,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ForceCompilerDirectivesInColumn1OffWorks()
         {
             var code = new[]
@@ -527,8 +527,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ForceCompilerDirectivesInColumn1OnWorks()
         {
             var code = new[]
@@ -559,8 +559,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentCaseOffWorks()
         {
             var code = new[]
@@ -597,8 +597,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentCaseOnWorks()
         {
             var code = new[]
@@ -635,8 +635,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentCompilerDirectivesOnWorks()
         {
             var code = new[]
@@ -667,8 +667,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentCompilerDirectivesOffWorks()
         {
             var code = new[]
@@ -699,8 +699,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void AlignDimsOnWorks()
         {
             var code = new[]
@@ -730,8 +730,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void AlignDimsFallsBackToOneSpace()
         {
             var code = new[]
@@ -762,8 +762,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1290
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IndentSpacesSettingIsUsed()
         {
             var code = new[]

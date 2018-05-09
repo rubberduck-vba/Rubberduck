@@ -175,7 +175,12 @@ namespace Rubberduck.Parsing.VBA
 
         protected void LoadReference(IReference localReference, ConcurrentBag<IReference> unmapped)
         {
-            Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));
+            if (Thread.CurrentThread.IsBackground && Thread.CurrentThread.Name == null)
+            {
+                Thread.CurrentThread.Name = $"LoadReference '{localReference.Name}'";
+            }
+
+            Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));            
             var comReflector = new ReferencedDeclarationsCollector(_state, localReference, _serializedDeclarationsPath);
             try
             {

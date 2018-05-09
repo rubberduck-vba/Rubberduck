@@ -12,9 +12,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class UndeclaredVariableInspection : InspectionBase
     {
         public UndeclaredVariableInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
@@ -6,12 +7,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveTypeHintsQuickFixTests
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_LongTypeHint()
         {
             const string inputCode =
@@ -25,7 +26,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -37,8 +38,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_IntegerTypeHint()
         {
             const string inputCode =
@@ -52,7 +53,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -64,8 +65,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_DoubleTypeHint()
         {
             const string inputCode =
@@ -79,7 +80,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -91,8 +92,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_SingleTypeHint()
         {
             const string inputCode =
@@ -106,7 +107,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -118,22 +119,22 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_DecimalTypeHint()
         {
             const string inputCode =
                 @"Public Foo@";
 
             const string expectedCode =
-                @"Public Foo As Decimal";
+                @"Public Foo As Currency";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -145,8 +146,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Field_StringTypeHint()
         {
             const string inputCode =
@@ -160,7 +161,7 @@ namespace RubberduckTests.QuickFixes
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -172,8 +173,8 @@ namespace RubberduckTests.QuickFixes
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Function_StringTypeHint()
         {
             const string inputCode =
@@ -191,7 +192,7 @@ End Function";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -203,8 +204,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_PropertyGet_StringTypeHint()
         {
             const string inputCode =
@@ -222,7 +223,7 @@ End Property";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -234,8 +235,8 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Parameter_StringTypeHint()
         {
             const string inputCode =
@@ -253,7 +254,7 @@ End Sub";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -265,8 +266,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Variable_StringTypeHint()
         {
             const string inputCode =
@@ -284,7 +285,7 @@ End Sub";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)
@@ -296,8 +297,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteTypeHint_QuickFixWorks_Constant_StringTypeHint()
         {
             const string inputCode =
@@ -315,7 +316,7 @@ End Sub";
             {
 
                 var inspection = new ObsoleteTypeHintInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 var fix = new RemoveTypeHintsQuickFix(state);
                 foreach (var result in inspectionResults)

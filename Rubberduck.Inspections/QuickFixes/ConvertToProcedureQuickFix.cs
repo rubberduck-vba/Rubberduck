@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -38,7 +39,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var rewriter = _state.GetRewriter(result.Target);
 
-            var asTypeContext = ParserRuleContextHelper.GetChild<VBAParser.AsTypeClauseContext>(functionContext);
+            var asTypeContext = functionContext.GetChild<VBAParser.AsTypeClauseContext>();
             if (asTypeContext != null)
             {
                 rewriter.Remove(asTypeContext);
@@ -47,7 +48,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             if (result.Target.TypeHint != null)
             {
-                rewriter.Remove(ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(functionContext));
+                rewriter.Remove(functionContext.GetDescendent<VBAParser.TypeHintContext>());
             }
 
             rewriter.Replace(functionContext.FUNCTION(), Tokens.Sub);
@@ -63,7 +64,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var rewriter = _state.GetRewriter(result.Target);
 
-            var asTypeContext = ParserRuleContextHelper.GetChild<VBAParser.AsTypeClauseContext>(propertyGetContext);
+            var asTypeContext = propertyGetContext.GetChild<VBAParser.AsTypeClauseContext>();
             if (asTypeContext != null)
             {
                 rewriter.Remove(asTypeContext);
@@ -72,7 +73,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             if (result.Target.TypeHint != null)
             {
-                rewriter.Remove(ParserRuleContextHelper.GetDescendent<VBAParser.TypeHintContext>(propertyGetContext));
+                rewriter.Remove(propertyGetContext.GetDescendent<VBAParser.TypeHintContext>());
             }
 
             rewriter.Replace(propertyGetContext.PROPERTY_GET(), Tokens.Sub);

@@ -1,20 +1,21 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class ApplicationWorksheetFunctionQuickFixTests
     {
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks()
         {
             const string inputCode =
@@ -51,16 +52,16 @@ End Sub
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks_WithBlock()
         {
             const string inputCode =
@@ -101,16 +102,16 @@ End Sub
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());
             }
         }
 
-        [TestMethod]
+        [Test]
         [DeploymentItem(@"Testfiles\")]
-        [TestCategory("QuickFixes")]
+        [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks_HasParameters()
         {
             const string inputCode =
@@ -147,7 +148,7 @@ End Sub
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new ApplicationWorksheetFunctionQuickFix(state).Fix(inspectionResults.First());
                 Assert.AreEqual(expectedCode, state.GetRewriter(project.Object.VBComponents.First()).GetText());

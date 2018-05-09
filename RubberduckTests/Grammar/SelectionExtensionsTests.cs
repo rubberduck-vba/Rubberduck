@@ -1,17 +1,17 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime;
 using System.Collections.Generic;
 
 namespace RubberduckTests.Grammar
 {
-    [TestClass]
+    [TestFixture]
     public class SelectionExtensionsTests
     {
         public class CollectorVBAParserBaseVisitor<Result> : VBAParserBaseVisitor<IEnumerable<Result>>
@@ -40,9 +40,9 @@ namespace RubberduckTests.Grammar
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_ZeroBased_EvilCode()
         {
             const string inputCode = @"
@@ -71,9 +71,9 @@ Debug.Print ""foo""
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_Selection_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -102,9 +102,9 @@ Debug.Print ""foo""
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_Start_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -133,9 +133,9 @@ Debug.Print ""foo""
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_End_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -164,9 +164,9 @@ Debug.Print ""foo""
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_GetSelection_OneBased_EvilCode()
         {
             const string inputCode = @"
@@ -197,9 +197,9 @@ Debug.Print ""foo""
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_GetSelection_ZeroBased()
         {
             const string inputCode = @"
@@ -227,9 +227,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_GetSelection_OneBased()
         {
             const string inputCode = @"
@@ -257,9 +257,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_Selection_OneBased()
         {
             const string inputCode = @"
@@ -286,9 +286,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_NotIn_Selection_StartTooLate_OneBased()
         {
             const string inputCode = @"
@@ -315,9 +315,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_NotIn_Selection_EndsTooSoon_OneBased()
         {
             const string inputCode = @"
@@ -344,8 +344,8 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
+        [Test]
+        [Category("Grammar")]
         public void Context_In_Selection_FirstBlock_OneBased()
         {
             const string inputCode = @"
@@ -382,9 +382,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_Not_In_Selection_SecondBlock_OneBased()
         {
             const string inputCode = @"
@@ -421,9 +421,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Context_In_Selection_SecondBlock_OneBased()
         {
             const string inputCode = @"
@@ -460,9 +460,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Contains_LastToken()
         {
             const string inputCode = @"
@@ -501,9 +501,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Not_Contains_LastToken()
         {
             const string inputCode = @"
@@ -540,9 +540,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Contains_Only_Innermost_Nested_Context()
         {
             const string inputCode = @"
@@ -585,9 +585,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Contains_Both_Nested_Context()
         {
             const string inputCode = @"
@@ -630,9 +630,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void Selection_Not_Contained_In_Neither_Nested_Context()
         {
             const string inputCode = @"
@@ -675,9 +675,9 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenOnlyBlankLines_EndColumn_Works()
         {
             const string inputCode = @"
@@ -692,7 +692,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 
@@ -702,13 +702,12 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenOnlyBlankLines_EndLine_Works()
         {
             const string inputCode = @"
-
 
 
 ";
@@ -719,7 +718,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 
@@ -729,15 +728,14 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenBlankLinesWithLeadingSpaces_EndColumn_Works()
         {
             const string inputCode = @"
 
-   
-";
+   ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
@@ -745,7 +743,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 
@@ -755,15 +753,14 @@ End Sub : 'Lame comment!
             }
         }
 
-        [TestMethod]
-        [TestCategory("Grammar")]
-        [TestCategory("Selection")]
+        [Test]
+        [Category("Grammar")]
+        [Category("Selection")]
         public void GivenBlankLinesWithLeadingSpaces_EndLine_Works()
         {
             const string inputCode = @"
 
-   
-";
+   ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var pane = component.CodeModule.CodePane;
@@ -771,7 +768,7 @@ End Sub : 'Lame comment!
             {
 
 
-                var tree = (Antlr4.Runtime.ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
+                var tree = (ParserRuleContext)state.GetParseTree(new QualifiedModuleName(component));
                 var startToken = tree.Start;
                 var endToken = tree.Stop;
 

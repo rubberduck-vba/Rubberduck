@@ -1,16 +1,17 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class UseSetKeywordForObjectAssignmentQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObjectVariableNotSet_ForFunctionAssignment_ReturnsResult()
         {
             var expectedResultCount = 2;
@@ -38,7 +39,7 @@ End Function";
             {
 
                 var inspection = new ObjectVariableNotSetInspection(state);
-                var inspectionResults = inspection.GetInspectionResults().ToList();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
 
                 Assert.AreEqual(expectedResultCount, inspectionResults.Count);
                 var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);
@@ -51,22 +52,22 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObjectVariableNotSet_ForPropertyGetAssignment_ReturnsResults()
         {
             var expectedResultCount = 1;
             var input = @"
-Private example As MyObject
+Private m_example As MyObject
 Public Property Get Example() As MyObject
-    Example = example
+    Example = m_example
 End Property
 ";
             var expectedCode =
                 @"
-Private example As MyObject
+Private m_example As MyObject
 Public Property Get Example() As MyObject
-    Set Example = example
+    Set Example = m_example
 End Property
 ";
 
@@ -75,7 +76,7 @@ End Property
             {
 
                 var inspection = new ObjectVariableNotSetInspection(state);
-                var inspectionResults = inspection.GetInspectionResults().ToList();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
 
                 Assert.AreEqual(expectedResultCount, inspectionResults.Count);
                 var fix = new UseSetKeywordForObjectAssignmentQuickFix(state);

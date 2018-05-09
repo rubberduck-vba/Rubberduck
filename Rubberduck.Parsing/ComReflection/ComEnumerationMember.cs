@@ -18,9 +18,9 @@ namespace Rubberduck.Parsing.ComReflection
             Value = (int)value.Value;
             ValueType = value.VariantType;
 
-            var names = new string[255];
+            var names = new string[1];
             int count;
-            info.GetNames(varDesc.memid, names, 1, out count);
+            info.GetNames(varDesc.memid, names, names.Length, out count);
             Debug.Assert(count == 1);
             Name = names[0];
         }

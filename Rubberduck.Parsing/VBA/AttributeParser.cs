@@ -9,6 +9,7 @@ using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.VBA
@@ -17,11 +18,13 @@ namespace Rubberduck.Parsing.VBA
     {
         private readonly IModuleExporter _exporter;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
+        private readonly IProjectsProvider _projectsProvider;
 
-        public AttributeParser(IModuleExporter exporter, Func<IVBAPreprocessor> preprocessorFactory)
+        public AttributeParser(IModuleExporter exporter, Func<IVBAPreprocessor> preprocessorFactory, IProjectsProvider projectsProvider)
         {
             _exporter = exporter;
             _preprocessorFactory = preprocessorFactory;
+            _projectsProvider = projectsProvider;
         }
 
         /// <summary>
@@ -32,7 +35,7 @@ namespace Rubberduck.Parsing.VBA
         public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var path = _exporter.Export(module.Component);
+            var path = _exporter.Export(_projectsProvider.Component(module));
             if (!File.Exists(path))
             {
                 // a document component without any code wouldn't be exported (file would be empty anyway).

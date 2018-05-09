@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
@@ -9,15 +9,15 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
 
-    [TestClass]
+    [TestFixture]
     public class ExtractedMethodTests
     {
-        [TestClass]
+        [TestFixture]
         public class WhenAMethodIsDefined : ExtractedMethodTests
         {
 
-            [TestCategory("ExtractedMethodTests")]
-            [TestMethod]
+            [Category("ExtractedMethodTests")]
+            [Test]
             public void shouldReturnStringCorrectly()
             {
                 var method = new ExtractedMethod();
@@ -36,11 +36,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
 
             }
         }
-        [TestClass]
+        [TestFixture]
         public class WhenDeclarationsContainNoPreviousNewMethod : ExtractedMethodTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldReturnNewMethod()
             {
                 var inputCode = @"
@@ -70,11 +70,11 @@ End Sub";
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenDeclarationsContainAPreviousNewMethod
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldReturnAnIncrementedMethodName()
             {
                 #region inputCode
@@ -109,11 +109,11 @@ End Sub";
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenDeclarationsContainAPreviousUnOrderedNewMethod
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldReturnAnLeastNextMethod()
             {
                 #region inputCode

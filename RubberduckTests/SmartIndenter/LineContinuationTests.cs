@@ -1,15 +1,15 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.SmartIndenter;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
 {
-    [TestClass]
+    [TestFixture]
     public class LineContinuationTests
     {
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void DeclarationLineAlignsCorrectly()
         {
             var code = new[]
@@ -29,8 +29,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void FunctionParametersAlignCorrectly()
         {
             var code = new[]
@@ -50,8 +50,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void NamedParametersAlignCorrectly()
         {
             var code = new[]
@@ -75,8 +75,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IgnoreOperatorsInContinuationsOnWorks()
         {
             var code = new[]
@@ -107,8 +107,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IgnoreOperatorsInContinuationsOffWorks()
         {
             var code = new[]
@@ -139,8 +139,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void IfThenDoesntGetMangled()
         {
             var code = new[]
@@ -166,8 +166,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void MultilineCommentAlignsCorrectly()
         {
             var code = new[]
@@ -193,8 +193,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ContinuedEndOfLineCommentAligned()
         {
             var code = new[]
@@ -225,8 +225,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1291 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void CommentsWithLineContinuationsWork()
         {
             var code = new[]
@@ -243,8 +243,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void RemsWithLineContinuationsWork()
         {
             var code = new[]
@@ -261,8 +261,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(code.SequenceEqual(actual));
         }
 
-        [TestMethod]        // Broken in VB6 SmartIndenter.
-        [TestCategory("Indenter")]
+        [Test]        // Broken in VB6 SmartIndenter.
+        [Category("Indenter")]
         public void DoWhileOnTwoLinesWorks()
         {
             var code = new[]
@@ -288,8 +288,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]        // Broken in VB6 SmartIndenter.
-        [TestCategory("Indenter")]
+        [Test]        // Broken in VB6 SmartIndenter.
+        [Category("Indenter")]
         public void ContinuedIfThenWorks()
         {
             var code = new[]
@@ -319,8 +319,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void MultipleFunctionCallsWorks()
         {
             var code = new[]
@@ -349,8 +349,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void UncontinuedNestedFunctionWorks()
         {
             var code = new[]
@@ -374,8 +374,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ContinuedNestedFunctionWorks()
         {
             var code = new[]
@@ -399,8 +399,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void MultiLineContinuedFunctionWorks()
         {
             var code = new[]
@@ -427,8 +427,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ContinuationsInTypeDeclarationsWorks()
         {
             var code = new[]
@@ -484,8 +484,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod]        // Broken in VB6 SmartIndenter.
-        [TestCategory("Indenter")]
+        [Test]        // Broken in VB6 SmartIndenter.
+        [Category("Indenter")]
         public void ContinuationsInProcedureDeclarationsWorks()
         {
             var code = new[]
@@ -543,8 +543,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2407
-        [TestMethod] 
-        [TestCategory("Indenter")]
+        [Test] 
+        [Category("Indenter")]
         public void ContinuationsInProcedureDeclarationsWithAlignWorks()
         {
             var code = new[]
@@ -576,8 +576,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2407
-        [TestMethod] 
-        [TestCategory("Indenter")]
+        [Test] 
+        [Category("Indenter")]
         public void ContinuationsInProcedureDeclarationsWithAlignWorksBareType()
         {
             var code = new[]
@@ -624,8 +624,8 @@ namespace RubberduckTests.SmartIndenter
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void ContinuationWithOnlyCommentWorks()
         {
             var code = new[]
@@ -656,8 +656,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void TrailingMultiLineCommentFirstWorks()
         {
             var code = new[]
@@ -696,8 +696,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void TrailingMultiLineCommentSecondWorks()
         {
             var code = new[]
@@ -736,8 +736,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void TrailingMultiLineCommentFirstNoAlignWorks()
         {
             var code = new[]
@@ -781,8 +781,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/1287
-        [TestMethod]
-        [TestCategory("Indenter")]
+        [Test]
+        [Category("Indenter")]
         public void TrailingMultiLineCommentSecondNoAlignWorks()
         {
             var code = new[]
@@ -826,8 +826,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2402
-        [TestMethod]        // Broken in VB6 SmartIndenter.
-        [TestCategory("Indenter")]
+        [Test]        // Broken in VB6 SmartIndenter.
+        [Category("Indenter")]
         public void SplitNamedParameterAlignsCorrectly()
         {
             var code = new[]
@@ -852,8 +852,8 @@ namespace RubberduckTests.SmartIndenter
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2402
-        [TestMethod]        // Broken in VB6 SmartIndenter.
-        [TestCategory("Indenter")]
+        [Test]        // Broken in VB6 SmartIndenter.
+        [Category("Indenter")]
         public void MultipleSplitNamedParametersAlignCorrectly()
         {
             var code = new[]

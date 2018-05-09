@@ -1,16 +1,17 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveUnusedDeclarationQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ConstantNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -27,7 +28,7 @@ End Sub";
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
@@ -38,8 +39,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void LabelNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -57,15 +58,15 @@ End Sub";
             {
 
                 var inspection = new LineLabelNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void LabelNotUsed_QuickFixWorks_MultipleLabels()
         {
             const string inputCode =
@@ -89,15 +90,15 @@ End Sub"; ;
             {
 
                 var inspection = new LineLabelNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -111,7 +112,7 @@ End Sub";
             {
 
                 var inspection = new ProcedureNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
 
@@ -120,8 +121,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_QuickFixWorks()
         {
             const string inputCode =
@@ -138,7 +139,7 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -146,8 +147,8 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithFollowingEmptyLine_DoesNotRemoveEmptyLine()
         {
             const string inputCode =
@@ -166,15 +167,15 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithCommentOnSameLine_DoesNotRemoveComment()
         {
             const string inputCode =
@@ -192,15 +193,15 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithCommentOnSameLineAndFollowingStuff_DoesNotRemoveComment()
         {
             const string inputCode =
@@ -224,7 +225,7 @@ End Function";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
@@ -233,8 +234,8 @@ End Function";
 
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithFollowingCommentLine_DoesNotRemoveCommentLine()
         {
             const string inputCode =
@@ -253,15 +254,15 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_InMultideclaration_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
         {
             const string inputCode =
@@ -285,15 +286,15 @@ End Function";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_InMultideclarationByStmtSeparators_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
         {
             const string inputCode =
@@ -317,7 +318,7 @@ End Function";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
+                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults(CancellationToken.None).First());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(expectedCode, rewriter.GetText());

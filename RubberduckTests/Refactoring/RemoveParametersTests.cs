@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
@@ -14,12 +14,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class RemoveParametersTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveBothParams()
         {
             //Input
@@ -54,9 +54,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveOnlyParam()
         {
             //Input
@@ -91,9 +91,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParam()
         {
             //Input
@@ -128,9 +128,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveSecondParam()
         {
             //Input
@@ -165,9 +165,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveNamedParam()
         {
             //Input
@@ -212,9 +212,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_CallerArgNameContainsOtherArgName()
         {
             //Input
@@ -259,9 +259,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveLastFromFunction()
         {
             //Input
@@ -296,9 +296,9 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveAllFromFunction()
         {
             //Input
@@ -333,9 +333,9 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveAllFromFunction_UpdateCallReferences()
         {
             //Input
@@ -380,9 +380,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ParentIdentifierContainsParameterName()
         {
             //Input
@@ -427,9 +427,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFromGetter()
         {
             //Input
@@ -464,9 +464,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_QuickFix()
         {
             //Input
@@ -503,9 +503,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParamFromSetter()
         {
             //Input
@@ -540,9 +540,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam()
         {
             //Input
@@ -587,9 +587,60 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam_LineContinued()
+        {
+            //Input
+            const string inputCode =
+                @"Private Function Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Function
+
+Private Sub Bar()
+    Dim x As Variant    
+    x = Foo _
+        (10, ""Hello"")
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Function Foo(ByVal arg2 As String)
+End Function
+
+Private Sub Bar()
+    Dim x As Variant    
+    x = Foo _
+        (""Hello"")
+End Sub
+";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                //Specify Param(s) to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[0].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+                refactoring.Refactor(qualifiedSelection);
+
+                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_FirstParam_ParensAroundCall()
         {
             //Input
@@ -642,9 +693,9 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_LastParam()
         {
             //Input
@@ -689,9 +740,62 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_ClientReferencesAreUpdated_OtherModule()
+        {
+            //Input
+            const string inputDeclaringCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+";
+            const string inputCallingCode = 
+@"Private Sub Bar()
+    Foo 10, ""Hello""
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCallingCode =
+@"Private Sub Bar()
+    Foo 10
+End Sub
+";
+
+            var vbeBuilder = new MockVbeBuilder();
+            var projectBuilder = vbeBuilder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("DeclarationModule", ComponentType.StandardModule, inputDeclaringCode, selection)
+                .AddComponent("CallingModule", ComponentType.StandardModule, inputCallingCode);
+            projectBuilder.AddProjectToVbeBuilder();
+            var vbe = vbeBuilder.Build();
+            var declaringComponent = projectBuilder.MockComponents[0].Object;
+            var callingComponent = projectBuilder.MockComponents[1].Object; 
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(declaringComponent), selection);
+
+                //Specify Param(s) to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[1].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+                refactoring.Refactor(qualifiedSelection);
+                var resultCallingCode = callingComponent.CodeModule.Content();
+
+                Assert.AreEqual(expectedCallingCode, resultCallingCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ClientReferencesAreUpdated_ParamArray()
         {
             //Input
@@ -748,9 +852,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveLastParamFromSetter_NotAllowed()
         {
             //Input
@@ -772,9 +876,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveLastParamFromLetter_NotAllowed()
         {
             //Input
@@ -796,9 +900,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
         {
             //Input
@@ -839,9 +943,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndLetter()
         {
             //Input
@@ -882,9 +986,9 @@ End Property";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureContainsOptionalParam()
         {
             //Input
@@ -927,10 +1031,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
-        public void RemoveParametersRefactoring_RemoveOptionalParam()
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_LastParam()
         {
             //Input
             const string inputCode =
@@ -974,9 +1078,117 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_FirstParam()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer, Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1, ""test""
+    Foo , ""test""
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo(Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo 
+    Foo ""test""
+    Foo ""test""
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                //Specify Params to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[0].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+                refactoring.Refactor(qualifiedSelection);
+                var resultingCode = component.CodeModule.Content();
+
+                Assert.AreEqual(expectedCode, resultingCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_MiddleParam()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer, Optional ByVal arg2 As String, Optional ByVal arg3 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1, ""test""
+    Foo 1, ""test"", 3
+    Foo 1, , 3
+    Foo , ""test""
+    Foo , ""test"", 3
+    Foo ,, 3
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer, Optional ByVal arg3 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1
+    Foo 1
+    Foo 1, 3
+    Foo 1, 3
+    Foo 
+    Foo , 3
+    Foo ,3
+End Sub";
+
+            IVBComponent component;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                //Specify Params to remove
+                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+                model.Parameters[1].IsRemoved = true;
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
+                refactoring.Refactor(qualifiedSelection);
+                var resultingCode = component.CodeModule.Content();
+
+                Assert.AreEqual(expectedCode, resultingCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines()
         {
             //Input
@@ -1014,9 +1226,9 @@ End Sub";   // note: VBE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveSecond()
         {
             //Input
@@ -1054,9 +1266,9 @@ End Sub";   // note: VBE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_SignatureOnMultipleLines_RemoveLast()
         {
             //Input
@@ -1094,9 +1306,9 @@ End Sub";   // note: VBE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_PassTargetIn()
         {
             //Input
@@ -1134,9 +1346,9 @@ End Sub";   // note: VBE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_CallOnMultipleLines()
         {
             //Input
@@ -1188,9 +1400,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved()
         {
             //Input
@@ -1244,9 +1456,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_ImplementationParamsHaveDifferentNames()
         {
             //Input
@@ -1300,9 +1512,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_ImplementationParamsHaveDifferentNames_TwoImplementations()
         {
             //Input
@@ -1369,9 +1581,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastEventParamRemoved()
         {
             //Input
@@ -1425,9 +1637,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void ReorderParametersRefactoring_LastEventParamRemoved_EventImplementationSelected()
         {
             //Input
@@ -1481,9 +1693,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastEventParamRemoved_ParamsHaveDifferentNames()
         {
             //Input
@@ -1537,9 +1749,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastEventParamRemoved_ParamsHaveDifferentNames_TwoHandlers()
         {
             //Input
@@ -1606,9 +1818,9 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamsRemoved_AcceptPrompt()
         {
             //Input
@@ -1667,9 +1879,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastInterfaceParamRemoved_RejectPrompt()
         {
             //Input
@@ -1705,9 +1917,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -1746,9 +1958,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParams_PresenterIsNull()
         {
             //Input
@@ -1770,9 +1982,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParams_ModelIsNull()
         {
             //Input
@@ -1801,9 +2013,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void Presenter_Accept_AutoMarksSingleParamAsRemoved()
         {
             //Input
@@ -1830,9 +2042,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void Presenter_ParameterlessTargetReturnsNullModel()
         {
             //Input
@@ -1861,9 +2073,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Remove Parameters")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input

@@ -49,7 +49,8 @@ namespace Rubberduck.Parsing
         {
             { "%", Tokens.Integer },
             { "&", Tokens.Long },
-            { "@", Tokens.Decimal },
+            { "^", Tokens.LongLong },
+            { "@", Tokens.Currency },
             { "!", Tokens.Single },
             { "#", Tokens.Double },
             { "$", Tokens.String }

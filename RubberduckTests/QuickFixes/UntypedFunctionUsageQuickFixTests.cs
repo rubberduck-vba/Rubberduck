@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
@@ -10,12 +10,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
+    [TestFixture]
     public class UntypedFunctionUsageQuickFixTests
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
-        [Ignore] // not sure how to handle GetBuiltInDeclarations
+        [Test]
+        [Category("QuickFixes")]
+        [Ignore("Broken feature - passes locally but not in AV. See FIXME in the notes")]
         public void UntypedFunctionUsage_QuickFixWorks()
         {
             const string inputCode =
@@ -52,7 +52,7 @@ End Sub";
                 }
 
                 var inspection = new UntypedFunctionUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 new UntypedFunctionUsageQuickFix(state).Fix(inspectionResults.First());
 

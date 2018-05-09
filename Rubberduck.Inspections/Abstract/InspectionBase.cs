@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Diagnostics;
+using System.Threading;
 using NLog;
 
 namespace Rubberduck.Inspections.Abstract
@@ -18,20 +19,12 @@ namespace Rubberduck.Inspections.Abstract
         protected readonly RubberduckParserState State;
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly CodeInspectionSeverity _defaultSeverity;
 
-        protected InspectionBase(RubberduckParserState state, CodeInspectionSeverity defaultSeverity = CodeInspectionSeverity.Warning)
+        protected InspectionBase(RubberduckParserState state)
         {
             State = state;
-            _defaultSeverity = defaultSeverity;
-            Severity = _defaultSeverity;
             Name = GetType().Name;
         }
-
-        /// <summary>
-        /// Gets a value the severity level to reset to, the "factory default" setting.
-        /// </summary>
-        public CodeInspectionSeverity DefaultSeverity => _defaultSeverity;
 
         /// <summary>
         /// Gets a localized string representing a short name/description for the inspection.
@@ -41,7 +34,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Gets the type of inspection; used for regrouping inspections.
         /// </summary>
-        public abstract CodeInspectionType InspectionType { get; }
+        public CodeInspectionType InspectionType { get; set; } = CodeInspectionType.CodeQualityIssues;
 
         /// <summary>
         /// The inspection type name, obtained by reflection.
@@ -51,7 +44,7 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// Inspection severity level. Can control whether an inspection is enabled.
         /// </summary>
-        public CodeInspectionSeverity Severity { get; set; }
+        public CodeInspectionSeverity Severity { get; set; } = CodeInspectionSeverity.Warning;
 
         /// <summary>
         /// Meta-information about why an inspection exists.
@@ -164,8 +157,9 @@ namespace Rubberduck.Inspections.Abstract
         /// <summary>
         /// A method that inspects the parser state and returns all issues it can find.
         /// </summary>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public IEnumerable<IInspectionResult> GetInspectionResults()
+        public IEnumerable<IInspectionResult> GetInspectionResults(CancellationToken token)
         {
             var _stopwatch = new Stopwatch();
             _stopwatch.Start();

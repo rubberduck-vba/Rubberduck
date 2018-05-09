@@ -100,12 +100,10 @@ namespace Rubberduck.Inspections.Concrete
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
         public HungarianNotationInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
-            : base(state, CodeInspectionSeverity.Suggestion)
+            : base(state)
         {
             _settings = settings;
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

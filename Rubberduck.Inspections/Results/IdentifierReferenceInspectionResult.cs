@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -11,7 +10,7 @@ namespace Rubberduck.Inspections.Results
 {
     internal class IdentifierReferenceInspectionResult : InspectionResultBase
     {
-        public IdentifierReferenceInspectionResult(IInspection inspection, string description, RubberduckParserState state, IdentifierReference reference, Dictionary<string, string> properties = null) :
+        public IdentifierReferenceInspectionResult(IInspection inspection, string description, RubberduckParserState state, IdentifierReference reference, dynamic properties = null) :
             base(inspection,
                  description,
                  reference.QualifiedModuleName,
@@ -19,7 +18,7 @@ namespace Rubberduck.Inspections.Results
                  reference.Declaration,
                  new QualifiedSelection(reference.QualifiedModuleName, reference.Context.GetSelection()),
                  GetQualifiedMemberName(state, reference),
-                 properties)
+                 (object)properties)
         {
         }
 

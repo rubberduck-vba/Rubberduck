@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
@@ -11,7 +11,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodModelTests
     {
 
@@ -60,8 +60,8 @@ End Sub";
             new ExtractMethodRuleUsedAfter(),
             new ExtractMethodRuleExternalReference()};
 
-        [TestMethod]
-        [TestCategory("ExtractMethodModelTests")]
+        [Test]
+        [Category("ExtractMethodModelTests")]
         public void shouldClassifyDeclarations()
         {
             QualifiedModuleName qualifiedModuleName;
@@ -85,7 +85,7 @@ End Sub";
             }
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenExtractingFromASelection : ExtractedMethodTests
         {
 
@@ -126,12 +126,11 @@ Public Sub NewVal( byval x as long)
 End Sub";
             #endregion
 
-            [TestClass]
+            [TestFixture]
             public class WhenTheSelectionIsNotWithinAMethod : WhenExtractingFromASelection
             {
-                [TestMethod]
-                [TestCategory("ExtractMethodModelTests")]
-                [ExpectedException(typeof(InvalidOperationException))]
+                [Test]
+                [Category("ExtractMethodModelTests")]
                 public void shouldThrowAnException()
                 {
                     QualifiedModuleName qualifiedModuleName;
@@ -141,24 +140,20 @@ End Sub";
 
                         var selection = new Selection(21, 1, 22, 17);
                         QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
-
-                        var emr = new Mock<IExtractMethodRule>();
+                        
                         var extractedMethod = new Mock<IExtractedMethod>();
                         var paramClassify = new Mock<IExtractMethodParameterClassification>();
                         var SUT = new ExtractMethodModel(extractedMethod.Object, paramClassify.Object);
 
-                        //Act
-                        SUT.extract(declarations, qSelection.Value, selectedCode);
-
-                        //Assert
-                        // ExpectedException
+                        //Act - Assert
+                        Assert.Catch<InvalidOperationException>(() => SUT.extract(declarations, qSelection.Value, selectedCode));
                     }
                 }
 
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldProvideAListOfDimsNoLongerNeededInTheContainingMethod()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -183,8 +178,8 @@ End Sub";
                 }
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldProvideTheSelectionOfLinesOfToRemove()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -221,8 +216,8 @@ End Sub";
                 }
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldProvideTheExtractMethodCaller()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -247,8 +242,8 @@ End Sub";
                 }
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldProvideThePositionForTheMethodCall()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -272,8 +267,8 @@ End Sub";
                 }
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldProvideThePositionForTheNewMethod()
             {
                 QualifiedModuleName qualifiedModuleName;
@@ -303,12 +298,12 @@ End Sub";
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenLocalVariableConstantIsInternal
         {
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldExcludeVariableInSignature()
             {
 
@@ -369,12 +364,12 @@ Debug.Print y";
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenSplittingSelection
         {
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void shouldSplitTheCodeAroundTheDefinition()
             {
 
@@ -447,29 +442,30 @@ end sub
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class GroupByConsecutiveTests
         {
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void testSelection()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };
                 var grouped = list.GroupByMissing(x => (x + 1), (x, y) => new Selection(x, 1, y, 1), (x, y) => y - x);
             }
 
-            [TestMethod]
-            [ExpectedException(typeof(ArgumentException))]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void isUnordered()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 7, 9, 8, 12, 13, 15 };
-                var grouped = list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList();
+
+                Assert.Catch<ArgumentException>(() =>
+                    list.GroupByMissing(x => (x + 1), (x, y) => Tuple.Create(x, y), (x, y) => y - x).ToList());
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void emptyList()
             {
                 IEnumerable<int> list = new List<int> { };
@@ -477,8 +473,8 @@ end sub
                 Assert.AreEqual(0, grouped.Count());
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void listOfSingleItem()
             {
                 IEnumerable<int> list = new List<int> { 2 };
@@ -492,8 +488,8 @@ end sub
                 Assert.AreEqual(1, grouped.Count());
             }
 
-            [TestMethod]
-            [TestCategory("ExtractMethodModelTests")]
+            [Test]
+            [Category("ExtractMethodModelTests")]
             public void testingUsefulList()
             {
                 IEnumerable<int> list = new List<int> { 2, 3, 4, 6, 8, 9, 10, 12, 13, 15 };

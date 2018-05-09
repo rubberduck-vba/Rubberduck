@@ -10,7 +10,7 @@ namespace Rubberduck.RegexAssistant
         Quantifier Quantifier { get; }
         string Specifier { get; }
     }
-
+    
     internal class CharacterClass : IAtom
     {
         public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";

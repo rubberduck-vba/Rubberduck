@@ -1,27 +1,16 @@
 ﻿using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass, Ignore]
+    [TestFixture]
     public class EmptyWhileWendBlockInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void EmptyWhileWendBlock_InspectionType()
-        {
-            var inspection = new EmptyWhileWendBlockInspection(null);
-            var expectedInspection = CodeInspectionType.MaintainabilityAndReadabilityIssues;
-
-            Assert.AreEqual(expectedInspection, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyWhileWendBlock_InspectionName()
         {
             const string expectedName = nameof(EmptyWhileWendBlockInspection);
@@ -30,8 +19,8 @@ namespace RubberduckTests.Inspections
             Assert.AreEqual(expectedName, inspection.Name);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyWhileWendBlock_DoesNotFiresOnImplementedLoopBlocks()
         {
             const string inputCode =
@@ -48,8 +37,8 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void EmptyWhileWendBlock_FiresOnEmptyLoopBlocks()
         {
             const string inputCode =

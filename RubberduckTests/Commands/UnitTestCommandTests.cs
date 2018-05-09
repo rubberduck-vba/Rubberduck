@@ -1,21 +1,23 @@
 using System;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
+using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
 {
-    [TestClass]
+    [TestFixture]
     public class UnitTestCommandTests
     {
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTest()
         {
             var input = @"
@@ -43,8 +45,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTest_NullActiveCodePane()
         {
             var input = @"
@@ -71,8 +73,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddTest_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -80,15 +82,15 @@ Private Assert As Object
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences, CancellationToken.None);
 
                 var addTestMethodCommand = new AddTestMethodCommand(vbe.Object, state);
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddTest_CanExecute_NoTestModule()
         {
             IVBComponent component;
@@ -101,8 +103,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddTest_CanExecute()
         {
             var input = @"
@@ -123,8 +125,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsExpectedErrorTest()
         {
             var input = @"
@@ -152,8 +154,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddExpectedErrorTest_CanExecute_NonReadyState()
         {
             IVBComponent component;
@@ -161,15 +163,15 @@ Private Assert As Object
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences);
+                state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences, CancellationToken.None);
 
                 var addTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe.Object, state);
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddExpectedErrorTest_CanExecute_NoTestModule()
         {
             IVBComponent component;
@@ -182,8 +184,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddExpectedErrorTest_CanExecute()
         {
             var input = @"
@@ -204,8 +206,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsExpectedErrorTest_NullActiveCodePane()
         {
             var input = @"
@@ -230,20 +232,19 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTestModule()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
+                var messageBox = new Mock<IMessageBox>();
                 var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
                 var config = GetUnitTestConfig();
                 settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object);
+                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object, messageBox.Object);
                 addTestModuleCommand.Execute(null);
 
                 // mock suite auto-assigns "TestModule1" to the first component when we create the mock
@@ -253,8 +254,8 @@ Private Assert As Object
             }
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void AddsTestModuleWithStubs()
         {
             const string code =
@@ -306,12 +307,10 @@ End Property
 
 Private Property Set PrivateProperty(s As String)
 End Property";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
                 var config = GetUnitTestConfig();
                 settings.Setup(x => x.LoadConfiguration()).Returns(config);
@@ -319,7 +318,8 @@ End Property";
                 var project = state.DeclarationFinder.FindProject("TestProject1");
                 var module = state.DeclarationFinder.FindStdModule("TestModule1", project);
 
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object);
+                var messageBox = new Mock<IMessageBox>();
+                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object, messageBox.Object);
                 addTestModuleCommand.Execute(module);
 
                 var testModule = state.DeclarationFinder.FindStdModule("TestModule2", project);
@@ -340,14 +340,7 @@ End Property";
 
         private Configuration GetUnitTestConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.EarlyBinding,
-                AssertMode = AssertMode.StrictAssert,
-                ModuleInit = false,
-                MethodInit = false,
-                DefaultTestStubInNewModule = false
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, false, false, false);
 
             var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);

@@ -14,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
         public HostSpecificExpressionInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)

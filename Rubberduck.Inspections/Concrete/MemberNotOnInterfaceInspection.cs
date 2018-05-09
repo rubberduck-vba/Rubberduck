@@ -14,8 +14,6 @@ namespace Rubberduck.Inspections.Concrete
         public MemberNotOnInterfaceInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations.Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName)).ToList();

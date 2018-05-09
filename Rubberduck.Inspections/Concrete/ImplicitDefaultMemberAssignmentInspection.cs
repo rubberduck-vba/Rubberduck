@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections.Resources;
@@ -13,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class ImplicitDefaultMemberAssignmentInspection : InspectionBase
     {
         public ImplicitDefaultMemberAssignmentInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
                 .SelectMany(declaration => declaration.References)
                 .Where(reference =>
                 {
-                    var letStmtContext = ParserRuleContextHelper.GetParent<VBAParser.LetStmtContext>(reference.Context);
+                    var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
                     return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
                 });
 
@@ -37,7 +38,5 @@ namespace Rubberduck.Inspections.Concrete
                                                                                   State,
                                                                                   reference));
         }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
     }
 }

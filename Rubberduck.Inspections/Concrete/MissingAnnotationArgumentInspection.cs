@@ -16,9 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class MissingAnnotationArgumentInspection : ParseTreeInspectionBase
     {
         public MissingAnnotationArgumentInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Error) { }
+            : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
         public override ParsePass Pass => ParsePass.AttributesPass;
 
         public override IInspectionListener Listener { get; } =

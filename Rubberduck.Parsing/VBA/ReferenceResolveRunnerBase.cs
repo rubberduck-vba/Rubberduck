@@ -6,9 +6,9 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Symbols;
 using Antlr4.Runtime.Tree;
 using System.Diagnostics;
+using System.Text;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System.Runtime.InteropServices;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -74,7 +74,7 @@ namespace Rubberduck.Parsing.VBA
             PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
-            ExecuteCompilationPasses(_toResolve.AsReadOnly());
+            ExecuteCompilationPasses(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
             AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
@@ -102,7 +102,7 @@ namespace Rubberduck.Parsing.VBA
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
         }
 
-        private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules)
+        private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             var passes = new List<ICompilationPass>
                 {
@@ -111,7 +111,16 @@ namespace Rubberduck.Parsing.VBA
                     new TypeHierarchyPass(_state.DeclarationFinder, new VBAExpressionParser()),
                     new TypeAnnotationPass(_state.DeclarationFinder, new VBAExpressionParser())
                 };
-            passes.ForEach(p => p.Execute(modules));
+            try
+            {
+                passes.ForEach(p => p.Execute(modules));
+            }
+            catch (Exception exception)
+            {
+                var names = string.Join(",", modules.Select(m => m.Name));
+                Logger.Error(exception, "Exception thrown on resolving those modules: '{0}' (thread {1}).", names, Thread.CurrentThread.ManagedThreadId);
+                _parserStateManager.SetModuleStates(modules, ParserState.ResolverError, token);
+            }
         }
 
         private void AddSupertypesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
@@ -133,67 +142,76 @@ namespace Rubberduck.Parsing.VBA
 
         private Declaration SupertypeForDocument(QualifiedModuleName module, RubberduckParserState state)
         {
-            if(module.ComponentType != ComponentType.Document || module.Component == null)
+            if(module.ComponentType != ComponentType.Document)
             {
                 return null;
             }
 
-            int documentPropertyCount = 0;
-            try
-            {
-                if(module.Component.IsWrappingNullReference
-                    || module.Component.Properties == null
-                    || module.Component.Properties.IsWrappingNullReference)
-                {
-                    return null;
-                }
-                documentPropertyCount = module.Component.Properties.Count;
-            }
-            catch(COMException)
+            var component = _state.ProjectsProvider.Component(module);
+            if (component == null || component.IsWrappingNullReference)
             {
                 return null;
             }
 
             Declaration superType = null;
-            foreach (var coclass in state.CoClasses)
+            // TODO: Replace with TypeLibAPI call, require a solution regarding thread synchronization or caching
+            /*
+            using (var properties = component.Properties)
             {
+                int documentPropertyCount = 0;
                 try
                 {
-                    
-
-                    if (coclass.Key.Count != documentPropertyCount)
+                    if (properties == null || properties.IsWrappingNullReference)
                     {
-                        continue;
+                        return null;
                     }
-
-                    var allNamesMatch = true;
-                    for (var i = 0; i < coclass.Key.Count; i++)
+                    documentPropertyCount = properties.Count;
+                }
+                catch(COMException)
+                {
+                    return null;
+                }
+                
+                foreach (var coclass in state.CoClasses)
+                {
+                    try
                     {
-                        if (coclass.Key[i] != module.Component.Properties[i + 1].Name)
+                        if (coclass.Key.Count != documentPropertyCount)
                         {
-                            allNamesMatch = false;
+                            continue;
+                        }
+
+                        var allNamesMatch = true;
+                        for (var i = 0; i < coclass.Key.Count; i++)
+                        {
+                            using (var property = properties[i+1])
+                            {
+                                if (coclass.Key[i] != property?.Name)
+                                {
+                                    allNamesMatch = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (allNamesMatch)
+                        {
+                            superType = coclass.Value;
                             break;
                         }
                     }
-
-                    if (allNamesMatch)
+                    catch (COMException)
                     {
-                        superType = coclass.Value;
-                        break;
                     }
                 }
-                catch (COMException)
-                {
-                }
             }
+            */
 
             return superType;
         }
 
         protected void ResolveReferences(DeclarationFinder finder, QualifiedModuleName module, IParseTree tree, CancellationToken token)
         {
-            Debug.Assert(_state.GetModuleState(module) == ParserState.ResolvingReferences || token.IsCancellationRequested);
-
             token.ThrowIfCancellationRequested();
 
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", module.Name, Thread.CurrentThread.ManagedThreadId);

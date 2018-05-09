@@ -15,9 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     public class ApplicationWorksheetFunctionInspection : InspectionBase
     {
         public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

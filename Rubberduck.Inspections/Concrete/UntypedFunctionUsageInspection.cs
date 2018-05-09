@@ -12,9 +12,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class UntypedFunctionUsageInspection : InspectionBase
     {
         public UntypedFunctionUsageInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
+            : base(state) { }
 
         private readonly string[] _tokens = {
             Tokens.Error,

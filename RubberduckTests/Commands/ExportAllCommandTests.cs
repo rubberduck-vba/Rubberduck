@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.UI;
 using Rubberduck.UI.Command;
@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace RubberduckTests.Commands
 {
-    [TestClass]
+    [TestFixture]
     public class ExportAllTests
     {
         private const string _path = @"C:\Users\Rubberduck\Desktop\ExportAll";
@@ -17,8 +17,8 @@ namespace RubberduckTests.Commands
         private const string _projectFullPath = @"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm";
         private const string _projectFullPath2 = @"C:\Users\Rubberduck\Documents\Subfolder\Project2.xlsm";
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_CanExecute_PassedNull_ExpectTrue()
         {
             var builder = new MockVbeBuilder();
@@ -36,8 +36,8 @@ namespace RubberduckTests.Commands
             Assert.IsTrue(ExportAllCommand.CanExecute(null));
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_CanExecute_PassedNull_NoComponents_ExpectFalse()
         {
             var builder = new MockVbeBuilder();
@@ -55,8 +55,8 @@ namespace RubberduckTests.Commands
             Assert.IsFalse(ExportAllCommand.CanExecute(null));
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_CanExecute_PassedIVBProject_ExpectTrue()
         {
             var builder = new MockVbeBuilder();
@@ -75,8 +75,8 @@ namespace RubberduckTests.Commands
             Assert.IsTrue(ExportAllCommand.CanExecute(vbe.Object.VBProjects.First()));
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_CanExecute_PassedIVBProject_NoComponents_ExpectFalse()
         {
             var builder = new MockVbeBuilder();
@@ -95,8 +95,8 @@ namespace RubberduckTests.Commands
         }
 
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedNull_SingleProject_ExpectExecution()
         {
             var builder = new MockVbeBuilder();
@@ -128,8 +128,8 @@ namespace RubberduckTests.Commands
             project.Verify(m => m.ExportSourceFiles(_path), Times.Once);
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedIVBProject_SingleProject_ExpectExecution()
         {
             var builder = new MockVbeBuilder();
@@ -162,8 +162,8 @@ namespace RubberduckTests.Commands
         }
 
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedNull_MultipleProjects_ExpectExecution()
         {
             var builder = new MockVbeBuilder();
@@ -209,8 +209,8 @@ namespace RubberduckTests.Commands
             project2.Verify(m => m.ExportSourceFiles(_path), Times.Once);
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedIVBProject_MultipleProjects_ExpectExecution()
         {
             var builder = new MockVbeBuilder();
@@ -255,8 +255,8 @@ namespace RubberduckTests.Commands
             project2.Verify(c => c.ExportSourceFiles(_path), Times.Never);
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedNull_SingleProject_BrowserCanceled_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
@@ -288,8 +288,8 @@ namespace RubberduckTests.Commands
             project.Verify(m => m.ExportSourceFiles(_path), Times.Never);
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedIVBProject_SingleProject_BrowserCanceled_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
@@ -322,8 +322,8 @@ namespace RubberduckTests.Commands
         }
 
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedNull_MultipleProjects_BrowserCanceled_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();
@@ -369,8 +369,8 @@ namespace RubberduckTests.Commands
             project2.Verify(m => m.ExportSourceFiles(_path), Times.Never);
         }
 
-        [TestCategory("Commands")]
-        [TestMethod]
+        [Category("Commands")]
+        [Test]
         public void ExportAllCommand_Execute_PassedIVBProject_MultipleProjects_BrowserCanceled_ExpectNoExecution()
         {
             var builder = new MockVbeBuilder();

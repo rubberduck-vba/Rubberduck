@@ -5,7 +5,6 @@ using System.Linq;
 using Moq;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace RubberduckTests.Mocks
 {
@@ -15,11 +14,12 @@ namespace RubberduckTests.Mocks
     public class MockUserFormBuilder
     {
         private readonly Mock<IVBComponent> _component;
+        private readonly Mock<ICodeModule> _codeModule;
         private readonly MockProjectBuilder _mockProjectBuilder;
         private readonly Mock<IControls> _vbControls;
         private readonly ICollection<IControl> _controls = new List<IControl>();
 
-        public MockUserFormBuilder(Mock<IVBComponent> component, MockProjectBuilder mockProjectBuilder)
+        public MockUserFormBuilder(Mock<IVBComponent> component, Mock<ICodeModule> codeModule, MockProjectBuilder mockProjectBuilder)
         {
             if (component.Object.Type != ComponentType.UserForm)
             {
@@ -27,6 +27,7 @@ namespace RubberduckTests.Mocks
             }
 
             _component = component;
+            _codeModule = codeModule;
             _mockProjectBuilder = mockProjectBuilder;
             _vbControls = CreateControlsMock();
         }
@@ -51,9 +52,10 @@ namespace RubberduckTests.Mocks
         /// to continue adding components to the project.
         /// </summary>
         /// <returns></returns>
-        public MockProjectBuilder MockProjectBuilder()
+        public MockProjectBuilder AddFormToProjectBuilder()
         {
-            _mockProjectBuilder.AddComponent(Build());
+            (var component, var codeModule) = Build();
+            _mockProjectBuilder.AddComponent(component,codeModule);
             return _mockProjectBuilder;
         }
 
@@ -61,7 +63,7 @@ namespace RubberduckTests.Mocks
         /// Gets the mock UserForm component.
         /// </summary>
         /// <returns></returns>
-        public Mock<IVBComponent> Build()
+        public (Mock<IVBComponent> Component, Mock<ICodeModule> CodeModule) Build()
         {
             //var designer = CreateMockDesigner();
             //_component.SetupGet(m => m.Designer).Returns(() => designer.Object);
@@ -71,7 +73,7 @@ namespace RubberduckTests.Mocks
             _component.Setup(m => m.Controls).Returns(_vbControls.Object);
             _component.Setup(m => m.DesignerWindow()).Returns(window.Object);
 
-            return _component;
+            return (_component, _codeModule);
         }
 
         //private Mock<UserForm> CreateMockDesigner()

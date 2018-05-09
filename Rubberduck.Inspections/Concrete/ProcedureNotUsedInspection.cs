@@ -15,8 +15,6 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }
 
-        public override CodeInspectionType InspectionType => CodeInspectionType.CodeQualityIssues;
-
         private static readonly string[] DocumentEventHandlerPrefixes =
         {
             "Chart_",

@@ -16,14 +16,13 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class RedundantOptionInspection : ParseTreeInspectionBase
     {
         public RedundantOptionInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Hint)
+            : base(state)
         {
             Listener = new RedundantModuleOptionListener();
         }
 
         public override string Meta => InspectionsUI.RedundantOptionInspectionMeta;
         public override string Description => InspectionsUI.RedundantOptionInspectionName;
-        public override CodeInspectionType InspectionType => CodeInspectionType.LanguageOpportunities;
 
         public override IInspectionListener Listener { get; }
 

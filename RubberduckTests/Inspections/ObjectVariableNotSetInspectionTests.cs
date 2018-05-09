@@ -1,34 +1,19 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
+    [DeploymentItem(@"TestFiles\")]
     public class ObjectVariableNotSetInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_OnlyAssignedToNothing_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-                @"
-Private Sub DoSomething()
-    Dim target As Object
-    target.DoSomething ' error 91
-    Set target = Nothing
-End Sub
-";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -44,8 +29,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -60,8 +45,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenPropertyLet_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -77,8 +62,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenPropertySet_WithoutSet_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -94,8 +79,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenPropertySet_WithSet_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -111,8 +96,8 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenIndexerObjectAccess_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -127,99 +112,78 @@ End Sub
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenStringVariable_ReturnsNoResult()
         {
             var expectResultCount = 0;
             var input =
 @"
-Private Sub Workbook_Open()
-    
+Private Sub Workbook_Open()    
     Dim target As String
     target = Range(""A1"")
-    
     target.Value = ""all good""
-
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedObject_ReturnsResult()
         {
             var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
-'whoCares is a LExprContext and is a known interesting declaration
     Dim target As Collection
-    Set target = new Collection
-    testParam = target             
+    Set target = New Collection
+    testParam = target
     testParam.Add 100
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedNewObject_ReturnsResult()
         {
             var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
-'is a NewExprContext
-    testParam = new Collection     
+    testParam = New Collection     
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
         {
-            var expectResultCount = 0;
+            var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
-'Range(""A1:C1"") is a LExprContext but is not a known interesting declaration
     testParam = Range(""A1:C1"")    
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
         {
             var expectResultCount = 1;
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant, target As Range)
-'target is a LExprContext and is a known interesting declaration
     testParam = target
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredVariant_ReturnsNoResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub TestSub(ByRef testParam As Variant, target As Range)
-'target is a LExprContext and is a known interesting declaration
-    testParam = target
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedBaseType_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -227,13 +191,13 @@ End Sub";
 @"
 Private Sub Workbook_Open()
     Dim target As Variant
-    target = ""A1""     'is a LiteralExprContext
+    target = ""A1""
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -247,11 +211,11 @@ Private Sub Workbook_Open()
     target.Value = ""forgot something?""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_Ignored_DoesNotReturnResult()
         {
             var expectResultCount = 0;
@@ -266,11 +230,11 @@ Private Sub Workbook_Open()
     target.Value = ""forgot something?""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenSetObjectVariable_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -284,48 +248,11 @@ Private Sub Workbook_Open()
     target.Value = ""All good""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
-        //https://github.com/rubberduck-vba/Rubberduck/issues/2266
-        [TestMethod]
-        [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_FunctionReturnsArrayOfType_ReturnsNoResult()
-        {
-            var expectedResultCount = 0;
-            var input =
-@"
-Private Function GetSomeDictionaries() As Dictionary()
-    Dim temp(0 To 1) As Worksheet
-    Set temp(0) = New Dictionary
-    Set temp(1) = New Dictionary
-    GetSomeDictionaries = temp
-End Function";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Codez", ComponentType.StandardModule, input)
-                .AddReference("Scripting", "", 1, 0, true)
-                .Build();
-
-            var vbe = builder.AddProject(project).Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Scripting.1.0.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ObjectVariableNotSetInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(expectedResultCount, inspectionResults.Count());
-
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LongPtrVariable_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -338,8 +265,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_NoTypeSpecified_ReturnsResult()
         {
             var expectResultCount = 0;
@@ -352,8 +279,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_SelfAssigned_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -363,17 +290,37 @@ Private Sub TestSelfAssigned()
     Dim arg1 As new Collection
     arg1.Add 7
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void ObjectVariableNotSet_EnumVariable_ReturnsNoResult()
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_UDT_ReturnsNoResult()
         {
 
             var expectResultCount = 0;
             var input =
 @"
+Private Type TTest
+    Foo As Long
+    Bar As String
+End Type
+
+Private Sub TestUDT()
+    Dim tt As TTest
+    tt.Foo = 42
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_EnumVariable_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
 Enum TestEnum
     EnumOne
     EnumTwo
@@ -387,22 +334,21 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_FunctionReturnNotSet_ReturnsResult()
         {
-
             var expectResultCount = 1;
             var input =
 @"
 Private Function Test() As Collection
-    Test = new Collection
+    Test = New Collection
 End Function";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_ObjectLiteral_ReturnsResult()
         {
 
@@ -416,8 +362,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_NonObjectLiteral_ReturnsNoResult()
         {
 
@@ -434,8 +380,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_ForEach_ReturnsNoResult()
         {
 
@@ -450,8 +396,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_RSet_ReturnsNoResult()
         {
 
@@ -466,8 +412,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LSet_ReturnsNoResult()
         {
 
@@ -482,8 +428,8 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LSetOnUDT_ReturnsNoResult()
         {
 
@@ -510,13 +456,36 @@ End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
-        private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected)
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using(var state = MockParser.CreateAndParse(vbe.Object))
+            const string inspectionName = "ObjectVariableNotSetInspection";
+            var inspection = new ObjectVariableNotSetInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected, params string[] testLibraries)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using(var coordinator = MockParser.Create(vbe.Object))
             {
-                var inspection = new ObjectVariableNotSetInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                foreach (var testLibrary in testLibraries)
+                {
+                    coordinator.State.AddTestLibrary(testLibrary);
+                }
+                coordinator.Parse(new CancellationTokenSource());
+
+                var inspection = new ObjectVariableNotSetInspection(coordinator.State);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(expected, inspectionResults.Count());
             }

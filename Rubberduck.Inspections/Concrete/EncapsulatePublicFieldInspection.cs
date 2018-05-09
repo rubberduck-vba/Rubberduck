@@ -12,9 +12,7 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {
         public EncapsulatePublicFieldInspection(RubberduckParserState state)
-            : base(state, CodeInspectionSeverity.Suggestion) { }
-
-        public override CodeInspectionType InspectionType => CodeInspectionType.MaintainabilityAndReadabilityIssues;
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
