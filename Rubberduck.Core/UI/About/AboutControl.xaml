@@ -57,7 +57,7 @@
                    Foreground="Gray"
                    FontSize="8"
                    HorizontalAlignment="Center"
-                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_CopyVersionLabel}"/>
+                   Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CopyVersionLabel}"/>
         </StackPanel>
         <TextBlock Grid.Column="0" Grid.Row="2"
                    Margin="0,30"
@@ -69,9 +69,9 @@
                             HorizontalAlignment="Center"
                             Margin="10">
                     <TextBlock HorizontalAlignment="Center"
-                               Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_FoundAnIssue}"/>
+                               Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_FoundAnIssue}"/>
                     <TextBlock HorizontalAlignment="Center"
-                               Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_HelpImproveRubberduck}"/>
+                               Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_HelpImproveRubberduck}"/>
                     <TextBlock>
                         <Hyperlink Name="GitHubIssueUrl"
                                    NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new"
@@ -86,11 +86,11 @@
                                Foreground="WhiteSmoke"
                                Width="120"
                                FontSize="13"
-                               Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_ReportAnIssue}"/>
+                               Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ReportAnIssue}"/>
                         </Hyperlink>
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Center" 
-                               Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_FindRubberduckAt}" />
+                               Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_FindRubberduckAt}" />
                     <StackPanel HorizontalAlignment="Center" 
                                 Orientation="Horizontal">
                         <!-- Circle logos created with Ai->XAML Export Plug-In Version 0.2 (PC/64) -->
@@ -146,20 +146,20 @@
                       BorderThickness="1" BorderBrush="Black">
             <StackPanel VerticalAlignment="Top"
                         Margin="10">
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionsLabel}"
+                <Label Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionsLabel}"
                        FontWeight="SemiBold"
                        FontSize="12"
                        Margin="5,0,0,0" />
                 <TextBlock Margin="15,0,0,10"
-                           Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_AttributionList}"
+                           Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionList}"
                            FontSize="10"/>
 
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_SpecialThanksLabel}"
+                <Label Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_SpecialThanksLabel}"
                        FontWeight="SemiBold"
                        FontSize="12"
                        Margin="5,0,0,0" />
                 <StackPanel Margin="5,0,0,0">
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_CommunityHeader}"
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CommunityHeader}"
                                FontWeight="SemiBold"
                                FontSize="10" 
                                Margin="10,0,0,0"/>
@@ -170,7 +170,7 @@ Code Review Stack Exchange
 Stack Overflow
                     </TextBlock>
 
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_ContributorsHeader}"
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ContributorsHeader}"
                                FontWeight="SemiBold"
                                FontSize="10"
                                Margin="10,0,0,0"/>
@@ -208,7 +208,7 @@ Stephen Bullen (Smart Indenter)
 Wayne Phillips (vbWatchdog)
                     </TextBlock>
 
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=AboutWindow_GeneralThanks}"
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_GeneralThanks}"
                                FontSize="10" 
                                Margin="15,0,0,0"/>
                 </StackPanel>
