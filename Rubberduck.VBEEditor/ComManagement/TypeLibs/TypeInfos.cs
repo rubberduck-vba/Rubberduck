@@ -291,10 +291,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private RestrictComInterfaceByAggregation<IVBEComponent> _IVBEComponent_Aggregator;
         private IVBEComponent target_IVBEComponent { get => _IVBEComponent_Aggregator?.WrappedObject; }
 
-        private RestrictComInterfaceByAggregation<IVBETypeInfo> _IVBETypeInfo_Aggregator;
-        private IVBETypeInfo target_IVBETypeInfo { get => _IVBETypeInfo_Aggregator?.WrappedObject; }
-
-        public bool HasVBEExtensions { get => _IVBETypeInfo_Aggregator?.WrappedObject != null; }
+        public bool HasVBEExtensions { get => _IVBEComponent_Aggregator?.WrappedObject != null; }
 
         private bool _hasModuleScopeCompilationErrors;
         public bool HasModuleScopeCompilationErrors => _hasModuleScopeCompilationErrors;
@@ -526,8 +523,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // additionally allowing it to query for ITypeInfo gives a _different_, and more prohibitive implementation of ITypeInfo
             _ITypeInfo_Aggregator = new RestrictComInterfaceByAggregation<ComTypes.ITypeInfo>(rawObjectPtr, queryForType: false);
             _IVBEComponent_Aggregator = new RestrictComInterfaceByAggregation<IVBEComponent>(rawObjectPtr);
-            _IVBETypeInfo_Aggregator = new RestrictComInterfaceByAggregation<IVBETypeInfo>(rawObjectPtr);
-
+            
             // base classes of VBE UserForms cause an access violation on calling GetDocumentation(MEMBERID_NIL)
             // so we have to detect UserForm parents, and ensure GetDocumentation(MEMBERID_NIL) never gets through
             if (parentUserFormUniqueId.HasValue)
@@ -549,8 +545,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _containerTypeLib?.Dispose();
             _ITypeInfo_Aggregator?.Dispose();
             _IVBEComponent_Aggregator?.Dispose();
-            _IVBETypeInfo_Aggregator?.Dispose();
-
+            
             Marshal.Release(_rawObjectPtr);
         }
 
@@ -644,7 +639,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException("This ITypeInfo is not hosted by the VBE, so does not support GetStdModAccessor");
             }
 
-            return target_IVBETypeInfo.GetStdModAccessor();
+            return target_IVBEComponent.GetStdModAccessor();
         }
 
         /// <summary>

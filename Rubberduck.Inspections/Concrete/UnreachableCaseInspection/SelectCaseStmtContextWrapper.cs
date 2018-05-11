@@ -18,10 +18,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public class SelectCaseStmtContextWrapper : ContextWrapperBase, ISelectCaseStmtContextWrapper
     {
         private readonly VBAParser.SelectCaseStmtContext _selectCaseContext;
-        private IRangeClauseContextWrapperFactory _inspectionRangeFactory;
-        private List<ParserRuleContext> _unreachableResults;
-        private List<ParserRuleContext> _mismatchResults;
-        private List<ParserRuleContext> _caseElseResults;
+        private readonly IRangeClauseContextWrapperFactory _inspectionRangeFactory;
+        private readonly List<ParserRuleContext> _unreachableResults;
+        private readonly List<ParserRuleContext> _mismatchResults;
+        private readonly List<ParserRuleContext> _caseElseResults;
 
         public SelectCaseStmtContextWrapper(VBAParser.SelectCaseStmtContext selectCaseContext, IParseTreeVisitorResults inspValues, IUnreachableCaseInspectionFactoryProvider factoryFactory)
             : base(selectCaseContext, inspValues, factoryFactory)
@@ -78,7 +78,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> UnreachableCaseElseCases => _caseElseResults;
 
-        private static List<string> InspectableTypes = new List<string>()
+        private static readonly List<string> InspectableTypes = new List<string>()
         {
             Tokens.Byte,
             Tokens.Integer,

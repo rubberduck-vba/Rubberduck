@@ -26,10 +26,11 @@ options { tokenVocab = VBALexer; }
 startRule : module EOF;
 
 module :
-	endOfStatement?
+    endOfStatement?
     moduleAttributes
     moduleHeader?
     moduleAttributes
+    moduleConfigReferences?
     moduleConfig?
     moduleAttributes
     moduleDeclarations
@@ -42,14 +43,26 @@ module :
 
 moduleHeader : VERSION whiteSpace numberLiteral whiteSpace? CLASS? endOfStatement;
 
+moduleConfigReferences: moduleConfigReferenceElement+;
+
+moduleConfigReferenceElement: 
+    OBJECT whiteSpace? EQ whiteSpace? STRINGLITERAL whiteSpace? SEMICOLON whiteSpace? STRINGLITERAL endOfStatement
+;
+
 moduleConfig :
-    BEGIN (whiteSpace GUIDLITERAL whiteSpace unrestrictedIdentifier whiteSpace?)? endOfStatement
-    moduleConfigElement+
+    BEGIN (whiteSpace (GUIDLITERAL | expression) whiteSpace unrestrictedIdentifier whiteSpace?)? endOfStatement
+        (moduleConfig | moduleConfigProperty | moduleConfigElement)+
     END endOfStatement
 ;
 
+moduleConfigProperty :
+    BEGINPROPERTY whiteSpace unrestrictedIdentifier (whiteSpace GUIDLITERAL)? endOfStatement
+        (moduleConfigProperty | moduleConfigElement)+
+    ENDPROPERTY endOfStatement
+;
+
 moduleConfigElement :
-    unrestrictedIdentifier whiteSpace* EQ whiteSpace* expression (COLON numberLiteral)? endOfStatement
+    unrestrictedIdentifier whiteSpace? EQ whiteSpace? expression (COLON numberLiteral)? endOfStatement
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)*;
@@ -60,10 +73,10 @@ attributeValue : expression;
 moduleDeclarations : (moduleDeclarationsElement endOfStatement)*;
 
 moduleOption : 
-    OPTION_BASE whiteSpace numberLiteral                     # optionBaseStmt
+    OPTION_BASE whiteSpace numberLiteral                       # optionBaseStmt
     | OPTION_COMPARE whiteSpace (BINARY | TEXT | DATABASE)     # optionCompareStmt
-    | OPTION_EXPLICIT                                         # optionExplicitStmt
-    | OPTION_PRIVATE_MODULE                                 # optionPrivateModuleStmt
+    | OPTION_EXPLICIT                                          # optionExplicitStmt
+    | OPTION_PRIVATE_MODULE                                    # optionPrivateModuleStmt
 ;
 
 moduleDeclarationsElement :
@@ -283,9 +296,9 @@ argDefaultValue : EQ whiteSpace? expression;
 // 5.2.2 Implicit Definition Directives
 defDirective : defType whiteSpace letterSpec (whiteSpace? COMMA whiteSpace? letterSpec)*;
 defType :
-        DEFBOOL | DEFBYTE | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR | DEFCUR |
-        DEFSNG | DEFDBL | DEFDATE | 
-        DEFSTR | DEFOBJ | DEFVAR
+    DEFBOOL | DEFBYTE | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR | DEFCUR |
+    DEFSNG | DEFDBL | DEFDATE | 
+    DEFSTR | DEFOBJ | DEFVAR
 ;
 // universalLetterRange must appear before letterRange because they both match the same amount in the case of A-Z but we prefer the universalLetterRange.
 // singleLetter must appear at the end to prevent premature bailout
@@ -355,7 +368,7 @@ functionStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? FUNCTION whiteSpace? functionName (whiteSpace? argList)? (whiteSpace? asTypeClause)? endOfStatement
     block
     statementLabelDefinition? whiteSpace? END_FUNCTION
-	(endOfLine attributeStmt)*
+    (endOfLine attributeStmt)*
 ;
 functionName : identifier;
 
@@ -365,18 +378,18 @@ goToStmt : GOTO whiteSpace expression;
 
 // 5.4.2.8 If Statement
 ifStmt :
-     IF whiteSpace booleanExpression whiteSpace THEN endOfStatement
-     block
-     (statementLabelDefinition? whiteSpace? elseIfBlock)*
-     (statementLabelDefinition? whiteSpace? elseBlock?)
-     statementLabelDefinition? whiteSpace? END_IF
+    IF whiteSpace booleanExpression whiteSpace THEN endOfStatement
+    block
+    (statementLabelDefinition? whiteSpace? elseIfBlock)*
+    (statementLabelDefinition? whiteSpace? elseBlock?)
+    statementLabelDefinition? whiteSpace? END_IF
 ;
 elseIfBlock : 
-     ELSEIF whiteSpace booleanExpression whiteSpace THEN endOfStatement block
-     | ELSEIF whiteSpace booleanExpression whiteSpace THEN whiteSpace? block
+    ELSEIF whiteSpace booleanExpression whiteSpace THEN endOfStatement block
+    | ELSEIF whiteSpace booleanExpression whiteSpace THEN whiteSpace? block
 ;
 elseBlock :
-     ELSE endOfStatement block
+    ELSE endOfStatement block
 ;
 
 // 5.4.2.9 Single-line If Statement
@@ -412,21 +425,21 @@ propertyGetStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_GET whiteSpace functionName (whiteSpace? argList)? (whiteSpace asTypeClause)? endOfStatement 
     block 
     statementLabelDefinition? whiteSpace? END_PROPERTY
-	(endOfLine attributeStmt)*
+    (endOfLine attributeStmt)*
 ;
 
 propertySetStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_SET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
     block 
     statementLabelDefinition? whiteSpace? END_PROPERTY
-	(endOfLine attributeStmt)*
+    (endOfLine attributeStmt)*
 ;
 
 propertyLetStmt : 
     (visibility whiteSpace)? (STATIC whiteSpace)? PROPERTY_LET whiteSpace subroutineName (whiteSpace? argList)? endOfStatement 
     block 
     statementLabelDefinition? whiteSpace? END_PROPERTY
-	(endOfLine attributeStmt)*
+    (endOfLine attributeStmt)*
 ;
 
 // 5.4.2.20 RaiseEvent Statement
@@ -444,11 +457,11 @@ redimVariableDeclaration : expression (whiteSpace asTypeClause)?;
 // 5.4.3.5 Mid/MidB/Mid$/MidB$ Statement
 // This needs to be explicitly defined to distinguish between Mid as a function and Mid as a keyword.
 midStatement : modeSpecifier 
-	LPAREN whiteSpace? 
-	lExpression whiteSpace? COMMA whiteSpace? lExpression whiteSpace? (COMMA whiteSpace? lExpression whiteSpace?)? 
-	RPAREN 
-	whiteSpace? ASSIGN whiteSpace? 
-	expression;
+    LPAREN whiteSpace? 
+    lExpression whiteSpace? COMMA whiteSpace? lExpression whiteSpace? (COMMA whiteSpace? lExpression whiteSpace?)? 
+    RPAREN 
+    whiteSpace? ASSIGN whiteSpace? 
+    expression;
 modeSpecifier :	(MID | MIDB) DOLLAR? ;
 
 integerExpression : expression;
@@ -483,7 +496,7 @@ caseClause :
 caseElseClause : CASE whiteSpace? ELSE endOfStatement block;
 rangeClause :
     (IS whiteSpace?)? comparisonOperator whiteSpace? expression
-	| selectStartValue whiteSpace TO whiteSpace selectEndValue 
+    | selectStartValue whiteSpace TO whiteSpace selectEndValue 
     | expression
 ;
 selectStartValue : expression;
@@ -495,7 +508,7 @@ subStmt :
     (visibility whiteSpace)? (STATIC whiteSpace)? SUB whiteSpace? subroutineName (whiteSpace? argList)? endOfStatement
     block 
     statementLabelDefinition? whiteSpace? END_SUB
-	(endOfLine attributeStmt)*
+    (endOfLine attributeStmt)*
 ;
 subroutineName : identifier;
 
@@ -547,6 +560,7 @@ subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
+legalLabelIdentifier : { !(new[]{DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND}).Contains(_input.La(1))}? identifier | markerKeyword;
 identifier : typedIdentifier | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
@@ -575,10 +589,10 @@ fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
 //Statement labels can only appear at the start of a line.
 statementLabelDefinition : {_input.La(-1) == NEWLINE}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
-identifierStatementLabel : unrestrictedIdentifier whiteSpace? COLON; 
+identifierStatementLabel : legalLabelIdentifier whiteSpace? COLON;
 standaloneLineNumberLabel : 
-	lineNumberLabel whiteSpace? COLON
-	| lineNumberLabel;
+    lineNumberLabel whiteSpace? COLON
+    | lineNumberLabel;
 combinedLabels : lineNumberLabel whiteSpace identifierStatementLabel;
 lineNumberLabel : numberLiteral;
 
@@ -592,28 +606,28 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 
 // 5.6 Expressions
 expression :
-	// Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
-	whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN									# parenthesizedExpr
-	| TYPEOF whiteSpace expression																	# typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
-	| HASH expression																				# markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
-	| NEW whiteSpace expression																		# newExpr
-	| expression whiteSpace? POW whiteSpace? expression												# powOp
-	| MINUS whiteSpace? expression																	# unaryMinusOp
-	| expression whiteSpace? (MULT | DIV) whiteSpace? expression									# multOp
-	| expression whiteSpace? INTDIV whiteSpace? expression											# intDivOp
-	| expression whiteSpace? MOD whiteSpace? expression												# modOp
-	| expression whiteSpace? (PLUS | MINUS) whiteSpace? expression									# addOp
-	| expression whiteSpace? AMPERSAND whiteSpace? expression										# concatOp
-	| expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression	# relationalOp
-	| NOT whiteSpace? expression																	# logicalNotOp
-	| expression whiteSpace? AND whiteSpace? expression												# logicalAndOp
-	| expression whiteSpace? OR whiteSpace? expression												# logicalOrOp
-	| expression whiteSpace? XOR whiteSpace? expression												# logicalXorOp
-	| expression whiteSpace? EQV whiteSpace? expression												# logicalEqvOp
-	| expression whiteSpace? IMP whiteSpace? expression												# logicalImpOp
-	| literalExpression																				# literalExpr
-	| lExpression																					# lExpr
-	| builtInType																					# builtInTypeExpr
+    // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
+    whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
+    | TYPEOF whiteSpace expression                                                                  # typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
+    | HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
+    | NEW whiteSpace expression                                                                     # newExpr
+    | expression whiteSpace? POW whiteSpace? expression                                             # powOp
+    | MINUS whiteSpace? expression                                                                  # unaryMinusOp
+    | expression whiteSpace? (MULT | DIV) whiteSpace? expression                                    # multOp
+    | expression whiteSpace? INTDIV whiteSpace? expression                                          # intDivOp
+    | expression whiteSpace? MOD whiteSpace? expression                                             # modOp
+    | expression whiteSpace? (PLUS | MINUS) whiteSpace? expression                                  # addOp
+    | expression whiteSpace? AMPERSAND whiteSpace? expression                                       # concatOp
+    | expression whiteSpace? (EQ | NEQ | LT | GT | LEQ | GEQ | LIKE | IS) whiteSpace? expression    # relationalOp
+    | NOT whiteSpace? expression                                                                    # logicalNotOp
+    | expression whiteSpace? AND whiteSpace? expression                                             # logicalAndOp
+    | expression whiteSpace? OR whiteSpace? expression                                              # logicalOrOp
+    | expression whiteSpace? XOR whiteSpace? expression                                             # logicalXorOp
+    | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
+    | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
+    | literalExpression                                                                             # literalExpr
+    | lExpression                                                                                   # lExpr
+    | builtInType                                                                                   # builtInTypeExpr
 ;
 
 // 5.6.5 Literal Expressions
@@ -637,7 +651,7 @@ lExpression :
     | identifier                                                                                                    # simpleNameExpr
     | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
     | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
-	| lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN			# whitespaceIndexExpr
+    | lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN         # whitespaceIndexExpr
 ;
 
 // 3.3.5.3 Special Identifier Forms
@@ -657,7 +671,7 @@ requiredArgument : argument;
 argument :
     positionalArgument
     | namedArgument
-	| missingArgument
+    | missingArgument
 ;
 
 positionalArgument : argumentExpression;
@@ -678,119 +692,122 @@ upperBoundArgumentExpression : expression;
 addressOfExpression : ADDRESSOF whiteSpace expression;
 
 keyword : 
-       ABS
-     | ADDRESSOF
-     | ALIAS
-     | AND
-     | ANY
-     | ARRAY
-     | ATTRIBUTE
-     | BEGIN
-     | BOOLEAN
-     | BYREF
-     | BYTE
-     | BYVAL
-     | CBOOL
-     | CBYTE
-     | CCUR
-     | CDATE
-     | CDBL
-     | CDEC
-     | CINT
-     | CLASS
-     | CLNG
-     | CLNGLNG
-     | CLNGPTR
-     | CSNG
-     | CSTR
-     | CURRENCY
-     | CVAR
-     | CVERR
-     | DATABASE
-     | DATE
-     | DEBUG
-     | DOEVENTS
-     | DOUBLE
-     | END
-     | EQV
-     | FALSE
-     | FIX
-     | IMP
-     | IN
-     | INPUTB
-     | INT
-     | INTEGER
-     | IS
-     | LBOUND
-     | LEN
-     | LEN
-     | LENB
-     | LIB
-     | LIKE
-     | LONG
-     | LONGLONG
-     | LONGPTR
-     | ME
-     | MID
-     | MIDB
-     | MOD
-     | NEW
-     | NOT
-     | NOTHING
-     | NULL
-     | OBJECT
-     | OPTIONAL
-     | OR
-     | PARAMARRAY
-     | PRESERVE
-     | PSET
-     | PTRSAFE
-     | REM
-     | SGN
-     | SINGLE
-     | SPC
-     | STRING
-     | TAB
-     | TEXT
-     | THEN
-     | TO
-     | TRUE
-     | TYPEOF
-     | UBOUND
-     | UNTIL
-     | VARIANT
-     | VERSION
-     | WITHEVENTS
-     | XOR
-     | STEP
-     | ON_ERROR
-     | ERROR
-     | APPEND
-     | BINARY
-     | OUTPUT
-     | RANDOM
-     | ACCESS
-     | READ
-     | WRITE
-     | READ_WRITE
-     | SHARED
-     | LOCK_READ
-     | LOCK_WRITE
-     | LOCK_READ_WRITE
-     | LINE_INPUT    
-     | RESET
-     | WIDTH
-     | PRINT
-     | GET
-     | PUT
-     | CLOSE
-     | INPUT
-     | LOCK
-     | OPEN
-     | SEEK
-     | UNLOCK
-     | WRITE
-	 | NAME
+      ABS
+    | ADDRESSOF
+    | ALIAS
+    | AND
+    | ANY
+    | ARRAY
+    | ATTRIBUTE
+    | BEGIN
+    | BEGINPROPERTY
+    | BOOLEAN
+    | BYREF
+    | BYTE
+    | BYVAL
+    | CBOOL
+    | CBYTE
+    | CCUR
+    | CDATE
+    | CDBL
+    | CDEC
+    | CINT
+    | CLASS
+    | CLNG
+    | CLNGLNG
+    | CLNGPTR
+    | CSNG
+    | CSTR
+    | CURRENCY
+    | CVAR
+    | CVERR
+    | DATABASE
+    | DATE
+    | DEBUG
+    | DOEVENTS
+    | DOUBLE
+    | END
+    | ENDPROPERTY
+    | EQV
+    | FALSE
+    | FIX
+    | IMP
+    | IN
+    | INPUTB
+    | INT
+    | INTEGER
+    | IS
+    | LBOUND
+    | LEN
+    | LEN
+    | LENB
+    | LIB
+    | LIKE
+    | LONG
+    | LONGLONG
+    | LONGPTR
+    | ME
+    | MID
+    | MIDB
+    | MOD
+    | NEW
+    | NOT
+    | NOTHING
+    | NULL
+    | OBJECT
+    | OPTIONAL
+    | OR
+    | PARAMARRAY
+    | PRESERVE
+    | PSET
+    | PTRSAFE
+    | REM
+    | SGN
+    | SINGLE
+    | SPC
+    | STRING
+    | TAB
+    | TEXT
+    | THEN
+    | TO
+    | TRUE
+    | TYPEOF
+    | UBOUND
+    | UNTIL
+    | VARIANT
+    | VERSION
+    | WITHEVENTS
+    | XOR
+    | STEP
+    | ON_ERROR
+    | ERROR
+    | APPEND
+    | BINARY
+    | OUTPUT
+    | RANDOM
+    | RANDOMIZE
+    | ACCESS
+    | READ
+    | WRITE
+    | READ_WRITE
+    | SHARED
+    | LOCK_READ
+    | LOCK_WRITE
+    | LOCK_READ_WRITE
+    | LINE_INPUT    
+    | RESET
+    | WIDTH
+    | PRINT
+    | GET
+    | PUT
+    | CLOSE
+    | INPUT
+    | LOCK
+    | OPEN
+    | SEEK
+    | UNLOCK
+    | WRITE
+    | NAME
 ;
 
 markerKeyword : AS;
@@ -868,7 +885,7 @@ endOfLine :
 // we expect endOfStatement to consume all trailing whitespace
 endOfStatement :
     (endOfLine whiteSpace? | (whiteSpace? COLON whiteSpace?))+
-	| whiteSpace? EOF
+    | whiteSpace? EOF
 ;
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
@@ -876,8 +893,8 @@ commentOrAnnotation :
     (annotationList 
     | remComment
     | comment) 
-	// all comments must end with a logical line. See VBA Language Spec 3.3.1
-	(NEWLINE | EOF)
+    // all comments must end with a logical line. See VBA Language Spec 3.3.1
+    (NEWLINE | EOF)
 ;
 remComment : REM whiteSpace? commentBody;
 comment : SINGLEQUOTE commentBody;
@@ -886,11 +903,11 @@ annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (COLON commentBody)?;
 annotation : annotationName annotationArgList?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
-     whiteSpace annotationArg
-     | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
-     | whiteSpace? LPAREN whiteSpace? RPAREN
-     | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
-     | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
+    whiteSpace annotationArg
+    | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+    | whiteSpace? LPAREN whiteSpace? RPAREN
+    | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
+    | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
 annotationArg : expression;
 
 mandatoryLineContinuation : LINE_CONTINUATION WS*;

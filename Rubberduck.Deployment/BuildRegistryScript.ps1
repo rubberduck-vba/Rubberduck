@@ -28,18 +28,18 @@ param (
 
 function Get-ScriptDirectory
 {
-  $Invocation = (Get-Variable MyInvocation -Scope 1).Value
-  Split-Path $Invocation.MyCommand.Path
+  $Invocation = (Get-Variable MyInvocation -Scope 1).Value;
+  Split-Path $Invocation.MyCommand.Path;
 }
 
-Set-StrictMode -Version latest
+Set-StrictMode -Version latest;
 $ErrorActionPreference = "Stop";
 
 try
 {
 	# Allow multiple DLL files to be registered if necessary
-	$separator = "|"
-	$option = [System.StringSplitOptions]::RemoveEmptyEntries
+	$separator = "|";
+	$option = [System.StringSplitOptions]::RemoveEmptyEntries;
 	$files = $filesToExtract.Split($separator, $option);
 
 	foreach($file in $files)
@@ -50,8 +50,8 @@ try
 		$targetTlb32 = $targetDir + ($file -replace ".dll", ".x32.tlb");
 		$sourceTlb64 = $sourceDir + ($file -replace ".dll", ".x64.tlb");
 		$targetTlb64 = $targetDir + ($file -replace ".dll", ".x64.tlb");
-		$dllXml = $targetDll + ".xml"
-		$tlbXml = $targetTlb32 + ".xml"
+		$dllXml = $targetDll + ".xml";
+		$tlbXml = $targetTlb32 + ".xml";
 
 		# Use for debugging issues with passing parameters to the external programs
 		# Note that it is not legal to have syntax like `& $cmdIncludingArguments` or `& $cmd $args`
@@ -67,19 +67,20 @@ try
 		& $cmd file ""$sourceTlb32"" -out ""$tlbXml"";
 			
 		[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
-		$builder = New-Object Rubberduck.Deployment.Builders.RegistryEntryBuilder
+		$builder = New-Object Rubberduck.Deployment.Builders.RegistryEntryBuilder;
 	
 		$entries = $builder.Parse($tlbXml, $dllXml);
 
 		# For debugging
 		# $entries | Format-Table | Out-String |% {Write-Host $_};
 		
-		$writer = New-Object Rubberduck.Deployment.Writers.InnoSetupRegistryWriter
+		$writer = New-Object Rubberduck.Deployment.Writers.InnoSetupRegistryWriter;
 		$content = $writer.Write($entries);
-		 
-		$regFile = ($includeDir + ($file -replace ".dll", ".reg.iss"))
-		$encoding = New-Object System.Text.UTF8Encoding $False
-		[System.IO.File]::WriteAllLines($regFile, $content, $encoding)
+		
+		# The file must be encoded in UTF-8 BOM
+		$regFile = ($includeDir + ($file -replace ".dll", ".reg.iss"));
+		$encoding = New-Object System.Text.UTF8Encoding $true;
+		[System.IO.File]::WriteAllLines($regFile, $content, $encoding);
 
 		# Register the debug build on the local machine
 		if($config -eq "Debug")
@@ -105,18 +106,18 @@ try
 						& reg.exe import $regFile;
 					}
 					& reg.exe import ($dir + "\RubberduckAddinRegistry.reg");
-					Move-Item -Path $regFile -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" )
+					Move-Item -Path $regFile -Destination ($regFile + ".imported_" + $datetime.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt" );
 				}
 			}
 			else
 			{
-				New-Item $dir -ItemType Directory
+				New-Item $dir -ItemType Directory;
 			}
 			
 			# NOTE: The local writer will perform the actual registry changes; the return
 			# is a registry script with deletion instructions for the keys to be deleted
 			# in the next build.
-			$writer = New-Object Rubberduck.Deployment.Writers.LocalDebugRegistryWriter
+			$writer = New-Object Rubberduck.Deployment.Writers.LocalDebugRegistryWriter;
 			$content = $writer.Write($entries);
 
 			$encoding = New-Object System.Text.ASCIIEncoding;

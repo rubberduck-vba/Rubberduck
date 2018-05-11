@@ -4,8 +4,8 @@ using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 

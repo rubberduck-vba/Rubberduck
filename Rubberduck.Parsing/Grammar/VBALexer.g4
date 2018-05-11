@@ -71,6 +71,7 @@ AND : A N D;
 ATTRIBUTE : A T T R I B U T E;
 APPEND : A P P E N D;
 AS : A S;
+BEGINPROPERTY : B E G I N P R O P E R T Y; //Used in module configurations.
 BEGIN : B E G I N;
 BINARY : B I N A R Y;
 BOOLEAN : B O O L E A N;
@@ -110,6 +111,7 @@ END_ENUM : E N D WS+ E N U M;
 END_FUNCTION : E N D (WS | LINE_CONTINUATION)+ F U N C T I O N;
 // We allow "EndIf" without the whitespace as well for the preprocessor.
 END_IF : E N D (WS | LINE_CONTINUATION)* I F;
+ENDPROPERTY : E N D P R O P E R T Y; //Used in module configurations.
 END_PROPERTY : E N D (WS | LINE_CONTINUATION)+ P R O P E R T Y;
 END_SELECT : E N D (WS | LINE_CONTINUATION)+ S E L E C T;
 END_SUB : E N D (WS | LINE_CONTINUATION)+ S U B;
@@ -184,6 +186,7 @@ PTRSAFE : P T R S A F E;
 PUBLIC : P U B L I C;
 PUT : P U T;
 RANDOM : R A N D O M;
+RANDOMIZE : R A N D O M I Z E;
 RAISEEVENT : R A I S E E V E N T;
 READ : R E A D;
 READ_WRITE : R E A D (WS | LINE_CONTINUATION)+ W R I T E;

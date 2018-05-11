@@ -25,7 +25,7 @@ End Sub";
             const string expectedCode =
                 @"Public Sub Foo()
     Dim bar As String
-bar = ""test""
+    bar = ""test""
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);

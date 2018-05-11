@@ -1,4 +1,4 @@
-; English Custom Messages Include
+﻿; English Custom Messages Include -- Must be encoded in UTF-8 BOM
 English.PerUser=Current User
 English.Everyone=All Users
 English.RegisterAddin=Repair VBE Addin registration

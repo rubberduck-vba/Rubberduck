@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.Command.MenuItems
 {

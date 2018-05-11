@@ -235,6 +235,7 @@
   <ItemGroup>
     <Compile Include="ComClientLibrary\UI\DockableWindowHost.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\AssertClass.cs" />
+    <Compile Include="ComClientLibrary\UnitTesting\FakesProviderFactory.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\FakesProvider.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IAssert.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IFake.cs" />
@@ -316,27 +317,8 @@
       <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VB6.Interop.VBIDE">
-      <HintPath>..\libs\Microsoft.VB6.Interop.VBIDE.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.Vbe.Interop, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\libs\Microsoft.Vbe.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Vbe.Interop.Forms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\libs\Microsoft.Vbe.Interop.Forms.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\libs\Office.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

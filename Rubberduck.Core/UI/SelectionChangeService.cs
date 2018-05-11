@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
 
 namespace Rubberduck.UI
 {

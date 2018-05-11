@@ -12,7 +12,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.API.VBA
@@ -20,7 +20,9 @@ namespace Rubberduck.API.VBA
     [ComVisible(true)]
     public interface IParserState
     {
-        void Initialize(Microsoft.Vbe.Interop.VBE vbe);
+        // vbe is the com coclass interface from the interop assembly.
+        // There is no shared interface between VBA and VB6 types, hence object.
+        void Initialize(object vbe); 
 
         void Parse();
         void BeginParse();
@@ -51,7 +53,7 @@ namespace Rubberduck.API.VBA
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
         private ParseCoordinator _parser;
-        private VBE _vbe;
+        private IVBE _vbe;
         private IVBEEvents _vbeEvents;
         private readonly IUiDispatcher _dispatcher;
 
@@ -61,14 +63,16 @@ namespace Rubberduck.API.VBA
             _dispatcher = new UiDispatcher(UiContextProvider.Instance());
         }
 
-        public void Initialize(Microsoft.Vbe.Interop.VBE vbe)
+        // vbe is the com coclass interface from the interop assembly.
+        // There is no shared interface between VBA and VB6 types, hence object.
+        public void Initialize(object vbe)
         {
             if (_parser != null)
             {
                 throw new InvalidOperationException("ParserState is already initialized.");
             }
 
-            _vbe = new VBE(vbe);
+            _vbe = RootComWrapperFactory.GetVbeWrapper(vbe);
             _vbeEvents = VBEEvents.Initialize(_vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(_vbe);

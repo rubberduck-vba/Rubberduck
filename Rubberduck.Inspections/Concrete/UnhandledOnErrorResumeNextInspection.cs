@@ -115,7 +115,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override void ExitIdentifierStatementLabel(VBAParser.IdentifierStatementLabelContext context)
         {
-            var labelText = context.unrestrictedIdentifier().identifier().untypedIdentifier().identifierValue().IDENTIFIER().GetText();
+            var labelText = context.legalLabelIdentifier().identifier().untypedIdentifier().identifierValue().IDENTIFIER().GetText();
             if (labelText.ToLower().StartsWith(LabelPrefix.ToLower()))
             {
                 _errorHandlerLabels.Add(labelText.ToLower());
