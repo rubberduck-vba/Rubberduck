@@ -5,8 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources;
 using Rubberduck.Resources.Registration;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
@@ -135,7 +135,7 @@ namespace Rubberduck.UnitTesting
             }
             else
             {
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, expected, actual, message).Trim());
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, expected, actual, message).Trim());
             }
         }
 
@@ -165,7 +165,7 @@ namespace Rubberduck.UnitTesting
             }
             else
             {
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, expected, actual, message).Trim());
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, expected, actual, message).Trim());
             }
         }
 
@@ -184,12 +184,12 @@ namespace Rubberduck.UnitTesting
 
             if (expected == null && actual != null)
             {
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, Tokens.Nothing, actual.GetHashCode(), message).Trim());
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, Tokens.Nothing, actual.GetHashCode(), message).Trim());
                 return;
             }
             if (actual == null && expected != null)
             {
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, expected.GetHashCode(), Tokens.Nothing, message).Trim());
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, expected.GetHashCode(), Tokens.Nothing, message).Trim());
                 return;
             }
             
@@ -199,7 +199,7 @@ namespace Rubberduck.UnitTesting
             }
             else
             {
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, expected.GetHashCode(), actual.GetHashCode(), message).Trim());
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, expected.GetHashCode(), actual.GetHashCode(), message).Trim());
             }
         }
 
@@ -218,7 +218,7 @@ namespace Rubberduck.UnitTesting
 
             if (expected == null && actual == null)
             {
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, Tokens.Nothing, Tokens.Nothing, message).Trim());
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, Tokens.Nothing, Tokens.Nothing, message).Trim());
                 return;
             }
             if (expected == null || actual == null)
@@ -233,7 +233,7 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, expected.GetHashCode(), actual.GetHashCode(), message).Trim());
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, expected.GetHashCode(), actual.GetHashCode(), message).Trim());
         }
 
         public virtual void SequenceEquals(object expected, object actual, string message = "")
@@ -262,7 +262,7 @@ namespace Rubberduck.UnitTesting
             {
                 if (equals)
                 {
-                    AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_DimensionMismatchFormat, expected.Rank,
+                    AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_DimensionMismatchFormat, expected.Rank,
                             actual.Rank, message).Trim(), methodName);                    
                     return;
                 }
@@ -277,7 +277,7 @@ namespace Rubberduck.UnitTesting
                 {
                     if (equals)
                     {
-                        AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_LBoundMismatchFormat, rank + 1, expectedBound,
+                        AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_LBoundMismatchFormat, rank + 1, expectedBound,
                                 actualBound, message).Trim(), methodName);
                         return;
                     }
@@ -290,7 +290,7 @@ namespace Rubberduck.UnitTesting
                 {
                     if (equals)
                     {
-                        AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_UBoundMismatchFormat, rank + 1, expectedBound,
+                        AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_UBoundMismatchFormat, rank + 1, expectedBound,
                                 actualBound, message).Trim(), methodName);
                         return;
                     }
@@ -324,7 +324,7 @@ namespace Rubberduck.UnitTesting
             if (expectedType.IsArray && actualType.IsArray)
             {
                 AssertHandler.OnAssertInconclusive(
-                    string.Format(RubberduckUI.Assert_UnexpectedArrayFormat, equals ? "Assert.SequenceEquals" : "Assert.NotSequenceEquals"));
+                    string.Format(AssertMessages.Assert_UnexpectedArrayFormat, equals ? "Assert.SequenceEquals" : "Assert.NotSequenceEquals"));
                 return false;
             }
 
@@ -336,13 +336,13 @@ namespace Rubberduck.UnitTesting
             if (expectedType.IsCOMObject && actualType.IsCOMObject)
             {
                 AssertHandler.OnAssertInconclusive(
-                    string.Format(RubberduckUI.Assert_UnexpectedReferenceComparisonFormat, equals ? "Assert.AreSame" : "Assert.AreNotSame"));
+                    string.Format(AssertMessages.Assert_UnexpectedReferenceComparisonFormat, equals ? "Assert.AreSame" : "Assert.AreNotSame"));
                 return false;
             }
 
             if (expectedType != actualType)
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_MismatchedTypes);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_MismatchedTypes);
                 return false;
             }
             return true;
@@ -367,7 +367,7 @@ namespace Rubberduck.UnitTesting
             if (expectedType != null && !expectedType.IsCOMObject && actualType != null && !actualType.IsCOMObject)
             {
                 AssertHandler.OnAssertInconclusive(
-                    string.Format(RubberduckUI.Assert_UnexpectedValueComparisonFormat, same ? "Assert.AreEqual" : "Assert.AreNotEqual"));
+                    string.Format(AssertMessages.Assert_UnexpectedValueComparisonFormat, same ? "Assert.AreEqual" : "Assert.AreNotEqual"));
                 return false;
             }
             return true;
@@ -381,7 +381,7 @@ namespace Rubberduck.UnitTesting
             if (expectedType == null && actualType == null)
             {
                 AssertHandler.OnAssertInconclusive(
-                    string.Format(RubberduckUI.Assert_UnexpectedNullArraysFormat, equals ? "Assert.AreSame" : "Assert.AreNotSame"));
+                    string.Format(AssertMessages.Assert_UnexpectedNullArraysFormat, equals ? "Assert.AreSame" : "Assert.AreNotSame"));
                 return false;
             }
 
@@ -392,19 +392,19 @@ namespace Rubberduck.UnitTesting
 
             if (expectedType != null && !expectedType.IsArray && actualType != null && actualType.IsArray)
             {
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_ParameterIsNotArrayFormat, "[Expected]"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_ParameterIsNotArrayFormat, "[Expected]"));
                 return false;
             }
 
             if (actualType != null && !actualType.IsArray && expectedType != null && expectedType.IsArray)
             {
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_ParameterIsNotArrayFormat, "[Actual]"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_ParameterIsNotArrayFormat, "[Actual]"));
                 return false;
             }
 
             if (actualType != null && !actualType.IsArray && (expectedType == null || expectedType.IsArray))
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_NeitherParameterIsArray);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_NeitherParameterIsArray);
                 return false;
             }
 
@@ -415,13 +415,13 @@ namespace Rubberduck.UnitTesting
         {
             if (expectedType != null && !expectedType.IsCOMObject && (actualType == null || actualType.IsCOMObject))
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_ValueReferenceMismatch);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_ValueReferenceMismatch);
                 return false;
             }
 
             if (actualType != null && !actualType.IsCOMObject && (expectedType == null || expectedType.IsCOMObject))
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_ReferenceValueMismatch);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_ReferenceValueMismatch);
                 return false;
             }
             return true;

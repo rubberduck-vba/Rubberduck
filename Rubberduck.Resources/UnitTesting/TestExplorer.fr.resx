@@ -240,4 +240,7 @@
   <data name="TestExplorer_Outcome" xml:space="preserve">
     <value>Résultat</value>
   </data>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
+  </data>
 </root>

@@ -191,18 +191,18 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Settings\UnitTesting.de.Designer.cs">
-      <DependentUpon>UnitTesting.de.resx</DependentUpon>
+    <Compile Include="Settings\UnitTestingPage.de.Designer.cs">
+      <DependentUpon>UnitTestingPage.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Settings\UnitTesting.Designer.cs">
-      <DependentUpon>UnitTesting.resx</DependentUpon>
+    <Compile Include="Settings\UnitTestingPage.Designer.cs">
+      <DependentUpon>UnitTestingPage.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Settings\UnitTesting.fr.Designer.cs">
-      <DependentUpon>UnitTesting.fr.resx</DependentUpon>
+    <Compile Include="Settings\UnitTestingPage.fr.Designer.cs">
+      <DependentUpon>UnitTestingPage.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -368,20 +368,20 @@
       <LastGenOutput>AssertMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\UnitTesting.cs.resx" />
-    <EmbeddedResource Include="Settings\UnitTesting.de.resx">
+    <EmbeddedResource Include="Settings\UnitTestingPage.cs.resx" />
+    <EmbeddedResource Include="Settings\UnitTestingPage.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UnitTesting.de.Designer.cs</LastGenOutput>
+      <LastGenOutput>UnitTestingPage.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\UnitTesting.fr.resx">
+    <EmbeddedResource Include="Settings\UnitTestingPage.fr.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UnitTesting.fr.Designer.cs</LastGenOutput>
+      <LastGenOutput>UnitTestingPage.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\UnitTesting.resx">
+    <EmbeddedResource Include="Settings\UnitTestingPage.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>UnitTesting.Designer.cs</LastGenOutput>
+      <LastGenOutput>UnitTestingPage.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UnitTesting\TestExplorer.cs.resx" />

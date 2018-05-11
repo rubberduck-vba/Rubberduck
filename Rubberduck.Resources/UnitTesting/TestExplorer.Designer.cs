@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log..
+        /// </summary>
+        public static string Command_AddTestModule_Error {
+            get {
+                return ResourceManager.GetString("Command_AddTestModule_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string TestExplorer_AddButtonText {

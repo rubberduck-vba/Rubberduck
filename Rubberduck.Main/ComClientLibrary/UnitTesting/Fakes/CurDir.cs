@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.Resources;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
@@ -25,7 +24,7 @@ namespace Rubberduck.UnitTesting.Fakes
             set
             {
                 Verifier.SuppressAsserts();
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "CurDir"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_InvalidFakePassThrough, "CurDir"));
             }
         }
 

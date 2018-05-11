@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.Resources;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
@@ -21,7 +20,7 @@ namespace Rubberduck.UnitTesting.Fakes
             set
             {
                 Verifier.SuppressAsserts();
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "InputBox"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_InvalidFakePassThrough, "InputBox"));
             }
         }
 

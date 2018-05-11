@@ -240,4 +240,7 @@
   <data name="TestExplorer_Outcome" xml:space="preserve">
     <value>Ergebnis</value>
   </data>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
+  </data>
 </root>

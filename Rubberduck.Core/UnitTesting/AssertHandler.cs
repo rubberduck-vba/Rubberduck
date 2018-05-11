@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Rubberduck.Resources;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
@@ -19,7 +18,7 @@ namespace Rubberduck.UnitTesting
         {
             OnAssertCompleted?.Invoke(null,
                     new AssertCompletedEventArgs(TestOutcome.Failed,
-                        string.Format(RubberduckUI.Assert_FailedMessageFormat, methodName, message).Trim()));
+                        string.Format(AssertMessages.Assert_FailedMessageFormat, methodName, message).Trim()));
         }
 
         public static void OnAssertInconclusive(string message)
@@ -38,7 +37,7 @@ namespace Rubberduck.UnitTesting
 
         public static void RaiseVbaError(int number, string source = "", string description = "", string helpfile = "", int helpcontext = 0)
         {
-            OnAssertInconclusive(RubberduckUI.Assert_NotImplemented);
+            OnAssertInconclusive(AssertMessages.Assert_NotImplemented);
         }
     }
 }

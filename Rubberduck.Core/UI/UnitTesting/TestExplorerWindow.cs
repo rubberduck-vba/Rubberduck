@@ -1,5 +1,5 @@
 ﻿using System.Windows.Forms;
-using Rubberduck.Resources;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -21,6 +21,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public string ClassId => "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
-        public string Caption => RubberduckUI.TestExplorerWindow_Caption;
+        public string Caption => TestExplorer.TestExplorerWindow_Caption;
     }
 }

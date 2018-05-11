@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings.Converters
 {
@@ -13,9 +13,9 @@ namespace Rubberduck.UI.Settings.Converters
             switch (mode)
             {
                 case Rubberduck.Settings.BindingMode.EarlyBinding:
-                    return RubberduckUI.UnitTestSettings_EarlyBinding;
+                    return UnitTestingPage.UnitTestSettings_EarlyBinding;
                 case Rubberduck.Settings.BindingMode.LateBinding:
-                    return RubberduckUI.UnitTestSettings_LateBinding;
+                    return UnitTestingPage.UnitTestSettings_LateBinding;
                 default:
                     return value;
             }
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Settings.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var text = (string)value;
-            return text == RubberduckUI.UnitTestSettings_EarlyBinding
+            return text == UnitTestingPage.UnitTestSettings_EarlyBinding
                 ? Rubberduck.Settings.BindingMode.EarlyBinding
                 : Rubberduck.Settings.BindingMode.LateBinding;
         }

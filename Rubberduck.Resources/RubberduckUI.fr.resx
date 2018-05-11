@@ -1531,9 +1531,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>'Compile on demand' est activé</value>
   </data>
-  <data name="Command_AddTestModule_Error" xml:space="preserve">
-    <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
-  </data>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filtrer par description :</value>
   </data>

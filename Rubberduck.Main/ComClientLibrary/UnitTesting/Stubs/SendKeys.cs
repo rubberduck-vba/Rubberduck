@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
@@ -22,7 +21,7 @@ namespace Rubberduck.UnitTesting
             set
             {
                 Verifier.SuppressAsserts();
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "SendKeys"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_InvalidFakePassThrough, "SendKeys"));
             }
         }
 

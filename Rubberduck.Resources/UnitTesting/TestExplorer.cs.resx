@@ -240,4 +240,7 @@
   <data name="UnitTest_TotalDuration" xml:space="preserve">
     <value>Total Duration</value>
   </data>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log.</value>
+  </data>
 </root>
