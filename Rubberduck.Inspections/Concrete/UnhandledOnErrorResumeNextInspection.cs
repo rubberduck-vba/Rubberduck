@@ -17,12 +17,10 @@ namespace Rubberduck.Inspections.Concrete
     {
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, string> _errorHandlerLabelsMap =
             new Dictionary<QualifiedContext<ParserRuleContext>, string>();
-        private readonly Dictionary<QualifiedContext<ParserRuleContext>, VBAParser.ModuleBodyElementContext> _bodyElementContextsMap =
-            new Dictionary<QualifiedContext<ParserRuleContext>, VBAParser.ModuleBodyElementContext>();
 
         public UnhandledOnErrorResumeNextInspection(RubberduckParserState state) : base(state)
         {
-            Listener = new OnErrorStatementListener(_errorHandlerLabelsMap, _bodyElementContextsMap);
+            Listener = new OnErrorStatementListener(_errorHandlerLabelsMap);
         }
 
         public override IInspectionListener Listener { get; }
@@ -35,7 +33,6 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     dynamic properties = new PropertyBag();
                     properties.Label = _errorHandlerLabelsMap[result];
-                    properties.BodyElement = _bodyElementContextsMap[result];
 
                     return new QualifiedContextInspectionResult(this, InspectionsUI.UnhandledOnErrorResumeNextInspectionResultFormat, result, properties);
                 });
@@ -48,15 +45,12 @@ namespace Rubberduck.Inspections.Concrete
         private readonly List<QualifiedContext<ParserRuleContext>> _unhandledContexts = new List<QualifiedContext<ParserRuleContext>>();
         private readonly List<string> _errorHandlerLabels = new List<string>();
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, string> _errorHandlerLabelsMap;
-        private readonly Dictionary<QualifiedContext<ParserRuleContext>, VBAParser.ModuleBodyElementContext> _bodyElementContextsMap;
 
         private const string LabelPrefix = "ErrorHandler";
 
-        public OnErrorStatementListener(Dictionary<QualifiedContext<ParserRuleContext>, string> errorHandlerLabelsMap,
-            Dictionary<QualifiedContext<ParserRuleContext>, VBAParser.ModuleBodyElementContext> bodyElementContextsMap)
+        public OnErrorStatementListener(Dictionary<QualifiedContext<ParserRuleContext>, string> errorHandlerLabelsMap)
         {
             _errorHandlerLabelsMap = errorHandlerLabelsMap;
-            _bodyElementContextsMap = bodyElementContextsMap;
         }
 
         public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
@@ -67,7 +61,6 @@ namespace Rubberduck.Inspections.Concrete
             _unhandledContexts.Clear();
             _errorHandlerLabels.Clear();
             _errorHandlerLabelsMap.Clear();
-            _bodyElementContextsMap.Clear();
         }
 
         public QualifiedModuleName CurrentModuleName { get; set; }
@@ -80,8 +73,6 @@ namespace Rubberduck.Inspections.Concrete
 
                 foreach (var errorContext in _unhandledContexts)
                 {
-                    _bodyElementContextsMap.Add(errorContext, context);
-
                     labelIndex++;
                     var labelSuffix = labelIndex == 0 ? "" : labelIndex.ToString();
 
