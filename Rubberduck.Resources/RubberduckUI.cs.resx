@@ -309,9 +309,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Severity" xml:space="preserve">
     <value>Závažnost</value>
   </data>
-  <data name="SourceControl_CreateNewRepo" xml:space="preserve">
-    <value>Vytvořit Nový Repozitář</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
   </data>
@@ -414,12 +411,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Unit &amp;Testy</value>
   </data>
-  <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>Spustit &amp;všechny test</value>
-  </data>
-  <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>&amp;Test Explorer</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parsuji...)</value>
   </data>
@@ -443,18 +434,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="Passed" xml:space="preserve">
     <value>V pořádku</value>
-  </data>
-  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
-    <value>{0} selhal</value>
-  </data>
-  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} neprůkazný</value>
-  </data>
-  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
-    <value>{0} v pořádku</value>
-  </data>
-  <data name="TestExplorerWindow_Caption" xml:space="preserve">
-    <value>Test Explorer</value>
   </data>
   <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>Todo Explorer</value>
@@ -519,53 +498,11 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="CodeInspections_RefreshToolTip" xml:space="preserve">
     <value>Spustit inspekci kódu</value>
   </data>
-  <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>Přidat</value>
-  </data>
-  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testovací metoda (Očekávaný error)</value>
-  </data>
-  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>Testovací metoda</value>
-  </data>
-  <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>Testovací modul</value>
-  </data>
-  <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>Trvání</value>
-  </data>
-  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Navigovat na výběr</value>
-  </data>
-  <data name="TestExplorer_Message" xml:space="preserve">
-    <value>Zpráva</value>
-  </data>
-  <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Název metody</value>
-  </data>
   <data name="ModuleName" xml:space="preserve">
     <value>Název modulu</value>
   </data>
-  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Modul</value>
-  </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>Všechny testy</value>
-  </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>Spustit</value>
-  </data>
   <data name="Run" xml:space="preserve">
     <value>Spustit</value>
-  </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Spustit poslední běh</value>
-  </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>Testy, které prošly</value>
-  </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Vybrané testy</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Řádek</value>
@@ -615,12 +552,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="SourceControlPanel_Caption" xml:space="preserve">
-    <value>Source Control</value>
-  </data>
-  <data name="SourceControl_CancelGlobalSettings" xml:space="preserve">
-    <value>Zrušit</value>
-  </data>
   <data name="DeclarationType_UserDefinedType" xml:space="preserve">
     <value>uživatelsky-definovaný typ</value>
   </data>
@@ -629,12 +560,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
     <value>Klikněte [Ok] pro uzavření okna a aplikování změn, nebo [Zrušit] pro jejich zrušení.</value>
-  </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>Testy, které neproběhly</value>
-  </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>Testy, které neprošly</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Text tokenu:</value>
@@ -711,22 +636,10 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="SourceControl_LocalDirectoryLabel" xml:space="preserve">
-    <value>Lokální adresář:</value>
-  </data>
   <data name="CodeExplorer_Commit" xml:space="preserve">
     <value>Commit...</value>
   </data>
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Odsazení</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>Testovací M&amp;odul</value>
-  </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testovací Metoda (&amp;Expected Error)</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>Testovací &amp;Metoda</value>
   </data>
 </root>

@@ -327,12 +327,6 @@
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>&amp;Tests Unitaires</value>
   </data>
-  <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>E&amp;xécuter tous les tests</value>
-  </data>
-  <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>Explorateur de &amp;tests</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (analyse...)</value>
   </data>
@@ -413,23 +407,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Severity" xml:space="preserve">
     <value>Sévérité</value>
   </data>
-  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
-    <value>{0} Échoués</value>
-  </data>
-  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} Inconclusifs</value>
-  </data>
-  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
-    <value>{0} Succès</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
-    <value>Deux ou plusieurs projets ont le même nom et contiennent une ou plusieurs méthodes de test ayant le même nom. Veuillez en renommer un avant de continuer.</value>
-  </data>
-  <data name="TestExplorerWindow_Caption" xml:space="preserve">
-    <value>Explorateur de tests</value>
   </data>
   <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>Explorateur de marqueurs "TODO"</value>
@@ -544,51 +523,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Configuration de Rubberduck</value>
-  </data>
-  <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>Ajouter</value>
-  </data>
-  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Test (erreur attendue)</value>
-  </data>
-  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>Test</value>
-  </data>
-  <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>Module de tests</value>
-  </data>
-  <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>Durée</value>
-  </data>
-  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Naviguer au test sélectionné</value>
-  </data>
-  <data name="TestExplorer_Message" xml:space="preserve">
-    <value>Message</value>
-  </data>
-  <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Nom</value>
-  </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>Tous les tests</value>
-  </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>Exécuter</value>
-  </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>Tests échoués</value>
-  </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Répéter</value>
-  </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>Tests non exécutés</value>
-  </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>Tests passés</value>
-  </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Tests sélectionnés</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Description</value>
@@ -855,9 +789,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Initialisation et nettoyage des méthodes de test</value>
-  </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolut</value>
   </data>
@@ -873,12 +804,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
-    <value>cette procédure s'exécute après chaque test dans le module</value>
-  </data>
-  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Mode:</value>
-  </data>
   <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
     <value>Explorateur</value>
   </data>
@@ -890,9 +815,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="SearchResults_MemberName" xml:space="preserve">
     <value>Membre</value>
-  </data>
-  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
-    <value>Module de test</value>
   </data>
   <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
     <value>Alt</value>
@@ -915,9 +837,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ParserState_Parsed" xml:space="preserve">
     <value>Analyse complétée</value>
   </data>
-  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
-    <value>Indirecte (late binding)</value>
-  </data>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>Par résultat</value>
   </data>
@@ -935,12 +854,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="CommonHotkey_HookDetached" xml:space="preserve">
     <value>L'attache est déjà désactivée.</value>
-  </data>
-  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Liaison par défaut:</value>
-  </data>
-  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Inclure un exemple de méthode de test</value>
   </data>
   <data name="IndenterSettings_EnableUndo" xml:space="preserve">
     <value>Activer l'annulation</value>
@@ -966,12 +879,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Résultats de recherche</value>
   </data>
-  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
-    <value>L'erreur attendue ne s'est pas produite</value>
-  </data>
-  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Module</value>
-  </data>
   <data name="HotkeyDescription_IndentModule" xml:space="preserve">
     <value>Indenter le module</value>
   </data>
@@ -984,12 +891,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>La combinaison ({0}) n'est pas enregistrée.</value>
   </data>
-  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
-    <value>Assertions strictes</value>
-  </data>
-  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
-    <value>Renommer le test</value>
-  </data>
   <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
     <value>Indentation</value>
   </data>
@@ -998,9 +899,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
     <value>Ctrl</value>
-  </data>
-  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>cette procédure s'exécute avant chaque test dans le module</value>
   </data>
   <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
     <value>Indenter les directives du préprocesseur</value>
@@ -1013,9 +911,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
     <value>Même espacement</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Non concluant</value>
   </data>
   <data name="IndenterSettings_AlignDims" xml:space="preserve">
     <value>Aligner les déclarations (Dim)</value>
@@ -1053,14 +948,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Clé invalide</value>
   </data>
-  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
-    <value>cette procédure s'exécute une seule fois par module</value>
-  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Sévérité:</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Succès</value>
   </data>
   <data name="CodeInspectionResults_Issue" xml:space="preserve">
     <value>Problème</value>
@@ -1077,9 +966,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="HotkeyDescription_ParseAll" xml:space="preserve">
     <value>Rafraîchir l'analyseur</value>
   </data>
-  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
-    <value>Directe (early binding)</value>
-  </data>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
   </data>
@@ -1089,14 +975,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>la procédure externe</value>
   </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Inconnu</value>
-  </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Aligner les commentaires avec le code</value>
-  </data>
-  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
-    <value>Assertions permissives</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Par module</value>
@@ -1122,12 +1002,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
     <value>Active</value>
   </data>
-  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
-    <value>Le test a produit une erreur</value>
-  </data>
-  <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Échec</value>
-  </data>
   <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
   </data>
@@ -1149,14 +1023,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Tests unitaires</value>
   </data>
-  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
-    <value>Changer le numéro d'erreur</value>
-  </data>
   <data name="SearchResults_ModuleName" xml:space="preserve">
     <value>Module</value>
-  </data>
-  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Initialisation et nettoyage des modules de test</value>
   </data>
   <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
     <value>Rechercher un symbole</value>
@@ -1200,14 +1068,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Find" xml:space="preserve">
     <value>Chercher</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
-    <value>Durée totale</value>
-  </data>
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Barre oblique (/)</value>
-  </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ignoré</value>
   </data>
   <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
     <value>Fatal</value>
@@ -1301,9 +1163,6 @@ End Sub</value>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck ne redémarre pas.</value>
   </data>
-  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>M&amp;odule de tests</value>
-  </data>
   <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
     <value>Refactorer / Encapsuler le champ</value>
   </data>
@@ -1337,17 +1196,11 @@ End Sub</value>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
   </data>
-  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>&amp;Méthode de test</value>
-  </data>
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
     <value>Développer l'arborescence</value>
   </data>
   <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignorer la casse</value>
-  </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Méthode de test (&amp;erreur attendue)</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
@@ -1515,9 +1368,6 @@ les projets dans le VBE.</value>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0}{1} ne peut être renommé.</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
-    <value>Tests inconclusifs</value>
-  </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
   </data>
@@ -1609,9 +1459,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="CodeMetrics_Lines" xml:space="preserve">
     <value>Lignes</value>
-  </data>
-  <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Résultat</value>
   </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indenter le module</value>
