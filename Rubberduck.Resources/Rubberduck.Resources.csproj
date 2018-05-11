@@ -151,6 +151,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\RubberduckGuid.cs" />
     <Compile Include="Registration\RubberduckProgId.cs" />
+    <Compile Include="RubberduckUI.cs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RubberduckUI.cs.resx</DependentUpon>
+    </Compile>
     <Compile Include="RubberduckUI.de.Designer.cs">
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -316,7 +321,10 @@
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="RubberduckUI.cs.resx" />
+    <EmbeddedResource Include="RubberduckUI.cs.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.cs.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="RubberduckUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
