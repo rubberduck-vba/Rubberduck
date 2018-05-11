@@ -133,11 +133,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="CodeExplorer.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeExplorer.resx</DependentUpon>
-    </Compile>
     <Compile Include="Inspections\InspectionsUI.de.Designer.cs">
       <DependentUpon>InspectionsUI.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -156,11 +151,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\RubberduckGuid.cs" />
     <Compile Include="Registration\RubberduckProgId.cs" />
-    <Compile Include="Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="RubberduckUI.de.Designer.cs">
       <DependentUpon>RubberduckUI.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -311,11 +301,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RegexAssistantUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="CodeExplorer.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>CodeExplorer.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionsUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
@@ -330,11 +315,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RubberduckUI.cs.resx" />
     <EmbeddedResource Include="RubberduckUI.de.resx">
@@ -403,677 +383,254 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Resource Include="Ducky.ico" />
+    <Resource Include="Icons\Fugue\application-resize.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\application-resize.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-090.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-090.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-270.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-270.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-branch-090.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-branch-090.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-circle-double.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-circle-double.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-circle-left.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-circle-left.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-merge-090.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-merge-090.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-repeat.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-repeat.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-repeat1.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-repeat1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-return-180-left.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-return-180-left.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-split.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-split.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow-step.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow-step.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\arrow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\Fugue\arrow.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AboutBanner.png" />
-    <Content Include="Icons\Custom\attribution.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\cc_license.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\AddPropertyMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\AddVariableMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\AllLoadedTestsMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\ExtractInterfaceMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\ExtractMethodMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\FindSymbolMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\ImplementInterfaceMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\PromoteLocalMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\RemoveParametersMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\ReorderParametersMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\Mask\TestManagerMask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Custom\mit_license.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Icons\Custom\attribution.txt" />
+    <Content Include="Icons\Custom\cc_license.txt" />
+    <Content Include="Icons\Custom\Mask\AddPropertyMask.bmp" />
+    <Content Include="Icons\Custom\Mask\AddVariableMask.bmp" />
+    <Content Include="Icons\Custom\Mask\AllLoadedTestsMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ExtractInterfaceMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ExtractMethodMask.bmp" />
+    <Content Include="Icons\Custom\Mask\FindSymbolMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ImplementInterfaceMask.bmp" />
+    <Content Include="Icons\Custom\Mask\PromoteLocalMask.bmp" />
+    <Content Include="Icons\Custom\Mask\RemoveParametersMask.bmp" />
+    <Content Include="Icons\Custom\Mask\ReorderParametersMask.bmp" />
+    <Content Include="Icons\Custom\Mask\TestManagerMask.bmp" />
+    <Content Include="Icons\Custom\mit_license.txt" />
+    <Resource Include="Icons\Fugue\document-block.png" />
+    <Resource Include="Icons\Fugue\document-globe.png" />
+    <Resource Include="Icons\Fugue\pencil-ruler.png" />
+    <Resource Include="Icons\Fugue\status-offline.png" />
+    <Resource Include="Icons\Fugue\ui-scroll-pane-form.png" />
+    <Resource Include="Icons\Fugue\ui-tab-content.png" />
+    <Content Include="Icons\Custom\PNG\MdiForm.png" />
     <Content Include="Splash.png" />
-    <Resource Include="Icons\Fugue\lock--exclamation.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Icons\Fugue\lock--exclamation.png" />
     <Resource Include="Rubberduck.png" />
-    <Resource Include="Icons\Custom\PNG\TestMethod.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\TestManager.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\Task.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\StepRunTest.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\Services.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ReorderParameters.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\RemoveParameters.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\Refresh.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\Recursion.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\PromoteLocal.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ProjectReference.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ProjectForm.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\Play.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\Options.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectValueTypeShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectValueTypeSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectValueTypeProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectValueTypePrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectValueTypeFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectValueType.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectTypeShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectTypeSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectTypeProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectTypePrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectTypeFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectType.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectStructureShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectStructureSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectStructureProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectStructurePrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectStructureFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectStructure.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectPropertiesShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectPropertiesSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectPropertiesProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectPropertiesPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectPropertiesFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectProperties.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectModuleShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectModuleSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectModuleProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectModulePrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectModuleFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectModule.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectMethodShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectMethodSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectMethodProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectMethodPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectMethodFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectMethod.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectLibrary.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectFieldShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectFieldSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectFieldProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectFieldPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectFieldFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectField.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEventShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEventSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEventProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEventPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEventFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEvent.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumItemShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumItemSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumItemProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumItemPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumItemFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumItem.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnumFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectEnum.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectConstantShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectConstantSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectConstantProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectConstantPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectConstantFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectConstant.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectClassShortcut.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectClassSealed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectClassProtected.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectClassPrivate.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectClassFriend.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectClass.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ObjectAssembly.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\NewEvent.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\NewConstant.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ListOfTests.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ImplementInterface.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\GroupBy.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\GenerateMethod.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\FolderOpenVirtual.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\FolderOpenHidden.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\FolderOpen.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\FolderClosedVirtual.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\FolderClosedHidden.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\FolderClosed.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\FindSymbol.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ExtractMethod.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ExtractInterface.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ExportTestRunResults.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\Document.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\DisplayName.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\DisplayFullSignature.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\CollapseUp.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\CollapseDown.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\ApplyCodeChanges.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AllLoadedTests.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AddVariable.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AddProperty.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AddModule.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AddMethod.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AddForm.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AddEvent.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Custom\PNG\AddClass.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Icons\Fugue\balloon_ellipsis.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Fugue\balloon_mask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Fugue\balloon_prohibition.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Fugue\balloon_smiley.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Icons\Fugue\tick.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\tick-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\terminal.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\question-white.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\printer.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\plus-circle1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\plus-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\navigation.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\navigation-180.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\minus-white.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\minus-circle1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\minus-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\magnifier-medium.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\magnifier--arrow.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\light-bulb-code.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\init-repo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\information.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\information-white.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\icon-github.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\hourglass.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\git.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\gear.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\folder.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\folder-rename.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\folder-open.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\folder-horizontal.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\folder-horizontal-open.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\folder--plus.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\folder--pencil.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask_mask.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask_exclamation_mask.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask-empty.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask--plus.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask--pencil.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask--exclamation.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\flask--arrow.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\exclamation.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\exclamation-white.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\exclamation-diamond.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\exclamation-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\edit-list-order.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\drive-upload.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\drive-download.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <None Include="Icons\Fugue\document-word.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons\Fugue\document-smiley-sad.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons\Fugue\document-powerpoint.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons\Fugue\document-outlook.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons\Fugue\document-office.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Icons\Fugue\document-excel.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Resource Include="Icons\Fugue\document-copy.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\disk.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\cross-script.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\cross-circle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\cross-button.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\creative-commons.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\control.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\control-000-small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <None Include="Icons\Fugue\circle_mask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Resource Include="Icons\Fugue\blue-folder-horizontal.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\blue-folder-horizontal-open.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Fugue\arrow1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Content Include="Icons\Fugue\arrow_circle_double_mask.bmp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Icons\Custom\PNG\TestMethod.png" />
+    <Resource Include="Icons\Custom\PNG\TestManager.png" />
+    <Resource Include="Icons\Custom\PNG\Task.png" />
+    <Resource Include="Icons\Custom\PNG\StepRunTest.png" />
+    <Resource Include="Icons\Custom\PNG\Services.png" />
+    <Resource Include="Icons\Custom\PNG\ReorderParameters.png" />
+    <Resource Include="Icons\Custom\PNG\RemoveParameters.png" />
+    <Resource Include="Icons\Custom\PNG\Refresh.png" />
+    <Resource Include="Icons\Custom\PNG\Recursion.png" />
+    <Resource Include="Icons\Custom\PNG\PromoteLocal.png" />
+    <Resource Include="Icons\Custom\PNG\ProjectReference.png" />
+    <Resource Include="Icons\Custom\PNG\ProjectForm.png" />
+    <Resource Include="Icons\Custom\PNG\Play.png" />
+    <Resource Include="Icons\Custom\PNG\Options.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueTypeShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueTypeSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueTypeProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueTypePrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueTypeFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectValueType.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectTypeShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectTypeSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectTypeProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectTypePrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectTypeFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectType.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectStructureShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectStructureSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectStructureProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectStructurePrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectStructureFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectStructure.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertiesShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertiesSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertiesProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertiesPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectPropertiesFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectProperties.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModuleShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModuleSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModuleProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModulePrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModuleFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectModule.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethodShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethodSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethodProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethodPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethodFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectMethod.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectLibrary.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectFieldShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectFieldSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectFieldProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectFieldPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectFieldFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectField.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEventShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEventSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEventProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEventPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEventFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEvent.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumItemShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumItemSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumItemProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumItemPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumItemFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumItem.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnumFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectEnum.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstantShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstantSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstantProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstantPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstantFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectConstant.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectClassShortcut.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectClassSealed.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectClassProtected.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectClassPrivate.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectClassFriend.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectClass.png" />
+    <Resource Include="Icons\Custom\PNG\ObjectAssembly.png" />
+    <Resource Include="Icons\Custom\PNG\NewEvent.png" />
+    <Resource Include="Icons\Custom\PNG\NewConstant.png" />
+    <Resource Include="Icons\Custom\PNG\ListOfTests.png" />
+    <Resource Include="Icons\Custom\PNG\ImplementInterface.png" />
+    <Resource Include="Icons\Custom\PNG\GroupBy.png" />
+    <Resource Include="Icons\Custom\PNG\GenerateMethod.png" />
+    <Resource Include="Icons\Custom\PNG\FolderOpenVirtual.png" />
+    <Resource Include="Icons\Custom\PNG\FolderOpenHidden.png" />
+    <Resource Include="Icons\Custom\PNG\FolderOpen.png" />
+    <Resource Include="Icons\Custom\PNG\FolderClosedVirtual.png" />
+    <Resource Include="Icons\Custom\PNG\FolderClosedHidden.png" />
+    <Resource Include="Icons\Custom\PNG\FolderClosed.png" />
+    <Resource Include="Icons\Custom\PNG\FindSymbol.png" />
+    <Resource Include="Icons\Custom\PNG\ExtractMethod.png" />
+    <Resource Include="Icons\Custom\PNG\ExtractInterface.png" />
+    <Resource Include="Icons\Custom\PNG\ExportTestRunResults.png" />
+    <Resource Include="Icons\Custom\PNG\Document.png" />
+    <Resource Include="Icons\Custom\PNG\DisplayName.png" />
+    <Resource Include="Icons\Custom\PNG\DisplayFullSignature.png" />
+    <Resource Include="Icons\Custom\PNG\CollapseUp.png" />
+    <Resource Include="Icons\Custom\PNG\CollapseDown.png" />
+    <Resource Include="Icons\Custom\PNG\ApplyCodeChanges.png" />
+    <Resource Include="Icons\Custom\PNG\AllLoadedTests.png" />
+    <Resource Include="Icons\Custom\PNG\AddVariable.png" />
+    <Resource Include="Icons\Custom\PNG\AddProperty.png" />
+    <Resource Include="Icons\Custom\PNG\AddModule.png" />
+    <Resource Include="Icons\Custom\PNG\AddMethod.png" />
+    <Resource Include="Icons\Custom\PNG\AddForm.png" />
+    <Resource Include="Icons\Custom\PNG\AddEvent.png" />
+    <Resource Include="Icons\Custom\PNG\AddClass.png" />
+    <Content Include="Icons\Fugue\balloon_ellipsis.bmp" />
+    <Content Include="Icons\Fugue\balloon_mask.bmp" />
+    <Content Include="Icons\Fugue\balloon_prohibition.bmp" />
+    <Content Include="Icons\Fugue\balloon_smiley.bmp" />
+    <Resource Include="Icons\Fugue\tick.png" />
+    <Resource Include="Icons\Fugue\tick-circle.png" />
+    <Resource Include="Icons\Fugue\terminal.png" />
+    <Resource Include="Icons\Fugue\question-white.png" />
+    <Resource Include="Icons\Fugue\printer.png" />
+    <Resource Include="Icons\Fugue\plus-circle1.png" />
+    <Resource Include="Icons\Fugue\plus-circle.png" />
+    <Resource Include="Icons\Fugue\navigation.png" />
+    <Resource Include="Icons\Fugue\navigation-180.png" />
+    <Resource Include="Icons\Fugue\minus-white.png" />
+    <Resource Include="Icons\Fugue\minus-circle1.png" />
+    <Resource Include="Icons\Fugue\minus-circle.png" />
+    <Resource Include="Icons\Fugue\magnifier-medium.png" />
+    <Resource Include="Icons\Fugue\magnifier--arrow.png" />
+    <Resource Include="Icons\Fugue\light-bulb-code.png" />
+    <Resource Include="Icons\Fugue\init-repo.png" />
+    <Resource Include="Icons\Fugue\information.png" />
+    <Resource Include="Icons\Fugue\information-white.png" />
+    <Resource Include="Icons\Fugue\icon-github.png" />
+    <Resource Include="Icons\Fugue\hourglass.png" />
+    <Resource Include="Icons\Fugue\git.png" />
+    <Resource Include="Icons\Fugue\gear.png" />
+    <Resource Include="Icons\Fugue\folder.png" />
+    <Resource Include="Icons\Fugue\folder-rename.png" />
+    <Resource Include="Icons\Fugue\folder-open.png" />
+    <Resource Include="Icons\Fugue\folder-horizontal.png" />
+    <Resource Include="Icons\Fugue\folder-horizontal-open.png" />
+    <Resource Include="Icons\Fugue\folder--plus.png" />
+    <Resource Include="Icons\Fugue\folder--pencil.png" />
+    <Resource Include="Icons\Fugue\flask_mask.png" />
+    <Resource Include="Icons\Fugue\flask_exclamation_mask.png" />
+    <Resource Include="Icons\Fugue\flask.png" />
+    <Resource Include="Icons\Fugue\flask-empty.png" />
+    <Resource Include="Icons\Fugue\flask--plus.png" />
+    <Resource Include="Icons\Fugue\flask--pencil.png" />
+    <Resource Include="Icons\Fugue\flask--exclamation.png" />
+    <Resource Include="Icons\Fugue\flask--arrow.png" />
+    <Resource Include="Icons\Fugue\exclamation.png" />
+    <Resource Include="Icons\Fugue\exclamation-white.png" />
+    <Resource Include="Icons\Fugue\exclamation-diamond.png" />
+    <Resource Include="Icons\Fugue\exclamation-circle.png" />
+    <Resource Include="Icons\Fugue\edit-list-order.png" />
+    <Resource Include="Icons\Fugue\drive-upload.png" />
+    <Resource Include="Icons\Fugue\drive-download.png" />
+    <None Include="Icons\Fugue\document-word.png" />
+    <None Include="Icons\Fugue\document-smiley-sad.png" />
+    <None Include="Icons\Fugue\document-powerpoint.png" />
+    <None Include="Icons\Fugue\document-outlook.png" />
+    <None Include="Icons\Fugue\document-office.png" />
+    <None Include="Icons\Fugue\document-excel.png" />
+    <Resource Include="Icons\Fugue\document-copy.png" />
+    <Resource Include="Icons\Fugue\disk.png" />
+    <Resource Include="Icons\Fugue\cross-script.png" />
+    <Resource Include="Icons\Fugue\cross-circle.png" />
+    <Resource Include="Icons\Fugue\cross-button.png" />
+    <Resource Include="Icons\Fugue\creative-commons.png" />
+    <Resource Include="Icons\Fugue\control.png" />
+    <Resource Include="Icons\Fugue\control-000-small.png" />
+    <None Include="Icons\Fugue\circle_mask.bmp" />
+    <Resource Include="Icons\Fugue\blue-folder-horizontal.png" />
+    <Resource Include="Icons\Fugue\blue-folder-horizontal-open.png" />
+    <Resource Include="Icons\Fugue\arrow1.png" />
+    <Content Include="Icons\Fugue\arrow_circle_double_mask.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

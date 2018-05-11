@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Rubberduck.UI {
+namespace Rubberduck.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Rubberduck.UI {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.UI.RubberduckUI", typeof(RubberduckUI).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Resources.RubberduckUI", typeof(RubberduckUI).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -191,42 +191,6 @@ namespace Rubberduck.UI {
         public static string AboutWindow_HelpImproveRubberduck {
             get {
                 return ResourceManager.GetString("AboutWindow_HelpImproveRubberduck", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Host Executable: {0}.
-        /// </summary>
-        public static string AboutWindow_HostExecutable {
-            get {
-                return ResourceManager.GetString("AboutWindow_HostExecutable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Host Product: {0} {1}.
-        /// </summary>
-        public static string AboutWindow_HostProduct {
-            get {
-                return ResourceManager.GetString("AboutWindow_HostProduct", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Host Version: {0}.
-        /// </summary>
-        public static string AboutWindow_HostVersion {
-            get {
-                return ResourceManager.GetString("AboutWindow_HostVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to OS: {0}, {1}.
-        /// </summary>
-        public static string AboutWindow_OperatingSystem {
-            get {
-                return ResourceManager.GetString("AboutWindow_OperatingSystem", resourceCulture);
             }
         }
         
@@ -4041,6 +4005,16 @@ namespace Rubberduck.UI {
         public static string SmartIndenterMenu {
             get {
                 return ResourceManager.GetString("SmartIndenterMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Splash {
+            get {
+                object obj = ResourceManager.GetObject("Splash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
