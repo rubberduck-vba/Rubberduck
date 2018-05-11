@@ -246,5 +246,57 @@ End Sub";
                 Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
             }
         }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void UnhandledOnErrorResumeNext_QuickFixWorks_SameLabelInMultipleProcedures()
+        {
+            const string inputCode =
+ @"Sub Foo()
+    On Error Resume Next
+End Sub
+
+Sub Bar()
+    On Error Resume Next
+End Sub";
+
+            const string expectedCode =
+@"Sub Foo()
+    On Error GoTo ErrorHandler
+
+    Exit Sub
+ErrorHandler:
+    If Err.Number > 0 Then 'TODO: handle specific error
+        Err.Clear
+        Resume Next
+    End If
+End Sub
+
+Sub Bar()
+    On Error GoTo ErrorHandler
+
+    Exit Sub
+ErrorHandler:
+    If Err.Number > 0 Then 'TODO: handle specific error
+        Err.Clear
+        Resume Next
+    End If
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnhandledOnErrorResumeNextInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var quickFix = new RestoreErrorHandlingQuickFix(state);
+
+                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
+                {
+                    quickFix.Fix(result);
+                }
+
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
     }
 }

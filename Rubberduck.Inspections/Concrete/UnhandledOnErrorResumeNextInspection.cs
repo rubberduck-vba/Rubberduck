@@ -97,8 +97,9 @@ namespace Rubberduck.Inspections.Concrete
                 _contexts.AddRange(_unhandledContexts);
 
                 _unhandledContexts.Clear();
-                _errorHandlerLabels.Clear();
             }
+
+            _errorHandlerLabels.Clear();
         }
 
         public override void ExitOnErrorStmt(VBAParser.OnErrorStmtContext context)
