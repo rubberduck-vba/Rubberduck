@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.Inspections.Resources
+﻿namespace Rubberduck.Parsing.Inspections
 {
     public enum CodeInspectionSeverity
     {

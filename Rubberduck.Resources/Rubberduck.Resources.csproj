@@ -307,12 +307,12 @@
       <LastGenOutput>RegexAssistantUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionsUI.de.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionsUI.fr.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
