@@ -16,9 +16,8 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="White">
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RenameDialog_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Binding Instructions}"
-                       Margin="5,0" />
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RenameDialog_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Binding Instructions}" Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Margin="5,10,10,5">
             <Grid.ColumnDefinitions>
@@ -36,7 +35,7 @@
                      VerticalContentAlignment="Center"
                      HorizontalAlignment="Stretch" />
             <Image Grid.Column="1"
-                   Source="../../../Resources/cross-circle.png"
+                   Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png"
                    Height="16"
                    Margin="0,-8,-8,0"
                    HorizontalAlignment="Right"

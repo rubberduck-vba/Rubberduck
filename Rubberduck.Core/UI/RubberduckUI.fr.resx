@@ -327,12 +327,6 @@
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>&amp;Tests Unitaires</value>
   </data>
-  <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>E&amp;xécuter tous les tests</value>
-  </data>
-  <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>Explorateur de &amp;tests</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (analyse...)</value>
   </data>
@@ -413,23 +407,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Severity" xml:space="preserve">
     <value>Sévérité</value>
   </data>
-  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
-    <value>{0} Échoués</value>
-  </data>
-  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} Inconclusifs</value>
-  </data>
-  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
-    <value>{0} Succès</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
-    <value>Deux ou plusieurs projets ont le même nom et contiennent une ou plusieurs méthodes de test ayant le même nom. Veuillez en renommer un avant de continuer.</value>
-  </data>
-  <data name="TestExplorerWindow_Caption" xml:space="preserve">
-    <value>Explorateur de tests</value>
   </data>
   <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>Explorateur de marqueurs "TODO"</value>
@@ -544,51 +523,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Configuration de Rubberduck</value>
-  </data>
-  <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>Ajouter</value>
-  </data>
-  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Test (erreur attendue)</value>
-  </data>
-  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>Test</value>
-  </data>
-  <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>Module de tests</value>
-  </data>
-  <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>Durée</value>
-  </data>
-  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Naviguer au test sélectionné</value>
-  </data>
-  <data name="TestExplorer_Message" xml:space="preserve">
-    <value>Message</value>
-  </data>
-  <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Nom</value>
-  </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>Tous les tests</value>
-  </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>Exécuter</value>
-  </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>Tests échoués</value>
-  </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Répéter</value>
-  </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>Tests non exécutés</value>
-  </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>Tests passés</value>
-  </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Tests sélectionnés</value>
   </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Description</value>
@@ -855,9 +789,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Initialisation et nettoyage des méthodes de test</value>
-  </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolut</value>
   </data>
@@ -873,12 +804,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
-    <value>cette procédure s'exécute après chaque test dans le module</value>
-  </data>
-  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Mode:</value>
-  </data>
   <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
     <value>Explorateur</value>
   </data>
@@ -890,9 +815,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="SearchResults_MemberName" xml:space="preserve">
     <value>Membre</value>
-  </data>
-  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
-    <value>Module de test</value>
   </data>
   <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
     <value>Alt</value>
@@ -915,9 +837,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ParserState_Parsed" xml:space="preserve">
     <value>Analyse complétée</value>
   </data>
-  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
-    <value>Indirecte (late binding)</value>
-  </data>
   <data name="GroupingStyle_ByOutcome" xml:space="preserve">
     <value>Par résultat</value>
   </data>
@@ -935,12 +854,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="CommonHotkey_HookDetached" xml:space="preserve">
     <value>L'attache est déjà désactivée.</value>
-  </data>
-  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Liaison par défaut:</value>
-  </data>
-  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Inclure un exemple de méthode de test</value>
   </data>
   <data name="IndenterSettings_EnableUndo" xml:space="preserve">
     <value>Activer l'annulation</value>
@@ -969,12 +882,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Résultats de recherche</value>
   </data>
-  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
-    <value>L'erreur attendue ne s'est pas produite</value>
-  </data>
-  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Module</value>
-  </data>
   <data name="HotkeyDescription_IndentModule" xml:space="preserve">
     <value>Indenter le module</value>
   </data>
@@ -987,12 +894,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>La combinaison ({0}) n'est pas enregistrée.</value>
   </data>
-  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
-    <value>Assertions strictes</value>
-  </data>
-  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
-    <value>Renommer le test</value>
-  </data>
   <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
     <value>Indentation</value>
   </data>
@@ -1001,9 +902,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
     <value>Ctrl</value>
-  </data>
-  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>cette procédure s'exécute avant chaque test dans le module</value>
   </data>
   <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
     <value>Indenter les directives du préprocesseur</value>
@@ -1016,9 +914,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
     <value>Même espacement</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Non concluant</value>
   </data>
   <data name="IndenterSettings_AlignDims" xml:space="preserve">
     <value>Aligner les déclarations (Dim)</value>
@@ -1067,20 +962,8 @@ Support localisation WPF par Grant Frisken</value>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Clé invalide</value>
   </data>
-  <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
-    <value>cette procédure s'exécute une seule fois par module</value>
-  </data>
-  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
-    <value>Contributeurs et supporters:</value>
-  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Sévérité:</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Succès</value>
   </data>
   <data name="CodeInspectionResults_Issue" xml:space="preserve">
     <value>Problème</value>
@@ -1097,9 +980,6 @@ Support localisation WPF par Grant Frisken</value>
   <data name="HotkeyDescription_ParseAll" xml:space="preserve">
     <value>Rafraîchir l'analyseur</value>
   </data>
-  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
-    <value>Directe (early binding)</value>
-  </data>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
   </data>
@@ -1112,17 +992,8 @@ Support localisation WPF par Grant Frisken</value>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>la procédure externe</value>
   </data>
-  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
-    <value>Communauté:</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Inconnu</value>
-  </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Aligner les commentaires avec le code</value>
-  </data>
-  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
-    <value>Assertions permissives</value>
   </data>
   <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
     <value>Par module</value>
@@ -1147,12 +1018,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="GeneralSettings_HotkeyEnabled" xml:space="preserve">
     <value>Active</value>
-  </data>
-  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
-    <value>Le test a produit une erreur</value>
-  </data>
-  <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Échec</value>
   </data>
   <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
@@ -1183,14 +1048,8 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Tests unitaires</value>
   </data>
-  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
-    <value>Changer le numéro d'erreur</value>
-  </data>
   <data name="SearchResults_ModuleName" xml:space="preserve">
     <value>Module</value>
-  </data>
-  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Initialisation et nettoyage des modules de test</value>
   </data>
   <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
     <value>Rechercher un symbole</value>
@@ -1234,14 +1093,8 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="Find" xml:space="preserve">
     <value>Chercher</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
-    <value>Durée totale</value>
-  </data>
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Barre oblique (/)</value>
-  </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ignoré</value>
   </data>
   <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
     <value>Fatal</value>
@@ -1335,9 +1188,6 @@ End Sub</value>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck ne redémarre pas.</value>
   </data>
-  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>M&amp;odule de tests</value>
-  </data>
   <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
     <value>Refactorer / Encapsuler le champ</value>
   </data>
@@ -1371,17 +1221,11 @@ End Sub</value>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
   </data>
-  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>&amp;Méthode de test</value>
-  </data>
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
     <value>Développer l'arborescence</value>
   </data>
   <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignorer la casse</value>
-  </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Méthode de test (&amp;erreur attendue)</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Les fenêtres ancrables n'ont probablement pas été correctement détruites, et/ou n'ont pas pu être recréées. l'environnement peut ne pas être dans un état stable. Rubberduck démerrera normalement à la prochaine initialisation du VBE.</value>
@@ -1533,18 +1377,6 @@ End Sub</value>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>
   </data>
-  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>Ni [attendu] ni [réel] n'est un tableau.</value>
-  </data>
-  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont des tableaux. Considérez utiliser {0}.</value>
-  </data>
-  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
-    <value>[attendu] est une référence, mais [réel] est une valeur.</value>
-  </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Une exception s'est produite lors de l'exécution des tests.</value>
-  </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>pour analyser et traiter
 les projets dans le VBE.</value>
@@ -1552,35 +1384,14 @@ les projets dans le VBE.</value>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Exporter le projet...</value>
   </data>
-  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: valeur UBound attendue {1}; valeur UBound réelle {2}. {3}</value>
-  </data>
-  <data name="Assert_FailedMessageFormat" xml:space="preserve">
-    <value>Échec de l'assertion {0}. {1}</value>
-  </data>
-  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont 'Nothing'. Considérez utiliser {0}.</value>
-  </data>
   <data name="ToolsMenu_ExportProject" xml:space="preserve">
     <value>Exporter le projet actif...</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>Fichiers VB</value>
   </data>
-  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont des valeurs. Considérez utiliser {0}.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Une erreur COM inattendue s'est produite lors de l'exécution des tests.</value>
-  </data>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0}{1} ne peut être renommé.</value>
-  </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
-    <value>Tests inconclusifs</value>
-  </data>
-  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont des références. Considérez utiliser {0}.</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
@@ -1594,44 +1405,23 @@ les projets dans le VBE.</value>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>L'identifiant {0} ne peut être renommé.</value>
   </data>
-  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>Ouais, moi aussi je vérifie mes entrées =)</value>
-  </data>
   <data name="CodeExplorer_AddModule" xml:space="preserve">
     <value>Ajouter un module</value>
   </data>
   <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
     <value>Impossible de détecter la cible à renommer</value>
   </data>
-  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
-    <value>Configuration invalide de IFake {0}. La propriété PassThrough doit être à False.</value>
-  </data>
   <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
     <value>Par nom</value>
   </data>
-  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
-    <value>On essaie de faire quoi au juste?</value>
-  </data>
-  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
-    <value>{0} dimensions attendues; {1} dimensions réelles. {2}</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Importer fichiers source</value>
-  </data>
-  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Le paramètre {0} n'avait pas une valeur numérique lors de l'invocation {1}. {2}</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck ne voit rien pour l'instant.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
-  </data>
-  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
-    <value>Aucune invocation correspondante pour le paramètre {0}; seulement {1} invocations. {2}</value>
-  </data>
-  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
-    <value>Rubberduck n'a pas pu traiter les résultats de l'invocation.</value>
   </data>
   <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
     <value>Exporter le projet actif</value>
@@ -1648,41 +1438,17 @@ les projets dans le VBE.</value>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
     <value>Formulaire (.frm)</value>
   </data>
-  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
-    <value>Le paramètre {0} n'a pas été passé lors de l'invocation {1}. {2}</value>
-  </data>
-  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
-    <value>{0} n'est pas un tableau.</value>
-  </data>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Fonctionnalités expérimentales:</value>
   </data>
-  <data name="Assert_MismatchedTypes" xml:space="preserve">
-    <value>[attendu] et [réel] sont de types différents.</value>
-  </data>
-  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: valeur LBound attendue {1}; valeur LBound réelle {2}. {3}</value>
-  </data>
-  <data name="Assert_NotImplemented" xml:space="preserve">
-    <value>Pas implémenté.</value>
-  </data>
-  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
-    <value>[attendu] est une valeur, mais [réel] est une référence.</value>
-  </data>
   <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
     <value>Module de tests avec modèles</value>
-  </data>
-  <data name="Assert_ParameterResultFormat" xml:space="preserve">
-    <value>Attendu: {0}; Réel: {1}. {2}</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Impossible de renommer {0}.</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>Tel que dans le module</value>
-  </data>
-  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
-    <value>Attendu: Stack overflow?; Réel: Clause de garde. Oui oui!</value>
   </data>
   <data name="RubberduckMenu_Refresh" xml:space="preserve">
     <value>Actualiser</value>
@@ -1727,9 +1493,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="CodeMetrics_Lines" xml:space="preserve">
     <value>Lignes</value>
-  </data>
-  <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Résultat</value>
   </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Indenter le module</value>
@@ -1801,21 +1564,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>'Compile on demand' est activé</value>
-  </data>
-  <data name="AboutWindow_HostExecutable" xml:space="preserve">
-    <value>Exécutable hôte : {0}</value>
-  </data>
-  <data name="AboutWindow_HostProduct" xml:space="preserve">
-    <value>Produit hôte : {0} {1}</value>
-  </data>
-  <data name="AboutWindow_HostVersion" xml:space="preserve">
-    <value>Version hôte : {0}</value>
-  </data>
-  <data name="AboutWindow_OperatingSystem" xml:space="preserve">
-    <value>Système d'exploitation : {0}, {1}</value>
-  </data>
-  <data name="Command_AddTestModule_Error" xml:space="preserve">
-    <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
   </data>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filtrer par description :</value>

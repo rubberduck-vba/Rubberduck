@@ -347,7 +347,27 @@
                 <Label Background="DarkGray"
                        Foreground="White"
                        FontWeight="SemiBold"
-                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}"
+                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc}"
+                       Margin="0,5,0,3">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <StackPanel>
+                    <CheckBox IsChecked="{Binding RunInspectionsOnSuccessfulParse}" 
+                              Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse}" />
+                </StackPanel>
+
+                <Label Background="DarkGray"
+                       Foreground="White"
+                       FontWeight="SemiBold"
+                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}"
                        Margin="0,5,0,3">
                     <Label.Style>
                         <Style>
@@ -424,25 +444,6 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
-                <Label Background="DarkGray"
-                       Foreground="White"
-                       FontWeight="SemiBold"
-                       Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_Misc}"
-                       Margin="0,5,0,3">
-                    <Label.Style>
-                        <Style>
-                            <Style.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="5"/>
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Label.Style>
-                </Label>
-                <StackPanel>
-                    <CheckBox IsChecked="{Binding RunInspectionsOnSuccessfulParse}" 
-                              Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse}" />
-                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

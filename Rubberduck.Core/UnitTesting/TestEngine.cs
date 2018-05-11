@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
@@ -131,7 +131,7 @@ namespace Rubberduck.UnitTesting
                     catch (COMException ex)
                     {
                         Logger.Error(ex, "Unexpected COM exception while running tests.", test.Declaration?.QualifiedName);
-                        test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
+                        test.UpdateResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException);
                     }
                     finally
                     {

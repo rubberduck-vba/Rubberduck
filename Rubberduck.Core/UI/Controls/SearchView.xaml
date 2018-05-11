@@ -16,7 +16,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Image Source="../../Resources/cross-button.png" Height="16" />
+                        <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-button.png" Height="16" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>            

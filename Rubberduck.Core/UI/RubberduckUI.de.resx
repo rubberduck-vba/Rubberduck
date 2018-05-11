@@ -328,12 +328,6 @@
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Unit &amp;Tests</value>
   </data>
-  <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>Alle Tests &amp;durchführen</value>
-  </data>
-  <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>&amp;Test Explorer</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parse...)</value>
   </data>
@@ -406,23 +400,8 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Severity" xml:space="preserve">
     <value>Sensitivität</value>
   </data>
-  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
-    <value>{0} fehlgeschlagen</value>
-  </data>
-  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} ergebnislos</value>
-  </data>
-  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
-    <value>{0} bestanden</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Typ</value>
-  </data>
-  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
-    <value>Zwei oder mehr Projekte mit Testmethoden haben den selben Namen und identisch benannte Tests. Bitte nennen sie zum Fortfahren eines davon um.</value>
-  </data>
-  <data name="TestExplorerWindow_Caption" xml:space="preserve">
-    <value>Test Explorer</value>
   </data>
   <data name="TodoExplorer_Caption" xml:space="preserve">
     <value>ToDo Liste</value>
@@ -529,56 +508,11 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ProjectName" xml:space="preserve">
     <value>Projektname</value>
   </data>
-  <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>Hinzufügen</value>
-  </data>
-  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>neue Testmethode (Erwarteter Fehler)</value>
-  </data>
-  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>neue Testmethode</value>
-  </data>
-  <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>neues Testmodul</value>
-  </data>
-  <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>Dauer</value>
-  </data>
-  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Zur Auswahl navigieren</value>
-  </data>
-  <data name="TestExplorer_Message" xml:space="preserve">
-    <value>Meldung</value>
-  </data>
-  <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Methodenname</value>
-  </data>
   <data name="ModuleName" xml:space="preserve">
     <value>Modulname</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>Alle Tests</value>
-  </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>Ausführen</value>
-  </data>
   <data name="Run" xml:space="preserve">
     <value>Ausführen</value>
-  </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>Fehlgeschlagene Tests</value>
-  </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Wiederhole letzten Testlauf</value>
-  </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>Nicht ausgeführte Tests</value>
-  </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>Bestanden Tests</value>
-  </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Ausgewählte Tests</value>
   </data>
   <data name="Line" xml:space="preserve">
     <value>Zeile</value>
@@ -845,21 +779,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Anzeigesprache:</value>
   </data>
-  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Modul</value>
-  </data>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Beiträge</value>
-  </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>Über Rubberduck</value>
-  </data>
-  <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Spezieller Dank</value>
-  </data>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Einstellung für die Unit Tests</value>
   </data>
@@ -874,48 +793,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Einstellungen für neue Unit Test Module und Methoden</value>
-  </data>
-  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Typ-Sicherheit:</value>
-  </data>
-  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Bindungsmodus:</value>
-  </data>
-  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
-    <value>Frühes Binden</value>
-  </data>
-  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Testmethodeninitialisierung / Leeren</value>
-  </data>
-  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Einfügen eine  Testmethodenstubs</value>
-  </data>
-  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Testmodulinitialisierung / Leeren</value>
-  </data>
-  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
-    <value>Spätes Binden</value>
-  </data>
-  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
-    <value>Tolerante Forderung</value>
-  </data>
-  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
-    <value>Strikte Forderung</value>
-  </data>
-  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
-    <value>Testmodulvorlage</value>
-  </data>
-  <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Fehlerhaft</value>
-  </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Ergebnislos</value>
-  </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Erfolgreich</value>
-  </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unbekannt</value>
   </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolut</value>
@@ -1111,27 +988,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Umschalt</value>
   </data>
-  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
-    <value>Diese Methode wird einmal pro Modul ausgeführt</value>
-  </data>
-  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>Diese Methode wird vor jedem Test ausgeführt.</value>
-  </data>
-  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
-    <value>Diese Methode wird nach jedem Test ausgeführt</value>
-  </data>
-  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
-    <value>Test umbenennen</value>
-  </data>
-  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
-    <value>Test hat diesen Fehler ergeben</value>
-  </data>
-  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
-    <value>Auf den Fehlercode des erwarteten Fehlers ändern</value>
-  </data>
-  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
-    <value>Der erwartete Fehler wurde nicht gefunden</value>
-  </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Ungültiges Zeichen.</value>
   </data>
@@ -1189,12 +1045,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>Füge '@&amp;NoIndent hinzu</value>
   </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ingoriert</value>
-  </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
-    <value>Gesamtdauer</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parserfehler</value>
   </data>
@@ -1243,9 +1093,6 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="RegexAssistant_NoPatternError" xml:space="preserve">
     <value>(kein Ausdruck gegeben)</value>
   </data>
-  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>Testm&amp;odul</value>
-  </data>
   <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
     <value>Global</value>
   </data>
@@ -1270,14 +1117,8 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Einen Regulären Ausdruck zur Analyse in die Box unten eingeben.</value>
   </data>
-  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>Test&amp;methode</value>
-  </data>
   <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignoriere Groß-/Kleinschreibung</value>
-  </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testmethode (&amp;erwartet Fehler)</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
     <value>Diese Namen werden von der Inspektion "Nutze aussagekräftige Namen" ignoriert.</value>
@@ -1483,92 +1324,14 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
   </data>
-  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>Weder [Erwartet] noch [Tatsächlich] ist ein Array.</value>
-  </data>
-  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Arrays. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
-  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
-    <value>[Erwartet] ist ein Referenztyp und [Tatsächlich] ist ein Werttyp.</value>
-  </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Unerwarteter Fehler beim Ausführen der Tests.</value>
-  </data>
-  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: Erwarteter UBound-Wert {1}; Tatsächlicher UBound-Wert {2}. {3}</value>
-  </data>
-  <data name="Assert_FailedMessageFormat" xml:space="preserve">
-    <value>{0} Prüfung fehlgeschlagen. {1}</value>
-  </data>
-  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Nothing. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
-  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Werttypen. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Unerwarteter Fehler in der COM Schnittstelle bei der Ausführung der Tests.</value>
-  </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
-    <value>Nicht aussagekräftige Tests</value>
-  </data>
-  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Referenztypen. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>Bezeichner {0} kann nicht umbenannt werden.</value>
-  </data>
-  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>I verifizier au.</value>
   </data>
   <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
     <value>Kann gewähltes Ziel für Umbenennung nicht erkennen.</value>
   </data>
-  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
-    <value>Aufgesetztes IFake-Objekt {0} ist nicht valide. PassThrough muss False sein.</value>
-  </data>
-  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
-    <value>OK. Rubberduck hat etwas geprüft. Und jetzt?</value>
-  </data>
-  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
-    <value>Gesuchter Wert hat {0} Dimensionen; Tatsächlicher Wert hat {1} Dimensionen. {2}</value>
-  </data>
-  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Parameter {0} hatte beim Aufruf keinen numerischen Wert {1}. {2}</value>
-  </data>
-  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
-    <value>Kein passender Aufruf für Parameter {0}; Nur {1} Aufrufe. {2}</value>
-  </data>
-  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
-    <value>Rubberduck konnte das Ergebnis des Aufrufs nicht verarbeiten.</value>
-  </data>
-  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
-    <value>Parameter {0} wurde beim Aufruf nicht übergeben {1}. {2}</value>
-  </data>
-  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
-    <value>{0} ist kein Array.</value>
-  </data>
-  <data name="Assert_MismatchedTypes" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] Werte sind von verschiedenem Typ.</value>
-  </data>
-  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: Erwarteter LBound-Wert {1}; Tatsächlicher LBound-Wert {2}. {3}</value>
-  </data>
-  <data name="Assert_NotImplemented" xml:space="preserve">
-    <value>Nicht implementiert.</value>
-  </data>
-  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
-    <value>[Erwartet] ist ein Werttyp und [Tatsächlich] ist ein Referenztyp.</value>
-  </data>
-  <data name="Assert_ParameterResultFormat" xml:space="preserve">
-    <value>Erwartet: {0}; Tatsächlich: {1}. {2}</value>
-  </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Konnte {0} nicht umbenennen.</value>
-  </data>
-  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
-    <value>Erwartet: Stacküberlauf?; Tatsächlich: Schutzbedingung.</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Vorschau</value>
@@ -1683,9 +1446,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="ParserState_UnexpectedError" xml:space="preserve">
     <value>Unerwarteter Fehler</value>
   </data>
-  <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Ergebnis</value>
-  </data>
   <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
     <value>Modul einrücken</value>
   </data>
@@ -1753,9 +1513,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>"Bei Bedarf Kompilieren" ist aktuell eingeschalten</value>
-  </data>
-  <data name="Command_AddTestModule_Error" xml:space="preserve">
-    <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
   </data>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Nach Beschreibung filtern:</value>
