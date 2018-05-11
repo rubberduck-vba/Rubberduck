@@ -64,6 +64,10 @@ namespace Rubberduck.Inspections.Concrete
         public void ClearContexts()
         {
             _contexts.Clear();
+            _unhandledContexts.Clear();
+            _errorHandlerLabels.Clear();
+            _errorHandlerLabelsMap.Clear();
+            _bodyElementContextsMap.Clear();
         }
 
         public QualifiedModuleName CurrentModuleName { get; set; }
