@@ -615,15 +615,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Přirazení</value>
-  </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>O Rubberducku</value>
-  </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Speciální Poděkování</value>
-  </data>
   <data name="SourceControlPanel_Caption" xml:space="preserve">
     <value>Source Control</value>
   </data>
