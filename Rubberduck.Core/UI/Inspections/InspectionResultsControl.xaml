@@ -42,7 +42,7 @@
             </CollectionViewSource>
 
 
-            <BitmapImage x:Key="SettingsImage" UriSource="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/gear.png" />
+            <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -59,7 +59,7 @@
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/arrow-circle-double.png" />
+                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
                 </Button>
 
                 <Separator />
@@ -68,7 +68,7 @@
                           Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}"
                           ItemsSource="{Binding QuickFixes}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/tick.png" />
+                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
                         </MenuItem.Icon>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="{x:Type MenuItem}">
@@ -81,9 +81,9 @@
                 </Menu>
 
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalAlignment="Center">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Custom/PNG/GroupBy.png" />
+                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
                         </MenuItem.Icon>
 
                         <MenuItem x:Name="GroupByInspectionType"
@@ -110,7 +110,7 @@
                 <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/document-copy.png" />
+                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>

@@ -12,7 +12,7 @@
             <Run FontWeight="Bold" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EmptyUIRefreshMessage_Title}"/><LineBreak/>
             <LineBreak/>
             <Button Command="{Binding RefreshCommand}" BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/arrow-circle-double.png" ClipToBounds="True" />
+                <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" ClipToBounds="True" />
                 <Button.ToolTip>
                     <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" />
                 </Button.ToolTip>

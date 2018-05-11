@@ -139,7 +139,7 @@
                         Command="{Binding RemoveParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/cross-script.png" Margin="0,0,5,0" />
+                        <Image Height="10" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" Margin="0,0,5,0" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}" />
                     </StackPanel>
                 </Button>
@@ -152,7 +152,7 @@
                         Command="{Binding RestoreParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/arrow-return-180-left.png" Margin="0,0,5,0" />
+                        <Image Height="10" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-return-180-left.png" Margin="0,0,5,0" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Restore}" />
                     </StackPanel>
                 </Button>

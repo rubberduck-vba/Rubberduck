@@ -346,7 +346,7 @@
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/arrow-circle-double.png">
+                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
@@ -365,9 +365,9 @@
                 <Separator />
 
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}" VerticalAlignment="Center">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/plus-circle.png" />
+                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
                         </MenuItem.Icon>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
                                   Command="{Binding AddTestModuleCommand}"
@@ -404,9 +404,9 @@
                 <Separator />
 
                 <Menu Margin="0,0,2,0">
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_Sort}">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_Sort}" VerticalAlignment="Center">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/edit-list-order.png" />
+                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/edit-list-order.png" />
                         </MenuItem.Icon>
 
                         <MenuItem Name="SortByName"
@@ -434,13 +434,13 @@
                 </Menu>
 
                 <ToggleButton Name="DisplaySignatures" ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Custom/PNG/DisplayFullSignature.png" />
+                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayFullSignature.png" />
                 </ToggleButton>
 
                 <Separator />
 
                 <Button Command="{Binding OpenDesignerCommand}" CommandParameter="{Binding SelectedItem}">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Custom/PNG/ProjectForm.png">
+                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ProjectForm.png">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
@@ -459,7 +459,7 @@
                 <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}" CommandParameter="{Binding ElementName=ProjectTree}">
-                    <Image Height="16" Source="../../../../Rubberduck/Rubberduck.Resources/Icons/Fugue/document-copy.png">
+                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
