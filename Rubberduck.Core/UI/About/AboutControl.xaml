@@ -46,16 +46,20 @@
         <Style x:Key="ReportButtonBorder" TargetType="Border">
             <Style.Setters>
                 <Setter Property="Margin" Value="10" />
-                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="BorderBrush" Value="Green" />
+                <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="Background" Value="#FF40C954" />
             </Style.Setters>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF61D156" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
-<!--
--->
 
     </UserControl.Resources>
     <Grid Background="{x:Static SystemColors.WindowBrush}">
-        <Grid.Margin>10</Grid.Margin>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="250"/>
             <ColumnDefinition Width="*" MinWidth="250"/>
@@ -98,8 +102,8 @@
                                        NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new"
                                        TextDecorations="{x:Null}"
                                        Command="{Binding UriCommand}" CommandParameter="{Binding ElementName=GitHubIssueUrl, Path=NavigateUri}">
-                                <Label Height="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                       Foreground="White" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                <Label Height="40" Foreground="White" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
                                        Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ReportAnIssue}"/>
                             </Hyperlink>
                         </TextBlock>
