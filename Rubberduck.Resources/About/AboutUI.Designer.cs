@@ -157,7 +157,7 @@ namespace Rubberduck.Resources.About {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can also find us at..
+        ///   Looks up a localized string similar to You can also find us at:.
         /// </summary>
         public static string AboutWindow_FindRubberduckAt {
             get {

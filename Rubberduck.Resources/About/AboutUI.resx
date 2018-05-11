@@ -180,7 +180,7 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
     <value>Help us improve Rubberduck!</value>
   </data>
   <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
-    <value>You can also find us at.</value>
+    <value>You can also find us at:</value>
   </data>
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
     <value>Report an issue</value>

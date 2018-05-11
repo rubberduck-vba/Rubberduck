@@ -161,4 +161,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
     <value>Versionsinformation in Zwischenablage kopiert.</value>
   </data>
+  <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
+    <value>You can also find us at:</value>
+  </data>
 </root>
