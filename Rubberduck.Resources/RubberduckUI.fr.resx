@@ -1499,18 +1499,6 @@ End Sub</value>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>
   </data>
-  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>Ni [attendu] ni [réel] n'est un tableau.</value>
-  </data>
-  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont des tableaux. Considérez utiliser {0}.</value>
-  </data>
-  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
-    <value>[attendu] est une référence, mais [réel] est une valeur.</value>
-  </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Une exception s'est produite lors de l'exécution des tests.</value>
-  </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>pour analyser et traiter
 les projets dans le VBE.</value>
@@ -1518,35 +1506,17 @@ les projets dans le VBE.</value>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Exporter le projet...</value>
   </data>
-  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: valeur UBound attendue {1}; valeur UBound réelle {2}. {3}</value>
-  </data>
-  <data name="Assert_FailedMessageFormat" xml:space="preserve">
-    <value>Échec de l'assertion {0}. {1}</value>
-  </data>
-  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont 'Nothing'. Considérez utiliser {0}.</value>
-  </data>
   <data name="ToolsMenu_ExportProject" xml:space="preserve">
     <value>Exporter le projet actif...</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>Fichiers VB</value>
   </data>
-  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont des valeurs. Considérez utiliser {0}.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Une erreur COM inattendue s'est produite lors de l'exécution des tests.</value>
-  </data>
   <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
     <value>{0}{1} ne peut être renommé.</value>
   </data>
   <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
     <value>Tests inconclusifs</value>
-  </data>
-  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
-    <value>[attendu] et [réel] sont des références. Considérez utiliser {0}.</value>
   </data>
   <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
     <value>La méthode {0} répond aux événements du contrôle '{1}'. Renommer '{1}'?</value>
@@ -1560,44 +1530,23 @@ les projets dans le VBE.</value>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>L'identifiant {0} ne peut être renommé.</value>
   </data>
-  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>Ouais, moi aussi je vérifie mes entrées =)</value>
-  </data>
   <data name="CodeExplorer_AddModule" xml:space="preserve">
     <value>Ajouter un module</value>
   </data>
   <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
     <value>Impossible de détecter la cible à renommer</value>
   </data>
-  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
-    <value>Configuration invalide de IFake {0}. La propriété PassThrough doit être à False.</value>
-  </data>
   <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
     <value>Par nom</value>
   </data>
-  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
-    <value>On essaie de faire quoi au juste?</value>
-  </data>
-  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
-    <value>{0} dimensions attendues; {1} dimensions réelles. {2}</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Importer fichiers source</value>
-  </data>
-  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Le paramètre {0} n'avait pas une valeur numérique lors de l'invocation {1}. {2}</value>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck ne voit rien pour l'instant.</value>
   </data>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
-  </data>
-  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
-    <value>Aucune invocation correspondante pour le paramètre {0}; seulement {1} invocations. {2}</value>
-  </data>
-  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
-    <value>Rubberduck n'a pas pu traiter les résultats de l'invocation.</value>
   </data>
   <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
     <value>Exporter le projet actif</value>
@@ -1614,41 +1563,17 @@ les projets dans le VBE.</value>
   <data name="CodeExplorer_AddFormText" xml:space="preserve">
     <value>Formulaire (.frm)</value>
   </data>
-  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
-    <value>Le paramètre {0} n'a pas été passé lors de l'invocation {1}. {2}</value>
-  </data>
-  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
-    <value>{0} n'est pas un tableau.</value>
-  </data>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Fonctionnalités expérimentales:</value>
   </data>
-  <data name="Assert_MismatchedTypes" xml:space="preserve">
-    <value>[attendu] et [réel] sont de types différents.</value>
-  </data>
-  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: valeur LBound attendue {1}; valeur LBound réelle {2}. {3}</value>
-  </data>
-  <data name="Assert_NotImplemented" xml:space="preserve">
-    <value>Pas implémenté.</value>
-  </data>
-  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
-    <value>[attendu] est une valeur, mais [réel] est une référence.</value>
-  </data>
   <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
     <value>Module de tests avec modèles</value>
-  </data>
-  <data name="Assert_ParameterResultFormat" xml:space="preserve">
-    <value>Attendu: {0}; Réel: {1}. {2}</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Impossible de renommer {0}.</value>
   </data>
   <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>Tel que dans le module</value>
-  </data>
-  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
-    <value>Attendu: Stack overflow?; Réel: Clause de garde. Oui oui!</value>
   </data>
   <data name="RubberduckMenu_Refresh" xml:space="preserve">
     <value>Actualiser</value>

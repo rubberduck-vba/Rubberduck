@@ -1448,92 +1448,17 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
   </data>
-  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>Weder [Erwartet] noch [Tatsächlich] ist ein Array.</value>
-  </data>
-  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Arrays. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
-  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
-    <value>[Erwartet] ist ein Referenztyp und [Tatsächlich] ist ein Werttyp.</value>
-  </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Unerwarteter Fehler beim Ausführen der Tests.</value>
-  </data>
-  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: Erwarteter UBound-Wert {1}; Tatsächlicher UBound-Wert {2}. {3}</value>
-  </data>
-  <data name="Assert_FailedMessageFormat" xml:space="preserve">
-    <value>{0} Prüfung fehlgeschlagen. {1}</value>
-  </data>
-  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Nothing. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
-  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Werttypen. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Unerwarteter Fehler in der COM Schnittstelle bei der Ausführung der Tests.</value>
-  </data>
   <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
     <value>Nicht aussagekräftige Tests</value>
-  </data>
-  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] sind Referenztypen. Erwägen Sie eine Benutzung von {0}.</value>
   </data>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>Bezeichner {0} kann nicht umbenannt werden.</value>
   </data>
-  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>I verifizier au.</value>
-  </data>
   <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
     <value>Kann gewähltes Ziel für Umbenennung nicht erkennen.</value>
   </data>
-  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
-    <value>Aufgesetztes IFake-Objekt {0} ist nicht valide. PassThrough muss False sein.</value>
-  </data>
-  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
-    <value>OK. Rubberduck hat etwas geprüft. Und jetzt?</value>
-  </data>
-  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
-    <value>Gesuchter Wert hat {0} Dimensionen; Tatsächlicher Wert hat {1} Dimensionen. {2}</value>
-  </data>
-  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Parameter {0} hatte beim Aufruf keinen numerischen Wert {1}. {2}</value>
-  </data>
-  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
-    <value>Kein passender Aufruf für Parameter {0}; Nur {1} Aufrufe. {2}</value>
-  </data>
-  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
-    <value>Rubberduck konnte das Ergebnis des Aufrufs nicht verarbeiten.</value>
-  </data>
-  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
-    <value>Parameter {0} wurde beim Aufruf nicht übergeben {1}. {2}</value>
-  </data>
-  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
-    <value>{0} ist kein Array.</value>
-  </data>
-  <data name="Assert_MismatchedTypes" xml:space="preserve">
-    <value>[Erwartet] und [Tatsächlich] Werte sind von verschiedenem Typ.</value>
-  </data>
-  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: Erwarteter LBound-Wert {1}; Tatsächlicher LBound-Wert {2}. {3}</value>
-  </data>
-  <data name="Assert_NotImplemented" xml:space="preserve">
-    <value>Nicht implementiert.</value>
-  </data>
-  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
-    <value>[Erwartet] ist ein Werttyp und [Tatsächlich] ist ein Referenztyp.</value>
-  </data>
-  <data name="Assert_ParameterResultFormat" xml:space="preserve">
-    <value>Erwartet: {0}; Tatsächlich: {1}. {2}</value>
-  </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Konnte {0} nicht umbenennen.</value>
-  </data>
-  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
-    <value>Erwartet: Stacküberlauf?; Tatsächlich: Schutzbedingung.</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Vorschau</value>
