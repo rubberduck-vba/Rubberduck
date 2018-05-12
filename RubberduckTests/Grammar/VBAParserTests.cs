@@ -2213,6 +2213,66 @@ End Sub";
 
         [Category("Parser")]
         [Test]
+        public void TestPSetVBForm_WithoutStep()
+        {
+            string code = @"
+Sub Test()
+    Me.PSet (1, 2), vbBlack
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestPSetVBForm_WithoutOptionalArguments()
+        {
+            string code = @"
+Sub Test()
+    Me.PSet (1, 2)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestPSetSpecialForm()
+        {
+            string code = @"
+Sub Test()
+    PSet Step(1, 2), vbBlack
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestPSetSpecialForm_WithoutStep()
+        {
+            string code = @"
+Sub Test()
+    PSet (1, 2), vbBlack
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestPSetSpecialForm_WithoutOptionalArguments()
+        {
+            string code = @"
+Sub Test()
+    PSet (1, 2)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
+        }
+
+        [Category("Parser")]
+        [Test]
         public void TestPtrSafeAsSub()
         {
             string code = @"
