@@ -148,7 +148,7 @@ mainBlockStmt :
     | lineSpecialForm
     | circleSpecialForm
     | scaleSpecialForm
-	| pSetSpecialForm
+    | pSetSpecialForm
     | callStmt
     | nameStmt
 ;
