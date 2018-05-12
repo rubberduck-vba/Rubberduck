@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="olewoo">
+      <HintPath>OleWoo\olewoo.dll</HintPath>
+    </Reference>
+    <Reference Include="olewoo_interop">
+      <HintPath>OleWoo\olewoo_interop.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
