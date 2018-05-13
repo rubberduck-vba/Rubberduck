@@ -63,6 +63,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="CodeExplorer\CodeExplorerUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeExplorerUI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CommandBarIcons.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CommandBarIcons.resx</DependentUpon>
+    </Compile>
     <Compile Include="Inspections\InspectionNames.Designer.cs">
       <DependentUpon>InspectionNames.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -237,6 +247,14 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AboutUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeExplorer\CodeExplorerUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorerUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommandBarIcons.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommandBarIcons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -586,7 +604,6 @@
     <Resource Include="Icons\Fugue\navigation.png" />
     <Resource Include="Icons\Fugue\navigation-180.png" />
     <Resource Include="Icons\Fugue\minus-white.png" />
-    <Resource Include="Icons\Fugue\minus-circle1.png" />
     <Resource Include="Icons\Fugue\minus-circle.png" />
     <Resource Include="Icons\Fugue\magnifier-medium.png" />
     <Resource Include="Icons\Fugue\magnifier--arrow.png" />

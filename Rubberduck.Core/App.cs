@@ -10,7 +10,6 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -145,12 +144,12 @@ namespace Rubberduck
         {
             _config = _configService.LoadConfiguration();
 
-            var currentCulture = RubberduckUI.Culture;
+            var currentCulture = Resources.RubberduckUI.Culture;
             try
             {
                 CultureManager.UICulture = CultureInfo.GetCultureInfo(_config.UserSettings.GeneralSettings.Language.Code);
-                RubberduckUI.Culture = CultureInfo.CurrentUICulture;
-                InspectionsUI.Culture = CultureInfo.CurrentUICulture;
+                LocalizeResources(CultureManager.UICulture);
+
                 _appMenus.Localize();
             }
             catch (CultureNotFoundException exception)
@@ -160,6 +159,21 @@ namespace Rubberduck
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
+        }
+
+        private static void LocalizeResources(CultureInfo culture)
+        {
+            Resources.RubberduckUI.Culture = culture;
+            Resources.About.AboutUI.Culture = culture;
+            Resources.Inspections.InspectionInfo.Culture = culture;
+            Resources.Inspections.InspectionNames.Culture = culture;
+            Resources.Inspections.InspectionResults.Culture = culture;
+            Resources.Inspections.InspectionsUI.Culture = culture;
+            Resources.Inspections.QuickFixes.Culture = culture;
+            Resources.RegexAssistant.RegexAssistantUI.Culture = culture;
+            Resources.Settings.UnitTestingPage.Culture = culture;
+            Resources.UnitTesting.AssertMessages.Culture = culture;
+            Resources.UnitTesting.TestExplorer.Culture = culture;
         }
 
         private void CheckForLegacyIndenterSettings()
@@ -173,7 +187,7 @@ namespace Rubberduck
                     return;
                 }
                 var response =
-                    _messageBox.Show(RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    _messageBox.Show(Resources.RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (response == DialogResult.Yes)
                 {
                     Logger.Trace("Attempting to load legacy Smart Indenter settings.");

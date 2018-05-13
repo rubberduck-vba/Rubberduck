@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Settings;
+using Rubberduck.Parsing.Inspections;
 
 namespace Rubberduck.UI.Settings
 {
@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Settings
             var selectedSeverityName = ((ComboBox) e.EditingElement).SelectedItem.ToString();
 
             var severities = Enum.GetValues(typeof(CodeInspectionSeverity)).Cast<CodeInspectionSeverity>();
-            var selectedSeverity = severities.Single(s => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, Settings.Culture) == selectedSeverityName);
+            var selectedSeverity = severities.Single(s => Rubberduck.Resources.Inspections.InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, Settings.Culture) == selectedSeverityName);
 
             ((InspectionSettingsViewModel) ViewModel).UpdateCollection(selectedSeverity);
         }

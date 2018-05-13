@@ -130,7 +130,7 @@ namespace Rubberduck.Resources.About {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy successful.
+        ///   Looks up a localized string similar to Copy version info.
         /// </summary>
         public static string AboutWindow_CopyVersionCaption {
             get {
@@ -139,7 +139,7 @@ namespace Rubberduck.Resources.About {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click here to copy version info to clipboard..
+        ///   Looks up a localized string similar to Copy version information to clipboard..
         /// </summary>
         public static string AboutWindow_CopyVersionLabel {
             get {
@@ -148,7 +148,7 @@ namespace Rubberduck.Resources.About {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version information copied to clipboard..
+        ///   Looks up a localized string similar to Version information was copied to clipboard..
         /// </summary>
         public static string AboutWindow_CopyVersionMessage {
             get {

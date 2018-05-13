@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Controls
 {

@@ -222,6 +222,36 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap AddClass {
+            get {
+                object obj = ResourceManager.GetObject("AddClass", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap AddForm {
+            get {
+                object obj = ResourceManager.GetObject("AddForm", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap AddModule {
+            get {
+                object obj = ResourceManager.GetObject("AddModule", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implementations of &apos;{0}&apos;.
         /// </summary>
         public static string AllImplementations_Caption {
@@ -254,6 +284,16 @@ namespace Rubberduck.Resources {
         public static string AllReferences_NoneFound {
             get {
                 return ResourceManager.GetString("AllReferences_NoneFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_circle_double {
+            get {
+                object obj = ResourceManager.GetObject("arrow_circle_double", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -1205,6 +1245,16 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap cross_circle {
+            get {
+                object obj = ResourceManager.GetObject("cross_circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to runtime expression.
         /// </summary>
         public static string DeclarationType_BracketedExpression {
@@ -1642,6 +1692,16 @@ namespace Rubberduck.Resources {
         public static string EndOfLineCommentStyle_StandardGap {
             get {
                 return ResourceManager.GetString("EndOfLineCommentStyle_StandardGap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap exclamation {
+            get {
+                object obj = ResourceManager.GetObject("exclamation", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -2543,6 +2603,16 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap light_bulb_code {
+            get {
+                object obj = ResourceManager.GetObject("light_bulb_code", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Line.
         /// </summary>
         public static string Line {
@@ -2575,6 +2645,16 @@ namespace Rubberduck.Resources {
         public static string MakeActiveWorkbookReferenceExplicit {
             get {
                 return ResourceManager.GetString("MakeActiveWorkbookReferenceExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap minus_white {
+            get {
+                object obj = ResourceManager.GetObject("minus_white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -2939,6 +3019,16 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ProjectForm {
+            get {
+                object obj = ResourceManager.GetObject("ProjectForm", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project Name.
         /// </summary>
         public static string ProjectName {
@@ -2968,6 +3058,16 @@ namespace Rubberduck.Resources {
         public static string PromptLoadDefaultConfig {
             get {
                 return ResourceManager.GetString("PromptLoadDefaultConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap question_white {
+            get {
+                object obj = ResourceManager.GetObject("question_white", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -4014,6 +4114,16 @@ namespace Rubberduck.Resources {
         public static System.Drawing.Bitmap Splash {
             get {
                 object obj = ResourceManager.GetObject("Splash", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap tick_circle {
+            get {
+                object obj = ResourceManager.GetObject("tick_circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -117,74 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Inspections_Declaration" xml:space="preserve">
-    <value>Declaration</value>
-  </data>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
-  </data>
-  <data name="Inspections_Usage" xml:space="preserve">
-    <value>Usage</value>
-  </data>
-  <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Fix all occurrences in module</value>
-  </data>
-  <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Fix all occurrences in project</value>
-  </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value>Disable this inspection</value>
-  </data>
-  <data name="QualifiedSelectionInspection" xml:space="preserve">
-    <value>{0}: {1} - {2} {3}.{4}, line {5}</value>
-  </data>
-  <data name="QuickFix_All" xml:space="preserve">
-    <value>Fix all occurences</value>
-  </data>
-  <data name="QuickFix_ThisProcedure" xml:space="preserve">
-    <value>Fix all occurrences in procedure</value>
-  </data>
-  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
-    <value>Code Quality Issues</value>
-  </data>
-  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
-    <value>Language Opportunities</value>
-  </data>
-  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Maintainability and Readability Issues</value>
-  </data>
-  <data name="CodeInspectionSettings_Performance" xml:space="preserve">
-    <value>Performance</value>
-  </data>
-  <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
-    <value>Rubberduck Opportunities</value>
-  </data>
-  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
-    <value>Do Not Show</value>
-  </data>
-  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>Hint</value>
-  </data>
-  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
-    <value>Suggestion</value>
-  </data>
-  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
-    <value>Warning</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="cross_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\fugue\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="FolderClosed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\custom\png\folderclosed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\fugue\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\fugue\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="information_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\fugue\information-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="FolderOpen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\custom\png\folderopen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
