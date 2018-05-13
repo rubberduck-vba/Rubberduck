@@ -6,7 +6,6 @@ using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace Rubberduck.Settings
 {
@@ -86,12 +85,12 @@ namespace Rubberduck.Settings
         [XmlIgnore]
         public string Description
         {
-            get => _description ?? (_description = InspectionsUI.ResourceManager.GetString(Name + "Name"));
+            get => _description ?? (_description = Resources.Inspections.InspectionNames.ResourceManager.GetString(Name));
             set => _description = value;
         }// not serialized because culture-dependent
 
         [XmlIgnore]
-        public string LocalizedName => InspectionsUI.ResourceManager.GetString(Name + "Name", CultureInfo.CurrentUICulture); // not serialized because culture-dependent
+        public string LocalizedName => Resources.Inspections.InspectionNames.ResourceManager.GetString(Name, CultureInfo.CurrentUICulture); // not serialized because culture-dependent
 
         [XmlIgnore]
         public string AnnotationName => Name.Replace("Inspection", string.Empty);
@@ -103,21 +102,21 @@ namespace Rubberduck.Settings
         public CodeInspectionSeverity Severity { get; set; }
 
         [XmlIgnore]
-        public string Meta => InspectionsUI.ResourceManager.GetString(Name + "Meta", CultureInfo.CurrentUICulture);
+        public string Meta => Resources.Inspections.InspectionInfo.ResourceManager.GetString(Name, CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         // ReSharper disable once UnusedMember.Global; used in string literal to define collection groupings
-        public string TypeLabel => InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture);
+        public string TypeLabel => Resources.Inspections.InspectionsUI.ResourceManager.GetString("CodeInspectionSettings_" + InspectionType, CultureInfo.CurrentUICulture);
 
         [XmlIgnore]
         public string SeverityLabel
         {
-            get => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture);
+            get => Resources.Inspections.InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + Severity, CultureInfo.CurrentUICulture);
             set
             {
                 foreach (var severity in Enum.GetValues(typeof(CodeInspectionSeverity)))
                 {
-                    if (value == InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
+                    if (value == Resources.Inspections.InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + severity, CultureInfo.CurrentUICulture))
                     {
                         Severity = (CodeInspectionSeverity)severity;
                         return;
