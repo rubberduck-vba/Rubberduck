@@ -8,7 +8,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -63,7 +63,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(function =>
                         new DeclarationInspectionResult(
                             this,
-                            string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat, function.IdentifierName),
+                            string.Format(InspectionResults.FunctionReturnValueNotUsedInspection, function.IdentifierName),
                             function));
             return nonInterfaceIssues;
         }
@@ -154,7 +154,7 @@ namespace Rubberduck.Inspections.Concrete
             properties.DisableFixes = nameof(QuickFixes.ConvertToProcedureQuickFix);
 
             return new DeclarationInspectionResult(inspection,
-                string.Format(InspectionsUI.FunctionReturnValueNotUsedInspectionResultFormat,
+                string.Format(InspectionResults.FunctionReturnValueNotUsedInspection,
                     interfaceMember.IdentifierName),
                 interfaceMember, properties: properties);
         }

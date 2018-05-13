@@ -125,7 +125,7 @@
             // 
             // InvalidNameValidationIcon
             // 
-            this.InvalidNameValidationIcon.Image = global::Rubberduck.Properties.Resources.cross_circle;
+            this.InvalidNameValidationIcon.Image = global::Rubberduck.Resources.RubberduckUI.cross_circle;
             this.InvalidNameValidationIcon.Location = new System.Drawing.Point(493, 70);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);

@@ -5,7 +5,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
             
             issues.AddRange(declarations.OfType<ParameterDeclaration>()
                 .Where(declaration => IsIssue(declaration, declarations, declareScopes, eventScopes, interfaceScopes))
-                .Select(issue => new DeclarationInspectionResult(this, string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, issue.IdentifierName), issue)));
+                .Select(issue => new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterCanBeByValInspection, issue.IdentifierName), issue)));
 
             return issues;
         }
@@ -103,7 +103,7 @@ namespace Rubberduck.Inspections.Concrete
                     if (parametersAreByRef[i])
                     {
                         yield return new DeclarationInspectionResult(this,
-                                                          string.Format(InspectionsUI.ParameterCanBeByValInspectionResultFormat, declarationParameters[i].IdentifierName),
+                                                          string.Format(InspectionResults.ParameterCanBeByValInspection, declarationParameters[i].IdentifierName),
                                                           declarationParameters[i]);
                     }
                 }

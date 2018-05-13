@@ -5,7 +5,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
                     .Where(reference =>
                         !IsIgnoringInspectionResultFor(reference, AnnotationName) && IsAccessedWithStringLiteralParameter(reference))
                     .Select(reference => new IdentifierReferenceInspectionResult(this,
-                        InspectionsUI.SheetAccessedUsingStringInspectionResultFormat, State, reference)));
+                        InspectionResults.SheetAccessedUsingStringInspection, State, reference)));
 
             var issues = new List<IdentifierReferenceInspectionResult>();
 

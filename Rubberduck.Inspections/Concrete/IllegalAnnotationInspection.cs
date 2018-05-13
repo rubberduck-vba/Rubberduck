@@ -9,7 +9,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context => 
                 new QualifiedContextInspectionResult(this, 
-                string.Format(InspectionsUI.IllegalAnnotationInspectionResultFormat, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
+                string.Format(InspectionResults.IllegalAnnotationInspection, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
         }
 
         public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Inspections;
 using RubberduckTests.Mocks;
 using System.Linq;
 using System.Threading;

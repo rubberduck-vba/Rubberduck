@@ -7,6 +7,7 @@ using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.Resources;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers;

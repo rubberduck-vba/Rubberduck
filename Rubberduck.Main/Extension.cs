@@ -14,6 +14,7 @@ using Castle.Windsor;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Root;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;

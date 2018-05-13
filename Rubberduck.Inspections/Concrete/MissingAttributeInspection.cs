@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts.Select(context =>
             {
-                var name = string.Format(InspectionsUI.MissingAttributeInspectionResultFormat, context.MemberName.MemberName,
+                var name = string.Format(InspectionResults.MissingAttributeInspection, context.MemberName.MemberName,
                     ((VBAParser.AnnotationContext) context.Context).annotationName().GetText());
                 return new QualifiedContextInspectionResult(this, name, context);
             });

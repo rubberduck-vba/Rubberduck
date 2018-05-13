@@ -7,8 +7,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Common;
+using Rubberduck.Parsing.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
