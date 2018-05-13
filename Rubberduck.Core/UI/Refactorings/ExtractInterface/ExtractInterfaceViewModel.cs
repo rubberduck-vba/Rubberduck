@@ -6,10 +6,11 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public class ExtractInterfaceViewModel : ViewModelBase
+    internal class ExtractInterfaceViewModel : ViewModelBase
     {
         public ExtractInterfaceViewModel()
         {
@@ -19,8 +20,8 @@ namespace Rubberduck.UI.Refactorings
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
         }
 
-        private List<InterfaceMember> _members;
-        public List<InterfaceMember> Members
+        private List<InterfaceMemberViewModel> _members;
+        public List<InterfaceMemberViewModel> Members
         {
             get => _members;
             set

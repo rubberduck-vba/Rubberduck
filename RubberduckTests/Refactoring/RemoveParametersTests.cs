@@ -11,6 +11,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using Rubberduck.UI.Refactorings.RemoveParameters;
 
 namespace RubberduckTests.Refactoring
 {

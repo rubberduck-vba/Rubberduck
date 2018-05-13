@@ -10,12 +10,12 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public class RemoveParametersViewModel : ViewModelBase
+    internal class RemoveParametersViewModel : ViewModelBase
     {
         public RubberduckParserState State { get; }
 
-        private List<Parameter> _parameters;
-        public List<Parameter> Parameters
+        private List<ParameterViewModel> _parameters;
+        public List<ParameterViewModel> Parameters
         {
             get => _parameters;
             set
@@ -134,11 +134,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             State = state;
             OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
             CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
-            RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((Parameter)param));
-            RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((Parameter)param));
+            RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
+            RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
         }
 
-        private void RemoveParameter(Parameter parameter)
+        private void RemoveParameter(ParameterViewModel parameter)
         {
             if (parameter != null)
             {
@@ -147,7 +147,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             }
         }
 
-        private void RestoreParameter(Parameter parameter)
+        private void RestoreParameter(ParameterViewModel parameter)
         {
             if (parameter != null)
             {
