@@ -55,8 +55,7 @@ namespace Rubberduck.UI.Command
         private void PromptAndBrowse(Version latestVersion)
         {
             var prompt = string.Format(RubberduckUI.VersionCheck_NewVersionAvailable, latestVersion);
-            if (_prompt.Show(prompt, RubberduckUI.Rubberduck, MessageBoxButtons.YesNo, MessageBoxIcon.Information) ==
-                DialogResult.No)
+            if (!_prompt.Prompt(prompt, RubberduckUI.Rubberduck))
             {
                 return;
             }

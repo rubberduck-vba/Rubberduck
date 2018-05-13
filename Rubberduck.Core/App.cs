@@ -3,13 +3,14 @@ using System.IO;
 using Infralution.Localization.Wpf;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Interaction;
 using Rubberduck.Settings;
 using Rubberduck.UI;
 using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Windows.Forms;
+using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -155,7 +156,7 @@ namespace Rubberduck
             catch (CultureNotFoundException exception)
             {
                 Logger.Error(exception, "Error Setting Culture for Rubberduck");
-                _messageBox.Show(exception.Message, "Rubberduck", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _messageBox.NotifyError(exception.Message, "Rubberduck");
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }
@@ -190,9 +191,7 @@ namespace Rubberduck
                 {
                     return;
                 }
-                var response =
-                    _messageBox.Show(Resources.RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (response == DialogResult.Yes)
+                if (_messageBox.Question(Resources.RubberduckUI.SmartIndenter_LegacySettingPrompt, "Rubberduck"))
                 {
                     Logger.Trace("Attempting to load legacy Smart Indenter settings.");
                     _config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();

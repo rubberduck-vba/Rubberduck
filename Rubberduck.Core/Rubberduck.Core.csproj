@@ -299,7 +299,6 @@
     <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
-    <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
     <Compile Include="Common\Hotkeys\HotkeyFactory.cs" />
     <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
@@ -626,7 +625,6 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
-    <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\IOpenFileDialog.cs" />
     <Compile Include="UI\ISaveFileDialog.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
@@ -726,7 +724,6 @@
     </Compile>
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
-    <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
@@ -760,7 +757,6 @@
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
-    <Compile Include="UI\IDialogView.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -948,6 +944,10 @@
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
+      <Project>{ac54b7fb-170d-4da6-a30b-8cad182f0e6b}</Project>
+      <Name>Rubberduck.Interaction</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
@@ -1023,24 +1023,24 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\ExtractInterface\ExtractInterfaceView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\Rename\RenameView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\ReorderParameters\ReorderParametersView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\RegexAssistant\RegexAssistant.xaml">
       <Generator>MSBuild:Compile</Generator>

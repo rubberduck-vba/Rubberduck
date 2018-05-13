@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -1861,8 +1861,7 @@ End Sub";
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.Yes);
+                messageBox.Setup(m => m.Prompt(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
@@ -1908,8 +1907,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.No);
+                messageBox.Setup(m => m.Prompt(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
@@ -2062,11 +2060,7 @@ End Sub";
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
-                var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
-
-                var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, messageBox.Object);
+                var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, new Mock<IMessageBox>().Object);
                 var presenter = factory.Create();
 
                 Assert.AreEqual(null, presenter.Show());

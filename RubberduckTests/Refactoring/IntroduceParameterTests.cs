@@ -9,6 +9,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using Rubberduck.Interaction;
 
 namespace RubberduckTests.Refactoring
 {
@@ -345,17 +346,13 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz");
                 refactoring.Refactor(target);
 
-                messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());
             }
@@ -379,17 +376,13 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz");
                 refactoring.Refactor(target);
 
-                messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());
             }
@@ -514,8 +507,6 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.OK);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
@@ -586,8 +577,6 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.OK);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
@@ -636,8 +625,7 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.No);
+                messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
@@ -700,15 +688,11 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.OK);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
 
-                messageBox.Verify(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());

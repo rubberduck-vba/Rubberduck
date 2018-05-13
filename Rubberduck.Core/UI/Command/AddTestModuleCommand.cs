@@ -236,7 +236,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception ex)
             {
-                _messageBox.Show(TestExplorer.Command_AddTestModule_Error);
+                _messageBox.Notify(TestExplorer.Command_AddTestModule_Error);
                 Logger.Warn("Unable to add test module. An exception was thrown.");
                 Logger.Warn(ex);
             }

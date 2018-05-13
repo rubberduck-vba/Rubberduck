@@ -133,7 +133,7 @@ namespace Rubberduck.UI.Command
             var viewModel = CreateViewModel(declaration);
             if (!viewModel.SearchResults.Any())
             {
-                _messageBox.Show(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck);
                 return;
             }
 

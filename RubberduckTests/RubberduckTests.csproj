@@ -330,6 +330,10 @@
       <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
       <Name>Rubberduck.Inspections</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
+      <Project>{ac54b7fb-170d-4da6-a30b-8cad182f0e6b}</Project>
+      <Name>Rubberduck.Interaction</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
       <Project>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</Project>
       <Name>Rubberduck.Main</Name>
