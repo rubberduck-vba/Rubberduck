@@ -5,7 +5,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
                          where !item.IsTypeSpecified && !IsIgnoringInspectionResultFor(item, AnnotationName)
                          let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                          select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionsUI.ImplicitVariantReturnTypeInspectionResultFormat, item.IdentifierName),
+                                                     string.Format(InspectionResults.ImplicitVariantReturnTypeInspection, item.IdentifierName),
                                                      item);
             return issues;
         }

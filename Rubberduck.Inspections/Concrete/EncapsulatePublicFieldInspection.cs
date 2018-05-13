@@ -3,7 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return fields
                 .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionsUI.EncapsulatePublicFieldInspectionResultFormat, issue.IdentifierName),
+                                                      string.Format(InspectionResults.EncapsulatePublicFieldInspection, issue.IdentifierName),
                                                       issue))
                 .ToList();
         }

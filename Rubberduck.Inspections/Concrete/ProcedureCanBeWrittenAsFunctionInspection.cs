@@ -7,7 +7,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
                                                                   .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
                                                                   !builtinHandlers.Contains(decl))
                                    .Select(result => new DeclarationInspectionResult(this,
-                                                             string.Format(InspectionsUI.ProcedureCanBeWrittenAsFunctionInspectionResultFormat, result.IdentifierName),
+                                                             string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
                                                              result));                   
         }
 

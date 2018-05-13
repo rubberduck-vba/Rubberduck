@@ -5,7 +5,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
             return unassigned
                 .Select(issue =>
                     new DeclarationInspectionResult(this,
-                                         string.Format(InspectionsUI.NonReturningFunctionInspectionResultFormat, issue.IdentifierName),
+                                         string.Format(InspectionResults.NonReturningFunctionInspection, issue.IdentifierName),
                                          issue));
         }
 
