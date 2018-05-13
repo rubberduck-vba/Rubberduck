@@ -189,7 +189,7 @@ namespace Rubberduck.Common
                     break;
             }
 
-            return new Uri(baseUri + path, UriKind.Relative);
+            return new Uri(baseUri + path, UriKind.Absolute);
         }
 
     }
