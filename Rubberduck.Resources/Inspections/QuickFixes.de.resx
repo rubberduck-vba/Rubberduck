@@ -117,61 +117,133 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Inspections_Declaration" xml:space="preserve">
-    <value>Declaration</value>
+  <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
+    <value>Leeren String durch die Konstante 'vbNullString' ersetzen</value>
   </data>
-  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
-    <value>TODO</value>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Das Feld '{0}' mit einer Eigenschaft kapselen</value>
   </data>
-  <data name="Inspections_Usage" xml:space="preserve">
-    <value>Usage</value>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Einmal ignorieren</value>
   </data>
-  <data name="QuickFix_ThisModule" xml:space="preserve">
-    <value>Fix all occurrences in module</value>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Als Funktion implementieren und Aufrufe anpassen.</value>
   </data>
-  <data name="QuickFix_ThisProject" xml:space="preserve">
-    <value>Fix all occurrences in project</value>
+  <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
+    <value>Funktion zu Prozedur konvertieren</value>
   </data>
-  <data name="DisableThisInspection" xml:space="preserve">
-    <value>Disable this inspection</value>
+  <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
+    <value>Als explizit 'Variant' deklarieren</value>
   </data>
-  <data name="QualifiedSelectionInspection" xml:space="preserve">
-    <value>{0}: {1} - {2} {3}.{4}, line {5}</value>
+  <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
+    <value>Variable in einer Zeile schreiben </value>
   </data>
-  <data name="QuickFix_All" xml:space="preserve">
-    <value>Fix all occurences</value>
+  <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
+    <value>'Global' durch 'Public' ersetzen</value>
   </data>
-  <data name="QuickFix_ThisProcedure" xml:space="preserve">
-    <value>Fix all occurrences in procedure</value>
+  <data name="OptionExplicitQuickFix" xml:space="preserve">
+    <value>'Option Explicit' setzen</value>
   </data>
-  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
-    <value>Code Quality Issues</value>
+  <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
+    <value>Parameter als Referenz übergeben</value>
   </data>
-  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
-    <value>Language Opportunities</value>
+  <data name="PassParameterByValueQuickFix" xml:space="preserve">
+    <value>Parameter als Wert übergeben</value>
   </data>
-  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
-    <value>Maintainability and Readability Issues</value>
+  <data name="RemoveCommentQuickFix" xml:space="preserve">
+    <value>Kommentar entfernen</value>
   </data>
-  <data name="CodeInspectionSettings_Performance" xml:space="preserve">
-    <value>Performance</value>
+  <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
+    <value>Überflüssige Anweisungen entfernen</value>
   </data>
-  <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
-    <value>Rubberduck Opportunities</value>
+  <data name="RemoveTypeHintsQuickFix" xml:space="preserve">
+    <value>Typ-Hinweise entfernen</value>
   </data>
-  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
-    <value>Do Not Show</value>
+  <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
+    <value>Nicht verwendete Variablen entfernen</value>
   </data>
-  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
-    <value>Error</value>
+  <data name="RemoveUnassignedVariableUsageQuickFix" xml:space="preserve">
+    <value>Nutzung enfernen (unterbricht den Code)</value>
   </data>
-  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
-    <value>Hint</value>
+  <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
+    <value>Unbenutze Deklaration enfernen</value>
   </data>
-  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
-    <value>Suggestion</value>
+  <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
+    <value>Nicht genutzte Parameter entfernen</value>
   </data>
-  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
-    <value>Warning</value>
+  <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
+    <value>'REM' durch einfaches Anführungszeichen als Kommentarzeichen ersetzen</value>
+  </data>
+  <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
+    <value>Explizit 'Variant' zurückgeben</value>
+  </data>
+  <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
+    <value>Gültigkeitsbereich 'Public' explizit definieren</value>
+  </data>
+  <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
+    <value>Mehrfach-Deklarationen in einer Zeile durch Deklaration in getrennten Zeilen ersetzen</value>
+  </data>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Kontexttyp '{0}' ist nicht gültig für {1}.</value>
+  </data>
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
+    <value>Das Schlüsselwort 'Set' benutzen</value>
+  </data>
+  <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
+    <value>Lokale Variable einführen</value>
+  </data>
+  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+    <value>'Property Get' Zugriff hinzufügen</value>
+  </data>
+  <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
+    <value>'Dim' durch 'Private' ersetzen</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">
+    <value>Application.WorksheetFunction explizit verwenden.</value>
+  </data>
+  <data name="WhiteListIdentifierQuickFix" xml:space="preserve">
+    <value>Zur Whitelist hinzufügen</value>
+  </data>
+  <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
+    <value>Eine lokale Kopie des Parameters erstellen und verwenden</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
+    <value>'Option Base'-Anweisung entfernen</value>
+  </data>
+  <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
+    <value>Attribute/Annotationen im Modul synchronisieren</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
+    <value>Redundante 'ByRef'-Markierung entfernen</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
+    <value>Leeren 'If'-Block entfernen</value>
+  </data>
+  <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
+    <value>Parameter explizit als Referenz übergeben.</value>
+  </data>
+  <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
+    <value>'Error' durch 'Err.Raise' ersetzen</value>
+  </data>
+  <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
+    <value>Leeren 'Else'-Block entfernen</value>
+  </data>
+  <data name="RemoveStopKeywordQuickFix" xml:space="preserve">
+    <value>'Stop'-Schlüsselwort entfernen</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix" xml:space="preserve">
+    <value>Typ zu 'Long' änderen</value>
+  </data>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
+    <value>'If/Else' mit einer einfachen Zuordnung ersetzen</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionQuickFix" xml:space="preserve">
+    <value>Subroutine zur Fehlerbehandlung einführen</value>
+  </data>
+  <data name="RemoveStepOneQuickFix" xml:space="preserve">
+    <value>Step entfernen</value>
+  </data>
+  <data name="AddStepOneQuickFix" xml:space="preserve">
+    <value>Step hinzufügen</value>
   </data>
 </root>
