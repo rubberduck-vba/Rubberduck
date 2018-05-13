@@ -9,16 +9,16 @@
     <Border Background="AliceBlue" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext}">
         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center"
                        MinWidth="200" Visibility="{Binding EmptyUIRefreshMessageVisibility}">
-            <Run FontWeight="Bold" Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=EmptyUIRefreshMessage_Title}"/><LineBreak/>
+            <Run FontWeight="Bold" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EmptyUIRefreshMessage_Title}"/><LineBreak/>
             <LineBreak/>
             <Button Command="{Binding RefreshCommand}" BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                 <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" ClipToBounds="True" />
                 <Button.ToolTip>
-                    <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" />
+                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" />
                 </Button.ToolTip>
             </Button>
-            <Hyperlink Command="{Binding RefreshCommand}"><Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}"/></Hyperlink>
-            <Run Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=EmptyUIRefreshMessage}"/>
+            <Hyperlink Command="{Binding RefreshCommand}"><Run Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}"/></Hyperlink>
+            <Run Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EmptyUIRefreshMessage}"/>
 	    </TextBlock>
     </Border>
 

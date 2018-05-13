@@ -41,10 +41,10 @@
                                            ItemsSource="{Binding SearchResultsSource.View}"
                                            SelectedItem="{Binding SelectedItem}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding ParentScope.IdentifierName}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_MemberType}" Binding="{Binding ParentScope.DeclarationType, Converter={StaticResource DeclarationTypeToString}}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Location}" Binding="{Binding Selection}" />
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SearchResults_Context}" Binding="{Binding ResultText}" Width="*" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding ParentScope.IdentifierName}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_MemberType}" Binding="{Binding ParentScope.DeclarationType, Converter={StaticResource DeclarationTypeToString}}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_Location}" Binding="{Binding Selection}" />
+                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_Context}" Binding="{Binding ResultText}" Width="*" />
                         </DataGrid.Columns>
                     </controls:GroupingGrid>
                 </DataTemplate>

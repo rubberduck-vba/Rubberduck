@@ -6,7 +6,7 @@
              xmlns:codeMetrics="clr-namespace:Rubberduck.Navigation.CodeMetrics"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             ResxExtension.DefaultResxName="Rubberduck.UI.RubberduckUI" 
+             ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
              Name="CodeMetrics"
              mc:Ignorable="d"
