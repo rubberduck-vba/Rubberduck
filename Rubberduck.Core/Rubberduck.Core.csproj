@@ -533,11 +533,6 @@
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorer.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeExplorer.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
       <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
     </Compile>
@@ -859,11 +854,6 @@
   <ItemGroup>
     <EmbeddedResource Include="UI\About\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CodeExplorer.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorerWindow.resx">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
