@@ -68,6 +68,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeExplorerUI.resx</DependentUpon>
     </Compile>
+    <Compile Include="CodeExplorer\CodeExplorerUI.cs.Designer.cs">
+      <DependentUpon>CodeExplorerUI.cs.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CodeExplorer\CodeExplorerUI.de.Designer.cs">
+      <DependentUpon>CodeExplorerUI.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CodeExplorer\CodeExplorerUI.fr.Designer.cs">
+      <DependentUpon>CodeExplorerUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CommandBarIcons.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -251,6 +266,20 @@
     <EmbeddedResource Include="CodeExplorer\CodeExplorerUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CodeExplorerUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeExplorer\CodeExplorerUI.cs.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorerUI.cs.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeExplorer\CodeExplorerUI.de.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorerUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeExplorer\CodeExplorerUI.fr.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CodeExplorerUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CommandBarIcons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

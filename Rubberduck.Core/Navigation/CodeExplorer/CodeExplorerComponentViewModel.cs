@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
+using Rubberduck.Resources.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -55,7 +56,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .ToList<CodeExplorerItemViewModel>();
 
             _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
-                ? Resources.RubberduckUI.CodeExplorer_ResourceFileText
+                ? CodeExplorerUI.CodeExplorer_ResourceFileText
                 : Declaration.IdentifierName;
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;

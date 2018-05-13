@@ -338,9 +338,6 @@
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Unit &amp;Tests</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
-    <value>{0} (parsing...)</value>
-  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
@@ -460,35 +457,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parser Errors</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Class module (.cls)</value>
-  </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>UserForm (.frm)</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standard module (.bas)</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Test module</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Display member &amp;names</value>
-  </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Display full &amp;signatures</value>
-  </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Find All Implementations...</value>
-    <comment>TC</comment>
-  </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Find All References...</value>
-    <comment>TC</comment>
-  </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspect</value>
   </data>
@@ -500,18 +468,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="Rename" xml:space="preserve">
     <value>Rename</value>
-  </data>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Run All &amp;Tests</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Open Designer</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Toggle folders</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copy to clipboard</value>
   </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Copy inspection results to clipboard</value>
@@ -613,18 +569,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>Code Explorer</value>
-  </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;vigate</value>
-  </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;New</value>
-  </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>R&amp;efresh</value>
-  </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
     <value>Re&amp;name</value>
   </data>
@@ -700,12 +644,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
     <value>Make ActiveWorkbook reference explicit</value>
-  </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Add a component to the active project</value>
-  </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Display style</value>
   </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Find symbol</value>
@@ -1068,21 +1006,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>library procedure</value>
   </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Toggle signatures</value>
-  </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Export...</value>
-  </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Import...</value>
-  </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Print...</value>
-  </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Remove...</value>
-  </data>
   <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
     <value>Folder Delimiter:</value>
   </data>
@@ -1094,18 +1017,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="NoIndentAnnotation" xml:space="preserve">
     <value>&amp;Add '@NoIndent</value>
-  </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Sort</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>by Name</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Group by Type</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>As in module</value>
   </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parser Errors</value>
@@ -1140,14 +1051,8 @@ Are you sure you want to proceed with this rename?</value>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Resolving references...</value>
   </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Project properties</value>
-  </data>
   <data name="RubberduckFatalError" xml:space="preserve">
     <value>Rubberduck encountered an error. Please save your work and restart the host program; if logging is enabled, you can upload your log file located at '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt' to a GitHub issue at 'https://github.com/rubberduck-vba/Rubberduck/issues/new' and report the bug.</value>
-  </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Indent</value>
   </data>
   <data name="RegexAssistant_Caption" xml:space="preserve">
     <value>Rubberduck - Regex Analyzer</value>
@@ -1187,12 +1092,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
     <value>Refactor / Encapsulate Field</value>
-  </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Collapse node and all child nodes</value>
-  </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Expand node and all child nodes</value>
   </data>
   <data name="CodeInspectionSettings_Misc" xml:space="preserve">
     <value>Miscellaneous</value>
@@ -1412,17 +1311,8 @@ Would you like to import them to Rubberduck?</value>
     <value>Choose a folder to export the source of {0} to:</value>
     <comment>{0} VBProject.Name</comment>
   </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Export Project...</value>
-  </data>
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
     <value>Export Active Project</value>
-  </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Open</value>
-  </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Open Designer</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>All Files</value>
@@ -1433,19 +1323,12 @@ Would you like to import them to Rubberduck?</value>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Import Source Files</value>
   </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Add Module</value>
-  </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>to parse and process the projects in the VBE.</value>
     <comment>Follows the text for "Refresh"</comment>
   </data>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck doesn't see anything yet.</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Test module with stubs</value>
-    <comment>TC</comment>
   </data>
   <data name="RubberduckMenu_Refresh" xml:space="preserve">
     <value>Refresh</value>
@@ -1521,9 +1404,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filter by Description:</value>
-  </data>
-  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
-    <value>Resources</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AddClass" type="System.Resources.ResXFileRef, System.Windows.Forms">
