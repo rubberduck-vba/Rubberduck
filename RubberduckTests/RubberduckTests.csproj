@@ -341,6 +341,10 @@
       <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
       <Name>Rubberduck.RegexAssistant</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{1B84B387-F7C4-4876-9BDF-C644C365359A}</Project>
+      <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
       <Name>Rubberduck.SettingsProvider</Name>
