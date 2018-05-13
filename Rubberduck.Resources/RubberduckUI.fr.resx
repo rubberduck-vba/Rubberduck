@@ -870,9 +870,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value>Forcer les directives du préprocesseur à la colonne 1</value>
   </data>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Attributions</value>
-  </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rechercher/remplacer avec une RegE&amp;x</value>
   </data>
@@ -936,9 +933,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Options spéciales</value>
   </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>À propos de Rubberduck</value>
-  </data>
   <data name="RubberduckMenu_Settings" xml:space="preserve">
     <value>&amp;Paramètres</value>
   </data>
@@ -950,14 +944,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="IndenterSettings_IndentSpaces" xml:space="preserve">
     <value>Nombre d'espaces:</value>
-  </data>
-  <data name="AboutWindow_AttributionList" xml:space="preserve">
-    <value>Analyse du code propulsée par ANTLR
-Intégration GitHub propulsée par LibGit2Sharp
-Présentation du code par AvalonEdit
-Icônes "Fugue" par Yusuke Kamiyamane
-Icônes IDE de SharpDevelop
-Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="CommonHotkey_InvalidKey" xml:space="preserve">
     <value>Clé invalide</value>
@@ -982,9 +968,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
     <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
-  </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Remerciements</value>
   </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
@@ -1022,9 +1005,6 @@ Support localisation WPF par Grant Frisken</value>
   <data name="Rubberduck" xml:space="preserve">
     <value>Rubberduck</value>
   </data>
-  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
-    <value>Blogues:</value>
-  </data>
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>Par type d'inspection</value>
   </data>
@@ -1039,11 +1019,6 @@ Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="SearchResults_Location" xml:space="preserve">
     <value>Emplacement</value>
-  </data>
-  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>Tous les contributeurs à notre repository sur GitHub
-Tous ceux qui nous ont donné une étoile ou un "like"
-...et quiconque lit ceci!</value>
   </data>
   <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
     <value>Tests unitaires</value>
@@ -1481,15 +1456,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Statistiques</value>
-  </data>
-  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
-    <value>Les informations ont été copiées dans le presse-papier.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Cliquer ici pour copier les informations dans le presse-papier.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Copie complétée.</value>
   </data>
   <data name="CodeMetrics_Lines" xml:space="preserve">
     <value>Lignes</value>

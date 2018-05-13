@@ -616,18 +616,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Attributions</value>
-  </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>About Rubberduck</value>
-  </data>
-  <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
-  </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Special Thanks</value>
-  </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;vigate</value>
   </data>
@@ -963,20 +951,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="AboutWindow_AttributionList" xml:space="preserve">
-    <value>Parsing powered by ANTLR
-GitHub integration powered by LibGit2Sharp
-Syntax highlighting powered by AvalonEdit
-Native hooks powered by EasyHook
-Fugue icons by Yusuke Kamiyamane
-IDE icons from SharpDevelop
-WPF localization support by Grant Frisken</value>
-  </data>
-  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>All contributors to our GitHub repository
-All our stargazers, likers &amp; followers, for the warm fuzzies
-...and anyone reading this!</value>
-  </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Search Results</value>
   </data>
@@ -1033,15 +1007,6 @@ All our stargazers, likers &amp; followers, for the warm fuzzies
   </data>
   <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
     <value>Resolving declarations...</value>
-  </data>
-  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
-    <value>Blogs:</value>
-  </data>
-  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
-    <value>Community:</value>
-  </data>
-  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
-    <value>Contributors &amp; supporters:</value>
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Parse all opened projects</value>
@@ -1501,15 +1466,6 @@ Would you like to import them to Rubberduck?</value>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
-  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Copy successful</value>
-  </data>
-  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Click here to copy version info to clipboard.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
-    <value>Version information copied to clipboard.</value>
-  </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Code Metrics</value>
   </data>
@@ -1565,18 +1521,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filter by Description:</value>
-  </data>
-  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
-    <value>Found an issue?</value>
-  </data>
-  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
-    <value>Help us improve Rubberduck!</value>
-  </data>
-  <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
-    <value>You can also find us at.</value>
-  </data>
-  <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
-    <value>Report an issue</value>
   </data>
   <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
     <value>Resources</value>
