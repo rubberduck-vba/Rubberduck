@@ -343,4 +343,7 @@
   <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
     <value>Group by Type</value>
   </data>
+  <data name="CodeExplorer_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
 </root>

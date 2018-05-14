@@ -6,9 +6,8 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
+             ResxExtension.DefaultResxName="Rubberduck.Resources.CodeExplorer.CodeExplorerUI" 
              Language="{UICulture}"
              Name="CodeExplorer"
              mc:Ignorable="d" 
@@ -365,11 +364,11 @@
                 <Separator />
 
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}" VerticalAlignment="Center">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Add}" VerticalContentAlignment="Center">
                         <MenuItem.Icon>
                             <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
                         </MenuItem.Icon>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_AddTestModuleText}"
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddTestModuleText}"
                                   Command="{Binding AddTestModuleCommand}"
                                   CommandParameter="{Binding SelectedItem}">
                             <MenuItem.Icon>
@@ -377,21 +376,21 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_AddStdModuleText}"
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddStdModuleText}"
                                   Command="{Binding AddStdModuleCommand}"
                                   CommandParameter="{Binding SelectedItem}">
                             <MenuItem.Icon>
                                 <Image Height="16" Source="{StaticResource AddStdModuleImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_AddClassModuleText}"
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddClassModuleText}"
                                   Command="{Binding AddClassModuleCommand}"
                                   CommandParameter="{Binding SelectedItem}">
                             <MenuItem.Icon>
                                 <Image Height="16" Source="{StaticResource AddClassModuleImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_AddFormText}"
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddFormText}"
                                   Command="{Binding AddUserFormCommand}"
                                   CommandParameter="{Binding SelectedItem}">
                             <MenuItem.Icon>
@@ -404,21 +403,21 @@
                 <Separator />
 
                 <Menu Margin="0,0,2,0">
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_Sort}" VerticalAlignment="Center">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Sort}" VerticalContentAlignment="Center">
                         <MenuItem.Icon>
                             <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/edit-list-order.png" />
                         </MenuItem.Icon>
 
                         <MenuItem Name="SortByName"
                                   Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_SortStyle_ByName}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByName}"
                                   IsChecked="{Binding SortByName, UpdateSourceTrigger=PropertyChanged}" 
                                   Command="{Binding SetNameSortCommand}"
                                   CommandParameter="{Binding ElementName=SortByName, Path=IsChecked}"
                                   IsCheckable="True" />
                         <MenuItem Name="SortByCodeOrder"
                                   Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_SortStyle_ByCodeOrder}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByCodeOrder}"
                                   IsChecked="{Binding SortByCodeOrder, UpdateSourceTrigger=PropertyChanged}" 
                                   Command="{Binding SetCodeOrderSortCommand}"
                                   CommandParameter="{Binding ElementName=SortByCodeOrder, Path=IsChecked}"
@@ -427,13 +426,13 @@
                         <Separator />
 
                         <MenuItem Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_SortStyle_ByType}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByType}"
                                   IsChecked="{Binding GroupByType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True" />
                     </MenuItem>
                 </Menu>
 
-                <ToggleButton Name="DisplaySignatures" ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
+                <ToggleButton Name="DisplaySignatures" ToolTip="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
                     <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayFullSignature.png" />
                 </ToggleButton>
 
@@ -452,7 +451,7 @@
                         </Image.Style>
                     </Image>
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_ShowDesignerToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ShowDesignerToolTip}" />
                     </Button.ToolTip>
                 </Button>
 
@@ -471,7 +470,7 @@
                         </Image.Style>
                     </Image>
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
 
@@ -549,17 +548,17 @@
                                 Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
                                 Command="{Binding IndenterCommand}"
                                 CommandParameter="{Binding SelectedItem}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_Indent}" />
+                                Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}" />
                         <controls:LinkButton Margin="4"
                                 Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding RenameCommand}"
                                 CommandParameter="{Binding SelectedItem}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Rename}" />
+                                Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=Rename}" />
                         <controls:LinkButton Margin="4"
                                 Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding FindAllReferencesCommand}"
                                 CommandParameter="{Binding SelectedItem}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_FindAllReferencesText}" />
+                                Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}" />
                     </WrapPanel>
                 </WrapPanel>
             </ScrollViewer>

@@ -228,4 +228,7 @@
   <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>Wie im Modul deklariert</value>
   </data>
+  <data name="CodeExplorer_Add" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
 </root>

@@ -434,9 +434,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Passed" xml:space="preserve">
     <value>Passage</value>
   </data>
-  <data name="Add" xml:space="preserve">
-    <value>Ajouter</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Modifier</value>
   </data>

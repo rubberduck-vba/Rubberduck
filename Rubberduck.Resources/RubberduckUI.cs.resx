@@ -513,9 +513,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>projekt</value>
   </data>
-  <data name="Add" xml:space="preserve">
-    <value>Přidat</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Změnit</value>
   </data>

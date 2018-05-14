@@ -514,9 +514,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>project</value>
   </data>
-  <data name="Add" xml:space="preserve">
-    <value>Add</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Change</value>
   </data>

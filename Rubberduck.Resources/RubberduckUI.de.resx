@@ -523,9 +523,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>Projekt</value>
   </data>
-  <data name="Add" xml:space="preserve">
-    <value>Hinzufügen</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Ändern</value>
   </data>

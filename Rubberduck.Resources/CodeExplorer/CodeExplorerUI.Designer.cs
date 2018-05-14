@@ -61,6 +61,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string CodeExplorer_Add {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Class module (.cls).
         /// </summary>
         public static string CodeExplorer_AddClassModuleText {
