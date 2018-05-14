@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
+using Rubberduck.Resources.Settings;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 
@@ -9,10 +10,12 @@ namespace Rubberduck.UI.Settings
 {
     public class SettingsControlViewModel : ViewModelBase
     {
+        private readonly IMessageBox _messageBox;
         private readonly IGeneralConfigService _configService;
         private readonly Configuration _config;
 
-        public SettingsControlViewModel(IGeneralConfigService configService,
+        public SettingsControlViewModel(IMessageBox messageBox,
+            IGeneralConfigService configService,
             Configuration config,
             SettingsView generalSettings,
             SettingsView todoSettings,
@@ -22,6 +25,7 @@ namespace Rubberduck.UI.Settings
             SettingsView windowSettings,
             SettingsViews activeView = UI.Settings.SettingsViews.GeneralSettings)
         {
+            _messageBox = messageBox;
             _configService = configService;
             _config = config;
 
@@ -88,6 +92,13 @@ namespace Rubberduck.UI.Settings
 
         private void ResetSettings()
         {
+            if (_messageBox.Show(SettingsUI.ConfirmResetSettings, SettingsUI.ResetSettingsButton, 
+                System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Exclamation) 
+                != System.Windows.Forms.DialogResult.Yes)
+            {
+                return;
+            }
+
             var defaultConfig = _configService.GetDefaultConfiguration();
             foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
             {

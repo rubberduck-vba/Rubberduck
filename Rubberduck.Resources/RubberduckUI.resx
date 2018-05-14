@@ -184,24 +184,6 @@
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Rename identifier</value>
   </data>
-  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
-    <value>General Settings</value>
-  </data>
-  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
-    <value>Code Inspection Settings</value>
-  </data>
-  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
-    <value>Todo Settings</value>
-  </data>
-  <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
-    <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>
-  </data>
-  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
-    <value>Click [Ok] to close the window and apply changes, or [Cancel] to discard them.</value>
-  </data>
-  <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
-    <value>Configure markers to be recognized in comments.</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>line label</value>
   </data>
@@ -520,9 +502,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
   </data>
-  <data name="Settings_Caption" xml:space="preserve">
-    <value>Rubberduck Settings</value>
-  </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Token Text:</value>
   </data>
@@ -549,12 +528,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   </data>
   <data name="New" xml:space="preserve">
     <value>New</value>
-  </data>
-  <data name="Settings_ResetSettings" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
-    <value>Reset settings to default configuration?</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>Renaming to '{0}' clashes with '{1}' in the same scope.
@@ -748,26 +721,8 @@ Are you sure you want to proceed with this rename?</value>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Members</value>
   </data>
-  <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
-    <value>Unit Test Settings</value>
-  </data>
-  <data name="SettingsCaption_WindowSettings" xml:space="preserve">
-    <value>Window Settings</value>
-  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Severity:</value>
-  </data>
-  <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
-    <value>Indenter Settings</value>
-  </data>
-  <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configure indenter settings.</value>
-  </data>
-  <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
-    <value>Configure the settings for new unit test modules and methods.</value>
-  </data>
-  <data name="SettingsInstructions_WindowSettings" xml:space="preserve">
-    <value>Configure the settings for window visibility.</value>
   </data>
   <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
     <value>Window visibility at startup</value>
@@ -882,9 +837,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
     <value>Hotkeys:</value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value>Settings</value>
   </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Search Results</value>
@@ -1164,12 +1116,6 @@ End Sub</value>
   <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
     <value>XML file (.xml)|*.xml|Rubberduck config file|*.config</value>
   </data>
-  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
-    <value>Export</value>
-  </data>
-  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
-    <value>Import</value>
-  </data>
   <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
     <value>Load General Settings</value>
   </data>
@@ -1438,5 +1384,11 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="tick_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>icons\fugue\tick-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
   </data>
 </root>

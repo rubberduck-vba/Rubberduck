@@ -184,21 +184,6 @@
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Renommer l'identifiant</value>
   </data>
-  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
-    <value>Options générales</value>
-  </data>
-  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
-    <value>Commentaires "todo"</value>
-  </data>
-  <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
-    <value>Configuration des niveaux de sévérité des inspections. Utiliser "DoNotShow" pour désactiver une inspection.</value>
-  </data>
-  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
-    <value>Cliquez [Ok] pour appliquer les modifications, ou [Annuler] pour conserver la configuration actuelle.</value>
-  </data>
-  <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
-    <value>Configuration des marqueurs à reconnaître dans les commentaires.</value>
-  </data>
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>le projet</value>
   </data>
@@ -518,9 +503,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Run" xml:space="preserve">
     <value>Exécuter</value>
   </data>
-  <data name="Settings_Caption" xml:space="preserve">
-    <value>Configuration de Rubberduck</value>
-  </data>
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Description</value>
   </data>
@@ -577,12 +559,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="New" xml:space="preserve">
     <value>Nouveau</value>
-  </data>
-  <data name="Settings_ResetSettings" xml:space="preserve">
-    <value>Réinitialiser</value>
-  </data>
-  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
-    <value>Réinitialiser les paramètres par défaut?</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>Le nom '{0}' entre en collision avec '{1}', ayant la même portée. Continuer?</value>
@@ -888,9 +864,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>La combinaison ({0}) n'est pas enregistrée.</value>
   </data>
-  <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
-    <value>Indentation</value>
-  </data>
   <data name="ParserState_Pending" xml:space="preserve">
     <value>En attente</value>
   </data>
@@ -914,9 +887,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
     <value>Refactorer / extraire une méthode</value>
-  </data>
-  <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configuration des options d'indentation</value>
   </data>
   <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
     <value>Description</value>
@@ -963,9 +933,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="HotkeyDescription_ParseAll" xml:space="preserve">
     <value>Rafraîchir l'analyseur</value>
   </data>
-  <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
-    <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
-  </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
   </data>
@@ -1005,9 +972,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
     <value>Par type d'inspection</value>
   </data>
-  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
-    <value>Inspections</value>
-  </data>
   <data name="ParserState_Parsing" xml:space="preserve">
     <value>Analyse...</value>
   </data>
@@ -1016,9 +980,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="SearchResults_Location" xml:space="preserve">
     <value>Emplacement</value>
-  </data>
-  <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
-    <value>Tests unitaires</value>
   </data>
   <data name="SearchResults_ModuleName" xml:space="preserve">
     <value>Module</value>
@@ -1256,9 +1217,6 @@ End Sub</value>
   <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
     <value>Charger les paramètres d'inspections</value>
   </data>
-  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
-    <value>Exporter</value>
-  </data>
   <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
     <value>Enregistrer les paramètres d'indentation</value>
   </data>
@@ -1267,9 +1225,6 @@ End Sub</value>
   </data>
   <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
     <value>Charger les paramètres généraux</value>
-  </data>
-  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
-    <value>Importer</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Vérifier si une nouvelle version est diponible au démarrage</value>
@@ -1300,9 +1255,6 @@ End Sub</value>
   </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>contrôles multiples</value>
-  </data>
-  <data name="SettingsInstructions_WindowSettings" xml:space="preserve">
-    <value>Configurer la visibilité des fenêtres</value>
   </data>
   <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
     <value>Un nom de variable ne peut pas contenir de caractères spéciaux autre que la barre de soulignement ("underscore").</value>
@@ -1339,9 +1291,6 @@ End Sub</value>
   </data>
   <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
     <value>Le nom d'une variable doit débuter par une lettre.</value>
-  </data>
-  <data name="SettingsCaption_WindowSettings" xml:space="preserve">
-    <value>Paramètres des fenêtres</value>
   </data>
   <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
     <value>Ouvrir le designer</value>
@@ -1530,5 +1479,8 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Filtrer par description :</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Ajouter</value>
   </data>
 </root>

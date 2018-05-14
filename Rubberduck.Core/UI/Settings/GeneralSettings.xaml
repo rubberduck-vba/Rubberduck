@@ -90,7 +90,7 @@
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                                 <Label Foreground="White"
                                    FontWeight="SemiBold" 
-                                   Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_GeneralSettings}">
+                                   Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_GeneralSettings}">
                                 </Label>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
@@ -102,10 +102,10 @@
                                     </Grid.ColumnDefinitions>
                                     <controls:LinkButton Grid.Column="1" Margin="2"
                                                          Command="{Binding ImportButtonCommand}"
-                                                         Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
+                                                         Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ImportPageSettingsButton}"/>
                                     <controls:LinkButton Grid.Column="2" Margin="2"
                                                          Command="{Binding ExportButtonCommand}"
-                                                         Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
+                                                         Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ExportPageSettingsButton}"/>
                                 </Grid>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"/>

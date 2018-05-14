@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Settings
         {
             var config = configService.LoadConfiguration();
 
-            ViewModel = new SettingsControlViewModel(configService,
+            ViewModel = new SettingsControlViewModel(messageBox, configService,
                 config,
                 new SettingsView
                 {

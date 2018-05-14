@@ -184,21 +184,6 @@
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Identifikator umbenennen</value>
   </data>
-  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
-    <value>Allgemeine Einstellungen</value>
-  </data>
-  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
-    <value>Todo Einstellungen</value>
-  </data>
-  <data name="SettingsInstructions_InspectionSettings" xml:space="preserve">
-    <value>Konfiguriere Untersuchungssensitivität. Zum Deaktivieren einer Untersuchungsart "Nicht anzeigen" auswählen.</value>
-  </data>
-  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
-    <value>[Ok] zum Schließen und Speichern oder [Abbrechen] zum Verwerfen der Änderungen.</value>
-  </data>
-  <data name="SettingsInstructions_TodoSettings" xml:space="preserve">
-    <value>Zu erkennende Markierungen in Kommentaren konfigurieren.</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>Sprungmarke</value>
   </data>
@@ -529,9 +514,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Remove" xml:space="preserve">
     <value>Entfernen</value>
   </data>
-  <data name="Settings_Caption" xml:space="preserve">
-    <value>Rubberduck Einstellungen</value>
-  </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Markierungstext:</value>
   </data>
@@ -553,12 +535,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="New" xml:space="preserve">
     <value>Neu</value>
-  </data>
-  <data name="Settings_ResetSettings" xml:space="preserve">
-    <value>Zurücksetzen</value>
-  </data>
-  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
-    <value>Einstellungen auf Standardkonfiguration zurücksetzen?</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
     <value>Das Umbenenen zu '{0}' wird einen Konflikt mit '{1}' auslösen.'
@@ -767,29 +743,14 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Interface Implementieren</value>
   </data>
-  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
-    <value>Einstellungen für die Codeuntersuchung</value>
-  </data>
   <data name="RubberduckMenu_Settings" xml:space="preserve">
     <value>&amp;Einstellungen</value>
   </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Anzeigesprache:</value>
   </data>
-  <data name="SettingsCaption_UnitTestSettings" xml:space="preserve">
-    <value>Einstellung für die Unit Tests</value>
-  </data>
   <data name="SeverityLabelText" xml:space="preserve">
     <value>Schweregrad:</value>
-  </data>
-  <data name="SettingsCaption_IndenterSettings" xml:space="preserve">
-    <value>Einrückungseinstellung</value>
-  </data>
-  <data name="SettingsInstructions_IndenterSettings" xml:space="preserve">
-    <value>Konfiguration der Einrückungseinstellungen</value>
-  </data>
-  <data name="SettingsInstructions_UnitTestSettings" xml:space="preserve">
-    <value>Einstellungen für neue Unit Test Module und Methoden</value>
   </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolut</value>
@@ -1207,9 +1168,6 @@ End Sub</value>
   <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
     <value>Einstellungen für Inspektionen laden</value>
   </data>
-  <data name="SettingsCaption_ExportSettings" xml:space="preserve">
-    <value>Exportieren</value>
-  </data>
   <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
     <value>Einstellungen für Einrückung speichern</value>
   </data>
@@ -1218,9 +1176,6 @@ End Sub</value>
   </data>
   <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
     <value>Allgemeine Einstellungen Laden</value>
-  </data>
-  <data name="SettingsCaption_ImportSettings" xml:space="preserve">
-    <value>Importieren</value>
   </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
@@ -1237,9 +1192,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
     <value>Fenstereinstellungen laden</value>
-  </data>
-  <data name="SettingsInstructions_WindowSettings" xml:space="preserve">
-    <value>Die Einstellungen für Fenstersichtbarkeit anpassen.</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'</value>
@@ -1264,9 +1216,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
     <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
-  </data>
-  <data name="SettingsCaption_WindowSettings" xml:space="preserve">
-    <value>Fenstereinstellungen</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
@@ -1481,5 +1430,8 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="InspectionSettings_FilterDescription" xml:space="preserve">
     <value>Nach Beschreibung filtern:</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Hinzufügen</value>
   </data>
 </root>

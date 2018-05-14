@@ -282,11 +282,11 @@
                             <controls:LinkButton
                                 Margin="2"
                                 Command="{Binding ImportButtonCommand}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ImportPageSettingsButton}"/>
                             <controls:LinkButton
                                 Margin="2"
                                 Command="{Binding ExportButtonCommand}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ExportPageSettingsButton}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Stretch">
                             <Label Foreground="White"

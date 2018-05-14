@@ -117,118 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
-    <value>{0} (parse...)</value>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>Marqueurs "TODO"</value>
   </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standardmodul (.bas)</value>
+  <data name="TodoSettings_TokenLabel" xml:space="preserve">
+    <value>Texte:</value>
   </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Testmodul</value>
+  <data name="TodoSettings_TokenListLabel" xml:space="preserve">
+    <value>Liste:</value>
   </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Member&amp;namen anzeigen</value>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Texte:</value>
   </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Volle &amp;Signaturen anzeigen</value>
-  </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Alle Implementierungen finden...</value>
-  </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Alle Referenzen finden...</value>
-  </data>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Alle &amp;Tests ausführen</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Designer öffnen</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Ordner umschalten</value>
-  </data>
-  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>Code Explorer</value>
-  </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;Neu</value>
-  </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>Aktualisieren</value>
-  </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;vigieren</value>
-  </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Style anzeigen</value>
-  </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Füge eine Komponente zum aktiven Projekt hinzu</value>
-  </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Klassenmodul (.cls)</value>
-  </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Wechsele Signatur</value>
-  </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Entfernen...</value>
-  </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Drucken...</value>
-  </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Importieren...</value>
-  </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exportieren...</value>
-  </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Sortieren</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>In Zwischenablage kopieren</value>
-  </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Projekteigenschaften öffnen</value>
-  </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Einrücken</value>
-  </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Knoten und alle Kindknoten einklappen</value>
-  </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Knoten und alle Kindknoten aufklappen</value>
-  </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Designer öffnen</value>
-  </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Projekt exportieren...</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Nach Typ gruppieren</value>
-  </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Modul hinzufügen</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>nach Name</value>
-  </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Öffnen</value>
-  </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Formular (.frm)</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Testmodul mit Skelettmethoden</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Wie im Modul deklariert</value>
-  </data>
-  <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Hinzufügen...</value>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Texte</value>
   </data>
 </root>

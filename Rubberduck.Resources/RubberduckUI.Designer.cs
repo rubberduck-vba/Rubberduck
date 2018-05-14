@@ -61,6 +61,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap AddClass {
@@ -3412,159 +3421,6 @@ namespace Rubberduck.Resources {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rubberduck Settings.
-        /// </summary>
-        public static string Settings_Caption {
-            get {
-                return ResourceManager.GetString("Settings_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset.
-        /// </summary>
-        public static string Settings_ResetSettings {
-            get {
-                return ResourceManager.GetString("Settings_ResetSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset settings to default configuration?.
-        /// </summary>
-        public static string Settings_ResetSettingsConfirmation {
-            get {
-                return ResourceManager.GetString("Settings_ResetSettingsConfirmation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export.
-        /// </summary>
-        public static string SettingsCaption_ExportSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_ExportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to General Settings.
-        /// </summary>
-        public static string SettingsCaption_GeneralSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_GeneralSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import.
-        /// </summary>
-        public static string SettingsCaption_ImportSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_ImportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Indenter Settings.
-        /// </summary>
-        public static string SettingsCaption_IndenterSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_IndenterSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Code Inspection Settings.
-        /// </summary>
-        public static string SettingsCaption_InspectionSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_InspectionSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Todo Settings.
-        /// </summary>
-        public static string SettingsCaption_TodoSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_TodoSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unit Test Settings.
-        /// </summary>
-        public static string SettingsCaption_UnitTestSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_UnitTestSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Window Settings.
-        /// </summary>
-        public static string SettingsCaption_WindowSettings {
-            get {
-                return ResourceManager.GetString("SettingsCaption_WindowSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Click [Ok] to close the window and apply changes, or [Cancel] to discard them..
-        /// </summary>
-        public static string SettingsInstructions_GeneralSettings {
-            get {
-                return ResourceManager.GetString("SettingsInstructions_GeneralSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure indenter settings..
-        /// </summary>
-        public static string SettingsInstructions_IndenterSettings {
-            get {
-                return ResourceManager.GetString("SettingsInstructions_IndenterSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure inspection severity. Use &quot;DoNotShow&quot; to disable an inspection..
-        /// </summary>
-        public static string SettingsInstructions_InspectionSettings {
-            get {
-                return ResourceManager.GetString("SettingsInstructions_InspectionSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure markers to be recognized in comments..
-        /// </summary>
-        public static string SettingsInstructions_TodoSettings {
-            get {
-                return ResourceManager.GetString("SettingsInstructions_TodoSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure the settings for new unit test modules and methods..
-        /// </summary>
-        public static string SettingsInstructions_UnitTestSettings {
-            get {
-                return ResourceManager.GetString("SettingsInstructions_UnitTestSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure the settings for window visibility..
-        /// </summary>
-        public static string SettingsInstructions_WindowSettings {
-            get {
-                return ResourceManager.GetString("SettingsInstructions_WindowSettings", resourceCulture);
             }
         }
         
