@@ -196,6 +196,26 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="ToDoExplorer\ToDoExplorerUI.cs.Designer.cs">
+      <DependentUpon>ToDoExplorerUI.cs.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="ToDoExplorer\ToDoExplorerUI.de.Designer.cs">
+      <DependentUpon>ToDoExplorerUI.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="ToDoExplorer\ToDoExplorerUI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ToDoExplorerUI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ToDoExplorer\ToDoExplorerUI.fr.Designer.cs">
+      <DependentUpon>ToDoExplorerUI.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="UnitTesting\AssertMessages.de.Designer.cs">
       <DependentUpon>AssertMessages.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -386,6 +406,25 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToDoExplorer\ToDoExplorerUI.cs.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ToDoExplorerUI.cs.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToDoExplorer\ToDoExplorerUI.de.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ToDoExplorerUI.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToDoExplorer\ToDoExplorerUI.fr.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ToDoExplorerUI.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToDoExplorer\ToDoExplorerUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>ToDoExplorerUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UnitTesting\AssertMessages.cs.resx" />
     <EmbeddedResource Include="UnitTesting\AssertMessages.de.resx">
