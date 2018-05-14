@@ -3,7 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
                          where ProcedureTypes.Contains(item.DeclarationType)
                                && item.Accessibility == Accessibility.Implicit
                          select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionsUI.ImplicitPublicMemberInspectionResultFormat, item.IdentifierName),
+                                                     string.Format(InspectionResults.ImplicitPublicMemberInspection, item.IdentifierName),
                                                      item);
             return issues;
         }

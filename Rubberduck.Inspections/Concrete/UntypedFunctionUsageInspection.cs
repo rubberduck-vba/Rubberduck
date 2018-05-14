@@ -4,7 +4,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
                                !IsIgnoringInspectionResultFor(item, AnnotationName))
                 .Select(item => new IdentifierReferenceInspectionResult(this,
-                                                     string.Format(InspectionsUI.UntypedFunctionUsageInspectionResultFormat, item.Declaration.IdentifierName),
+                                                     string.Format(InspectionResults.UntypedFunctionUsageInspection, item.Declaration.IdentifierName),
                                                      State,
                                                      item)));
         }

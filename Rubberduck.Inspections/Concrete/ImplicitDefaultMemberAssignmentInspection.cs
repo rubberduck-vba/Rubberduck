@@ -5,7 +5,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
                 });
 
             return interestingReferences.Select(reference => new IdentifierReferenceInspectionResult(this,
-                                                                                  string.Format(InspectionsUI.ImplicitDefaultMemberAssignmentInspectionResultFormat,
+                                                                                  string.Format(InspectionResults.ImplicitDefaultMemberAssignmentInspection,
                                                                                                 reference.Declaration.IdentifierName,
                                                                                                 reference.Declaration.AsTypeDeclaration.IdentifierName),
                                                                                   State,

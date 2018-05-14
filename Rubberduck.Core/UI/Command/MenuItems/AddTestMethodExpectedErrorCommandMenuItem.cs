@@ -1,5 +1,4 @@
 using System.Drawing;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
@@ -14,7 +13,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key => "TestExplorerMenu_AddExpectedErrorTestMethod";
         public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.AddTestMethodExpectedError;
 
-        public override Image Image => Resources.flask_exclamation;
-        public override Image Mask => Resources.flask_exclamation_mask;
+        public override Image Image => Resources.CommandBarIcons.flask_exclamation;
+        public override Image Mask => Resources.CommandBarIcons.flask_exclamation_mask;
     }
 }

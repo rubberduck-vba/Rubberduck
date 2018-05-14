@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.Common.WinAPI;
 using NLog;
-using Rubberduck.UI;
+using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.Common.Hotkeys

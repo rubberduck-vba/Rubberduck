@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(result.Target.Context.Start.TokenIndex, propertyGet);
         }
 
-        public override string Description(IInspectionResult result) => InspectionsUI.WriteOnlyPropertyQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.WriteOnlyPropertyQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => true;

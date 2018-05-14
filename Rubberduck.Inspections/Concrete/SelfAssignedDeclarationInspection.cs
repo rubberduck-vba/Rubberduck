@@ -4,7 +4,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
                     && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
                 .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
                 .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionsUI.SelfAssignedDeclarationInspectionResultFormat, issue.IdentifierName),
+                                                      string.Format(InspectionResults.SelfAssignedDeclarationInspection, issue.IdentifierName),
                                                       issue));
         }
     }

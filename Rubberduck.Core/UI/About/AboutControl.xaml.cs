@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.About
 {

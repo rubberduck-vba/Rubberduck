@@ -9,6 +9,7 @@ using NLog;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Settings
 {

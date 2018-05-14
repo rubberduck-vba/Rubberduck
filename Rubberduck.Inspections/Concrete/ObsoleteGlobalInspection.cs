@@ -4,7 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
             var issues = from item in UserDeclarations
                          where item.Accessibility == Accessibility.Global && item.Context != null
                          select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionsUI.ObsoleteGlobalInspectionResultFormat, item.DeclarationType.ToLocalizedString(), item.IdentifierName),
+                                                     string.Format(InspectionResults.ObsoleteGlobalInspection, item.DeclarationType.ToLocalizedString(), item.IdentifierName),
                                                      item);
 
             return issues;

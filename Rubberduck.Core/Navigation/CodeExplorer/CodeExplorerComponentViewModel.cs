@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -41,7 +41,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             Parent = parent;
             Declaration = declaration;
             _projectsProvider = projectsProvider;
-            _icon = Icons[DeclarationType];
+            
+            _icon = Icons.ContainsKey(DeclarationType) 
+                ? Icons[DeclarationType]
+                : GetImageSource(resx.status_offline);
+
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
                                                 && item.ParentScope == declaration.Scope
@@ -50,7 +54,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
                                 .ToList<CodeExplorerItemViewModel>();
 
-            _name = Declaration.IdentifierName;
+            _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
+                ? Resources.RubberduckUI.CodeExplorer_ResourceFileText
+                : Declaration.IdentifierName;
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
             try
@@ -101,7 +107,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _isErrorState = value;
-                _icon = GetImageSource(resx.Error);
+                _icon = GetImageSource(resx.cross_circle);
 
 
                 foreach (var item in Items)
@@ -126,6 +132,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name => _name;
+  
         public override string NameWithSignature => _name;
 
         public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
@@ -137,7 +144,14 @@ namespace Rubberduck.Navigation.CodeExplorer
             { ComponentType.ClassModule, DeclarationType.ClassModule },
             { ComponentType.StandardModule, DeclarationType.ProceduralModule },
             { ComponentType.Document, DeclarationType.Document },
-            { ComponentType.UserForm, DeclarationType.UserForm }
+            { ComponentType.UserForm, DeclarationType.UserForm },
+            { ComponentType.VBForm, DeclarationType.VbForm },
+            { ComponentType.MDIForm, DeclarationType.MdiForm},
+            { ComponentType.UserControl, DeclarationType.UserControl},
+            { ComponentType.ResFile, DeclarationType.ResFile},
+            { ComponentType.RelatedDocument, DeclarationType.RelatedDocument},
+            { ComponentType.PropPage, DeclarationType.PropPage},
+            { ComponentType.ActiveXDesigner, DeclarationType.ActiveXDesigner}
         };
 
         private DeclarationType DeclarationType
@@ -162,7 +176,14 @@ namespace Rubberduck.Navigation.CodeExplorer
             { DeclarationType.ClassModule, GetImageSource(resx.ObjectClass) },
             { DeclarationType.ProceduralModule, GetImageSource(resx.ObjectModule) },
             { DeclarationType.UserForm, GetImageSource(resx.ProjectForm) },
-            { DeclarationType.Document, GetImageSource(resx.document_office) }
+            { DeclarationType.Document, GetImageSource(resx.document_office) },
+            { DeclarationType.VbForm, GetImageSource(resx.ProjectForm)},
+            { DeclarationType.MdiForm, GetImageSource(resx.MdiForm)},
+            { DeclarationType.UserControl, GetImageSource(resx.ui_scroll_pane_form)},
+            { DeclarationType.DocObject, GetImageSource(resx.document_globe)},
+            { DeclarationType.PropPage, GetImageSource(resx.ui_tab_content)},
+            { DeclarationType.ActiveXDesigner, GetImageSource(resx.pencil_ruler)},
+            { DeclarationType.ResFile, GetImageSource(resx.document_block)}
         };
 
         private BitmapImage _icon;

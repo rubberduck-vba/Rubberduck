@@ -14,8 +14,8 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override string Key => "RefactorMenu_ImplementInterface";
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ImplementInterface;
-        public override Image Image => Resources.ImplementInterface;
-        public override Image Mask => Resources.ImplementInterfaceMask;
+        public override Image Image => Resources.CommandBarIcons.ImplementInterface;
+        public override Image Mask => Resources.CommandBarIcons.ImplementInterfaceMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

@@ -10,6 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Text;
 using Rubberduck.Parsing.Symbols;
 using System;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.Command
 {
@@ -45,14 +46,14 @@ namespace Rubberduck.UI.Command
         private readonly string _moduleInit = new StringBuilder()
             .AppendLine("'@ModuleInitialize")
             .AppendLine("Public Sub ModuleInitialize()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.")
+            .AppendLine($"    '{TestExplorer.UnitTest_NewModule_RunOnce}.")
             .AppendLine("    {0}")
             .AppendLine("    {1}")
             .AppendLine("End Sub")
             .AppendLine()
             .AppendLine("'@ModuleCleanup")
             .AppendLine("Public Sub ModuleCleanup()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunOnce}.")
+            .AppendLine($"    '{TestExplorer.UnitTest_NewModule_RunOnce}.")
             .AppendLine("    Set Assert = Nothing")
             .AppendLine("    Set Fakes = Nothing")
             .AppendLine("End Sub")
@@ -62,12 +63,12 @@ namespace Rubberduck.UI.Command
         private readonly string _methodInit = new StringBuilder()
             .AppendLine("'@TestInitialize")
             .AppendLine("Public Sub TestInitialize()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunBeforeTest}.")
+            .AppendLine($"    '{TestExplorer.UnitTest_NewModule_RunBeforeTest}.")
             .AppendLine("End Sub")
             .AppendLine()
             .AppendLine("'@TestCleanup")
             .AppendLine("Public Sub TestCleanup()")
-            .AppendLine($"    '{RubberduckUI.UnitTest_NewModule_RunAfterTest}.")
+            .AppendLine($"    '{TestExplorer.UnitTest_NewModule_RunAfterTest}.")
             .AppendLine("End Sub")
             .AppendLine()
             .ToString();
@@ -235,7 +236,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception ex)
             {
-                _messageBox.Show(RubberduckUI.Command_AddTestModule_Error);
+                _messageBox.Show(TestExplorer.Command_AddTestModule_Error);
                 Logger.Warn("Unable to add test module. An exception was thrown.");
                 Logger.Warn(ex);
             }

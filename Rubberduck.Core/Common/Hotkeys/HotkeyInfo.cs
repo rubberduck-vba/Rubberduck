@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
-using Rubberduck.UI;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Common.Hotkeys
 {
@@ -37,7 +37,7 @@ namespace Rubberduck.Common.Hotkeys
                 builder.Append('+');
             }
             
-            builder.Append(HotkeyDisplayConverter.Convert(Keys & ~Modifiers));
+            builder.Append(Rubberduck.UI.HotkeyDisplayConverter.Convert(Keys & ~Modifiers));
             return builder.ToString();
         }
     }
