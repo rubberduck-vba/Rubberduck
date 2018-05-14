@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    internal class RemoveParametersPresenterFactory : IRefactoringPresenterFactory<RemoveParametersPresenter>
+    public class RemoveParametersPresenterFactory : IRefactoringPresenterFactory<RemoveParametersPresenter>
     {
         private readonly IVBE _vbe;
         private readonly IRefactoringDialog<RemoveParametersViewModel> _view;

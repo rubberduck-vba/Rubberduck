@@ -38,7 +38,7 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (!selection.HasValue)
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption);
                 return;
             }
 
@@ -63,7 +63,7 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
                 throw new ArgumentException(@"Invalid declaration type", nameof(target));
             }
 
@@ -75,7 +75,7 @@ namespace Rubberduck.Refactorings.IntroduceField
         {
             if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
                 return;
             }
 

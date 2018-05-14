@@ -3,7 +3,7 @@ using Rubberduck.Refactorings.RemoveParameters;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    internal class ParameterViewModel : ViewModelBase
+    public class ParameterViewModel : ViewModelBase
     {
         private Parameter wrapped;
         internal Parameter Wrapped { get => wrapped; }

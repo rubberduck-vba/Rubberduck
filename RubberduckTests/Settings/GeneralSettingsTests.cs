@@ -9,6 +9,7 @@ using Moq;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.VBERuntime.Settings;
 using System;
+using Rubberduck.Interaction;
 
 namespace RubberduckTests.Settings
 {

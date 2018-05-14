@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    internal class RemoveParametersPresenter : IRemoveParametersPresenter
+    public class RemoveParametersPresenter : IRemoveParametersPresenter
     {
         private readonly IRefactoringDialog<RemoveParametersViewModel> _view;
         private readonly RemoveParametersModel _model;

@@ -43,7 +43,6 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -80,7 +79,6 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters.ForEach(arg => arg.IsRemoved = true);
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -117,7 +115,7 @@ End Sub";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -154,7 +152,7 @@ End Sub";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -201,7 +199,7 @@ End Sub
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[2].IsRemoved = true;
+                model.Parameters =  new[] { model.Parameters[2] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -248,7 +246,7 @@ End Sub";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[2].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[2] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -285,7 +283,7 @@ End Function";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -322,7 +320,6 @@ End Function";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters.ForEach(p => p.IsRemoved = true);
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -369,7 +366,6 @@ End Sub
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters.ForEach(p => p.IsRemoved = true);
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -414,10 +410,12 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters.ElementAt(2).IsRemoved = true;
-                model.Parameters.ElementAt(3).IsRemoved = true;
-                model.Parameters.ElementAt(5).IsRemoved = true;
-
+                model.Parameters = new[] {
+                    model.Parameters.ElementAt(2),
+                    model.Parameters.ElementAt(3),
+                    model.Parameters.ElementAt(5),
+                }.ToList();
+                
                 //SetupFactory
                 var factory = SetupFactory(model);
 
@@ -453,7 +451,6 @@ End Property";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters.ForEach(p => p.IsRemoved = true);
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -529,7 +526,7 @@ End Property";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -576,7 +573,7 @@ End Sub
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -627,7 +624,7 @@ End Sub
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -682,7 +679,7 @@ End Function";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -729,7 +726,7 @@ End Sub
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -781,7 +778,7 @@ End Sub
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -841,7 +838,7 @@ End Sub
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -932,7 +929,7 @@ End Property";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -975,7 +972,7 @@ End Property";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1020,7 +1017,7 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1067,7 +1064,7 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1116,7 +1113,7 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1174,7 +1171,7 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1215,7 +1212,7 @@ End Sub";   // note: VBE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1255,7 +1252,7 @@ End Sub";   // note: VBE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1295,7 +1292,7 @@ End Sub";   // note: VBE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[2].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[2] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1335,7 +1332,7 @@ End Sub";   // note: VBE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1389,7 +1386,7 @@ End Sub
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1444,7 +1441,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1500,7 +1497,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1568,7 +1565,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1625,7 +1622,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1681,7 +1678,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters.Last().IsRemoved = true;
+                model.Parameters = new[] { model.Parameters.Last() }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1737,7 +1734,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1805,7 +1802,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1866,7 +1863,7 @@ End Sub";
 
                 //Specify Params to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
-                model.Parameters[1].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[1] }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -2031,7 +2028,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-                model.Parameters[0].IsRemoved = true;
+                model.Parameters = new[] { model.Parameters[0] }.ToList();
 
                 var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
 

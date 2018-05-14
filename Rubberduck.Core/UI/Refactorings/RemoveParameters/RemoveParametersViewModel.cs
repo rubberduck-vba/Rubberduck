@@ -10,7 +10,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    internal class RemoveParametersViewModel : ViewModelBase
+    public class RemoveParametersViewModel : ViewModelBase
     {
         public RubberduckParserState State { get; }
 

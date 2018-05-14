@@ -3,7 +3,7 @@ using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    internal sealed partial class RemoveParametersDialog : Form, IRefactoringDialog<RemoveParametersViewModel>
+    public sealed partial class RemoveParametersDialog : Form, IRefactoringDialog<RemoveParametersViewModel>
     {
         public RemoveParametersViewModel ViewModel { get; }
 
