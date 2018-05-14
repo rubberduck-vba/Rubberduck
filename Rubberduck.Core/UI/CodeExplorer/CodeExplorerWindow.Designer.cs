@@ -73,7 +73,7 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             // RefreshContextButton
             // 
-            this.RefreshContextButton.Image = global::Rubberduck.Properties.Resources.arrow_circle_double;
+            this.RefreshContextButton.Image = global::Rubberduck.Resources.RubberduckUI.arrow_circle_double;
             this.RefreshContextButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.RefreshContextButton.Name = "RefreshContextButton";
             this.RefreshContextButton.Size = new System.Drawing.Size(214, 22);
@@ -93,7 +93,7 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             // AddClassContextButton
             // 
-            this.AddClassContextButton.Image = global::Rubberduck.Properties.Resources.AddClass;
+            this.AddClassContextButton.Image = global::Rubberduck.Resources.RubberduckUI.AddClass;
             this.AddClassContextButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.AddClassContextButton.ImageTransparentColor = System.Drawing.Color.Transparent;
             this.AddClassContextButton.Name = "AddClassContextButton";
@@ -102,7 +102,7 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             // AddStdModuleContextButton
             // 
-            this.AddStdModuleContextButton.Image = global::Rubberduck.Properties.Resources.AddModule;
+            this.AddStdModuleContextButton.Image = global::Rubberduck.Resources.RubberduckUI.AddModule;
             this.AddStdModuleContextButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.AddStdModuleContextButton.ImageTransparentColor = System.Drawing.Color.Transparent;
             this.AddStdModuleContextButton.Name = "AddStdModuleContextButton";
@@ -111,7 +111,7 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             // AddFormContextButton
             // 
-            this.AddFormContextButton.Image = global::Rubberduck.Properties.Resources.AddForm;
+            this.AddFormContextButton.Image = global::Rubberduck.Resources.RubberduckUI.AddForm;
             this.AddFormContextButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.AddFormContextButton.ImageTransparentColor = System.Drawing.Color.Transparent;
             this.AddFormContextButton.Name = "AddFormContextButton";
@@ -161,7 +161,7 @@ namespace Rubberduck.UI.CodeExplorer
             // ShowDesignerContextButton
             // 
             this.ShowDesignerContextButton.Enabled = false;
-            this.ShowDesignerContextButton.Image = global::Rubberduck.Properties.Resources.ProjectForm;
+            this.ShowDesignerContextButton.Image = global::Rubberduck.Resources.RubberduckUI.ProjectForm;
             this.ShowDesignerContextButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.ShowDesignerContextButton.ImageTransparentColor = System.Drawing.Color.Transparent;
             this.ShowDesignerContextButton.Name = "ShowDesignerContextButton";
@@ -176,7 +176,7 @@ namespace Rubberduck.UI.CodeExplorer
             // 
             // InspectContextButton
             // 
-            this.InspectContextButton.Image = global::Rubberduck.Properties.Resources.light_bulb_code;
+            this.InspectContextButton.Image = global::Rubberduck.Resources.RubberduckUI.light_bulb_code;
             this.InspectContextButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.InspectContextButton.Name = "InspectContextButton";
             this.InspectContextButton.Size = new System.Drawing.Size(214, 22);

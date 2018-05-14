@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -55,7 +55,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .ToList<CodeExplorerItemViewModel>();
 
             _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
-                ? UI.RubberduckUI.CodeExplorer_ResourceFileText
+                ? Resources.RubberduckUI.CodeExplorer_ResourceFileText
                 : Declaration.IdentifierName;
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
@@ -107,7 +107,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _isErrorState = value;
-                _icon = GetImageSource(resx.Error);
+                _icon = GetImageSource(resx.cross_circle);
 
 
                 foreach (var item in Items)

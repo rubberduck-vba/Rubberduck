@@ -6,7 +6,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
                                            !DeclarationReferencesContainsReference(lenbFunction, d))
                                .SelectMany(d => d.References)
                                .Select(r => new IdentifierReferenceInspectionResult(this,
-                                                                 string.Format(InspectionsUI.UnassignedVariableUsageInspectionResultFormat, r.IdentifierName),
+                                                                 string.Format(InspectionResults.UnassignedVariableUsageInspection, r.IdentifierName),
                                                                  State,
                                                                  r)).ToList();
         }

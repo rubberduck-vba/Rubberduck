@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using Rubberduck.UI;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Settings
 {

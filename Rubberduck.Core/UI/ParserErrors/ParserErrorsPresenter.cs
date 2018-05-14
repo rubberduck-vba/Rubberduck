@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.ParserErrors
 {

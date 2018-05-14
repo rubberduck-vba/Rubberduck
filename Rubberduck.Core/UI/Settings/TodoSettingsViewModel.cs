@@ -5,6 +5,7 @@ using NLog;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Settings
 {

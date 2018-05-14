@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
@@ -36,7 +35,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
         
-        public override string Description(IInspectionResult result) => InspectionsUI.RemoveEmptyElseBlockQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveEmptyElseBlockQuickFix;
 
         public override bool CanFixInProcedure => false;
         public override bool CanFixInModule => false;

@@ -4,8 +4,8 @@ using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command
 
         public static readonly string TestMethodTemplate = string.Concat(
             "'@TestMethod\r\n",
-            "Public Sub ", NamePlaceholder, "() 'TODO ", RubberduckUI.UnitTest_NewMethod_Rename, "\r\n",
+            "Public Sub ", NamePlaceholder, "() 'TODO ", TestExplorer.UnitTest_NewMethod_Rename, "\r\n",
             "    On Error GoTo TestFail\r\n",
             "    \r\n",
             "    'Arrange:\r\n\r\n",
@@ -41,7 +41,7 @@ namespace Rubberduck.UI.Command
             "TestExit:\r\n",
             "    Exit Sub\r\n",
             "TestFail:\r\n",
-            "    Assert.Fail \"", RubberduckUI.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\r\n",
+            "    Assert.Fail \"", TestExplorer.UnitTest_NewMethod_RaisedTestError, ": #\" & Err.Number & \" - \" & Err.Description\r\n",
             "End Sub\r\n"
             );
 

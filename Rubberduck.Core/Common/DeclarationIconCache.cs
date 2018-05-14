@@ -30,7 +30,7 @@ namespace Rubberduck.Common
 
         private static Uri GetIconUri(DeclarationType declarationType, Accessibility accessibility)
         {
-            const string baseUri = @"../../Resources/Custom/PNG/";
+            const string baseUri = @"../Rubberduck.Resources/Icons/Fugue/";
 
             string path;
             switch (declarationType)

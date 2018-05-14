@@ -3,7 +3,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -24,12 +24,7 @@ namespace Rubberduck.Inspections.Concrete
                          && !IsIgnoringInspectionResultFor(item, AnnotationName)
                          && !item.IsTypeSpecified
                          && !item.IsUndeclared
-                         select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionsUI.ImplicitVariantDeclarationInspectionResultFormat,
-                                                                   item.DeclarationType,
-                                                                   item.IdentifierName),
-                                                     item);
-
+                         select new DeclarationInspectionResult(this, string.Format(InspectionResults.ImplicitVariantDeclarationInspection, item.DeclarationType, item.IdentifierName), item);
             return issues;
         }
     }

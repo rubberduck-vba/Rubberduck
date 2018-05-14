@@ -4,7 +4,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
                 
             return members.Select(issue => new IdentifierReferenceInspectionResult(this,
-                                                                string.Format(InspectionsUI.ImplicitActiveWorkbookReferenceInspectionResultFormat, issue.Context.GetText()),
+                                                                string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, issue.Context.GetText()),
                                                                 State,
                                                                 issue));
         }

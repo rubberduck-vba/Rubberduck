@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -505,8 +505,8 @@ namespace Rubberduck.UI.Inspections
             var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
             var resource = _results.Count == 1
-                ? RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
-                : RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
+                ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
+                : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 

@@ -5,7 +5,6 @@ using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
-using resx = Rubberduck.Properties.Resources;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -29,8 +28,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             Name = name.Replace("\"", string.Empty);
             FolderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
 
-            CollapsedIcon = GetImageSource(resx.folder_horizontal);
-            ExpandedIcon = GetImageSource(resx.folder_horizontal_open);
+            CollapsedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.FolderClosed);
+            ExpandedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.FolderOpen);
         }
 
         public void AddNodes(List<Declaration> declarations)

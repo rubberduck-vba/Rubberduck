@@ -1,7 +1,6 @@
 ﻿using System;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
@@ -18,7 +17,7 @@ namespace Rubberduck.UI.Inspections
             _count = count;
         }
 
-        public string Description => string.Format(InspectionsUI.AggregateInspectionResultFormat, _result.Inspection.Description, _count);
+        public string Description => string.Format(Resources.Inspections.InspectionResults.AggregateInspection, _result.Inspection.Description, _count);
 
         public QualifiedSelection QualifiedSelection => _result.QualifiedSelection;
         public QualifiedMemberName? QualifiedMemberName => _result.QualifiedMemberName;
