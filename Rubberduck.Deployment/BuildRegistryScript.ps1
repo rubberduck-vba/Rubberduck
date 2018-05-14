@@ -46,6 +46,7 @@ try
 	foreach($file in $files)
 	{
 		$dllFile = [System.String]$file;
+		$idlFile = [System.String]($file -replace ".dll", ".idl");
 		$tlb32File = [System.String]($file -replace ".dll", ".x32.tlb");
 		$tlb64File = [System.String]($file -replace ".dll", ".x64.tlb");
 
@@ -63,6 +64,13 @@ try
 		# For simplicity, the arguments are pass in literally.
 		# & "C:\GitHub\Rubberduck\Rubberduck\Rubberduck.Deployment\echoargs.exe" ""$sourceDll"" /win32 /out:""$sourceTlb"";
 		
+		[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
+		$idlGenerator = New-Object Rubberduck.Deployment.IdlGeneration.IdlGenerator;
+		
+		$idl = $idlGenerator.GenerateIdl($sourceDll);
+		$encoding = New-Object System.Text.UTF8Encoding $true;
+		[System.IO.File]::WriteAllLines($idlFile, $idl, $encoding);
+		
 		$cmd = "{0}tlbexp.exe" -f $netToolsDir;
 		& $cmd ""$sourceDll"" /win32 /out:""$sourceTlb32"";
 		& $cmd ""$sourceDll"" /win64 /out:""$sourceTlb64"";
@@ -70,8 +78,7 @@ try
 		$cmd = "{0}heat.exe" -f $wixToolsDir;
 		& $cmd file ""$sourceDll"" -out ""$dllXml"";
 		& $cmd file ""$sourceTlb32"" -out ""$tlbXml"";
-			
-		[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
+		
 		$builder = New-Object Rubberduck.Deployment.Builders.RegistryEntryBuilder;
 	
 		$entries = $builder.Parse($tlbXml, $dllXml);

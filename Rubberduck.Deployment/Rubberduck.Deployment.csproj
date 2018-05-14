@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IdlGeneration\IdlGenerator.cs" />
+    <Compile Include="IdlGeneration\IdlListener.cs" />
     <Compile Include="Structs\Bitness.cs" />
     <Compile Include="Structs\ClassMap.cs" />
     <Compile Include="Structs\FileMap.cs" />
