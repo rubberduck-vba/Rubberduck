@@ -625,7 +625,7 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
+                messageBox.Setup(m => m.ConfirmYN(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Refactorings.ExtractInterface;
 

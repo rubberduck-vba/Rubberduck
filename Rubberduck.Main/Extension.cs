@@ -183,7 +183,7 @@ namespace Rubberduck
             }
             catch (Win32Exception)
             {
-                System.Windows.Forms.MessageBox.Show(RubberduckUI.RubberduckReloadFailure_Message, RubberduckUI.RubberduckReloadFailure_Title,
+                System.Windows.Forms.MessageBox.Show(Resources.RubberduckUI.RubberduckReloadFailure_Message, RubberduckUI.RubberduckReloadFailure_Title,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (Exception exception)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources;
 

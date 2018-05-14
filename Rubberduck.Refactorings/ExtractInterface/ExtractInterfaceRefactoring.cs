@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ImplementInterface;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -125,12 +124,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
         {
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _model.State, _messageBox);
-            implementInterfaceRefactoring.Refactor(_model.Members.Where(m => m.IsSelected).Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
+            implementInterfaceRefactoring.Refactor(_model.Members.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
         }
 
         private string GetInterfaceModuleBody()
         {
-            return string.Join(Environment.NewLine, _model.Members.Where(m => m.IsSelected).Select(m => m.Body));
+            return string.Join(Environment.NewLine, _model.Members.Select(m => m.Body));
         }
     }
 }

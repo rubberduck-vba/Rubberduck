@@ -2,13 +2,13 @@
 using System.Linq;
 using Rubberduck.Resources;
 using Rubberduck.Interaction;
-using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.ReorderParameters;
+using System.Windows.Forms;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-
+    // FIXME investigate generic IRefactoringPresenter<ReorderParametersModel> usage!
     public class ReorderParametersPresenter : IReorderParametersPresenter
     {
         private readonly IRefactoringDialog<ReorderParametersViewModel> _view;

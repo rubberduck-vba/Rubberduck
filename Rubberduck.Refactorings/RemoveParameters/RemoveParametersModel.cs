@@ -78,7 +78,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = _messageBox.Confirm(message, RubberduckUI.ReorderParamsDialog_TitleText);
+            var confirm = _messageBox.ConfirmYN(message, RubberduckUI.ReorderParamsDialog_TitleText);
             return confirm ? null : interfaceMember;
         }
 

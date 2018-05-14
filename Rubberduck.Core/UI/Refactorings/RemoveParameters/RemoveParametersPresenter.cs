@@ -1,11 +1,12 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Resources;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
+using System.Windows.Forms;
+using System.Linq;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public class RemoveParametersPresenter : IRemoveParametersPresenter
+    internal class RemoveParametersPresenter : IRemoveParametersPresenter
     {
         private readonly IRefactoringDialog<RemoveParametersViewModel> _view;
         private readonly RemoveParametersModel _model;
@@ -32,20 +33,18 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                 return null;
             }
 
-            if (_model.Parameters.Count == 1)
+            _view.ViewModel.Parameters = _model.Parameters.Select(p => p.ToViewModel()).ToList();
+            if (_view.ViewModel.Parameters.Count == 1)
             {
-                _model.Parameters[0].IsRemoved = true;
+                _view.ViewModel.Parameters[0].IsRemoved = true;
                 return _model;
             }
-
-            _view.ViewModel.Parameters = _model.Parameters;
             _view.ShowDialog();
             if (_view.DialogResult != DialogResult.OK)
             {
                 return null;
             }
-
-            _model.Parameters = _view.ViewModel.Parameters;
+            _model.Parameters = _view.ViewModel.Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
             return _model;
         }
     }

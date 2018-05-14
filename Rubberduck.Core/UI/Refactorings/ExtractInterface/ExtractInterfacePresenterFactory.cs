@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Refactorings.ExtractInterface
 {
-    public class ExtractInterfacePresenterFactory : IRefactoringPresenterFactory<ExtractInterfacePresenter>
+    internal class ExtractInterfacePresenterFactory : IRefactoringPresenterFactory<ExtractInterfacePresenter>
     {
         private readonly IVBE _vbe;
         private readonly IRefactoringDialog<ExtractInterfaceViewModel> _view;

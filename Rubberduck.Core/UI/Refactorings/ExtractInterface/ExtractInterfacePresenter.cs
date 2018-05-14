@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Refactorings.ExtractInterface
             }
 
             _model.InterfaceName = _view.ViewModel.InterfaceName;
-            _model.Members = _view.ViewModel.Members.Select(vm => vm.ToModel()).ToList();
+            _model.Members = _view.ViewModel.Members.Where(m => m.IsSelected).Select(vm => vm.ToModel()).ToList();
             return _model;
         }
     }

@@ -37,7 +37,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             _model = presenter.Show();
-            if (_model == null || !_model.Parameters.Any(item => item.IsRemoved))
+            if (_model == null || !_model.Parameters.Any())
             {
                 return;
             }
@@ -91,10 +91,18 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
         {
             _model = new RemoveParametersModel(state, selection, new MessageBox());
+            
             var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
             Debug.Assert(target != null, "Target was not found");
-
-            target.IsRemoved = true;
+            
+            if (target != null)
+            {
+                _model.Parameters.Clear();
+                _model.Parameters.Add(target);
+            } else
+            {
+                return; // FIXME is this equivalent to before?
+            }
             RemoveParameters();
         }
 
@@ -162,10 +170,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
             {
-                if (!_model.Parameters[i].IsRemoved)
-                {
-                    continue;
-                }
+                // All parameters we keep are to be removed by definition
+                //if (!_model.Parameters[i].IsRemoved)
+                //{
+                //    continue;
+                //}
                 
                 if (_model.Parameters[i].IsParamArray)
                 {
@@ -255,12 +264,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
             
-            for (var i = 0; i < _model.Parameters.Count; i++)
+            foreach (var remove in _model.Parameters)
             {
-                if (_model.Parameters[i].IsRemoved)
-                {
-                    rewriter.Remove(parameters[i]);
-                }
+                rewriter.Remove(remove.Declaration);
             }
 
             _rewriters.Add(rewriter);

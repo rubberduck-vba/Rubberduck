@@ -51,7 +51,7 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (target == null)
             {
-                _messageBox.Show(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
                 return;
             }
 

@@ -3,7 +3,7 @@ using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public sealed partial class ExtractInterfaceDialog : Form, IRefactoringDialog<ExtractInterfaceViewModel>
+    internal sealed partial class ExtractInterfaceDialog : Form, IRefactoringDialog<ExtractInterfaceViewModel>
     {
         public ExtractInterfaceViewModel ViewModel { get; }
 

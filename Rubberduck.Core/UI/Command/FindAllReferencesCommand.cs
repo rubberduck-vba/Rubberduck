@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;

@@ -10,7 +10,9 @@ namespace Rubberduck.Interaction
         void NotifyWarn(string text, string caption);
         bool Question(string text, string caption);
         bool Prompt(string text, string caption);
-        bool Confirm(string text, string caption);
+        bool ConfirmYN(string text, string caption);
+        bool ConfirmYN(string text, string caption, bool suggestion);
+        bool? Confirm(string text, string caption, bool? suggestion);
     }
 
     public class MessageBox : IMessageBox
@@ -41,9 +43,33 @@ namespace Rubberduck.Interaction
             return Forms.MessageBox.Show(text, caption, Forms.MessageBoxButtons.YesNo, Forms.MessageBoxIcon.Information) == Forms.DialogResult.Yes;
         }
 
-        public bool Confirm(string text, string caption)
+        public bool ConfirmYN(string text, string caption)
         {
             return Forms.MessageBox.Show(text, caption, Forms.MessageBoxButtons.YesNo, Forms.MessageBoxIcon.Exclamation) == Forms.DialogResult.Yes;
+        }
+
+        public bool ConfirmYN(string text, string caption, bool suggestion)
+        {
+            return Forms.MessageBox.Show(text, caption, Forms.MessageBoxButtons.YesNo, Forms.MessageBoxIcon.Exclamation, suggestion ? Forms.MessageBoxDefaultButton.Button1 : Forms.MessageBoxDefaultButton.Button2) == Forms.DialogResult.Yes;
+        }
+
+        public bool? Confirm(string text, string caption, bool? suggestion)
+        {
+            var suggestionButton = suggestion.HasValue ? (suggestion.Value ? Forms.MessageBoxDefaultButton.Button1 : Forms.MessageBoxDefaultButton.Button2) : Forms.MessageBoxDefaultButton.Button3;
+            var result = Forms.MessageBox.Show(text, caption, Forms.MessageBoxButtons.YesNoCancel, Forms.MessageBoxIcon.Exclamation, suggestionButton);
+
+            switch (result)
+            {
+                case Forms.DialogResult.Cancel:
+                    return null;
+                case Forms.DialogResult.Yes:
+                    return true;
+                case Forms.DialogResult.No:
+                    return false;
+                default:
+                    return suggestion;
+
+            }
         }
     }
 }

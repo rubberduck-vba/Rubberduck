@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.ComManagement;
@@ -55,15 +56,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override void OnExecute(object parameter)
         {
             var message = string.Format("Do you want to export '{0}' before removing?", ((CodeExplorerComponentViewModel)parameter).Name);
-            var result = _messageBox.Show(message, "Rubberduck Export Prompt", MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+            var result = _messageBox.Confirm(message, "Rubberduck Export Prompt", true);
 
-            if (result == DialogResult.Cancel)
+            if (!result.HasValue)
             {
                 return;
             }
 
-            if (result == DialogResult.Yes && !ExportFile((CodeExplorerComponentViewModel)parameter))
+            if (result.Value && !ExportFile((CodeExplorerComponentViewModel)parameter))
             {
                 return;
             }

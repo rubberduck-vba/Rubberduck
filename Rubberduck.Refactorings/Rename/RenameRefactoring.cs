@@ -183,7 +183,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private bool UserConfirmsRenameOfResolvedTarget(string message)
         {
-            return _messageBox?.Confirm(message, RubberduckUI.RenameDialog_TitleText) ?? false;
+            return _messageBox?.ConfirmYN(message, RubberduckUI.RenameDialog_TitleText) ?? false;
             
         }
 
@@ -253,7 +253,7 @@ namespace Rubberduck.Refactorings.Rename
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
                     conflictDeclarations.FirstOrDefault().IdentifierName);
 
-                return _messageBox?.Confirm(message, RubberduckUI.RenameDialog_Caption) ?? false;
+                return _messageBox?.ConfirmYN(message, RubberduckUI.RenameDialog_Caption) ?? false;
             }
 
             return true;

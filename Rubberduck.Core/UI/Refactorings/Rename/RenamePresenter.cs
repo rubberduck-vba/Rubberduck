@@ -5,6 +5,7 @@ using Rubberduck.UI.Refactorings.Rename;
 
 namespace Rubberduck.Refactorings.Rename
 {
+    // FIXME investigate generic IRefactoringPresenter<RenameModel> usage!
     public class RenamePresenter : IRenamePresenter
     {
         private readonly IRefactoringDialog<RenameViewModel> _view;
