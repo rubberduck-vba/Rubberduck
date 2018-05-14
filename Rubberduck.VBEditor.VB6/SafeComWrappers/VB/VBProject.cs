@@ -118,17 +118,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void AssignProjectId()
         {
-            if (!string.IsNullOrEmpty(ProjectId))
+            if (IsWrappingNullReference || !string.IsNullOrEmpty(ProjectId))
             {
                 return;
             }
-
-            var projectId = Guid.NewGuid().ToString();
-
-            if (!IsWrappingNullReference)
-            {
-                Target.WriteProperty("Rubberduck", "ProjectId", projectId);
-            }
+            Target.WriteProperty("Rubberduck", "ProjectId", Guid.NewGuid().ToString());
         }
 
         /// <summary>
