@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Resources.Registration;
 using Rubberduck.Resources.UnitTesting;

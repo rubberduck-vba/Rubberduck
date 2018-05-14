@@ -191,12 +191,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.SharedResources\Rubberduck.SharedResources.csproj">
-      <Project>{8039defa-60c9-4511-8160-7969b40b3e4c}</Project>
-      <Name>Rubberduck.SharedResources</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +198,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
+      <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

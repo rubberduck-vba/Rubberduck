@@ -42,7 +42,6 @@ namespace Rubberduck.Parsing.Symbols
         DocObject = 1L << 33 | ClassModule,
         RelatedDocument = 1L << 34,
         ActiveXDesigner = 1L << 35 | ClassModule
-
     }
 
     public interface IIdentifier { IdentifierNode Identifier { get; } }

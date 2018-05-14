@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.API.VBA
 {

@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.SharedResources.COM
+﻿namespace Rubberduck.Resources.Registration
 {
     // https://msdn.microsoft.com/en-us/library/windows/desktop/ms221242(v=vs.85).aspx
     public static class WellKnownDispIds

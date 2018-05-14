@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Rubberduck.API.VBA;
 using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.API
 {

@@ -161,6 +161,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\RubberduckGuid.cs" />
     <Compile Include="Registration\RubberduckProgId.cs" />
+    <Compile Include="Registration\WellKnownDispIds.cs" />
     <Compile Include="RubberduckUI.cs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 using Source = Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.API.VBA

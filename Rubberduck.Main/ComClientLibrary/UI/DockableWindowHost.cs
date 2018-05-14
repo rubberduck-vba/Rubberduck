@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.WindowsApi;
 using User32 = Rubberduck.Common.WinAPI.User32;
 using NLog;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 using Rubberduck.UI.CustomComWrappers;
 
 namespace Rubberduck.UI

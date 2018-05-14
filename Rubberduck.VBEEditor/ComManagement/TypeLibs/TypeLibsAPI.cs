@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

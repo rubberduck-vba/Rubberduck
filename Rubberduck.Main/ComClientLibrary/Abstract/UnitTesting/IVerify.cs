@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 
 // The parameters on RD's public interfaces are following VBA conventions not C# conventions to stop the
 // obnoxious "Can I haz all identifiers with the same casing" behavior of the VBE.

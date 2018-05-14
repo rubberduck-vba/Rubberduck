@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 using Source = Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.API.VBA
@@ -10,33 +10,34 @@ namespace Rubberduck.API.VBA
     ]
     public enum DeclarationType
     {
-        BracketedExpression = Source.DeclarationType.BracketedExpression,
-        ClassModule = Source.DeclarationType.ClassModule,
-        ComAlias = Source.DeclarationType.ComAlias,
-        Constant = Source.DeclarationType.Constant,
-        Control = Source.DeclarationType.Control,
-        Document = Source.DeclarationType.Document,
-        Enumeration = Source.DeclarationType.Enumeration,
-        EnumerationMember = Source.DeclarationType.EnumerationMember,
-        Event = Source.DeclarationType.Event,
-        Function = Source.DeclarationType.Function,
-        LibraryFunction = Source.DeclarationType.LibraryFunction,
-        LibraryProcedure = Source.DeclarationType.LibraryProcedure,
-        LineLabel = Source.DeclarationType.LineLabel,
-        Member = Source.DeclarationType.Member,
-        Module = Source.DeclarationType.Module,
-        Parameter = Source.DeclarationType.Parameter,
-        ProceduralModule = Source.DeclarationType.ProceduralModule,
-        Procedure = Source.DeclarationType.Procedure,
-        Project = Source.DeclarationType.Project,
-        Property = Source.DeclarationType.Property,
-        PropertyGet = Source.DeclarationType.PropertyGet,
-        PropertyLet = Source.DeclarationType.PropertyLet,
-        PropertySet = Source.DeclarationType.PropertySet,
-        UnresolvedMember = Source.DeclarationType.UnresolvedMember,
-        UserDefinedType = Source.DeclarationType.UserDefinedType,
-        UserDefinedTypeMember = Source.DeclarationType.UserDefinedTypeMember,
-        UserForm = Source.DeclarationType.UserForm,
-        Variable = Source.DeclarationType.Variable
+        //TODO: figure out a cleaner way to handle long/int 
+        BracketedExpression = (int)Source.DeclarationType.BracketedExpression,
+        ClassModule = (int)Source.DeclarationType.ClassModule,
+        ComAlias = (int)Source.DeclarationType.ComAlias,
+        Constant = (int)Source.DeclarationType.Constant,
+        Control = (int)Source.DeclarationType.Control,
+        Document = (int)Source.DeclarationType.Document,
+        Enumeration = (int)Source.DeclarationType.Enumeration,
+        EnumerationMember = (int)Source.DeclarationType.EnumerationMember,
+        Event = (int)Source.DeclarationType.Event,
+        Function = (int)Source.DeclarationType.Function,
+        LibraryFunction = (int)Source.DeclarationType.LibraryFunction,
+        LibraryProcedure = (int)Source.DeclarationType.LibraryProcedure,
+        LineLabel = (int)Source.DeclarationType.LineLabel,
+        Member = (int)Source.DeclarationType.Member,
+        Module = (int)Source.DeclarationType.Module,
+        Parameter = (int)Source.DeclarationType.Parameter,
+        ProceduralModule = (int)Source.DeclarationType.ProceduralModule,
+        Procedure = (int)Source.DeclarationType.Procedure,
+        Project = (int)Source.DeclarationType.Project,
+        Property = (int)Source.DeclarationType.Property,
+        PropertyGet = (int)Source.DeclarationType.PropertyGet,
+        PropertyLet = (int)Source.DeclarationType.PropertyLet,
+        PropertySet = (int)Source.DeclarationType.PropertySet,
+        UnresolvedMember = (int)Source.DeclarationType.UnresolvedMember,
+        UserDefinedType = (int)Source.DeclarationType.UserDefinedType,
+        UserDefinedTypeMember = (int)Source.DeclarationType.UserDefinedTypeMember,
+        UserForm = (int)Source.DeclarationType.UserForm,
+        Variable = (int)Source.DeclarationType.Variable
     }
 }

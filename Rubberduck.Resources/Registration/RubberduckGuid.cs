@@ -1,35 +1,57 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace Rubberduck.Resources.Registration
+﻿namespace Rubberduck.Resources.Registration
 {
     public static class RubberduckGuid
     {
-        // TypeLib Guid:
-        public const string RubberduckTypeLibGuid = "e07c841c-14b4-4890-83e9-8c80b06dd59d";
+        // Guid Suffix
+        private const string GuidSuffix = "-43F0-3B33-B105-9B8188A6F040";
 
+        // TypeLib Guid:
+        private const string TypeLibGuidspace = "E07C84";
+        public const string RubberduckTypeLibGuid = TypeLibGuidspace + "1C" + GuidSuffix;
+        public const string RubberduckApiTypeLibGuid = TypeLibGuidspace + "1D" + GuidSuffix;
+        
         // Addin Guids:
-        public const string ExtensionGuid = "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66";                 // shipped
-        public const string DockableWindowHostGuid = "9CF1392A-2DC9-48A6-AC0B-E601A9802608";        // shipped
+        private const string AddinGuidspace = "69E0F6";
+        public const string ExtensionGuid = AddinGuidspace + "97" + GuidSuffix;
+        public const string IDockableWindowHostGuid = AddinGuidspace + "98" + GuidSuffix;
+        public const string DockableWindowHostGuid = AddinGuidspace + "99" + GuidSuffix;
+
+        // Unit testing Guids:
+        private const string UnitTestingGuidspace = "69E0F7";
+        public const string AssertClassGuid = UnitTestingGuidspace + "DA" + GuidSuffix;
+        public const string IAssertGuid = UnitTestingGuidspace + "DB" + GuidSuffix;
+        public const string PermissiveAssertClassGuid = UnitTestingGuidspace + "DC" + GuidSuffix;
+        public const string FakesProviderClassGuid = UnitTestingGuidspace + "DD" + GuidSuffix;
+        public const string IFakesProviderGuid = UnitTestingGuidspace + "DE" + GuidSuffix;
+        public const string IFakeGuid = UnitTestingGuidspace + "DF" + GuidSuffix;
+        public const string IVerifyGuid = UnitTestingGuidspace + "E0" + GuidSuffix;
+        public const string IStubGuid = UnitTestingGuidspace + "E1" + GuidSuffix;
 
         // Rubberduck API Guids:
-        public const string DeclarationClassGuid = "67940D0B-081A-45BE-B0B9-CAEAFE034BC0";          // shipped prior to 2.0.14
-        public const string IdentifierReferenceClassGuid = "57F78E64-8ADF-4D81-A467-A0139B877D14";  // shipped prior to 2.0.14
-        public const string ParserStateClassGuid = "28754D11-10CC-45FD-9F6A-525A65412B7A";          // shipped prior to 2.0.14
-        public const string IParserStateEventsGuid = "3D8EAA28-8983-44D5-83AF-2EEC4C363079";        // shipped prior to 2.0.14
-        
-        // Unit testing Guids:
-        private const string UnitTestingGuidspace = "-43F0-3B33-B105-9B8188A6F040";
-        public const string AssertClassGuid = "69E194DA" + UnitTestingGuidspace;                    // shipped prior to 2.0.14
-        public const string IAssertGuid = "69E194DB" + UnitTestingGuidspace;                        // added for 2.0.14
-        public const string PermissiveAssertClassGuid = "40F71F29-D63F-4481-8A7D-E04A4B054501";     // shipped prior to 2.0.14
-        public const string FakesProviderClassGuid = "69E194DD" + UnitTestingGuidspace;             // added for 2.0.14
-        public const string IFakesProviderGuid = "69E194DE" + UnitTestingGuidspace;                 // added for 2.0.14
-        public const string IFakeGuid = "69E194DF" + UnitTestingGuidspace;                          // added for 2.0.14
-        public const string IVerifyGuid = "69E194E0" + UnitTestingGuidspace;                        // added for 2.0.14
-        public const string IStubGuid = "69E194E1" + UnitTestingGuidspace;                          // added for 2.0.14
+        private const string ApiGuidspace = "69E0F7";
+        public const string IDeclarationGuid = ApiGuidspace + "81" + GuidSuffix;
+        public const string DeclarationClassGuid = ApiGuidspace + "82" + GuidSuffix;
+        public const string IIdentifierReferenceGuid = ApiGuidspace + "83" + GuidSuffix;
+        public const string IdentifierReferenceClassGuid = ApiGuidspace + "84" + GuidSuffix;
+        public const string IParserGuid = ApiGuidspace + "85" + GuidSuffix;
+        public const string ParserClassGuid = ApiGuidspace + "86" + GuidSuffix;
+        public const string IParserEventsGuid = ApiGuidspace + "87" + GuidSuffix;
+        public const string IDeclarationsGuid = ApiGuidspace + "88" + GuidSuffix;
+        public const string DeclarationsClassGuid = ApiGuidspace + "89" + GuidSuffix;
+        public const string IApiProviderGuid = ApiGuidspace + "8A" + GuidSuffix;
+        public const string ApiProviderClassGuid = ApiGuidspace + "8B" + GuidSuffix;
+        public const string IIdentifierReferencesGuid = ApiGuidspace + "8C" + GuidSuffix;
+        public const string IdentifierReferencesClassGuid = ApiGuidspace + "8D" + GuidSuffix;
 
         // Enum Guids:
-        public const string DeclarationTypeGuid = "3E077C17-5678-3605-8449-FEABE42C9725";
-        public const string AccessibilityGuid = "6BD869B8-C7C6-3970-8ED4-AC74DD2EBA92";
+        private const string RecordGuidspace = "69E100";
+        public const string DeclarationTypeGuid = RecordGuidspace + "23" + GuidSuffix;
+        public const string AccessibilityGuid = RecordGuidspace + "24" + GuidSuffix;
+        public const string ParserStateGuid = RecordGuidspace + "25" + GuidSuffix;
+
+        // Debug Guids:
+        private const string DebugGuidspace = "69E101";
+        public const string DebugAddinObjectInterfaceGuid = DebugGuidspace + "23" + GuidSuffix;
+        public const string DebugAddinObjectClassGuid = DebugGuidspace + "24" + GuidSuffix;
     }
 }

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.SharedResources.COM;
+using Rubberduck.Resources.Registration;
 using RubberduckDeclaration = Rubberduck.Parsing.Symbols.Declaration;
 
 namespace Rubberduck.API.VBA
