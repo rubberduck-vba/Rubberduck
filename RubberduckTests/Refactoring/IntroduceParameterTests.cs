@@ -507,6 +507,7 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
+                messageBox.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
@@ -518,6 +519,8 @@ End Sub";
 
                 var rewriter2 = state.GetRewriter(component1);
                 Assert.AreEqual(expectedCode2, rewriter2.GetText());
+
+                messageBox.Verify(m => m.Question(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
             }
         }
 
@@ -577,6 +580,7 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
+                messageBox.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
                 var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object);
 
@@ -591,6 +595,7 @@ End Sub";
 
                 var rewriter3 = state.GetRewriter(component3);
                 Assert.AreEqual(expectedCode3, rewriter3.GetText());
+                messageBox.Verify(m => m.Question(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
             }
         }
 

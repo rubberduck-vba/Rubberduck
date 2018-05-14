@@ -246,7 +246,7 @@ End Sub";
 
                 //Specify Param(s) to remove
                 var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.Parameters = new[] { model.Parameters[2] }.ToList();
+                model.Parameters = model.Parameters.Where(p => p.Name == "c").ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -1638,7 +1638,7 @@ End Sub";   // note: IDE removes excess spaces
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
-        public void ReorderParametersRefactoring_LastEventParamRemoved_EventImplementationSelected()
+        public void RemoveParametersRefactoring_LastEventParamRemoved_EventImplementationSelected()
         {
             //Input
             const string inputCode1 =

@@ -33,12 +33,12 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                 return null;
             }
 
-            _view.ViewModel.Parameters = _model.Parameters.Select(p => p.ToViewModel()).ToList();
-            if (_view.ViewModel.Parameters.Count == 1)
+            if (_model.Parameters.Count == 1)
             {
-                _view.ViewModel.Parameters[0].IsRemoved = true;
                 return _model;
             }
+
+            _view.ViewModel.Parameters = _model.Parameters.Select(p => p.ToViewModel()).ToList();
             _view.ShowDialog();
             if (_view.DialogResult != DialogResult.OK)
             {

@@ -1232,7 +1232,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYN(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -1310,7 +1310,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYN(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]

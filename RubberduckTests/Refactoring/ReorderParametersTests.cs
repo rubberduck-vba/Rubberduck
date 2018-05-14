@@ -1391,7 +1391,7 @@ End Sub";
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.ConfirmYN(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+                messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns(true);
 
                 //Specify Params to remove
                 var model = new ReorderParametersModel(state, qualifiedSelection, messageBox.Object);
@@ -1438,7 +1438,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.ConfirmYN(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
+                messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns(false);
 
                 //Specify Params to remove
                 var model = new ReorderParametersModel(state, qualifiedSelection, messageBox.Object);
