@@ -111,8 +111,8 @@ try
 		$origEnv = Get-Environment
 		Invoke-CmdScript "$devEnvDir\..\Tools\VsDevCmd.bat";
 		
-		& midl.exe ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
-		& midl.exe ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
+		& "C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x86\midl.exe" ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
+		& "C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x86\midl.exe" ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
 
 		Restore-Environment $origEnv;
 

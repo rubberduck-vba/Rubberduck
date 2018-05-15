@@ -42,7 +42,6 @@ assembly_info:
   assembly_version: '{version}'
 
 before_build:
-  - cinst visualstudio2017-workload-vctools  -v
   - cinst innosetup
   - cinst codecov
   - cinst opencover.portable
