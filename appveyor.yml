@@ -42,7 +42,7 @@ assembly_info:
   assembly_version: '{version}'
 
 before_build:
-  - cinst windows-sdk-7.1 -d -v
+  - cinst visualstudio2017-workload-vctools  -v
   - cinst innosetup
   - cinst codecov
   - cinst opencover.portable
