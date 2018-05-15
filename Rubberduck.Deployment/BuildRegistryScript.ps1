@@ -10,7 +10,6 @@
 #  -config '$(ConfigurationName)' 
 #  -builderAssemblyPath '$(TargetPath)' 
 #  -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' 
-#  -devEnvDir '$(DevEnvDir)' 
 #  -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' 
 #  -sourceDir '$(TargetDir)' 
 #  -targetDir '$(TargetDir)' 
@@ -20,7 +19,6 @@ param (
 	[Parameter(Mandatory=$true)][string]$config,
 	[Parameter(Mandatory=$true)][string]$builderAssemblyPath,
 	[Parameter(Mandatory=$true)][string]$netToolsDir,
-	[Parameter(Mandatory=$true)][string]$devEnvDir,
 	[Parameter(Mandatory=$true)][string]$wixToolsDir,
 	[Parameter(Mandatory=$true)][string]$sourceDir,
 	[Parameter(Mandatory=$true)][string]$targetDir,
@@ -108,19 +106,24 @@ try
 		$encoding = New-Object System.Text.UTF8Encoding $true;
 		[System.IO.File]::WriteAllLines($idlFile, $idl, $encoding);
 		
-		Write-Host "";
-		Write-Host "Debug the directories...";
-		Write-Host $devEnvDir;
-		Resolve-Path -Path "$devEnvDir..\*" | Write-Host;
-		Write-Host "";
+		$devPath = Resolve-Path -Path "C:\Program Files*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
+		if($devPath)
+		{
+			$origEnv = Get-Environment
+			Invoke-CmdScript "$devPath";
 		
-		$origEnv = Get-Environment
-		Invoke-CmdScript "$devEnvDir\..\Tools\VsDevCmd.bat";
-		
-		& "midl.exe" ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
-		& "midl.exe" ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
+			& "midl.exe" ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
+			& "midl.exe" ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
 
-		Restore-Environment $origEnv;
+			Restore-Environment $origEnv;
+		}
+		else
+		{
+			Write-Warning "Cannot locate the VsDevCmd.bat to initialize C++ build tools; falling back to tlbexp.exe....";
+			$cmd = "{0}tlbexp.exe" -f $netToolsDir;
+			& $cmd ""$sourceDll"" /win32 /out:""$sourceTlb32"";
+			& $cmd ""$sourceDll"" /win64 /out:""$sourceTlb64"";
+		}
 
 		$cmd = "{0}heat.exe" -f $wixToolsDir;
 		& $cmd file ""$sourceDll"" -out ""$dllXml"";
