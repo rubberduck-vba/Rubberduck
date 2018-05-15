@@ -99,23 +99,27 @@ try
 		# For simplicity, the arguments are pass in literally.
 		# & "C:\GitHub\Rubberduck\Rubberduck\Rubberduck.Deployment\echoargs.exe" ""$sourceDll"" /win32 /out:""$sourceTlb"";
 		
-		[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
-		$idlGenerator = New-Object Rubberduck.Deployment.IdlGeneration.IdlGenerator;
-		
-		$idl = $idlGenerator.GenerateIdl($sourceDll);
-		$encoding = New-Object System.Text.UTF8Encoding $true;
-		[System.IO.File]::WriteAllLines($idlFile, $idl, $encoding);
-		
 		$devPath = Resolve-Path -Path "C:\Program Files*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
 		if($devPath)
 		{
-			$origEnv = Get-Environment
-			Invoke-CmdScript "$devPath";
+			[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
+			$idlGenerator = New-Object Rubberduck.Deployment.IdlGeneration.IdlGenerator;
 		
-			& "midl.exe" ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
-			& "midl.exe" ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
-
-			Restore-Environment $origEnv;
+			$idl = $idlGenerator.GenerateIdl($sourceDll);
+			$encoding = New-Object System.Text.UTF8Encoding $true;
+			[System.IO.File]::WriteAllLines($idlFile, $idl, $encoding);
+		
+			$origEnv = Get-Environment
+			try {
+				Invoke-CmdScript "$devPath";
+		
+				& "midl.exe" ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
+				& "midl.exe" ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
+			} catch {
+				throw;
+			} finally {
+				Restore-Environment $origEnv;
+			}
 		}
 		else
 		{
