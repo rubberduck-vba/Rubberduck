@@ -42,7 +42,7 @@ assembly_info:
   assembly_version: '{version}'
 
 before_build:
-  - cinst windows-sdk-10.1 -d -v
+  - cinst windows-sdk-7.1 -d -v
   - cinst innosetup
   - cinst codecov
   - cinst opencover.portable
