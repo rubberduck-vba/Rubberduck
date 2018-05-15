@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Org.Benf.OleWoo;
 using Org.Benf.OleWoo.Typelib;
 using System.IO;
@@ -13,8 +12,6 @@ namespace Rubberduck.Deployment.IdlGeneration
     {
         public string GenerateIdl(string assemblyPath)
         {
-            System.Diagnostics.Debugger.Launch();
-
             try
             {
                 if (File.Exists(assemblyPath))

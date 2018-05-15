@@ -10,6 +10,7 @@
 #  -config '$(ConfigurationName)' 
 #  -builderAssemblyPath '$(TargetPath)' 
 #  -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' 
+#  -devEnvDir '$(DevEnvDir)' 
 #  -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' 
 #  -sourceDir '$(TargetDir)' 
 #  -targetDir '$(TargetDir)' 
@@ -19,6 +20,7 @@ param (
 	[Parameter(Mandatory=$true)][string]$config,
 	[Parameter(Mandatory=$true)][string]$builderAssemblyPath,
 	[Parameter(Mandatory=$true)][string]$netToolsDir,
+	[Parameter(Mandatory=$true)][string]$devEnvDir,
 	[Parameter(Mandatory=$true)][string]$wixToolsDir,
 	[Parameter(Mandatory=$true)][string]$sourceDir,
 	[Parameter(Mandatory=$true)][string]$targetDir,
@@ -30,6 +32,41 @@ function Get-ScriptDirectory
 {
   $Invocation = (Get-Variable MyInvocation -Scope 1).Value;
   Split-Path $Invocation.MyCommand.Path;
+}
+
+# Invokes a Cmd.exe shell script and updates the environment.
+function Invoke-CmdScript {
+  param(
+    [String] $scriptName
+  )
+  $cmdLine = """$scriptName"" $args & set"
+  & $Env:SystemRoot\system32\cmd.exe /c $cmdLine |
+  select-string '^([^=]*)=(.*)$' | foreach-object {
+    $varName = $_.Matches[0].Groups[1].Value
+    $varValue = $_.Matches[0].Groups[2].Value
+    set-item Env:$varName $varValue
+  }
+}
+
+# Returns the current environment.
+function Get-Environment {
+  get-childitem Env:
+}
+
+# Restores the environment to a previous state.
+function Restore-Environment {
+  param(
+    [parameter(Mandatory=$TRUE)]
+      [System.Collections.DictionaryEntry[]] $oldEnv
+  )
+  # Remove any added variables.
+  compare-object $oldEnv $(Get-Environment) -property Key -passthru |
+  where-object { $_.SideIndicator -eq "=>" } |
+  foreach-object { remove-item Env:$($_.Name) }
+  # Revert any changed variables to original values.
+  compare-object $oldEnv $(Get-Environment) -property Value -passthru |
+  where-object { $_.SideIndicator -eq "<=" } |
+  foreach-object { set-item Env:$($_.Name) $_.Value }
 }
 
 Set-StrictMode -Version latest;
@@ -71,9 +108,13 @@ try
 		$encoding = New-Object System.Text.UTF8Encoding $true;
 		[System.IO.File]::WriteAllLines($idlFile, $idl, $encoding);
 		
-		$cmd = "{0}tlbexp.exe" -f $netToolsDir;
-		& $cmd ""$sourceDll"" /win32 /out:""$sourceTlb32"";
-		& $cmd ""$sourceDll"" /win64 /out:""$sourceTlb64"";
+		$origEnv = Get-Environment
+		Invoke-CmdScript "$devEnvDir\..\Tools\VsDevCmd.bat";
+		
+		& midl.exe ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
+		& midl.exe ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
+
+		Restore-Environment $origEnv;
 
 		$cmd = "{0}heat.exe" -f $wixToolsDir;
 		& $cmd file ""$sourceDll"" -out ""$dllXml"";
@@ -141,11 +182,16 @@ try
 			$encoding = New-Object System.Text.ASCIIEncoding;
 			[System.IO.File]::AppendAllText($regFileDebug, $content, $encoding);
 		}
+
+		Write-Host "Finished processing '$file'";
+		Write-Host "";
 	}
+	
+	Write-Host "Finished processing all files";
 }
 catch
 {
-	Write-Host -Foreground Red -Background Black ($_);
+	Write-Error ($_);
 	# Cause the build to fail
 	throw;
 }
