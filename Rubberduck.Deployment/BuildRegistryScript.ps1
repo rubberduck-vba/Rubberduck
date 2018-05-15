@@ -108,6 +108,12 @@ try
 		$encoding = New-Object System.Text.UTF8Encoding $true;
 		[System.IO.File]::WriteAllLines($idlFile, $idl, $encoding);
 		
+		Write-Host "";
+		Write-Host "Debug the directories...";
+		Write-Host $devEnvDir;
+		Resolve-Path -Path "$devEnvDir..\*" | Write-Host;
+		Write-Host "";
+		
 		$origEnv = Get-Environment
 		Invoke-CmdScript "$devEnvDir\..\Tools\VsDevCmd.bat";
 		
