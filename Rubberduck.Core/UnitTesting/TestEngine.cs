@@ -150,10 +150,10 @@ namespace Rubberduck.UnitTesting
 
         private void Run(IEnumerable<Declaration> members)
         {
-            var groupedMembers = members.GroupBy(m => m.ProjectName);
+            var groupedMembers = members.GroupBy(m => m.ProjectId);
             foreach (var group in groupedMembers)
             {
-                using (var project = _vbe.VBProjects[group.Key])
+                var project = _state.ProjectsProvider.Project(group.Key);
                 using (var typeLib = TypeLibWrapper.FromVBProject(project))
                 {
                     foreach (var member in group)
