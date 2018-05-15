@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.UI.Inspections
 {
