@@ -10,8 +10,9 @@ namespace RubberduckCodeAnalysis
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class ComVisibleTypeAnalyzer : DiagnosticAnalyzer
     {
+        private const string MissingGuidId = "MissingGuidId";
         private static readonly DiagnosticDescriptor MissingGuidRule = new DiagnosticDescriptor(
-            new LocalizableResourceString(nameof(Resources.MissingGuidId), Resources.ResourceManager, typeof(Resources)).ToString(),
+            MissingGuidId,
             new LocalizableResourceString(nameof(Resources.MissingGuidTitle), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.MissingGuidMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.AnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(), 
@@ -20,8 +21,9 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingGuidDescription), Resources.ResourceManager, typeof(Resources))
         );
 
+        private const string MissingClassInterfaceId = "MissingClassInterface";
         private static readonly DiagnosticDescriptor MissingClassInterfaceRule = new DiagnosticDescriptor(
-            new LocalizableResourceString(nameof(Resources.MissingClassInterfaceId), Resources.ResourceManager, typeof(Resources)).ToString(),
+            MissingClassInterfaceId,
             new LocalizableResourceString(nameof(Resources.MissingClassInterfaceTitle), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.MissingClassInterfaceMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.AnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
@@ -30,8 +32,9 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingClassInterfaceDescription), Resources.ResourceManager, typeof(Resources))
         );
 
+        private const string MissingProgIdId = "MissingProgId";
         private static readonly DiagnosticDescriptor MissingProgIdRule = new DiagnosticDescriptor(
-            new LocalizableResourceString(nameof(Resources.MissingProgIdId), Resources.ResourceManager, typeof(Resources)).ToString(),
+            MissingProgIdId,
             new LocalizableResourceString(nameof(Resources.MissingProgIdTitle), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.MissingProgIdMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.AnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
@@ -40,8 +43,9 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingProgIdDescription), Resources.ResourceManager, typeof(Resources))
         );
 
+        private const string MissingComDefaultInterfaceId = "MissingComDefaultInterface";
         private static readonly DiagnosticDescriptor MissingComDefaultInterfaceRule = new DiagnosticDescriptor(
-            new LocalizableResourceString(nameof(Resources.MissingComDefaultInterfaceId), Resources.ResourceManager, typeof(Resources)).ToString(),
+            MissingComDefaultInterfaceId,
             new LocalizableResourceString(nameof(Resources.MissingComDefaultInterfaceTitle), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.MissingComDefaultInterfaceMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.AnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
@@ -50,8 +54,9 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingComDefaultInterfaceDescription), Resources.ResourceManager, typeof(Resources))
         );
 
+        private const string MissingInterfaceTypeId = "MissingInterfaceType";
         private static readonly DiagnosticDescriptor MissingInterfaceTypeRule = new DiagnosticDescriptor(
-            new LocalizableResourceString(nameof(Resources.MissingInterfaceTypeId), Resources.ResourceManager, typeof(Resources)).ToString(),
+            MissingInterfaceTypeId,
             new LocalizableResourceString(nameof(Resources.MissingInterfaceTypeTitle), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.MissingInterfaceTypeMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.AnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
