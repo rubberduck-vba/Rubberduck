@@ -32,15 +32,24 @@ namespace Rubberduck.Parsing.Rewriter
             if(!IsDirty) { return; }
 
             var component = Module.Parent;
+            var vbeKind = component.VBE.Kind;
             if (component.Type == ComponentType.Document)
             {
                 // can't re-import a document module
                 return;
             }
 
-            var file = _exporter.Export(component);
+            var file = vbeKind == VBEKind.Embedded
+                ? _exporter.Export(component)
+                : component.GetFileName(1);    
+
             var content = Rewriter.GetText();
             File.WriteAllText(file, content);
+
+            if (vbeKind == VBEKind.Standalone)
+            {
+                return;
+            }
 
             var components = component.Collection;
             components.Remove(component);

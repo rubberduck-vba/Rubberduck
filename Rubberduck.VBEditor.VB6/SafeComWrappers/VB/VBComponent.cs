@@ -96,109 +96,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
         public string ExportAsSourceFile(string folder, bool tempFile = false)
         {
-            var fullPath = tempFile
-                ? Path.Combine(folder, Path.GetRandomFileName())
-                : Path.Combine(folder, SafeName + Type.FileExtension());
-            switch (Type)
-            {
-                case ComponentType.UserForm:
-                    ExportUserFormModule(fullPath);
-                    break;
-                case ComponentType.Document:
-                    ExportDocumentModule(fullPath);
-                    break;
-                default:
-                    Export(fullPath);
-                    break;
-            }
-
-            return fullPath;
+            throw new NotSupportedException("Export as source file is not supported in VB6");
         }
 
         public IVBProject ParentProject => Collection.Parent;
 
-        private void ExportUserFormModule(string path)
+        public int FileCount => IsWrappingNullReference ? 0 : Target.FileCount;
+
+        public string GetFileName(short index)
         {
-            // VBIDE API inserts an extra newline when exporting a UserForm module.
-            // this issue causes forms to always be treated as "modified" in source control, which causes conflicts.
-            // we need to remove the extra newline before the file gets written to its output location.
-
-            int legitEmptyLineCount;
-            using (var codeModule = CodeModule)
+            if (IsWrappingNullReference)
             {
-                var visibleCode = codeModule.Content().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                legitEmptyLineCount = visibleCode.TakeWhile(string.IsNullOrWhiteSpace).Count();
+                return null;
             }
-
-            var tempFile = ExportToTempFile();
-            var tempFilePath = Directory.GetParent(tempFile).FullName;
-            var fileEncoding = System.Text.Encoding.Default;    //We use the current ANSI codepage because that is what the VBE does.
-            var contents = File.ReadAllLines(tempFile, fileEncoding);
-            var nonAttributeLines = contents.TakeWhile(line => !line.StartsWith("Attribute")).Count();
-            var attributeLines = contents.Skip(nonAttributeLines).TakeWhile(line => line.StartsWith("Attribute")).Count();
-            var declarationsStartLine = nonAttributeLines + attributeLines + 1;
-
-            var emptyLineCount = contents.Skip(declarationsStartLine - 1)
-                                         .TakeWhile(string.IsNullOrWhiteSpace)
-                                         .Count();
-
-            var code = contents;
-            if (emptyLineCount > legitEmptyLineCount)
+            if (index < 0 || index > FileCount)
             {
-                code = contents.Take(declarationsStartLine).Union(
-                       contents.Skip(declarationsStartLine + emptyLineCount - legitEmptyLineCount))
-                               .ToArray();
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
-            File.WriteAllLines(path, code, fileEncoding);
-
-            // LINQ hates this search, therefore, iterate the long way
-            foreach (string line in contents)
-            {
-                if (line.Contains("OleObjectBlob"))
-                {
-                    var binaryFileName = line.Trim().Split('"')[1];
-                    var destPath = Directory.GetParent(path).FullName;
-                    if (File.Exists(Path.Combine(tempFilePath, binaryFileName)) && !destPath.Equals(tempFilePath))
-                    {
-                        System.Diagnostics.Debug.WriteLine(Path.Combine(destPath, binaryFileName));
-                        if (File.Exists(Path.Combine(destPath, binaryFileName)))
-                        {
-                            try
-                            {
-                                File.Delete(Path.Combine(destPath, binaryFileName));
-                            }
-                            catch (Exception)
-                            {
-                                // Meh?
-                            }
-                        }
-                        File.Copy(Path.Combine(tempFilePath, binaryFileName), Path.Combine(destPath, binaryFileName));
-                    }
-                    break;
-                }
-            }
-        }
-
-        private void ExportDocumentModule(string path)
-        {
-            using (var codeModule = CodeModule)
-            {
-                var lineCount = codeModule.CountOfLines;
-                if (lineCount > 0)
-                {
-                    //One cannot reimport document modules as such in the VBE; so we simply export and import the contents of the code pane.
-                    //Because of this, it is OK, and actually preferable, to use the default UTF8 encoding.
-                    var text = codeModule.GetLines(1, lineCount);
-                    File.WriteAllText(path, text, Encoding.UTF8);
-                }
-            }
-        }
-
-        private string ExportToTempFile()
-        {
-            var path = Path.Combine(Path.GetTempPath(), SafeName + Type.FileExtension());
-            Export(path);
-            return path;
+            return Target.FileNames[index];
         }
 
         public override bool Equals(ISafeComWrapper<VB.VBComponent> other)
