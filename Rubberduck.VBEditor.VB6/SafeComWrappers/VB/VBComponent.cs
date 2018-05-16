@@ -109,7 +109,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             {
                 return null;
             }
-            if (index < 0 || index > FileCount)
+            if (index < 1 || index > FileCount) // 1-based indexing from VB
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
