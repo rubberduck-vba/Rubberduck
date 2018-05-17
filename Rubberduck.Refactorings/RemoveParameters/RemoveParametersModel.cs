@@ -16,7 +16,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public IEnumerable<Declaration> Declarations { get; }
 
         public Declaration TargetDeclaration { get; private set; }
-        public List<Parameter> Parameters { get; set; }
+        public List<Parameter> Parameters { get; private set; }
+        public List<Parameter> RemoveParameters { get; set; }
 
         private readonly IMessageBox _messageBox;
 
@@ -43,6 +44,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             if (TargetDeclaration == null) { return; }
             
             Parameters = GetParameters().Select(arg => new Parameter(arg)).ToList();
+            RemoveParameters = new List<Parameter>();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
@@ -79,7 +81,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
             var confirm = _messageBox.ConfirmYN(message, RubberduckUI.ReorderParamsDialog_TitleText);
-            return confirm ? null : interfaceMember;
+            return confirm ? interfaceMember : null;
         }
 
         private Declaration GetEvent()

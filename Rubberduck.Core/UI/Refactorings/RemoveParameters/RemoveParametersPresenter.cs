@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             {
                 return null;
             }
-            _model.Parameters = _view.ViewModel.Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
+            _model.RemoveParameters = _view.ViewModel.Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
             return _model;
         }
     }

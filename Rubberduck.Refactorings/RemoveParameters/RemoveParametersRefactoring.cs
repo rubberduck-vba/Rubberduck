@@ -97,11 +97,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
             
             if (target != null)
             {
-                _model.Parameters.Clear();
-                _model.Parameters.Add(target);
+                _model.RemoveParameters.Add(target);
             } else
             {
-                return; // FIXME is this equivalent to before?
+                return;
             }
             RemoveParameters();
         }
@@ -170,11 +169,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
             {
-                // All parameters we keep are to be removed by definition
-                //if (!_model.Parameters[i].IsRemoved)
-                //{
-                //    continue;
-                //}
+                // only remove params from RemoveParameters
+                if (!_model.RemoveParameters.Contains(_model.Parameters[i]))
+                {
+                    continue;
+                }
                 
                 if (_model.Parameters[i].IsParamArray)
                 {
@@ -264,9 +263,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
             
-            foreach (var remove in _model.Parameters)
+            foreach (var index in _model.RemoveParameters.Select(rem => _model.Parameters.IndexOf(rem)))
             {
-                rewriter.Remove(remove.Declaration);
+                rewriter.Remove(parameters[index]);
             }
 
             _rewriters.Add(rewriter);
