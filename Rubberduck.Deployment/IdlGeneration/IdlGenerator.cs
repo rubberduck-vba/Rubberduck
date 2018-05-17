@@ -34,7 +34,7 @@ namespace Rubberduck.Deployment.IdlGeneration
             var converter = new TypeLibConverter();
             var sink = new TypeLibExporterNotifySink();
             var lib = (ITypeLib) converter.ConvertAssemblyToTypeLib(assembly, assembly.GetName().Name,
-                TypeLibExporterFlags.ExportAs32Bit, sink);
+                TypeLibExporterFlags.None, sink);
             var formatter = new PlainIDLFormatter();
             var owLib = new OWTypeLib(lib);
             owLib.Listeners.Add(new IdlListener());
@@ -55,7 +55,7 @@ namespace Rubberduck.Deployment.IdlGeneration
         {
             var converter = new TypeLibConverter();
             var lib = converter.ConvertAssemblyToTypeLib(assembly, assembly.GetName().Name,
-                TypeLibExporterFlags.ExportAs32Bit, this);
+                TypeLibExporterFlags.None, this);
             return lib;
         }
     }

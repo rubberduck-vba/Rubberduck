@@ -44,7 +44,7 @@ namespace Rubberduck.API.VBA
     public interface IParserEvents
     {
         [DispId(1)]
-        void OnStateChanged(ParserState ParserState);
+        void OnStateChanged(ParserState CurrentState);
     }
 
     [

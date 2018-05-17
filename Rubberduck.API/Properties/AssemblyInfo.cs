@@ -6,11 +6,11 @@ using Rubberduck.Resources.Registration;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RubberduckAPI")]
+[assembly: AssemblyTitle("Rubberduck.API")]
 [assembly: AssemblyDescription("Rubberduck Reflection API")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rubberduck-VBA")]
-[assembly: AssemblyProduct("RubberduckAPI")]
+[assembly: AssemblyProduct("Rubberduck.API")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyCulture("en")]
 [assembly: AssemblyTrademark("")]

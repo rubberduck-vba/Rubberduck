@@ -10,30 +10,30 @@ namespace Rubberduck.Deployment.IdlGeneration
             libNode.Data.Name = libNode.Data.Name.Replace("_", string.Empty);
             libNode.Data.ShortName = libNode.Data.ShortName.Replace("_", string.Empty);
         }
-        
+
         public override void EnterCoClass(ITlibNode coClassNode)
         {
             if (coClassNode.ShortName.StartsWith("_"))
             {
                 coClassNode.Data.Attributes.Add("hidden");
+                coClassNode.Data.Attributes.Add("restricted");
+            }
+        }
+
+        public override void EnterCoClassInterface(ITlibNode coClassInterfaceNode)
+        {
+            if (coClassInterfaceNode.Parent.ShortName.StartsWith("_") && coClassInterfaceNode.ShortName != "_Object")
+            {
+                coClassInterfaceNode.Data.Attributes.Remove("default");
+                coClassInterfaceNode.Data.Attributes.Add("restricted");
             }
         }
 
         public override void EnterInterface(ITlibNode interfaceNode)
         {
-            if (interfaceNode.Parent.Name.StartsWith("_"))
+            if (interfaceNode.ShortName.StartsWith("_") || interfaceNode.ShortName == "IDockableWindowHost")
             {
-                interfaceNode.Data.Attributes.Remove("default");
                 interfaceNode.Data.Attributes.Add("restricted");
-            }
-        }
-
-        public override void EnterDispInterface(ITlibNode dispInterfaceNode)
-        {
-            if (dispInterfaceNode.Parent.Name.StartsWith("_"))
-            {
-                dispInterfaceNode.Data.Attributes.Remove("default");
-                dispInterfaceNode.Data.Attributes.Add("restricted");
             }
         }
 
