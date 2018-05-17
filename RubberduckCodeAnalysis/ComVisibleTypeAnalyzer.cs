@@ -10,7 +10,7 @@ namespace RubberduckCodeAnalysis
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class ComVisibleTypeAnalyzer : DiagnosticAnalyzer
     {
-        private const string MissingGuidId = "MissingGuidId";
+        private const string MissingGuidId = "MissingGuid";
         private static readonly DiagnosticDescriptor MissingGuidRule = new DiagnosticDescriptor(
             MissingGuidId,
             new LocalizableResourceString(nameof(Resources.MissingGuidTitle), Resources.ResourceManager, typeof(Resources)),
