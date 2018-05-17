@@ -89,7 +89,7 @@ Name: {group}; Attribs: readonly
 
 [Files]
 ; Install the correct bitness binaries.
-Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,Rubberduck.dll.xml,Rubberduck.x32.tlb.xml,{#AddinDLL},\NativeBinaries"; Check: CheckShouldInstallFiles
+Source: "{#BuildDir}*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs replacesameversion; Excludes: "Rubberduck.Deployment.*,olewoo.*,*.idl,*.dll.xml,*.tlb.xml,{#AddinDLL},\NativeBinaries"; Check: CheckShouldInstallFiles
 Source: "{#BuildDir}{#AddinDLL}"; DestDir: "{app}"; Flags: ignoreversion replacesameversion; Check: CheckShouldInstallFiles;
 
 ; Used for customizing the Start menu folder appearance

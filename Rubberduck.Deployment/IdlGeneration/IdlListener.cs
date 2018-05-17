@@ -22,7 +22,7 @@ namespace Rubberduck.Deployment.IdlGeneration
 
         public override void EnterCoClassInterface(ITlibNode coClassInterfaceNode)
         {
-            if (coClassInterfaceNode.Parent.ShortName.StartsWith("_") && coClassInterfaceNode.ShortName != "_Object")
+            if (coClassInterfaceNode.Parent.ShortName.StartsWith("_")) //&& coClassInterfaceNode.ShortName != "_Object")
             {
                 coClassInterfaceNode.Data.Attributes.Remove("default");
                 coClassInterfaceNode.Data.Attributes.Add("restricted");

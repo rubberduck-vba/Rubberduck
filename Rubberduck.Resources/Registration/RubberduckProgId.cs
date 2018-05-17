@@ -5,7 +5,7 @@
         private const string BaseNamespace = "Rubberduck.";
 
         public const string ExtensionProgId = BaseNamespace + "Extension";
-        public const string DockableWindowHostProgId = BaseNamespace + "UI.DockableWindowHost";
+        public const string DockableWindowHostProgId = BaseNamespace + "DockableWindowHost";
 
         public const string DeclarationProgId = BaseNamespace + "Declaration";
         public const string DeclarationsProgId = BaseNamespace + "Declarations";
