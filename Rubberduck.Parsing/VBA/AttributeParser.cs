@@ -35,7 +35,12 @@ namespace Rubberduck.Parsing.VBA
         public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var path = _exporter.Export(_projectsProvider.Component(module));
+            var component = _projectsProvider.Component(module);
+
+            var path = component.VBE.Kind == VBEKind.Embedded
+                ? _exporter.Export(component)
+                : component.GetFileName(1); 
+
             if (!File.Exists(path))
             {
                 // a document component without any code wouldn't be exported (file would be empty anyway).

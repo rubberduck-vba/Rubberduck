@@ -20,7 +20,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         void Activate();
         void Export(string path);
         string ExportAsSourceFile(string folder, bool tempFile = false);
-
+        int FileCount { get; }
+        string GetFileName(short index);
         IVBProject ParentProject { get; }
 
         QualifiedModuleName QualifiedModuleName { get; }
