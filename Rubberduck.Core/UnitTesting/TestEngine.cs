@@ -131,7 +131,7 @@ namespace Rubberduck.UnitTesting
                                 module.Key.Name);
                             foreach (var method in moduleTestMethods)
                             {
-                                method.UpdateResult(TestOutcome.Unknown, RubberduckUI.Assert_ComException);
+                                method.UpdateResult(TestOutcome.Unknown, AssertMessages.Assert_ComException);
                             }
                             continue;
                         }
