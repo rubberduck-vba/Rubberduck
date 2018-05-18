@@ -7,7 +7,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
                        || context.annotationName().GetText() == AnnotationType.Folder.ToString() 
                     where context.annotationArgList() == null 
                     select new QualifiedContextInspectionResult(this,
-                                                string.Format(InspectionsUI.MissingAnnotationArgumentInspectionResultFormat,
+                                                string.Format(InspectionResults.MissingAnnotationArgumentInspection,
                                                               ((VBAParser.AnnotationContext)result.Context).annotationName().GetText()),
                                                 result));
         }

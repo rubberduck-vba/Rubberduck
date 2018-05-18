@@ -206,6 +206,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
         }
 
+        public int FileCount => 0;
+        public string GetFileName(short index) => null;
+
         public bool Equals(IVBComponent other)
         {
             return Equals(other as SafeComWrapper<VB.VBComponent>);

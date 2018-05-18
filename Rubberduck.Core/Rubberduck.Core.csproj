@@ -230,8 +230,8 @@
     <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Core, Version=4.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Windsor.4.0.0\lib\net45\Castle.Windsor.dll</HintPath>
@@ -242,8 +242,8 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.8.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -256,7 +256,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -266,16 +266,21 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
@@ -444,11 +449,6 @@
       <DependentUpon>ReorderParametersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
-    <Compile Include="UI\RubberduckUI.Designer.cs">
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Include="UI\SelectionChangeService.cs" />
     <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
@@ -533,11 +533,6 @@
       <DependentUpon>BusyIndicator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Navigation\CodeExplorer\CodeExplorerComponentViewModel.cs" />
-    <Compile Include="UI\CodeExplorer\CodeExplorer.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeExplorer.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\CodeExplorer\CodeExplorerControl.xaml.cs">
       <DependentUpon>CodeExplorerControl.xaml</DependentUpon>
     </Compile>
@@ -665,11 +660,6 @@
       <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\RegexAssistant\RegexAssistantViewModel.cs" />
-    <Compile Include="UI\RubberduckUI.de.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RubberduckUI.de.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\Settings\Converters\HotkeyDisplayConverter.cs" />
     <Compile Include="UI\Settings\Converters\AssertModeValueToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\DelimiterToTextConverter.cs" />
@@ -720,11 +710,6 @@
       <DependentUpon>UnitTestSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenterFactory.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="Refactorings\IRefactoring.cs" />
@@ -783,11 +768,6 @@
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.Designer.cs">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\RubberduckUI.fr.Designer.cs">
-      <DependentUpon>RubberduckUI.fr.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
@@ -875,18 +855,8 @@
     <EmbeddedResource Include="UI\About\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\CodeExplorer\CodeExplorer.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CodeExplorer.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeExplorer\CodeExplorerWindow.resx">
       <DependentUpon>CodeExplorerWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CodeMetrics\CodeMetricsWindow.resx">
       <DependentUpon>CodeMetricsWindow.cs</DependentUpon>
@@ -912,16 +882,6 @@
     <EmbeddedResource Include="UI\RegexAssistant\RegexAssistantDialog.resx">
       <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.de.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.resx">
-      <SubType>Designer</SubType>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -939,11 +899,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\RubberduckUI.fr.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.fr.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Splash.resx">
       <DependentUpon>Splash.cs</DependentUpon>
@@ -963,52 +918,9 @@
     <EmbeddedResource Include="UI\Controls\vba.xshd" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\minus-circle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\exclamation-circle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\arrow-circle-double.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\control.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\arrow-repeat.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\arrow-repeat1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\flask--pencil.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\magnifier--arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\rubberduck_adsize.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\plus-circle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Rubberduck.png" />
-    <Resource Include="Resources\hourglass.png" />
-    <Resource Include="Resources\arrow-090.png" />
-    <Resource Include="Resources\arrow-270.png" />
-    <Resource Include="Resources\arrow1.png" />
-    <Resource Include="Resources\Ducky.ico" />
-    <Resource Include="Resources\arrow-return-180-left.png" />
-    <Resource Include="Resources\cross-script.png" />
-    <Resource Include="Resources\flask_exclamation_mask.png" />
-    <Resource Include="Resources\flask_mask.png" />
-    <Resource Include="Resources\disk.png" />
-    <Resource Include="Resources\arrow-circle-left.png" />
-    <Resource Include="Resources\terminal.png" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1027,14 +939,6 @@
     <Content Include="EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\arrow_circle_double_mask.bmp" />
-    <Content Include="Resources\balloon_ellipsis.bmp" />
-    <Content Include="Resources\balloon_mask.bmp" />
-    <Content Include="Resources\balloon_prohibition.bmp" />
-    <Content Include="Resources\balloon_smiley.bmp" />
-    <Resource Include="Resources\blue-folder-horizontal-open.png" />
-    <Resource Include="Resources\blue-folder-horizontal.png" />
-    <Resource Include="Resources\lock--exclamation.png" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1043,204 +947,7 @@
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\document-smiley-sad.png" />
-    <None Include="Resources\document-word.png" />
-    <None Include="Resources\document-office.png" />
-    <None Include="Resources\document-outlook.png" />
-    <None Include="Resources\document-powerpoint.png" />
-    <None Include="Resources\document-excel.png" />
-    <Resource Include="Resources\folder--pencil.png" />
-    <Resource Include="Resources\folder--plus.png" />
-    <Resource Include="Resources\folder-rename.png" />
-    <Resource Include="Resources\cross-button.png" />
-    <Resource Include="Resources\init-repo.png" />
-    <Resource Include="Resources\edit-list-order.png" />
-    <Resource Include="Resources\Custom\PNG\AddClass.png" />
-    <Resource Include="Resources\Custom\PNG\AddEvent.png" />
-    <Resource Include="Resources\Custom\PNG\AddForm.png" />
-    <Resource Include="Resources\Custom\PNG\AddMethod.png" />
-    <Resource Include="Resources\Custom\PNG\AddModule.png" />
-    <Resource Include="Resources\Custom\PNG\AddProperty.png" />
-    <Resource Include="Resources\Custom\PNG\AddVariable.png" />
-    <Resource Include="Resources\Custom\PNG\AllLoadedTests.png" />
-    <Resource Include="Resources\Custom\PNG\DisplayFullSignature.png" />
-    <Resource Include="Resources\Custom\PNG\DisplayName.png" />
-    <Resource Include="Resources\Custom\PNG\Document.png" />
-    <Resource Include="Resources\Custom\PNG\ExportTestRunResults.png" />
-    <Resource Include="Resources\Custom\PNG\ExtractInterface.png" />
-    <Resource Include="Resources\Custom\PNG\ExtractMethod.png" />
-    <Resource Include="Resources\Custom\PNG\FindSymbol.png" />
-    <Resource Include="Resources\Custom\PNG\FolderClosed.png" />
-    <Resource Include="Resources\Custom\PNG\FolderClosedHidden.png" />
-    <Resource Include="Resources\Custom\PNG\FolderClosedVirtual.png" />
-    <Resource Include="Resources\Custom\PNG\FolderOpen.png" />
-    <Resource Include="Resources\Custom\PNG\FolderOpenHidden.png" />
-    <Resource Include="Resources\Custom\PNG\FolderOpenVirtual.png" />
-    <Resource Include="Resources\Custom\PNG\GenerateMethod.png" />
-    <Resource Include="Resources\Custom\PNG\GroupBy.png" />
-    <Resource Include="Resources\Custom\PNG\ImplementInterface.png" />
-    <Resource Include="Resources\Custom\PNG\ListOfTests.png" />
-    <Resource Include="Resources\Custom\PNG\NewConstant.png" />
-    <Resource Include="Resources\Custom\PNG\NewEvent.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectAssembly.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectClass.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectClassFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectClassPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectClassProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectClassSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectClassShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectConstant.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectConstantFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectConstantPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectConstantProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectConstantSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectConstantShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnum.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumItem.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumItemFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumItemPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumItemProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumItemSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumItemShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEnumShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEvent.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEventFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEventPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEventProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEventSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectEventShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectField.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectFieldFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectFieldPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectFieldProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectFieldSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectFieldShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectMethod.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectMethodFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectMethodPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectMethodProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectMethodSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectMethodShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectModule.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectModuleFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectModulePrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectModuleProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectModuleSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectModuleShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectProperties.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectPropertiesFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectPropertiesPrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectPropertiesProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectPropertiesSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectPropertiesShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectStructure.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectStructureFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectStructurePrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectStructureProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectStructureSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectStructureShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectType.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectTypeFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectTypePrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectTypeProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectTypeSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectTypeShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectValueType.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectValueTypeFriend.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectValueTypePrivate.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectValueTypeProtected.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectValueTypeSealed.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectValueTypeShortcut.png" />
-    <Resource Include="Resources\Custom\PNG\Options.png" />
-    <Resource Include="Resources\Custom\PNG\Play.png" />
-    <Resource Include="Resources\Custom\PNG\ProjectForm.png" />
-    <Resource Include="Resources\Custom\PNG\ProjectReference.png" />
-    <Resource Include="Resources\Custom\PNG\PromoteLocal.png" />
-    <Resource Include="Resources\Custom\PNG\Recursion.png" />
-    <Resource Include="Resources\Custom\PNG\Refresh.png" />
-    <Resource Include="Resources\Custom\PNG\RemoveParameters.png" />
-    <Resource Include="Resources\Custom\PNG\ReorderParameters.png" />
-    <Resource Include="Resources\Custom\PNG\Services.png" />
-    <Resource Include="Resources\Custom\PNG\StepRunTest.png" />
-    <Resource Include="Resources\Custom\PNG\Task.png" />
-    <Resource Include="Resources\Custom\PNG\TestManager.png" />
-    <Resource Include="Resources\Custom\PNG\TestMethod.png" />
-    <None Include="Resources\circle_mask.bmp" />
-    <Content Include="Resources\Custom\attribution.txt" />
-    <Content Include="Resources\Custom\cc_license.txt" />
-    <Content Include="Resources\Custom\Mask\AddPropertyMask.bmp" />
-    <Content Include="Resources\Custom\Mask\AddVariableMask.bmp" />
-    <Content Include="Resources\Custom\Mask\AllLoadedTestsMask.bmp" />
-    <Content Include="Resources\Custom\Mask\ExtractInterfaceMask.bmp" />
-    <Content Include="Resources\Custom\Mask\ExtractMethodMask.bmp" />
-    <Content Include="Resources\Custom\Mask\FindSymbolMask.bmp" />
-    <Content Include="Resources\Custom\Mask\ImplementInterfaceMask.bmp" />
-    <Content Include="Resources\Custom\Mask\PromoteLocalMask.bmp" />
-    <Content Include="Resources\Custom\Mask\RemoveParametersMask.bmp" />
-    <Content Include="Resources\Custom\Mask\ReorderParametersMask.bmp" />
-    <Content Include="Resources\Custom\Mask\TestManagerMask.bmp" />
-    <Resource Include="Resources\minus-white.png" />
-    <Resource Include="Resources\printer.png" />
-    <Resource Include="Resources\Custom\PNG\ApplyCodeChanges.png" />
-    <Resource Include="Resources\Custom\PNG\CollapseDown.png" />
-    <Resource Include="Resources\Custom\PNG\CollapseUp.png" />
-    <Resource Include="Resources\Custom\PNG\ObjectLibrary.png" />
-    <Content Include="Resources\Custom\mit_license.txt" />
-    <Resource Include="Resources\folder-open.png" />
-    <Resource Include="Resources\folder.png" />
-    <None Include="Resources\RD-300x250-base.png" />
-    <Resource Include="Resources\magnifier-medium.png" />
-    <Content Include="Resources\Rubberduck\RD-AboutWindow.png" />
-    <Content Include="Resources\Rubberduck\RD-InstallBanner.bmp" />
-    <Content Include="Resources\Rubberduck\RD-InstallWindow.bmp" />
-    <Resource Include="Resources\AboutBanner.png" />
-    <Resource Include="Resources\twitter_circle_black-512.png" />
-    <Resource Include="Resources\RD-InstallWindow.png" />
-    <Resource Include="Resources\minus-circle1.png" />
-    <Resource Include="Resources\plus-circle1.png" />
-    <Resource Include="Resources\question-white.png" />
-    <Resource Include="Resources\tick-circle.png" />
-    <Resource Include="Resources\navigation-180.png" />
-    <Resource Include="Resources\navigation.png" />
-    <Resource Include="Resources\tick.png" />
-    <Resource Include="Resources\cross-circle.png" />
-    <Resource Include="Resources\exclamation-diamond.png" />
-    <Resource Include="Resources\arrow.png" />
-    <Resource Include="Resources\document-copy.png" />
-    <Resource Include="Resources\information-white.png" />
-    <Resource Include="Resources\exclamation-white.png" />
-    <Resource Include="Resources\exclamation.png" />
-    <Resource Include="Resources\information.png" />
-    <Resource Include="Resources\flask.png" />
-    <Resource Include="Resources\flask--arrow.png" />
-    <Resource Include="Resources\flask--exclamation.png" />
-    <Resource Include="Resources\flask--plus.png" />
-    <Resource Include="Resources\flask-empty.png" />
-    <Resource Include="Resources\creative-commons.png" />
-    <Resource Include="Resources\gear.png" />
-    <Resource Include="Resources\control-000-small.png" />
-    <Resource Include="Resources\git.png" />
-    <Resource Include="Resources\arrow-merge-090.png" />
-    <Resource Include="Resources\arrow-split.png" />
-    <Resource Include="Resources\drive-download.png" />
-    <Resource Include="Resources\drive-upload.png" />
-    <Resource Include="Resources\arrow-step.png" />
-    <Resource Include="Resources\github-alt.png" />
-    <Resource Include="Resources\icon-github.png" />
-    <Resource Include="Resources\arrow-branch-090.png" />
-    <Resource Include="Resources\folder-horizontal-open.png" />
-    <Resource Include="Resources\folder-horizontal.png" />
-    <Resource Include="Resources\application-resize.png" />
-    <Resource Include="Resources\light-bulb-code.png" />
     <Content Include="Ducky.ico" />
-    <Resource Include="Resources\facebook-icon.png" />
-    <Resource Include="Resources\github_circle_black-128.png" />
-    <Resource Include="Resources\facebook-circle-256.png" />
-    <Resource Include="Resources\google-circle-512.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
@@ -1250,6 +957,10 @@
     <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
       <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
       <Name>Rubberduck.RegexAssistant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
+      <Name>Rubberduck.Resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
       <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>

@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
@@ -158,7 +158,7 @@ namespace Rubberduck.UnitTesting
                             catch (COMException ex)
                             {
                                 Logger.Error(ex, "Unexpected COM exception while running tests.");
-                                test.UpdateResult(TestOutcome.Inconclusive, RubberduckUI.Assert_ComException);
+                        test.UpdateResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException);
                             }
                             finally
                             {
@@ -194,10 +194,10 @@ namespace Rubberduck.UnitTesting
 
         private void RunInternal(IEnumerable<Declaration> members)
         {
-            var groupedMembers = members.GroupBy(m => m.ProjectName);
+            var groupedMembers = members.GroupBy(m => m.ProjectId);
             foreach (var group in groupedMembers)
             {
-                using (var project = _vbe.VBProjects[group.Key])
+                var project = _state.ProjectsProvider.Project(group.Key);
                 using (var typeLib = TypeLibWrapper.FromVBProject(project))
                 {
                     foreach (var member in group)

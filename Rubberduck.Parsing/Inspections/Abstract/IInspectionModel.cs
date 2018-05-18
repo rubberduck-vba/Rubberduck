@@ -1,4 +1,4 @@
-﻿using Rubberduck.Parsing.Inspections.Resources;
+﻿using Rubberduck.Parsing.Inspections;
 
 namespace Rubberduck.Parsing.Inspections.Abstract
 {

@@ -27,8 +27,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public override ButtonStyle ButtonStyle => ButtonStyle.IconAndCaption;
         public override string Key => "HotkeyDescription_ParseAll";
-        public override Image Image => Resources.arrow_circle_double;
-        public override Image Mask => Resources.arrow_circle_double_mask;
+        public override Image Image => Resources.CommandBarIcons.arrow_circle_double;
+        public override Image Mask => Resources.CommandBarIcons.arrow_circle_double_mask;
         public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.RequestReparse;
     }
 }

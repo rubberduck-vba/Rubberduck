@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -19,7 +20,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 		
         public IApplication Parent => new Application(null);
 
-        public string ProjectId => HelpFile;
+        public string ProjectId
+        {
+            get
+            {
+                try
+                {
+                    return IsWrappingNullReference ? string.Empty : Target.ReadProperty("Rubberduck", "ProjectId");
+                }
+                catch (COMException)
+                {
+                    return string.Empty;
+                }
+            }
+        } 
+
 
         public string HelpFile
         {
@@ -103,40 +118,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void AssignProjectId()
         {
-            //assign a hashcode if no helpfile is present
-            if (string.IsNullOrEmpty(HelpFile))
+            if (IsWrappingNullReference || !string.IsNullOrEmpty(ProjectId))
             {
-                HelpFile = GetHashCode().ToString();
+                return;
             }
-
-            //loop until the helpfile is unique for this host session
-            while (!IsProjectIdUnique())
-            {
-                HelpFile = (GetHashCode() ^ HelpFile.GetHashCode()).ToString();
-            }
+            Target.WriteProperty("Rubberduck", "ProjectId", Guid.NewGuid().ToString());
         }
-
-        private bool IsProjectIdUnique()
-        {
-            using (var vbe = VBE)
-            {
-                using (var projects = vbe.VBProjects)
-                {
-                    var helpFile = HelpFile;
-                    int matchCount = 0;
-                    foreach (var project in projects)
-                    {
-                        if (project.HelpFile == helpFile)
-                        {
-                            matchCount++;
-                        }
-                        project.Dispose();
-                    }
-                    return matchCount == 1;
-                }
-            }
-        }
-
 
         /// <summary>
         /// Exports all code modules in the VbProject to a destination directory. Files are given the same name as their parent code Module name and file extensions are based on what type of code Module it is.

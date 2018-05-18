@@ -4,7 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var issues = from issue in parameters
                 let isInterfaceImplementationMember = interfaceImplementationMembers.Contains(issue.ParentDeclaration)
-                select new DeclarationInspectionResult(this, string.Format(InspectionsUI.ParameterNotUsedInspectionResultFormat, issue.IdentifierName).Capitalize(), issue);
+                select new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterNotUsedInspection, issue.IdentifierName).Capitalize(), issue);
 
             return issues;
         }

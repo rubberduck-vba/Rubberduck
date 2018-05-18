@@ -2405,6 +2405,27 @@ End Sub
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void PSetSpecialForm_IsReferenceToLocalVariable()
+        {
+            var code = @"
+Public Sub Test()
+    Dim referenced As Integer
+    PSet (referenced, referenced)
+End Sub
+";
+            using (var state = Resolve(code))
+            {
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+                Assert.AreEqual(2, declaration.References.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void FieldLengthStmt_IsReferenceToLocalVariable()
         {
             var code = @"

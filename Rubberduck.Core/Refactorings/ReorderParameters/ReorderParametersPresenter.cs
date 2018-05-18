@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.ReorderParameters;

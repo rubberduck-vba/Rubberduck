@@ -17,6 +17,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
+        public VBEKind Kind => VBEKind.Standalone;
         public object HardReference => Target;
 
         public string Version => IsWrappingNullReference ? string.Empty : Target.Version;
