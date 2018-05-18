@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IProjectManager _projectManager;
         private readonly IParsingCacheService _parsingCacheService;
         private readonly IParserStateManager _parserStateManager;
+        private ConcurrentStack<object> _queuedRequestors;
 
         private readonly bool _isTestScope;
 
@@ -61,6 +63,9 @@ namespace Rubberduck.Parsing.VBA
             _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
+            state.SuspendRequest += SuspendRequested;
+
+            _queuedRequestors = new ConcurrentStack<object>();
         }
 
         // Do not access this from anywhere but ReparseRequested.
@@ -75,6 +80,12 @@ namespace Rubberduck.Parsing.VBA
             CancellationToken token;
             lock (_cancellationSyncObject)
             {
+                if (State.Status == ParserState.Busy)
+                {
+                    _queuedRequestors.Push(sender);
+                    return;
+                }
+
                 Cancel();
 
                 if (_currentCancellationTokenSource == null)
@@ -86,7 +97,35 @@ namespace Rubberduck.Parsing.VBA
                 token = _currentCancellationTokenSource.Token;
             }
 
+            BeginParse(sender,token);
+        }
 
+        public void SuspendRequested(object sender, RubberduckStatusSuspendParserEventArgs e)
+        {
+            lock (_cancellationSyncObject)
+            {
+                if (State.Status != ParserState.Ready)
+                {
+                    throw new InvalidOperationException(
+                        "Cannot suspend the parser while it is running. Either cancel or wait for Ready status");
+                }
+
+                State.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy, CancellationToken.None);
+                e.BusyAction.Invoke();
+                if (_queuedRequestors.TryPop(out var lastRequestor))
+                {
+                    _queuedRequestors.Clear();
+                    BeginParse(lastRequestor, _currentCancellationTokenSource.Token);
+                }
+                else
+                {
+                    State.SetStatusAndFireStateChanged(e.Requestor, ParserState.Ready, CancellationToken.None);
+                }
+            }
+        }
+
+        private void BeginParse(object sender, CancellationToken token)
+        {
             if (!_isTestScope)
             {
                 Task.Run(() => ParseAll(sender, token), token);

@@ -16,7 +16,7 @@ namespace RubberduckTests.ParserStateTests
         {
             var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
             var state = MockParser.CreateAndParse(vbe.Object);
-            state.SuspendParser(this, () =>
+            state.OnSuspendParser(this, () =>
             {
                 Assert.IsTrue(state.Status == ParserState.Busy);
             });
@@ -32,7 +32,7 @@ namespace RubberduckTests.ParserStateTests
             state.SetStatusAndFireStateChanged(this, ParserState.Pending, CancellationToken.None);
             Assert.Throws<InvalidOperationException>(() =>
             {
-                state.SuspendParser(this, () =>
+                state.OnSuspendParser(this, () =>
                 {
                     Assert.IsTrue(state.Status == ParserState.Busy);
                 });
@@ -57,7 +57,7 @@ namespace RubberduckTests.ParserStateTests
                 }
             };
 
-            state.SuspendParser(this, () =>
+            state.OnSuspendParser(this, () =>
             {
                 wasBusy = state.Status == ParserState.Busy;
                 // This is a cheap hack to avoid the multi-threading setup... Lo and behold the laziness of me

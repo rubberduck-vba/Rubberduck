@@ -57,6 +57,18 @@ namespace Rubberduck.Parsing.VBA
 
     }
 
+    public class RubberduckStatusSuspendParserEventArgs : EventArgs
+    {
+        public RubberduckStatusSuspendParserEventArgs(object requestor, Action busyAction)
+        {
+            Requestor = requestor;
+            BusyAction = busyAction;
+        }
+
+        public object Requestor { get; }
+        public Action BusyAction { get; }
+    }
+
     public class RubberduckStatusMessageEventArgs : EventArgs
     {
         public RubberduckStatusMessageEventArgs(string message)
@@ -73,6 +85,7 @@ namespace Rubberduck.Parsing.VBA
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
         public event EventHandler<EventArgs> ParseRequest;
+        public event EventHandler<RubberduckStatusSuspendParserEventArgs> SuspendRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
         private static readonly List<ParserState> States = new List<ParserState>();
@@ -119,8 +132,7 @@ namespace Rubberduck.Parsing.VBA
             _projectRepository = projectRepository;
             _declarationFinderFactory = declarationFinderFactory;
             _vbeEvents = vbeEvents;
-            _queuedRequestors = new List<object>();
-
+            
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
             {
@@ -911,16 +923,20 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="requestor">The object requesting a reparse.</param>
         public void OnParseRequested(object requestor)
         {
-            if (Status == ParserState.Busy)
-            {
-                _queuedRequestors.Add(requestor);
-                return;
-            }
-
             var handler = ParseRequest;
             if (handler != null && IsEnabled)
             {
                 var args = EventArgs.Empty;
+                handler.Invoke(requestor, args);
+            }
+        }
+
+        public void OnSuspendParser(object requestor, Action busyAction)
+        {
+            var handler = SuspendRequest;
+            if (handler != null && IsEnabled)
+            {
+                var args = new RubberduckStatusSuspendParserEventArgs(requestor, busyAction);
                 handler.Invoke(requestor, args);
             }
         }
@@ -982,31 +998,6 @@ namespace Rubberduck.Parsing.VBA
         {
             var key = module;
             _moduleStates[key].SetAttributesRewriter(attributesRewriter);
-        }
-
-        private List<object> _queuedRequestors;
-        public void SuspendParser(object requestor, Action busyAction)
-        {
-            if (Status != ParserState.Ready)
-            {
-                throw new InvalidOperationException("Cannot suspend the parser while it is running. Either cancel or wait for Ready status");
-            }
-
-            SetStatusAndFireStateChanged(requestor, ParserState.Busy, CancellationToken.None);
-            busyAction.Invoke();
-            if (_queuedRequestors.Any())
-            {
-                var lastRequestor = _queuedRequestors.Last();
-                _queuedRequestors.Clear();
-                // don't fire the event; we just need to make it ready
-                // to ensure it don't go into the busy subroutine.
-                _status = ParserState.Ready;
-                OnParseRequested(lastRequestor);;
-            }
-            else
-            {
-                SetStatusAndFireStateChanged(requestor, ParserState.Ready, CancellationToken.None);
-            }
         }
 
         private bool _isDisposed;

@@ -24,6 +24,13 @@ namespace Rubberduck.UnitTesting
         private readonly IVBETypeLibsAPI _typeLibApi;
         private readonly IUiDispatcher _uiDispatcher;
 
+        public ParserState[] AllowedRunStates => new[]
+        {
+            //TODO: work out a clean way for communicating allowable states to OnSuspendParse
+            //ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, 
+            ParserState.Ready
+        };
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private bool _testRequested;
@@ -94,7 +101,7 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            _state.SuspendParser(this, () =>
+            _state.OnSuspendParser(this, () =>
             {
                 var testMethods = tests as IList<TestMethod> ?? tests.ToList();
                 if (!testMethods.Any())
