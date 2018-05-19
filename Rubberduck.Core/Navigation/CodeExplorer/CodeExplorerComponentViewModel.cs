@@ -53,9 +53,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
                                 .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
-                                .ToList<CodeExplorerItemViewModel>();                                     
+                                .ToList<CodeExplorerItemViewModel>();
 
+            _name = Declaration.IdentifierName;
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
+
             try
             {
                 switch (qualifiedModuleName.ComponentType)
@@ -94,7 +96,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                         break;
 
                     default:
-                        _name =Declaration.IdentifierName;
+                        _name = Declaration.IdentifierName;
                         break;
                 }
             }
