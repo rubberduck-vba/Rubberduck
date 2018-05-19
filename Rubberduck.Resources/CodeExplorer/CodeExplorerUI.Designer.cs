@@ -93,6 +93,16 @@ namespace Rubberduck.Resources.CodeExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap document_import {
+            get {
+                object obj = ResourceManager.GetObject("document_import", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap document_office {
             get {
                 object obj = ResourceManager.GetObject("document_office", resourceCulture);

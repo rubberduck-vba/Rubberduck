@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
@@ -52,38 +53,49 @@ namespace Rubberduck.Navigation.CodeExplorer
                                                 && MemberTypes.Contains(item.DeclarationType))
                                 .OrderBy(item => item.QualifiedSelection.Selection.StartLine)
                                 .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
-                                .ToList<CodeExplorerItemViewModel>();
-
-            _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
-                ? Resources.RubberduckUI.CodeExplorer_ResourceFileText
-                : Declaration.IdentifierName;
+                                .ToList<CodeExplorerItemViewModel>();                                     
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
             try
             {
-                if (qualifiedModuleName.ComponentType == ComponentType.Document)
+                switch (qualifiedModuleName.ComponentType)
                 {
-                    var component = _projectsProvider.Component(qualifiedModuleName);
-                    string parenthesizedName;
-                    using (var properties = component.Properties)
-                    {
-                        parenthesizedName = properties["Name"].Value.ToString() ?? String.Empty;
-                    }
-
-                    if (ContainsBuiltinDocumentPropertiesProperty())
-                    {
-                        CodeExplorerItemViewModel node = this;
-                        while (node.Parent != null)
+                    case ComponentType.Document:
+                        var component = _projectsProvider.Component(qualifiedModuleName);
+                        string parenthesizedName;
+                        using (var properties = component.Properties)
                         {
-                            node = node.Parent;
+                            parenthesizedName = properties["Name"].Value.ToString() ?? string.Empty;
                         }
 
-                        ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
-                    }
-                    else
-                    {
-                        _name += " (" + parenthesizedName + ")";
-                    }
+                        if (ContainsBuiltinDocumentPropertiesProperty())
+                        {
+                            CodeExplorerItemViewModel node = this;
+                            while (node.Parent != null)
+                            {
+                                node = node.Parent;
+                            }
+
+                            ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
+                        }
+                        else
+                        {
+                            _name += " (" + parenthesizedName + ")";
+                        }
+                        break;
+
+                    case ComponentType.ResFile:
+                        var fileName = Declaration.IdentifierName.Split('\\').Last();
+                        _name = $"{Resources.RubberduckUI.CodeExplorer_ResourceFileText} ({fileName})";
+                        break;
+
+                    case ComponentType.RelatedDocument:
+                        _name = $"({Declaration.IdentifierName.Split('\\').Last()})";
+                        break;
+
+                    default:
+                        _name =Declaration.IdentifierName;
+                        break;
                 }
             }
             catch
@@ -183,7 +195,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             { DeclarationType.DocObject, GetImageSource(resx.document_globe)},
             { DeclarationType.PropPage, GetImageSource(resx.ui_tab_content)},
             { DeclarationType.ActiveXDesigner, GetImageSource(resx.pencil_ruler)},
-            { DeclarationType.ResFile, GetImageSource(resx.document_block)}
+            { DeclarationType.ResFile, GetImageSource(resx.document_block)},
+            { DeclarationType.RelatedDocument, GetImageSource(resx.document_import)}
         };
 
         private BitmapImage _icon;

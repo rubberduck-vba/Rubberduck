@@ -223,4 +223,7 @@
   <data name="ui_tab_content" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\fugue\ui-tab-content.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="document_import" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Icons\Fugue\document-import.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
