@@ -211,20 +211,20 @@ End Sub";
 
             const string expectedCode =
                 @"Sub Foo()
-    On Error GoTo ErrorHandler
     On Error GoTo ErrorHandler2
+    On Error GoTo ErrorHandler3
 
 ErrorHandler1:
 
     Exit Sub
-ErrorHandler2:
+ErrorHandler3:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next
     End If
 
     Exit Sub
-ErrorHandler:
+ErrorHandler2:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next
@@ -277,6 +277,88 @@ Sub Bar()
 
     Exit Sub
 ErrorHandler:
+    If Err.Number > 0 Then 'TODO: handle specific error
+        Err.Clear
+        Resume Next
+    End If
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnhandledOnErrorResumeNextInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var quickFix = new RestoreErrorHandlingQuickFix(state);
+
+                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
+                {
+                    quickFix.Fix(result);
+                }
+
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void UnhandledOnErrorResumeNext_QuickFixWorks_LabelWithNonNumericSuffix()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    On Error Resume Next
+
+ErrorHandlerFoo:
+End Sub";
+
+            const string expectedCode =
+                @"Sub Foo()
+    On Error GoTo ErrorHandler
+
+ErrorHandlerFoo:
+
+    Exit Sub
+ErrorHandler:
+    If Err.Number > 0 Then 'TODO: handle specific error
+        Err.Clear
+        Resume Next
+    End If
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnhandledOnErrorResumeNextInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var quickFix = new RestoreErrorHandlingQuickFix(state);
+
+                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
+                {
+                    quickFix.Fix(result);
+                }
+
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void UnhandledOnErrorResumeNext_QuickFixWorks_GeneratedLabelHasGreaterNumberThanExistingLabel()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    On Error Resume Next
+
+ErrorHandler3:
+End Sub";
+
+            const string expectedCode =
+                @"Sub Foo()
+    On Error GoTo ErrorHandler4
+
+ErrorHandler3:
+
+    Exit Sub
+ErrorHandler4:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next
