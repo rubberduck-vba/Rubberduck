@@ -19,6 +19,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
         }
 
+        public VBEKind Kind => VBEKind.Embedded;
         public object HardReference => Target;
 
         public string Version => IsWrappingNullReference ? string.Empty : Target.Version;

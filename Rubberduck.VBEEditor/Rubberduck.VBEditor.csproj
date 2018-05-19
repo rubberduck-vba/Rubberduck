@@ -36,18 +36,25 @@
     <Reference Include="CustomMarshalers" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComManagement\ComMessagePumper.cs" />
@@ -62,6 +69,7 @@
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />
+    <Compile Include="SafeComWrappers\VB\Enums\VBEKind.cs" />
     <Compile Include="Utility\UiContext.cs" />
     <Compile Include="VBERuntime\IVBERuntime.cs" />
     <Compile Include="VBERuntime\Settings\IVBESettings.cs" />
@@ -161,7 +169,6 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="SubClassingWindowEventArgs.cs" />
     <Compile Include="Extensions\ComponentTypeExtensions.cs" />
-    <Compile Include="Extensions\IDEExtensions.cs" />
     <Compile Include="VBEEditorText.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

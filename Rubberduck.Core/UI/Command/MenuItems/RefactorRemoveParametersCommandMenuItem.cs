@@ -15,8 +15,8 @@ namespace Rubberduck.UI.Command.MenuItems
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.RemoveParameters;
         public override bool BeginGroup => true;
 
-        public override Image Image => Resources.RemoveParameters;
-        public override Image Mask => Resources.RemoveParametersMask;
+        public override Image Image => Resources.CommandBarIcons.RemoveParameters;
+        public override Image Mask => Resources.CommandBarIcons.RemoveParametersMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

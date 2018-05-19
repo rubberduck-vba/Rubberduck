@@ -5,7 +5,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -83,7 +82,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertAfter(block.Stop.TokenIndex, errorHandlerSubroutine);
         }
 
-        public override string Description(IInspectionResult result) => InspectionsUI.UnhandledOnErrorResumeNextInspectionQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.UnhandledOnErrorResumeNextInspectionQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

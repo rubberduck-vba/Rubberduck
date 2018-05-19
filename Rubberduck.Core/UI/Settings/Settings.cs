@@ -42,7 +42,7 @@ namespace Rubberduck.UI.Settings
         {
             if (_configService == null)
             {
-                _cultureInfo = RubberduckUI.Culture ?? Dispatcher.CurrentDispatcher.Thread.CurrentUICulture;
+                _cultureInfo = Resources.RubberduckUI.Culture ?? Dispatcher.CurrentDispatcher.Thread.CurrentUICulture;
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace Rubberduck.UI.Settings
             }
             catch (CultureNotFoundException)
             {
-                _cultureInfo = RubberduckUI.Culture;
+                _cultureInfo = Resources.RubberduckUI.Culture;
             }
         }
 

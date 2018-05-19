@@ -97,8 +97,8 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Background="White">
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RemoveParamsDialog_TitleText}" FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=RemoveParamsDialog_InstructionsLabelText}"
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RemoveParamsDialog_TitleText}" FontWeight="Bold" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RemoveParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1" Grid.IsSharedSizeScope="True">
@@ -139,8 +139,8 @@
                         Command="{Binding RemoveParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../Resources/cross-script.png" Margin="0,0,5,0" />
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" />
+                        <Image Height="10" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}" />
                     </StackPanel>
                 </Button>
                 <Button Grid.Row="1"
@@ -152,8 +152,8 @@
                         Command="{Binding RestoreParameterCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="../../../Resources/arrow-return-180-left.png" Margin="0,0,5,0" />
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Restore}" />
+                        <Image Height="10" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-return-180-left.png" Margin="0,0,5,0" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Restore}" />
                     </StackPanel>
                 </Button>
             </Grid>
@@ -166,7 +166,7 @@
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">
-                        <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="Preview"/>
+                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="Preview"/>
                     </Label>
                 </Expander.Header>
                 <controls:BindableTextEditor Margin="10,10,10,10"
@@ -185,13 +185,13 @@
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                 </Grid.ColumnDefinitions>
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
                         Grid.Column="0"
                         Height="20"
                         Margin="5,0"
                         Padding="10,0"
                         Command="{Binding OkButtonCommand}" />
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
                         Grid.Column="1"
                         Height="20"
                         Margin="5,0"

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.VersionCheck;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Command
 {
