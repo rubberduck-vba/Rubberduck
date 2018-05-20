@@ -58,6 +58,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
         {
             var mainBlockStmt = (VBAParser.MainBlockStmtContext)variables.Parent.Parent;
+            var blockStmt = (VBAParser.BlockStmtContext)mainBlockStmt.Parent;
             var startIndex = mainBlockStmt.Start.TokenIndex;
             if (count == 1)
             {
@@ -89,7 +90,16 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
                         }
                         else
                         {
-                            stopIndex = containingBlock.GetChild<ParserRuleContext>(blockStmtIndex + 2).Start.TokenIndex - 1;
+                            if (blockStmt.statementLabelDefinition() != null)
+                            {
+                                // special case where line has statement label or line number
+                                // don't want to remove trailing newline or can have label/number apply to next line where it isn't necessarily valid
+                                stopIndex = eol.Stop.TokenIndex - 1;
+                            }
+                            else
+                            {
+                                stopIndex = containingBlock.GetChild<ParserRuleContext>(blockStmtIndex + 2).Start.TokenIndex - 1;
+                            }
                         }
                     }
 
@@ -98,9 +108,6 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
                 return new RewriterInfo(startIndex, stopIndex);
             }
 
-            var blockStmt = (VBAParser.BlockStmtContext)mainBlockStmt.Parent;
-            var block = (VBAParser.BlockContext)blockStmt.Parent;
-            var statements = block.blockStmt();
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
         }
     }
