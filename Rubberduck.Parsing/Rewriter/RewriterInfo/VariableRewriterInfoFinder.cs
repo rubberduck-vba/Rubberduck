@@ -65,7 +65,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
                 int stopIndex = variables.Stop.TokenIndex + 1; // also remove trailing newlines?
                 
                 var containingBlock = (VBAParser.BlockContext)mainBlockStmt.Parent.Parent;
-                var blockStmtIndex = containingBlock.children.IndexOf(mainBlockStmt.Parent);
+                var blockStmtIndex = containingBlock.children.IndexOf(blockStmt);
                 // a few things can happen here
                 if (blockStmtIndex == containingBlock.ChildCount)
                 {
@@ -81,26 +81,21 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
                     {
                         stopIndex = eol.commentOrAnnotation().Start.TokenIndex - 1;
                     }
+                    else if (blockStmtIndex + 2 >= containingBlock.ChildCount)
+                    {
+                        // remove until the end of the EOS
+                        stopIndex = eol.Stop.TokenIndex;
+                    }
+                    else if (blockStmt.statementLabelDefinition() != null)
+                    {
+                        // special case where line has statement label or line number
+                        // don't want to remove trailing newline or can have label/number apply to next line where it isn't necessarily valid
+                        stopIndex = eol.Stop.TokenIndex - 1;
+                    }
                     else
                     {
-                        // remove until the end of the EOS or continue to the start of the following
-                        if (blockStmtIndex + 2 >= containingBlock.ChildCount)
-                        {
-                            stopIndex = eol.Stop.TokenIndex;
-                        }
-                        else
-                        {
-                            if (blockStmt.statementLabelDefinition() != null)
-                            {
-                                // special case where line has statement label or line number
-                                // don't want to remove trailing newline or can have label/number apply to next line where it isn't necessarily valid
-                                stopIndex = eol.Stop.TokenIndex - 1;
-                            }
-                            else
-                            {
-                                stopIndex = containingBlock.GetChild<ParserRuleContext>(blockStmtIndex + 2).Start.TokenIndex - 1;
-                            }
-                        }
+                        // remove up to the start of the following blockStmt (offset index by 2 because blockStmts alternate with endOfStatements)
+                        stopIndex = containingBlock.GetChild<ParserRuleContext>(blockStmtIndex + 2).Start.TokenIndex - 1;
                     }
 
                 }
