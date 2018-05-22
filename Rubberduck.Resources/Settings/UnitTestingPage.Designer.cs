@@ -61,6 +61,24 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unit Test Settings.
+        /// </summary>
+        public static string PageHeader {
+            get {
+                return ResourceManager.GetString("PageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure the settings for new unit test modules and methods..
+        /// </summary>
+        public static string PageInstructions {
+            get {
+                return ResourceManager.GetString("PageInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type safety:.
         /// </summary>
         public static string UnitTestSettings_AssertMode {

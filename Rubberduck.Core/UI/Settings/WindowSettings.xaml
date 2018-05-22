@@ -50,14 +50,14 @@
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                         <Label Foreground="White"
                                    FontWeight="SemiBold" 
-                                   Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_WindowSettings}">
+                                   Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_WindowSettings}">
                         </Label>
                     </StackPanel>
                 </DockPanel>
             </Label>
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=WindowSettings_StartupVisibilityHeader}"
                    FontWeight="SemiBold" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorerDockablePresenter_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorerDockablePresenter_Caption}"
                       IsChecked="{Binding CodeExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />

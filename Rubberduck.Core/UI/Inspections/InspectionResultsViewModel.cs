@@ -80,7 +80,7 @@ namespace Rubberduck.UI.Inspections
             QuickFixInProjectCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInProjectCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             QuickFixInAllProjectsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInAllProjectsCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
-            OpenTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
+            OpenInspectionSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             
@@ -243,7 +243,7 @@ namespace Rubberduck.UI.Inspections
         public CommandBase QuickFixInAllProjectsCommand { get; }
         public CommandBase DisableInspectionCommand { get; }
         public CommandBase CopyResultsCommand { get; }
-        public CommandBase OpenTodoSettings { get; }
+        public CommandBase OpenInspectionSettings { get; }
 
         private void OpenSettings(object param)
         {

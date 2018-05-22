@@ -142,7 +142,7 @@
                         <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                         <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                     </Grid.ColumnDefinitions>
-                    <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings_ResetSettings}"
+                    <Button Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ResetSettingsButton}"
                             Height="20"
                             Margin="5,0"
                             Padding="10,0"

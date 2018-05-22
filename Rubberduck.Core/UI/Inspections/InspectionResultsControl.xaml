@@ -112,10 +112,10 @@
                 <Button Command="{Binding CopyResultsCommand}">
                     <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeExplorer_CopyToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
-                <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
+                <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenInspectionSettings}" BorderThickness="0" Background="Transparent">
                     <Image Height="16" Source="{StaticResource SettingsImage}" />
                 </Button>
             </ToolBar>
@@ -187,23 +187,23 @@
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInProcedure, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInProcedureCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisProcedure}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_ThisProcedure}" />
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInModule, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInModuleCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisModule}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_ThisModule}" />
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInProjectCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_ThisProject}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_ThisProject}" />
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInAllProjectsCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=QuickFix_All}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_All}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
-                            Content="{Resx ResxName=Rubberduck.Parsing.Inspections.Resources.InspectionsUI, Key=DisableThisInspection}" />
+                            Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=DisableThisInspection}" />
                 </WrapPanel>
             </StackPanel>
         </Border>

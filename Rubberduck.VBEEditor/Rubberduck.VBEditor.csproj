@@ -69,6 +69,7 @@
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />
+    <Compile Include="SafeComWrappers\VB\Enums\VBEKind.cs" />
     <Compile Include="Utility\UiContext.cs" />
     <Compile Include="VBERuntime\IVBERuntime.cs" />
     <Compile Include="VBERuntime\Settings\IVBESettings.cs" />
@@ -168,7 +169,6 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="SubClassingWindowEventArgs.cs" />
     <Compile Include="Extensions\ComponentTypeExtensions.cs" />
-    <Compile Include="Extensions\IDEExtensions.cs" />
     <Compile Include="VBEEditorText.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
