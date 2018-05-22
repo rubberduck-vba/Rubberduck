@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Menus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -24,7 +24,7 @@ namespace Rubberduck.UI.Command.MenuItems
             {
                 return () => string.IsNullOrEmpty(Key)
                     ? string.Empty
-                    : RubberduckUI.ResourceManager.GetString(Key, CultureInfo.CurrentUICulture);
+                    : RubberduckMenus.ResourceManager.GetString(Key, CultureInfo.CurrentUICulture);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Command.MenuItems
             {
                 return () => string.IsNullOrEmpty(ToolTipKey)
                     ? string.Empty
-                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
+                    : RubberduckMenus.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
             }
         }
 
