@@ -204,42 +204,6 @@
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Třída nebo člen '{0}' ještě není implementován</value>
   </data>
-  <data name="ContextMenu_FindSymbol" xml:space="preserve">
-    <value>Najít &amp;symbol...</value>
-  </data>
-  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
-    <value>Jít na &amp;implementaci...</value>
-  </data>
-  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
-    <value>Extrahovat &amp;Metodu</value>
-  </data>
-  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
-    <value>Najít všechny re&amp;ference...</value>
-  </data>
-  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
-    <value>&amp;Odstranit Parametry</value>
-  </data>
-  <data name="RefactorMenu_Rename" xml:space="preserve">
-    <value>&amp;Přejmenovat</value>
-  </data>
-  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
-    <value>Pře&amp;rozdělit Parametry</value>
-  </data>
-  <data name="RubberduckMenu" xml:space="preserve">
-    <value>Ru&amp;bberduck</value>
-  </data>
-  <data name="RubberduckMenu_About" xml:space="preserve">
-    <value>O &amp;Aplikaci...</value>
-  </data>
-  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
-    <value>&amp;Code Explorer</value>
-  </data>
-  <data name="RubberduckMenu_Settings" xml:space="preserve">
-    <value>Nastav&amp;ení</value>
-  </data>
-  <data name="ToolsMenu_TodoItems" xml:space="preserve">
-    <value>To&amp;Do Položky</value>
-  </data>
   <data name="Home" xml:space="preserve">
     <value>Domů</value>
   </data>
@@ -389,18 +353,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
     <value>Parametry:</value>
-  </data>
-  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
-    <value>&amp;Inspekce kódu</value>
-  </data>
-  <data name="RubberduckMenu_Refactor" xml:space="preserve">
-    <value>&amp;Refactor</value>
-  </data>
-  <data name="ToolsMenu_SourceControl" xml:space="preserve">
-    <value>&amp;Source Control</value>
-  </data>
-  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
-    <value>Unit &amp;Testy</value>
   </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parsuji...)</value>
@@ -560,12 +512,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
     <value>Neplatný výběr.</value>
-  </data>
-  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value>&amp;Implementovat interface</value>
-  </data>
-  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
-    <value>E&amp;xtrahovat interface</value>
   </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolutní</value>

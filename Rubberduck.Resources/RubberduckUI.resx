@@ -274,52 +274,6 @@
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Class or member '{0}' is not implemented.</value>
   </data>
-  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
-    <value>&amp;Find all references...</value>
-  </data>
-  <data name="ContextMenu_FindSymbol" xml:space="preserve">
-    <value>Find &amp;symbol...</value>
-  </data>
-  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
-    <value>Go to &amp;implementation...</value>
-  </data>
-  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
-    <value>Extract &amp;Method</value>
-  </data>
-  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
-    <value>Remo&amp;ve Parameters</value>
-  </data>
-  <data name="RefactorMenu_Rename" xml:space="preserve">
-    <value>&amp;Rename</value>
-  </data>
-  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
-    <value>Re&amp;order Parameters</value>
-    <comment>TC: different hotkey</comment>
-  </data>
-  <data name="RubberduckMenu" xml:space="preserve">
-    <value>Ru&amp;bberduck</value>
-  </data>
-  <data name="RubberduckMenu_About" xml:space="preserve">
-    <value>&amp;About...</value>
-  </data>
-  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
-    <value>&amp;Code Explorer</value>
-  </data>
-  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
-    <value>Code &amp;Inspections</value>
-  </data>
-  <data name="RubberduckMenu_Settings" xml:space="preserve">
-    <value>S&amp;ettings</value>
-  </data>
-  <data name="RubberduckMenu_Refactor" xml:space="preserve">
-    <value>&amp;Refactor</value>
-  </data>
-  <data name="ToolsMenu_TodoItems" xml:space="preserve">
-    <value>To&amp;Do Items</value>
-  </data>
-  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
-    <value>Unit &amp;Tests</value>
-  </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
@@ -539,9 +493,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Rename {0}</value>
   </data>
-  <data name="FormContextMenu_Rename" xml:space="preserve">
-    <value>Re&amp;name</value>
-  </data>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} issues)</value>
     <comment>{0}=status; {1}=number</comment>
@@ -563,9 +514,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>German</value>
-  </data>
-  <data name="RubberduckMenu_Navigate" xml:space="preserve">
-    <value>Na&amp;vigate</value>
   </data>
   <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
     <value>All Opened Files</value>
@@ -618,30 +566,12 @@ Are you sure you want to proceed with this rename?</value>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Find symbol</value>
   </data>
-  <data name="IndentCurrentModule" xml:space="preserve">
-    <value>Current &amp;Module</value>
-  </data>
-  <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>Current &amp;Procedure</value>
-  </data>
   <data name="IndentCurrentProject" xml:space="preserve">
     <value>Current Project</value>
-  </data>
-  <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>In&amp;dent</value>
-  </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value>Introduce &amp;Parameter</value>
-  </data>
-  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
-    <value>Introduce &amp;Field</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Selection is not a variable.</value>
     <comment>Used in both Introduce Parameter and Introduce Field</comment>
-  </data>
-  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
-    <value>&amp;Encapsulate Field</value>
   </data>
   <data name="EncapsulateField_Caption" xml:space="preserve">
     <value>Rubberduck - Encapsulate Field</value>
@@ -664,9 +594,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Parameter Name:</value>
   </data>
-  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value>Move Closer To &amp;Usage</value>
-  </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Move Closer To Usage</value>
   </data>
@@ -687,12 +614,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Method '{0}' implements '{1}.{2}'. Change interface signature? (Will propagate to all implementations.)</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
-  </data>
-  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
-    <value>E&amp;xtract Interface</value>
-  </data>
-  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value>&amp;Implement Interface</value>
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Implement Interface</value>
@@ -943,9 +864,6 @@ Are you sure you want to proceed with this rename?</value>
   <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
     <value>Refactor / Move declaration closer to usage</value>
   </data>
-  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
-    <value>Rege&amp;x Search/Replace</value>
-  </data>
   <data name="CommandDescription_ReparseCommand" xml:space="preserve">
     <value>Refresh parser state</value>
   </data>
@@ -963,9 +881,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Slash (/)</value>
-  </data>
-  <data name="NoIndentAnnotation" xml:space="preserve">
-    <value>&amp;Add '@NoIndent</value>
   </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parser Errors</value>
@@ -1017,12 +932,6 @@ Are you sure you want to proceed with this rename?</value>
   </data>
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Pattern</value>
-  </data>
-  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
-    <value>Regex &amp;Assistant</value>
-  </data>
-  <data name="ToolsMenu" xml:space="preserve">
-    <value>T&amp;ools</value>
   </data>
   <data name="RegexAssistant_NoPatternError" xml:space="preserve">
     <value>(no pattern)</value>
@@ -1247,9 +1156,6 @@ Would you like to import them to Rubberduck?</value>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Experimental Features (Requires a restart to take effect):</value>
   </data>
-  <data name="ToolsMenu_ExportProject" xml:space="preserve">
-    <value>Export Active Project...</value>
-  </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Choose a folder to export the source of {0} to:</value>
     <comment>{0} VBProject.Name</comment>
@@ -1273,9 +1179,6 @@ Would you like to import them to Rubberduck?</value>
   <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
     <value>Rubberduck doesn't see anything yet.</value>
   </data>
-  <data name="RubberduckMenu_Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
   <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck TODO Items - {0}
 {1} items found.</value>
@@ -1293,9 +1196,6 @@ Would you like to import them to Rubberduck?</value>
     <value>Copy to clipboard</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
-    <value>Code Metrics</value>
-  </data>
-  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
     <value>Code Metrics</value>
   </data>
   <data name="CodeMetrics_Complexity" xml:space="preserve">

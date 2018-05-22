@@ -273,45 +273,6 @@
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Aucune implémentation trouvée pour '{0}'.</value>
   </data>
-  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
-    <value>&amp;Trouver toutes les références...</value>
-  </data>
-  <data name="ContextMenu_FindSymbol" xml:space="preserve">
-    <value>Rechercher un &amp;symbole...</value>
-  </data>
-  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
-    <value>Aller à l'&amp;implémentation...</value>
-  </data>
-  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
-    <value>Extraire une &amp;méthode</value>
-  </data>
-  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
-    <value>Sup&amp;primer un Paramètre</value>
-  </data>
-  <data name="RefactorMenu_Rename" xml:space="preserve">
-    <value>&amp;Renommer</value>
-  </data>
-  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
-    <value>Modifier l'ordre des &amp;Paramètres</value>
-  </data>
-  <data name="RubberduckMenu" xml:space="preserve">
-    <value>Ru&amp;bberduck</value>
-  </data>
-  <data name="RubberduckMenu_About" xml:space="preserve">
-    <value>&amp;A propos...</value>
-  </data>
-  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
-    <value>Explorateur de &amp;Code</value>
-  </data>
-  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
-    <value>&amp;Inspections</value>
-  </data>
-  <data name="RubberduckMenu_Refactor" xml:space="preserve">
-    <value>&amp;Refactorer</value>
-  </data>
-  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
-    <value>&amp;Tests Unitaires</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (analyse...)</value>
   </data>
@@ -569,9 +530,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Explorateur</value>
   </data>
-  <data name="FormContextMenu_Rename" xml:space="preserve">
-    <value>Re&amp;nommer</value>
-  </data>
   <data name="CodeExplorer_Navigate" xml:space="preserve">
     <value>Na&amp;viguer</value>
   </data>
@@ -603,9 +561,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Language_DE" xml:space="preserve">
     <value>Allemand</value>
   </data>
-  <data name="RubberduckMenu_Navigate" xml:space="preserve">
-    <value>Na&amp;viguer</value>
-  </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Nom du paramètre:</value>
   </data>
@@ -618,17 +573,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
     <value>Portée:</value>
   </data>
-  <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>In&amp;denter</value>
-  </data>
   <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
     <value>Sélection</value>
-  </data>
-  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value>&amp;Déplacer la déclaration</value>
-  </data>
-  <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Current Project</value>
   </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Rapprocher la déclaration de son utilisation</value>
@@ -644,9 +590,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' n'est pas utilisé</value>
-  </data>
-  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
-    <value>Introduire un &amp;champ</value>
   </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value>Encapsuler le champ</value>
@@ -696,23 +639,14 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
     <value>Tous les projets ouverts</value>
   </data>
-  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
-    <value>&amp;Encapsuler le champ</value>
-  </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>La sélection courante n'est pas valide pour cette opération.</value>
-  </data>
-  <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>&amp;Procédure courante</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>La sélection n'est pas une variable.</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Membres</value>
-  </data>
-  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
-    <value>E&amp;xtraire une interface</value>
   </data>
   <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
     <value>Affichage</value>
@@ -722,9 +656,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value>Veuillez spécifier le nom, l'accessibilité des paramètres, et le type de mutateur pour la nouvelle propriété.</value>
-  </data>
-  <data name="IndentCurrentModule" xml:space="preserve">
-    <value>&amp;Module courant</value>
   </data>
   <data name="CodeExplorer_NewToolTip" xml:space="preserve">
     <value>Ajouter un module au projet actif</value>
@@ -737,9 +668,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' est utilisé dans plus d'une méthode.</value>
-  </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value>Introduire un &amp;paramètre</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
     <value>Remplacer tout</value>
@@ -755,9 +683,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>La méthode '{0}' implémente '{1}.{2}'. Modifier la signature de l'interface? (se propagera à toutes les implémentations)</value>
-  </data>
-  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value>&amp;Implémenter l'interface</value>
   </data>
   <data name="ParserState_ResolverError" xml:space="preserve">
     <value>Erreur de résolution</value>
@@ -843,9 +768,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value>Forcer les directives du préprocesseur à la colonne 1</value>
   </data>
-  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
-    <value>Rechercher/remplacer avec une RegE&amp;x</value>
-  </data>
   <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
     <value>Ignorer les opérateurs</value>
   </data>
@@ -899,9 +821,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
     <value>Options spéciales</value>
-  </data>
-  <data name="RubberduckMenu_Settings" xml:space="preserve">
-    <value>&amp;Paramètres</value>
   </data>
   <data name="IndenterSettings_IndentCase" xml:space="preserve">
     <value>Indenter les blocs Case</value>
@@ -1016,9 +935,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
     <value>Erreur</value>
-  </data>
-  <data name="NoIndentAnnotation" xml:space="preserve">
-    <value>Annoter avec '@&amp;NoIndent</value>
   </data>
   <data name="CodeExplorer_Print" xml:space="preserve">
     <value>Imprimer...</value>
@@ -1136,20 +1052,11 @@ End Sub</value>
   <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
     <value>Propriétés du projet</value>
   </data>
-  <data name="ToolsMenu" xml:space="preserve">
-    <value>&amp;Outils</value>
-  </data>
-  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
-    <value>&amp;Assistant Regex</value>
-  </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyseur d'expressions Regex</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Identifiants en liste blanche</value>
-  </data>
-  <data name="ToolsMenu_TodoItems" xml:space="preserve">
-    <value>À &amp;faire ("TODO")</value>
   </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
@@ -1305,9 +1212,6 @@ les projets dans le VBE.</value>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Exporter le projet...</value>
   </data>
-  <data name="ToolsMenu_ExportProject" xml:space="preserve">
-    <value>Exporter le projet actif...</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>Fichiers VB</value>
   </data>
@@ -1371,9 +1275,6 @@ les projets dans le VBE.</value>
   <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>Tel que dans le module</value>
   </data>
-  <data name="RubberduckMenu_Refresh" xml:space="preserve">
-    <value>Actualiser</value>
-  </data>
   <data name="Preview" xml:space="preserve">
     <value>Aperçu</value>
   </data>
@@ -1396,9 +1297,6 @@ les projets dans le VBE.</value>
   </data>
   <data name="CodeMetrics_Complexity" xml:space="preserve">
     <value>Complexité Cyclomatique</value>
-  </data>
-  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
-    <value>Statistiques</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Statistiques</value>

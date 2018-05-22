@@ -117,115 +117,121 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
-    <value>{0} fehlgeschlagen</value>
+  <data name="RubberduckMenu" xml:space="preserve">
+    <value>Ru&amp;bberduck</value>
   </data>
-  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
-    <value>{0} ergebnislos</value>
+  <data name="RubberduckMenu_About" xml:space="preserve">
+    <value>&amp;A propos...</value>
   </data>
-  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
-    <value>{0} bestanden</value>
+  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
+    <value>Explorateur de &amp;Code</value>
   </data>
-  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
-    <value>Zwei oder mehr Projekte mit Testmethoden haben den selben Namen und identisch benannte Tests. Bitte nennen sie zum Fortfahren eines davon um.</value>
+  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
+    <value>&amp;Inspections</value>
   </data>
-  <data name="TestExplorerWindow_Caption" xml:space="preserve">
-    <value>Test Explorer</value>
+  <data name="RubberduckMenu_Refactor" xml:space="preserve">
+    <value>&amp;Refactorer</value>
   </data>
-  <data name="TestExplorer_AddButtonText" xml:space="preserve">
-    <value>Hinzufügen</value>
+  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
+    <value>&amp;Tests Unitaires</value>
   </data>
-  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>neue Testmethode (Erwarteter Fehler)</value>
+  <data name="RubberduckMenu_Navigate" xml:space="preserve">
+    <value>Na&amp;viguer</value>
   </data>
-  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
-    <value>neue Testmethode</value>
+  <data name="SmartIndenterMenu" xml:space="preserve">
+    <value>In&amp;denter</value>
   </data>
-  <data name="TestExplorer_AddTestModule" xml:space="preserve">
-    <value>neues Testmodul</value>
+  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
+    <value>Rechercher/remplacer avec une RegE&amp;x</value>
   </data>
-  <data name="TestExplorer_Duration" xml:space="preserve">
-    <value>Dauer</value>
+  <data name="RubberduckMenu_Settings" xml:space="preserve">
+    <value>&amp;Paramètres</value>
   </data>
-  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
-    <value>Zur Auswahl navigieren</value>
+  <data name="ToolsMenu" xml:space="preserve">
+    <value>&amp;Outils</value>
   </data>
-  <data name="TestExplorer_Message" xml:space="preserve">
-    <value>Meldung</value>
+  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
+    <value>&amp;Assistant Regex</value>
   </data>
-  <data name="TestExplorer_MethodName" xml:space="preserve">
-    <value>Methodenname</value>
+  <data name="ToolsMenu_TodoItems" xml:space="preserve">
+    <value>À &amp;faire ("TODO")</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
-    <value>Alle Tests</value>
+  <data name="ToolsMenu_ExportProject" xml:space="preserve">
+    <value>Exporter le projet actif...</value>
   </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
-    <value>Ausführen</value>
+  <data name="RubberduckMenu_Refresh" xml:space="preserve">
+    <value>Actualiser</value>
   </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
-    <value>Fehlgeschlagene Tests</value>
+  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
+    <value>Statistiques</value>
   </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
-    <value>Wiederhole letzten Testlauf</value>
+  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
+    <value>&amp;Trouver toutes les références...</value>
   </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
-    <value>Nicht ausgeführte Tests</value>
+  <data name="ContextMenu_FindSymbol" xml:space="preserve">
+    <value>Rechercher un &amp;symbole...</value>
   </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
-    <value>Bestanden Tests</value>
+  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
+    <value>Aller à l'&amp;implémentation...</value>
   </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Ausgewählte Tests</value>
+  <data name="FormContextMenu_Rename" xml:space="preserve">
+    <value>Re&amp;nommer</value>
   </data>
-  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
-    <value>Modul</value>
+  <data name="IndentCurrentModule" xml:space="preserve">
+    <value>&amp;Module courant</value>
   </data>
-  <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Fehlerhaft</value>
+  <data name="IndentCurrentProcedure" xml:space="preserve">
+    <value>&amp;Procédure courante</value>
   </data>
-  <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Ergebnislos</value>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Current Project</value>
   </data>
-  <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Erfolgreich</value>
+  <data name="NoIndentAnnotation" xml:space="preserve">
+    <value>Annoter avec '@&amp;NoIndent</value>
   </data>
-  <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unbekannt</value>
+  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
+    <value>&amp;Encapsuler le champ</value>
   </data>
-  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
-    <value>Diese Methode wird einmal pro Modul ausgeführt</value>
+  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
+    <value>E&amp;xtraire une interface</value>
   </data>
-  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>Diese Methode wird vor jedem Test ausgeführt.</value>
+  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
+    <value>Extraire une &amp;méthode</value>
   </data>
-  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
-    <value>Diese Methode wird nach jedem Test ausgeführt</value>
+  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
+    <value>&amp;Implémenter l'interface</value>
   </data>
-  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
-    <value>Test umbenennen</value>
+  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
+    <value>Introduire un &amp;champ</value>
   </data>
-  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
-    <value>Test hat diesen Fehler ergeben</value>
+  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
+    <value>Introduire un &amp;paramètre</value>
   </data>
-  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
-    <value>Auf den Fehlercode des erwarteten Fehlers ändern</value>
+  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
+    <value>&amp;Déplacer la déclaration</value>
   </data>
-  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
-    <value>Der erwartete Fehler wurde nicht gefunden</value>
+  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
+    <value>Sup&amp;primer un Paramètre</value>
   </data>
-  <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ingoriert</value>
+  <data name="RefactorMenu_Rename" xml:space="preserve">
+    <value>&amp;Renommer</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
-    <value>Gesamtdauer</value>
+  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
+    <value>Modifier l'ordre des &amp;Paramètres</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
-    <value>Nicht aussagekräftige Tests</value>
+  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Méthode de test (&amp;erreur attendue)</value>
   </data>
-  <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Ergebnis</value>
+  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
+    <value>&amp;Méthode de test</value>
   </data>
-  <data name="Command_AddTestModule_Error" xml:space="preserve">
-    <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
+  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
+    <value>M&amp;odule de tests</value>
+  </data>
+  <data name="TestMenu_RunAllTests" xml:space="preserve">
+    <value>E&amp;xécuter tous les tests</value>
+  </data>
+  <data name="TestMenu_TextExplorer" xml:space="preserve">
+    <value>Explorateur de &amp;tests</value>
   </data>
 </root>

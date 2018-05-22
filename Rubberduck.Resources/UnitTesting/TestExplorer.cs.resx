@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>Spustit &amp;všechny test</value>
-  </data>
-  <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>&amp;Test Explorer</value>
-  </data>
   <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
     <value>{0} selhal</value>
   </data>
@@ -182,15 +176,6 @@
   </data>
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
     <value>Testy, které neprošly</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>Testovací M&amp;odul</value>
-  </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testovací Metoda (&amp;Expected Error)</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>Testovací &amp;Metoda</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
     <value>Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.</value>

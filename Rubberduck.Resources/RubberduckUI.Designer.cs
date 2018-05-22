@@ -706,33 +706,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Find all references....
-        /// </summary>
-        public static string ContextMenu_FindAllReferences {
-            get {
-                return ResourceManager.GetString("ContextMenu_FindAllReferences", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Find &amp;symbol....
-        /// </summary>
-        public static string ContextMenu_FindSymbol {
-            get {
-                return ResourceManager.GetString("ContextMenu_FindSymbol", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Go to &amp;implementation....
-        /// </summary>
-        public static string ContextMenu_GoToImplementation {
-            get {
-                return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to multiple controls.
         /// </summary>
         public static string ContextMultipleControlsSelection {
@@ -1374,15 +1347,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Re&amp;name.
-        /// </summary>
-        public static string FormContextMenu_Rename {
-            get {
-                return ResourceManager.GetString("FormContextMenu_Rename", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Check if a newer version is available at startup.
         /// </summary>
         public static string GeneralSettings_CheckVersion {
@@ -1768,24 +1732,6 @@ namespace Rubberduck.Resources {
         public static string ImportCommand_OpenDialog_Title {
             get {
                 return ResourceManager.GetString("ImportCommand_OpenDialog_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current &amp;Module.
-        /// </summary>
-        public static string IndentCurrentModule {
-            get {
-                return ResourceManager.GetString("IndentCurrentModule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Current &amp;Procedure.
-        /// </summary>
-        public static string IndentCurrentProcedure {
-            get {
-                return ResourceManager.GetString("IndentCurrentProcedure", resourceCulture);
             }
         }
         
@@ -2273,15 +2219,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &amp;Add &apos;@NoIndent.
-        /// </summary>
-        public static string NoIndentAnnotation {
-            get {
-                return ResourceManager.GetString("NoIndentAnnotation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Offline.
         /// </summary>
         public static string Offline {
@@ -2583,96 +2520,6 @@ namespace Rubberduck.Resources {
         public static string Refactoring_TargetIsInterfaceMemberImplementation {
             get {
                 return ResourceManager.GetString("Refactoring_TargetIsInterfaceMemberImplementation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Encapsulate Field.
-        /// </summary>
-        public static string RefactorMenu_EncapsulateField {
-            get {
-                return ResourceManager.GetString("RefactorMenu_EncapsulateField", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to E&amp;xtract Interface.
-        /// </summary>
-        public static string RefactorMenu_ExtractInterface {
-            get {
-                return ResourceManager.GetString("RefactorMenu_ExtractInterface", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Extract &amp;Method.
-        /// </summary>
-        public static string RefactorMenu_ExtractMethod {
-            get {
-                return ResourceManager.GetString("RefactorMenu_ExtractMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Implement Interface.
-        /// </summary>
-        public static string RefactorMenu_ImplementInterface {
-            get {
-                return ResourceManager.GetString("RefactorMenu_ImplementInterface", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Introduce &amp;Field.
-        /// </summary>
-        public static string RefactorMenu_IntroduceField {
-            get {
-                return ResourceManager.GetString("RefactorMenu_IntroduceField", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Introduce &amp;Parameter.
-        /// </summary>
-        public static string RefactorMenu_IntroduceParameter {
-            get {
-                return ResourceManager.GetString("RefactorMenu_IntroduceParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move Closer To &amp;Usage.
-        /// </summary>
-        public static string RefactorMenu_MoveCloserToUsage {
-            get {
-                return ResourceManager.GetString("RefactorMenu_MoveCloserToUsage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remo&amp;ve Parameters.
-        /// </summary>
-        public static string RefactorMenu_RemoveParameter {
-            get {
-                return ResourceManager.GetString("RefactorMenu_RemoveParameter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Rename.
-        /// </summary>
-        public static string RefactorMenu_Rename {
-            get {
-                return ResourceManager.GetString("RefactorMenu_Rename", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Re&amp;order Parameters.
-        /// </summary>
-        public static string RefactorMenu_ReorderParameters {
-            get {
-                return ResourceManager.GetString("RefactorMenu_ReorderParameters", resourceCulture);
             }
         }
         
@@ -3209,105 +3056,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ru&amp;bberduck.
-        /// </summary>
-        public static string RubberduckMenu {
-            get {
-                return ResourceManager.GetString("RubberduckMenu", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;About....
-        /// </summary>
-        public static string RubberduckMenu_About {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_About", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Code Explorer.
-        /// </summary>
-        public static string RubberduckMenu_CodeExplorer {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_CodeExplorer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Code &amp;Inspections.
-        /// </summary>
-        public static string RubberduckMenu_CodeInspections {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_CodeInspections", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Code Metrics.
-        /// </summary>
-        public static string RubberduckMenu_CodeMetrics {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_CodeMetrics", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Na&amp;vigate.
-        /// </summary>
-        public static string RubberduckMenu_Navigate {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_Navigate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Refactor.
-        /// </summary>
-        public static string RubberduckMenu_Refactor {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_Refactor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        public static string RubberduckMenu_Refresh {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_Refresh", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rege&amp;x Search/Replace.
-        /// </summary>
-        public static string RubberduckMenu_RegexSearchReplace {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_RegexSearchReplace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to S&amp;ettings.
-        /// </summary>
-        public static string RubberduckMenu_Settings {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unit &amp;Tests.
-        /// </summary>
-        public static string RubberduckMenu_UnitTests {
-            get {
-                return ResourceManager.GetString("RubberduckMenu_UnitTests", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Toolwindows were not correctly destroyed and/or could not be recreated; the VBE may not be in a stable state. Rubberduck will load normally next time the VBE is initialized..
         /// </summary>
         public static string RubberduckReloadFailure_Message {
@@ -3453,15 +3201,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In&amp;dent.
-        /// </summary>
-        public static string SmartIndenterMenu {
-            get {
-                return ResourceManager.GetString("SmartIndenterMenu", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap Splash {
@@ -3588,42 +3327,6 @@ namespace Rubberduck.Resources {
         public static string TodoSettings_TokenListLabel {
             get {
                 return ResourceManager.GetString("TodoSettings_TokenListLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to T&amp;ools.
-        /// </summary>
-        public static string ToolsMenu {
-            get {
-                return ResourceManager.GetString("ToolsMenu", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export Active Project....
-        /// </summary>
-        public static string ToolsMenu_ExportProject {
-            get {
-                return ResourceManager.GetString("ToolsMenu_ExportProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Regex &amp;Assistant.
-        /// </summary>
-        public static string ToolsMenu_RegexAssistant {
-            get {
-                return ResourceManager.GetString("ToolsMenu_RegexAssistant", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To&amp;Do Items.
-        /// </summary>
-        public static string ToolsMenu_TodoItems {
-            get {
-                return ResourceManager.GetString("ToolsMenu_TodoItems", resourceCulture);
             }
         }
         

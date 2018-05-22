@@ -274,45 +274,6 @@
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Klasse oder Member '{0}' ist nicht implementiert.</value>
   </data>
-  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
-    <value>&amp;Finde alle Referenzen...</value>
-  </data>
-  <data name="ContextMenu_FindSymbol" xml:space="preserve">
-    <value>Finde &amp;Symbol...</value>
-  </data>
-  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
-    <value>Springe zu &amp;Implementation...</value>
-  </data>
-  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
-    <value>Extrahiere &amp;Methode</value>
-  </data>
-  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
-    <value>Entferne &amp;Parameter</value>
-  </data>
-  <data name="RefactorMenu_Rename" xml:space="preserve">
-    <value>&amp;Umbenennen</value>
-  </data>
-  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
-    <value>Parameter Um&amp;ordnen</value>
-  </data>
-  <data name="RubberduckMenu" xml:space="preserve">
-    <value>Ru&amp;bberduck</value>
-  </data>
-  <data name="RubberduckMenu_About" xml:space="preserve">
-    <value>&amp;Über...</value>
-  </data>
-  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
-    <value>&amp;Code Explorer</value>
-  </data>
-  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
-    <value>&amp;Code-Untersuchungen</value>
-  </data>
-  <data name="RubberduckMenu_Refactor" xml:space="preserve">
-    <value>Um&amp;gestalten</value>
-  </data>
-  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
-    <value>Unit &amp;Tests</value>
-  </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parse...)</value>
   </data>
@@ -546,9 +507,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
     <value>Code Explorer</value>
   </data>
-  <data name="FormContextMenu_Rename" xml:space="preserve">
-    <value>Umbe&amp;nennen</value>
-  </data>
   <data name="CodeExplorer_New" xml:space="preserve">
     <value>&amp;Neu</value>
   </data>
@@ -586,9 +544,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Deutsch</value>
-  </data>
-  <data name="RubberduckMenu_Navigate" xml:space="preserve">
-    <value>&amp;Navigieren</value>
   </data>
   <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
     <value>Aktuelle Datei</value>
@@ -662,26 +617,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
     <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder</value>
   </data>
-  <data name="IndentCurrentModule" xml:space="preserve">
-    <value>Aktuelles &amp;Modul</value>
-  </data>
-  <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>Aktuelle &amp;Prozedur</value>
-  </data>
-  <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Aktuelles Projekt</value>
-  </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
     <value>Ein&amp;rücken</value>
   </data>
-  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
-    <value>&amp;Feld einführen</value>
-  </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable</value>
-  </data>
-  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
-    <value>F&amp;eld kapseln</value>
   </data>
   <data name="EncapsulateField_Caption" xml:space="preserve">
     <value>Rubberduck - Gekapseltes Feld</value>
@@ -692,20 +632,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EncapsulateField_PropertyName" xml:space="preserve">
     <value>Eigenschaftsname:</value>
   </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value>Parameter e&amp;inführen</value>
-  </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value>Feld Kapseln</value>
   </data>
   <data name="EncapsulateField_ParameterName" xml:space="preserve">
     <value>Eigenschaftsname</value>
-  </data>
-  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
-    <value>E&amp;xtrahiere Interface</value>
-  </data>
-  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value>Implementie&amp;re Interface</value>
   </data>
   <data name="EncapsulateField_SetterType" xml:space="preserve">
     <value>Typ für 'Set':</value>
@@ -725,9 +656,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
     <value>Methode '{0}' implementiert '{1}.{2}'. Ändern der Interface Signatur? (Wird auf alle Implementierungen angewendet.)</value>
   </data>
-  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value>Näher an die N&amp;utzung verschieben</value>
-  </data>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Näher an die Nutzung führen</value>
   </data>
@@ -742,9 +670,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="ImplementInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Interface Implementieren</value>
-  </data>
-  <data name="RubberduckMenu_Settings" xml:space="preserve">
-    <value>&amp;Einstellungen</value>
   </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Anzeigesprache:</value>
@@ -935,9 +860,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
     <value>Hotkey ({0}) ist nicht registriert.</value>
   </data>
-  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
-    <value>Rege&amp;x Suchen/Ersetzen</value>
-  </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Nach Markierung</value>
   </data>
@@ -976,9 +898,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="CodeExplorer_Sort" xml:space="preserve">
     <value>Sortieren</value>
-  </data>
-  <data name="NoIndentAnnotation" xml:space="preserve">
-    <value>Füge '@&amp;NoIndent hinzu</value>
   </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parserfehler</value>
@@ -1034,20 +953,11 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="RegexAssistant_Caption" xml:space="preserve">
     <value>Rubberduck - Regexassistent</value>
   </data>
-  <data name="ToolsMenu" xml:space="preserve">
-    <value>&amp;Werkzeuge</value>
-  </data>
-  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
-    <value>Regex&amp;assistent</value>
-  </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Assistent für Reguläre Ausdrücke</value>
   </data>
   <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
     <value>Explizit erlaubte Namen</value>
-  </data>
-  <data name="ToolsMenu_TodoItems" xml:space="preserve">
-    <value>To&amp;Do Liste</value>
   </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Einen Regulären Ausdruck zur Analyse in die Box unten eingeben.</value>
@@ -1268,9 +1178,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="CodeExplorer_ExportAll" xml:space="preserve">
     <value>Projekt exportieren...</value>
   </data>
-  <data name="ToolsMenu_ExportProject" xml:space="preserve">
-    <value>Aktives Projekt exportieren</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>VB Dateien</value>
   </data>
@@ -1322,9 +1229,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
     <value>Wie im Modul deklariert</value>
   </data>
-  <data name="RubberduckMenu_Refresh" xml:space="preserve">
-    <value>Aktualisieren</value>
-  </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>In die Zwischenablage kopieren</value>
   </data>
@@ -1341,9 +1245,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
     <value>Codemetrikergebnisse</value>
-  </data>
-  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
-    <value>Codemetriken</value>
   </data>
   <data name="CodeMetrics_Complexity" xml:space="preserve">
     <value>Zyklomatische Komplexität</value>
