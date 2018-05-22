@@ -268,56 +268,11 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test Method (&amp;Expected Error).
-        /// </summary>
-        public static string TestExplorerMenu_AddExpectedErrorTestMethod {
-            get {
-                return ResourceManager.GetString("TestExplorerMenu_AddExpectedErrorTestMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Test &amp;Method.
-        /// </summary>
-        public static string TestExplorerMenu_AddTestMethod {
-            get {
-                return ResourceManager.GetString("TestExplorerMenu_AddTestMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Test M&amp;odule.
-        /// </summary>
-        public static string TestExplorerMenu_AddTestModule {
-            get {
-                return ResourceManager.GetString("TestExplorerMenu_AddTestModule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Test Explorer.
         /// </summary>
         public static string TestExplorerWindow_Caption {
             get {
                 return ResourceManager.GetString("TestExplorerWindow_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Run All Tests.
-        /// </summary>
-        public static string TestMenu_RunAllTests {
-            get {
-                return ResourceManager.GetString("TestMenu_RunAllTests", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Test Explorer.
-        /// </summary>
-        public static string TestMenu_TextExplorer {
-            get {
-                return ResourceManager.GetString("TestMenu_TextExplorer", resourceCulture);
             }
         }
         

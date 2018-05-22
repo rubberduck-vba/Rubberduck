@@ -1,12 +1,12 @@
 ﻿using System.Globalization;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
     public class SettingsView
     {
-        public string Label => RubberduckUI.ResourceManager.GetString("SettingsCaption_" + View);
-        public string Instructions => RubberduckUI.ResourceManager.GetString("SettingsInstructions_" + View, CultureInfo.CurrentUICulture);
+        public string Label => SettingsUI.ResourceManager.GetString("PageHeader_" + View);
+        public string Instructions => SettingsUI.ResourceManager.GetString("PageInstructions_" + View, CultureInfo.CurrentUICulture);
         public ISettingsView Control { get; set; }
         public SettingsViews View { get; set; }
     }

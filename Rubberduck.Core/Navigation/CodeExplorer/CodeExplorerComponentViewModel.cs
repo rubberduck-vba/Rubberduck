@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
-using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
+using Rubberduck.Resources.CodeExplorer;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -44,7 +44,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             
             _icon = Icons.ContainsKey(DeclarationType) 
                 ? Icons[DeclarationType]
-                : GetImageSource(resx.status_offline);
+                : GetImageSource(CodeExplorerUI.status_offline);
 
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
@@ -55,7 +55,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .ToList<CodeExplorerItemViewModel>();
 
             _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
-                ? Resources.RubberduckUI.CodeExplorer_ResourceFileText
+                ? CodeExplorerUI.CodeExplorer_ResourceFileText
                 : Declaration.IdentifierName;
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
@@ -107,7 +107,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _isErrorState = value;
-                _icon = GetImageSource(resx.cross_circle);
+                _icon = GetImageSource(CodeExplorerUI.cross_circle);
 
 
                 foreach (var item in Items)
@@ -173,17 +173,17 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
         {
-            { DeclarationType.ClassModule, GetImageSource(resx.ObjectClass) },
-            { DeclarationType.ProceduralModule, GetImageSource(resx.ObjectModule) },
-            { DeclarationType.UserForm, GetImageSource(resx.ProjectForm) },
-            { DeclarationType.Document, GetImageSource(resx.document_office) },
-            { DeclarationType.VbForm, GetImageSource(resx.ProjectForm)},
-            { DeclarationType.MdiForm, GetImageSource(resx.MdiForm)},
-            { DeclarationType.UserControl, GetImageSource(resx.ui_scroll_pane_form)},
-            { DeclarationType.DocObject, GetImageSource(resx.document_globe)},
-            { DeclarationType.PropPage, GetImageSource(resx.ui_tab_content)},
-            { DeclarationType.ActiveXDesigner, GetImageSource(resx.pencil_ruler)},
-            { DeclarationType.ResFile, GetImageSource(resx.document_block)}
+            { DeclarationType.ClassModule, GetImageSource(CodeExplorerUI.ObjectClass) },
+            { DeclarationType.ProceduralModule, GetImageSource(CodeExplorerUI.ObjectModule) },
+            { DeclarationType.UserForm, GetImageSource(CodeExplorerUI.ProjectForm) },
+            { DeclarationType.Document, GetImageSource(CodeExplorerUI.document_office) },
+            { DeclarationType.VbForm, GetImageSource(CodeExplorerUI.ProjectForm)},
+            { DeclarationType.MdiForm, GetImageSource(CodeExplorerUI.MdiForm)},
+            { DeclarationType.UserControl, GetImageSource(CodeExplorerUI.ui_scroll_pane_form)},
+            { DeclarationType.DocObject, GetImageSource(CodeExplorerUI.document_globe)},
+            { DeclarationType.PropPage, GetImageSource(CodeExplorerUI.ui_tab_content)},
+            { DeclarationType.ActiveXDesigner, GetImageSource(CodeExplorerUI.pencil_ruler)},
+            { DeclarationType.ResFile, GetImageSource(CodeExplorerUI.document_block)}
         };
 
         private BitmapImage _icon;

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using Rubberduck.Resources;
+using Rubberduck.Resources.About;
 
 namespace Rubberduck.UI.About
 {
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.About
             sb.AppendLine(HostExecutable.Text);
 
             Clipboard.SetText(sb.ToString());
-            System.Windows.MessageBox.Show(RubberduckUI.AboutWindow_CopyVersionMessage, RubberduckUI.AboutWindow_CopyVersionCaption);
+            System.Windows.MessageBox.Show(AboutUI.AboutWindow_CopyVersionMessage, AboutUI.AboutWindow_CopyVersionCaption);
         }
     }
 }

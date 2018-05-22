@@ -170,8 +170,12 @@ namespace Rubberduck
             Resources.Inspections.InspectionResults.Culture = culture;
             Resources.Inspections.InspectionsUI.Culture = culture;
             Resources.Inspections.QuickFixes.Culture = culture;
+            Resources.Menus.RubberduckMenus.Culture = culture;
             Resources.RegexAssistant.RegexAssistantUI.Culture = culture;
+            Resources.Settings.SettingsUI.Culture = culture;
+            Resources.Settings.ToDoExplorerPage.Culture = culture;
             Resources.Settings.UnitTestingPage.Culture = culture;
+            Resources.ToDoExplorer.ToDoExplorerUI.Culture = culture;
             Resources.UnitTesting.AssertMessages.Culture = culture;
             Resources.UnitTesting.TestExplorer.Culture = culture;
         }

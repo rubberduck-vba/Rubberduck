@@ -147,4 +147,10 @@
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
     <value>Initialisation et nettoyage des modules de test</value>
   </data>
+  <data name="PageHeader" xml:space="preserve">
+    <value>Tests unitaires</value>
+  </data>
+  <data name="PageInstructions" xml:space="preserve">
+    <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
+  </data>
 </root>

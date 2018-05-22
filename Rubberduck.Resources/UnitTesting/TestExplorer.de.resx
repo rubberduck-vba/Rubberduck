@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>Alle Tests &amp;durchführen</value>
-  </data>
-  <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>&amp;Test Explorer</value>
-  </data>
   <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
     <value>{0} fehlgeschlagen</value>
   </data>
@@ -224,15 +218,6 @@
   </data>
   <data name="UnitTest_TotalDuration" xml:space="preserve">
     <value>Gesamtdauer</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>Testm&amp;odul</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>Test&amp;methode</value>
-  </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testmethode (&amp;erwartet Fehler)</value>
   </data>
   <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
     <value>Nicht aussagekräftige Tests</value>
