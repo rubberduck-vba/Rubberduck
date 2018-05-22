@@ -70,15 +70,6 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run.
-        /// </summary>
-        public static string RunButtonText {
-            get {
-                return ResourceManager.GetString("RunButtonText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string TestExplorer_AddButtonText {
