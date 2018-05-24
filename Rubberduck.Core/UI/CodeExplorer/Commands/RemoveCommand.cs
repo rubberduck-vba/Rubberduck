@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -55,8 +56,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            var message = string.Format("Do you want to export '{0}' before removing?", ((CodeExplorerComponentViewModel)parameter).Name);
-            var result = _messageBox.Confirm(message, "Rubberduck Export Prompt", true);
+            var message = string.Format(CodeExplorerUI.ExportBeforeRemove_Prompt, ((CodeExplorerComponentViewModel)parameter).Name);
+            var result = _messageBox.Confirm(message, CodeExplorerUI.ExportBeforeRemove_Caption, true);
 
             if (!result.HasValue)
             {

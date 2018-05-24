@@ -71,7 +71,7 @@ namespace Rubberduck.UI.Command
         {
             if (_vbeSettings.CompileOnDemand)
             {
-                return _messageBox.ConfirmYN(RubberduckUI.Command_Reparse_CompileOnDemandEnabled, RubberduckUI.Command_Reparse_CompileOnDemandEnabled_Caption, false);
+                return _messageBox.ConfirmYesNo(RubberduckUI.Command_Reparse_CompileOnDemandEnabled, RubberduckUI.Command_Reparse_CompileOnDemandEnabled_Caption, false);
             }
 
             return true;
@@ -107,7 +107,7 @@ namespace Rubberduck.UI.Command
             var formattedList = string.Concat(Environment.NewLine, Environment.NewLine,
                 string.Join(Environment.NewLine, failedNames));
             // FIXME using Exclamation instead of warning now... 
-            return _messageBox.ConfirmYN(
+            return _messageBox.ConfirmYesNo(
                 string.Format(RubberduckUI.Command_Reparse_CannotCompile,
                     formattedList),
                 RubberduckUI.Command_Reparse_CannotCompile_Caption, false);

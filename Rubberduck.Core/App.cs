@@ -154,6 +154,7 @@ namespace Rubberduck
             catch (CultureNotFoundException exception)
             {
                 Logger.Error(exception, "Error Setting Culture for Rubberduck");
+                // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyError(exception.Message, "Rubberduck");
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);

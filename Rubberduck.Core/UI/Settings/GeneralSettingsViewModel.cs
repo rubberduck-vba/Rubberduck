@@ -159,7 +159,7 @@ namespace Rubberduck.UI.Settings
 
         private bool SynchronizeVBESettings()
         {
-            if (!_messageBox.ConfirmYN(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
+            if (!_messageBox.ConfirmYesNo(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
                 RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption, true))
             {
                 return false;

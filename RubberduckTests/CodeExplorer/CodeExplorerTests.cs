@@ -816,7 +816,7 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.ConfirmYN(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
+            messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))

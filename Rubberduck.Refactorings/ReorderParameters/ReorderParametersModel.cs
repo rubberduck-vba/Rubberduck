@@ -75,7 +75,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
             
-            return _messageBox.ConfirmYN(message, RubberduckUI.ReorderParamsDialog_TitleText) ? interfaceMember : null;
+            return _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText) ? interfaceMember : null;
         }
 
         private Declaration GetEvent()

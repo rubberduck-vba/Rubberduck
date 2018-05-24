@@ -55,7 +55,7 @@ namespace Rubberduck.UI.Command
         private void PromptAndBrowse(Version latestVersion)
         {
             var prompt = string.Format(RubberduckUI.VersionCheck_NewVersionAvailable, latestVersion);
-            if (!_prompt.Prompt(prompt, RubberduckUI.Rubberduck))
+            if (!_prompt.Question(prompt, RubberduckUI.Rubberduck))
             {
                 return;
             }
