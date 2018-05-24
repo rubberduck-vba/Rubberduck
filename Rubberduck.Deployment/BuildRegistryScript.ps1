@@ -99,10 +99,11 @@ try
 		# For simplicity, the arguments are pass in literally.
 		# & "C:\GitHub\Rubberduck\Rubberduck\Rubberduck.Deployment\echoargs.exe" ""$sourceDll"" /win32 /out:""$sourceTlb"";
 		
+		[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
+
 		$devPath = Resolve-Path -Path "C:\Program Files*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
 		if($devPath)
 		{
-			[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
 			$idlGenerator = New-Object Rubberduck.Deployment.IdlGeneration.IdlGenerator;
 		
 			$idl = $idlGenerator.GenerateIdl($sourceDll);
