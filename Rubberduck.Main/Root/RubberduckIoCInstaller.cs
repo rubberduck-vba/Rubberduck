@@ -97,6 +97,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
                 .LifestyleSingleton());
+            container.Register(Component.For<ITypingCodeService>()
+                .ImplementedBy<TypingCodeService>()
+                .LifestyleSingleton());
             container.Register(Component.For<IOperatingSystem>()
                 .ImplementedBy<WindowsOperatingSystem>()
                 .LifestyleSingleton());
@@ -203,7 +206,8 @@ namespace Rubberduck.Root
                     .IncludeNonPublicTypes()
                     .Where(type => type.Namespace != null
                             && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
-                            && !type.Name.Equals("SelectionChangeService")
+                            && !type.Name.Equals(nameof(SelectionChangeService))
+                            && !type.Name.Equals(nameof(TypingCodeService))
                             && !type.Name.EndsWith("Factory")
                             && !type.Name.EndsWith("ConfigProvider")
                             && !type.Name.EndsWith("FakesProvider")
