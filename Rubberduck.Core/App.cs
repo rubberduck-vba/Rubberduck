@@ -56,13 +56,11 @@ namespace Rubberduck
         {
             _config = _configService.LoadConfiguration();
             _hooks.HookHotkeys();
-            // also updates the ShortcutKey text
-            _appMenus.Localize();
             UpdateLoggingLevel();
 
             if (e.LanguageChanged)
             {
-                LoadConfig();
+                ApplyCultureConfig();
             }
         }
 
@@ -111,7 +109,7 @@ namespace Rubberduck
         {
             EnsureLogFolderPathExists();
             EnsureTempPathExists();
-            LoadConfig();
+            ApplyCultureConfig();
 
             LogRubberduckStart();
             UpdateLoggingLevel();
@@ -140,7 +138,7 @@ namespace Rubberduck
             }
         }
 
-        private void LoadConfig()
+        private void ApplyCultureConfig()
         {
             _config = _configService.LoadConfiguration();
 
