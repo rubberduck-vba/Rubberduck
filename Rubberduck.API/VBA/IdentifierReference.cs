@@ -1,26 +1,42 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.API.VBA
 {
-    [ComVisible(true)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IIdentifierReferenceGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual)
+    ]
     public interface IIdentifierReference
     {
+        [DispId(1)]
         Declaration Declaration { get; }
+        [DispId(2)]
         Declaration ParentScope { get; }
+        [DispId(3)]
         Declaration ParentNonScoping { get; }
+        [DispId(4)]
         bool IsAssignment { get; }
+        [DispId(5)]
         int StartLine { get; }
+        [DispId(6)]
         int StartColumn { get; }
+        [DispId(7)]
         int EndLine { get; }
+        [DispId(8)]
         int EndColumn { get; }
     }
 
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IdentifierReferenceClassGuid)]
-    [ProgId(RubberduckProgId.IdentifierReferenceProgId)]
-    [ComDefaultInterface(typeof(IIdentifierReference))]
-    [EditorBrowsable(EditorBrowsableState.Always)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IdentifierReferenceClassGuid),
+        ProgId(RubberduckProgId.IdentifierReferenceProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IIdentifierReference)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public class IdentifierReference : IIdentifierReference
     {
         private readonly Parsing.Symbols.IdentifierReference _reference;

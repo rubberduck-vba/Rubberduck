@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.VBEditor.VB6</RootNamespace>
     <AssemblyName>Rubberduck.VBEditor.VB6</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +97,9 @@
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
       <Name>Rubberduck.VBEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.xsd">

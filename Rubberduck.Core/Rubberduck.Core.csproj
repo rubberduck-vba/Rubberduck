@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,12 +9,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck</RootNamespace>
     <AssemblyName>Rubberduck.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -231,19 +232,19 @@
       <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
+      <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Windsor.4.0.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <HintPath>..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="EasyHook, Version=2.7.6270.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
-      <HintPath>..\packages\EasyHook.2.7.6270\lib\net40\EasyHook.dll</HintPath>
+    <Reference Include="EasyHook, Version=2.7.6684.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
+      <HintPath>..\packages\EasyHook.2.7.6684\lib\net40\EasyHook.dll</HintPath>
     </Reference>
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.8.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.8.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.8.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -310,7 +311,6 @@
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
     <Compile Include="Common\ModuleExporter.cs" />
-    <Compile Include="Common\RootComWrapperFactory.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\VariableNameValidator.cs" />
     <Compile Include="Common\WinAPI\RegistryAccess.cs" />
@@ -348,8 +348,6 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
-    <Compile Include="RubberduckGuid.cs" />
-    <Compile Include="RubberduckProgId.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\ExperimentalFeatures.cs" />
     <Compile Include="Settings\DefaultSettings.cs" />
@@ -970,14 +968,6 @@
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
-      <Project>{5d683117-21f1-4a01-a0c7-6ae6f30a16a7}</Project>
-      <Name>Rubberduck.VBEditor.VB6</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
-      <Project>{d488071e-edcb-4601-b734-1a3109ed903c}</Project>
-      <Name>Rubberduck.VBEditor.VBA</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
       <Name>Rubberduck.VBEditor</Name>
@@ -1092,6 +1082,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

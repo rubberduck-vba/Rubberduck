@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 using Rubberduck.UnitTesting.Fakes;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(true)]
-    [ComDefaultInterface(typeof(IFakesProvider))]
-    [ProgId(RubberduckProgId.FakesProviderProgId)]
-    [Guid(RubberduckGuid.FakesProviderClassGuid)]
-    [EditorBrowsable(EditorBrowsableState.Always)]    
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.FakesProviderClassGuid),
+        ProgId(RubberduckProgId.FakesProviderProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IFakesProvider)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]   
     public class FakesProvider : IFakesProvider, IFakes
         // IFakesProvider is COM side, exposed to the VBA User
         // IFakes is Rubberduck side and we inject the FakesProvider back into Core

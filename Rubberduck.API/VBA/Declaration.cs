@@ -2,34 +2,42 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 using RubberduckDeclaration = Rubberduck.Parsing.Symbols.Declaration;
 
 namespace Rubberduck.API.VBA
 {
-    [ComVisible(true)]
-    [InterfaceType(ComInterfaceType.InterfaceIsDual)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IDeclarationGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual)
+    ]
     public interface IDeclaration
     {
-        [ComVisible(true)]
+        [DispId(1)]
         string Name { get; }
-        [ComVisible(true)]
+        [DispId(2)]
         Accessibility Accessibility { get; }
-        [ComVisible(true)]
+        [DispId(3)]
         DeclarationType DeclarationType { get; }
+        [DispId(4)]
         string TypeName { get; }
-        [ComVisible(true)]
+        [DispId(5)]
         bool IsArray { get; }
-        [ComVisible(true)]
+        [DispId(6)]
         Declaration ParentDeclaration { get; }
-        [ComVisible(true)]
-        IdentifierReference[] References { get; }
+        [DispId(7)]
+        IdentifierReferences References { get; }
     }
 
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.DeclarationClassGuid)]
-    [ProgId(RubberduckProgId.DeclarationProgId)]
-    [ComDefaultInterface(typeof(IDeclaration))]
-    [EditorBrowsable(EditorBrowsableState.Always)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.DeclarationClassGuid),
+        ProgId(RubberduckProgId.DeclarationProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IDeclaration)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public class Declaration : IDeclaration
     {
         internal Declaration(RubberduckDeclaration declaration)
@@ -49,7 +57,7 @@ namespace Rubberduck.API.VBA
             new Dictionary<Parsing.Symbols.DeclarationType, DeclarationType>
             {
                 { Parsing.Symbols.DeclarationType.Project, DeclarationType.Project },
-                { Parsing.Symbols.DeclarationType.ProceduralModule, DeclarationType.StandardModule },
+                { Parsing.Symbols.DeclarationType.ProceduralModule, DeclarationType.ProceduralModule },
                 { Parsing.Symbols.DeclarationType.ClassModule, DeclarationType.ClassModule },
                 { Parsing.Symbols.DeclarationType.Control, DeclarationType.Control },
                 { Parsing.Symbols.DeclarationType.UserForm, DeclarationType.UserForm },
@@ -75,12 +83,12 @@ namespace Rubberduck.API.VBA
         private Declaration _parentDeclaration;
         public Declaration ParentDeclaration => _parentDeclaration ?? (_parentDeclaration = new Declaration(Instance.ParentDeclaration));
 
-        private IdentifierReference[] _references;
-        public IdentifierReference[] References
+        private IdentifierReferences _references;
+        public IdentifierReferences References
         {
             get
             {
-                return _references ?? (_references = Instance.References.Select(item => new IdentifierReference(item)).ToArray());
+                return _references ?? (_references = new IdentifierReferences(Instance.References.Select(item => new IdentifierReference(item))));
             }
         }
     }

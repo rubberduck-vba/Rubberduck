@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Xml;
@@ -19,37 +20,45 @@ namespace Rubberduck.Deployment.Builders
 
         public IOrderedEnumerable<RegistryEntry> Parse(string tlbHeatOutputXmlPath, string dllHeatOutputXmlPath)
         {
-            var tlbXml = new XmlDocument();
-            tlbXml.Load(new XmlTextReader(tlbHeatOutputXmlPath) {Namespaces = false});
-
-            var dllXml = new XmlDocument();
-            dllXml.Load(new XmlTextReader(dllHeatOutputXmlPath) {Namespaces = false});
-
-            fileMap = ExtractFilePath(dllXml.SelectSingleNode("//File"));
-            typeLibMap = ExtractTypeLib(tlbXml.SelectSingleNode("//TypeLib"));
-            interfaceMap = ExtractInterfaces(tlbXml.SelectNodes(@"//TypeLib/Interface"), typeLibMap);
-            classMapList = ExtractClasses(dllXml.SelectSingleNode("//File"), typeLibMap);
-            recordMap = ExtractRecords(dllXml.SelectNodes(@"//RegistryValue[starts-with(@Key, 'Record\')]"));
-
-            var tmp = new List<RegistryEntry>();
-            tmp.AddRange(typeLibMap.Entries);
-
-            foreach (var map in interfaceMap)
+            try
             {
-                tmp.AddRange(map.Value);
-            }
+                var tlbXml = new XmlDocument();
+                tlbXml.Load(new XmlTextReader(tlbHeatOutputXmlPath) {Namespaces = false});
 
-            foreach (var classMap in classMapList)
-            {
-                tmp.AddRange(classMap.Entries);
-            }
+                var dllXml = new XmlDocument();
+                dllXml.Load(new XmlTextReader(dllHeatOutputXmlPath) {Namespaces = false});
 
-            foreach (var record in recordMap)
-            {
-                tmp.AddRange(record.Value);
+                fileMap = ExtractFilePath(dllXml.SelectSingleNode("//File"));
+                typeLibMap = ExtractTypeLib(tlbXml.SelectSingleNode("//TypeLib"));
+                interfaceMap = ExtractInterfaces(tlbXml.SelectNodes(@"//TypeLib/Interface"), typeLibMap);
+                classMapList = ExtractClasses(dllXml.SelectSingleNode("//File"), typeLibMap);
+                recordMap = ExtractRecords(dllXml.SelectNodes(@"//RegistryValue[starts-with(@Key, 'Record\')]"));
+
+                var tmp = new List<RegistryEntry>();
+                tmp.AddRange(typeLibMap.Entries);
+
+                foreach (var map in interfaceMap)
+                {
+                    tmp.AddRange(map.Value);
+                }
+
+                foreach (var classMap in classMapList)
+                {
+                    tmp.AddRange(classMap.Entries);
+                }
+
+                foreach (var record in recordMap)
+                {
+                    tmp.AddRange(record.Value);
+                }
+
+                return tmp.OrderBy(t => t.Key);
             }
-            
-            return tmp.OrderBy(t => t.Key);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public FileMap ExtractFilePath(XmlNode node)

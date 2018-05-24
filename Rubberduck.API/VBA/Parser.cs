@@ -10,45 +10,53 @@ using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.Root;
 
 namespace Rubberduck.API.VBA
 {
-    [ComVisible(true)]
-    public interface IParserState
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IParserGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual)
+    ]
+    public interface IParser
     {
-        // vbe is the com coclass interface from the interop assembly.
-        // There is no shared interface between VBA and VB6 types, hence object.
-        void Initialize(object vbe); 
-
+        [DispId(1)]
         void Parse();
+        [DispId(2)]
         void BeginParse();
-
-        Declaration[] AllDeclarations { get; }
-        Declaration[] UserDeclarations { get; }
+        [DispId(3)]
+        Declarations AllDeclarations { get; }
+        [DispId(4)]
+        Declarations UserDeclarations { get; }
     }
 
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IParserStateEventsGuid)]
-    [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface IParserStateEvents
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IParserEventsGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsIDispatch)
+    ]
+    public interface IParserEvents
     {
-        void OnParsed();
-        void OnReady();
-        void OnError();
+        [DispId(1)]
+        void OnStateChanged(ParserState CurrentState);
     }
 
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.ParserStateClassGuid)]
-    [ProgId(RubberduckProgId.ParserStateProgId)]
-    [ClassInterface(ClassInterfaceType.AutoDual)]
-    [ComDefaultInterface(typeof(IParserState))]
-    [ComSourceInterfaces(typeof(IParserStateEvents))]
-    [EditorBrowsable(EditorBrowsableState.Always)]
-    public sealed class ParserState : IParserState, IDisposable
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.ParserClassGuid),
+        ProgId(RubberduckProgId.ParserStateProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IParser)),
+        ComSourceInterfaces(typeof(IParserEvents)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
+    public sealed class Parser : IParser, IDisposable
     {
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
@@ -57,7 +65,7 @@ namespace Rubberduck.API.VBA
         private IVBEEvents _vbeEvents;
         private readonly IUiDispatcher _dispatcher;
 
-        public ParserState()
+        internal Parser()
         {
             UiContextProvider.Initialize();
             _dispatcher = new UiDispatcher(UiContextProvider.Instance());
@@ -65,7 +73,7 @@ namespace Rubberduck.API.VBA
 
         // vbe is the com coclass interface from the interop assembly.
         // There is no shared interface between VBA and VB6 types, hence object.
-        public void Initialize(object vbe)
+        internal Parser(object vbe) : this()
         {
             if (_parser != null)
             {
@@ -76,12 +84,12 @@ namespace Rubberduck.API.VBA
             _vbeEvents = VBEEvents.Initialize(_vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(_vbe);
-            _state = new RubberduckParserState(null, projectRepository, declarationFinderFactory, _vbeEvents);
+            _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
 
             var exporter = new ModuleExporter();
 
-            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
+            IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
             _attributeParser = new AttributeParser(exporter, preprocessorFactory, _state.ProjectsProvider);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
@@ -156,42 +164,31 @@ namespace Rubberduck.API.VBA
             _dispatcher.Invoke(() => _state.OnParseRequested(this));
         }
 
-        public event Action OnParsed;
-        public event Action OnReady;
-        public event Action OnError;
-
+        public delegate void OnStateChangedDelegate(ParserState ParserState);
+        public event OnStateChangedDelegate OnStateChanged;
+        
         private void _state_StateChanged(object sender, EventArgs e)
         {
-            AllDeclarations = _state.AllDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
-            
-            UserDeclarations = _state.AllUserDeclarations
-                                     .Select(item => new Declaration(item))
-                                     .ToArray();
+            AllDeclarations = new Declarations(_state.AllDeclarations
+                .Select(item => new Declaration(item)));
 
-            var errorHandler = OnError;
-            if (_state.Status == Parsing.VBA.ParserState.Error && errorHandler != null)
-            {
-                _dispatcher.Invoke(errorHandler.Invoke);
-            }
+            UserDeclarations = new Declarations(_state.AllUserDeclarations
+                .Select(item => new Declaration(item)));
 
-            var parsedHandler = OnParsed;
-            if (_state.Status == Parsing.VBA.ParserState.Parsed && parsedHandler != null)
+            var state = (ParserState) _state.Status;
+            var stateHandler = OnStateChanged;
+            if (stateHandler != null)
             {
-                _dispatcher.Invoke(parsedHandler.Invoke);
-            }
-
-            var readyHandler = OnReady;
-            if (_state.Status == Parsing.VBA.ParserState.Ready && readyHandler != null)
-            {
-                _dispatcher.Invoke(readyHandler.Invoke);
+                _dispatcher.RaiseComEvent(() =>
+                {
+                    stateHandler.Invoke(state);
+                });
             }
         }
 
-        public Declaration[] AllDeclarations { get; private set; }
+        public Declarations AllDeclarations { get; private set; }
 
-        public Declaration[] UserDeclarations { get; private set; }
+        public Declarations UserDeclarations { get; private set; }
 
         private bool _disposed;
         public void Dispose()
@@ -205,9 +202,7 @@ namespace Rubberduck.API.VBA
             {
                 _state.StateChanged -= _state_StateChanged;
             }
-
-
-            //_vbe.Release();            
+            
             _disposed = true;
         }
     }
