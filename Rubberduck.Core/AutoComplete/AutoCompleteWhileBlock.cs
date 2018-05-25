@@ -5,6 +5,6 @@ namespace Rubberduck.AutoComplete
     public class AutoCompleteWhileBlock : AutoCompleteBlockBase
     {
         public AutoCompleteWhileBlock()
-            : base(Tokens.While, Tokens.Wend) { }
+            : base($"{Tokens.While} ", Tokens.Wend) { }
     }
 }

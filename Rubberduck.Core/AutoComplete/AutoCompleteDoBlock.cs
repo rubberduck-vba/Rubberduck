@@ -5,6 +5,6 @@ namespace Rubberduck.AutoComplete
     public class AutoCompleteDoBlock : AutoCompleteBlockBase
     {
         public AutoCompleteDoBlock()
-            : base(Tokens.Do, Tokens.Loop) { }
+            : base($"{Tokens.Do} ", Tokens.Loop) { }
     }
 }
