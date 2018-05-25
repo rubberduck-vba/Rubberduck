@@ -2,7 +2,7 @@
 {
     public class AutoCompleteClosingBracket : AutoCompleteBase
     {
-        protected AutoCompleteClosingBracket() 
+        public AutoCompleteClosingBracket() 
             : base("[", "]") { }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class AutoCompleteClosingString : AutoCompleteBase
     {
-        protected AutoCompleteClosingString() 
+        public AutoCompleteClosingString() 
             : base("\"", "\"") { }
     }
 }

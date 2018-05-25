@@ -15,7 +15,15 @@ namespace Rubberduck.AutoComplete
             new AutoCompleteClosingString(),
             new AutoCompleteClosingBracket(),
             new AutoCompleteClosingBrace(),
-            new AutoCompleteEndIf(),
+            new AutoCompleteDoBlock(),
+            new AutoCompleteEnumBlock(),
+            new AutoCompleteForBlock(),
+            new AutoCompleteIfBlock(),
+            new AutoCompleteOnErrorResumeNextBlock(),
+            new AutoCompleteSelectBlock(),
+            new AutoCompleteTypeBlock(),
+            new AutoCompleteWhileBlock(),
+            new AutoCompleteWithBlock(),
         };
 
         public AutoCompleteService()

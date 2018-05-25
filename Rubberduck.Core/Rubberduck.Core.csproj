@@ -296,6 +296,15 @@
     <Compile Include="App.cs" />
     <Compile Include="AppMenu.cs" />
     <Compile Include="AutoComplete\AutoCompleteBlockBase.cs" />
+    <Compile Include="AutoComplete\AutoCompleteDoBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteEnumBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteForBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteIfBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteOnErrorResumeNextBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteSelectBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteTypeBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteWhileBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteWithBlock.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
@@ -378,7 +387,6 @@
     <Compile Include="AutoComplete\AutoCompleteClosingBracket.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
-    <Compile Include="AutoComplete\AutoCompleteEndIf.cs" />
     <Compile Include="AutoComplete\AutoCompleteService.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />

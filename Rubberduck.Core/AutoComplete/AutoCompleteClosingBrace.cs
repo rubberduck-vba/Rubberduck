@@ -2,7 +2,7 @@
 {
     public class AutoCompleteClosingBrace : AutoCompleteBase
     {
-        protected AutoCompleteClosingBrace() 
+        public AutoCompleteClosingBrace() 
             : base("{", "}") { }
     }
 }

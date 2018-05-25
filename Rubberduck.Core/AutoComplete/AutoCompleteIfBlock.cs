@@ -2,10 +2,9 @@
 
 namespace Rubberduck.AutoComplete
 {
-
-    public class AutoCompleteEndIf : AutoCompleteBlockBase
+    public class AutoCompleteIfBlock : AutoCompleteBlockBase
     {
-        public AutoCompleteEndIf() 
+        public AutoCompleteIfBlock() 
             : base(Tokens.If, $"{Tokens.End} {Tokens.If}") { }
     }
 }
