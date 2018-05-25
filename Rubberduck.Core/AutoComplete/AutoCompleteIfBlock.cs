@@ -5,6 +5,6 @@ namespace Rubberduck.AutoComplete
     public class AutoCompleteIfBlock : AutoCompleteBlockBase
     {
         public AutoCompleteIfBlock() 
-            : base($" {Tokens.Then}\n", $"{Tokens.End} {Tokens.If}") { }
+            : base($" {Tokens.Then}", $"{Tokens.End} {Tokens.If}") { }
     }
 }
