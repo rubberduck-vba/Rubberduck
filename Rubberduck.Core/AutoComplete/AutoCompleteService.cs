@@ -9,25 +9,11 @@ namespace Rubberduck.AutoComplete
     public class AutoCompleteService : IAutoCompleteService, IDisposable
     {
         public event EventHandler TypingCode;
-        private readonly IReadOnlyList<IAutoComplete> _autocompletions = new IAutoComplete[]
-        {
-            new AutoCompleteClosingParenthese(),
-            new AutoCompleteClosingString(),
-            new AutoCompleteClosingBracket(),
-            new AutoCompleteClosingBrace(),
-            new AutoCompleteDoBlock(),
-            new AutoCompleteEnumBlock(),
-            new AutoCompleteForBlock(),
-            new AutoCompleteIfBlock(),
-            new AutoCompleteOnErrorResumeNextBlock(),
-            new AutoCompleteSelectBlock(),
-            new AutoCompleteTypeBlock(),
-            new AutoCompleteWhileBlock(),
-            new AutoCompleteWithBlock(),
-        };
+        private readonly IReadOnlyList<IAutoComplete> _autocompletions;
 
-        public AutoCompleteService()
+        public AutoCompleteService(IReadOnlyList<IAutoComplete> autoCompletes)
         {
+            _autocompletions = autoCompletes;
             VBENativeServices.TypingCode += VBENativeServices_TypingCode;
         }
 
