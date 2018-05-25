@@ -165,7 +165,7 @@ namespace Rubberduck.VBEditor.Events
             if (pane != null) SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs(pane));
         }
 
-        public static event EventHandler<TypingCodeEventArgs> TypingCode; // not CodeChanged because wouldn't fire on paste
+        public static event EventHandler<AutoCompleteEventArgs> TypingCode; // not CodeChanged because wouldn't fire on paste
         private static void OnTypingCode(IntPtr hwnd)
         {
             var pane = GetCodePaneFromHwnd(hwnd);
@@ -174,7 +174,7 @@ namespace Rubberduck.VBEditor.Events
                 var selection = pane.Selection;
                 if (selection.IsSingleCharacter)
                 {
-                    TypingCode?.Invoke(_vbe, new TypingCodeEventArgs(pane));
+                    TypingCode?.Invoke(_vbe, new AutoCompleteEventArgs(pane));
                 }
             }
         }

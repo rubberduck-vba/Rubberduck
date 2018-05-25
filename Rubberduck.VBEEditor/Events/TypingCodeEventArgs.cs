@@ -3,15 +3,9 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
-    public class TypingCodeEventArgs : EventArgs
+    public class AutoCompleteEventArgs : EventArgs
     {
-        public ICodePane CodePane { get; }
-
-        public bool IsCommitted { get; }
-
-        public string Code { get; }
-
-        public TypingCodeEventArgs(ICodePane pane)
+        public AutoCompleteEventArgs(ICodePane pane)
         {
             CodePane = pane;
             var selection = pane.Selection;
@@ -29,5 +23,13 @@ namespace Rubberduck.VBEditor.Events
                 }
             }
         }
+
+        public ICodePane CodePane { get; }
+
+        public bool IsCommitted { get; }
+
+        public string Code { get; }
+
+        public string ReplacementLineContent { get; set; }
     }
 }

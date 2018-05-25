@@ -1,151 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI
 {
-    public interface IAutoComplete
-    {
-        string InputToken { get; }
-        string OutputToken { get; }
-        string Execute(TypingCodeEventArgs e);
-        bool IsEnabled { get; }
-    }
-
-    public abstract class AutoCompleteBase : IAutoComplete
-    {
-        public bool IsEnabled => true;
-        public abstract string InputToken { get; }
-        public abstract string OutputToken { get; }
-
-        public virtual string Execute(TypingCodeEventArgs e)
-        {
-            var selection = e.CodePane.Selection;
-            if (selection.StartColumn < 2) { return null; }
-
-            if (!e.IsCommitted && e.Code.Substring(selection.StartColumn - 2, 1) == InputToken)
-            {
-                using (var module = e.CodePane.CodeModule)
-                {
-                    var replacement = e.Code.Insert(selection.StartColumn - 1, OutputToken);
-                    module.ReplaceLine(e.CodePane.Selection.StartLine, replacement);
-                    e.CodePane.Selection = selection;
-                    return replacement;
-                }
-            }
-            return null;
-        }
-    }
-
-    public class AutoCompleteClosingParenthese : AutoCompleteBase
-    {
-        public override string InputToken => "(";
-        public override string OutputToken => ")";
-    }
-    public class AutoCompleteClosingString : AutoCompleteBase
-    {
-        public override string InputToken => "\"";
-        public override string OutputToken => "\"";
-    }
-    public class AutoCompleteClosingBracket : AutoCompleteBase
-    {
-        public override string InputToken => "[";
-        public override string OutputToken => "]";
-    }
-    public class AutoCompleteClosingBrace : AutoCompleteBase
-    {
-        public override string InputToken => "{";
-        public override string OutputToken => "}";
-    }
-    public class AutoCompleteEndIf : AutoCompleteBase
-    {
-        public override string InputToken => "If ";
-        public override string OutputToken => "End If";
-
-        public override string Execute(TypingCodeEventArgs e)
-        {
-            var selection = e.CodePane.Selection;
-
-            if (e.IsCommitted && e.Code.Trim().StartsWith(InputToken))
-            {
-                var indent = e.Code.IndexOf(InputToken + 1); // borked
-                using (var module = e.CodePane.CodeModule)
-                {
-                    var code = OutputToken.PadLeft(indent + OutputToken.Length, ' ');
-                    module.InsertLines(selection.StartLine + 1, code);
-                    e.CodePane.Selection = selection; // todo auto-indent?
-                    return code;
-                }
-            }
-            return null;
-        }
-    }
 
     public interface ISelectionChangeService
     {
         event EventHandler<DeclarationChangedEventArgs> SelectedDeclarationChanged;
         event EventHandler<DeclarationChangedEventArgs> SelectionChanged;
-    }
-    
-    public interface ITypingCodeService
-    {
-        event EventHandler TypingCode;
-    }
-
-    public class TypingCodeService : ITypingCodeService, IDisposable
-    {
-        public event EventHandler TypingCode;
-        private readonly IReadOnlyList<IAutoComplete> _autocompletions = new IAutoComplete[]
-        {
-            new AutoCompleteClosingParenthese(),
-            new AutoCompleteClosingString(),
-            new AutoCompleteClosingBracket(),
-            new AutoCompleteClosingBrace(),
-            new AutoCompleteEndIf(),
-        };
-
-        public TypingCodeService()
-        {
-            VBENativeServices.TypingCode += VBENativeServices_TypingCode;
-        }
-
-        QualifiedSelection? _lastSelection;
-        string _lastCode;
-
-        private void VBENativeServices_TypingCode(object sender, TypingCodeEventArgs e)
-        {
-            TypingCode?.Invoke(this, e);
-            var selection = e.CodePane.Selection;
-            var qualifiedSelection = e.CodePane.GetQualifiedSelection();
-
-            if (!selection.IsSingleCharacter || e.Code.Equals(_lastCode) || qualifiedSelection.Value.Equals(_lastSelection))
-            {
-                return;
-            }
-
-            foreach (var autocomplete in _autocompletions.Where(auto => auto.IsEnabled))
-            {
-                var replacement = autocomplete.Execute(e);
-                if (replacement != null)
-                {
-                    _lastSelection = qualifiedSelection;
-                    _lastCode = replacement;
-                    break;
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-            VBENativeServices.TypingCode -= VBENativeServices_TypingCode;
-        }
     }
 
     public class SelectionChangeService : ISelectionChangeService, IDisposable
