@@ -1,8 +1,11 @@
-﻿namespace Rubberduck.AutoComplete
+﻿
+using Rubberduck.Parsing.Grammar;
+
+namespace Rubberduck.AutoComplete
 {
     public class AutoCompleteClosingParenthese : AutoCompleteBase
     {
-        public override string InputToken => "(";
-        public override string OutputToken => ")";
+        public AutoCompleteClosingParenthese()
+            :base("(", ")") { }
     }
 }

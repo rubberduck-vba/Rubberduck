@@ -32,7 +32,7 @@ namespace Rubberduck.AutoComplete
             var selection = e.CodePane.Selection;
             var qualifiedSelection = e.CodePane.GetQualifiedSelection();
 
-            if (!selection.IsSingleCharacter || e.Code.Equals(_lastCode) || qualifiedSelection.Value.Equals(_lastSelection))
+            if (!selection.IsSingleCharacter || e.OldCode.Equals(_lastCode) || qualifiedSelection.Value.Equals(_lastSelection))
             {
                 return;
             }
@@ -42,7 +42,7 @@ namespace Rubberduck.AutoComplete
                 if (autocomplete.Execute(e))
                 {
                     _lastSelection = qualifiedSelection;
-                    _lastCode = e.ReplacementLineContent;
+                    _lastCode = e.NewCode;
                     break;
                 }
             }

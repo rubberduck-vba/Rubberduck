@@ -4,23 +4,29 @@ namespace Rubberduck.AutoComplete
 {
     public abstract class AutoCompleteBase : IAutoComplete
     {
+        protected AutoCompleteBase(string inputToken, string outputToken)
+        {
+            InputToken = inputToken;
+            OutputToken = outputToken;
+        }
+
         public bool IsEnabled => true;
-        public abstract string InputToken { get; }
-        public abstract string OutputToken { get; }
+        public string InputToken { get; }
+        public string OutputToken { get; }
 
         public virtual bool Execute(AutoCompleteEventArgs e)
         {
             var selection = e.CodePane.Selection;
             if (selection.StartColumn < 2) { return false; }
 
-            if (!e.IsCommitted && e.Code.Substring(selection.StartColumn - 2, 1) == InputToken)
+            if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken)
             {
                 using (var module = e.CodePane.CodeModule)
                 {
-                    var replacement = e.Code.Insert(selection.StartColumn - 1, OutputToken);
-                    module.ReplaceLine(e.CodePane.Selection.StartLine, replacement);
+                    var newCode = e.OldCode.Insert(selection.StartColumn - 1, OutputToken);
+                    module.ReplaceLine(e.CodePane.Selection.StartLine, newCode);
                     e.CodePane.Selection = selection;
-                    e.ReplacementLineContent = replacement;
+                    e.NewCode = newCode;
                     return true;
                 }
             }

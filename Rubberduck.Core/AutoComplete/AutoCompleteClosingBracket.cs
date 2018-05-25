@@ -2,7 +2,7 @@
 {
     public class AutoCompleteClosingBracket : AutoCompleteBase
     {
-        public override string InputToken => "[";
-        public override string OutputToken => "]";
+        protected AutoCompleteClosingBracket() 
+            : base("[", "]") { }
     }
 }

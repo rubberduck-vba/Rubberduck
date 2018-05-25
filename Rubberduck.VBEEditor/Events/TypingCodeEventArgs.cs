@@ -15,11 +15,11 @@ namespace Rubberduck.VBEditor.Events
                 if (string.IsNullOrWhiteSpace(atSelection))
                 {
                     IsCommitted = true;
-                    Code = module.GetLines(selection.PreviousLine);
+                    OldCode = module.GetLines(selection.PreviousLine);
                 }
                 else
                 {
-                    Code = module.GetLines(selection);
+                    OldCode = module.GetLines(selection);
                 }
             }
         }
@@ -28,8 +28,8 @@ namespace Rubberduck.VBEditor.Events
 
         public bool IsCommitted { get; }
 
-        public string Code { get; }
+        public string OldCode { get; }
 
-        public string ReplacementLineContent { get; set; }
+        public string NewCode { get; set; }
     }
 }

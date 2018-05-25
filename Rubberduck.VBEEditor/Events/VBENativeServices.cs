@@ -165,16 +165,18 @@ namespace Rubberduck.VBEditor.Events
             if (pane != null) SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs(pane));
         }
 
+        private static string _currentLine;
         public static event EventHandler<AutoCompleteEventArgs> TypingCode; // not CodeChanged because wouldn't fire on paste
         private static void OnTypingCode(IntPtr hwnd)
         {
             var pane = GetCodePaneFromHwnd(hwnd);
-            if (pane != null)
+            if (pane?.Selection.IsSingleCharacter ?? false)
             {
-                var selection = pane.Selection;
-                if (selection.IsSingleCharacter)
+                var args = new AutoCompleteEventArgs(pane);
+                if (_currentLine != args.OldCode)
                 {
-                    TypingCode?.Invoke(_vbe, new AutoCompleteEventArgs(pane));
+                    TypingCode?.Invoke(_vbe, args);
+                    _currentLine = args.NewCode;
                 }
             }
         }
