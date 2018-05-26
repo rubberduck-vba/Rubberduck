@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Resources.Settings;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
@@ -92,9 +93,7 @@ namespace Rubberduck.UI.Settings
 
         private void ResetSettings()
         {
-            if (_messageBox.Show(SettingsUI.ConfirmResetSettings, SettingsUI.ResetSettingsButton, 
-                System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Exclamation) 
-                != System.Windows.Forms.DialogResult.Yes)
+            if (!_messageBox.ConfirmYesNo(SettingsUI.ConfirmResetSettings, SettingsUI.ResetSettingsButton))
             {
                 return;
             }

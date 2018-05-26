@@ -297,9 +297,9 @@
     <Compile Include="App.cs" />
     <Compile Include="AppMenu.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
+    <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
-    <Compile Include="Common\DeclarationExtensions.cs" />
     <Compile Include="Common\HookEventArgs.cs" />
     <Compile Include="Common\Hotkeys\HotkeyFactory.cs" />
     <Compile Include="Common\Hotkeys\HotkeyInfo.cs" />
@@ -336,12 +336,17 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Refactorings\EncapsulateField\PropertyGenerator.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractedMethod.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractedParameter.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodExtraction.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodParameterClassification.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenterFactory.cs" />
+    <Compile Include="Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
     <Compile Include="Refactorings\ExtractMethod\ExtractMethodSelectionValidation.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractedMethod.cs" />
-    <Compile Include="Refactorings\ExtractMethod\ExtractMethodExtraction.cs" />
+    <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodExtraction.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodModel.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodParameterClassification.cs" />
@@ -420,29 +425,83 @@
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.Designer.cs">
+      <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.Designer.cs">
+      <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldPresenter.cs" />
+    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldPresenterFactory.cs" />
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml.cs">
       <DependentUpon>EncapsulateFieldView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldViewModel.cs" />
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.Designer.cs">
+      <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfacePresenter.cs" />
+    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfacePresenterFactory.cs" />
     <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceView.xaml.cs">
       <DependentUpon>ExtractInterfaceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceViewModel.cs" />
+    <Compile Include="UI\Refactorings\ExtractInterface\InterfaceMemberViewModel.cs" />
+    <Compile Include="UI\Refactorings\ExtractMethodDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ExtractMethodDialog.Designer.cs">
+      <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\Refactorings\IRefactoringDialog.cs" />
     <Compile Include="UI\Refactorings\RemoveParameters\ParameterTextDecorationConverter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\ParameterViewModel.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.Designer.cs">
+      <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
+    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersPresenterFactory.cs" />
     <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml.cs">
       <DependentUpon>RemoveParametersView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersViewModel.cs" />
-    <Compile Include="UI\Refactorings\Rename\RenameViewModel.cs" />
+    <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
+      <DependentUpon>RenameDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\Rename\RenamePresenter.cs" />
+    <Compile Include="UI\Refactorings\Rename\RenamePresenterFactory.cs" />
     <Compile Include="UI\Refactorings\Rename\RenameView.xaml.cs">
       <DependentUpon>RenameView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Refactorings\Rename\RenameViewModel.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\DragAdorner.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\IndexIsNotLastConverter.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\IndexIsNotZeroConverter.cs" />
+    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.Designer.cs">
+      <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
+    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersView.xaml.cs">
       <DependentUpon>ReorderParametersView.xaml</DependentUpon>
     </Compile>
@@ -498,31 +557,6 @@
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplacePresenter.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchReplaceScope.cs" />
     <Compile Include="Navigation\RegexSearchReplace\RegexSearchResult.cs" />
-    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldModel.cs" />
-    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenter.cs" />
-    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldPresenterFactory.cs" />
-    <Compile Include="Refactorings\EncapsulateField\EncapsulateFieldRefactoring.cs" />
-    <Compile Include="Refactorings\EncapsulateField\IEncapsulateFieldDialog.cs" />
-    <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceRefactoring.cs" />
-    <Compile Include="Refactorings\ExtractInterface\ExtractInterfaceModel.cs" />
-    <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenter.cs" />
-    <Compile Include="Refactorings\ExtractInterface\ExtractInterfacePresenterFactory.cs" />
-    <Compile Include="Refactorings\ExtractInterface\InterfaceMember.cs" />
-    <Compile Include="Refactorings\ImplementInterface\ImplementInterfaceRefactoring.cs" />
-    <Compile Include="Refactorings\ImplementInterface\Parameter.cs" />
-    <Compile Include="Refactorings\IntroduceField\IntroduceFieldRefactoring.cs" />
-    <Compile Include="Refactorings\IntroduceParameter\IntroduceParameterRefactoring.cs" />
-    <Compile Include="Refactorings\MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
-    <Compile Include="Refactorings\RemoveParameters\Parameter.cs" />
-    <Compile Include="Refactorings\RemoveParameters\RemoveParametersModel.cs" />
-    <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenter.cs" />
-    <Compile Include="Refactorings\RemoveParameters\RemoveParametersPresenterFactory.cs" />
-    <Compile Include="Refactorings\RemoveParameters\RemoveParametersRefactoring.cs" />
-    <Compile Include="Refactorings\Rename\RenameModel.cs" />
-    <Compile Include="Refactorings\ReorderParameters\ReorderParametersModel.cs" />
-    <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenter.cs" />
-    <Compile Include="Refactorings\ReorderParameters\ReorderParametersPresenterFactory.cs" />
-    <Compile Include="Refactorings\ReorderParameters\ReorderParametersRefactoring.cs" />
     <Compile Include="Settings\DisplayLanguageSetting.cs" />
     <Compile Include="Settings\GeneralSettings.cs" />
     <Compile Include="Settings\HotkeySetting.cs" />
@@ -626,28 +660,9 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\FolderBrowser.cs" />
-    <Compile Include="UI\IMessageBox.cs" />
     <Compile Include="UI\IOpenFileDialog.cs" />
     <Compile Include="UI\ISaveFileDialog.cs" />
     <Compile Include="UI\ParserErrors\ParseErrorListItem.cs" />
-    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.Designer.cs">
-      <DependentUpon>AssignedByValParameterQuickFixDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldDialog.Designer.cs">
-      <DependentUpon>EncapsulateFieldDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.Designer.cs">
-      <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\RegexAssistant\RegexAssistant.xaml.cs">
       <DependentUpon>RegexAssistant.xaml</DependentUpon>
     </Compile>
@@ -708,13 +723,6 @@
       <DependentUpon>UnitTestSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenterFactory.cs" />
-    <Compile Include="Refactorings\ExtractMethod\ExtractMethodRefactoring.cs" />
-    <Compile Include="Refactorings\IRefactoring.cs" />
-    <Compile Include="Refactorings\IRefactoringPresenterFactory.cs" />
-    <Compile Include="Refactorings\Rename\RenamePresenterFactory.cs" />
-    <Compile Include="Refactorings\Rename\RenameRefactoring.cs" />
-    <Compile Include="Refactorings\ReorderParameters\Parameter.cs" />
     <Compile Include="UI\FindSymbol\FindSymbolControl.xaml.cs">
       <DependentUpon>FindSymbolControl.xaml</DependentUpon>
     </Compile>
@@ -726,14 +734,12 @@
     </Compile>
     <Compile Include="UI\FindSymbol\FindSymbolViewModel.cs" />
     <Compile Include="UI\FindSymbol\SearchResult.cs" />
-    <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="UI\GridViewSort.cs" />
     <Compile Include="UI\IdentifierReferences\IdentifierReferenceListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationListItem.cs" />
     <Compile Include="UI\IdentifierReferences\ImplementationsListDockablePresenter.cs" />
     <Compile Include="UI\IdentifierReferences\ListItemActionEventArgs.cs" />
     <Compile Include="UI\ParserErrors\ParserErrorsPresenter.cs" />
-    <Compile Include="Refactorings\ExtractMethod\ExtractMethodModel.cs" />
     <Compile Include="UI\Settings\WindowSettings.xaml.cs">
       <DependentUpon>WindowSettings.xaml</DependentUpon>
     </Compile>
@@ -745,36 +751,7 @@
       <DependentUpon>SimpleListControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
-    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\RemoveParameters\RemoveParametersDialog.Designer.cs">
-      <DependentUpon>RemoveParametersDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Refactorings\ExtractMethod\ExtractMethodPresenter.cs" />
-    <Compile Include="Refactorings\ExtractMethod\ExtractedParameter.cs" />
-    <Compile Include="UI\Refactorings\ExtractMethodDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\ExtractMethodDialog.Designer.cs">
-      <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Refactorings\ExtractMethod\IExtractMethodDialog.cs" />
-    <Compile Include="UI\IDialogView.cs" />
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.Designer.cs">
-      <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
-    <Compile Include="UI\Refactorings\Rename\RenameDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Refactorings\Rename\RenameDialog.Designer.cs">
-      <DependentUpon>RenameDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Refactorings\Rename\RenamePresenter.cs" />
     <Compile Include="UI\Controls\INavigateSelection.cs" />
     <Compile Include="UI\Splash.cs">
       <SubType>Form</SubType>
@@ -877,15 +854,6 @@
     <EmbeddedResource Include="UI\Refactorings\ExtractInterface\ExtractInterfaceDialog.resx">
       <DependentUpon>ExtractInterfaceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\RegexAssistant\RegexAssistantDialog.resx">
-      <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SimpleListControl.resx">
-      <DependentUpon>SimpleListControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ExtractMethodDialog.resx">
       <DependentUpon>ExtractMethodDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -897,6 +865,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Refactorings\ReorderParameters\ReorderParametersDialog.resx">
       <DependentUpon>ReorderParametersDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\RegexAssistant\RegexAssistantDialog.resx">
+      <DependentUpon>RegexAssistantDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Settings\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SimpleListControl.resx">
+      <DependentUpon>SimpleListControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Splash.resx">
       <DependentUpon>Splash.cs</DependentUpon>
@@ -948,9 +925,17 @@
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
+      <Project>{ac54b7fb-170d-4da6-a30b-8cad182f0e6b}</Project>
+      <Name>Rubberduck.Interaction</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj">
+      <Project>{d4b6a510-14e1-420a-a8d5-6a09890fd7d8}</Project>
+      <Name>Rubberduck.Refactorings</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
       <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
@@ -1023,24 +1008,24 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\ExtractInterface\ExtractInterfaceView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\RemoveParameters\RemoveParametersView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\Rename\RenameView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Refactorings\ReorderParameters\ReorderParametersView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\RegexAssistant\RegexAssistant.xaml">
       <Generator>MSBuild:Compile</Generator>

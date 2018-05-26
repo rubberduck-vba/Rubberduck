@@ -346,4 +346,10 @@
   <data name="CodeExplorer_Add" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="ExportBeforeRemove_Caption" xml:space="preserve">
+    <value>Confirm Export</value>
+  </data>
+  <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
+    <value>Do you want to export '{0}' before removing?</value>
+  </data>
 </root>
