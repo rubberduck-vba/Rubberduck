@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
@@ -70,9 +71,7 @@ namespace Rubberduck.UI.Command
         {
             if (_vbeSettings.CompileOnDemand)
             {
-                return DialogResult.Yes == _messageBox.Show(RubberduckUI.Command_Reparse_CompileOnDemandEnabled,
-                           RubberduckUI.Command_Reparse_CompileOnDemandEnabled_Caption, MessageBoxButtons.YesNo,
-                           MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+                return _messageBox.ConfirmYesNo(RubberduckUI.Command_Reparse_CompileOnDemandEnabled, RubberduckUI.Command_Reparse_CompileOnDemandEnabled_Caption, false);
             }
 
             return true;
@@ -107,12 +106,12 @@ namespace Rubberduck.UI.Command
         {
             var formattedList = string.Concat(Environment.NewLine, Environment.NewLine,
                 string.Join(Environment.NewLine, failedNames));
-            var result = _messageBox.Show(
+            // FIXME using Exclamation instead of warning now... 
+            return _messageBox.ConfirmYesNo(
                 string.Format(RubberduckUI.Command_Reparse_CannotCompile,
                     formattedList),
-                RubberduckUI.Command_Reparse_CannotCompile_Caption, MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-            return result == DialogResult.Yes;
+                RubberduckUI.Command_Reparse_CannotCompile_Caption, false);
+            
         }
     }
 }

@@ -10,7 +10,8 @@
              x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
+             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
@@ -513,7 +514,7 @@
                 <Button Command="{Binding CopyResultsCommand}">
                     <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ToDoExplorer_CopyToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=ToDoExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
@@ -527,10 +528,10 @@
 			                   SelectedItem="{Binding SelectedItem}"
                                Visibility="{Binding Path=IsChecked, ElementName=GroupByMarker, Converter={StaticResource BoolToVisibility}}">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
         
@@ -539,10 +540,10 @@
 			                   SelectedItem="{Binding SelectedItem}"
                                Visibility="{Binding Path=IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
     </Grid>

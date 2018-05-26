@@ -38,7 +38,7 @@
                 <DockPanel Background="#FFA9A9A9" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                         <Label Foreground="#FFFFFFFF" FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="SettingsCaption_IndenterSettings"/>
+                            <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="PageHeader_IndenterSettings"/>
                         </Label>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
@@ -52,14 +52,14 @@
                                                  Margin="2"
                                                  Command="{Binding ImportButtonCommand}">
                                 <controls:LinkButton.Content>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="SettingsCaption_ImportSettings"/>
+                                    <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="ImportPageSettingsButton"/>
                                 </controls:LinkButton.Content>
                             </controls:LinkButton>
                             <controls:LinkButton Grid.Column="2"
                                                  Margin="2"
                                                  Command="{Binding ExportButtonCommand}">
                                 <controls:LinkButton.Content>
-                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="SettingsCaption_ExportSettings"/>
+                                    <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="ExportPageSettingsButton"/>
                                 </controls:LinkButton.Content>
                             </controls:LinkButton>
                         </Grid>

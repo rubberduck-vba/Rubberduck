@@ -168,12 +168,6 @@
   <data name="RenameDialog_TitleText" xml:space="preserve">
     <value>Přejmenovat identifikátor</value>
   </data>
-  <data name="SettingsCaption_GeneralSettings" xml:space="preserve">
-    <value>Obecné Nastavení</value>
-  </data>
-  <data name="SettingsCaption_TodoSettings" xml:space="preserve">
-    <value>Todo Nastavení</value>
-  </data>
   <data name="CodeInspections_Inspecting" xml:space="preserve">
     <value>Kontroluji...</value>
   </data>
@@ -209,42 +203,6 @@
   </data>
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Třída nebo člen '{0}' ještě není implementován</value>
-  </data>
-  <data name="ContextMenu_FindSymbol" xml:space="preserve">
-    <value>Najít &amp;symbol...</value>
-  </data>
-  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
-    <value>Jít na &amp;implementaci...</value>
-  </data>
-  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
-    <value>Extrahovat &amp;Metodu</value>
-  </data>
-  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
-    <value>Najít všechny re&amp;ference...</value>
-  </data>
-  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
-    <value>&amp;Odstranit Parametry</value>
-  </data>
-  <data name="RefactorMenu_Rename" xml:space="preserve">
-    <value>&amp;Přejmenovat</value>
-  </data>
-  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
-    <value>Pře&amp;rozdělit Parametry</value>
-  </data>
-  <data name="RubberduckMenu" xml:space="preserve">
-    <value>Ru&amp;bberduck</value>
-  </data>
-  <data name="RubberduckMenu_About" xml:space="preserve">
-    <value>O &amp;Aplikaci...</value>
-  </data>
-  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
-    <value>&amp;Code Explorer</value>
-  </data>
-  <data name="RubberduckMenu_Settings" xml:space="preserve">
-    <value>Nastav&amp;ení</value>
-  </data>
-  <data name="ToolsMenu_TodoItems" xml:space="preserve">
-    <value>To&amp;Do Položky</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Domů</value>
@@ -354,9 +312,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="TodoExplorer_Description" xml:space="preserve">
     <value>Popisek</value>
   </data>
-  <data name="SettingsCaption_InspectionSettings" xml:space="preserve">
-    <value>Nastavení inspekce kódu</value>
-  </data>
   <data name="DeclarationType_LineLabel" xml:space="preserve">
     <value>označení řádku</value>
   </data>
@@ -398,18 +353,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
     <value>Parametry:</value>
-  </data>
-  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
-    <value>&amp;Inspekce kódu</value>
-  </data>
-  <data name="RubberduckMenu_Refactor" xml:space="preserve">
-    <value>&amp;Refactor</value>
-  </data>
-  <data name="ToolsMenu_SourceControl" xml:space="preserve">
-    <value>&amp;Source Control</value>
-  </data>
-  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
-    <value>Unit &amp;Testy</value>
   </data>
   <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
     <value>{0} (parsuji...)</value>
@@ -513,17 +456,11 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="DeclarationType_Project" xml:space="preserve">
     <value>projekt</value>
   </data>
-  <data name="Add" xml:space="preserve">
-    <value>Přidat</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Změnit</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Odstranit</value>
-  </data>
-  <data name="Settings_Caption" xml:space="preserve">
-    <value>Rubberduck nastavení</value>
   </data>
   <data name="Navigation" xml:space="preserve">
     <value>Navigace</value>
@@ -540,12 +477,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="New" xml:space="preserve">
     <value>Nový</value>
   </data>
-  <data name="Settings_ResetSettings" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="Settings_ResetSettingsConfirmation" xml:space="preserve">
-    <value>Resetovat nastavení do defaultní konfigurace?</value>
-  </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Přejmenovat {0}</value>
   </data>
@@ -557,9 +488,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="DeclarationType_UserDefinedTypeMember" xml:space="preserve">
     <value>uživatelsky-definovaný člen</value>
-  </data>
-  <data name="SettingsInstructions_GeneralSettings" xml:space="preserve">
-    <value>Klikněte [Ok] pro uzavření okna a aplikování změn, nebo [Zrušit] pro jejich zrušení.</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Text tokenu:</value>
@@ -584,12 +512,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
     <value>Neplatný výběr.</value>
-  </data>
-  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value>&amp;Implementovat interface</value>
-  </data>
-  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
-    <value>E&amp;xtrahovat interface</value>
   </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
     <value>Absolutní</value>
@@ -641,5 +563,8 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Odsazení</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Přidat</value>
   </data>
 </root>

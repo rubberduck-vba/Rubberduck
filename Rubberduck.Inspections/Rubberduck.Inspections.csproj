@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.Inspections</RootNamespace>
     <AssemblyName>Rubberduck.Inspections</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -204,13 +204,21 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
-      <Project>{A1587EAC-7B54-407E-853F-4C7493D0323E}</Project>
+      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
+      <Project>{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}</Project>
+      <Name>Rubberduck.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
       <Name>Rubberduck.Parsing</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj">
+      <Project>{D4B6A510-14E1-420A-A8D5-6A09890FD7D8}</Project>
+      <Name>Rubberduck.Refactorings</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
       <Project>{1B84B387-F7C4-4876-9BDF-C644C365359A}</Project>
@@ -239,7 +247,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

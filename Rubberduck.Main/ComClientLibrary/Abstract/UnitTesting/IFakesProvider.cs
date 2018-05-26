@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IFakesProviderGuid)]
-    [EditorBrowsable(EditorBrowsableState.Always)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IFakesProviderGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public interface IFakesProvider
     {
         [DispId(1)]
