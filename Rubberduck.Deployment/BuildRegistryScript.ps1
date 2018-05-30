@@ -13,6 +13,7 @@
 #  -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' 
 #  -sourceDir '$(TargetDir)' 
 #  -targetDir '$(TargetDir)' 
+#  -projectDir '$(ProjectDir)'
 #  -includeDir '$(ProjectDir)InnoSetup\Includes\'
 #  -filesToExtract 'Rubberduck.dll'"
 param (
@@ -22,6 +23,7 @@ param (
 	[Parameter(Mandatory=$true)][string]$wixToolsDir,
 	[Parameter(Mandatory=$true)][string]$sourceDir,
 	[Parameter(Mandatory=$true)][string]$targetDir,
+	[Parameter(Mandatory=$true)][string]$projectDir,
 	[Parameter(Mandatory=$true)][string]$includeDir,
 	[Parameter(Mandatory=$true)][string]$filesToExtract
 )
@@ -86,6 +88,13 @@ try
 	if($devPath)
 	{
 		# Additional verifications as some versions of VsDevCmd.bat might not initialize the environment for C++ build tools
+		$result = Get-Module -ListAvailable -Name "VSSetup" -ErrorAction SilentlyContinue;
+		if(!$result)
+		{
+			Write-Warning "VSSetup not installed; extracting...";
+			Expand-Archive "$projectDir\OleWoo\VSSetup.zip" "$([Environment]::GetFolderPath("MyDocuments"))\WindowsPowerShell\Modules\VSSetup" -Force
+		}
+
 		try {
 			Import-Module VSSetup -Force:$true;
 			$result = Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require Microsoft.VisualStudio.Component.VC.Tools.x86.x64;
