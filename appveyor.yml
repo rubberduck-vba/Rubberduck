@@ -45,6 +45,7 @@ before_build:
   - cinst innosetup
   - cinst codecov
   - cinst opencover.portable
+  - cinst powershell-packagemanagement
   - nuget restore
 build:
   verbosity: minimal
