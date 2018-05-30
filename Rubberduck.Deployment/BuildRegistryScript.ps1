@@ -87,10 +87,12 @@ try
 	{
 		# Additional verifications as some versions of VsDevCmd.bat might not initialize the environment for C++ build tools
 		try {
+			Import-Module VSSetup -Force:$true;
 			$result = Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require Microsoft.VisualStudio.Component.VC.Tools.x86.x64;
 		} catch {
 			$result = $null;
 			Write-Warning "Error occurred with using VSSetup module";
+			Write-Error ($_);
 		}
 
 		if(!$result)
