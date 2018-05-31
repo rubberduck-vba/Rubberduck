@@ -13,6 +13,7 @@
 #  -wixToolsDir '$(SolutionDir)packages\WiX.Toolset.3.9.1208.0\tools\wix\' 
 #  -sourceDir '$(TargetDir)' 
 #  -targetDir '$(TargetDir)' 
+#  -projectDir '$(ProjectDir)'
 #  -includeDir '$(ProjectDir)InnoSetup\Includes\'
 #  -filesToExtract 'Rubberduck.dll'"
 param (
@@ -22,6 +23,7 @@ param (
 	[Parameter(Mandatory=$true)][string]$wixToolsDir,
 	[Parameter(Mandatory=$true)][string]$sourceDir,
 	[Parameter(Mandatory=$true)][string]$targetDir,
+	[Parameter(Mandatory=$true)][string]$projectDir,
 	[Parameter(Mandatory=$true)][string]$includeDir,
 	[Parameter(Mandatory=$true)][string]$filesToExtract
 )
@@ -77,9 +79,50 @@ try
 	$separator = "|";
 	$option = [System.StringSplitOptions]::RemoveEmptyEntries;
 	$files = $filesToExtract.Split($separator, $option);
+	
+	# Load the Deployment DLL 
+	[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
+
+	# Determine if MIDL is available for building
+	$devPath = Resolve-Path -Path "C:\Program Files*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
+	if($devPath)
+	{
+		# Additional verifications as some versions of VsDevCmd.bat might not initialize the environment for C++ build tools
+		$result = Get-Module -ListAvailable -Name "VSSetup" -ErrorAction SilentlyContinue;
+		if(!$result)
+		{
+			Write-Warning "VSSetup not installed; extracting...";
+			Expand-Archive "$projectDir\OleWoo\VSSetup.zip" "$([Environment]::GetFolderPath("MyDocuments"))\WindowsPowerShell\Modules\VSSetup" -Force
+		}
+
+		try {
+			Import-Module VSSetup -Force:$true;
+			$result = Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require Microsoft.VisualStudio.Component.VC.Tools.x86.x64;
+		} catch {
+			$result = $null;
+			Write-Warning "Error occurred with using VSSetup module";
+			Write-Error ($_);
+		}
+
+		if(!$result)
+		{
+			$devPath = $null;
+			Write-Warning "Cannot locate the VS Setup instance capable of building with C++ build tools";
+		}
+	}
+
+	if(!$devPath)
+	{
+		Write-Warning "Cannot locate the VsDevCmd.bat to initialize C++ build tools; falling back to tlbexp.exe....";
+	}
+
+	Write-Host "";
 
 	foreach($file in $files)
 	{
+		Write-Host "Processing '$file'";
+		Write-Host "";
+
 		$dllFile = [System.String]$file;
 		$idlFile = [System.String]($file -replace ".dll", ".idl");
 		$tlb32File = [System.String]($file -replace ".dll", ".x32.tlb");
@@ -99,9 +142,7 @@ try
 		# For simplicity, the arguments are pass in literally.
 		# & "C:\GitHub\Rubberduck\Rubberduck\Rubberduck.Deployment\echoargs.exe" ""$sourceDll"" /win32 /out:""$sourceTlb"";
 		
-		[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
-
-		$devPath = Resolve-Path -Path "C:\Program Files*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
+		# Compile TLB files using MIDL
 		if($devPath)
 		{
 			$idlGenerator = New-Object Rubberduck.Deployment.IdlGeneration.IdlGenerator;
@@ -122,20 +163,22 @@ try
 				Restore-Environment $origEnv;
 			}
 		}
-		else
+
+		# Compile TLB files using tlbexp.exe
+		if(!$devPath)
 		{
-			Write-Warning "Cannot locate the VsDevCmd.bat to initialize C++ build tools; falling back to tlbexp.exe....";
 			$cmd = "{0}tlbexp.exe" -f $netToolsDir;
 			& $cmd ""$sourceDll"" /win32 /out:""$sourceTlb32"";
 			& $cmd ""$sourceDll"" /win64 /out:""$sourceTlb64"";
 		}
 
+		# Harvest both DLL and TLB files using WiX's heat.exe, generating XML files
 		$cmd = "{0}heat.exe" -f $wixToolsDir;
 		& $cmd file ""$sourceDll"" -out ""$dllXml"";
 		& $cmd file ""$sourceTlb32"" -out ""$tlbXml"";
 		
+		# Initialize the registry builder with the provided XML files
 		$builder = New-Object Rubberduck.Deployment.Builders.RegistryEntryBuilder;
-	
 		$entries = $builder.Parse($tlbXml, $dllXml);
 
 		# For debugging
