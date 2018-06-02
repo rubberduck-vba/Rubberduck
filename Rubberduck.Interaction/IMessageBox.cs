@@ -11,12 +11,6 @@ namespace Rubberduck.Interaction
         /// <param name="text">The message to show to the user</param>
         void Message(string text);
         /// <summary>
-        /// Notify the user of an error. Will only return after the user has acknowledged the error.
-        /// </summary>
-        /// <param name="text">The Error text to show the user</param>
-        /// <param name="caption">The caption of the dialog window</param>
-        void NotifyError(string text, string caption);
-        /// <summary>
         /// Notify the user of a warning. Will only return after the user has acknowledged the warning.
         /// </summary>
         /// <param name="text">The Warning text to show the user</param>
@@ -61,11 +55,6 @@ namespace Rubberduck.Interaction
         public void Message(string text)
         {
             Forms.MessageBox.Show(text);
-        }
-
-        public void NotifyError(string text, string caption)
-        {
-            Forms.MessageBox.Show(text, caption, Forms.MessageBoxButtons.OK, Forms.MessageBoxIcon.Error);
         }
 
         public void NotifyWarn(string text, string caption)
