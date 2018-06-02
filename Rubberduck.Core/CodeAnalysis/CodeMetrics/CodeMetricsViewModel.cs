@@ -18,32 +18,47 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             _analyst = analyst;
             _state.StateChanged += OnStateChanged;
         }
-
+        
         private void OnStateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State == ParserState.Ready)
+            if (e.State != ParserState.Ready && e.State != ParserState.Error && e.State != ParserState.ResolverError && e.State != ParserState.UnexpectedError)
             {
                 IsBusy = true;
+            }
 
-                var metricResults = _analyst.GetMetrics(_state);
-
-                metricResultContainer = metricResults
-                    .GroupBy(r => r.Metric.Level)
-                    .ToDictionary(g => g.Key,
-                       levelGrouping => levelGrouping.GroupBy(r => r.Declaration)
-                         .ToDictionary(g => g.Key,
-                            declarationGrouping => declarationGrouping.ToDictionary(r => r.Metric)
-                         )
-                    );
-
-                metricsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Metric).ToList());
-                declarationsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Declaration).ToList());
-                declarationsByParent = metricResults.Select(r => r.Declaration).GroupBy(decl => decl.ParentDeclaration).ToDictionary(g => g.Key, g => g.ToList());
-                resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
-                
-
+            if (e.State == ParserState.Ready)
+            {
+                UpdateData();
                 IsBusy = false;
             }
+
+            if (e.State == ParserState.Error || e.State == ParserState.ResolverError || e.State == ParserState.UnexpectedError)
+            {
+                IsBusy = false;
+            }
+        }
+
+        private void UpdateData()
+        {
+            IsBusy = true;
+
+            var metricResults = _analyst.GetMetrics(_state);
+
+            MetricResults = metricResults
+                .GroupBy(r => r.Metric.Level)
+                .ToDictionary(g => g.Key,
+                   levelGrouping => levelGrouping.GroupBy(r => r.Declaration)
+                     .ToDictionary(g => g.Key,
+                        declarationGrouping => declarationGrouping.ToDictionary(r => r.Metric)
+                     )
+                );
+
+            metricsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Metric).ToList());
+            declarationsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Declaration).ToList());
+            declarationsByParent = metricResults.Select(r => r.Declaration).GroupBy(decl => decl.ParentDeclaration).ToDictionary(g => g.Key, g => g.ToList());
+            resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
+            
+            IsBusy = false;
         }
 
         public void Dispose()
@@ -55,13 +70,24 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
         private Dictionary<AggregationLevel, List<CodeMetric>> metricsByLevel;
         private Dictionary<AggregationLevel, List<Declaration>> declarationsByLevel;
         private Dictionary<Declaration, List<Declaration>> declarationsByParent;
-        private Dictionary<Declaration, List<ICodeMetricResult>> resultsByDeclaration; 
-
-        private Dictionary<AggregationLevel, Dictionary<Declaration, Dictionary<CodeMetric, ICodeMetricResult>>>
-            metricResultContainer;
+        private Dictionary<Declaration, List<ICodeMetricResult>> resultsByDeclaration;
         public Dictionary<AggregationLevel, Dictionary<Declaration, Dictionary<CodeMetric, ICodeMetricResult>>>
-            MetricResults
-        { get => metricResultContainer; }
+            MetricResults { get; private set; }
+
+        //SelectedMetric = ModuleMetrics.Any(i => SelectedMetric.ModuleName == i.ModuleName)
+        //    ? ModuleMetrics.First(i => SelectedMetric.ModuleName == i.ModuleName)
+        //    : ModuleMetrics.FirstOrDefault();
+
+        private Dictionary<CodeMetric, ICodeMetricResult> _selectedMetric;
+        public Dictionary<CodeMetric, ICodeMetricResult> SelectedMetric
+        {
+            get => _selectedMetric;
+            set
+            {
+                _selectedMetric = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _isBusy;
         public bool IsBusy
@@ -70,9 +96,22 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             set
             {
                 _isBusy = value;
+                EmptyUIRefreshMessageVisibility = false;
                 OnPropertyChanged();
-                // If the window is "busy" then hide the Refresh message
-                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
+            }
+        }
+
+        private bool _emptyUIRefreshMessageVisibility = true;
+        public bool EmptyUIRefreshMessageVisibility
+        {
+            get => _emptyUIRefreshMessageVisibility;
+            set
+            {
+                if (_emptyUIRefreshMessageVisibility != value)
+                {
+                    _emptyUIRefreshMessageVisibility = value;
+                    OnPropertyChanged();
+                }
             }
         }
     }
