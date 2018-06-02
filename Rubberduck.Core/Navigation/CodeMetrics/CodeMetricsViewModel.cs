@@ -2,6 +2,8 @@
 using Rubberduck.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
@@ -26,7 +28,7 @@ namespace Rubberduck.Navigation.CodeMetrics
 
             if (e.State == ParserState.Ready)
             {
-                ModuleMetrics = _analyst.ModuleMetrics(_state);
+                ModuleMetrics = new ObservableCollection<ModuleMetricsResult>(_analyst.ModuleMetrics(_state));
                 IsBusy = false;
             }
 
@@ -52,12 +54,15 @@ namespace Rubberduck.Navigation.CodeMetrics
             }
         }
 
-        private IEnumerable<ModuleMetricsResult> _moduleMetrics;
-        public IEnumerable<ModuleMetricsResult> ModuleMetrics {
+        private ObservableCollection<ModuleMetricsResult> _moduleMetrics;
+        public ObservableCollection<ModuleMetricsResult> ModuleMetrics {
             get => _moduleMetrics;
             private set
             {
                 _moduleMetrics = value;
+                SelectedMetric = ModuleMetrics.Any(i => SelectedMetric.ModuleName == i.ModuleName)
+                    ? ModuleMetrics.First(i => SelectedMetric.ModuleName == i.ModuleName)
+                    : ModuleMetrics.FirstOrDefault();
                 OnPropertyChanged();
             }
         }
