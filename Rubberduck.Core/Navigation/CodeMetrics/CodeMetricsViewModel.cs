@@ -1,10 +1,7 @@
-﻿using NLog;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Rubberduck.Navigation.CodeMetrics
 {
@@ -22,10 +19,19 @@ namespace Rubberduck.Navigation.CodeMetrics
 
         private void OnStateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State == ParserState.Ready)
+            if (e.State != ParserState.Ready && e.State != ParserState.Error && e.State != ParserState.ResolverError && e.State != ParserState.UnexpectedError)
             {
                 IsBusy = true;
+            }
+
+            if (e.State == ParserState.Ready)
+            {
                 ModuleMetrics = _analyst.ModuleMetrics(_state);
+                IsBusy = false;
+            }
+
+            if  (e.State == ParserState.Error || e.State == ParserState.ResolverError || e.State == ParserState.UnexpectedError)
+            {
                 IsBusy = false;
             }
         }
@@ -33,6 +39,17 @@ namespace Rubberduck.Navigation.CodeMetrics
         public void Dispose()
         {
             _state.StateChanged -= OnStateChanged;
+        }
+
+        private ModuleMetricsResult _selectedMetric;
+        public ModuleMetricsResult SelectedMetric
+        {
+            get => _selectedMetric;
+            set
+            {
+                _selectedMetric = value;
+                OnPropertyChanged();
+            }
         }
 
         private IEnumerable<ModuleMetricsResult> _moduleMetrics;
@@ -52,9 +69,23 @@ namespace Rubberduck.Navigation.CodeMetrics
             set
             {
                 _isBusy = value;
+                EmptyUIRefreshMessageVisibility = false;
                 OnPropertyChanged();
-                // If the window is "busy" then hide the Refresh message
-                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
+            }
+        }
+
+
+        private bool _emptyUIRefreshMessageVisibility = true;
+        public bool EmptyUIRefreshMessageVisibility
+        {
+            get => _emptyUIRefreshMessageVisibility;
+            set
+            {
+                if (_emptyUIRefreshMessageVisibility != value)
+                {
+                    _emptyUIRefreshMessageVisibility = value;
+                    OnPropertyChanged();
+                }
             }
         }
     }

@@ -17,6 +17,116 @@
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="FocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+            <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
+            <LinearGradientBrush x:Key="Item.SelectedInactive.Background" EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#FFEEEDED" Offset="0"/>
+                <GradientStop Color="#FFDDDDDD" Offset="1"/>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="LightGray"/>
+            <LinearGradientBrush x:Key="Item.SelectedActive.Background" EndPoint="0,1" StartPoint="0,0">
+                <GradientStop Color="#FFD9F4FF" Offset="0"/>
+                <GradientStop Color="#FF9BDDFB" Offset="1"/>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#ADC6E5"/>
+            <Style x:Key="PrettyListBoxItem" TargetType="{x:Type ListBoxItem}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="2"/>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Padding" Value="4,1"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+                <Setter Property="Height" Value="26" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.MouseOver.Border}"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="BorderThickness" Value="1.5" />
+                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="BorderThickness" Value="1.5" />
+                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+                                </MultiTrigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="2"/>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="BorderThickness" Value="0,.5,0,0" />
+                <Setter Property="BorderBrush" Value="DarkGray" />
+                <Setter Property="MinHeight" Value="26" />
+                <Setter Property="TextBlock.FontWeight" Value="Normal" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="BorderThickness" Value="1.5" />
+                    </Trigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True" />
+                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="#adc6e5"/>
+                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                    </MultiTrigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True" />
+                            <Condition Property="Selector.IsSelectionActive" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="LightGray"/>
+                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                    </MultiTrigger>
+                </Style.Triggers>
+            </Style>
+
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
             <BitmapImage x:Key="CollaseNodesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder.png" />
             <BitmapImage x:Key="ExpandNodesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
@@ -29,6 +139,7 @@
             <converters:StringHasValueToVisibilityConverter x:Key="StringHasValueToVisibility" />
             <converters:StringHasNoValueToVisibilityConverter x:Key="StringHasNoValueToVisibility" />
             <converters:SubtractionConverter x:Key="SubtractionConverter" />
+            <converters:DeclarationToMemberSignatureConverter x:Key="DeclarationToMemberSignatureConverter" />
 
             <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
                 <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -44,33 +155,77 @@
     </UserControl.Resources>
 
     <Grid UseLayoutRounding="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2.5*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MinHeight="64" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <controls:EmptyUIRefresh Grid.Row="1" />
+        <ListBox Name="ListBox"
+                 Grid.RowSpan="2"
+                 Grid.Column="0"
+                 ItemContainerStyle="{StaticResource PrettyListBoxItem}"
+                 ItemsSource="{Binding ModuleMetrics}"
+                 DisplayMemberPath="ModuleName"
+                 SelectedItem="{Binding SelectedMetric, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="5,5,0,5" />
 
-        <DataGrid Grid.Row="1" ItemsSource="{Binding ModuleMetrics}" AutoGenerateColumns="False" IsReadOnly="True">
+        <WrapPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Lines}" FontWeight="Bold" />
+                <TextBlock Text="{Binding SelectedMetric.Result.Lines}" VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Complexity}" FontWeight="Bold" />
+                <TextBlock Text="{Binding SelectedMetric.Result.CyclomaticComplexity}" VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Nesting}" FontWeight="Bold" />
+                <TextBlock Text="{Binding SelectedMetric.Result.MaximumNesting}" VerticalAlignment="Center" />
+            </StackPanel>
+        </WrapPanel>
+        
+        <DataGrid Grid.Column="1"
+                  Grid.Row="1"
+                  ItemsSource="{Binding SelectedMetric.MemberResults}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserReorderColumns="False"
+                  CanUserSortColumns="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserResizeColumns="True"
+                  CanUserResizeRows="False"
+                  HorizontalGridLinesBrush="Transparent"
+                  VerticalGridLinesBrush="Transparent"
+                  HeadersVisibility="Column"
+                  HorizontalScrollBarVisibility="Disabled"
+                  ItemContainerStyle="{StaticResource PrettifyRow}"
+                  ColumnHeaderHeight="22"
+                  SelectionMode="Single"
+                  Margin="5,5,0,5">
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=ModuleName}" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_ModuleName}" Width="*"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.Lines}" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Lines}" Width="Auto" x:Name="LinesColumn"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.CyclomaticComplexity}" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Complexity}" Width="Auto" x:Name="CCColumn"/>
-                <DataGridTextColumn Binding="{Binding Path=Result.MaximumNesting}" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Nesting}" Width="Auto" x:Name="NestingColumn"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding Path=Key, Mode=OneWay, Converter={StaticResource DeclarationToMemberSignatureConverter}}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Lines}" Binding="{Binding Path=Value.Lines, Mode=OneWay}"  Width="auto"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Complexity}"  Binding="{Binding Path=Value.CyclomaticComplexity, Mode=OneWay}" Width="auto"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Nesting}" Binding="{Binding Path=Value.MaximumNesting, Mode=OneWay}" Width="auto"/>
             </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <DataGrid ItemsSource="{Binding Path=MemberResults}" AutoGenerateColumns="False" IsReadOnly="True" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=DataGrid,AncestorLevel=1}, Converter={StaticResource SubtractionConverter},ConverterParameter=25}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SearchResults_MemberName}" Binding="{Binding Path=Key.IdentifierName}" Width="*"/>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Lines}" Binding="{Binding Path=Value.Lines}"  Width="{Binding Path=ActualWidth, Source={x:Reference LinesColumn}}"/>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Complexity}"  Binding="{Binding Path=Value.CyclomaticComplexity}" Width="{Binding Path=ActualWidth, Source={x:Reference CCColumn}}"/>
-                            <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeMetrics_Nesting}" Binding="{Binding Path=Value.MaximumNesting}" Width="{Binding Path=ActualWidth, Source={x:Reference NestingColumn}}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
         </DataGrid>
-        <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+        <controls:EmptyUIRefresh Grid.ColumnSpan="2" Grid.RowSpan="2" Visibility="{Binding EmptyUIRefreshMessageVisibility, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.ColumnSpan="2" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
 
