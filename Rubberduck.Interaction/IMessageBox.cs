@@ -30,8 +30,6 @@ namespace Rubberduck.Interaction
         /// <param name="caption">The caption of the dialog window</param>
         /// <returns>true, if the user selects "Yes", false if the user selects "No"</returns>
         bool Question(string text, string caption);
-        [Obsolete] // TODO absorb into confirmation with preselected result
-        bool ConfirmYesNo(string text, string caption);
         /// <summary>
         /// Ask the user for a simple confirmation. If the user selects an option, non-reversible consequences are acceptable.
         /// Will only return on user-input.
