@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AC4F1D22-D74B-45FF-AB0C-CC2A104FE023}</ProjectGuid>
+    <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.Inspections</RootNamespace>
