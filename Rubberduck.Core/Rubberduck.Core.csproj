@@ -411,6 +411,7 @@
     <Compile Include="UI\CodeMetrics\CodeMetricsDockablePresenter.cs" />
     <Compile Include="UI\Command\CodeMetricsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CodeMetricsCommandMenuItem.cs" />
+    <Compile Include="UI\Converters\DeclarationToMemberSignatureConverter.cs" />
     <Compile Include="UI\Converters\StringHasNoValueToVisibilityConverter.cs" />
     <Compile Include="UI\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsControl.xaml.cs">
