@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Inspections.Abstract;
 
-namespace Rubberduck.Inspections
+namespace Rubberduck.CodeAnalysis.Inspections
 {
     public interface IInspectionProvider
     {
