@@ -143,6 +143,44 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
+'@TestMethod
+Public Sub EnvironFakeVariantFormWorks()
+    On Error GoTo TestFail
+
+    Dim returnVal As Variant
+    With Fakes.Environ
+        .ReturnsWhen "envstring", "PATH", "C:\Rubberduck"
+        returnVal = Environ("PATH")
+        .Verify.Once
+        .Verify.Parameter "envstring", "PATH"
+        Assert.IsTrue returnVal = "C:\Rubberduck"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub EnvironFakeStringFormWorks()
+    On Error GoTo TestFail
+
+    Dim returnVal As Variant
+    With Fakes.Environ
+        .ReturnsWhen "envstring", "PATH", "C:\Rubberduck"
+        returnVal = Environ$("PATH")
+        .Verify.Once
+        .Verify.Parameter "envstring", "PATH"
+        Assert.IsTrue returnVal = "C:\Rubberduck"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
 ''@TestMethod
 'Public Sub CurDirFakeNoArgsWorks()
 '    On Error GoTo TestFail
