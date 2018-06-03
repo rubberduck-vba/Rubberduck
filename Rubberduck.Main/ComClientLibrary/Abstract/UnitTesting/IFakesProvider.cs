@@ -64,7 +64,8 @@ namespace Rubberduck.UnitTesting
         [Description("Configures VBA.FileSystem.ChDrive calls.")]
         IStub ChDrive { get; }
 
-        //[DispId(17)]
-        //IFake CurDir { get; }
+        [DispId(14)]
+        [Description("Configures VBA.FileSystem.CurDir calls.")]
+        IFake CurDir { get; }
     }
 }

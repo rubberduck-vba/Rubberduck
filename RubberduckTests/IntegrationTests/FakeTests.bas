@@ -181,35 +181,57 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
-''@TestMethod
-'Public Sub CurDirFakeNoArgsWorks()
-'    On Error GoTo TestFail
+Public Sub CurDirFakeNoArgsWorks()
+    On Error GoTo TestFail
 
-'    With Fakes.CurDir
-'        .Returns "C:\Foo"
-'        Debug.Print CurDir
-'        .Verify.Once
-'    End With
+    Dim returnVal As Variant
+    With Fakes.CurDir
+        .Returns "C:\Foo"
+        returnVal = CurDir()
+        .Verify.Once
+        Assert.IsTrue returnVal = "C:\Foo"
+    End With
 
-'TestExit:
-'    Exit Sub
-'TestFail:
-'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-'End Sub
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
 
-''@TestMethod
-'Public Sub CurDirFakeWorks()
-'    On Error GoTo TestFail
+'@TestMethod
+Public Sub CurDirFakeWorks()
+    On Error GoTo TestFail
 
-'    With Fakes.CurDir
-'        .Returns "C:\Foo"
-'        Debug.Print CurDir("C")
-'        .Verify.Once
-'        .Verify.Parameter "Drive", "C"
-'    End With
+    Dim returnVal As Variant
+    With Fakes.CurDir
+        .Returns "C:\Foo"
+        returnVal = CurDir("C")
+        .Verify.Once
+        .Verify.Parameter "Drive", "C"
+        Assert.IsTrue returnVal = "C:\Foo"
+    End With
 
-'TestExit:
-'    Exit Sub
-'TestFail:
-'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-'End Sub
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub CurDirFakeStringReturnWorks()
+    On Error GoTo TestFail
+
+    Dim returnVal As Variant
+    With Fakes.CurDir
+        .Returns "C:\Foo"
+        returnVal = CurDir$("C")
+        .Verify.Once
+        .Verify.Parameter "Drive", "C"
+        Assert.IsTrue returnVal = "C:\Foo"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
