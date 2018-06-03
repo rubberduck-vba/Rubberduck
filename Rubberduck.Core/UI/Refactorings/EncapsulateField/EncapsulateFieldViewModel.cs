@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
-using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
@@ -19,9 +17,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             State = state;
             Indenter = indenter;
-
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
 
             IsLetSelected = true;
             CanHaveLet = true;
@@ -184,8 +179,5 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public event EventHandler<bool> ExpansionStateChanged;
         private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);
-
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
     }
 }

@@ -14,8 +14,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         public RemoveParametersViewModel(RubberduckParserState state, RemoveParametersModel model) : base(model)
         {
             State = state;
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
             RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
             RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
         }
@@ -155,8 +153,6 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             }
         }
 
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
         public CommandBase RemoveParameterCommand { get; }
         public CommandBase RestoreParameterCommand { get; }
     }

@@ -13,8 +13,6 @@ namespace Rubberduck.UI.Refactorings
     {
         public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
         {
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
         }
@@ -66,8 +64,6 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
         public CommandBase SelectAllCommand { get; }
         public CommandBase DeselectAllCommand { get; }
     }

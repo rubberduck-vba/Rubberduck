@@ -15,8 +15,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         public ReorderParametersViewModel(RubberduckParserState state, ReorderParametersModel model) : base(model)
         {
             State = state;
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
             MoveParameterUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterUp((Parameter)param));
             MoveParameterDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterDown((Parameter)param));
         }
@@ -177,8 +175,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
         }
         
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
         public CommandBase MoveParameterUpCommand { get; }
         public CommandBase MoveParameterDownCommand { get; }
     }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Command;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.Rename
@@ -18,9 +16,6 @@ namespace Rubberduck.UI.Refactorings.Rename
         public RenameViewModel(RubberduckParserState state, RenameModel model) : base(model)
         {
             State = state;
-
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
         }
 
         private Declaration _target;
@@ -77,8 +72,5 @@ namespace Rubberduck.UI.Refactorings.Rename
                        NewName.Length <= (Target.DeclarationType.HasFlag(DeclarationType.Module) ? Declaration.MaxModuleNameLength : Declaration.MaxMemberNameLength);
             }
         }
-
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
     }
 }
