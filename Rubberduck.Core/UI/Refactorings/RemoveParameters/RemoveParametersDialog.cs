@@ -1,29 +1,15 @@
 ﻿using System.Windows.Forms;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public sealed partial class RemoveParametersDialog : Form, IRefactoringDialog<RemoveParametersViewModel>
+    public sealed class RemoveParametersDialog : RefactoringDialogBase<RemoveParametersModel, RemoveParametersView, RemoveParametersViewModel>
     {
-        public RemoveParametersViewModel ViewModel { get; }
-
-        private RemoveParametersDialog()
+        public RemoveParametersDialog(RemoveParametersViewModel viewModel) : base(viewModel)
         {
-            InitializeComponent();
             Text = RubberduckUI.RemoveParamsDialog_Caption;
-        }
-
-        public RemoveParametersDialog(RemoveParametersViewModel vm) : this()
-        {
-            ViewModel = vm;
-            RemoveParametersViewElement.DataContext = vm;
-            vm.OnWindowClosed += ViewModel_OnWindowClosed;
-        }
-
-        void ViewModel_OnWindowClosed(object sender, DialogResult result)
-        {
-            DialogResult = result;
-            Close();
         }
     }
 }
