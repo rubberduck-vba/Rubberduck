@@ -143,35 +143,98 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
-''@TestMethod
-'Public Sub CurDirFakeNoArgsWorks()
-'    On Error GoTo TestFail
+'@TestMethod
+Public Sub EnvironFakeVariantFormWorks()
+    On Error GoTo TestFail
 
-'    With Fakes.CurDir
-'        .Returns "C:\Foo"
-'        Debug.Print CurDir
-'        .Verify.Once
-'    End With
+    Dim returnVal As Variant
+    With Fakes.Environ
+        .ReturnsWhen "envstring", "PATH", "C:\Rubberduck", 1
+        .ReturnsWhen "envstring", "PATH", "C:\Second", 2
+        returnVal = Environ("PATH")
+        .Verify.Once
+        .Verify.Parameter "envstring", "PATH"
+        Assert.IsTrue returnVal = "C:\Rubberduck"
+        returnVal = Environ("PATH")
+        Assert.IsTrue returnVal = "C:\Second"
+    End With
 
-'TestExit:
-'    Exit Sub
-'TestFail:
-'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-'End Sub
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
 
-''@TestMethod
-'Public Sub CurDirFakeWorks()
-'    On Error GoTo TestFail
+'@TestMethod
+Public Sub EnvironFakeStringFormWorks()
+    On Error GoTo TestFail
 
-'    With Fakes.CurDir
-'        .Returns "C:\Foo"
-'        Debug.Print CurDir("C")
-'        .Verify.Once
-'        .Verify.Parameter "Drive", "C"
-'    End With
+    Dim returnVal As Variant
+    With Fakes.Environ
+        .ReturnsWhen "envstring", "PATH", "C:\Rubberduck"
+        returnVal = Environ$("PATH")
+        .Verify.Once
+        .Verify.Parameter "envstring", "PATH"
+        Assert.IsTrue returnVal = "C:\Rubberduck"
+    End With
 
-'TestExit:
-'    Exit Sub
-'TestFail:
-'    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-'End Sub
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+Public Sub CurDirFakeNoArgsWorks()
+    On Error GoTo TestFail
+
+    Dim returnVal As Variant
+    With Fakes.CurDir
+        .Returns "C:\Foo"
+        returnVal = CurDir()
+        .Verify.Once
+        Assert.IsTrue returnVal = "C:\Foo"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub CurDirFakeWorks()
+    On Error GoTo TestFail
+
+    Dim returnVal As Variant
+    With Fakes.CurDir
+        .Returns "C:\Foo"
+        returnVal = CurDir("C")
+        .Verify.Once
+        .Verify.Parameter "Drive", "C"
+        Assert.IsTrue returnVal = "C:\Foo"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub CurDirFakeStringReturnWorks()
+    On Error GoTo TestFail
+
+    Dim returnVal As Variant
+    With Fakes.CurDir
+        .Returns "C:\Foo"
+        returnVal = CurDir$("C")
+        .Verify.Once
+        .Verify.Parameter "Drive", "C"
+        Assert.IsTrue returnVal = "C:\Foo"
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
