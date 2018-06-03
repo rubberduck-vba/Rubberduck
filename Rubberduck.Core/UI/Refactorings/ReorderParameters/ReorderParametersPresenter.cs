@@ -4,45 +4,41 @@ using Rubberduck.Resources;
 using Rubberduck.Interaction;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.ReorderParameters;
-using System.Windows.Forms;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    // FIXME investigate generic IRefactoringPresenter<ReorderParametersModel> usage!
-    public class ReorderParametersPresenter : IReorderParametersPresenter
+    public class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel, ReorderParametersDialog, ReorderParametersView, ReorderParametersViewModel>
     {
-        private readonly IRefactoringDialog<ReorderParametersViewModel> _view;
-        private readonly ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenter(IRefactoringDialog<ReorderParametersViewModel> view, ReorderParametersModel model, IMessageBox messageBox)
+        public ReorderParametersPresenter(ReorderParametersModel model,
+            IRefactoringDialogFactory<ReorderParametersModel, ReorderParametersView, ReorderParametersViewModel,
+                ReorderParametersDialog> dialogFactory, IMessageBox messageBox) : base(model, dialogFactory)
         {
-            _view = view;
-            _model = model;
             _messageBox = messageBox;
         }
 
-        public ReorderParametersModel Show()
+        public override ReorderParametersModel Show()
         {
-            if (_model.TargetDeclaration == null) { return null; }
+            if (Model.TargetDeclaration == null) { return null; }
 
-            if (_model.Parameters.Count < 2)
+            if (Model.Parameters.Count < 2)
             {
-                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _model.TargetDeclaration.IdentifierName);
+                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, Model.TargetDeclaration.IdentifierName);
                 _messageBox.NotifyWarn(message, RubberduckUI.ReorderParamsDialog_TitleText);
                 return null;
             }
 
-            _view.ViewModel.Parameters = new ObservableCollection<Parameter>(_model.Parameters);
+            ViewModel.Parameters = new ObservableCollection<Parameter>(Model.Parameters);
 
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
+            Show();
+            if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;
             }
 
-            _model.Parameters = _view.ViewModel.Parameters.ToList();
-            return _model;
+            Model.Parameters = ViewModel.Parameters.ToList();
+            return Model;
         }
     }
 }

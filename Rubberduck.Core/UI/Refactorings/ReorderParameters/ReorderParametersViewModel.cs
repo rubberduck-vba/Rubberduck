@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -12,8 +10,17 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    public class ReorderParametersViewModel : ViewModelBase
+    public class ReorderParametersViewModel : RefactoringViewModelBase<ReorderParametersModel>
     {
+        public ReorderParametersViewModel(RubberduckParserState state, ReorderParametersModel model) : base(model)
+        {
+            State = state;
+            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
+            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
+            MoveParameterUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterUp((Parameter)param));
+            MoveParameterDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterDown((Parameter)param));
+        }
+
         public RubberduckParserState State { get; }
 
         private ObservableCollection<Parameter> _parameters;
@@ -146,15 +153,6 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             return signature.ToString();
         }
 
-        public ReorderParametersViewModel(RubberduckParserState state)
-        {
-            State = state;
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
-            MoveParameterUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterUp((Parameter)param));
-            MoveParameterDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterDown((Parameter)param));
-        }
-
         public void UpdatePreview() => OnPropertyChanged(nameof(SignaturePreview));
 
         private void MoveParameterUp(Parameter parameter)
@@ -178,11 +176,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
-
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-
+        
         public CommandBase OkButtonCommand { get; }
         public CommandBase CancelButtonCommand { get; }
         public CommandBase MoveParameterUpCommand { get; }
