@@ -1,58 +1,54 @@
 ﻿using System.Linq;
-using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldPresenter : IEncapsulateFieldPresenter
+    public class EncapsulateFieldPresenter : RefactoringPresenterBase<EncapsulateFieldModel, EncapsulateFieldDialog, EncapsulateFieldView, EncapsulateFieldViewModel>, IEncapsulateFieldPresenter
     {
-        private readonly IRefactoringDialog<EncapsulateFieldViewModel> _view;
-        private readonly EncapsulateFieldModel _model;
+        public EncapsulateFieldPresenter(EncapsulateFieldModel model,
+            IRefactoringDialogFactory<EncapsulateFieldModel, EncapsulateFieldView, EncapsulateFieldViewModel,
+                EncapsulateFieldDialog> dialogFactory) : base(model, dialogFactory)
+        { }
 
-        public EncapsulateFieldPresenter(IRefactoringDialog<EncapsulateFieldViewModel> view, EncapsulateFieldModel model)
+        public override EncapsulateFieldModel Show()
         {
-            _view = view;
-            _model = model;
-        }
+            if (Model.TargetDeclaration == null) { return null; }
 
-        public EncapsulateFieldModel Show()
-        {
-            if (_model.TargetDeclaration == null) { return null; }
+            ViewModel.TargetDeclaration = Model.TargetDeclaration;
 
-            _view.ViewModel.TargetDeclaration = _model.TargetDeclaration;
-
-            var isVariant = _model.TargetDeclaration.AsTypeName.Equals(Tokens.Variant);
-            var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(_model.TargetDeclaration.AsTypeName) ||
-                              _model.TargetDeclaration.DeclarationType == DeclarationType.Enumeration);
+            var isVariant = Model.TargetDeclaration.AsTypeName.Equals(Tokens.Variant);
+            var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(Model.TargetDeclaration.AsTypeName) ||
+                              Model.TargetDeclaration.DeclarationType == DeclarationType.Enumeration);
 
             AssignSetterAndLetterAvailability(isVariant, isValueType);
 
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
+            Dialog.ShowDialog();
+            if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;
             }
 
-            _model.PropertyName = _view.ViewModel.PropertyName;
-            _model.ImplementLetSetterType = _view.ViewModel.CanHaveLet;
-            _model.ImplementSetSetterType = _view.ViewModel.CanHaveSet;
-            _model.CanImplementLet = _view.ViewModel.CanHaveSet && !_view.ViewModel.CanHaveSet;
+            Model.PropertyName = ViewModel.PropertyName;
+            Model.ImplementLetSetterType = ViewModel.CanHaveLet;
+            Model.ImplementSetSetterType = ViewModel.CanHaveSet;
+            Model.CanImplementLet = ViewModel.CanHaveSet && !ViewModel.CanHaveSet;
 
-            _model.ParameterName = _view.ViewModel.ParameterName;
-            return _model;
+            Model.ParameterName = ViewModel.ParameterName;
+            return Model;
         }
 
         private void AssignSetterAndLetterAvailability(bool isVariant, bool isValueType)
         {
-            if (_model.TargetDeclaration.References.Any(r => r.IsAssignment))
+            if (Model.TargetDeclaration.References.Any(r => r.IsAssignment))
             {
                 if (isVariant)
                 {
-                    RuleContext node = _model.TargetDeclaration.References.First(r => r.IsAssignment).Context;
+                    RuleContext node = Model.TargetDeclaration.References.First(r => r.IsAssignment).Context;
                     while (!(node is VBAParser.LetStmtContext) && !(node is VBAParser.SetStmtContext))
                     {
                         node = node.Parent;
@@ -60,36 +56,36 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
                     if (node is VBAParser.LetStmtContext)
                     {
-                        _view.ViewModel.CanHaveLet = true;
+                        ViewModel.CanHaveLet = true;
                     }
                     else
                     {
-                        _view.ViewModel.CanHaveSet = true;
+                        ViewModel.CanHaveSet = true;
                     }
                 }
                 else if (isValueType)
                 {
-                    _view.ViewModel.CanHaveLet = true;
+                    ViewModel.CanHaveLet = true;
                 }
                 else
                 {
-                    _view.ViewModel.CanHaveSet = true;
+                    ViewModel.CanHaveSet = true;
                 }
             }
             else
             {
                 if (isValueType)
                 {
-                    _view.ViewModel.CanHaveLet = true;
+                    ViewModel.CanHaveLet = true;
                 }
                 else if (!isVariant)
                 {
-                    _view.ViewModel.CanHaveSet = true;
+                    ViewModel.CanHaveSet = true;
                 }
                 else
                 {
-                    _view.ViewModel.CanHaveLet = true;
-                    _view.ViewModel.CanHaveSet = true;
+                    ViewModel.CanHaveLet = true;
+                    ViewModel.CanHaveSet = true;
                 }
             }
         }

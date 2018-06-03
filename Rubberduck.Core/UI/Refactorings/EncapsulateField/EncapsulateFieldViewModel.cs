@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -11,12 +10,12 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldViewModel : ViewModelBase
+    public class EncapsulateFieldViewModel : RefactoringViewModelBase<EncapsulateFieldModel>
     {
         public RubberduckParserState State { get; }
         public IIndenter Indenter { get; }
 
-        public EncapsulateFieldViewModel(RubberduckParserState state, IIndenter indenter)
+        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state, IIndenter indenter) : base(model)
         {
             State = state;
             Indenter = indenter;
@@ -182,10 +181,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 return string.Join(Environment.NewLine, Indenter.Indent(propertyText, true));
             }
         }
-
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
 
         public event EventHandler<bool> ExpansionStateChanged;
         private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);

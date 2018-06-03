@@ -1,35 +1,19 @@
-﻿using System.Windows.Forms;
+﻿using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
-    public sealed partial class EncapsulateFieldDialog : Form, IRefactoringDialog<EncapsulateFieldViewModel>
+    public sealed class EncapsulateFieldDialog : RefactoringDialogBase<EncapsulateFieldModel, EncapsulateFieldView, EncapsulateFieldViewModel>
     {
-        public EncapsulateFieldViewModel ViewModel { get; }
-
-        private EncapsulateFieldDialog()
+        public EncapsulateFieldDialog(EncapsulateFieldViewModel vm) : base(vm)
         {
-            InitializeComponent();
             Text = RubberduckUI.EncapsulateField_Caption;
-        }
-
-        public EncapsulateFieldDialog(EncapsulateFieldViewModel vm) : this()
-        {
-            ViewModel = vm;
-            EncapsulateFieldViewElement.DataContext = vm;
-            vm.OnWindowClosed += ViewModel_OnWindowClosed;
-            vm.ExpansionStateChanged += Vm_ExpansionStateChanged;
+            ViewModel.ExpansionStateChanged += Vm_ExpansionStateChanged;
         }
 
         private void Vm_ExpansionStateChanged(object sender, bool isExpanded)
         {
             Height = isExpanded ? 560 : 305;
-        }
-
-        void ViewModel_OnWindowClosed(object sender, DialogResult result)
-        {
-            DialogResult = result;
-            Close();
         }
     }
 }
