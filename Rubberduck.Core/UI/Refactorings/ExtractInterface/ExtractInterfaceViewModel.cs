@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings
 {
-    internal class ExtractInterfaceViewModel : ViewModelBase
+    internal class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
-        public ExtractInterfaceViewModel()
+        public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
         {
             OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
             CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
@@ -57,10 +57,6 @@ namespace Rubberduck.UI.Refactorings
                        && !InterfaceName.Any(c => !char.IsLetterOrDigit(c) && c != '_');
             }
         }
-
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
 
         private void ToggleSelection(bool value)
         {

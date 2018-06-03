@@ -1,45 +1,41 @@
 ﻿using System.Linq;
-using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings.ExtractInterface
 {
-    internal class ExtractInterfacePresenter : IExtractInterfacePresenter
+    internal class ExtractInterfacePresenter : RefactoringPresenterBase<ExtractInterfaceModel, ExtractInterfaceDialog, ExtractInterfaceView, ExtractInterfaceViewModel>
     {
-        private readonly IRefactoringDialog<ExtractInterfaceViewModel> _view;
-        private readonly ExtractInterfaceModel _model;
+        public ExtractInterfacePresenter(ExtractInterfaceModel model,
+            IRefactoringDialogFactory<ExtractInterfaceModel, ExtractInterfaceView, ExtractInterfaceViewModel,
+                ExtractInterfaceDialog> dialogFactory) : base(model, dialogFactory)
+        { }
 
-        public ExtractInterfacePresenter(IRefactoringDialog<ExtractInterfaceViewModel> view, ExtractInterfaceModel model)
+        public override ExtractInterfaceModel Show()
         {
-            _view = view;
-            _model = model;
-        }
-
-        public ExtractInterfaceModel Show()
-        {
-            if (_model.TargetDeclaration == null)
+            if (Model.TargetDeclaration == null)
             {
                 return null;
             }
 
-            _view.ViewModel.ComponentNames = _model.State.DeclarationFinder
+            ViewModel.ComponentNames = Model.State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Module)
-                .Where(moduleDeclaration => moduleDeclaration.ProjectId == _model.TargetDeclaration.ProjectId)
+                .Where(moduleDeclaration => moduleDeclaration.ProjectId == Model.TargetDeclaration.ProjectId)
                 .Select(module => module.ComponentName)
                 .ToList();
-            _view.ViewModel.InterfaceName = _model.InterfaceName;
-            _view.ViewModel.Members = _model.Members.Select(m => m.ToViewModel()).ToList();
+            ViewModel.InterfaceName = Model.InterfaceName;
+            ViewModel.Members = Model.Members.Select(m => m.ToViewModel()).ToList();
 
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
+            Show();
+            if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;
             }
 
-            _model.InterfaceName = _view.ViewModel.InterfaceName;
-            _model.Members = _view.ViewModel.Members.Where(m => m.IsSelected).Select(vm => vm.ToModel()).ToList();
-            return _model;
+            Model.InterfaceName = ViewModel.InterfaceName;
+            Model.Members = ViewModel.Members.Where(m => m.IsSelected).Select(vm => vm.ToModel()).ToList();
+            return Model;
         }
     }
 }

@@ -1,29 +1,13 @@
-﻿using System.Windows.Forms;
+﻿using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings
 {
-    internal sealed partial class ExtractInterfaceDialog : Form, IRefactoringDialog<ExtractInterfaceViewModel>
+    internal sealed class ExtractInterfaceDialog : RefactoringDialogBase<ExtractInterfaceModel, ExtractInterfaceView, ExtractInterfaceViewModel>
     {
-        public ExtractInterfaceViewModel ViewModel { get; }
-
-        private ExtractInterfaceDialog()
+        private ExtractInterfaceDialog(ExtractInterfaceViewModel viewModel) : base(viewModel)
         {
-            InitializeComponent();
             Text = RubberduckUI.ExtractInterface_Caption;
-        }
-
-        public ExtractInterfaceDialog(ExtractInterfaceViewModel vm) : this()
-        {
-            ViewModel = vm;
-            ExtractInterfaceViewElement.DataContext = vm;
-            vm.OnWindowClosed += ViewModel_OnWindowClosed;
-        }
-
-        void ViewModel_OnWindowClosed(object sender, DialogResult result)
-        {
-            DialogResult = result;
-            Close();
         }
     }
 }

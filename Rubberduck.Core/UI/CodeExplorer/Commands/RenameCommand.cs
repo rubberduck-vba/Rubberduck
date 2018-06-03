@@ -3,9 +3,9 @@ using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
