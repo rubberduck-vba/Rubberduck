@@ -149,11 +149,14 @@ Public Sub EnvironFakeVariantFormWorks()
 
     Dim returnVal As Variant
     With Fakes.Environ
-        .ReturnsWhen "envstring", "PATH", "C:\Rubberduck"
+        .ReturnsWhen "envstring", "PATH", "C:\Rubberduck", 1
+        .ReturnsWhen "envstring", "PATH", "C:\Second", 2
         returnVal = Environ("PATH")
         .Verify.Once
         .Verify.Parameter "envstring", "PATH"
         Assert.IsTrue returnVal = "C:\Rubberduck"
+        returnVal = Environ("PATH")
+        Assert.IsTrue returnVal = "C:\Second"
     End With
 
 TestExit:
