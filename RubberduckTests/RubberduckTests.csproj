@@ -102,6 +102,8 @@
     <Compile Include="Binding\SimpleNameDefaultBindingTests.cs" />
     <Compile Include="Binding\SimpleNameTypeBindingTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Inspections\ParseTreeExpressionEvaluatorTests.cs" />
+    <Compile Include="Inspections\ParseTreeValueTests.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />

@@ -210,6 +210,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static string NOT => Tokens.Not;
         public static string EQV => "Eqv";
         public static string IMP => "Imp";
+        public static string LIKE => Tokens.Like;
+
+        public static List<string> LogicSymbolList = new List<string>()
+        {
+            EQ,
+            NEQ,
+            LT,
+            LTE,
+            GT,
+            GTE,
+            AND,
+            OR,
+            XOR,
+            NOT,
+            EQV,
+            IMP,
+            LIKE,
+        };
 
         private static string LoadSymbols(int target)
         {

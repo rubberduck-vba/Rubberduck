@@ -2307,35 +2307,35 @@ Select Case x
             inputCode = inputCode.Replace("<opSymbol>", opSymbol);
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
+//Moved to ParseTreeExpressionEvaluationTests
+//        [TestCase("START Eqv FINISH", "True")]
+//        [TestCase("START * 0 Eqv FINISH * 0", "True")]
+//        [TestCase("START Eqv FINISH * 0", "False")]
+//        [TestCase("START * 0 Eqv FINISH", "False")]
+//        [Category("Inspections")]
+//        public void UciFunctional_EqvOperator( string secondCase, string thirdCase)
+//        {
+//            string inputCode =
+//@"
+//        private const START As Long = 3
+//        private const FINISH As Long = 10
 
-        [TestCase("START Eqv FINISH", "True")]
-        [TestCase("START * 0 Eqv FINISH * 0", "True")]
-        [TestCase("START Eqv FINISH * 0", "False")]
-        [TestCase("START * 0 Eqv FINISH", "False")]
-        [Category("Inspections")]
-        public void UciFunctional_EqvOperator( string secondCase, string thirdCase)
-        {
-            string inputCode =
-@"
-        private const START As Long = 3
-        private const FINISH As Long = 10
+//        Sub Foo(x As Long, y As Long, z As Long)
+//        Select Case z
+//            Case Is < x 
+//            'OK
+//            Case <secondCase>
+//            'OK
+//            Case <thirdCase>
+//            'Unreachable
+//        End Select
 
-        Sub Foo(x As Long, y As Long, z As Long)
-        Select Case z
-            Case Is < x 
-            'OK
-            Case <secondCase>
-            'OK
-            Case <thirdCase>
-            'Unreachable
-        End Select
+//        End Sub";
 
-        End Sub";
-
-            inputCode = inputCode.Replace("<secondCase>", secondCase);
-            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
-        }
+//            inputCode = inputCode.Replace("<secondCase>", secondCase);
+//            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
+//            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+//        }
 
         [TestCase("START Imp FINISH", "True")]
         [TestCase("START * 0 Imp FINISH * 0", "True")]
