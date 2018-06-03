@@ -1,25 +1,17 @@
-﻿using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
 
 namespace Rubberduck.Refactorings.Rename
 {
-    // FIXME investigate generic IRefactoringPresenter<RenameModel> usage!
-    public class RenamePresenter : IRenamePresenter
+    public class RenamePresenter : RefactoringPresenterBase<RenameModel, RenameDialog, RenameView, RenameViewModel>
     {
-        private readonly IRefactoringDialog<RenameViewModel> _view;
-
-        public RenamePresenter(IRefactoringDialog<RenameViewModel> view, RenameModel model)
-        {
-            _view = view;
-
-            Model = model;
-        }
-
-        public RenameModel Model { get; }
-
-        public RenameModel Show()
+        public RenamePresenter(RenameModel model,
+            IRefactoringDialogFactory<RenameModel, RenameView, RenameViewModel, RenameDialog> dialogFactory) : base(
+            model, dialogFactory)
+        { }
+        
+        public override RenameModel Show()
         {
             return Model.Target == null ? null : Show(Model.Target);
         }
@@ -32,16 +24,16 @@ namespace Rubberduck.Refactorings.Rename
             }
 
             Model.Target = target;
-            _view.ViewModel.Target = target;
+            ViewModel.Target = target;
 
-            _view.ShowDialog();
+            Show();
 
-            if (_view.DialogResult != DialogResult.OK)
+            if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;
             }
 
-            Model.NewName = _view.ViewModel.NewName;
+            Model.NewName = ViewModel.NewName;
             return Model;
         }
     }

@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
-    public class RenameViewModel : ViewModelBase
+    public class RenameViewModel : RefactoringViewModelBase<RenameModel>
     {
         public RubberduckParserState State { get; }
 
-        public RenameViewModel(RubberduckParserState state)
+        public RenameViewModel(RubberduckParserState state, RenameModel model) : base(model)
         {
             State = state;
 
@@ -78,10 +78,6 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
         }
 
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-        
         public CommandBase OkButtonCommand { get; }
         public CommandBase CancelButtonCommand { get; }
     }

@@ -1,29 +1,15 @@
 ﻿using System.Windows.Forms;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
-    public sealed partial class RenameDialog : Form, IRefactoringDialog<RenameViewModel>
+    public sealed class RenameDialog : RefactoringDialogBase<RenameModel, RenameView, RenameViewModel>
     {
-        public RenameViewModel ViewModel { get; }
-
-        private RenameDialog()
+        public RenameDialog(RenameViewModel vm) : base(vm)
         {
-            InitializeComponent();
             Text = RubberduckUI.RenameDialog_Caption;
-        }
-
-        public RenameDialog(RenameViewModel vm) : this()
-        {
-            ViewModel = vm;
-            RenameViewElement.DataContext = vm;
-            vm.OnWindowClosed += ViewModel_OnWindowClosed;
-        }
-
-        void ViewModel_OnWindowClosed(object sender, DialogResult result)
-        {
-            DialogResult = result;
-            Close();
         }
     }
 }
