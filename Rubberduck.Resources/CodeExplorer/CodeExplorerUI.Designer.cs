@@ -462,6 +462,24 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Export.
+        /// </summary>
+        public static string ExportBeforeRemove_Caption {
+            get {
+                return ResourceManager.GetString("ExportBeforeRemove_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to export &apos;{0}&apos; before removing?.
+        /// </summary>
+        public static string ExportBeforeRemove_Prompt {
+            get {
+                return ResourceManager.GetString("ExportBeforeRemove_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap FolderClosed {

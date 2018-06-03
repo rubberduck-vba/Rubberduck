@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UnitTesting;
@@ -236,7 +237,7 @@ namespace Rubberduck.UI.Command
             }
             catch (Exception ex)
             {
-                _messageBox.Show(TestExplorer.Command_AddTestModule_Error);
+                _messageBox.Message(TestExplorer.Command_AddTestModule_Error);
                 Logger.Warn("Unable to add test module. An exception was thrown.");
                 Logger.Warn(ex);
             }
