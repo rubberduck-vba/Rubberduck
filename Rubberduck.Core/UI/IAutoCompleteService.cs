@@ -4,6 +4,6 @@ namespace Rubberduck.AutoComplete
 {
     public interface IAutoCompleteService
     {
-        event EventHandler TypingCode;
+        event EventHandler AutoCompleteTriggered;
     }
 }

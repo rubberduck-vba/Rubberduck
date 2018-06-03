@@ -8,35 +8,41 @@ namespace Rubberduck.AutoComplete
 {
     public class AutoCompleteService : IAutoCompleteService, IDisposable
     {
-        public event EventHandler TypingCode;
-        private readonly IReadOnlyList<IAutoComplete> _autocompletions;
+        private readonly IReadOnlyList<IAutoComplete> _autoCompletions;
 
         public AutoCompleteService(IReadOnlyList<IAutoComplete> autoCompletes)
         {
-            _autocompletions = autoCompletes;
-            VBENativeServices.TypingCode += VBENativeServices_TypingCode;
+            _autoCompletions = autoCompletes;
+            VBENativeServices.CaretHidden += VBENativeServices_CaretHidden;
         }
 
-        QualifiedSelection? _lastSelection;
-        string _lastCode;
+        public event EventHandler AutoCompleteTriggered;
 
-        private void VBENativeServices_TypingCode(object sender, AutoCompleteEventArgs e)
+        private QualifiedSelection? _lastSelection;
+        private string _lastCode;
+        string _contentHash;
+
+        private void VBENativeServices_CaretHidden(object sender, AutoCompleteEventArgs e)
         {
-            TypingCode?.Invoke(this, e);
+            AutoCompleteTriggered?.Invoke(this, e);
             var selection = e.CodePane.Selection;
             var qualifiedSelection = e.CodePane.GetQualifiedSelection();
 
-            if (!selection.IsSingleCharacter || e.OldCode.Equals(_lastCode) || qualifiedSelection.Value.Equals(_lastSelection))
+            if (!selection.IsSingleCharacter || e.OldCode.Equals(_lastCode) || qualifiedSelection.Value.Equals(_lastSelection) || string.IsNullOrWhiteSpace(e.OldCode) || e.ContentHash == _contentHash)
             {
                 return;
             }
 
-            foreach (var autocomplete in _autocompletions.Where(auto => auto.IsEnabled))
+            foreach (var autoCompletion in _autoCompletions.Where(auto => auto.IsEnabled))
             {
-                if (autocomplete.Execute(e))
+                if (autoCompletion.Execute(e))
                 {
                     _lastSelection = qualifiedSelection;
                     _lastCode = e.NewCode;
+                    using (var module = e.CodePane.CodeModule)
+                    {
+                        _contentHash = module.ContentHash();
+                    }
                     break;
                 }
             }
@@ -44,7 +50,7 @@ namespace Rubberduck.AutoComplete
 
         public void Dispose()
         {
-            VBENativeServices.TypingCode -= VBENativeServices_TypingCode;
+            VBENativeServices.CaretHidden -= VBENativeServices_CaretHidden;
         }
     }
 }

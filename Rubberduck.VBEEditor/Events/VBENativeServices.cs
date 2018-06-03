@@ -166,7 +166,7 @@ namespace Rubberduck.VBEditor.Events
         }
 
         private static string _currentLine;
-        public static event EventHandler<AutoCompleteEventArgs> TypingCode; // not CodeChanged because wouldn't fire on paste
+        public static event EventHandler<AutoCompleteEventArgs> CaretHidden; // not CodeChanged because wouldn't fire on paste
         private static void OnTypingCode(IntPtr hwnd)
         {
             var pane = GetCodePaneFromHwnd(hwnd);
@@ -175,7 +175,7 @@ namespace Rubberduck.VBEditor.Events
                 var args = new AutoCompleteEventArgs(pane);
                 if (_currentLine != args.OldCode)
                 {
-                    TypingCode?.Invoke(_vbe, args);
+                    CaretHidden?.Invoke(_vbe, args);
                     _currentLine = args.NewCode;
                 }
             }
