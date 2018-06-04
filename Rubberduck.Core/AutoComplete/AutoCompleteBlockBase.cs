@@ -27,10 +27,9 @@ namespace Rubberduck.AutoComplete
 
         protected virtual bool IndentBody => true;
 
-        private bool _executing;
         public override bool Execute(AutoCompleteEventArgs e)
         {
-            if (_executing || (SkipPreCompilerDirective && e.OldCode.Trim().StartsWith("#")))
+            if (SkipPreCompilerDirective && e.OldCode.Trim().StartsWith("#"))
             {
                 return false;
             }
@@ -51,11 +50,9 @@ namespace Rubberduck.AutoComplete
                 var indent = e.OldCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                 using (var module = e.CodePane.CodeModule)
                 {
-                    _executing = true;
                     var code = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
                     if (module.GetLines(selection.NextLine) == code)
                     {
-                        _executing = false;
                         return false;
                     }
 
@@ -65,7 +62,6 @@ namespace Rubberduck.AutoComplete
                     e.CodePane.Selection = new VBEditor.Selection(selection.StartLine, indent + stdIndent + 1);
 
                     e.NewCode = e.OldCode;
-                    _executing = false;
                     return true;
                 }
             }
