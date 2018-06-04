@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.AutoComplete
 {
