@@ -9,9 +9,9 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
@@ -30,31 +30,34 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor()
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
+            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
             {
-                return;
-            }
-
-            _model = presenter.Show();
-            if (_model == null || !_model.Parameters.Any())
-            {
-                return;
-            }
-
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                var oldSelection = pane.GetQualifiedSelection();
-
-                RemoveParameters();
-
-                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                var presenter = container.Value;
+                if (presenter == null)
                 {
-                    pane.Selection = oldSelection.Value.Selection;
+                    return;
                 }
-            }
 
-            _model.State.OnParseRequested(this);
+                _model = presenter.Show();
+                if (_model == null || !_model.Parameters.Any())
+                {
+                    return;
+                }
+
+                using (var pane = _vbe.ActiveCodePane)
+                {
+                    var oldSelection = pane.GetQualifiedSelection();
+
+                    RemoveParameters();
+
+                    if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
+                }
+
+                _model.State.OnParseRequested(this);
+            }
         }
 
         public void Refactor(QualifiedSelection target)

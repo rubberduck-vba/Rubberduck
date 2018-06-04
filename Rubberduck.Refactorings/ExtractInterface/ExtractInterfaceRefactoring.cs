@@ -8,6 +8,7 @@ using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -27,36 +28,39 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor()
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
+            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
             {
-                return;
-            }
-
-            _model = presenter.Show();
-            if (_model == null)
-            {
-                return;
-            }
-
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
+                var presenter = container.Value;
+                if (presenter == null)
                 {
                     return;
                 }
 
-                var oldSelection = pane.GetQualifiedSelection();
-
-                AddInterface();
-
-                if (oldSelection.HasValue)
+                _model = presenter.Show();
+                if (_model == null)
                 {
-                    pane.Selection = oldSelection.Value.Selection;
+                    return;
                 }
-            }
 
-            _model.State.OnParseRequested(this);
+                using (var pane = _vbe.ActiveCodePane)
+                {
+                    if (pane.IsWrappingNullReference)
+                    {
+                        return;
+                    }
+
+                    var oldSelection = pane.GetQualifiedSelection();
+
+                    AddInterface();
+
+                    if (oldSelection.HasValue)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
+                }
+
+                _model.State.OnParseRequested(this);
+            }
         }
 
         public void Refactor(QualifiedSelection target)

@@ -12,6 +12,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
@@ -34,42 +35,46 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public void Refactor()
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
+            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
             {
-                return;
-            }
-
-            _model = presenter.Show();
-            if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() || !IsValidParamOrder())
-            {
-                return;
-            }
-
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
+                var presenter = container.Value;
+                if (presenter == null)
                 {
                     return;
                 }
 
-                var oldSelection = pane.GetQualifiedSelection();
-
-                AdjustReferences(_model.TargetDeclaration.References);
-                AdjustSignatures();
-
-                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                _model = presenter.Show();
+                if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() ||
+                    !IsValidParamOrder())
                 {
-                    pane.Selection = oldSelection.Value.Selection;
-                } 
-            }
+                    return;
+                }
 
-            foreach (var rewriter in _rewriters)
-            {
-                rewriter.Rewrite();
-            }
+                using (var pane = _vbe.ActiveCodePane)
+                {
+                    if (pane.IsWrappingNullReference)
+                    {
+                        return;
+                    }
 
-            _model.State.OnParseRequested(this);
+                    var oldSelection = pane.GetQualifiedSelection();
+
+                    AdjustReferences(_model.TargetDeclaration.References);
+                    AdjustSignatures();
+
+                    if (oldSelection.HasValue && !pane.IsWrappingNullReference)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
+                }
+
+                foreach (var rewriter in _rewriters)
+                {
+                    rewriter.Rewrite();
+                }
+
+                _model.State.OnParseRequested(this);
+            }
         }
 
         public void Refactor(QualifiedSelection target)

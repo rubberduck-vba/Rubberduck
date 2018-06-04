@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -69,11 +70,14 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor()
         {
-            var presenter = CreateRenamePresenter();
-            if (presenter != null)
+            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
             {
-                RefactorImpl(presenter.Model.Target, presenter);
-                RestoreInitialSelection();
+                var presenter = container.Value;
+                if (presenter != null)
+                {
+                    RefactorImpl(presenter.Model.Target, presenter);
+                    RestoreInitialSelection();
+                }
             }
         }
 

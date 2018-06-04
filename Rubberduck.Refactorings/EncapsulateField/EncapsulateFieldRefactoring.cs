@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -27,20 +28,29 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor()
         {
-            var presenter = _factory.Create();
-            if (presenter == null) { return; }
-
-            _model = presenter.Show();
-            if (_model == null) { return; }
-
-            var target = _model.TargetDeclaration;
-            var rewriter = _model.State.GetRewriter(target);
-            AddProperty(rewriter);
-
-            rewriter.Rewrite();
-            foreach (var referenceRewriter in _referenceRewriters)
+            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
             {
-                referenceRewriter.Rewrite();
+                var presenter = container.Value;
+                if (presenter == null)
+                {
+                    return;
+                }
+
+                _model = presenter.Show();
+                if (_model == null)
+                {
+                    return;
+                }
+
+                var target = _model.TargetDeclaration;
+                var rewriter = _model.State.GetRewriter(target);
+                AddProperty(rewriter);
+
+                rewriter.Rewrite();
+                foreach (var referenceRewriter in _referenceRewriters)
+                {
+                    referenceRewriter.Rewrite();
+                }
             }
         }
 
