@@ -157,6 +157,15 @@ namespace Rubberduck.Root
 
         private void RegisterCodeMetrics(IWindsorContainer container, Assembly[] assembliesToRegister)
         {
+            foreach (var assembly in assembliesToRegister)
+            {
+                container.Register(Types.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<CodeMetric>()
+                    .Unless(t => t == typeof(CodeMetric))
+                    .WithServiceBase()
+                    .LifestyleSingleton());
+            }
             container.Register(Component.For<ICodeMetricsAnalyst>()
                 .ImplementedBy<CodeMetricsAnalyst>()
                 .LifestyleSingleton());
