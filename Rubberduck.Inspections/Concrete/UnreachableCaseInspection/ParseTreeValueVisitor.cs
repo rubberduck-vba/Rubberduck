@@ -21,14 +21,28 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private RubberduckParserState _state;
         private IParseTreeValueFactory _inspValueFactory;
 
-        public ParseTreeValueVisitor(RubberduckParserState state, IParseTreeValueFactory valueFactory)
+        //public ParseTreeValueVisitor(RubberduckParserState state, IParseTreeValueFactory valueFactory)
+        //{
+        //    _state = state;
+        //    _inspValueFactory = valueFactory;
+        //    Calculator = new ParseTreeExpressionEvaluator(valueFactory);
+        //    _contextValues = new ParseTreeVisitorResults();
+        //    OnValueResultCreated += _contextValues.OnNewValueResult;
+        //}
+
+        public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
         {
-            _state = state;
             _inspValueFactory = valueFactory;
+            IdRefRetriever = idRefRetriever;
             Calculator = new ParseTreeExpressionEvaluator(valueFactory);
             _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
         }
+
+        //used only within UnreachableCaseInspection tests
+        public RubberduckParserState State { set; get; } = null;
+
+        private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { set; get; } = null;
 
         public event EventHandler<ValueResultEventArgs> OnValueResultCreated;
 
@@ -362,8 +376,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             return context is VBAParser.LogicalNotOpContext;
         }
+
+        public static bool IsResultContext<TContext>(TContext context)
+        {
+            return IsMathContext(context)
+                    || IsLogicalContext(context)
+                    || context is VBAParser.SelectStartValueContext
+                    || context is VBAParser.SelectEndValueContext
+                    || context is VBAParser.ParenthesizedExprContext
+                    || context is VBAParser.SelectEndValueContext
+                    || context is VBAParser.LExprContext
+                    || context is VBAParser.LiteralExprContext;
+        }
     }
-    
+
     public class ValueResultEventArgs : EventArgs
     {
         public ValueResultEventArgs(ParserRuleContext context, IParseTreeValue value)

@@ -10,14 +10,19 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Symbols;
+using System;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
+        private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
+        private readonly IParseTreeValueFactory _valueFactory;
+
         private readonly IParseTreeValueVisitorFactory _parseTreeVisitorFactory;
         private readonly ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
-        private readonly IParseTreeValueFactory _valueFactory;
+        //private readonly IParseTreeValueFactory _valueFactory;
         private enum CaseInpectionResult { Unreachable, MismatchType, CaseElse };
 
         private static readonly Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
@@ -33,15 +38,50 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var factoriesFactory = new UnreachableCaseInspectionFactoryProvider();
 
             _selectStmtFactory = factoriesFactory.CreateISelectStmtContextWrapperFactory();
+            //_selectStmtFactory = factoriesFactory.CreateIUnreachableInspectorFactory();
             _valueFactory = factoriesFactory.CreateIParseTreeValueFactory();
-            _parseTreeVisitorFactory = factoriesFactory.CreateIParseTreeValueVisitorFactory();
+            //_parseTreeVisitorFactory = factoriesFactory.CreateIParseTreeValueVisitorFactory();
         }
 
         public override IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
 
         private List<IInspectionResult> _inspectionResults = new List<IInspectionResult>();
-        private ParseTreeVisitorResults _valueResults = new ParseTreeVisitorResults();
+        private ParseTreeVisitorResults ValueResults { get; }  = new ParseTreeVisitorResults();
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults2()
+        {
+            _inspectionResults = new List<IInspectionResult>();
+            var qualifiedSelectCaseStmts = Listener.Contexts
+                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
+
+            //<<<<<<< HEAD
+            var parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, GetIdentifierReferenceForContext);
+            //var parseTreeValueVisitor = _parseTreeVisitorFactory.Create(_valueFactory, GetIdentifierReferenceForContext);
+            parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
+            //=======
+            //            var parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
+            //            _valueResults = new ParseTreeVisitorResults();
+            //            parseTreeValueVisitor.OnValueResultCreated += _valueResults.OnNewValueResult;
+            //>>>>>>> rubberduck-vba/next
+
+            foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
+            {
+                qualifiedSelectCaseStmt.Context.Accept(parseTreeValueVisitor);
+                //<<<<<<< HEAD
+                var selectStmt = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults, _valueFactory);
+                //=======
+                //                var selectStmt = _selectStmtFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, _valueResults);
+                //>>>>>>> rubberduck-vba/next
+
+                selectStmt.InspectForUnreachableCases();
+
+                selectStmt.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[CaseInpectionResult.Unreachable]));
+                selectStmt.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.MismatchType]));
+                selectStmt.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInpectionResult.CaseElse]));
+            }
+            return _inspectionResults;
+        }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -50,13 +90,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
             var parseTreeValueVisitor = _parseTreeVisitorFactory.Create(State, _valueFactory);
-            _valueResults = new ParseTreeVisitorResults();
-            parseTreeValueVisitor.OnValueResultCreated += _valueResults.OnNewValueResult;
+            //_valueResults = new ParseTreeVisitorResults();
+            parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
             {
                 qualifiedSelectCaseStmt.Context.Accept(parseTreeValueVisitor);
-                var selectStmt = _selectStmtFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, _valueResults);
+                var selectStmt = _selectStmtFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults);
 
                 selectStmt.InspectForUnreachableCases();
 
@@ -74,6 +114,33 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
             _inspectionResults.Add(result);
         }
+
+        public static IParseTreeValueVisitor CreateParseTreeValueVisitor(IParseTreeValueFactory valueFactory, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
+        {
+            return new ParseTreeValueVisitor(valueFactory, func);
+        }
+
+        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
+        private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)
+        {
+            return GetIdentifierReferenceForContext(context, State);
+        }
+
+        //public static to support tests
+        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, RubberduckParserState state)
+        {
+            IdentifierReference idRef = null;
+            var success = false;
+            var identifierReferences = (state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
+                .Where(rf => rf.Context == context);
+            if (identifierReferences.Count() == 1)
+            {
+                idRef = identifierReferences.First();
+                success = true;
+            }
+            return (success, idRef);
+        }
+
 
         #region UnreachableCaseInspectionListeners
         public class UnreachableCaseInspectionListener : VBAParserBaseListener, IInspectionListener

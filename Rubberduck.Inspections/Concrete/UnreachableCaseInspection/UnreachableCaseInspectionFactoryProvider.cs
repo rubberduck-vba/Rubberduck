@@ -42,5 +42,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 FactoryProvider = this
             };
         }
+
+        public IUnreachableCaseInspectorFactory CreateIUnreachableInspectorFactory()
+        {
+            return new UnreachableCaseInspectorFactory();
+        }
     }
 }
