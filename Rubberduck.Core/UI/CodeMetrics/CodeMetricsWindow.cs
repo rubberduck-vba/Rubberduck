@@ -1,15 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
-using Rubberduck.Navigation.CodeMetrics;
 using Rubberduck.Resources;
+using Rubberduck.CodeAnalysis.CodeMetrics;
+using System;
 
 namespace Rubberduck.UI.CodeMetrics
 {
     [ExcludeFromCodeCoverage]
     public partial class CodeMetricsWindow : UserControl, IDockableUserControl
     {
-        private const string ClassId = "C5318B5A-172F-417C-88E3-B377CDA2D809";
-        string IDockableUserControl.ClassId => ClassId;
+        private readonly string RandomGuid = Guid.NewGuid().ToString();
+        string IDockableUserControl.GuidIdentifier => RandomGuid;
         string IDockableUserControl.Caption => RubberduckUI.CodeMetricsDockablePresenter_Caption;
 
         private CodeMetricsWindow()

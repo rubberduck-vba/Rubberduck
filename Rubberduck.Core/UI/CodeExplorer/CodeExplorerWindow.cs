@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources.CodeExplorer;
@@ -8,8 +9,8 @@ namespace Rubberduck.UI.CodeExplorer
     [ExcludeFromCodeCoverage]
     public partial class CodeExplorerWindow : UserControl, IDockableUserControl
     {
-        private const string ClassId = "C5318B59-172F-417C-88E3-B377CDA2D809";
-        string IDockableUserControl.ClassId { get { return ClassId; } }
+        private readonly string RandomGuid = Guid.NewGuid().ToString();
+        string IDockableUserControl.GuidIdentifier => RandomGuid;
         string IDockableUserControl.Caption { get { return CodeExplorerUI.CodeExplorerDockablePresenter_Caption; } }
 
         private CodeExplorerWindow()
