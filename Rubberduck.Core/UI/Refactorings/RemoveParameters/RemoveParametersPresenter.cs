@@ -6,7 +6,7 @@ using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel, RemoveParametersDialog, RemoveParametersView, RemoveParametersViewModel>
+    internal class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel, RemoveParametersDialog, RemoveParametersView, RemoveParametersViewModel>, IRemoveParametersPresenter
     {
         private readonly IMessageBox _messageBox;
 

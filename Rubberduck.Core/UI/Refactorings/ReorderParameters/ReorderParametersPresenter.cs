@@ -2,12 +2,12 @@
 using System.Linq;
 using Rubberduck.Resources;
 using Rubberduck.Interaction;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ReorderParameters;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ReorderParameters;
 
-namespace Rubberduck.Refactorings.ReorderParameters
+namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    public class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel, ReorderParametersDialog, ReorderParametersView, ReorderParametersViewModel>
+    internal class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel, ReorderParametersDialog, ReorderParametersView, ReorderParametersViewModel>, IReorderParametersPresenter
     {
         private readonly IMessageBox _messageBox;
 

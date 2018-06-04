@@ -1,10 +1,10 @@
 ﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Rename;
 
-namespace Rubberduck.Refactorings.Rename
+namespace Rubberduck.UI.Refactorings.Rename
 {
-    public class RenamePresenter : RefactoringPresenterBase<RenameModel, RenameDialog, RenameView, RenameViewModel>
+    internal class RenamePresenter : RefactoringPresenterBase<RenameModel, RenameDialog, RenameView, RenameViewModel>, IRenamePresenter
     {
         public RenamePresenter(RenameModel model,
             IRefactoringDialogFactory<RenameModel, RenameView, RenameViewModel, RenameDialog> dialogFactory) : base(

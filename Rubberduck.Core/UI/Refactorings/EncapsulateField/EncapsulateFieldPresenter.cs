@@ -8,7 +8,7 @@ using Rubberduck.Refactorings.EncapsulateField;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldPresenter : RefactoringPresenterBase<EncapsulateFieldModel, EncapsulateFieldDialog, EncapsulateFieldView, EncapsulateFieldViewModel>, IEncapsulateFieldPresenter
+    internal class EncapsulateFieldPresenter : RefactoringPresenterBase<EncapsulateFieldModel, EncapsulateFieldDialog, EncapsulateFieldView, EncapsulateFieldViewModel>, IEncapsulateFieldPresenter
     {
         public EncapsulateFieldPresenter(EncapsulateFieldModel model,
             IRefactoringDialogFactory<EncapsulateFieldModel, EncapsulateFieldView, EncapsulateFieldViewModel,

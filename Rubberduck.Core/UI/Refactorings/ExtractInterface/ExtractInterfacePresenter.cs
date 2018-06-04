@@ -5,7 +5,7 @@ using Rubberduck.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings.ExtractInterface
 {
-    internal class ExtractInterfacePresenter : RefactoringPresenterBase<ExtractInterfaceModel, ExtractInterfaceDialog, ExtractInterfaceView, ExtractInterfaceViewModel>
+    internal class ExtractInterfacePresenter : RefactoringPresenterBase<ExtractInterfaceModel, ExtractInterfaceDialog, ExtractInterfaceView, ExtractInterfaceViewModel>, IExtractInterfacePresenter
     {
         public ExtractInterfacePresenter(ExtractInterfaceModel model,
             IRefactoringDialogFactory<ExtractInterfaceModel, ExtractInterfaceView, ExtractInterfaceViewModel,
