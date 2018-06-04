@@ -343,7 +343,7 @@ End Property";
         {
             var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, false, false, false);
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
     }

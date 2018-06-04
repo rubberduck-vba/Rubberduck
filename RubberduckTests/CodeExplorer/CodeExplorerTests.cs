@@ -2290,7 +2290,7 @@ End Sub";
                 }
             };
 
-            var userSettings = new UserSettings(generalSettings, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(generalSettings, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
