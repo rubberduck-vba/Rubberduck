@@ -18,7 +18,9 @@ namespace Rubberduck.Settings
             IsEnabled = isEnabled;
         }
 
+        [XmlAttribute]
         public string Key { get; set; }
+        [XmlAttribute]
         public bool IsEnabled { get; set; }
 
         [XmlIgnore]
