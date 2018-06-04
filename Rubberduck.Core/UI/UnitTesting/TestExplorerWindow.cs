@@ -22,10 +22,8 @@ namespace Rubberduck.UI.UnitTesting
             get { return _viewModel; }
         }
 
-        public string ClassId
-        {
-            get { return "9CF1392A-2DC9-48A6-AC0B-E601A9802608"; }
-        }
+        private readonly string RandomGuid = Guid.NewGuid().ToString();
+        string IDockableUserControl.GuidIdentifier => RandomGuid;
 
         public string Caption => TestExplorer.TestExplorerWindow_Caption;
     }

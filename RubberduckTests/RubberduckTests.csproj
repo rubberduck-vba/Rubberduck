@@ -325,16 +325,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj">
-      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
+      <Project>{def2fb9d-6e62-49d6-8e26-9983ac025768}</Project>
       <Name>Rubberduck.CodeAnalysis</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
       <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
-      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
-      <Name>Rubberduck.Inspections</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
       <Project>{ac54b7fb-170d-4da6-a30b-8cad182f0e6b}</Project>

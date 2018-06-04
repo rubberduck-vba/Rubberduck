@@ -3,9 +3,9 @@
     public interface IDockableUserControl
     {
         /// <summary>
-        /// Gets a string containing the GUID with which the class is registered.
+        /// Gets a string containing some semi-random GUID to use for positional registration
         /// </summary>
-        string ClassId { get; }
+        string GuidIdentifier { get; }
 
         /// <summary>
         /// Gets a string containing the caption of the toolwindow.
