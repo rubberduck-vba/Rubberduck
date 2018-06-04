@@ -17,8 +17,8 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class AutoCompleteSettings : IAutoCompleteSettings, IEquatable<AutoCompleteSettings>
     {
-        private readonly IEnumerable<AutoCompleteSetting> _defaultSettings;
-        private HashSet<AutoCompleteSetting> _settings = new HashSet<AutoCompleteSetting>();
+        [XmlArrayItem("AutoComplete", IsNullable = false)]
+        public HashSet<AutoCompleteSetting> AutoCompletes { get; set; }
 
         public AutoCompleteSettings() : this(Enumerable.Empty<AutoCompleteSetting>())
         {
@@ -27,64 +27,7 @@ namespace Rubberduck.Settings
 
         public AutoCompleteSettings(IEnumerable<AutoCompleteSetting> defaultSettings)
         {
-            _defaultSettings = defaultSettings;
-            _settings = defaultSettings.ToHashSet();
-        }
-
-        [XmlArrayItem("AutoComplete", IsNullable = false)]
-        public HashSet<AutoCompleteSetting> AutoCompletes
-        {
-            get => _settings;
-            set
-            {
-                // Enable loading user settings during deserialization
-                if (_defaultSettings == null)
-                {
-                    if (value != null)
-                    {
-                        AddUnique(value);
-                    }
-
-                    return;
-                }
-
-                var defaults = _defaultSettings.ToArray();
-
-                if (value == null || value.Count == 0)
-                {
-                    _settings = new HashSet<AutoCompleteSetting>(defaults);
-                    return;
-                }
-
-                _settings = new HashSet<AutoCompleteSetting>();
-
-                var incoming = value;
-                AddUnique(incoming);
-
-                //Merge any hotkeys that weren't found in the input.
-                foreach (var setting in defaults.Where(setting => _settings.FirstOrDefault(s => s.Key.Equals(setting.Key)) == null))
-                {
-                    setting.IsEnabled &= !IsDuplicate(setting);
-                    _settings.Add(setting);
-                }
-            }
-
-        }
-
-        private void AddUnique(IEnumerable<AutoCompleteSetting> settings)
-        {
-            //Only take the first setting if multiple definitions are found.
-            foreach (var setting in settings.GroupBy(s => s.Key).Select(autocomplete => autocomplete.First()))
-            {
-                //Only allow one hotkey to be enabled with the same key combination.
-                setting.IsEnabled &= !IsDuplicate(setting);
-                _settings.Add(setting);
-            }
-        }
-
-        private bool IsDuplicate(AutoCompleteSetting setting)
-        {
-            return _settings.FirstOrDefault(s => s.Key == setting.Key) != null;
+            AutoCompletes = new HashSet<AutoCompleteSetting>(defaultSettings);
         }
 
         public AutoCompleteSetting GetSetting<TAutoComplete>() where TAutoComplete : IAutoComplete

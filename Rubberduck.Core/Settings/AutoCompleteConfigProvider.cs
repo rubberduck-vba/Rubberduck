@@ -19,25 +19,43 @@ namespace Rubberduck.Settings
             _defaultSettings = new DefaultSettings<AutoCompleteSettings>().Default;
             _defaultSettings.AutoCompletes = _defaultSettings.AutoCompletes.Where(setting => _foundAutoCompleteKeys.Contains(setting.Key)).ToHashSet();
 
+            var defaultKeys = _defaultSettings.AutoCompletes.Select(e => e.Key);
+            var nonDefaultAutoCompletes = provider.AutoCompletes.Where(e => !defaultKeys.Contains(e.GetType().Name));
+
+            _defaultSettings.AutoCompletes.UnionWith(nonDefaultAutoCompletes.Select(e => new AutoCompleteSetting(e)));
         }
 
         public AutoCompleteSettings Create()
         {
-            var prototype = new AutoCompleteSettings(_defaultSettings.AutoCompletes);
-
-            // Loaded settings don't contain defaults, so we need to use the `Settings` property to combine user settings with defaults.
-            var loaded = _persister.Load(prototype);
-            if (loaded != null)
+            var loaded = _persister.Load(_defaultSettings);
+            if (loaded == null)
             {
-                prototype.AutoCompletes = loaded.AutoCompletes;
+                return _defaultSettings;
             }
 
-            return prototype;
+            // Loaded settings don't contain defaults, so we need to combine user settings with defaults.
+            var settings = new HashSet<AutoCompleteSetting>();
+
+            foreach (var loadedSetting in loaded.AutoCompletes.Where(e => _foundAutoCompleteKeys.Contains(e.Key)))
+            {
+                var matchingDefaultSetting = _defaultSettings.AutoCompletes.FirstOrDefault(e => e.Equals(loadedSetting));
+                if (matchingDefaultSetting != null)
+                {
+                    loadedSetting.IsEnabled = matchingDefaultSetting.IsEnabled;
+                }
+
+                settings.Add(loadedSetting);
+            }
+
+            settings.UnionWith(_defaultSettings.AutoCompletes.Where(e => !settings.Contains(e)));
+            loaded.AutoCompletes = settings;
+
+            return loaded;
         }
 
         public AutoCompleteSettings CreateDefaults()
         {
-            return new AutoCompleteSettings(_defaultSettings.AutoCompletes);
+            return _defaultSettings;
         }
 
         public void Save(AutoCompleteSettings settings)
