@@ -47,7 +47,7 @@ namespace Rubberduck.UnitTesting
                 ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount) &&
                                         r.Argument != null &&
                                         r.Parameter.Equals(parameter.ToLower()) &&
-                                        r.Argument.Equals(value)).ToList();
+                                        value.Equals(r.Argument)).ToList(); // use this order instead of r.Argument.Equals(value) to use Equals method for ComVariant
             if (returnInfo.Count <= 0)
             {
                 return false;

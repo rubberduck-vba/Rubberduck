@@ -44,7 +44,10 @@ namespace Rubberduck.Parsing.VBA
                     options,
                     module =>
                     {
-                        ParseModule(module, token);
+                        if (module.IsParsable)
+                        {
+                            ParseModule(module, token);
+                        }
                     }
                 );
             }

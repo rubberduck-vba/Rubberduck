@@ -18,6 +18,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public QualifiedModuleName QualifiedModuleName => new QualifiedModuleName(this);
 
         public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
+        public bool HasCodeModule => true;
         public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
         public IVBComponents Collection => new VBComponents(IsWrappingNullReference ? null : Target.Collection);
