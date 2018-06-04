@@ -10,13 +10,13 @@ namespace Rubberduck.UI.Refactorings
         where TDialog : RefactoringDialogBase<TModel, TView, TViewModel>
     {
         private readonly TDialog _dialog;
-        private readonly IRefactoringDialogFactory<TModel, TView, TViewModel, TDialog> _factory;
+        private readonly IRefactoringDialogFactory _factory;
 
-        public RefactoringPresenterBase(TModel model, IRefactoringDialogFactory<TModel, TView, TViewModel, TDialog> factory)
+        public RefactoringPresenterBase(TModel model, IRefactoringDialogFactory factory)
         {
             _factory = factory;
-            var viewModel = _factory.CreateViewModel(model);
-            _dialog = _factory.CreateDialog(viewModel);
+            var viewModel = _factory.CreateViewModel<TModel, TViewModel>(model);
+            _dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(viewModel);
         }
 
         public TModel Model => _dialog.ViewModel.Model;

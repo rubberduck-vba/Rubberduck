@@ -11,8 +11,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
     internal class EncapsulateFieldPresenter : RefactoringPresenterBase<EncapsulateFieldModel, EncapsulateFieldDialog, EncapsulateFieldView, EncapsulateFieldViewModel>, IEncapsulateFieldPresenter
     {
         public EncapsulateFieldPresenter(EncapsulateFieldModel model,
-            IRefactoringDialogFactory<EncapsulateFieldModel, EncapsulateFieldView, EncapsulateFieldViewModel,
-                EncapsulateFieldDialog> dialogFactory) : base(model, dialogFactory)
+            IRefactoringDialogFactory dialogFactory) : base(model, dialogFactory)
         { }
 
         public override EncapsulateFieldModel Show()

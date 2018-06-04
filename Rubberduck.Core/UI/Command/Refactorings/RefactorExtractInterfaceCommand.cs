@@ -18,10 +18,10 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory<IExtractInterfacePresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
 
         public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox,
-            IRefactoringPresenterFactory<IExtractInterfacePresenter> factory)
+            IRefactoringPresenterFactory factory)
             : base(vbe)
         {
             _state = state;

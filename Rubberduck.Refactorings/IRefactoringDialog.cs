@@ -8,9 +8,13 @@ namespace Rubberduck.Refactorings
         Cancel
     }
 
-    public interface IRefactoringDialog<TViewModel> : IDisposable
+    public interface IRefactoringDialog<TViewModel> : IRefactoringDialog
     {
         TViewModel ViewModel { get; }
+    }
+
+    public interface IRefactoringDialog : IDisposable
+    {
         RefactoringDialogResult DialogResult { get; }
         RefactoringDialogResult ShowDialog();
     }
