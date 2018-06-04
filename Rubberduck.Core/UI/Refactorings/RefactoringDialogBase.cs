@@ -9,6 +9,7 @@ namespace Rubberduck.UI.Refactorings
     {
         public RefactoringDialogBase(TViewModel viewModel)
         {
+            InitializeComponent();
             ViewModel = viewModel;
             userControl = new TView
             {
