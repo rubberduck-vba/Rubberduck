@@ -14,12 +14,12 @@ namespace Rubberduck.AutoComplete
         public AutoCompleteProvider(IEnumerable<IAutoComplete> autoCompletes)
         {
             var defaults = new DefaultSettings<AutoCompleteSettings>().Default;
-            var defaultKeys = defaults.Settings.Select(x => x.Key);
+            var defaultKeys = defaults.AutoCompletes.Select(x => x.Key);
             var defaultAutoCompletes = autoCompletes.Where(autoComplete => defaultKeys.Contains(autoComplete.GetType().Name));
 
             foreach (var autoComplete in defaultAutoCompletes)
             {
-                autoComplete.IsEnabled = defaults.Settings.First(setting => setting.Key == autoComplete.GetType().Name).IsEnabled;
+                autoComplete.IsEnabled = defaults.AutoCompletes.First(setting => setting.Key == autoComplete.GetType().Name).IsEnabled;
             }
 
             AutoCompletes = autoCompletes;

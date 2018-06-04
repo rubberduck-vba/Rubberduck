@@ -17,19 +17,19 @@ namespace Rubberduck.Settings
             _persister = persister;
             _foundAutoCompleteKeys = provider.AutoCompletes.Select(e => e.GetType().Name).ToHashSet();
             _defaultSettings = new DefaultSettings<AutoCompleteSettings>().Default;
-            _defaultSettings.Settings = _defaultSettings.Settings.Where(setting => _foundAutoCompleteKeys.Contains(setting.Key)).ToHashSet();
+            _defaultSettings.AutoCompletes = _defaultSettings.AutoCompletes.Where(setting => _foundAutoCompleteKeys.Contains(setting.Key)).ToHashSet();
 
         }
 
         public AutoCompleteSettings Create()
         {
-            var prototype = new AutoCompleteSettings(_defaultSettings.Settings);
+            var prototype = new AutoCompleteSettings(_defaultSettings.AutoCompletes);
 
             // Loaded settings don't contain defaults, so we need to use the `Settings` property to combine user settings with defaults.
             var loaded = _persister.Load(prototype);
             if (loaded != null)
             {
-                prototype.Settings = loaded.Settings;
+                prototype.AutoCompletes = loaded.AutoCompletes;
             }
 
             return prototype;
@@ -37,7 +37,7 @@ namespace Rubberduck.Settings
 
         public AutoCompleteSettings CreateDefaults()
         {
-            return new AutoCompleteSettings(_defaultSettings.Settings);
+            return new AutoCompleteSettings(_defaultSettings.AutoCompletes);
         }
 
         public void Save(AutoCompleteSettings settings)

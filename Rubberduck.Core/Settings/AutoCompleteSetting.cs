@@ -20,5 +20,16 @@ namespace Rubberduck.Settings
 
         [XmlIgnore]
         public string Description => Resources.Settings.SettingsUI.ResourceManager.GetString(Key + "Description");
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as AutoCompleteSetting;
+            return other != null && other.Key == Key;
+        }
+
+        public override int GetHashCode()
+        {
+            return Key?.GetHashCode() ?? 0;
+        }
     }
 }

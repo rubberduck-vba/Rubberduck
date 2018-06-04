@@ -10,17 +10,20 @@ namespace Rubberduck.Settings
 {
     public interface IAutoCompleteSettings
     {
-        HashSet<AutoCompleteSetting> Settings { get; set; }
+        HashSet<AutoCompleteSetting> AutoCompletes { get; set; }
     }
 
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     [XmlType(AnonymousType = true)]
-    public class AutoCompleteSettings : IAutoCompleteSettings
+    public class AutoCompleteSettings : IAutoCompleteSettings, IEquatable<AutoCompleteSettings>
     {
         private readonly IEnumerable<AutoCompleteSetting> _defaultSettings;
         private HashSet<AutoCompleteSetting> _settings = new HashSet<AutoCompleteSetting>();
 
-        public AutoCompleteSettings() { /* default constructor required for XML serialization */ }
+        public AutoCompleteSettings() : this(Enumerable.Empty<AutoCompleteSetting>())
+        {
+            /* default constructor required for XML serialization */
+        }
 
         public AutoCompleteSettings(IEnumerable<AutoCompleteSetting> defaultSettings)
         {
@@ -29,7 +32,7 @@ namespace Rubberduck.Settings
         }
 
         [XmlArrayItem("AutoComplete", IsNullable = false)]
-        public HashSet<AutoCompleteSetting> Settings
+        public HashSet<AutoCompleteSetting> AutoCompletes
         {
             get => _settings;
             set
@@ -86,7 +89,7 @@ namespace Rubberduck.Settings
 
         public AutoCompleteSetting GetSetting<TAutoComplete>() where TAutoComplete : IAutoComplete
         {
-            return Settings.FirstOrDefault(s => typeof(TAutoComplete).Name.Equals(s.Key))
+            return AutoCompletes.FirstOrDefault(s => typeof(TAutoComplete).Name.Equals(s.Key))
                 ?? GetSetting(typeof(TAutoComplete));
         }
 
@@ -94,20 +97,25 @@ namespace Rubberduck.Settings
         {
             try
             {
-                var existing = Settings.FirstOrDefault(s => autoCompleteType.Name.Equals(s.Key));
+                var existing = AutoCompletes.FirstOrDefault(s => autoCompleteType.Name.Equals(s.Key));
                 if (existing != null)
                 {
                     return existing;
                 }
                 var proto = Convert.ChangeType(Activator.CreateInstance(autoCompleteType, new object[] { null }), autoCompleteType);
                 var setting = new AutoCompleteSetting(proto as IAutoComplete);
-                Settings.Add(setting);
+                AutoCompletes.Add(setting);
                 return setting;
             }
             catch (Exception)
             {
                 return null;
             }
+        }
+
+        public bool Equals(AutoCompleteSettings other)
+        {
+            return other != null && AutoCompletes.SequenceEqual(other.AutoCompletes);
         }
     }
 }
