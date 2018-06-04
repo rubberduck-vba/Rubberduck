@@ -8,24 +8,23 @@ namespace Rubberduck.AutoComplete
 {
     public abstract class AutoCompleteBlockBase : AutoCompleteBase
     {
-        /// <param name="api">Used for ensuring compilable resulting code.</param>
         /// <param name="indenterSettings">Used for auto-indenting blocks as per indenter settings.</param>
         /// <param name="inputToken">The token that starts the block, i.e. what to detect.</param>
         /// <param name="outputToken">The token that closes the block, i.e. what to insert.</param>
-        protected AutoCompleteBlockBase(IVBETypeLibsAPI api, IIndenterSettings indenterSettings, string inputToken, string outputToken)
+        protected AutoCompleteBlockBase(IIndenterSettings indenterSettings, string inputToken, string outputToken)
             :base(inputToken, outputToken)
         {
-            _api = api;
-            _indenterSettings = indenterSettings;
+            IndenterSettings = indenterSettings;
         }
 
         protected virtual bool FindInputTokenAtBeginningOfCurrentLine => false;
 
-        private readonly IVBETypeLibsAPI _api;
-        private readonly IIndenterSettings _indenterSettings;
+        protected readonly IIndenterSettings IndenterSettings;
 
         protected virtual bool ExecuteOnCommittedInputOnly => true;
         protected virtual bool MatchInputTokenAtEndOfLineOnly => false;
+
+        protected virtual bool IndentBody => true;
 
         private bool _executing;
         public override bool Execute(AutoCompleteEventArgs e)
@@ -36,7 +35,7 @@ namespace Rubberduck.AutoComplete
             }
 
             var selection = e.CodePane.Selection;
-            var stdIndent = _indenterSettings.IndentSpaces;
+            var stdIndent = IndentBody ? IndenterSettings.IndentSpaces : 0;
 
             var isMatch = MatchInputTokenAtEndOfLineOnly 
                             ? e.OldCode.EndsWith(InputToken)
@@ -59,6 +58,7 @@ namespace Rubberduck.AutoComplete
 
                     module.ReplaceLine(selection.StartLine, new string(' ', indent + stdIndent));
                     e.CodePane.Selection = new VBEditor.Selection(selection.StartLine, indent + stdIndent + 1);
+
                     e.NewCode = e.OldCode;
                     _executing = false;
                     return true;
