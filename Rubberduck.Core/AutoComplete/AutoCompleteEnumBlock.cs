@@ -7,5 +7,7 @@ namespace Rubberduck.AutoComplete
     {
         public AutoCompleteEnumBlock(IIndenterSettings indenterSettings)
             : base(indenterSettings, $"{Tokens.Enum}", $"{Tokens.End} {Tokens.Enum}") { }
+
+        protected override bool IndentBody => IndenterSettings.IndentEnumTypeAsProcedure;
     }
 }
