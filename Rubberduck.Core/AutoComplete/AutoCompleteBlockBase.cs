@@ -1,4 +1,5 @@
-﻿using Rubberduck.SmartIndenter;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using System.Linq;
@@ -41,7 +42,10 @@ namespace Rubberduck.AutoComplete
                             ? e.OldCode.EndsWith(InputToken)
                             : Regex.IsMatch(e.OldCode.Trim(), $"\\b{InputToken}\\b");
 
-            if (isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
+            // todo: handle line-continuating and non-start-of-line comments
+            var isComment = e.OldCode.Trim().StartsWith("'") || e.OldCode.Trim().StartsWith(Tokens.Rem);
+
+            if (!isComment && isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
             {
                 var indent = e.OldCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                 using (var module = e.CodePane.CodeModule)
