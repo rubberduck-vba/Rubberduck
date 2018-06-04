@@ -19,13 +19,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class ReorderParametersRefactoring : IRefactoring
     {
         private readonly IVBE _vbe;
-        private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
         private readonly IProjectsProvider _projectsProvider;
 
-        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox, IProjectsProvider projectsProvider)
+        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory factory, IMessageBox messageBox, IProjectsProvider projectsProvider)
         {
             _vbe = vbe;
             _factory = factory;
@@ -35,7 +35,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IReorderParametersPresenter>(), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter == null)

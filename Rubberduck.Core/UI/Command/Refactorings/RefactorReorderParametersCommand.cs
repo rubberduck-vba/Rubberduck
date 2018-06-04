@@ -16,9 +16,9 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _msgbox;
-        private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorReorderParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox msgbox) 
+        public RefactorReorderParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox msgbox) 
             : base (vbe)
         {
             _state = state;

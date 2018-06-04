@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -16,11 +15,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private readonly IMessageBox _msgBox;
 
-        public RenameCommand(IVBE vbe, IRefactoringDialog<RenameViewModel> view, RubberduckParserState state,
-            IMessageBox msgBox, IRefactoringPresenterFactory<IRenamePresenter> factory) : base(LogManager.GetCurrentClassLogger())
+        public RenameCommand(IVBE vbe, RubberduckParserState state,
+            IMessageBox msgBox, IRefactoringPresenterFactory factory) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;

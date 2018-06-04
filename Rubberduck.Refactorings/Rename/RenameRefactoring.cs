@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.Rename
         private const string _prependUnderscoreFormat = "_{0}";
 
         private readonly IVBE _vbe;
-        private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
@@ -38,7 +38,7 @@ namespace Rubberduck.Refactorings.Rename
         private bool IsUserEventHandlerRename { set; get; }
         private bool RequestParseAfterRename { set; get; }
 
-        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
+        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory factory, IMessageBox messageBox, RubberduckParserState state)
         {
             _vbe = vbe;
             _factory = factory;
@@ -70,7 +70,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter>(), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter != null)
@@ -88,6 +88,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 RefactorImpl(target, presenter);
                 RestoreInitialSelection();
+                _factory.Release(presenter);
             }
         }
 
@@ -123,7 +124,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private IRenamePresenter CreateRenamePresenter()
         {
-            var presenter = _factory.Create();
+            var presenter = _factory.Create<IRenamePresenter>();
             if (presenter != null)
             {
                 _model = presenter.Model;

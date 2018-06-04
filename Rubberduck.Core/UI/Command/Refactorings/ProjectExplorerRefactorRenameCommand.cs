@@ -15,10 +15,10 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _msgBox;
-        private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
 
         public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox,
-            IRefactoringPresenterFactory<IRenamePresenter> factory)
+            IRefactoringPresenterFactory factory)
             : base(vbe)
         {
             _state = state;

@@ -16,10 +16,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
     {
         private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory<IExtractInterfacePresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private ExtractInterfaceModel _model;
 
-        public ExtractInterfaceRefactoring(IVBE vbe, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory)
+        public ExtractInterfaceRefactoring(IVBE vbe, IMessageBox messageBox, IRefactoringPresenterFactory factory)
         {
             _vbe = vbe;
             _messageBox = messageBox;
@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IExtractInterfacePresenter>(), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter == null)

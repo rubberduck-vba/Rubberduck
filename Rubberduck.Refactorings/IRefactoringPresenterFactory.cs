@@ -1,8 +1,8 @@
 ﻿namespace Rubberduck.Refactorings
 {
-    public interface IRefactoringPresenterFactory<TPresenter>
+    public interface IRefactoringPresenterFactory
     {
-        TPresenter Create();
-        void Release(TPresenter presenter);
+        TPresenter Create<TPresenter>();
+        void Release<TPresenter>(TPresenter presenter);
     }
 }

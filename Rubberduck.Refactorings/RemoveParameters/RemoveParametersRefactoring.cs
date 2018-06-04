@@ -18,11 +18,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersRefactoring : IRefactoring
     {
         private readonly IVBE _vbe;
-        private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private RemoveParametersModel _model;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
-        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory factory)
         {
             _vbe = vbe;
             _factory = factory;
@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IRemoveParametersPresenter>(), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter == null)

@@ -14,9 +14,9 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly Indenter _indenter;
-        private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, Indenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
+        public RefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, Indenter indenter, IRefactoringPresenterFactory factory)
             : base(vbe)
         {
             _state = state;

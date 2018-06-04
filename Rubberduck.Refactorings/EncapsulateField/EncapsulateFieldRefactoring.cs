@@ -14,12 +14,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly IVBE _vbe;
         private readonly IIndenter _indenter;
-        private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private EncapsulateFieldModel _model;
 
         private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
 
-        public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
+        public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory)
         {
             _vbe = vbe;
             _indenter = indenter;
@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IEncapsulateFieldPresenter>(), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter == null)

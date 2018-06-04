@@ -12,9 +12,9 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory)
             : base(typeof(ParameterNotUsedInspection))
         {
             _vbe = vbe;

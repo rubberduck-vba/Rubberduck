@@ -1,12 +1,10 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -14,14 +12,12 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorRemoveParametersCommand : RefactorCommandBase
     {
-        private readonly IMessageBox _msgbox;
         private readonly RubberduckParserState _state;
-        private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory) 
+        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory) 
             : base (vbe)
         {
-            _msgbox = msgbox;
             _state = state;
             _factory = factory;
         }

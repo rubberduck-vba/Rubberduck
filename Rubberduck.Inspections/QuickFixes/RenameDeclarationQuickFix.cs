@@ -16,9 +16,9 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory<IRenamePresenter> factory)
+        public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory)
             : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection), typeof(DefaultProjectNameInspection))
         {
             _vbe = vbe;
