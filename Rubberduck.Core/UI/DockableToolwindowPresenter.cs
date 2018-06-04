@@ -53,7 +53,7 @@ namespace Rubberduck.UI
             {
                 using (var windows = _vbe.Windows)
                 {
-                    var info = windows.CreateToolWindow(_addin, RubberduckProgId.DockableWindowHostProgId, control.Caption, control.ClassId);
+                    var info = windows.CreateToolWindow(_addin, RubberduckProgId.DockableWindowHostProgId, control.Caption, control.GuidIdentifier);
                     _userControlObject = info.UserControl;
                     toolWindow = info.ToolWindow;
                 }

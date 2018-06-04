@@ -342,7 +342,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj">
-      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
+      <Project>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</Project>
       <Name>Rubberduck.CodeAnalysis</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
