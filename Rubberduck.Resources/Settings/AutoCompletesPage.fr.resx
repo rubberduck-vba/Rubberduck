@@ -129,31 +129,31 @@
   <data name="AutoCompleteClosingStringDescription" xml:space="preserve">
     <value>Fermer les chaînes littérales '"'</value>
   </data>
-  <data name="AutoCompleteDoBlock" xml:space="preserve">
+  <data name="AutoCompleteDoBlockDescription" xml:space="preserve">
     <value>Fermer les boucles 'Do [While|Until]...Loop'</value>
   </data>
-  <data name="AutoCompleteEnumBlock" xml:space="preserve">
+  <data name="AutoCompleteEnumBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'Enum'</value>
   </data>
-  <data name="AutoCompleteForBlock" xml:space="preserve">
+  <data name="AutoCompleteForBlockDescription" xml:space="preserve">
     <value>Fermer les boucles 'For [Each]...Next'</value>
   </data>
-  <data name="AutoCompleteIfBlock" xml:space="preserve">
+  <data name="AutoCompleteIfBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'If'</value>
   </data>
-  <data name="AutoCompleteOnErrorResumeNextBlock" xml:space="preserve">
+  <data name="AutoCompleteOnErrorResumeNextBlockDescription" xml:space="preserve">
     <value>Traiter 'On Error Resume Next...GoTo 0' comme un bloc</value>
   </data>
-  <data name="AutoCompleteSelectBlock" xml:space="preserve">
+  <data name="AutoCompleteSelectBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'Select'</value>
   </data>
-  <data name="AutoCompleteTypeBlock" xml:space="preserve">
+  <data name="AutoCompleteTypeBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'Type'</value>
   </data>
-  <data name="AutoCompleteWhileBlock" xml:space="preserve">
+  <data name="AutoCompleteWhileBlockDescription" xml:space="preserve">
     <value>Fermer les boucles 'While...Wend'</value>
   </data>
-  <data name="AutoCompleteWithBlock" xml:space="preserve">
+  <data name="AutoCompleteWithBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'With'</value>
   </data>
   <data name="PageHeader" xml:space="preserve">
