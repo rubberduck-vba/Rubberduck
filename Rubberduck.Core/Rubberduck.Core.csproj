@@ -437,7 +437,6 @@
     <Compile Include="UI\CustomComWrappers\IOleWrapper.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
     <Compile Include="AutoComplete\IAutoComplete.cs" />
-    <Compile Include="UI\IAutoCompleteService.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
     <Compile Include="UI\Refactorings\EncapsulateField\EncapsulateFieldView.xaml.cs">

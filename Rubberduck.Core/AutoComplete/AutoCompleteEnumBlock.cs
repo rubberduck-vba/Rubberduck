@@ -1,11 +1,12 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 
 namespace Rubberduck.AutoComplete
 {
     public class AutoCompleteEnumBlock : AutoCompleteBlockBase
     {
-        public AutoCompleteEnumBlock(IIndenterSettings indenterSettings)
-            : base(indenterSettings, $"{Tokens.Enum}", $"{Tokens.End} {Tokens.Enum}") { }
+        public AutoCompleteEnumBlock(IVBETypeLibsAPI api, IIndenterSettings indenterSettings)
+            : base(api, indenterSettings, $"{Tokens.Enum}", $"{Tokens.End} {Tokens.Enum}") { }
     }
 }

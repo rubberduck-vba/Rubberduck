@@ -98,8 +98,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IAutoCompleteService>()
-                .ImplementedBy<AutoCompleteService>()
+            container.Register(Component.For<AutoCompleteService>()
                 .LifestyleSingleton());
             container.Register(Component.For<IOperatingSystem>()
                 .ImplementedBy<WindowsOperatingSystem>()

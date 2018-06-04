@@ -13,16 +13,16 @@ namespace Rubberduck.Common
 {
     public class RubberduckHooks : SubclassingWindow, IRubberduckHooks
     {
-        private readonly IAutoCompleteService _typingHook;
+        private readonly AutoCompleteService _autoCompleteHook;
         private readonly IGeneralConfigService _config;
         private readonly HotkeyFactory _hotkeyFactory;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory, IAutoCompleteService typingHook)
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory, AutoCompleteService autoCompleteHook)
             : base((IntPtr)vbe.MainWindow.HWnd, (IntPtr)vbe.MainWindow.HWnd)
         {
-            _typingHook = typingHook;
+            _autoCompleteHook = autoCompleteHook;
             _config = config;
             _hotkeyFactory = hotkeyFactory;
         }

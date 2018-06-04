@@ -84,7 +84,7 @@ namespace Rubberduck.VBEditor.Events
                 (idObject == (int)ObjId.Caret && eventType == (uint)WinEvent.ObjectHide) &&
                 hwnd.ToWindowType() == WindowType.CodePane)
             {
-                OnTypingCode(hwnd);
+                OnCaretHidden(hwnd);
             }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
@@ -167,13 +167,13 @@ namespace Rubberduck.VBEditor.Events
 
         private static string _currentLine;
         public static event EventHandler<AutoCompleteEventArgs> CaretHidden; // not CodeChanged because wouldn't fire on paste
-        private static void OnTypingCode(IntPtr hwnd)
+        private static void OnCaretHidden(IntPtr hwnd)
         {
             var pane = GetCodePaneFromHwnd(hwnd);
             if (pane?.Selection.IsSingleCharacter ?? false)
             {
                 var args = new AutoCompleteEventArgs(pane);
-                if (_currentLine != args.OldCode)
+                if (_currentLine != args.OldCode && !string.IsNullOrEmpty(args.OldCode))
                 {
                     CaretHidden?.Invoke(_vbe, args);
                     _currentLine = args.NewCode;
