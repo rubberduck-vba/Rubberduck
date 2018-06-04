@@ -61,7 +61,9 @@
     <Compile Include="IntroduceField\IntroduceFieldRefactoring.cs" />
     <Compile Include="IntroduceParameter\IntroduceParameterRefactoring.cs" />
     <Compile Include="IRefactoring.cs" />
+    <Compile Include="IRefactoringDialog.cs" />
     <Compile Include="IRefactoringPresenterFactory.cs" />
+    <Compile Include="IRefactoringViewModel.cs" />
     <Compile Include="MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoveParameters\IRemoveParametersPresenter.cs" />

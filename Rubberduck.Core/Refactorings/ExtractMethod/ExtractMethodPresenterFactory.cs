@@ -3,6 +3,7 @@ using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.Refactorings.ExtractMethod
 {
+    /*
     public class ExtractMethodPresenterFactory : IRefactoringPresenterFactory<IExtractMethodPresenter>
     {
         private readonly IIndenter _indenter;
@@ -19,4 +20,5 @@ namespace Rubberduck.Refactorings.ExtractMethod
             return new ExtractMethodPresenter(view, _indenter);
         }
     }
+    */
 }
