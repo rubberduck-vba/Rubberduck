@@ -4,6 +4,10 @@ using Rubberduck.UI;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Rubberduck.Navigation.CodeExplorer;
+using System.Windows;
+using Rubberduck.Navigation.Folders;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
@@ -11,11 +15,13 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
     {
         private readonly RubberduckParserState _state;
         private readonly ICodeMetricsAnalyst _analyst;
+        private readonly FolderHelper _folderHelper;
 
-        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst)
+        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst, FolderHelper folderHelper)
         {
             _state = state;
             _analyst = analyst;
+            _folderHelper = folderHelper;
             _state.StateChanged += OnStateChanged;
         }
         
@@ -43,22 +49,69 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             IsBusy = true;
 
             var metricResults = _analyst.GetMetrics(_state);
-
-            MetricResults = metricResults
-                .GroupBy(r => r.Metric.Level)
-                .ToDictionary(g => g.Key,
-                   levelGrouping => levelGrouping.GroupBy(r => r.Declaration)
-                     .ToDictionary(g => g.Key,
-                        declarationGrouping => declarationGrouping.ToDictionary(r => r.Metric)
-                     )
-                );
-
-            metricsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Metric).ToList());
-            declarationsByLevel = metricResults.GroupBy(r => r.Metric.Level).ToDictionary(g => g.Key, g => g.Select(r => r.Declaration).ToList());
-            declarationsByParent = metricResults.Select(r => r.Declaration).GroupBy(decl => decl.ParentDeclaration).ToDictionary(g => g.Key, g => g.ToList());
             resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
-            
+
+            if (Projects == null)
+            {
+                Projects = new ObservableCollection<CodeExplorerItemViewModel>();
+            }
+
+            IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
+
+            var userDeclarations = _state.DeclarationFinder.AllUserDeclarations
+                .GroupBy(declaration => declaration.ProjectId)
+                .ToList();
+
+            if (userDeclarations.Any(
+                    grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
+            {
+                return;
+            }
+
+            var newProjects = userDeclarations.Select(grouping =>
+                new CodeExplorerProjectViewModel(_folderHelper,
+                    grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
+                    grouping)).ToList();
+
+            UpdateNodes(Projects, newProjects);
+
+            Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
+
             IsBusy = false;
+        }
+
+        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList, IEnumerable<CodeExplorerItemViewModel> newList)
+        {
+            foreach (var item in newList)
+            {
+                CodeExplorerItemViewModel oldItem;
+
+                if (item is CodeExplorerCustomFolderViewModel)
+                {
+                    oldItem = oldList.FirstOrDefault(i => i.Name == item.Name);
+                }
+                else
+                {
+                    oldItem = oldList.FirstOrDefault(i =>
+                        item.QualifiedSelection != null && i.QualifiedSelection != null &&
+                        i.QualifiedSelection.Value.QualifiedName.ProjectId ==
+                        item.QualifiedSelection.Value.QualifiedName.ProjectId &&
+                        i.QualifiedSelection.Value.QualifiedName.ComponentName ==
+                        item.QualifiedSelection.Value.QualifiedName.ComponentName &&
+                        i.QualifiedSelection.Value.Selection == item.QualifiedSelection.Value.Selection);
+                }
+
+                if (oldItem != null)
+                {
+                    item.IsExpanded = oldItem.IsExpanded;
+                    item.IsSelected = oldItem.IsSelected;
+
+                    if (oldItem.Items.Any() && item.Items.Any())
+                    {
+                        UpdateNodes(oldItem.Items, item.Items);
+                    }
+                }
+            }
         }
 
         public void Dispose()
@@ -66,26 +119,41 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             _state.StateChanged -= OnStateChanged;
         }
 
-        // TBD: use these dictionaries to populate the GridView
-        private Dictionary<AggregationLevel, List<CodeMetric>> metricsByLevel;
-        private Dictionary<AggregationLevel, List<Declaration>> declarationsByLevel;
-        private Dictionary<Declaration, List<Declaration>> declarationsByParent;
         private Dictionary<Declaration, List<ICodeMetricResult>> resultsByDeclaration;
-        public Dictionary<AggregationLevel, Dictionary<Declaration, Dictionary<CodeMetric, ICodeMetricResult>>>
-            MetricResults { get; private set; }
 
-        //SelectedMetric = ModuleMetrics.Any(i => SelectedMetric.ModuleName == i.ModuleName)
-        //    ? ModuleMetrics.First(i => SelectedMetric.ModuleName == i.ModuleName)
-        //    : ModuleMetrics.FirstOrDefault();
-
-        private Dictionary<CodeMetric, ICodeMetricResult> _selectedMetric;
-        public Dictionary<CodeMetric, ICodeMetricResult> SelectedMetric
+        private CodeExplorerItemViewModel _selectedItem;
+        public CodeExplorerItemViewModel SelectedItem
         {
-            get => _selectedMetric;
+            get => _selectedItem;
             set
             {
-                _selectedMetric = value;
+                _selectedItem = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Metrics));
+            }
+        }
+
+        private ObservableCollection<CodeExplorerItemViewModel> _projects;
+        public ObservableCollection<CodeExplorerItemViewModel> Projects
+        {
+            get => _projects;
+            set
+            {
+                _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TreeViewVisibility));
+            }
+        }
+
+        public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        
+        public ObservableCollection<ICodeMetricResult> Metrics
+        {
+            get
+            {
+                var results = resultsByDeclaration?.FirstOrDefault(f => f.Key == SelectedItem.GetSelectedDeclaration());
+                return !results.HasValue || results.Value.Value == null ? new ObservableCollection<ICodeMetricResult>() : new ObservableCollection<ICodeMetricResult>(results.Value.Value);
             }
         }
 
