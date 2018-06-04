@@ -117,61 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConfirmResetSettings" xml:space="preserve">
-    <value>Reset settings to default configuration?</value>
+  <data name="AutoCompleteClosingBraceDescription" xml:space="preserve">
+    <value>Fermer les accolades '{'</value>
   </data>
-  <data name="ExportPageSettingsButton" xml:space="preserve">
-    <value>Export</value>
+  <data name="AutoCompleteClosingBracketDescription" xml:space="preserve">
+    <value>Fermer les braquettes '['</value>
   </data>
-  <data name="ImportPageSettingsButton" xml:space="preserve">
-    <value>Import</value>
+  <data name="AutoCompleteClosingParentheseDescription" xml:space="preserve">
+    <value>Fermer les parenthèses '('</value>
   </data>
-  <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
+  <data name="AutoCompleteClosingStringDescription" xml:space="preserve">
+    <value>Fermer les chaînes littérales '"'</value>
+  </data>
+  <data name="AutoCompleteDoBlock" xml:space="preserve">
+    <value>Fermer les boucles 'Do [While|Until]...Loop'</value>
+  </data>
+  <data name="AutoCompleteEnumBlock" xml:space="preserve">
+    <value>Fermer les blocs 'Enum'</value>
+  </data>
+  <data name="AutoCompleteForBlock" xml:space="preserve">
+    <value>Fermer les boucles 'For [Each]...Next'</value>
+  </data>
+  <data name="AutoCompleteIfBlock" xml:space="preserve">
+    <value>Fermer les blocs 'If'</value>
+  </data>
+  <data name="AutoCompleteOnErrorResumeNextBlock" xml:space="preserve">
+    <value>Traiter 'On Error Resume Next...GoTo 0' comme un bloc</value>
+  </data>
+  <data name="AutoCompleteSelectBlock" xml:space="preserve">
+    <value>Fermer les blocs 'Select'</value>
+  </data>
+  <data name="AutoCompleteTypeBlock" xml:space="preserve">
+    <value>Fermer les blocs 'Type'</value>
+  </data>
+  <data name="AutoCompleteWhileBlock" xml:space="preserve">
+    <value>Fermer les boucles 'While...Wend'</value>
+  </data>
+  <data name="AutoCompleteWithBlock" xml:space="preserve">
+    <value>Fermer les blocs 'With'</value>
+  </data>
+  <data name="PageHeader" xml:space="preserve">
     <value>Autocompletion Settings</value>
   </data>
-  <data name="PageHeader_GeneralSettings" xml:space="preserve">
-    <value>General Settings</value>
-  </data>
-  <data name="PageHeader_IndenterSettings" xml:space="preserve">
-    <value>Indenter Settings</value>
-  </data>
-  <data name="PageHeader_InspectionSettings" xml:space="preserve">
-    <value>Code Inspection Settings</value>
-  </data>
-  <data name="PageHeader_TodoSettings" xml:space="preserve">
-    <value>Todo Settings</value>
-  </data>
-  <data name="PageHeader_UnitTestSettings" xml:space="preserve">
-    <value>Unit Test Settings</value>
-  </data>
-  <data name="PageHeader_WindowSettings" xml:space="preserve">
-    <value>Window Settings</value>
-  </data>
-  <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
-    <value>Configure Autocompletion</value>
-  </data>
-  <data name="PageInstructions_GeneralSettings" xml:space="preserve">
-    <value>Click [Ok] to close the window and apply changes, or [Cancel] to discard them.</value>
-  </data>
-  <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configure indenter settings.</value>
-  </data>
-  <data name="PageInstructions_InspectionSettings" xml:space="preserve">
-    <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>
-  </data>
-  <data name="PageInstructions_TodoSettings" xml:space="preserve">
-    <value>Configure markers to be recognized in comments.</value>
-  </data>
-  <data name="PageInstructions_UnitTestSettings" xml:space="preserve">
-    <value>Configure the settings for new unit test modules and methods.</value>
-  </data>
-  <data name="PageInstructions_WindowSettings" xml:space="preserve">
-    <value>Configure the settings for window visibility.</value>
-  </data>
-  <data name="ResetSettingsButton" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="Settings_Caption" xml:space="preserve">
-    <value>Rubberduck Settings</value>
+  <data name="PageInstructions" xml:space="preserve">
+    <value>Configure which Rubberduck autocompletions are enabled.</value>
   </data>
 </root>
