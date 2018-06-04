@@ -4,9 +4,9 @@ using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Refactorings.RemoveParameters;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -16,12 +16,14 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly IMessageBox _msgbox;
         private readonly RubberduckParserState _state;
+        private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
 
-        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox) 
+        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory) 
             : base (vbe)
         {
             _msgbox = msgbox;
             _state = state;
+            _factory = factory;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -72,12 +74,8 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             var selection = Vbe.GetActiveSelection();
 
-            using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
-            {
-                var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                var refactoring = new RemoveParametersRefactoring(Vbe, factory);
-                refactoring.Refactor(selection.Value);
-            }
+            var refactoring = new RemoveParametersRefactoring(Vbe, _factory);
+            refactoring.Refactor(selection.Value);
         }
     }
 }

@@ -4,6 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -15,12 +16,14 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _msgbox;
+        private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
 
-        public RefactorReorderParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox) 
+        public RefactorReorderParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox msgbox) 
             : base (vbe)
         {
             _state = state;
             _msgbox = msgbox;
+            _factory = factory;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -72,12 +75,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
-            {
-                var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox, _state.ProjectsProvider);
-                refactoring.Refactor(selection.Value);
-            }
+            var refactoring = new ReorderParametersRefactoring(Vbe, _factory, _msgbox, _state.ProjectsProvider);
+            refactoring.Refactor(selection.Value);
         }
     }
 }

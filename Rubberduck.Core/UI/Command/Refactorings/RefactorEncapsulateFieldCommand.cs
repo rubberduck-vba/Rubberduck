@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Refactorings.EncapsulateField;
@@ -13,12 +14,14 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly Indenter _indenter;
+        private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
 
-        public RefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, Indenter indenter)
+        public RefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, Indenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
             : base(vbe)
         {
             _state = state;
             _indenter = indenter;
+            _factory = factory;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -49,12 +52,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
             }
 
-            using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
-            {
-                var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
-                var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, factory);
-                refactoring.Refactor();
-            }
+            var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, _factory);
+            refactoring.Refactor();
         }
     }
 }
