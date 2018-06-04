@@ -10,7 +10,7 @@ namespace Rubberduck.AutoComplete
             OutputToken = outputToken;
         }
 
-        public bool IsEnabled => true;
+        public bool IsEnabled { get; set; }
         public string InputToken { get; }
         public string OutputToken { get; }
 
