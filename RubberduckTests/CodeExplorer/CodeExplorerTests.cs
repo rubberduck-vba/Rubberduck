@@ -156,7 +156,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -198,7 +198,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -236,7 +236,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -274,7 +274,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -312,7 +312,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
