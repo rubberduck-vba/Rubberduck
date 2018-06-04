@@ -10,16 +10,19 @@ namespace Rubberduck.Settings
         public AutoCompleteSetting() { /* default ctor required for XML serialization */ }
 
         public AutoCompleteSetting(IAutoComplete autoComplete)
+            : this(autoComplete.GetType().Name, autoComplete.IsEnabled) { }
+
+        public AutoCompleteSetting(string key, bool isEnabled)
         {
-            Key = autoComplete.GetType().Name;
-            IsEnabled = autoComplete.IsEnabled;
+            Key = key;
+            IsEnabled = isEnabled;
         }
 
         public string Key { get; set; }
         public bool IsEnabled { get; set; }
 
         [XmlIgnore]
-        public string Description => Resources.Settings.SettingsUI.ResourceManager.GetString(Key + "Description");
+        public string Description => Resources.Settings.AutoCompletesPage.ResourceManager.GetString(Key + "Description");
 
         public override bool Equals(object obj)
         {
