@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -16,8 +19,45 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
                 .ExecuteCode("ProjectName", "ModuleName", "ProcedureName")
             End With
     */
-    [System.Runtime.InteropServices.ComVisible(true)]
-    public class VBETypeLibsAPI_Object
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.DebugAddinObjectInterfaceGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
+    public interface IVBETypeLibsAPI_Object
+    {
+        [DispId(1)]
+        bool CompileProject(string projectName);
+        [DispId(2)]
+        bool CompileComponent(string projectName, string componentName);
+        [DispId(3)]
+        object ExecuteCode(string projectName, string standardModuleName, string procName);
+        [DispId(4)]
+        string GetProjectConditionalCompilationArgsRaw(string projectName);
+        [DispId(5)]
+        void SetProjectConditionalCompilationArgsRaw(string projectName, string newConditionalArgs);
+        [DispId(5)]
+        bool DoesClassImplementInterface(string projectName, string className, string interfaceProgId);
+        [DispId(6)]
+        string GetUserFormControlType(string projectName, string userFormName, string controlName);
+        [DispId(7)]
+        string GetDocumentClassControlType(string projectName, string documentClassName, string controlName);
+        [DispId(8)]
+        DocClassType DetermineDocumentClassType(string projectName, string className);
+        [DispId(9)]
+        string DocumentAll();
+    }
+
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.DebugAddinObjectClassGuid),
+        ProgId(RubberduckProgId.DebugAddinObject),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IVBETypeLibsAPI_Object)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
+    public class VBETypeLibsAPI_Object : IVBETypeLibsAPI_Object
     {
         private IVBE _ide;
         private readonly VBETypeLibsAPI _api;

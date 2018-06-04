@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
+using Rubberduck.Interaction;
 using Rubberduck.VBEditor.VBERuntime.Settings;
 using System.Collections.Generic;
 using System;

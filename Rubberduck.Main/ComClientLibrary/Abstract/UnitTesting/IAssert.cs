@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 
 // ReSharper disable InconsistentNaming
 // The parameters on RD's public interfaces are following VBA conventions not C# conventions to stop the
@@ -7,8 +8,12 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IAssertGuid)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IAssertGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public interface IAssert
     {
         /// <summary>

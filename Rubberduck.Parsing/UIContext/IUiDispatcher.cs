@@ -26,6 +26,14 @@ namespace Rubberduck.Parsing.UIContext
         void Invoke(Action action);
 
         /// <summary>
+        /// Raises a COM-visible event on the UI thread. This will use <see cref="UiDispatcher.Invoke()" /> internally
+        /// but with additional error handling & retry logic for transisent failure to fire COM event due to the host
+        /// being too busy to accept event.
+        /// </summary>
+        /// <param name="comEventHandler">The handler for setting up and firing the COM event on the UI thread</param>
+        void RaiseComEvent(Action comEventHandler);
+
+        /// <summary>
         /// Starts a task on the ui thread.
         /// </summary>
         /// <param name="action">The action that will be executed on the UI

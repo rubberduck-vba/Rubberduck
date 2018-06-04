@@ -1,9 +1,9 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI;
 using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

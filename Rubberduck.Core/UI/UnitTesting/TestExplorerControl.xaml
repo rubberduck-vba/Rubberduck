@@ -484,7 +484,7 @@
 
                 <Separator />
                 <Menu>
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=RunButtonText}">
+                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunButtonText}">
                         <MenuItem.Icon>
                             <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/control.png" />
                         </MenuItem.Icon>

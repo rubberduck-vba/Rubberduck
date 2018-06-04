@@ -196,6 +196,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registration\RubberduckGuid.cs" />
     <Compile Include="Registration\RubberduckProgId.cs" />
+    <Compile Include="Registration\WellKnownDispIds.cs" />
     <Compile Include="RubberduckUI.cs.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -646,6 +647,7 @@
     <Resource Include="Icons\Fugue\ui-scroll-pane-form.png" />
     <Resource Include="Icons\Fugue\ui-tab-content.png" />
     <Content Include="Icons\Custom\PNG\MdiForm.png" />
+    <Resource Include="Icons\Fugue\document-import.png" />
     <Content Include="Splash.png" />
     <Resource Include="Icons\Fugue\lock--exclamation.png" />
     <Resource Include="Rubberduck.png" />

@@ -1,5 +1,8 @@
-﻿using Rubberduck.Inspections.Abstract;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
@@ -9,6 +12,7 @@ namespace Rubberduck.Inspections.QuickFixes
     public class RestoreErrorHandlingQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;
+        private const string LabelPrefix = "ErrorHandler";
 
         public RestoreErrorHandlingQuickFix(RubberduckParserState state)
             : base(typeof(UnhandledOnErrorResumeNextInspection))
@@ -18,15 +22,9 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
-            var context = (VBAParser.OnErrorStmtContext)result.Context;
-
-            rewriter.Replace(context.RESUME(), Tokens.GoTo);
-            rewriter.Replace(context.NEXT(), result.Properties.Label);
-
             var exitStatement = "Exit ";
             VBAParser.BlockContext block;
-            VBAParser.ModuleBodyElementContext bodyElementContext = result.Properties.BodyElement;
+            var bodyElementContext = result.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();
 
             if (bodyElementContext.propertyGetStmt() != null)
             {
@@ -54,9 +52,27 @@ namespace Rubberduck.Inspections.QuickFixes
                 block = bodyElementContext.subStmt().block();
             }
 
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var context = (VBAParser.OnErrorStmtContext)result.Context;
+            var labels = bodyElementContext.GetDescendents<VBAParser.IdentifierStatementLabelContext>().ToArray();
+            var maximumExistingLabelIndex = GetMaximumExistingLabelIndex(labels);
+            int offset = result.Properties.UnhandledContexts.IndexOf(result.Context);
+            var labelIndex = maximumExistingLabelIndex + offset;
+
+            var labelSuffix = labelIndex == 0
+                ? labels.Select(GetLabelText).Any(text => text == LabelPrefix)
+                    ? "1"
+                    : ""
+                : maximumExistingLabelIndex == 0
+                    ? labelIndex.ToString()
+                    : (labelIndex + 1).ToString();
+
+            rewriter.Replace(context.RESUME(), Tokens.GoTo);
+            rewriter.Replace(context.NEXT(), $"{LabelPrefix}{labelSuffix}");
+
             var errorHandlerSubroutine = $@"
     {exitStatement}
-{result.Properties.Label}:
+{LabelPrefix}{labelSuffix}:
     If Err.Number > 0 Then 'TODO: handle specific error
         Err.Clear
         Resume Next
@@ -71,5 +87,30 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
+
+        private static int GetMaximumExistingLabelIndex(IEnumerable<VBAParser.IdentifierStatementLabelContext> labelContexts)
+        {
+            var maximumIndex = 0;
+
+            foreach (var context in labelContexts)
+            {
+                var labelText = GetLabelText(context);
+                if (labelText.ToLower().StartsWith(LabelPrefix.ToLower()))
+                {
+                    var suffixIsNumeric = int.TryParse(string.Concat(labelText.Skip(LabelPrefix.Length)), out var index);
+                    if (suffixIsNumeric && index > maximumIndex)
+                    {
+                        maximumIndex = index;
+                    }
+                }
+            }
+
+            return maximumIndex;
+        }
+
+        private static string GetLabelText(VBAParser.IdentifierStatementLabelContext labelContext)
+        {
+            return labelContext.legalLabelIdentifier().identifier().untypedIdentifier().identifierValue().IDENTIFIER().GetText();
+        }
     }
 }

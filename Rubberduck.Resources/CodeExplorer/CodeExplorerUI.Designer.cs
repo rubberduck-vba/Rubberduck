@@ -444,6 +444,16 @@ namespace Rubberduck.Resources.CodeExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap document_import {
+            get {
+                object obj = ResourceManager.GetObject("document_import", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap document_office {
             get {
                 object obj = ResourceManager.GetObject("document_office", resourceCulture);
@@ -458,6 +468,24 @@ namespace Rubberduck.Resources.CodeExplorer {
             get {
                 object obj = ResourceManager.GetObject("exclamation", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Export.
+        /// </summary>
+        public static string ExportBeforeRemove_Caption {
+            get {
+                return ResourceManager.GetString("ExportBeforeRemove_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to export &apos;{0}&apos; before removing?.
+        /// </summary>
+        public static string ExportBeforeRemove_Prompt {
+            get {
+                return ResourceManager.GetString("ExportBeforeRemove_Prompt", resourceCulture);
             }
         }
         

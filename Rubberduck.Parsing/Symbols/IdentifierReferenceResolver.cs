@@ -761,6 +761,15 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
+        public void Resolve(VBAParser.PSetSpecialFormContext context)
+        {
+            foreach (var expr in context.expression())
+            {
+                ResolveDefault(expr);
+            }
+            ResolveTuple(context.tuple());
+        }
+
         private void ResolveTuple(VBAParser.TupleContext tuple)
         {
             foreach (var expr in tuple.expression())

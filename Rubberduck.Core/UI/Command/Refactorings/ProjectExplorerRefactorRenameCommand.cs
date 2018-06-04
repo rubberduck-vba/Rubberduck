@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
@@ -53,7 +54,7 @@ namespace Rubberduck.UI.Command.Refactorings
             
             return _state.AllUserDeclarations.SingleOrDefault(
                     t => t.IdentifierName == Vbe.SelectedVBComponent.Name &&
-                            t.ProjectId == Vbe.ActiveVBProject.HelpFile &&
+                            t.ProjectId == Vbe.ActiveVBProject.ProjectId &&
                             new[]
                                 {
                                     DeclarationType.ClassModule,
