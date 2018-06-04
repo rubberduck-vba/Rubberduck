@@ -1,10 +1,9 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -13,25 +12,20 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
+        private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
 
-        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
             : base(typeof(ParameterNotUsedInspection))
         {
             _vbe = vbe;
             _state = state;
-            _messageBox = messageBox;
+            _factory = factory;
         }
 
         public override void Fix(IInspectionResult result)
         {
-            using (var dialog = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
-            {
-                var refactoring = new RemoveParametersRefactoring(_vbe,
-                    new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox));
-
-                refactoring.QuickFix(_state, result.QualifiedSelection);
-            }
+            var refactoring = new RemoveParametersRefactoring(_vbe, _factory);
+            refactoring.QuickFix(_state, result.QualifiedSelection);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedParameterQuickFix;

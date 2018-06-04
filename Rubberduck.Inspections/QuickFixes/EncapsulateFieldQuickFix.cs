@@ -2,9 +2,9 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -14,23 +14,21 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
+        private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
 
-        public EncapsulateFieldQuickFix(IVBE vbe, RubberduckParserState state, IIndenter indenter)
+        public EncapsulateFieldQuickFix(IVBE vbe, RubberduckParserState state, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
             : base(typeof(EncapsulatePublicFieldInspection))
         {
             _vbe = vbe;
             _state = state;
             _indenter = indenter;
+            _factory = factory;
         }
 
         public override void Fix(IInspectionResult result)
         {
-            using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
-            {
-                var factory = new EncapsulateFieldPresenterFactory(_vbe, _state, view);
-                var refactoring = new EncapsulateFieldRefactoring(_vbe, _indenter, factory);
-                refactoring.Refactor(result.Target);
-            }
+            var refactoring = new EncapsulateFieldRefactoring(_vbe, _indenter, _factory);
+            refactoring.Refactor(result.Target);
         }
 
         public override string Description(IInspectionResult result)
