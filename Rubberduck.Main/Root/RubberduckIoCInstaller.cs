@@ -161,29 +161,18 @@ namespace Rubberduck.Root
 
         private void RegisterCodeMetrics(IWindsorContainer container, Assembly[] assembliesToRegister)
         {
-            var metricImplementations = new List<CodeMetric>();
             foreach (var assembly in assembliesToRegister)
             {
-                metricImplementations.AddRange(assembly.GetTypes()
-                    .Where(t => t.BaseType == typeof(CodeMetric))
-                    .Select(t =>
-                    {
-                        try
-                        {
-                            return (CodeMetric)Activator.CreateInstance(t, new object[] { });
-                        }
-                        catch (Exception e)
-                        {
-                            // FIXME: log instantiation failure
-                            return null;
-                        }
-                    }).Where(m => m != null));
+                container.Register(Types.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<CodeMetric>()
+                    .Unless(t => t == typeof(CodeMetric))
+                    .WithServiceBase()
+                    .LifestyleSingleton());
             }
             container.Register(Component.For<ICodeMetricsAnalyst>()
                 .ImplementedBy<CodeMetricsAnalyst>()
-                .DependsOn(Dependency.OnValue<IEnumerable<CodeMetric>>(metricImplementations))
                 .LifestyleSingleton());
-
         }
 
         private void RegisterUnitTestingComSide(IWindsorContainer container)
