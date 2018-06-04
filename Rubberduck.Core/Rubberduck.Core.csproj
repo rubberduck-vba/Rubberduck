@@ -332,6 +332,7 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
+    <Compile Include="AutoComplete\AutoCompleteProvider.cs" />
     <Compile Include="Inspections\IInspectionProvider.cs" />
     <Compile Include="Inspections\InspectionProvider.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
@@ -363,6 +364,9 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
+    <Compile Include="Settings\AutoCompleteConfigProvider.cs" />
+    <Compile Include="Settings\AutoCompleteSetting.cs" />
+    <Compile Include="Settings\AutoCompleteSettings.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\ExperimentalFeatures.cs" />
     <Compile Include="Settings\DefaultSettings.cs" />
