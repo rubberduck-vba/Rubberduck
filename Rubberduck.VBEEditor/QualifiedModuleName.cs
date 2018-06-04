@@ -35,7 +35,7 @@ namespace Rubberduck.VBEditor
 
         public static int GetModuleContentHash(IVBComponent component)
         {
-            if (component == null || component.IsWrappingNullReference)
+            if (component == null || component.IsWrappingNullReference || !component.HasCodeModule)
             {
                 return 0;
             }
@@ -103,6 +103,7 @@ namespace Rubberduck.VBEditor
 
         public ComponentType ComponentType { get; }
 
+        public bool IsParsable => ComponentType != ComponentType.ResFile && ComponentType != ComponentType.RelatedDocument;
         public string ProjectId { get; }
 
         private readonly string _componentName;

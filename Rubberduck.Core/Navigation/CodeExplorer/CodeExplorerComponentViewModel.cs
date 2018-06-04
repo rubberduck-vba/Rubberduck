@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
@@ -61,29 +62,44 @@ namespace Rubberduck.Navigation.CodeExplorer
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
             try
             {
-                if (qualifiedModuleName.ComponentType == ComponentType.Document)
+                switch (qualifiedModuleName.ComponentType)
                 {
-                    var component = _projectsProvider.Component(qualifiedModuleName);
-                    string parenthesizedName;
-                    using (var properties = component.Properties)
-                    {
-                        parenthesizedName = properties["Name"].Value.ToString() ?? String.Empty;
-                    }
-
-                    if (ContainsBuiltinDocumentPropertiesProperty())
-                    {
-                        CodeExplorerItemViewModel node = this;
-                        while (node.Parent != null)
+                    case ComponentType.Document:
+                        var component = _projectsProvider.Component(qualifiedModuleName);
+                        string parenthesizedName;
+                        using (var properties = component.Properties)
                         {
-                            node = node.Parent;
+                            parenthesizedName = properties["Name"].Value.ToString() ?? string.Empty;
                         }
 
-                        ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
-                    }
-                    else
-                    {
-                        _name += " (" + parenthesizedName + ")";
-                    }
+                        if (ContainsBuiltinDocumentPropertiesProperty())
+                        {
+                            CodeExplorerItemViewModel node = this;
+                            while (node.Parent != null)
+                            {
+                                node = node.Parent;
+                            }
+
+                            ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
+                        }
+                        else
+                        {
+                            _name += " (" + parenthesizedName + ")";
+                        }
+                        break;
+
+                    case ComponentType.ResFile:
+                        var fileName = Declaration.IdentifierName.Split('\\').Last();
+                        _name = $"{CodeExplorerUI.CodeExplorer_ResourceFileText} ({fileName})";
+                        break;
+
+                    case ComponentType.RelatedDocument:
+                        _name = $"({Declaration.IdentifierName.Split('\\').Last()})";
+                        break;
+
+                    default:
+                        _name = Declaration.IdentifierName;
+                        break;
                 }
             }
             catch
@@ -183,7 +199,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             { DeclarationType.DocObject, GetImageSource(CodeExplorerUI.document_globe)},
             { DeclarationType.PropPage, GetImageSource(CodeExplorerUI.ui_tab_content)},
             { DeclarationType.ActiveXDesigner, GetImageSource(CodeExplorerUI.pencil_ruler)},
-            { DeclarationType.ResFile, GetImageSource(CodeExplorerUI.document_block)}
+            { DeclarationType.ResFile, GetImageSource(CodeExplorerUI.document_block)},
+            { DeclarationType.RelatedDocument, GetImageSource(CodeExplorerUI.document_import)}
         };
 
         private BitmapImage _icon;

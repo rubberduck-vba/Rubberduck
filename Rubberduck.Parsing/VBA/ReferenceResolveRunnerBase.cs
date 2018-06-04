@@ -63,7 +63,7 @@ namespace Rubberduck.Parsing.VBA
         {
             token.ThrowIfCancellationRequested();
 
-            _toResolve.UnionWith(toResolve);
+            _toResolve.UnionWith(toResolve.Where(qmn => qmn.IsParsable));
             token.ThrowIfCancellationRequested();
 
             if(!_toResolve.Any())
