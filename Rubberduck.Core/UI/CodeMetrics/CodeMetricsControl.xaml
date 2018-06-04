@@ -221,7 +221,7 @@
                                   ItemsSource="{Binding Items}">
                 <StackPanel Orientation="Horizontal">
                     <Image Style="{StaticResource TreeViewIconStyle}" />
-                    <TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />
+                    <!--<TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />-->
                     <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
