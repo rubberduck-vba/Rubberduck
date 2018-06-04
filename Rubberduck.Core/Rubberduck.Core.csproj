@@ -302,6 +302,7 @@
     <Compile Include="AutoComplete\AutoCompleteForBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteIfBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteOnErrorResumeNextBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompletePrecompilerIfBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteSelectBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteTypeBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteWhileBlock.cs" />

@@ -144,6 +144,9 @@
   <data name="AutoCompleteOnErrorResumeNextBlockDescription" xml:space="preserve">
     <value>Traiter 'On Error Resume Next...GoTo 0' comme un bloc</value>
   </data>
+  <data name="AutoCompletePrecompilerIfBlockDescription" xml:space="preserve">
+    <value>Fermer les blocs '#If' (préprocesseur)</value>
+  </data>
   <data name="AutoCompleteSelectBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'Select'</value>
   </data>

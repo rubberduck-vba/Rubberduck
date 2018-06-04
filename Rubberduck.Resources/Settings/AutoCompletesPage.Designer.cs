@@ -142,6 +142,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close precompiler &apos;#If&apos; blocks.
+        /// </summary>
+        public static string AutoCompletePrecompilerIfBlockDescription {
+            get {
+                return ResourceManager.GetString("AutoCompletePrecompilerIfBlockDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close &apos;Select&apos; blocks.
         /// </summary>
         public static string AutoCompleteSelectBlockDescription {

@@ -1,6 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -19,6 +18,7 @@ namespace Rubberduck.AutoComplete
         }
 
         protected virtual bool FindInputTokenAtBeginningOfCurrentLine => false;
+        protected virtual bool SkipPreCompilerDirective => true;
 
         protected readonly IIndenterSettings IndenterSettings;
 
@@ -30,7 +30,7 @@ namespace Rubberduck.AutoComplete
         private bool _executing;
         public override bool Execute(AutoCompleteEventArgs e)
         {
-            if (_executing)
+            if (_executing || (SkipPreCompilerDirective && e.OldCode.Trim().StartsWith("#")))
             {
                 return false;
             }
@@ -38,14 +38,15 @@ namespace Rubberduck.AutoComplete
             var selection = e.CodePane.Selection;
             var stdIndent = IndentBody ? IndenterSettings.IndentSpaces : 0;
 
+            var pattern = SkipPreCompilerDirective
+                            ? $"\\b{InputToken}\\b"
+                            : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
+
             var isMatch = MatchInputTokenAtEndOfLineOnly 
                             ? e.OldCode.EndsWith(InputToken)
-                            : Regex.IsMatch(e.OldCode.Trim(), $"\\b{InputToken}\\b");
+                            : Regex.IsMatch(e.OldCode.Trim(), pattern);
 
-            // todo: handle line-continuating and non-start-of-line comments
-            var isComment = e.OldCode.Trim().StartsWith("'") || e.OldCode.Trim().StartsWith(Tokens.Rem);
-
-            if (!isComment && isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
+            if (!e.OldCode.HasComment(out _) && isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
             {
                 var indent = e.OldCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                 using (var module = e.CodePane.CodeModule)

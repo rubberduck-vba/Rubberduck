@@ -270,6 +270,7 @@
     &lt;AutoComplete Key="AutoCompleteForBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteIfBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteOnErrorResumeNextBlock" IsEnabled="true" /&gt;
+    &lt;AutoComplete Key="AutoCompletePrecompilerIfBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteSelectBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteTypeBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteWhileBlock" IsEnabled="true" /&gt;

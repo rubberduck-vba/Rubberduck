@@ -442,6 +442,7 @@ namespace Rubberduck.Properties {
     <AutoComplete Key=""AutoCompleteForBlock"" IsEnabled=""true"" />
     <AutoComplete Key=""AutoCompleteIfBlock"" IsEnabled=""true"" />
     <AutoComplete Key=""AutoCompleteOnErrorResumeNextBlock"" IsEnabled=""true"" />
+    <AutoComplete Key=""AutoCompletePrecompilerIfBlock"" IsEnabled=""true"" />
     <AutoComplete Key=""AutoCompleteSelectBlock"" IsEnabled=""true"" />
     <AutoComplete Key=""AutoCompleteTypeBlock"" IsEnabled=""true"" />
     <AutoComplete Key=""AutoCompleteWhileBlock"" IsEnabled=""true"" />

@@ -16,10 +16,12 @@ namespace Rubberduck.VBEditor.Events
                 if (string.IsNullOrWhiteSpace(atSelection))
                 {
                     IsCommitted = true;
+                    OldPrecedingLine = module.GetLines(selection.PreviousLine.PreviousLine);
                     OldCode = module.GetLines(selection.PreviousLine);
                 }
                 else
                 {
+                    OldPrecedingLine = module.GetLines(selection.PreviousLine);
                     OldCode = module.GetLines(selection);
                 }
             }
@@ -47,6 +49,11 @@ namespace Rubberduck.VBEditor.Events
         /// If not committed, the entire current line of code. If committed, the line of code immediately preceding the current selection.
         /// </summary>
         public string OldCode { get; }
+
+        /// <summary>
+        /// The line of code immediately above <see cref="OldCode"/>; used to determine whether we're looking at a line-continuated comment.
+        /// </summary>
+        public string OldPrecedingLine { get; }
 
         /// <summary>
         /// The autocompleted line of code, assigned by the autocomplete implementation. Used for caching, to prevent misfiring autocompletes.
