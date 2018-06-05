@@ -12,7 +12,7 @@ namespace RubberduckTests.Settings
         {
             var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false);
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
@@ -20,7 +20,7 @@ namespace RubberduckTests.Settings
         {
             var unitTestSettings = new UnitTestSettings(BindingMode.EarlyBinding, AssertMode.PermissiveAssert, false, false, true);
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 

@@ -109,6 +109,7 @@
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
+    <Compile Include="Settings\AutoCompleteSettingsTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />

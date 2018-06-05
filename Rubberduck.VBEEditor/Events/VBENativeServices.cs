@@ -70,12 +70,21 @@ namespace Rubberduck.VBEditor.Events
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime)
         {
+            //This is an output window firehose, leave this here, but comment it out when done.
+            //if (idObject != (int)ObjId.Cursor) Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild);
+
             if (hwnd != IntPtr.Zero && 
                 idObject == (int)ObjId.Caret && 
                 (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate) &&
                 hwnd.ToWindowType() == WindowType.CodePane)
             {
                 OnSelectionChanged(hwnd);             
+            }
+            else if (hwnd != IntPtr.Zero &&
+                (idObject == (int)ObjId.Caret && eventType == (uint)WinEvent.ObjectHide) &&
+                hwnd.ToWindowType() == WindowType.CodePane)
+            {
+                OnCaretHidden(hwnd);
             }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
@@ -102,8 +111,6 @@ namespace Rubberduck.VBEditor.Events
                     FocusDispatcher(_vbe, new WindowChangedEventArgs(parent, null, null, FocusType.ChildFocus));
                 }                
             }
-            //This is an output window firehose, leave this here, but comment it out when done.
-            //if (idObject != (int)ObjId.Cursor) Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild);
         }
 
         private static void AttachWindow(IntPtr hwnd)
@@ -154,10 +161,23 @@ namespace Rubberduck.VBEditor.Events
         public static event EventHandler<SelectionChangedEventArgs> SelectionChanged;
         private static void OnSelectionChanged(IntPtr hwnd)
         {
-            if (SelectionChanged != null)
+            var pane = GetCodePaneFromHwnd(hwnd);
+            if (pane != null) SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs(pane));
+        }
+
+        private static string _currentLine;
+        public static event EventHandler<AutoCompleteEventArgs> CaretHidden; // not CodeChanged because wouldn't fire on paste
+        private static void OnCaretHidden(IntPtr hwnd)
+        {
+            var pane = GetCodePaneFromHwnd(hwnd);
+            if (pane?.Selection.IsSingleCharacter ?? false)
             {
-                var pane = GetCodePaneFromHwnd(hwnd);
-                if (pane != null) SelectionChanged.Invoke(_vbe, new SelectionChangedEventArgs(pane));
+                var args = new AutoCompleteEventArgs(pane);
+                if (_currentLine != args.OldCode && !string.IsNullOrEmpty(args.OldCode))
+                {
+                    CaretHidden?.Invoke(_vbe, args);
+                    _currentLine = args.NewCode;
+                }
             }
         }
 

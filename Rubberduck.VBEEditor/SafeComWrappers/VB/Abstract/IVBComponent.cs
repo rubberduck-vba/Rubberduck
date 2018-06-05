@@ -5,6 +5,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     public interface IVBComponent : ISafeComWrapper, IEquatable<IVBComponent>
     {
         ComponentType Type { get; }
+        bool HasCodeModule { get; }
         ICodeModule CodeModule { get; }
         IVBE VBE { get; }
         IVBComponents Collection { get; }

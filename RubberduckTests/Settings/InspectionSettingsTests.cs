@@ -26,7 +26,7 @@ namespace RubberduckTests.Settings
                     .ThenBy(cis => cis.Description)) // Explicit sorting is to match InspectionSettingsViewModel.cs
             };
 
-            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null, null);
+            var userSettings = new UserSettings(null, null, null, null, inspectionSettings, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -46,7 +46,7 @@ namespace RubberduckTests.Settings
                     .ThenBy(cis => cis.Description)) // Explicit sorting is to match InspectionSettingsViewModel.cs
             };
 
-            var userSettings = new UserSettings(null, null, null, inspectionSettings, null, null, null);
+            var userSettings = new UserSettings(null, null, null, null, inspectionSettings, null, null, null);
             return new Configuration(userSettings);
         }
 

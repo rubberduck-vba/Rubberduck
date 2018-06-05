@@ -1,8 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
@@ -18,7 +17,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public QualifiedModuleName QualifiedModuleName => new QualifiedModuleName(this);
 
         public ComponentType Type => IsWrappingNullReference ? 0 : (ComponentType)Target.Type;
-        public ICodeModule CodeModule => new CodeModule(IsWrappingNullReference ? null : Target.CodeModule);
+
+        public bool HasCodeModule => Type != ComponentType.RelatedDocument && Type != ComponentType.ResFile;
+        public ICodeModule CodeModule
+        {
+            get
+            {                
+                if (!IsWrappingNullReference && HasCodeModule)
+                {
+                    return new CodeModule(Target.CodeModule);
+                }
+                return new CodeModule(null);
+            }
+        }
+
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
         public IVBComponents Collection => new VBComponents(IsWrappingNullReference ? null : Target.Collection);
         public IProperties Properties => new Properties(IsWrappingNullReference ? null : Target.Properties);
@@ -27,7 +39,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public string Name
         {
-            get => IsWrappingNullReference ? string.Empty : Target.Name;
+            get
+            {
+                if (IsWrappingNullReference)
+                {
+                    return string.Empty;
+                }
+                if (!string.IsNullOrEmpty(Target.Name))
+                {
+                    return Target.Name;
+                }
+                if (FileCount > 0)
+                {
+                    return GetFileName(1);
+                }
+
+                Debug.Assert(false, "Could not get component name");
+                return string.Empty;
+            }
             set
             {
                 if (!IsWrappingNullReference)
