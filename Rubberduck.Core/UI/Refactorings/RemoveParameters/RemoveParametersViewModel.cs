@@ -5,17 +5,29 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     public class RemoveParametersViewModel : RefactoringViewModelBase<RemoveParametersModel>
     {
-        public RemoveParametersViewModel(RubberduckParserState state, RemoveParametersModel model) : base(model)
+        private readonly IMessageBox _messageBox;
+
+        public RemoveParametersViewModel(RubberduckParserState state, RemoveParametersModel model, IMessageBox messageBox) : base(model)
         {
             State = state;
             RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
             RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
+            _messageBox = messageBox;
+            model.ConfirmRemoveParameter += ConfirmRemoveParameterHandler;
+        }
+
+        private void ConfirmRemoveParameterHandler(object sender, RefactoringConfirmEventArgs e)
+        {
+            e.Confirm = _messageBox.ConfirmYesNo(e.Message, RubberduckUI.ReorderParamsDialog_TitleText);
         }
 
         public RubberduckParserState State { get; }

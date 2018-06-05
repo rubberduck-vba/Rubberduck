@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 
@@ -18,14 +17,11 @@ namespace Rubberduck.Refactorings.ReorderParameters
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; set; }
 
-        private readonly IMessageBox _messageBox;
-            
-        public ReorderParametersModel(RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
+        public ReorderParametersModel(RubberduckParserState state, QualifiedSelection selection)
         {
             State = state;
             Declarations = state.AllUserDeclarations;
-            _messageBox = messageBox;
-
+            
             AcquireTarget(selection);
 
             Parameters = new List<Parameter>();
@@ -74,9 +70,12 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-            
-            return _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText) ? interfaceMember : null;
+            var args = new RefactoringConfirmEventArgs(message) {Confirm = true};
+            ConfirmReorderParameter?.Invoke(this, args);
+            return args.Confirm ? interfaceMember : null;
         }
+
+        public event EventHandler<RefactoringConfirmEventArgs> ConfirmReorderParameter;
 
         private Declaration GetEvent()
         {

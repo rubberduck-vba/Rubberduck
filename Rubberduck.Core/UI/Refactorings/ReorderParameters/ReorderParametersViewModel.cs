@@ -3,20 +3,32 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
+using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     public class ReorderParametersViewModel : RefactoringViewModelBase<ReorderParametersModel>
     {
-        public ReorderParametersViewModel(RubberduckParserState state, ReorderParametersModel model) : base(model)
+        private readonly IMessageBox _messageBox;
+
+        public ReorderParametersViewModel(RubberduckParserState state, ReorderParametersModel model, IMessageBox messageBox) : base(model)
         {
             State = state;
             MoveParameterUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterUp((Parameter)param));
             MoveParameterDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterDown((Parameter)param));
+            _messageBox = messageBox;
+
+            model.ConfirmReorderParameter += ConfirmReorderParameterHandler;
+        }
+
+        private void ConfirmReorderParameterHandler(object sender, Rubberduck.Refactorings.RefactoringConfirmEventArgs e)
+        {
+            e.Confirm = _messageBox.ConfirmYesNo(e.Message, RubberduckUI.ReorderParamsDialog_TitleText);
         }
 
         public RubberduckParserState State { get; }

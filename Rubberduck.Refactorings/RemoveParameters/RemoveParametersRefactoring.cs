@@ -93,7 +93,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
         {
-            _model = new RemoveParametersModel(state, selection, new MessageBox());
+            _model = new RemoveParametersModel(state, selection);
             
             var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
             Debug.Assert(target != null, "Target was not found");
@@ -101,7 +101,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
             if (target != null)
             {
                 _model.RemoveParameters.Add(target);
-            } else
+            }
+            else
             {
                 return;
             }

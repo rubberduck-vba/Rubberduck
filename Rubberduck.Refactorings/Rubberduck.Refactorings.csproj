@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoveParameters\IRemoveParametersPresenter.cs" />
     <Compile Include="RemoveParameters\Parameter.cs" />
+    <Compile Include="RefactoringConfirmEventArgs.cs" />
     <Compile Include="RemoveParameters\RemoveParametersModel.cs" />
     <Compile Include="RemoveParameters\RemoveParametersRefactoring.cs" />
     <Compile Include="Rename\IRenamePresenter.cs" />
