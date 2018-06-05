@@ -232,14 +232,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     {
                         return new UnaryExpression(clauseValue, symbol);
                     }
-                    //TODO: Restore this part
-                    //else if (resultContext is VBAParser.RelationalOpContext
-                    //        || resultContext is VBAParser.LogicalEqvOpContext
-                    //        || resultContext is VBAParser.LogicalImpOpContext)
-                    //{
-                    //    (IParseTreeValue lhs, IParseTreeValue rhs) = clauseValue.CreateOperandPair(symbol, _valueFactory);
-                    //    return new BinaryExpression(lhs, rhs, symbol);
-                    //}
+                    else if (resultContext is VBAParser.RelationalOpContext
+                            || resultContext is VBAParser.LogicalEqvOpContext
+                            || resultContext is VBAParser.LogicalImpOpContext)
+                    {
+                        (IParseTreeValue lhs, IParseTreeValue rhs) = clauseValue.CreateOperandPair(symbol, _valueFactory);
+                        return new BinaryExpression(lhs, rhs, symbol);
+                    }
                 }
             }
             else

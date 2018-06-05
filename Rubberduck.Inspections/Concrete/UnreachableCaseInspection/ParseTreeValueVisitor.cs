@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public class ParseTreeValueVisitor : IParseTreeValueVisitor
     {
         private IParseTreeVisitorResults _contextValues;
-        private RubberduckParserState _state;
+        //private RubberduckParserState _state;
         private IParseTreeValueFactory _inspValueFactory;
 
         //public ParseTreeValueVisitor(RubberduckParserState state, IParseTreeValueFactory valueFactory)
@@ -28,6 +28,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         //    Calculator = new ParseTreeExpressionEvaluator(valueFactory);
         //    _contextValues = new ParseTreeVisitorResults();
         //    OnValueResultCreated += _contextValues.OnNewValueResult;
+        //    //TODO: TEMPORARY LINE OF CODE
+        //    IdRefRetriever = GetIdentifierReferenceForContext;
         //}
 
         public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
@@ -38,6 +40,32 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
         }
+
+        //TODO: TEMPORARY CODE
+
+        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
+        //private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)
+        //{
+        //    return GetIdentifierReferenceForContext(context, State);
+        //}
+
+        //public static to support tests
+        //public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, RubberduckParserState state)
+        //{
+        //    IdentifierReference idRef = null;
+        //    var success = false;
+        //    var identifierReferences = (state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
+        //        .Where(rf => rf.Context == context);
+        //    if (identifierReferences.Count() == 1)
+        //    {
+        //        idRef = identifierReferences.First();
+        //        success = true;
+        //    }
+        //    return (success, idRef);
+        //}
+
+        //TODO: END TEMPORARY CODE
+
 
         //used only within UnreachableCaseInspection tests
         public RubberduckParserState State { set; get; } = null;
@@ -50,7 +78,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public virtual IParseTreeVisitorResults Visit(IParseTree tree)
         {
-            if (tree is ParserRuleContext context)
+            if (tree is ParserRuleContext context && !(context is VBAParser.WhiteSpaceContext))
             {
                 Visit(context);
             }
@@ -290,15 +318,37 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
+        //private bool TryGetIdentifierReferenceForContext2(ParserRuleContext context, out IdentifierReference idRef)
+        //{
+        //    idRef = null;
+        //    var identifierReferences = (State.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
+        //        .Where(rf => rf.Context == context);
+        //    if (identifierReferences.Count() == 1)
+        //    {
+        //        idRef = identifierReferences.First();
+        //        return true;
+        //    }
+        //    return false;
+        //}
+
         private bool TryGetIdentifierReferenceForContext(ParserRuleContext context, out IdentifierReference idRef)
         {
             idRef = null;
-            var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
-                .Where(rf => rf.Context == context);
-            if (identifierReferences.Count() == 1)
+            if (IdRefRetriever != null)
             {
-                idRef = identifierReferences.First();
-                return true;
+                (bool success, IdentifierReference idReference) = IdRefRetriever(context);
+                idRef = idReference;
+                return success;
+            }
+            else if (State != null) //State is set to non-null for testing
+            {
+                var identifierReferences = (State.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
+                    .Where(rf => rf.Context == context);
+                if (identifierReferences.Count() == 1)
+                {
+                    idRef = identifierReferences.First();
+                    return true;
+                }
             }
             return false;
         }
@@ -347,6 +397,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return context is VBAParser.MultOpContext   //MultOpContext includes both * and /
                 || context is VBAParser.AddOpContext    //AddOpContet includes both + and -
                 || context is VBAParser.PowOpContext
+                || context is VBAParser.IntDivOpContext
                 || context is VBAParser.ModOpContext;
         }
 

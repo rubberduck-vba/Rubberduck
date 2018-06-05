@@ -164,7 +164,7 @@ namespace RubberduckTests.Inspections
         [TestCase("10.51_*_11.2", "117.712", "Double")]
         [TestCase("10.51?Single_*_11.2?Single", "117.712", "Single")]
         [TestCase("10.51?Currency_*_11.2?Currency", "117.712", "Single")]
-        [TestCase("10_*_11", "110", "long")]
+        [TestCase("10_*_11", "110", "Long")]
         [TestCase("True_*_10", "-10", "Long")]
         [TestCase("10_*_True", "-10", "Long")]
         [Category("Inspections")]
@@ -399,6 +399,15 @@ namespace RubberduckTests.Inspections
             RHS = CreateInspValueFrom(operandItems[2]);
         }
 
+        private void GetBinaryOpValues(string operands, string typeName, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol)
+        {
+            var operandItems = operands.Split(new string[] { OPERAND_SEPARATOR }, StringSplitOptions.None);
+
+            LHS = CreateInspValueFrom(operandItems[0], typeName);
+            opSymbol = operandItems[1];
+            RHS = CreateInspValueFrom(operandItems[2], typeName);
+        }
+
         private void GetUnaryOpValues(string operands, out IParseTreeValue LHS, out string opSymbol)
         {
             var operandItems = operands.Split(new string[] { OPERAND_SEPARATOR }, StringSplitOptions.None);
@@ -435,18 +444,18 @@ namespace RubberduckTests.Inspections
                 : ValueFactory.Create(valAndType, conformTo);
         }
 
-        private IParseTreeValue TestBinaryOp(string opSymbol, string operands, string expected, string typeName)
+        private IParseTreeValue TestBinaryOp(string opSymbol, string operands, string expected, string selectExpressionTypeName)
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out _);
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
-            if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single) || typeName.Equals(Tokens.Currency))
+            if (selectExpressionTypeName.Equals(Tokens.Double) || selectExpressionTypeName.Equals(Tokens.Single) || selectExpressionTypeName.Equals(Tokens.Currency))
             {
                 var compareLength = expected.Length > 5 ? 5 : expected.Length;
                 Assert.IsTrue(Math.Abs(double.Parse(result.ValueText.Substring(0, compareLength)) - double.Parse(expected.Substring(0, compareLength))) <= double.Epsilon, $"Actual={result.ValueText} Expected={expected}");
             }
-            else if (typeName.Equals(Tokens.String))
+            else if (selectExpressionTypeName.Equals(Tokens.String))
             {
                 var compareLength = expected.Length > 5 ? 5 : expected.Length;
                 Assert.AreEqual(expected.Substring(0, compareLength), result.ValueText.Substring(0, compareLength));

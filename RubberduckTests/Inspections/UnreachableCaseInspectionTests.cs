@@ -23,7 +23,7 @@ namespace RubberduckTests.Inspections
         private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
         private IParseTreeValueFactory _valueFactory;
         private IParseTreeExpressionEvaluator _calculator;
-        private IParseTreeValueVisitorFactory _visitorFactory;
+        //private IParseTreeValueVisitorFactory _visitorFactory;
         private IRangeClauseFilterFactory _rangeClauseFilterFactory;
         private IRangeClauseContextWrapperFactory _rangeFactory;
         private ISelectCaseStmtContextWrapperFactory _selectStmtFactory;
@@ -64,17 +64,17 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        private IParseTreeValueVisitorFactory ValueVisitorFactory
-        {
-            get
-            {
-                if (_visitorFactory is null)
-                {
-                    _visitorFactory = FactoryProvider.CreateIParseTreeValueVisitorFactory();
-                }
-                return _visitorFactory;
-            }
-        }
+        //private IParseTreeValueVisitorFactory ValueVisitorFactory
+        //{
+        //    get
+        //    {
+        //        if (_visitorFactory is null)
+        //        {
+        //            _visitorFactory = FactoryProvider.CreateIParseTreeValueVisitorFactory();
+        //        }
+        //        return _visitorFactory;
+        //    }
+        //}
 
         private IRangeClauseFilterFactory RangeClauseFilterFactory
         {
@@ -486,14 +486,14 @@ namespace RubberduckTests.Inspections
         [TestCase("50?Long_To_50?Long", "Long", "Single=50")]
         [TestCase("50?Long_To_x?Long", "Long", "Range=50:x")]
         [TestCase("50?Long_To_100?Long", "Long", "Range=50:100")]
-        [TestCase("Soup?String_To_Nuts?String", "String", "Range=Nuts:Soup")]
+        [TestCase("Soup?String_To_Nuts?String", "String", "Range=Soup:Nuts")]
         [TestCase("50.3?Double_To_100.2?Double", "Long", "Range=50:100")]
         [TestCase("50.3?Double_To_100.2?Double", "Double", "Range=50.3:100.2")]
         [TestCase("50_To_100,75_To_125", "Long", "Range=50:100,Range=75:125")]
         [TestCase("50_To_100,175_To_225", "Long", "Range=50:100,Range=175:225")]
         [TestCase("500?Long_To_100?Long", "Long", "Range=100:500")]
         [Category("Inspections")]
-        public void UciUnit_AddRangeClauses(string firstCase, string filterTypeName, string expectedClauses)
+        public void UciUnit_AddRangeClause(string firstCase, string filterTypeName, string expectedClauses)
         {
             var UUT = RangeClauseFilterFactory.Create(filterTypeName, ValueFactory);
 
@@ -1219,8 +1219,8 @@ $@"Sub Foo(x As {type})
 
         [TestCase(@"1 To ""Forever""", 1, 1)]
         [TestCase(@"""Fifty-Five"" To 1000", 1, 1)]
-        [TestCase("z To 1000", 1, 1)]
-        [TestCase("50 To z", 1, 1)]
+        [TestCase("z To 1000", 1, 0)]
+        [TestCase("50 To z", 1, 0)]
         [TestCase(@"z To 1000, 95, ""TEST""", 1, 0)]
         [Category("Inspections")]
         public void UciFunctional_NumberRangeMixedTypes(string firstCase, int unreachableCount, int mismatchCount)
@@ -1665,6 +1665,7 @@ Select Case x
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
+        //TODO: should there be another error type - Range is high to low?
         [Test]
         [Category("Inspections")]
         public void UciFunctional_BooleanExpressionUnreachableCaseElseInvertBooleanRange()
@@ -1675,21 +1676,19 @@ Select Case x
             Random = VBA.Rnd()
         End Function
 
-
         Sub Foo(x As Boolean)
-
 
         Select Case Random() > 0.5
             Case False To True 
-            'OK
-            Case True
             'Unreachable
+            Case True
+            'OK
             Case Else
             'Unreachable
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 0);
         }
 
         [Test]
@@ -2298,7 +2297,7 @@ Select Case x
             'OK
             Case -START To FINISH 
             'OK
-            Case Is <opSymbol> y 
+            Case Is <opSymbol> x 
             'Unreachable
         End Select
 
@@ -2307,13 +2306,43 @@ Select Case x
             inputCode = inputCode.Replace("<opSymbol>", opSymbol);
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
-//Moved to ParseTreeExpressionEvaluationTests
-//        [TestCase("START Eqv FINISH", "True")]
-//        [TestCase("START * 0 Eqv FINISH * 0", "True")]
-//        [TestCase("START Eqv FINISH * 0", "False")]
-//        [TestCase("START * 0 Eqv FINISH", "False")]
+        //Moved to ParseTreeExpressionEvaluationTests
+        //        [TestCase("START Eqv FINISH", "True")]
+        //        [TestCase("START * 0 Eqv FINISH * 0", "True")]
+        //        [TestCase("START Eqv FINISH * 0", "False")]
+        //        [TestCase("START * 0 Eqv FINISH", "False")]
+        //        [Category("Inspections")]
+        //        public void UciFunctional_EqvOperator( string secondCase, string thirdCase)
+        //        {
+        //            string inputCode =
+        //@"
+        //        private const START As Long = 3
+        //        private const FINISH As Long = 10
+
+        //        Sub Foo(x As Long, y As Long, z As Long)
+        //        Select Case z
+        //            Case Is < x 
+        //            'OK
+        //            Case <secondCase>
+        //            'OK
+        //            Case <thirdCase>
+        //            'Unreachable
+        //        End Select
+
+        //        End Sub";
+
+        //            inputCode = inputCode.Replace("<secondCase>", secondCase);
+        //            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
+        //            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+        //        }
+
+        //Moved to ParseTreeExpressionEvaluationTests
+//        [TestCase("START Imp FINISH", "True")]
+//        [TestCase("START * 0 Imp FINISH * 0", "True")]
+//        [TestCase("START Imp FINISH * 0", "False")]
+//        [TestCase("START * 0 Imp FINISH", "True")]
 //        [Category("Inspections")]
-//        public void UciFunctional_EqvOperator( string secondCase, string thirdCase)
+//        public void UciFunctional_ImpOperator(string secondCase, string thirdCase)
 //        {
 //            string inputCode =
 //@"
@@ -2336,35 +2365,6 @@ Select Case x
 //            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
 //            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
 //        }
-
-        [TestCase("START Imp FINISH", "True")]
-        [TestCase("START * 0 Imp FINISH * 0", "True")]
-        [TestCase("START Imp FINISH * 0", "False")]
-        [TestCase("START * 0 Imp FINISH", "True")]
-        [Category("Inspections")]
-        public void UciFunctional_ImpOperator(string secondCase, string thirdCase)
-        {
-            string inputCode =
-@"
-        private const START As Long = 3
-        private const FINISH As Long = 10
-
-        Sub Foo(x As Long, y As Long, z As Long)
-        Select Case z
-            Case Is < x 
-            'OK
-            Case <secondCase>
-            'OK
-            Case <thirdCase>
-            'Unreachable
-        End Select
-
-        End Sub";
-
-            inputCode = inputCode.Replace("<secondCase>", secondCase);
-            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
-        }
 
         [Test]
         [Category("Inspections")]
@@ -2723,7 +2723,13 @@ End Sub
             {
                 var firstParserRuleContext = (ParserRuleContext)state.ParseTrees.Where(pt => pt.Value is ParserRuleContext).First().Value;
                 selectStmt = firstParserRuleContext.GetDescendent<VBAParser.SelectCaseStmtContext>();
-                var visitor = ValueVisitorFactory.Create(state, ValueFactory);
+                //var visitor = ValueVisitorFactory.Create(state, ValueFactory);
+                var visitor = UnreachableCaseInspection.CreateParseTreeValueVisitor
+                    (ValueFactory,
+                        (ParserRuleContext context) =>
+                        { return UnreachableCaseInspection.GetIdentifierReferenceForContext(context, state); }
+                    );
+
                 valueResults = selectStmt.Accept(visitor);
             }
             return valueResults;

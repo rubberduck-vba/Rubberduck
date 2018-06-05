@@ -67,6 +67,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Tokens.Integer,
             Tokens.Byte,
             Tokens.Boolean,
+            Tokens.String
         };
 
         public ParseTreeExpressionEvaluator(IParseTreeValueFactory valueFactory)

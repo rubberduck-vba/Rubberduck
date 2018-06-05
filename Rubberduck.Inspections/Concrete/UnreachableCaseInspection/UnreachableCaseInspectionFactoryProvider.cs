@@ -3,7 +3,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspectionFactoryProvider
     {
-        IParseTreeValueVisitorFactory CreateIParseTreeValueVisitorFactory();
+        //IParseTreeValueVisitorFactory CreateIParseTreeValueVisitorFactory();
         IParseTreeValueFactory CreateIParseTreeValueFactory();
         IRangeClauseFilterFactory CreateIRangeClauseFilterFactory();
         ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory();
@@ -12,10 +12,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public class UnreachableCaseInspectionFactoryProvider : IUnreachableCaseInspectionFactoryProvider
     {
-        public IParseTreeValueVisitorFactory CreateIParseTreeValueVisitorFactory()
-        {
-            return new ParseTreeValueVisitorFactory();
-        }
+        //public IParseTreeValueVisitorFactory CreateIParseTreeValueVisitorFactory()
+        //{
+        //    return new ParseTreeValueVisitorFactory();
+        //}
 
         public IParseTreeValueFactory CreateIParseTreeValueFactory()
         {

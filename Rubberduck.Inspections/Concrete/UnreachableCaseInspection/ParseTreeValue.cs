@@ -17,16 +17,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public class ParseTreeValue : IParseTreeValue
     {
+        private readonly string _inputValue;
         private readonly string _declaredType;
         private readonly string _derivedType;
 
-        public ParseTreeValue(string value, string declaredType = null)
+        public ParseTreeValue(string value, string declaredType = null, string conformToType = null)
         {
             if (value is null)
             {
                 throw new ArgumentNullException("null 'value' argument passed to UCIValue");
             }
-
+            _inputValue = value;
+            ValueText = value;
             ParsesToConstantValue = IsStringConstant(value);
             _declaredType = ParsesToConstantValue && (declaredType is null) ? Tokens.String : declaredType;
             _derivedType = DeriveTypeName(value, out bool derivedFromTypeHint);
@@ -40,7 +42,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 ValueText = value.Replace("\"", "");
             }
 
-            var conformToTypeName = _declaredType ?? _derivedType;
+            var conformToTypeName = conformToType ?? _declaredType ?? _derivedType;
+            //var conformToTypeName = _declaredType ?? _derivedType;
             ConformValueTextToType(conformToTypeName);
         }
 
@@ -283,7 +286,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             if (conformTypeName.Equals(Tokens.LongLong) || conformTypeName.Equals(Tokens.Long) ||
                 conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
             {
-                if (this.TryConvertValue(out long newVal))
+                if (StringValueConverter.TryConvertString(ValueText, out long newVal))
+                //if (this.TryConvertValue(out long newVal))
                 {
                     ValueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -344,7 +348,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Double) || conformTypeName.Equals(Tokens.Single))
             {
-                if (this.TryConvertValue(out double newVal))
+                if (StringValueConverter.TryConvertString(ValueText, out double newVal))
+                //if (this.TryConvertValue(out double newVal))
                 {
                     ValueText = newVal.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
@@ -354,7 +359,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Boolean))
             {
-                if (this.TryConvertValue(out bool newVal))
+                if (StringValueConverter.TryConvertString(ValueText, out bool newVal))
+                //if (this.TryConvertValue(out bool newVal))
                 {
                     ValueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -364,13 +370,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.String))
             {
-                ParsesToConstantValue = true;
+                //ParsesToConstantValue = true;
+                ParsesToConstantValue = IsStringConstant(_inputValue);
                 return;
             }
 
             if (conformTypeName.Equals(Tokens.Currency))
             {
-                if (this.TryConvertValue(out decimal newVal))
+                if (StringValueConverter.TryConvertString(this.ValueText, out decimal newVal))
+                //if (this.TryConvertValue(out decimal newVal))
                 {
                     ValueText = newVal.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
@@ -380,8 +388,81 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
+    public struct PredicateValueExpression<T> where T : IComparable<T>
+    {
+        public string LHS { private set; get; }
+        public T RHS { private set; get; }
+        public string OpSymbol { private set; get; }
+
+        public PredicateValueExpression(string lhs, T rhs, string opSymbol)
+        {
+            LHS = lhs;
+            RHS = rhs;
+            OpSymbol = opSymbol;
+        }
+
+        public override string ToString()
+        {
+            return $"{LHS} {OpSymbol} {RHS}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is PredicateValueExpression<T> expression))
+            {
+                return false;
+            }
+            return ToString().Equals(expression.ToString());
+        }
+
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+
+        public bool Filters(PredicateValueExpression<T> predicate)
+        {
+            if (OpSymbol != predicate.OpSymbol)
+            {
+                return false;
+            }
+            if (OpSymbol.Equals(LogicSymbols.LT) || OpSymbol.Equals(LogicSymbols.LTE))
+            {
+                return RHS.CompareTo(predicate.RHS) >= 0;
+            }
+            else if (OpSymbol.Equals(LogicSymbols.GT) || OpSymbol.Equals(LogicSymbols.GTE))
+            {
+                return RHS.CompareTo(predicate.RHS) <= 0;
+            }
+            else if (OpSymbol.Equals(LogicSymbols.EQ) || OpSymbol.Equals(LogicSymbols.NEQ))
+            {
+                return RHS.CompareTo(predicate.RHS) == 0;
+            }
+            return false;
+        }
+    }
+
     public static class ParseTreeValueExtensions
-    { 
+    {
+        public static (IParseTreeValue lhs, IParseTreeValue rhs)
+            CreateOperandPair(this IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
+        {
+            var operands = value.ValueText.Split(new string[] { opSymbol }, StringSplitOptions.None);
+            if (operands.Count() == 2)
+            {
+                var lhs = factory.Create(operands[0].Trim());
+                var rhs = factory.Create(operands[1].Trim());
+                return (lhs, rhs);
+            }
+
+            if (operands.Count() == 1)
+            {
+                var lhs = new ParseTreeValue(operands[0].Trim());
+                return (lhs, null);
+            }
+            return (null, null);
+        }
+
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out long value)
         {
             value = default;

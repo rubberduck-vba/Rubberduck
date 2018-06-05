@@ -88,6 +88,7 @@
     <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValueFactory.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\ContextWrapperBase.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseExpression.cs" />
+    <Compile Include="Concrete\UnreachableCaseInspection\RangeValues.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\StringValueConverter.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionFactoryProvider.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseContextWrapper.cs" />
