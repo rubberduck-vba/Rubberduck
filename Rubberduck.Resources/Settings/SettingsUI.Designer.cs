@@ -88,6 +88,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autocompletion Settings.
+        /// </summary>
+        public static string PageHeader_AutoCompleteSettings {
+            get {
+                return ResourceManager.GetString("PageHeader_AutoCompleteSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General Settings.
         /// </summary>
         public static string PageHeader_GeneralSettings {
@@ -138,6 +147,15 @@ namespace Rubberduck.Resources.Settings {
         public static string PageHeader_WindowSettings {
             get {
                 return ResourceManager.GetString("PageHeader_WindowSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure which autocompletions are enabled..
+        /// </summary>
+        public static string PageInstructions_AutoCompleteSettings {
+            get {
+                return ResourceManager.GetString("PageInstructions_AutoCompleteSettings", resourceCulture);
             }
         }
         

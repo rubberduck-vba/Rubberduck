@@ -53,6 +53,7 @@ namespace Rubberduck.Inspections
                         if (inspection.Name == setting.Name)
                         {
                             inspection.Severity = setting.Severity;
+                            continue;
                         }
                     }
                 }

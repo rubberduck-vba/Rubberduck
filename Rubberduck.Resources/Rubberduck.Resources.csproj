@@ -217,6 +217,26 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Settings\AutoCompletesPage.cs.Designer.cs">
+      <DependentUpon>AutoCompletesPage.cs.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Settings\AutoCompletesPage.de.Designer.cs">
+      <DependentUpon>AutoCompletesPage.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Settings\AutoCompletesPage.fr.Designer.cs">
+      <DependentUpon>AutoCompletesPage.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Settings\AutoCompletesPage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AutoCompletesPage.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings\ToDoExplorerPage.cs.Designer.cs">
       <DependentUpon>ToDoExplorerPage.cs.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -481,6 +501,22 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\AutoCompletesPage.cs.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutoCompletesPage.cs.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\AutoCompletesPage.de.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutoCompletesPage.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\AutoCompletesPage.fr.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutoCompletesPage.fr.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\AutoCompletesPage.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AutoCompletesPage.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\ToDoExplorerPage.cs.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

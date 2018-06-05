@@ -48,6 +48,7 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.AutoComplete;
 
 namespace Rubberduck.Root
 {
@@ -96,6 +97,8 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
+                .LifestyleSingleton());
+            container.Register(Component.For<AutoCompleteService>()
                 .LifestyleSingleton());
             container.Register(Component.For<IOperatingSystem>()
                 .ImplementedBy<WindowsOperatingSystem>()
@@ -146,6 +149,7 @@ namespace Rubberduck.Root
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
             RegisterQuickFixes(container, assembliesToRegister);
+            RegisterAutoCompletes(container, assembliesToRegister);
 
             RegisterSpecialFactories(container);
             RegisterFactories(container, assembliesToRegister);
@@ -203,7 +207,8 @@ namespace Rubberduck.Root
                     .IncludeNonPublicTypes()
                     .Where(type => type.Namespace != null
                             && !type.Namespace.StartsWith("Rubberduck.VBEditor.SafeComWrappers")
-                            && !type.Name.Equals("SelectionChangeService")
+                            && !type.Name.Equals(nameof(SelectionChangeService))
+                            && !type.Name.Equals(nameof(AutoCompleteService))
                             && !type.Name.EndsWith("Factory")
                             && !type.Name.EndsWith("ConfigProvider")
                             && !type.Name.EndsWith("FakesProvider")
@@ -258,6 +263,19 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .BasedOn<IInspection>()
+                    .If(type => type.NotDisabledOrExperimental(_initialSettings))
+                    .WithService.Base()
+                    .LifestyleTransient());
+            }
+        }
+
+        private void RegisterAutoCompletes(IWindsorContainer container, Assembly[] assembliesToRegister)
+        {
+            foreach (var assembly in assembliesToRegister)
+            {
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<IAutoComplete>()
                     .If(type => type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Base()
                     .LifestyleTransient());

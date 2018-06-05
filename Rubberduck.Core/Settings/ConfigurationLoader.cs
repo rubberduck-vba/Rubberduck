@@ -28,17 +28,19 @@ namespace Rubberduck.Settings
     {
         private readonly IConfigProvider<GeneralSettings> _generalProvider;
         private readonly IConfigProvider<HotkeySettings> _hotkeyProvider;
+        private readonly IConfigProvider<AutoCompleteSettings> _autoCompleteProvider;
         private readonly IConfigProvider<ToDoListSettings> _todoProvider;
         private readonly IConfigProvider<CodeInspectionSettings> _inspectionProvider;
         private readonly IConfigProvider<UnitTestSettings> _unitTestProvider;
         private readonly IConfigProvider<IndenterSettings> _indenterProvider;
         private readonly IConfigProvider<WindowSettings> _windowProvider;
 
-        public ConfigurationLoader(IConfigProvider<GeneralSettings> generalProvider, IConfigProvider<HotkeySettings> hotkeyProvider, IConfigProvider<ToDoListSettings> todoProvider,
+        public ConfigurationLoader(IConfigProvider<GeneralSettings> generalProvider, IConfigProvider<HotkeySettings> hotkeyProvider, IConfigProvider<AutoCompleteSettings> autoCompleteProvider, IConfigProvider<ToDoListSettings> todoProvider,
                                    IConfigProvider<CodeInspectionSettings> inspectionProvider, IConfigProvider<UnitTestSettings> unitTestProvider, IConfigProvider<IndenterSettings> indenterProvider, IConfigProvider<WindowSettings> windowProvider)
         {
             _generalProvider = generalProvider;
             _hotkeyProvider = hotkeyProvider;
+            _autoCompleteProvider = autoCompleteProvider;
             _todoProvider = todoProvider;
             _inspectionProvider = inspectionProvider;
             _unitTestProvider = unitTestProvider;
@@ -57,6 +59,7 @@ namespace Rubberduck.Settings
                 (
                     _generalProvider.Create(),
                     _hotkeyProvider.Create(),
+                    _autoCompleteProvider.Create(),
                     _todoProvider.Create(),
                     _inspectionProvider.Create(),
                     _unitTestProvider.Create(),
@@ -75,6 +78,7 @@ namespace Rubberduck.Settings
                 (
                     _generalProvider.CreateDefaults(),
                     _hotkeyProvider.CreateDefaults(),
+                    _autoCompleteProvider.CreateDefaults(),
                     _todoProvider.CreateDefaults(),
                     _inspectionProvider.CreateDefaults(),
                     _unitTestProvider.CreateDefaults(),
@@ -93,6 +97,7 @@ namespace Rubberduck.Settings
 
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
+            _autoCompleteProvider.Save(toSerialize.UserSettings.AutoCompleteSettings);
             _todoProvider.Save(toSerialize.UserSettings.ToDoListSettings);
             _inspectionProvider.Save(toSerialize.UserSettings.CodeInspectionSettings);
             _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
