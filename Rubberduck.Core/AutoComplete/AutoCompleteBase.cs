@@ -21,8 +21,7 @@ namespace Rubberduck.AutoComplete
                 var selection = pane.Selection;
                 if (selection.StartColumn < 2) { return false; }
                 
-                if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken 
-                    && (e.OldCode.Length - e.OldCode.Replace(OutputToken, InputToken).Replace(InputToken, "").Length % 2 != 0))
+                if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken)
                 {
                     using (var module = pane.CodeModule)
                     {
