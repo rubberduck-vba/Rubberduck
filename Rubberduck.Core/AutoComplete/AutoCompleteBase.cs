@@ -16,21 +16,25 @@ namespace Rubberduck.AutoComplete
 
         public virtual bool Execute(AutoCompleteEventArgs e)
         {
-            var selection = e.CodePane.Selection;
-            if (selection.StartColumn < 2) { return false; }
-
-            if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken)
+            using (var pane = e.CodePane)
             {
-                using (var module = e.CodePane.CodeModule)
+                var selection = pane.Selection;
+                if (selection.StartColumn < 2) { return false; }
+                
+                if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken 
+                    && (e.OldCode.Length - e.OldCode.Replace(OutputToken, InputToken).Replace(InputToken, "").Length % 2 != 0))
                 {
-                    var newCode = e.OldCode.Insert(selection.StartColumn - 1, OutputToken);
-                    module.ReplaceLine(e.CodePane.Selection.StartLine, newCode);
-                    e.CodePane.Selection = selection;
-                    e.NewCode = newCode;
-                    return true;
+                    using (var module = pane.CodeModule)
+                    {
+                        var newCode = e.OldCode.Insert(selection.StartColumn - 1, OutputToken);
+                        module.ReplaceLine(selection.StartLine, newCode);
+                        pane.Selection = selection;
+                        e.NewCode = newCode;
+                        return true;
+                    }
                 }
+                return false;
             }
-            return false;
         }
     }
 }
