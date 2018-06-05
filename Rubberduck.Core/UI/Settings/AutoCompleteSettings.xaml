@@ -95,8 +95,7 @@
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                               ItemContainerStyle="{StaticResource PrettifyRow}"
                               ColumnHeaderHeight="22"
-                              BorderThickness="0"
-                              Height="200">
+                              BorderThickness="0" Height="Auto" MinHeight="70">
                         <DataGrid.CellStyle>
                             <Style TargetType="{x:Type DataGridCell}">
                                 <Setter Property="BorderThickness" Value="0" />
