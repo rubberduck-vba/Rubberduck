@@ -65,7 +65,7 @@
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                             <Label Foreground="White"
                                 FontWeight="SemiBold" 
-                                Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletePage, Key=PageHeader}">
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=PageHeader}">
                             </Label>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
