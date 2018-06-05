@@ -48,7 +48,7 @@ namespace Rubberduck.AutoComplete
 
         private void VBENativeServices_CaretHidden(object sender, AutoCompleteEventArgs e)
         {
-            if (e.ContentHash == _contentHash || e.OldCode.Length < (_lastCode?.Length ?? 0))
+            if (e.ContentHash == _contentHash || (e.OldCode.StartsWith(_lastCode) && e.OldCode.Length < (_lastCode?.Length ?? 0)))
             {
                 return;
             }
