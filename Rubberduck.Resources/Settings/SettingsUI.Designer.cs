@@ -151,7 +151,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Autocompletion.
+        ///   Looks up a localized string similar to Configure which autocompletions are enabled..
         /// </summary>
         public static string PageInstructions_AutoCompleteSettings {
             get {

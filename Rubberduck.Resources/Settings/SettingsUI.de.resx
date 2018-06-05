@@ -144,6 +144,9 @@
   <data name="PageHeader_WindowSettings" xml:space="preserve">
     <value>Fenstereinstellungen</value>
   </data>
+  <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
+    <value>Configure which autocompletions are enabled.</value>
+  </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
     <value>[Ok] zum Schließen und Speichern oder [Abbrechen] zum Verwerfen der Änderungen.</value>
   </data>

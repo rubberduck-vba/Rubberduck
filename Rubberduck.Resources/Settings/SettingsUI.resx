@@ -148,7 +148,7 @@
     <value>Window Settings</value>
   </data>
   <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
-    <value>Configure Autocompletion</value>
+    <value>Configure which autocompletions are enabled.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
     <value>Click [Ok] to close the window and apply changes, or [Cancel] to discard them.</value>

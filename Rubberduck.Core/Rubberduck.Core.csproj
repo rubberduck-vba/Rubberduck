@@ -529,6 +529,10 @@
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
+    <Compile Include="UI\Settings\AutoCompleteSettings.xaml.cs">
+      <DependentUpon>AutoCompleteSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\AutoCompleteSettingsViewModel.cs" />
     <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
@@ -1052,6 +1056,10 @@
     <Page Include="UI\RegexAssistant\RegexAssistant.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Settings\AutoCompleteSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\GeneralSettings.xaml">
       <SubType>Designer</SubType>
