@@ -52,7 +52,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
             }
 
-            var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, _factory);
+            var refactoring = new EncapsulateFieldRefactoring(_state, Vbe, _indenter, _factory);
             refactoring.Refactor();
         }
     }

@@ -75,7 +75,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var refactoring = new ReorderParametersRefactoring(Vbe, _factory, _msgbox, _state.ProjectsProvider);
+            var refactoring = new ReorderParametersRefactoring(_state, Vbe, _factory, _msgbox, _state.ProjectsProvider);
             refactoring.Refactor(selection.Value);
         }
     }

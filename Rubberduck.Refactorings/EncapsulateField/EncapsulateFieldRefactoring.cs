@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -12,6 +13,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IIndenter _indenter;
         private readonly IRefactoringPresenterFactory _factory;
@@ -19,15 +21,34 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
 
-        public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory)
+        public EncapsulateFieldRefactoring(RubberduckParserState state, IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory)
         {
+            _state = state;
             _vbe = vbe;
             _indenter = indenter;
             _factory = factory;
         }
 
+        private EncapsulateFieldModel InitializeModel()
+        {
+            var selection = _vbe.GetActiveSelection();
+
+            if (!selection.HasValue)
+            {
+                return null;
+            }
+
+            return new EncapsulateFieldModel(_state, selection.Value);
+        }
+
         public void Refactor()
         {
+            _model = InitializeModel();
+            if (_model == null)
+            {
+                return;
+            }
+
             using (var container = DisposalActionContainer.Create(_factory.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;

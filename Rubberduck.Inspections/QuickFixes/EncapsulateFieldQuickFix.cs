@@ -11,13 +11,15 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class EncapsulateFieldQuickFix : QuickFixBase
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IIndenter _indenter;
         private readonly IRefactoringPresenterFactory _factory;
 
-        public EncapsulateFieldQuickFix(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory)
+        public EncapsulateFieldQuickFix(RubberduckParserState state, IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory)
             : base(typeof(EncapsulatePublicFieldInspection))
         {
+            _state = state;
             _vbe = vbe;
             _indenter = indenter;
             _factory = factory;
@@ -25,7 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            var refactoring = new EncapsulateFieldRefactoring(_vbe, _indenter, _factory);
+            var refactoring = new EncapsulateFieldRefactoring(_state, _vbe, _indenter, _factory);
             refactoring.Refactor(result.Target);
         }
 

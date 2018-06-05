@@ -84,7 +84,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
             }
 
-            var refactoring = new ExtractInterfaceRefactoring(Vbe, _messageBox, _factory);
+            var refactoring = new ExtractInterfaceRefactoring(_state, Vbe, _messageBox, _factory);
             refactoring.Refactor();
         }
     }

@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            var refactoring = new RemoveParametersRefactoring(_vbe, _factory);
+            var refactoring = new RemoveParametersRefactoring(_state, _vbe, _factory);
             refactoring.QuickFix(_state, result.QualifiedSelection);
         }
 

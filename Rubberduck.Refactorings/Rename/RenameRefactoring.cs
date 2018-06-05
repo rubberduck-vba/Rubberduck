@@ -44,7 +44,6 @@ namespace Rubberduck.Refactorings.Rename
             _factory = factory;
             _messageBox = messageBox;
             _state = state;
-            _model = null;
             var activeCodePane = _vbe.ActiveCodePane;
             _initialSelection = new Tuple<ICodePane, Selection>(activeCodePane, activeCodePane.IsWrappingNullReference ? Selection.Empty : activeCodePane.Selection);
             _modulesToRewrite = new List<QualifiedModuleName>();
@@ -62,6 +61,13 @@ namespace Rubberduck.Refactorings.Rename
             _neverRenameIdentifiers = NeverRenameList();
         }
 
+        private RenameModel InitializeModel()
+        {
+            var activeSelection = _vbe.GetActiveSelection();
+            var qualifiedSelection = activeSelection ?? new QualifiedSelection();
+            return new RenameModel(_state, qualifiedSelection);
+        }
+
         public void Refactor(QualifiedSelection qualifiedSelection)
         {
             CacheInitialSelection(qualifiedSelection);
@@ -70,6 +76,12 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor()
         {
+            _model = InitializeModel();
+            if (_model == null)
+            {
+                return;
+            }
+
             using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter, RenameModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;

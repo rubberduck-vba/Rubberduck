@@ -3,7 +3,6 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
@@ -12,12 +11,14 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+ using Rubberduck.Parsing.VBA;
  using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory _factory;
         private ReorderParametersModel _model;
@@ -25,16 +26,34 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
         private readonly IProjectsProvider _projectsProvider;
 
-        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory factory, IMessageBox messageBox, IProjectsProvider projectsProvider)
+        public ReorderParametersRefactoring(RubberduckParserState state, IVBE vbe, IRefactoringPresenterFactory factory, IMessageBox messageBox, IProjectsProvider projectsProvider)
         {
+            _state = state;
             _vbe = vbe;
             _factory = factory;
             _messageBox = messageBox;
             _projectsProvider = projectsProvider;
         }
 
+        private ReorderParametersModel InitializeModel()
+        {
+            var selection = _vbe.GetActiveSelection();
+            if (!selection.HasValue)
+            {
+                return null;
+            }
+
+            return new ReorderParametersModel(_state, selection.Value);
+        }
+
         public void Refactor()
         {
+            _model = InitializeModel();
+            if (_model == null)
+            {
+                return;
+            }
+
             using (var container = DisposalActionContainer.Create(_factory.Create<IReorderParametersPresenter, ReorderParametersModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;

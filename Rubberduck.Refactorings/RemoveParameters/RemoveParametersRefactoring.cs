@@ -17,19 +17,34 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory _factory;
         private RemoveParametersModel _model;
         private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
-        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory factory)
+        public RemoveParametersRefactoring(RubberduckParserState state, IVBE vbe, IRefactoringPresenterFactory factory)
         {
+            _state = state;
             _vbe = vbe;
             _factory = factory;
         }
 
+        private RemoveParametersModel InitializeModel()
+        {
+            var selection = _vbe.GetActiveSelection();
+
+            return !selection.HasValue ? null : new RemoveParametersModel(_state, selection.Value);
+        }
+
         public void Refactor()
         {
+            _model = InitializeModel();
+            if (_model == null)
+            {
+                return;
+            }
+
             using (var container = DisposalActionContainer.Create(_factory.Create<IRemoveParametersPresenter, RemoveParametersModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;

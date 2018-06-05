@@ -70,7 +70,7 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             var selection = Vbe.GetActiveSelection();
 
-            var refactoring = new RemoveParametersRefactoring(Vbe, _factory);
+            var refactoring = new RemoveParametersRefactoring(_state, Vbe, _factory);
             refactoring.Refactor(selection.Value);
         }
     }

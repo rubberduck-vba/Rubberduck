@@ -4,6 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -14,20 +15,41 @@ namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
         private ExtractInterfaceModel _model;
 
-        public ExtractInterfaceRefactoring(IVBE vbe, IMessageBox messageBox, IRefactoringPresenterFactory factory)
+        public ExtractInterfaceRefactoring(RubberduckParserState state, IVBE vbe, IMessageBox messageBox, IRefactoringPresenterFactory factory)
         {
+            _state = state;
             _vbe = vbe;
             _messageBox = messageBox;
             _factory = factory;
         }
 
+        private ExtractInterfaceModel InitializeModel()
+        {
+            var selection = _vbe.GetActiveSelection();
+
+            if (selection == null)
+            {
+                return null;
+            }
+
+            return new ExtractInterfaceModel(_state, selection.Value);
+        }
+
         public void Refactor()
         {
+            _model = InitializeModel();
+
+            if (_model == null)
+            {
+                return;
+            }
+
             using (var container = DisposalActionContainer.Create(_factory.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
