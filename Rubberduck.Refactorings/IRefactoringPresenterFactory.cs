@@ -2,7 +2,7 @@
 {
     public interface IRefactoringPresenterFactory
     {
-        TPresenter Create<TPresenter>();
+        TPresenter Create<TPresenter, TModel>(TModel model);
         void Release<TPresenter>(TPresenter presenter);
     }
 }

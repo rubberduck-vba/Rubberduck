@@ -70,7 +70,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter>(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter, RenameModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter != null)
@@ -124,7 +124,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private IRenamePresenter CreateRenamePresenter()
         {
-            var presenter = _factory.Create<IRenamePresenter>();
+            var presenter = _factory.Create<IRenamePresenter, RenameModel>(_model);
             if (presenter != null)
             {
                 _model = presenter.Model;

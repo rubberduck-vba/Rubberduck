@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create<IExtractInterfacePresenter>(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter == null)

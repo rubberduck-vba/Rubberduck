@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor()
         {
-            using (var container = DisposalActionContainer.Create(_factory.Create<IEncapsulateFieldPresenter>(), p => _factory.Release(p)))
+            using (var container = DisposalActionContainer.Create(_factory.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
                 if (presenter == null)
