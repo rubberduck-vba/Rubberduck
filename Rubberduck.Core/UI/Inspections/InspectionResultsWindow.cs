@@ -1,13 +1,12 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Inspections
 {
     public partial class InspectionResultsWindow : UserControl, IDockableUserControl
     {
-        private readonly string RandomGuid = Guid.NewGuid().ToString();
-        string IDockableUserControl.GuidIdentifier => RandomGuid;
+        private const string ClassId = "D3B2A683-9856-4246-BDC8-6B0795DC875B";
+        string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.CodeInspections; } }
         
         private InspectionResultsWindow()

@@ -8,8 +8,8 @@ namespace Rubberduck.UI.ToDoItems
     [ExcludeFromCodeCoverage]
     public partial class ToDoExplorerWindow : UserControl, IDockableUserControl
     {
-        private readonly string RandomGuid = Guid.NewGuid().ToString();
-        string IDockableUserControl.GuidIdentifier => RandomGuid;
+        private const string ClassId = "8B071EDA-2C9C-4009-9A22-A1958BF98B28"; // todo get from Resources.Registration?
+        string IDockableUserControl.ClassId { get { return ClassId; } }
         string IDockableUserControl.Caption { get { return RubberduckUI.TodoExplorer_Caption; } }
 
         private ToDoExplorerWindow()

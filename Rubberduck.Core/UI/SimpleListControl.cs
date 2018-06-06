@@ -32,8 +32,8 @@ namespace Rubberduck.UI
             handler(this, arg);
         }
 
-        private readonly string RandomGuid = Guid.NewGuid().ToString();
-        string IDockableUserControl.GuidIdentifier => RandomGuid;
+        private const string ClassId = "972A7CE8-55A0-48F5-B607-2035E81D28CF";
+        string IDockableUserControl.ClassId { get { return ClassId; } }
 
         private readonly string _caption;
         string IDockableUserControl.Caption

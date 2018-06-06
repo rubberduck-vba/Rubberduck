@@ -127,6 +127,10 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             get => _selectedItem;
             set
             {
+                if (_selectedItem == value)
+                {
+                    return;
+                }
                 _selectedItem = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Metrics));

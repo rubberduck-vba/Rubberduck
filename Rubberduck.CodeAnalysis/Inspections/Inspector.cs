@@ -18,7 +18,6 @@ using Rubberduck.Settings;
 using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
 using Rubberduck.Resources;
-using Rubberduck.CodeAnalysis.Inspections;
 
 namespace Rubberduck.Inspections
 {
@@ -55,6 +54,7 @@ namespace Rubberduck.Inspections
                         if (inspection.Name == setting.Name)
                         {
                             inspection.Severity = setting.Severity;
+                            break;
                         }
                     }
                 }

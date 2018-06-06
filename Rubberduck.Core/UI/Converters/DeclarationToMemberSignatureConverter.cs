@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Converters
 
             public override string ToString()
             {
-                return $"{ParamAccessibility} {ParamName} As {ParamType}";
+                return $"{ParamAccessibility} {ParamName} {Tokens.As} {ParamType}";
             }
         }
 
@@ -64,7 +64,7 @@ namespace Rubberduck.UI.Converters
                 return new List<Parameter>();
             }
 
-            if (GetMethodType(member) == "Property Get")
+            if (GetMethodType(member) == $"{Tokens.Property} {Tokens.Get}")
             {
                 parameters = parameters.Take(parameters.Count - 1).ToList();
             }
