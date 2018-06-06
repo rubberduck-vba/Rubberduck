@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.Refactorings
+﻿using System;
+
+namespace Rubberduck.Refactorings
 {
     public interface IRefactoringViewModel<TModel> : IRefactoringViewModel
     {
@@ -7,5 +9,6 @@
 
     public interface IRefactoringViewModel
     {
+        event EventHandler<RefactoringDialogResult> OnWindowClosed;
     }
 }

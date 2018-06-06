@@ -3,7 +3,7 @@ using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public class RefactoringPresenterBase<TModel, TDialog, TView, TViewModel> : IDisposable
+    public class RefactoringPresenterBase<TModel, TDialog, TView, TViewModel> : IDisposable, IRefactoringPresenter<TModel, TDialog, TView, TViewModel> 
         where TModel : class
         where TView : System.Windows.Controls.UserControl, new()
         where TViewModel : RefactoringViewModelBase<TModel>

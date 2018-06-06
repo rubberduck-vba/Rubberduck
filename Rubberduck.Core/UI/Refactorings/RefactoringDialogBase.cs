@@ -3,9 +3,10 @@ using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class RefactoringDialogBase<TModel, TView, TViewModel> : Forms.Form, IRefactoringDialog<TViewModel>
+    public partial class RefactoringDialogBase<TModel, TView, TViewModel> : Forms.Form, IRefactoringDialog<TModel, TView, TViewModel>
+        where TModel : class
         where TView : System.Windows.Controls.UserControl, new()
-        where TViewModel : RefactoringViewModelBase<TModel>
+        where TViewModel : class, IRefactoringViewModel<TModel>
     {
         public RefactoringDialogBase(TViewModel viewModel)
         {
