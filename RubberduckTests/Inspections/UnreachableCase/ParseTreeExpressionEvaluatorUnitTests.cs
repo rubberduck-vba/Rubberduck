@@ -5,7 +5,7 @@ using System;
 using System.Text;
 using System.Linq;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.Inspections.UnreachableCase
 {
     /*
     ParseTreeValueExpressionEvaluator is a support class of the UnreachableCaseInspection
@@ -27,7 +27,7 @@ namespace RubberduckTests.Inspections
 
 
     [TestFixture]
-    public class ParseTreeExpressionEvaluatorTests
+    public class ParseTreeExpressionEvaluatorUnitTests
     {
         private const string VALUE_TYPE_SEPARATOR = "?";
         private const string OPERAND_SEPARATOR = "_";

@@ -3,7 +3,7 @@ using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing.Grammar;
 using System;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.Inspections.UnreachableCase
 {
     /*
         ParseTreeValue is a support class of the UnreachableCaseInspection
@@ -13,7 +13,7 @@ namespace RubberduckTests.Inspections
         If there is no "?<declaredType>", then <operand>'s type is derived by the ParseTreeValue instance.
     */
     [TestFixture]
-    public class ParseTreeValueTests
+    public class ParseTreeValueUnitTests
     {
         private const string VALUE_TYPE_SEPARATOR = "?";
 

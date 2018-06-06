@@ -12,10 +12,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.Inspections.UnreachableCase
 {
     [TestFixture]
-    public class UnreachableCaseInspectionTests
+    public class UnreachableCaseInspectionTests2
     {
         private const string VALUE_TYPE_SEPARATOR = "?";
         private const string OPERAND_SEPARATOR = "_";

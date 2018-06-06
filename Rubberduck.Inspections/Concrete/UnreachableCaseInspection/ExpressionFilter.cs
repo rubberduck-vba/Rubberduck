@@ -302,7 +302,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             if (expression is BinaryExpression binary)
             {
-                if (FiltersTrueFalse) { return false; }
+                if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol)
+                    && !(binary.OpSymbol.Equals(LogicSymbols.EQV) || binary.OpSymbol.Equals(LogicSymbols.IMP)))
+                {
+                    return false;
+                }
 
                 if (binary.OpSymbol.Equals(LogicSymbols.LIKE))
                 {

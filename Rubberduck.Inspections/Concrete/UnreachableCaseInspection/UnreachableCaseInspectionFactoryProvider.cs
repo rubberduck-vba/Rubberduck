@@ -7,6 +7,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         IParseTreeValueFactory CreateIParseTreeValueFactory();
         IRangeClauseFilterFactory CreateIRangeClauseFilterFactory();
         ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory();
+        IUnreachableCaseInspectorFactory CreateIUnreachableInspectorFactory();
         IRangeClauseContextWrapperFactory CreateIRangeClauseContextWrapperFactory();
     }
 

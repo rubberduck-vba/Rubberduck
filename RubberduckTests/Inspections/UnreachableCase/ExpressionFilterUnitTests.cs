@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RubberduckTests.Inspections
+namespace RubberduckTests.Inspections.UnreachableCase
 {
     /*
         RangeClauseFilter is a support class of the UnreachableCaseInspection
@@ -29,7 +29,7 @@ namespace RubberduckTests.Inspections
     */
 
     [TestFixture]
-    public class ExpressionFilterTests
+    public class ExpressionFilterUnitTests
     {
         private const string RANGECLAUSE_DELIMITER = ",";
         private const string VALUE_TYPE_DELIMITER = "?";
@@ -83,7 +83,7 @@ namespace RubberduckTests.Inspections
         [TestCase("RelOp!x < 55", "RelOp!x < 65", "Min(typeMin)Max(typeMax)Predicates(x < 65)")]
         [TestCase("RelOp!x < 55,RelOp!Is < x", "RelOp!x < 65", "Min(typeMin)Max(typeMax)Is(Is < x)Predicates(x < 65)")]
         [Category("Inspections")]
-        public void RangeClauseFilter_ToString(string firstCase, string secondCase, string expected)
+        public void ExpressionFilter_ToString(string firstCase, string secondCase, string expected)
         {
             var filter = ExpressionFilterFactory.Create(Tokens.Long);
             var expressions = RangeDescriptorsToExpressions(new string[] { firstCase, secondCase }, Tokens.Long);
@@ -107,7 +107,7 @@ namespace RubberduckTests.Inspections
         [TestCase("50_To_100,175_To_225", "Long", "Range!50:100,Range!175:225")]
         [TestCase("500?Long_To_100?Long", "Long", "")]
         [Category("Inspections")]
-        public void RangeClauseFilter_AddRangeClauses(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
+        public void ExpressionFilter_AddRangeClauses(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
         {
             var filter = ExpressionFilterFactory.Create(selectExpressionTypename);
 
@@ -148,7 +148,7 @@ namespace RubberduckTests.Inspections
         [TestCase(@"Is_<>_""100""", "Long", "Min!100,Max!100")]
         [TestCase("Is_>_x", "Long", "RelOp!Is > x")]
         [Category("Inspections")]
-        public void RangeClauseFilter_AddIsClause(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
+        public void ExpressionFilter_AddIsClause(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
         {
             var filter = ExpressionFilterFactory.Create(selectExpressionTypename);
 
@@ -177,7 +177,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Range!151:255", "Value!150, Value!0,Value!1,Range!2:149", "Byte")]
         [TestCase("Min!13,Max!30,Range!12:100", "Value!13,Value!14,Value!15,Value!16,Value!17,Value!18,Range!12:30", "Long")]
         [Category("Inspections")]
-        public void RangeClauseFilter_FiltersAll(string firstCase, string secondCase, string SelectExpessionTypeName)
+        public void ExpressionFilter_FiltersAll(string firstCase, string secondCase, string SelectExpessionTypeName)
         {
             var filter = ExpressionFilterFactory.Create(SelectExpessionTypeName);
             var expressions = RangeDescriptorsToExpressions(new string[] { firstCase, secondCase }, SelectExpessionTypeName);
@@ -210,7 +210,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Range!150:250,Range!1:100,Range!-5:-2,Range!101:149", "Range!25:249", "Range!-5:-2,Range!1:250")]
         [TestCase("Range!5:5,Value!x,Value!y", "", "Value!5,Value!x,Value!y")]
         [Category("Inspections")]
-        public void RangeClauseFilter_AddFiltersIntegers(string existing, string toAdd, string expectedClause)
+        public void ExpressionFilter_AddFiltersIntegers(string existing, string toAdd, string expectedClause)
         {
            (IExpressionFilter expected, IExpressionFilter actual) = TestAddFilters(new string[] { existing, toAdd, expectedClause }, Tokens.Long);
             Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
@@ -221,7 +221,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Range!101.45:149.0007", "Range!15.67:148.9999", "Range!15.67:149.0007")]
         [TestCase("Range!101.45:149.2", "Range!149.2:150.5", "Range!101.45:150.5")]
         [Category("Inspections")]
-        public void RangeClauseFilter_AddFiltersRational(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_AddFiltersRational(string firstCase, string secondCase, string expectedClauses)
         {
             (IExpressionFilter expected, IExpressionFilter actual) = TestAddFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Double);
             Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
@@ -230,7 +230,7 @@ namespace RubberduckTests.Inspections
 
         [TestCase(@"Range!""Alpha"":""Omega""", @"Range!""Nuts"":""Soup""", @"Range!""Alpha"":""Soup""")]
         [Category("Inspections")]
-        public void RangeClauseFilter_AddFiltersStrings(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_AddFiltersStrings(string firstCase, string secondCase, string expectedClauses)
         {
             (IExpressionFilter expected, IExpressionFilter actual) = TestAddFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.String);
             Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
@@ -247,7 +247,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Min!1", "RelOp!x < 3", "Min!1,RelOp!x < True")]
         [TestCase("Max!-2", "RelOp!x < 3", "Max!-2,RelOp!x < True")]
         [Category("Inspections")]
-        public void RangeClauseFilter_AddFiltersBoolean(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_AddFiltersBoolean(string firstCase, string secondCase, string expectedClauses)
         {
             (IExpressionFilter expected, IExpressionFilter actual) = TestAddFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
             Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
@@ -261,7 +261,7 @@ namespace RubberduckTests.Inspections
         //[TestCase("Single")]
         //[TestCase("Currency")]
         //[Category("Inspections")]
-        //public void RangeClauseFilter_Extents(string selectExpressionTypename)
+        //public void ExpressionFilter_Extents(string selectExpressionTypename)
         //{
         //    var filter = RangeClauseFilterFactory.Create(selectExpressionTypename, ValueFactory);
         //    if (selectExpressionTypename.Equals(Tokens.Long)
@@ -304,7 +304,7 @@ namespace RubberduckTests.Inspections
         [TestCase("Is_=_False", "RelOp!Is = False")]
         [TestCase("Is_<>_False", "RelOp!Is <> False")]
         [Category("Inspections")]
-        public void RangeClauseFilter_BooleanIsClauseTruthTable(string rangeClause, string expected)
+        public void ExpressionFilter_BooleanIsClauseTruthTable(string rangeClause, string expected)
         {
             var filter = ExpressionFilterFactory.Create(Tokens.Boolean); //, ValueFactory);
 
@@ -324,7 +324,7 @@ namespace RubberduckTests.Inspections
         [TestCase("x_Like_[A-Z]*", "RelOp!x Like [A-Z]*")]
         [TestCase("x_Like_[A-Z]*, x_Like_Fo*oBar", "RelOp!x Like [A-Z]*,RelOp!x Like Fo*oBar")]
         [Category("Inspections")]
-        public void RangeClauseFilter_LikesLoadings(string rangeClause, string expectedClause)
+        public void ExpressionFilter_LikesLoadings(string rangeClause, string expectedClause)
         {
             var filter = ExpressionFilterFactory.Create(Tokens.String);
 
@@ -344,7 +344,7 @@ namespace RubberduckTests.Inspections
         [TestCase("RelOp!x Like *Bar", "Value!True", "RelOp!x Like *Bar,Value!True")]
         [TestCase("RelOp!x Like *", "Value!True", "RelOp!x Like *")]
         [Category("Inspections")]
-        public void RangeClauseFilter_FiltersLike(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_FiltersLike(string firstCase, string secondCase, string expectedClauses)
         {
             (IExpressionFilter expected, IExpressionFilter actual) = TestAddFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
             Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");

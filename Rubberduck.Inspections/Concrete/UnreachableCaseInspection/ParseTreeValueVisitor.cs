@@ -314,6 +314,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     || declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
                 {
                     expressionValue = GetConstantDeclarationValueToken(declaration);
+                    if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
+                        && declaredTypeName.Equals(Tokens.String))
+                    {
+                        expressionValue = "\"" + expressionValue + "\"";
+                    }
                 }
             }
         }
@@ -420,6 +425,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || context is VBAParser.LogicalXorOpContext
                 || context is VBAParser.LogicalAndOpContext
                 || context is VBAParser.LogicalOrOpContext
+                || context is VBAParser.LogicalImpOpContext
                 || context is VBAParser.LogicalEqvOpContext;
         }
 
