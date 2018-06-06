@@ -882,7 +882,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("1 To 10.0", "55 To 100.0", "Double")]
         [TestCase("ToString(45)", @"""Bar""", "String")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_CaseClauseTypes(string rangeExpr1, string rangeExpr2, string expected)
+        public void UnreachableCaseInspection_CaseClauseType(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
 @"
@@ -1290,7 +1290,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_NestedSelectCases()
+        public void UnreachableCaseInspection_NestedSelectCaseStrings()
         {
             const string inputCode =
 @"Sub Foo(x As String, z As String )
@@ -1319,7 +1319,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_NestedSelectCaseSUnreachable()
+        public void UnreachableCaseInspection_NestedSelectCasesUnreachable()
         {
             const string inputCode =
 @"Sub Foo(x As String, z As String)
@@ -1368,6 +1368,7 @@ Select Case x
         End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
+
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspection_MixedSelectCaseTypes()
@@ -1629,6 +1630,7 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
         }
 
+        //TODO: should there be another error type - Range is high to low?
         [TestCase("False To True", 1, 0)] //<firstCase> is unreachable - malformed
         [TestCase("True To False", 1, 1)] //<firstCase> filters all possible values
         [Category("Inspections")]
@@ -2550,7 +2552,7 @@ End Property
 
         [TestCase("Long = 300")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_ConstanInOtherModule(string propertyType)
+        public void UnreachableCaseInspection_ConstantInOtherModule(string propertyType)
         {
             string inputCode =
 @"
