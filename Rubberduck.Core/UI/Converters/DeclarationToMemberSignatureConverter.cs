@@ -38,7 +38,7 @@ namespace Rubberduck.UI.Converters
         {
             var signature = $"{GetMethodType(member)} {member.IdentifierName}({string.Join(", ", GetMemberParameters(member))})";
 
-            return member.AsTypeName == null ? signature : $"{signature} As {member.AsTypeName}";
+            return member.AsTypeName == null ? signature : $"{signature} {Tokens.As} {member.AsTypeName}";
         }
 
         private List<Parameter> GetMemberParameters(Declaration member)
