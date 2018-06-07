@@ -35,13 +35,11 @@ namespace Rubberduck.AutoComplete
         {
             foreach (var autoComplete in _autoCompletes)
             {
-                foreach (var setting in config.UserSettings.AutoCompleteSettings.AutoCompletes)
+                var setting = config.UserSettings.AutoCompleteSettings.AutoCompletes.FirstOrDefault(s => s.Key == autoComplete.GetType().Name);
+                if (setting != null && autoComplete.IsEnabled != setting.IsEnabled)
                 {
-                    if (setting.Key == autoComplete.GetType().Name)
-                    {
-                        autoComplete.IsEnabled = setting.IsEnabled;
-                        continue;
-                    }
+                    autoComplete.IsEnabled = setting.IsEnabled;
+                    continue;
                 }
             }
         }

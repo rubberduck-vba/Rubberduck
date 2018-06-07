@@ -36,7 +36,7 @@ namespace Rubberduck.Settings
             // Loaded settings don't contain defaults, so we need to combine user settings with defaults.
             var settings = new HashSet<AutoCompleteSetting>();
 
-            foreach (var loadedSetting in loaded.AutoCompletes.Where(e => _foundAutoCompleteKeys.Contains(e.Key)))
+            foreach (var loadedSetting in loaded.AutoCompletes.Where(e => !settings.Contains(e) && _foundAutoCompleteKeys.Contains(e.Key)))
             {
                 var matchingDefaultSetting = _defaultSettings.AutoCompletes.FirstOrDefault(e => e.Equals(loadedSetting));
                 if (matchingDefaultSetting != null)

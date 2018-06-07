@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Events;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Rubberduck.AutoComplete
         /// <param name="indenterSettings">Used for auto-indenting blocks as per indenter settings.</param>
         /// <param name="inputToken">The token that starts the block, i.e. what to detect.</param>
         /// <param name="outputToken">The token that closes the block, i.e. what to insert.</param>
-        protected AutoCompleteBlockBase(IIndenterSettings indenterSettings, string inputToken, string outputToken)
+        protected AutoCompleteBlockBase(IConfigProvider<IndenterSettings> indenterSettings, string inputToken, string outputToken)
             :base(inputToken, outputToken)
         {
             IndenterSettings = indenterSettings;
@@ -20,7 +21,7 @@ namespace Rubberduck.AutoComplete
         protected virtual bool FindInputTokenAtBeginningOfCurrentLine => false;
         protected virtual bool SkipPreCompilerDirective => true;
 
-        protected readonly IIndenterSettings IndenterSettings;
+        protected readonly IConfigProvider<IndenterSettings> IndenterSettings;
 
         protected virtual bool ExecuteOnCommittedInputOnly => true;
         protected virtual bool MatchInputTokenAtEndOfLineOnly => false;
@@ -35,7 +36,6 @@ namespace Rubberduck.AutoComplete
             }
 
             var selection = e.CodePane.Selection;
-            var stdIndent = IndentBody ? IndenterSettings.IndentSpaces : 0;
 
             var pattern = SkipPreCompilerDirective
                             ? $"\\b{InputToken}\\b"
@@ -55,6 +55,8 @@ namespace Rubberduck.AutoComplete
                     {
                         return false;
                     }
+
+                    var stdIndent = IndentBody ? IndenterSettings.Create().IndentSpaces : 0;
 
                     module.InsertLines(selection.StartLine + 1, code);
 
