@@ -41,8 +41,8 @@ namespace Rubberduck.Inspections
 
             private void ConfigServiceSettingsChanged(object sender, EventArgs e)
             {
-                var config = _configService.LoadConfiguration();
-                UpdateInspectionSeverity(config);
+                //var config = _configService.LoadConfiguration();
+                //UpdateInspectionSeverity(config);
             }
 
             private void UpdateInspectionSeverity(Configuration config)

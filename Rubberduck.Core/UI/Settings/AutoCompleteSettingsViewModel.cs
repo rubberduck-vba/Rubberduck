@@ -4,8 +4,8 @@ using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Data;
 
 namespace Rubberduck.UI.Settings
 {
@@ -13,15 +13,14 @@ namespace Rubberduck.UI.Settings
     {
         public AutoCompleteSettingsViewModel(Configuration config)
         {
-            Settings = new ListCollectionView(
-                config.UserSettings.AutoCompleteSettings.AutoCompletes.ToList());
+            Settings = new ObservableCollection<AutoCompleteSetting>(config.UserSettings.AutoCompleteSettings.AutoCompletes);
 
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
-        private ListCollectionView _settings;
-        public ListCollectionView Settings
+        private ObservableCollection<AutoCompleteSetting> _settings;
+        public ObservableCollection<AutoCompleteSetting> Settings
         {
             get { return _settings; }
             set
@@ -30,6 +29,7 @@ namespace Rubberduck.UI.Settings
                 {
                     _settings = value;
                     OnPropertyChanged();
+                    SelectAll = value.All(e => e.IsEnabled);
                 }
             }
         }
@@ -41,12 +41,33 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
-            config.UserSettings.AutoCompleteSettings.AutoCompletes = new HashSet<AutoCompleteSetting>(_settings.OfType<AutoCompleteSetting>());
+            config.UserSettings.AutoCompleteSettings.AutoCompletes = new HashSet<AutoCompleteSetting>(_settings);
         }
 
         private void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
         {
-            Settings = new ListCollectionView(toLoad.AutoCompletes.ToList());
+            Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
+        }
+
+        private bool _selectAll;
+        public bool SelectAll
+        {
+            get
+            {
+                return _selectAll;
+            }
+            set
+            {
+                if (_selectAll != value)
+                {
+                    _selectAll = value;
+                    foreach (var setting in Settings)
+                    {
+                        setting.IsEnabled = value;
+                    }
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private void ImportSettings()
@@ -78,7 +99,7 @@ namespace Rubberduck.UI.Settings
                 var service = new XmlPersistanceService<Rubberduck.Settings.AutoCompleteSettings> { FilePath = dialog.FileName };
                 service.Save(new Rubberduck.Settings.AutoCompleteSettings
                 {
-                     AutoCompletes = new HashSet<AutoCompleteSetting>(this.Settings.SourceCollection.OfType<AutoCompleteSetting>()),
+                     AutoCompletes = new HashSet<AutoCompleteSetting>(Settings),
                 });
             }
         }
