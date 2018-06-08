@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -80,12 +81,6 @@ namespace Rubberduck.VBEditor.Events
             {
                 OnSelectionChanged(hwnd);             
             }
-            else if (hwnd != IntPtr.Zero &&
-                (idObject == (int)ObjId.Caret && eventType == (uint)WinEvent.ObjectHide) &&
-                hwnd.ToWindowType() == WindowType.CodePane)
-            {
-                OnCaretHidden(hwnd);
-            }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
                 var type = hwnd.ToWindowType();
@@ -125,8 +120,14 @@ namespace Rubberduck.VBEditor.Events
                     : new DesignerWindowSubclass(hwnd);
                 var info = new WindowInfo(hwnd, window, source);
                 source.FocusChange += FocusDispatcher;
+                source.KeyDown += KeyDownDispatcher;
                 TrackedWindows.Add(hwnd, info);
             }           
+        }
+
+        private static void KeyDownDispatcher(object sender, KeyPressEventArgs e)
+        {
+            OnKeyDown(e);
         }
 
         private static void DetachWindow(IntPtr hwnd)
@@ -136,6 +137,7 @@ namespace Rubberduck.VBEditor.Events
                 Debug.Assert(TrackedWindows.ContainsKey(hwnd));
                 var info = TrackedWindows[hwnd];
                 info.Subclass.FocusChange -= FocusDispatcher;
+                info.Subclass.KeyDown -= KeyDownDispatcher;
                 info.Subclass.Dispose();
                 TrackedWindows.Remove(hwnd);
             }             
@@ -166,16 +168,16 @@ namespace Rubberduck.VBEditor.Events
         }
 
         private static string _currentLine;
-        public static event EventHandler<AutoCompleteEventArgs> CaretHidden; // not CodeChanged because wouldn't fire on paste
-        private static void OnCaretHidden(IntPtr hwnd)
+        public static event EventHandler<AutoCompleteEventArgs> KeyDown; // not CodeChanged because wouldn't fire on paste
+        private static void OnKeyDown(KeyPressEventArgs e)
         {
-            var pane = GetCodePaneFromHwnd(hwnd);
+            var pane = GetCodePaneFromHwnd(e.Hwnd);
             if (pane?.Selection.IsSingleCharacter ?? false)
             {
-                var args = new AutoCompleteEventArgs(pane);
+                var args = new AutoCompleteEventArgs(pane, e.Key);
                 if (_currentLine != args.OldCode && !string.IsNullOrEmpty(args.OldCode))
                 {
-                    CaretHidden?.Invoke(_vbe, args);
+                    KeyDown?.Invoke(_vbe, args);
                     _currentLine = args.NewCode;
                 }
             }

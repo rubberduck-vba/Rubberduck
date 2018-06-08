@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.AutoComplete
 {
-    public class AutoCompleteService : IDisposable
+    public class AutoCompleteService : SubclassingWindow, IDisposable
     {
         private readonly IGeneralConfigService _configService;
         private readonly List<IAutoComplete> _autoCompletes;
@@ -22,7 +25,7 @@ namespace Rubberduck.AutoComplete
             UpdateEnabledAutoCompletes(configService.LoadConfiguration());
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
-            VBENativeServices.CaretHidden += VBENativeServices_CaretHidden;
+            VBENativeServices.KeyDown += HandleKeyDown;
         }
 
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
@@ -44,7 +47,7 @@ namespace Rubberduck.AutoComplete
             }
         }
 
-        private void VBENativeServices_CaretHidden(object sender, AutoCompleteEventArgs e)
+        private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
             if (e.ContentHash == _contentHash)
             {
@@ -70,9 +73,31 @@ namespace Rubberduck.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Handles a WM.KeyDown event, before the key is written to the code pane.
+        /// Return <c>true</c> to "swallow" the key.
+        /// </summary>
+        public bool HandleKeyPress(ICodeModule module, Keys keys)
+        {
+            if (module.ContentHash() == _contentHash)
+            {
+                return false;
+            }
+
+            var selection = module.GetQualifiedSelection().Value.Selection;
+
+            if (keys == Keys.Back)
+            {
+                // if cursor LHS is opening and RHS is closing any inline autocomplete, delete the next character.
+                return true;
+            }
+
+            return false;
+        }
+
         public void Dispose()
         {
-            VBENativeServices.CaretHidden -= VBENativeServices_CaretHidden;
+            VBENativeServices.KeyDown -= HandleKeyDown;
             if (_configService != null)
             {
                 _configService.SettingsChanged -= ConfigServiceSettingsChanged;

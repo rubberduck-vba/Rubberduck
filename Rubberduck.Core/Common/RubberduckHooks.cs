@@ -7,22 +7,22 @@ using Rubberduck.Settings;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
-using Rubberduck.AutoComplete;
 
 namespace Rubberduck.Common
 {
     public class RubberduckHooks : SubclassingWindow, IRubberduckHooks
     {
-        private readonly AutoCompleteService _autoCompleteHook;
         private readonly IGeneralConfigService _config;
         private readonly HotkeyFactory _hotkeyFactory;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory, AutoCompleteService autoCompleteHook)
+        private readonly IVBE _vbe;
+
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory)
             : base((IntPtr)vbe.MainWindow.HWnd, (IntPtr)vbe.MainWindow.HWnd)
         {
-            _autoCompleteHook = autoCompleteHook;
+            _vbe = vbe;
             _config = config;
             _hotkeyFactory = hotkeyFactory;
         }
@@ -83,6 +83,26 @@ namespace Rubberduck.Common
             catch (Win32Exception exception)
             {
                 Logger.Error(exception);
+            }
+        }
+
+        private void KeyboardHook_MessageReceived(object sender, HookEventArgs e)
+        {
+            if (e.Key.HasFlag(System.Windows.Forms.Keys.Back))
+            {
+                /* backspace */
+            }
+            else if(e.Key.HasFlag(System.Windows.Forms.Keys.Delete))
+            {
+                /* delete */
+            }
+            else if (e.Key.HasFlag(System.Windows.Forms.Keys.Enter))
+            {
+                /* enter */
+            }
+            else
+            {
+                /* any other key */
             }
         }
 

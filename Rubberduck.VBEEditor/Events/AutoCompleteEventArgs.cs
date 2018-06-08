@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Windows.Forms;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
     public class AutoCompleteEventArgs : EventArgs
     {
-        public AutoCompleteEventArgs(ICodePane pane)
+        public AutoCompleteEventArgs(ICodePane pane, char key)
         {
+            Key = key;
             CodePane = pane;
             var selection = pane.Selection;
             using (var module = pane.CodeModule)
@@ -29,6 +31,7 @@ namespace Rubberduck.VBEditor.Events
         /// The CodePane wrapper for the module being edited.
         /// </summary>
         public ICodePane CodePane { get; }
+        public char Key { get; }
 
         /// <summary>
         /// Indicates whether the line of code held in <see cref="OldCode"/> is committed or not.
