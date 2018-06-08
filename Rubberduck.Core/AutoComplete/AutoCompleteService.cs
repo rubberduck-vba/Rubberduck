@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.AutoComplete
@@ -49,7 +48,7 @@ namespace Rubberduck.AutoComplete
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
-            if (e.ContentHash == _contentHash)
+            if (e.Keys == Keys.Delete || e.ContentHash == _contentHash)
             {
                 return;
             }
@@ -71,28 +70,6 @@ namespace Rubberduck.AutoComplete
                     break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Handles a WM.KeyDown event, before the key is written to the code pane.
-        /// Return <c>true</c> to "swallow" the key.
-        /// </summary>
-        public bool HandleKeyPress(ICodeModule module, Keys keys)
-        {
-            if (module.ContentHash() == _contentHash)
-            {
-                return false;
-            }
-
-            var selection = module.GetQualifiedSelection().Value.Selection;
-
-            if (keys == Keys.Back)
-            {
-                // if cursor LHS is opening and RHS is closing any inline autocomplete, delete the next character.
-                return true;
-            }
-
-            return false;
         }
 
         public void Dispose()

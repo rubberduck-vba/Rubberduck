@@ -7,18 +7,29 @@ namespace Rubberduck.VBEditor.WindowsApi
 {
     public class KeyPressEventArgs
     {
-        public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam)
+        public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, char character = default)
         {
             Hwnd = hwnd;
             WParam = wParam;
             LParam = lParam;
+            Character = character;
+            if (character == default(char))
+            {
+                Key = (Keys)wParam;
+            }
+            else
+            {
+                IsCharacter = true;
+            }
         }
 
+        public bool IsCharacter { get; }
         public IntPtr Hwnd { get; }
         public IntPtr WParam { get; }
         public IntPtr LParam { get; }
 
-        public char Key => (char)(WParam.ToInt32());
+        public char Character { get; }
+        public Keys Key { get; }
     }
 
     //Stub for code pane replacement.  :-)
@@ -36,6 +47,9 @@ namespace Rubberduck.VBEditor.WindowsApi
             switch ((WM)msg)
             {
                 case WM.CHAR:
+                    OnKeyDown(new KeyPressEventArgs(hWnd, wParam, lParam, (char)wParam));
+                    break;
+                case WM.KEYDOWN:
                     OnKeyDown(new KeyPressEventArgs(hWnd, wParam, lParam));
                     break;
             }

@@ -16,12 +16,17 @@ namespace Rubberduck.AutoComplete
 
         public virtual bool Execute(AutoCompleteEventArgs e)
         {
+            if (!e.IsCharacter)
+            {
+                return false;
+            }
+
             using (var pane = e.CodePane)
             {
                 var selection = pane.Selection;
                 if (selection.StartColumn < 2) { return false; }
                 
-                if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken)
+                if (!e.IsCommitted && e.Character.ToString() == InputToken)
                 {
                     using (var module = pane.CodeModule)
                     {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -168,13 +167,13 @@ namespace Rubberduck.VBEditor.Events
         }
 
         private static string _currentLine;
-        public static event EventHandler<AutoCompleteEventArgs> KeyDown; // not CodeChanged because wouldn't fire on paste
+        public static event EventHandler<AutoCompleteEventArgs> KeyDown; 
         private static void OnKeyDown(KeyPressEventArgs e)
         {
             var pane = GetCodePaneFromHwnd(e.Hwnd);
             if (pane?.Selection.IsSingleCharacter ?? false)
             {
-                var args = new AutoCompleteEventArgs(pane, e.Key);
+                var args = new AutoCompleteEventArgs(pane, e);
                 if (_currentLine != args.OldCode && !string.IsNullOrEmpty(args.OldCode))
                 {
                     KeyDown?.Invoke(_vbe, args);

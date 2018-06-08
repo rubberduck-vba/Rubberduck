@@ -1,29 +1,36 @@
 ﻿using System;
 using System.Windows.Forms;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
 {
     public class AutoCompleteEventArgs : EventArgs
     {
-        public AutoCompleteEventArgs(ICodePane pane, char key)
+        public AutoCompleteEventArgs(ICodePane pane, WindowsApi.KeyPressEventArgs e)
         {
-            Key = key;
+            Character = e.Character;
             CodePane = pane;
             var selection = pane.Selection;
             using (var module = pane.CodeModule)
             {
                 ContentHash = module.ContentHash();
                 var atSelection = module.GetLines(selection);
-                if (string.IsNullOrWhiteSpace(atSelection))
+                if (e.Character == '\n')
                 {
                     IsCommitted = true;
-                    OldCode = module.GetLines(selection.PreviousLine);
-                }
-                else
-                {
                     OldCode = module.GetLines(selection);
                 }
+                else if (e.Character != default(char))
+                {
+                    OldCode = module.GetLines(selection) + e.Character;
+                }
+                else if (e.Key == Keys.Delete)
+                {
+                    Keys = e.Key;
+                }
+
+                IsCharacter = e.IsCharacter;
             }
         }
 
@@ -31,8 +38,10 @@ namespace Rubberduck.VBEditor.Events
         /// The CodePane wrapper for the module being edited.
         /// </summary>
         public ICodePane CodePane { get; }
-        public char Key { get; }
+        public char Character { get; }
+        public Keys Keys { get; }
 
+        public bool IsCharacter { get; }
         /// <summary>
         /// Indicates whether the line of code held in <see cref="OldCode"/> is committed or not.
         /// </summary>
