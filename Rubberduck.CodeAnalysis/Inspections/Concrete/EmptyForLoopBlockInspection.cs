@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
-                InspectBlockForExecutableStatements(context.block(), context);
+                InspectBlockForExecutableStatements(context.unterminatedBlock(), context);
             }
         }
     }
