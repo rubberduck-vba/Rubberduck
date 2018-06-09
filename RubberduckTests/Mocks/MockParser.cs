@@ -156,7 +156,10 @@ namespace RubberduckTests.Mocks
         public static void AddTestLibrary(this RubberduckParserState state, string serialized)
         {
             var reader = new XmlPersistableDeclarations();
-            var deserialized = reader.Load(Path.Combine("Testfiles\\Resolver", serialized));
+            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            basePath = Directory.GetParent(basePath).Parent.FullName;
+            var path = Path.Combine(basePath, "Testfiles\\Resolver", serialized);
+            var deserialized = reader.Load(path);
             AddTestLibrary(state, deserialized);
         }
 

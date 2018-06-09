@@ -108,6 +108,8 @@ moduleBodyElement :
 
 block : (blockStmt endOfStatement)*;
 
+unterminatedBlock : blockStmt? (endOfStatement blockStmt)*;
+
 blockStmt : 
     statementLabelDefinition whiteSpace? mainBlockStmt?
     | mainBlockStmt 

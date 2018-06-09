@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -13,7 +12,6 @@ namespace RubberduckTests.Inspections
     public class ImplicitActiveWorkbookReferenceInspectionTests
     {
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
@@ -50,7 +48,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_Ignored_DoesNotReportRange()
         {
