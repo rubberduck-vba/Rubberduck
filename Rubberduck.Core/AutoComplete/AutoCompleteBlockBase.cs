@@ -30,26 +30,27 @@ namespace Rubberduck.AutoComplete
 
         public override bool Execute(AutoCompleteEventArgs e)
         {
-            if (SkipPreCompilerDirective && e.OldCode.Trim().StartsWith("#"))
+            if (e.OldCode == null || SkipPreCompilerDirective && (e.OldCode.Trim().StartsWith("#")))
             {
                 return false;
             }
 
-            var selection = e.CodePane.Selection;
-
-            var pattern = SkipPreCompilerDirective
-                            ? $"\\b{InputToken}\\b"
-                            : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
-
-            var isMatch = MatchInputTokenAtEndOfLineOnly 
-                            ? e.OldCode.EndsWith(InputToken)
-                            : Regex.IsMatch(e.OldCode.Trim(), pattern);
-
-            if (!e.OldCode.HasComment(out _) && isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
+            using (var pane = e.CodePane)
+            using (var module = pane.CodeModule)
             {
-                var indent = e.OldCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
-                using (var module = e.CodePane.CodeModule)
+                var selection = e.CodePane.Selection;
+
+                var pattern = SkipPreCompilerDirective
+                                ? $"\\b{InputToken}\\b"
+                                : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
+
+                var isMatch = MatchInputTokenAtEndOfLineOnly
+                                ? e.OldCode?.EndsWith(InputToken) ?? false
+                                : Regex.IsMatch(e.OldCode.Trim(), pattern);
+
+                if (!e.OldCode.HasComment(out _) && isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
                 {
+                    var indent = e.OldCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                     var code = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
                     if (module.GetLines(selection.NextLine) == code)
                     {
@@ -66,8 +67,8 @@ namespace Rubberduck.AutoComplete
                     e.NewCode = e.OldCode;
                     return true;
                 }
+                return false;
             }
-            return false;
         }
     }
 }

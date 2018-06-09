@@ -28,6 +28,8 @@ namespace Rubberduck.VBEditor.WindowsApi
         public IntPtr WParam { get; }
         public IntPtr LParam { get; }
 
+        public bool Handled { get; set; }
+
         public char Character { get; }
         public Keys Key { get; }
     }
@@ -44,13 +46,18 @@ namespace Rubberduck.VBEditor.WindowsApi
 
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
         {
+            KeyPressEventArgs args;
             switch ((WM)msg)
             {
                 case WM.CHAR:
-                    OnKeyDown(new KeyPressEventArgs(hWnd, wParam, lParam, (char)wParam));
+                    args = new KeyPressEventArgs(hWnd, wParam, lParam, (char)wParam);
+                    OnKeyDown(args);
+                    if (args.Handled) { return 0; }
                     break;
                 case WM.KEYDOWN:
-                    OnKeyDown(new KeyPressEventArgs(hWnd, wParam, lParam));
+                    args = new KeyPressEventArgs(hWnd, wParam, lParam);
+                    OnKeyDown(args);
+                    if (args.Handled) { return 0; }
                     break;
             }
             return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);

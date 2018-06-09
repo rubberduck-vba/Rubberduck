@@ -7,6 +7,7 @@ namespace Rubberduck.AutoComplete
         string InputToken { get; }
         string OutputToken { get; }
         bool Execute(AutoCompleteEventArgs e);
+        void Revert();
         bool IsEnabled { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
 {
@@ -14,8 +16,6 @@ namespace Rubberduck.VBEditor.Events
             var selection = pane.Selection;
             using (var module = pane.CodeModule)
             {
-                ContentHash = module.ContentHash();
-                var atSelection = module.GetLines(selection);
                 if (e.Character == '\n')
                 {
                     IsCommitted = true;
@@ -23,9 +23,9 @@ namespace Rubberduck.VBEditor.Events
                 }
                 else if (e.Character != default(char))
                 {
-                    OldCode = module.GetLines(selection) + e.Character;
+                    OldCode = module.GetLines(selection); // note: e.Character is not yet in here!
                 }
-                else if (e.Key == Keys.Delete)
+                else if (e.Key == Keys.Delete || e.Key == Keys.Back)
                 {
                     Keys = e.Key;
                 }
@@ -33,6 +33,8 @@ namespace Rubberduck.VBEditor.Events
                 IsCharacter = e.IsCharacter;
             }
         }
+
+        public bool Handled { get; set; }
 
         /// <summary>
         /// The CodePane wrapper for the module being edited.
@@ -49,11 +51,6 @@ namespace Rubberduck.VBEditor.Events
         /// If the line is committed, <see cref="OldCode"/> is located on the line that precedes the current selection in the <see cref="CodePane"/>.
         /// </remarks>
         public bool IsCommitted { get; }
-
-        /// <summary>
-        /// The content hash for the module before autocompletion. Used to prevent misfiring autocompletes.
-        /// </summary>
-        public string ContentHash { get; }
 
         /// <summary>
         /// If not committed, the entire current line of code. If committed, the line of code immediately preceding the current selection.

@@ -174,10 +174,11 @@ namespace Rubberduck.VBEditor.Events
             if (pane?.Selection.IsSingleCharacter ?? false)
             {
                 var args = new AutoCompleteEventArgs(pane, e);
-                if (_currentLine != args.OldCode && !string.IsNullOrEmpty(args.OldCode))
+                if (_currentLine != args.OldCode)
                 {
                     KeyDown?.Invoke(_vbe, args);
                     _currentLine = args.NewCode;
+                    e.Handled = args.Handled;
                 }
             }
         }

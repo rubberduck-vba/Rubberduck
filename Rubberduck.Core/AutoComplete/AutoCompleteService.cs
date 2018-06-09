@@ -13,9 +13,6 @@ namespace Rubberduck.AutoComplete
     {
         private readonly IGeneralConfigService _configService;
         private readonly List<IAutoComplete> _autoCompletes;
-        private QualifiedSelection? _lastSelection;
-        private string _lastCode;
-        private string _contentHash;
 
         public AutoCompleteService(IGeneralConfigService configService, IAutoCompleteProvider provider)
         {
@@ -48,26 +45,46 @@ namespace Rubberduck.AutoComplete
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
-            if (e.Keys == Keys.Delete || e.ContentHash == _contentHash)
+            if (e.Keys == Keys.Delete)
             {
                 return;
             }
 
-            var qualifiedSelection = e.CodePane.GetQualifiedSelection();
-            var selection = qualifiedSelection.Value.Selection;
-
-            foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled))
+            using (var pane = e.CodePane)
+            using (var module = pane.CodeModule)
             {
-                if (autoComplete.Execute(e))
-                {
-                    _lastSelection = qualifiedSelection;
-                    _lastCode = e.NewCode;
-                    using (var module = e.CodePane.CodeModule)
-                    {
-                        _contentHash = module.ContentHash();
-                    }
+                var qualifiedSelection = module.GetQualifiedSelection();
+                var selection = qualifiedSelection.Value.Selection;
+                var currentContent = module.GetLines(selection);
 
-                    break;
+                foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled))
+                {
+                    if (e.Keys == Keys.Back && selection.StartColumn > 1)
+                    {
+                        // If caret LHS is the AC input token and RHS is the AC output token, we can remove both.
+                        // Substring index is 0-based. Selection from code pane is 1-based.
+                        // LHS should be at StartColumn - 2, RHS at StartColumn - 1.
+                        var caretLHS = currentContent.Substring(Math.Max(0, selection.StartColumn - 2), 1);
+                        var caretRHS = currentContent.Substring(selection.StartColumn - 1, 1);
+
+                        if (caretLHS == autoComplete.InputToken && caretRHS == autoComplete.OutputToken 
+                            && !string.IsNullOrEmpty(currentContent.Substring(selection.StartColumn - 1)))
+                        {
+                            var left = currentContent.Substring(0, selection.StartColumn - 2);
+                            var right = currentContent.Substring(selection.StartColumn);
+                            module.ReplaceLine(selection.StartLine, left + right);
+                            pane.Selection = new Selection(selection.StartLine, selection.StartColumn - right.Length);
+                            e.Handled = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (autoComplete.Execute(e))
+                        {
+                            break;
+                        }
+                    }
                 }
             }
         }
