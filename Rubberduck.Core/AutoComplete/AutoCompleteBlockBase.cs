@@ -30,41 +30,48 @@ namespace Rubberduck.AutoComplete
 
         public override bool Execute(AutoCompleteEventArgs e)
         {
-            if (e.OldCode == null || SkipPreCompilerDirective && (e.OldCode.Trim().StartsWith("#")))
+            if (e.Character.ToString() != "\r")
             {
+                // handle ENTER or TAB key
                 return false;
             }
 
             using (var pane = e.CodePane)
             using (var module = pane.CodeModule)
             {
-                var selection = e.CodePane.Selection;
+                var selection = pane.Selection;
+                var code = module.GetLines(selection);
+
+                if (SkipPreCompilerDirective && code.Trim().StartsWith("#"))
+                {
+                    return false;
+                }
 
                 var pattern = SkipPreCompilerDirective
                                 ? $"\\b{InputToken}\\b"
                                 : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
 
                 var isMatch = MatchInputTokenAtEndOfLineOnly
-                                ? e.OldCode?.EndsWith(InputToken) ?? false
-                                : Regex.IsMatch(e.OldCode.Trim(), pattern);
+                                ? code.EndsWith(InputToken)
+                                : Regex.IsMatch(code.Trim(), pattern);
 
-                if (!e.OldCode.HasComment(out _) && isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
+                if (!code.HasComment(out _) && isMatch)
                 {
-                    var indent = e.OldCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
-                    var code = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
-                    if (module.GetLines(selection.NextLine) == code)
+                    var indent = code.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+                    var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
+                    if (module.GetLines(selection.NextLine) == newCode)
                     {
                         return false;
                     }
 
                     var stdIndent = IndentBody ? IndenterSettings.Create().IndentSpaces : 0;
 
-                    module.InsertLines(selection.StartLine + 1, code);
+                    module.InsertLines(selection.NextLine.StartLine+1, newCode);
 
-                    module.ReplaceLine(selection.StartLine, new string(' ', indent + stdIndent));
-                    e.CodePane.Selection = new VBEditor.Selection(selection.StartLine, indent + stdIndent + 1);
+                    module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
+                    e.CodePane.Selection = new VBEditor.Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
 
-                    e.NewCode = e.OldCode;
+                    e.NewCode = newCode;
                     return true;
                 }
                 return false;
