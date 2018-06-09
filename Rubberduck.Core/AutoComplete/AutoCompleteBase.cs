@@ -33,7 +33,7 @@ namespace Rubberduck.AutoComplete
 
         public virtual bool Execute(AutoCompleteEventArgs e)
         {
-            if (!e.IsCharacter || e.OldCode == null)
+            if (!e.IsCharacter)
             {
                 return false;
             }
@@ -42,7 +42,7 @@ namespace Rubberduck.AutoComplete
             using (var module = pane.CodeModule)
             {
                 var selection = pane.Selection;
-                if (selection.StartColumn < 2) { return false; }
+                if (selection.StartColumn < 1) { return false; }
                 
                 if (!e.IsCommitted && e.Character.ToString() == InputToken)
                 {
