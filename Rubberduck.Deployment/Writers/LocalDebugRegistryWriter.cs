@@ -11,9 +11,19 @@ namespace Rubberduck.Deployment.Writers
 {
     public class LocalDebugRegistryWriter : IRegistryWriter
     {
-        public string Write(IOrderedEnumerable<RegistryEntry> entries)
+        private string _dllName;
+        private string _tlb32Name;
+        private string _tlb64Name;
+
+        public string Write(IOrderedEnumerable<RegistryEntry> entries, string dllName, string tlb32Name, string tlb64Name)
         {
-            //System.Diagnostics.Debugger.Launch(); //uncomment if need to debug
+            // uncomment if need to debug
+            // System.Diagnostics.Debugger.Launch(); 
+
+            _dllName = dllName;
+            _tlb32Name = tlb32Name;
+            _tlb64Name = tlb64Name;
+
             var sb = new StringBuilder("Windows Registry Editor Version 5.00" + Environment.NewLine + Environment.NewLine);
             var distinctKeys = new List<string>();
             
@@ -82,9 +92,9 @@ namespace Rubberduck.Deployment.Writers
                 case PlaceHolders.InstallPath:
                     return _currentPath;
                 case PlaceHolders.DllPath:
-                    return Path.Combine( _currentPath, "Rubberduck.dll");
+                    return Path.Combine( _currentPath, _dllName);
                 case PlaceHolders.TlbPath:
-                    return Path.Combine(_currentPath,  bitness == Bitness.Is64Bit ? "Rubberduck.x64.tlb" : "Rubberduck.x32.tlb");
+                    return Path.Combine(_currentPath,  bitness == Bitness.Is64Bit ? _tlb64Name : _tlb32Name);
                 default:
                     return value;
             }

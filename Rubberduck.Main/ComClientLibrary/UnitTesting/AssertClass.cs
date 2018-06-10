@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,10 +11,14 @@ using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(true)]
-    [ComDefaultInterface(typeof(IAssert))]
-    [Guid(RubberduckGuid.AssertClassGuid)]
-    [ProgId(RubberduckProgId.AssertClassProgId)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.AssertClassGuid),
+        ProgId(RubberduckProgId.AssertClassProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IAssert)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public class AssertClass : IAssert
     {
         private static readonly IEqualityComparer<object> DefaultComparer = EqualityComparer<object>.Default;

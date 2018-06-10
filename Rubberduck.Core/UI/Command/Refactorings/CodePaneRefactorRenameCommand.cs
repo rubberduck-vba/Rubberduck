@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;

@@ -16,7 +16,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var item = (ListBoxItem)sender;
-            var target = (Parameter)item.Content;
+            var target = (ParameterViewModel)item.Content;
 
             if (target.IsRemoved)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.VBEditor.Utility;
@@ -50,6 +51,61 @@ namespace Rubberduck.Parsing.UIContext
             {
                 InvokeAsync(action);
             }
+        }
+
+        private const uint RPC_E_SERVERCALL_RETRYLATER = 0x8001010A;
+        private const uint VBA_E_IGNORE = 0x800AC472;
+        private const uint VBA_E_CANTEXECCODEINBREAKMODE = 0x800ADF09;
+
+        /// <summary>
+        /// Raises a COM-visible event on the UI thread. This will use <see cref="UiDispatcher.Invoke()" /> internally
+        /// but with additional error handling & retry logic for transisent failure to fire COM event due to the host
+        /// being too busy to accept event.
+        /// </summary>
+        /// <param name="comEventHandler">The handler for setting up and firing the COM event on the UI thread</param>
+        public void RaiseComEvent(Action comEventHandler)
+        {
+            Invoke(() =>
+            {
+                var currentCount = 0;
+                var retryCount = 100;
+                var timeSleep = 10;
+                for (; ; )
+                {
+                    try
+                    {
+                        comEventHandler.Invoke();
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (currentCount < retryCount)
+                        {
+                            var cex = (COMException)ex;
+                            switch ((uint)cex.ErrorCode)
+                            {
+                                case VBA_E_CANTEXECCODEINBREAKMODE:
+                                    Thread.Sleep(timeSleep);
+                                    break;
+                                case RPC_E_SERVERCALL_RETRYLATER:
+                                    Thread.Sleep(timeSleep);
+                                    break;
+                                case VBA_E_IGNORE:
+                                    Thread.Sleep(timeSleep);
+                                    break;
+                                default:
+                                    throw;
+                            }
+
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                        currentCount++;
+                    }
+                }
+            });
         }
 
         /// <summary>

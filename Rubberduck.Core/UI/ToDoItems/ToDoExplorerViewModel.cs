@@ -14,7 +14,7 @@ using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
+using Rubberduck.Resources.ToDoExplorer;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -185,8 +185,8 @@ namespace Rubberduck.UI.ToDoItems
                     var resultArray = _items.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
                     var resource = _items.Count == 1
-                        ? RubberduckUI.ToDoExplorer_NumberOfIssuesFound_Singular
-                        : RubberduckUI.ToDoExplorer_NumberOfIssuesFound_Plural;
+                        ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
+                        : ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
 
                     var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
 

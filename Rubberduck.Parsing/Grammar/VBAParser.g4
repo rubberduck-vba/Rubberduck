@@ -108,6 +108,8 @@ moduleBodyElement :
 
 block : (blockStmt endOfStatement)*;
 
+unterminatedBlock : blockStmt (endOfStatement blockStmt)*;
+
 blockStmt : 
     statementLabelDefinition whiteSpace? mainBlockStmt?
     | mainBlockStmt 
@@ -351,16 +353,18 @@ eventStmt : (visibility whiteSpace)? EVENT whiteSpace identifier whiteSpace? arg
 exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
 
 forEachStmt : 
-    FOR whiteSpace EACH whiteSpace expression whiteSpace IN whiteSpace expression endOfStatement
-    block
-    statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
+    FOR whiteSpace EACH whiteSpace expression whiteSpace IN whiteSpace expression 
+	(endOfStatement unterminatedBlock)?
+    (endOfStatement statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)? 
+	| whiteSpace? COMMA whiteSpace? expression)
 ;
 
 // expression EQ expression refactored to expression to allow SLL
 forNextStmt : 
-    FOR whiteSpace expression whiteSpace TO whiteSpace expression stepStmt? whiteSpace* endOfStatement 
-    block
-    statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
+    FOR whiteSpace expression whiteSpace TO whiteSpace expression stepStmt? whiteSpace* 
+	(endOfStatement unterminatedBlock)?
+    (endOfStatement statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)? 
+	| whiteSpace? COMMA whiteSpace? expression)
 ; 
 
 stepStmt : whiteSpace STEP whiteSpace expression;

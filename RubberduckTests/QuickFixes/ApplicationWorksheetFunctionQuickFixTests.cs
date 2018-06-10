@@ -5,7 +5,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
@@ -14,7 +13,6 @@ namespace RubberduckTests.QuickFixes
     public class ApplicationWorksheetFunctionQuickFixTests
     {
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks()
         {
@@ -60,7 +58,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks_WithBlock()
         {
@@ -110,7 +107,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_UseExplicitlyQuickFixWorks_HasParameters()
         {

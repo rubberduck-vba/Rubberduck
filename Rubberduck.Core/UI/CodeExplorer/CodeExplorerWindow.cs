@@ -1,7 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
-using Rubberduck.Resources;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Resources.CodeExplorer;
 
 namespace Rubberduck.UI.CodeExplorer
 {
@@ -10,7 +11,7 @@ namespace Rubberduck.UI.CodeExplorer
     {
         private const string ClassId = "C5318B59-172F-417C-88E3-B377CDA2D809";
         string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return RubberduckUI.CodeExplorerDockablePresenter_Caption; } }
+        string IDockableUserControl.Caption { get { return CodeExplorerUI.CodeExplorerDockablePresenter_Caption; } }
 
         private CodeExplorerWindow()
         {

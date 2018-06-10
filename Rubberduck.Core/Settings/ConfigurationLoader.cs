@@ -10,9 +10,11 @@ namespace Rubberduck.Settings
         public bool LanguageChanged { get; }
         public bool InspectionSettingsChanged { get; }
         public bool RunInspectionsOnReparse { get; }
+        public bool AutoCompleteSettingsChanged { get; }
 
-        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged)
+        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged, bool autoCompleteSettingsChanged)
         {
+            AutoCompleteSettingsChanged = autoCompleteSettingsChanged;
             RunInspectionsOnReparse = runInspections;
             LanguageChanged = languageChanged;
             InspectionSettingsChanged = inspectionSettingsChanged;
@@ -28,17 +30,19 @@ namespace Rubberduck.Settings
     {
         private readonly IConfigProvider<GeneralSettings> _generalProvider;
         private readonly IConfigProvider<HotkeySettings> _hotkeyProvider;
+        private readonly IConfigProvider<AutoCompleteSettings> _autoCompleteProvider;
         private readonly IConfigProvider<ToDoListSettings> _todoProvider;
         private readonly IConfigProvider<CodeInspectionSettings> _inspectionProvider;
         private readonly IConfigProvider<UnitTestSettings> _unitTestProvider;
         private readonly IConfigProvider<IndenterSettings> _indenterProvider;
         private readonly IConfigProvider<WindowSettings> _windowProvider;
 
-        public ConfigurationLoader(IConfigProvider<GeneralSettings> generalProvider, IConfigProvider<HotkeySettings> hotkeyProvider, IConfigProvider<ToDoListSettings> todoProvider,
+        public ConfigurationLoader(IConfigProvider<GeneralSettings> generalProvider, IConfigProvider<HotkeySettings> hotkeyProvider, IConfigProvider<AutoCompleteSettings> autoCompleteProvider, IConfigProvider<ToDoListSettings> todoProvider,
                                    IConfigProvider<CodeInspectionSettings> inspectionProvider, IConfigProvider<UnitTestSettings> unitTestProvider, IConfigProvider<IndenterSettings> indenterProvider, IConfigProvider<WindowSettings> windowProvider)
         {
             _generalProvider = generalProvider;
             _hotkeyProvider = hotkeyProvider;
+            _autoCompleteProvider = autoCompleteProvider;
             _todoProvider = todoProvider;
             _inspectionProvider = inspectionProvider;
             _unitTestProvider = unitTestProvider;
@@ -57,6 +61,7 @@ namespace Rubberduck.Settings
                 (
                     _generalProvider.Create(),
                     _hotkeyProvider.Create(),
+                    _autoCompleteProvider.Create(),
                     _todoProvider.Create(),
                     _inspectionProvider.Create(),
                     _unitTestProvider.Create(),
@@ -75,6 +80,7 @@ namespace Rubberduck.Settings
                 (
                     _generalProvider.CreateDefaults(),
                     _hotkeyProvider.CreateDefaults(),
+                    _autoCompleteProvider.CreateDefaults(),
                     _todoProvider.CreateDefaults(),
                     _inspectionProvider.CreateDefaults(),
                     _unitTestProvider.CreateDefaults(),
@@ -89,17 +95,22 @@ namespace Rubberduck.Settings
             var langChanged = _generalProvider.Create().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
             var oldInspectionSettings = _inspectionProvider.Create().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+            var inspectionsChanged = !oldInspectionSettings.SequenceEqual(newInspectionSettings);
             var inspectOnReparse = toSerialize.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
+            var oldAutoCompleteSettings = _autoCompleteProvider.Create().AutoCompletes.Select(s => Tuple.Create(s.Key, s.IsEnabled));
+            var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings.AutoCompletes.Select(s => Tuple.Create(s.Key, s.IsEnabled));
+            var autoCompletesChanged = !oldAutoCompleteSettings.SequenceEqual(newAutoCompleteSettings);
 
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
+            _autoCompleteProvider.Save(toSerialize.UserSettings.AutoCompleteSettings);
             _todoProvider.Save(toSerialize.UserSettings.ToDoListSettings);
             _inspectionProvider.Save(toSerialize.UserSettings.CodeInspectionSettings);
             _unitTestProvider.Save(toSerialize.UserSettings.UnitTestSettings);
             _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
             _windowProvider.Save(toSerialize.UserSettings.WindowSettings);
 
-            OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, !oldInspectionSettings.SequenceEqual(newInspectionSettings)));
+            OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, inspectionsChanged, autoCompletesChanged));
         }
 
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;

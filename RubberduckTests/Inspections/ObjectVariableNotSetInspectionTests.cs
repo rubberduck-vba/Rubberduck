@@ -3,13 +3,12 @@ using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    [DeploymentItem(@"TestFiles\")]
+    //[DeploymentItem(@"TestFiles\")]
     public class ObjectVariableNotSetInspectionTests
     {
         [Test]

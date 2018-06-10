@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:inspections="clr-namespace:Rubberduck.Parsing.Inspections;assembly=Rubberduck.Parsing"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             xmlns:inspections="clr-namespace:Rubberduck.Parsing.Inspections;assembly=Rubberduck.Parsing"
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
@@ -35,7 +35,7 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type Type="inspections:CodeInspectionSeverity"/>
+                <x:Type Type="inspections:CodeInspectionSeverity" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
@@ -261,7 +261,7 @@
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Label Background="DarkGray"
                        HorizontalContentAlignment="Stretch"
-                       Margin="0,0,0,3">
+                       Margin="0,5,0,5">
                     <Label.Style>
                         <Style>
                             <Style.Resources>
@@ -282,11 +282,11 @@
                             <controls:LinkButton
                                 Margin="2"
                                 Command="{Binding ImportButtonCommand}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_ImportSettings}"/>
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ImportPageSettingsButton}"/>
                             <controls:LinkButton
                                 Margin="2"
                                 Command="{Binding ExportButtonCommand}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SettingsCaption_ExportSettings}"/>
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ExportPageSettingsButton}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Stretch">
                             <Label Foreground="White"
@@ -348,7 +348,7 @@
                        Foreground="White"
                        FontWeight="SemiBold"
                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc}"
-                       Margin="0,5,0,3">
+                       Margin="0,15,0,5">
                     <Label.Style>
                         <Style>
                             <Style.Resources>
@@ -368,7 +368,7 @@
                        Foreground="White"
                        FontWeight="SemiBold"
                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}"
-                       Margin="0,5,0,3">
+                       Margin="0,15,0,5">
                     <Label.Style>
                         <Style>
                             <Style.Resources>

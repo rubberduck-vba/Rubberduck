@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;

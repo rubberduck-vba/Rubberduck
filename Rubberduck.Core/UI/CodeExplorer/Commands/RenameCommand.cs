@@ -1,5 +1,6 @@
 using System;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;

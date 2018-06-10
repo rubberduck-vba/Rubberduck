@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.Refactorings.ReorderParameters;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings

@@ -6,7 +6,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -16,7 +15,6 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
-        [DeploymentItem(@"TestFiles\")]
         public void ReturnsResultForExpressionOnLeftHandSide()
         {
             const string code = @"

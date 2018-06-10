@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
+using Rubberduck.Interaction;
 using NLog;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -158,11 +158,8 @@ namespace Rubberduck.UI.Settings
 
         private bool SynchronizeVBESettings()
         {
-            var result = _messageBox.Show(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
-                RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption, MessageBoxButtons.YesNo,
-                MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-
-            if (result == DialogResult.No)
+            if (!_messageBox.ConfirmYesNo(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
+                RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption, true))
             {
                 return false;
             }
