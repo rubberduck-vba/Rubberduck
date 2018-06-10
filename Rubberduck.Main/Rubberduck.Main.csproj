@@ -243,6 +243,7 @@
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IFakesProvider.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IStub.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IVerify.cs" />
+    <Compile Include="ComClientLibrary\UnitTesting\Fakes\Now.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\FakeBase.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\Fakes\CurDir.cs" />

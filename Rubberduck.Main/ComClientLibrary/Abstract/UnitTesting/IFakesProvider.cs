@@ -67,5 +67,9 @@ namespace Rubberduck.UnitTesting
         [DispId(14)]
         [Description("Configures VBA.FileSystem.CurDir calls.")]
         IFake CurDir { get; }
+
+        [DispId(15)]
+        [Description("Configures VBA.DateTime.Now calls.")]
+        IFake Now { get; }
     }
 }

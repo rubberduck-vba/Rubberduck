@@ -73,6 +73,7 @@ namespace Rubberduck.UnitTesting
         public IStub ChDir => RetrieveOrCreateFunction<IStub>(typeof(ChDir));
         public IStub ChDrive => RetrieveOrCreateFunction<IStub>(typeof(ChDrive));
         public IFake CurDir => RetrieveOrCreateFunction<IFake>(typeof(CurDir));
+        public IFake Now => RetrieveOrCreateFunction<IFake>(typeof(Now));
 
 
         #endregion
