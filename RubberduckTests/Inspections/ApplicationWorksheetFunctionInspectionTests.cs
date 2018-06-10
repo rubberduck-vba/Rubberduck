@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -36,7 +35,6 @@ namespace RubberduckTests.Inspections
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_GlobalApplication()
         {
@@ -58,7 +56,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithGlobalApplication()
         {
@@ -82,7 +79,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_ApplicationVariable()
         {
@@ -106,7 +102,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithApplicationVariable()
         {
@@ -132,7 +127,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseGlobalApplication()
         {
@@ -154,7 +148,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseApplicationVariable()
         {
@@ -209,7 +202,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_Ignored_DoesNotReturnResult()
         {

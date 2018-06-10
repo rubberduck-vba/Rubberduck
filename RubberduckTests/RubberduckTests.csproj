@@ -122,7 +122,6 @@
     <Compile Include="Commands\RefactorCommandTests.cs" />
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
-    <Compile Include="Common\DeploymentItemAttribute.cs" />
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
     <Compile Include="Grammar\SelectionExtensionsTests.cs" />
     <Compile Include="Inspections\ApplicationWorksheetFunctionInspectionTests.cs" />
