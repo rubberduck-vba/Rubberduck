@@ -238,3 +238,37 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub NowFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Now
+        .Returns #1/1/2018 9:00:00 AM#
+        Assert.IsTrue Now = #1/1/2018 9:00:00 AM#
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub NowFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Now
+        .Returns #1/1/2018 9:00:00 AM#
+        .Passthrough = True
+        Assert.IsTrue Now <> #1/1/2018 9:00:00 AM#
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
