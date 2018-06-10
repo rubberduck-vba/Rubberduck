@@ -12,16 +12,8 @@ namespace Rubberduck.UnitTesting.Fakes
             InjectDelegate(new NowDelegate(NowCallback), ProcessAddress);
         }
 
-        private readonly ValueTypeConverter<float> _converter = new ValueTypeConverter<float>();
-        public override void Returns(object value, int invocation = FakesProvider.AllInvocations)
-        {
-            _converter.Value = value;
-            base.Returns((float)_converter.Value, invocation);
-        }
-
         [DllImport(TargetLibrary, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.R4)]
-        private static extern void rtcGetPresentDate();
+        private static extern void rtcGetPresentDate(out object retVal);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void NowDelegate(IntPtr retVal);
@@ -29,11 +21,16 @@ namespace Rubberduck.UnitTesting.Fakes
         public void NowCallback(IntPtr retVal)
         {
             OnCallBack(true);
-
+            if (!TrySetReturnValue())                          // specific invocation
+            {
+                TrySetReturnValue(true);                       // any invocation
+            }
             if (PassThrough)
             {
-                //TODO - get passthrough working with byref call
-                Marshal.GetNativeVariantForObject(0, retVal); // rtcGetPresentDate();
+                object result;
+                rtcGetPresentDate(out result);
+                Marshal.GetNativeVariantForObject(result, retVal);
+                return;
             }
             Marshal.GetNativeVariantForObject(ReturnValue ?? 0, retVal);
         }
