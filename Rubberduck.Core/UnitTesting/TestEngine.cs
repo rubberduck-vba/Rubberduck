@@ -26,8 +26,8 @@ namespace Rubberduck.UnitTesting
 
         public ParserState[] AllowedRunStates => new[]
         {
-            //TODO: work out a clean way for communicating allowable states to OnSuspendParse
-            //ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, 
+            ParserState.ResolvedDeclarations,
+            ParserState.ResolvingReferences, 
             ParserState.Ready
         };
 
@@ -96,7 +96,7 @@ namespace Rubberduck.UnitTesting
 
         private void RunInternal(IEnumerable<TestMethod> tests)
         {
-            if (_state.Status != ParserState.Ready)
+            if (!AllowedRunStates.Contains(_state.Status))
             {
                 return;
             }

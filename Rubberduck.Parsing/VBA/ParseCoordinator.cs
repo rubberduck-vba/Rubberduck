@@ -22,7 +22,8 @@ namespace Rubberduck.Parsing.VBA
         private readonly IProjectManager _projectManager;
         private readonly IParsingCacheService _parsingCacheService;
         private readonly IParserStateManager _parserStateManager;
-        private readonly ConcurrentStack<object> _RequestorStack;
+        private readonly ConcurrentStack<object> _requestorStack;
+        private long _suspensionIteration;
 
         private readonly bool _isTestScope;
 
@@ -65,7 +66,7 @@ namespace Rubberduck.Parsing.VBA
             state.ParseRequest += ReparseRequested;
             state.SuspendRequest += SuspendRequested;
 
-            _RequestorStack = new ConcurrentStack<object>();
+            _requestorStack = new ConcurrentStack<object>();
         }
 
         // Do not access this from anywhere but ReparseRequested.
@@ -74,16 +75,17 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly object _cancellationSyncObject = new object();
         private readonly object _parsingRunSyncObject = new object();
-        private readonly ReaderWriterLockSlim _parsingSuspendLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private readonly ReaderWriterLockSlim _parsingSuspendLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
         private void ReparseRequested(object sender, EventArgs e)
         {
             CancellationToken token;
             lock (_cancellationSyncObject)
             {
-                if (State.Status == ParserState.Busy)
+                var isSuspended = Interlocked.Read(ref _suspensionIteration);
+                if (isSuspended != 0)
                 {
-                    _RequestorStack.Push(sender);
+                    _requestorStack.Push(sender);
                     return;
                 }
 
@@ -103,16 +105,19 @@ namespace Rubberduck.Parsing.VBA
 
         public void SuspendRequested(object sender, RubberduckStatusSuspendParserEventArgs e)
         {
+            object parseRequestor = null;
+
             try
             {
                 _parsingSuspendLock.EnterWriteLock();
+                Interlocked.Add(ref _suspensionIteration, 1);
                 var originalStatus = State.Status;
-                State.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy, CancellationToken.None);
+                _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy, CancellationToken.None);
                 e.BusyAction.Invoke();
-                if (_RequestorStack.TryPop(out var lastRequestor))
+                if (_requestorStack.TryPop(out var lastRequestor))
                 {
-                    _RequestorStack.Clear();
-                    BeginParse(lastRequestor, _currentCancellationTokenSource.Token);
+                    _requestorStack.Clear();
+                    parseRequestor = lastRequestor;
                 }
                 else
                 {
@@ -120,21 +125,28 @@ namespace Rubberduck.Parsing.VBA
                     {
                         // We can't assume that we can return to any other state that's not "Ready"; it's better
                         // to request a new parse and let parser set the correct state itself.
-                        BeginParse(this, _currentCancellationTokenSource.Token);
+                        parseRequestor = this;
                     }
                     else
                     {
-                        State.SetStatusAndFireStateChanged(e.Requestor, originalStatus, CancellationToken.None);
+                        _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, originalStatus, CancellationToken.None);
                     }
                 }
-                _RequestorStack.Clear();
+                _requestorStack.Clear();
             }
             finally
             {
+                Interlocked.Exchange(ref _suspensionIteration, 0);
                 if (_parsingSuspendLock.IsWriteLockHeld)
                 {
                     _parsingSuspendLock.ExitWriteLock();
                 }
+            }
+
+            if (parseRequestor != null)
+            {
+                Cancel();
+                BeginParse(parseRequestor, _currentCancellationTokenSource.Token);
             }
         }
 
@@ -196,11 +208,9 @@ namespace Rubberduck.Parsing.VBA
             var lockTaken = false;
             try
             {
-                if (_parsingSuspendLock.TryEnterReadLock(-1))
-                {
-                    Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
-                    ParseAllInternal(this, token);
-                }
+                _parsingSuspendLock.EnterReadLock();
+                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
+                ParseAllInternal(this, token);
             }
             catch (OperationCanceledException)
             {
