@@ -166,20 +166,20 @@ namespace Rubberduck.VBEditor.Events
             if (pane != null) SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs(pane));
         }
 
-        private static string _currentLine;
+        //private static string _currentLine;
         public static event EventHandler<AutoCompleteEventArgs> KeyDown; 
         private static void OnKeyDown(KeyPressEventArgs e)
         {
-            var pane = GetCodePaneFromHwnd(e.Hwnd);
-            if (pane?.Selection.IsSingleCharacter ?? false)
+            using (var pane = GetCodePaneFromHwnd(e.Hwnd))
+            using (var module = pane.CodeModule)
             {
-                var args = new AutoCompleteEventArgs(pane, e);
-                if (_currentLine != args.OldCode)
-                {
+                var args = new AutoCompleteEventArgs(module, e);
+                //if (_currentLine != args.CurrentLine)
+                //{
                     KeyDown?.Invoke(_vbe, args);
-                    _currentLine = args.NewCode;
+                    //_currentLine = args.NewCode;
                     e.Handled = args.Handled;
-                }
+                //}
             }
         }
 

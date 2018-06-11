@@ -38,19 +38,16 @@ namespace Rubberduck.AutoComplete
                 return false;
             }
 
-            using (var pane = e.CodePane)
-            using (var module = pane.CodeModule)
+            var module = e.CodeModule;
+            using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
-                if (selection.StartColumn < 1) { return false; }
-                
-                if (!e.IsCommitted && e.Character.ToString() == InputToken)
+                if (e.Character.ToString() == InputToken)
                 {
-                    var newCode = e.OldCode.Insert(selection.StartColumn - 1, InputToken + OutputToken);
-                    module.ReplaceLine(selection.StartLine, newCode);
+                    var code = module.GetLines(selection).Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
+                    module.ReplaceLine(selection.StartLine, code);
                     pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 1);
                     e.Handled = true;
-                    e.NewCode = newCode;
                     return true;
                 }
                 return false;

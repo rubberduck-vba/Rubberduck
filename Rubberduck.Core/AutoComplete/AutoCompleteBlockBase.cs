@@ -30,14 +30,13 @@ namespace Rubberduck.AutoComplete
 
         public override bool Execute(AutoCompleteEventArgs e)
         {
-            if (e.Character.ToString() != "\r")
+            if (e.Keys != System.Windows.Forms.Keys.Enter /*&& e.Keys != System.Windows.Forms.Keys.Tab*/)
             {
-                // handle ENTER or TAB key
                 return false;
             }
 
-            using (var pane = e.CodePane)
-            using (var module = pane.CodeModule)
+            var module = e.CodeModule;
+            using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
                 var code = module.GetLines(selection);
@@ -53,25 +52,25 @@ namespace Rubberduck.AutoComplete
 
                 var isMatch = MatchInputTokenAtEndOfLineOnly
                                 ? code.EndsWith(InputToken)
-                                : Regex.IsMatch(code.Trim(), pattern);
+                                : Regex.IsMatch(code.Trim(), pattern, RegexOptions.IgnoreCase);
 
                 if (!code.HasComment(out _) && isMatch)
                 {
                     var indent = code.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                     var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
-                    if (module.GetLines(selection.NextLine) == newCode)
+                    if (module.GetLines(selection.NextLine.NextLine) == newCode)
                     {
                         return false;
                     }
 
                     var stdIndent = IndentBody ? IndenterSettings.Create().IndentSpaces : 0;
 
-                    module.InsertLines(selection.NextLine.StartLine+1, newCode);
+                    module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
 
                     module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
-                    e.CodePane.Selection = new VBEditor.Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
+                    pane.Selection = new VBEditor.Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
 
-                    e.NewCode = newCode;
+                    e.Handled = true;
                     return true;
                 }
                 return false;
