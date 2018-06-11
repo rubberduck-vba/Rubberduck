@@ -71,5 +71,9 @@ namespace Rubberduck.UnitTesting
         [DispId(15)]
         [Description("Configures VBA.DateTime.Now calls.")]
         IFake Now { get; }
+
+        [DispId(16)]
+        [Description("Configures VBA.DateTime.Time calls.")]
+        IFake Time { get; }
     }
 }

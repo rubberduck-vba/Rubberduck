@@ -272,3 +272,34 @@ TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
+'@TestMethod
+Public Sub TimeFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Time
+        .Returns #9:00:00 AM#
+        Assert.IsTrue Time = #9:00:00 AM#
+        .Verify.Once
+    End With
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub TimeFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Time
+        .Returns #9:00:00 AM#
+        .Passthrough = True
+        Assert.IsTrue Time <> #9:00:00 AM#
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
