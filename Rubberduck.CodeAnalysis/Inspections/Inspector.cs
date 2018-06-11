@@ -10,13 +10,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using NLog;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Inspections
 {
@@ -40,8 +41,8 @@ namespace Rubberduck.Inspections
 
             private void ConfigServiceSettingsChanged(object sender, EventArgs e)
             {
-                var config = _configService.LoadConfiguration();
-                UpdateInspectionSeverity(config);
+                //var config = _configService.LoadConfiguration();
+                //UpdateInspectionSeverity(config);
             }
 
             private void UpdateInspectionSeverity(Configuration config)
@@ -53,7 +54,7 @@ namespace Rubberduck.Inspections
                         if (inspection.Name == setting.Name)
                         {
                             inspection.Severity = setting.Severity;
-                            continue;
+                            break;
                         }
                     }
                 }
@@ -87,7 +88,7 @@ namespace Rubberduck.Inspections
                 }
 
                 // Prepare ParseTreeWalker based inspections
-                var passes = Enum.GetValues(typeof (ParsePass)).Cast<ParsePass>();
+                var passes = Enum.GetValues(typeof(ParsePass)).Cast<ParsePass>();
                 foreach (var parsePass in passes)
                 {
                     try

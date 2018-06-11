@@ -10,9 +10,11 @@ namespace Rubberduck.Settings
         public bool LanguageChanged { get; }
         public bool InspectionSettingsChanged { get; }
         public bool RunInspectionsOnReparse { get; }
+        public bool AutoCompleteSettingsChanged { get; }
 
-        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged)
+        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged, bool autoCompleteSettingsChanged)
         {
+            AutoCompleteSettingsChanged = autoCompleteSettingsChanged;
             RunInspectionsOnReparse = runInspections;
             LanguageChanged = languageChanged;
             InspectionSettingsChanged = inspectionSettingsChanged;
@@ -93,7 +95,11 @@ namespace Rubberduck.Settings
             var langChanged = _generalProvider.Create().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
             var oldInspectionSettings = _inspectionProvider.Create().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+            var inspectionsChanged = !oldInspectionSettings.SequenceEqual(newInspectionSettings);
             var inspectOnReparse = toSerialize.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
+            var oldAutoCompleteSettings = _autoCompleteProvider.Create().AutoCompletes.Select(s => Tuple.Create(s.Key, s.IsEnabled));
+            var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings.AutoCompletes.Select(s => Tuple.Create(s.Key, s.IsEnabled));
+            var autoCompletesChanged = !oldAutoCompleteSettings.SequenceEqual(newAutoCompleteSettings);
 
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);
@@ -104,7 +110,7 @@ namespace Rubberduck.Settings
             _indenterProvider.Save(toSerialize.UserSettings.IndenterSettings);
             _windowProvider.Save(toSerialize.UserSettings.WindowSettings);
 
-            OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, !oldInspectionSettings.SequenceEqual(newInspectionSettings)));
+            OnSettingsChanged(new ConfigurationChangedEventArgs(inspectOnReparse, langChanged, inspectionsChanged, autoCompletesChanged));
         }
 
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;

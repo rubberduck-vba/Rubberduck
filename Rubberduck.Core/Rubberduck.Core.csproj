@@ -307,6 +307,11 @@
     <Compile Include="AutoComplete\AutoCompleteTypeBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteWhileBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteWithBlock.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\AggregationLevel.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\CodeMetric.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricResult.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricsParseTreeListener.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
@@ -334,13 +339,10 @@
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
     <Compile Include="AutoComplete\AutoCompleteProvider.cs" />
-    <Compile Include="Inspections\IInspectionProvider.cs" />
-    <Compile Include="Inspections\InspectionProvider.cs" />
+    <Compile Include="CodeAnalysis\Inspections\IInspectionProvider.cs" />
+    <Compile Include="CodeAnalysis\Inspections\InspectionProvider.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
-    <Compile Include="Navigation\CodeMetrics\CodeMetricsAnalyst.cs" />
-    <Compile Include="Navigation\CodeMetrics\CodeMetricsResult.cs" />
-    <Compile Include="Navigation\CodeMetrics\CodeMetricsViewModel.cs" />
-    <Compile Include="Navigation\CodeMetrics\ICodeMetricsAnalyst.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -409,6 +411,7 @@
     <Compile Include="UI\CodeMetrics\CodeMetricsDockablePresenter.cs" />
     <Compile Include="UI\Command\CodeMetricsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CodeMetricsCommandMenuItem.cs" />
+    <Compile Include="UI\Converters\DeclarationToMemberSignatureConverter.cs" />
     <Compile Include="UI\Converters\StringHasNoValueToVisibilityConverter.cs" />
     <Compile Include="UI\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsControl.xaml.cs">

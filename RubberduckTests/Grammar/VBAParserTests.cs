@@ -1486,6 +1486,126 @@ End Sub";
 
         [Category("Parser")]
         [Test]
+        public void TestCombinedForNextStatement()
+        {
+            string code = @"
+Sub Test()
+    For n = 1 To 10
+        For m = 1 To 20
+            a = m + n
+        Next m _
+    , n%
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestCombinedForNextStatementWhithItermediateCode()
+        {
+            string code = @"
+Sub Test()
+    For n = 1 To 10
+        b = n
+        For m = 1 To 20
+            a = m + n
+    Next m,n%
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestCombinedForEachStatement()
+        {
+            string code = @"
+Sub Test()
+    Dim foo As Collection
+    Dim bar As Collection
+    For Each n In foo
+        For Each m In bar
+            a = m + n
+    Next m _
+        , _
+        n%
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forEachStmt", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestCombinedForEachStatementWhithItermediateCode()
+        {
+            string code = @"
+Sub Test()
+    Dim foo As Collection
+    Dim bar As Collection
+    For Each n In foo
+        b = n
+        For Each m In bar
+            a = m + n
+    Next m,n%
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forEachStmt", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestMixedCombinedForEachAndForNextStatement()
+        {
+            string code = @"
+Sub Test()
+    Dim foo As Collection
+    Dim bar As Collection
+    For n = 1 To 10
+        b = n
+        For Each c In foo
+            For m = 1 To 20
+                For Each d In bar
+                    a = m + n + c + d
+                        For k = 0 To 100
+                            t = a + k
+    Next k, d, m,_
+            c, _
+            n
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forEachStmt", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 3);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestMixedRegularAndCombinedForEachAndForNextStatement()
+        {
+            string code = @"
+Sub Test()
+    Dim foo As Collection
+    Dim bar As Collection
+    For n = 1 To 10
+        For Each c In foo
+        Next c
+        For m = 1 To 20
+            For k = 0 To 100
+                t = a + k
+            Next
+            For Each d In bar
+                For l = 15 To 23
+                   a = m + n + d + l
+            Next l, d                   
+    Next m, n
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forEachStmt", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 4);
+        }
+
+        [Category("Parser")]
+        [Test]
         public void TestLineLabelStatement()
         {
             string code = @"

@@ -86,10 +86,6 @@
       <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
-      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
-      <Name>Rubberduck.Inspections</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
       <Project>{e8ab5d93-2d0f-423d-bc15-5ee118673e48}</Project>
       <Name>Rubberduck.Main</Name>

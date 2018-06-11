@@ -171,6 +171,9 @@
   <data name="ResetSettingsButton" xml:space="preserve">
     <value>Reset</value>
   </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>All</value>
+  </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Settings</value>
   </data>

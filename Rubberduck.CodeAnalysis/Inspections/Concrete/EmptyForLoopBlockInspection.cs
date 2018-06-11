@@ -12,9 +12,9 @@ using System.Linq;
 namespace Rubberduck.Inspections.Concrete
 {
     [Experimental]
-    internal class EmptyForEachBlockInspection : ParseTreeInspectionBase
+    internal class EmptyForLoopBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyForEachBlockInspection(RubberduckParserState state)
+        public EmptyForLoopBlockInspection(RubberduckParserState state)
             : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -22,18 +22,18 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyForEachBlockInspection,
+                                                        InspectionResults.EmptyForLoopBlockInspection,
                                                         result));
         }
 
         public override IInspectionListener Listener { get; } =
-            new EmptyForEachBlockListener();
+            new EmptyForloopBlockListener();
 
-        public class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyForloopBlockListener : EmptyBlockInspectionListenerBase
         {
-            public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
+            public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
-                InspectBlockForExecutableStatements(context.block(), context);
+                InspectBlockForExecutableStatements(context.unterminatedBlock(), context);
             }
         }
     }

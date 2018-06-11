@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
@@ -41,7 +40,6 @@ namespace RubberduckTests.Inspections
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredMember()
         {
@@ -62,7 +60,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredInterfaceMember()
         {
@@ -83,7 +80,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_ApplicationObject()
         {
@@ -102,7 +98,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_UnDeclaredMemberOnParameter()
         {
@@ -121,7 +116,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_DeclaredMember()
         {
@@ -142,7 +136,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_NonExtensible()
         {
@@ -162,7 +155,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_ReturnsResult_WithBlock()
         {
@@ -184,7 +176,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_BangNotation()
         {
@@ -205,7 +196,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_WithBlockBangNotation()
         {
@@ -227,7 +217,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_DoesNotReturnResult_ProjectReference()
         {
@@ -246,7 +235,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_Ignored_DoesNotReturnResult()
         {
@@ -268,7 +256,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void MemberNotOnInterface_CatchesInvalidUseOfMember()
         {

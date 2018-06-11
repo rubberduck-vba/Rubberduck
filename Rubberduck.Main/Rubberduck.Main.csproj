@@ -341,13 +341,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj">
+      <Project>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</Project>
+      <Name>Rubberduck.CodeAnalysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
       <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
-      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
-      <Name>Rubberduck.Inspections</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
@@ -369,12 +369,16 @@
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.StaticCodeAnalysis\Rubberduck.CodeAnalysis.csproj">
+      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
+      <Name>Rubberduck.CodeAnalysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
-      <Project>{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}</Project>
+      <Project>{5d683117-21f1-4a01-a0c7-6ae6f30a16a7}</Project>
       <Name>Rubberduck.VBEditor.VB6</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
-      <Project>{D488071E-EDCB-4601-B734-1A3109ED903C}</Project>
+      <Project>{d488071e-edcb-4601-b734-1a3109ed903c}</Project>
       <Name>Rubberduck.VBEditor.VBA</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
