@@ -43,7 +43,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var conformToTypeName = conformToType ?? _declaredType ?? _derivedType;
-            //var conformToTypeName = _declaredType ?? _derivedType;
             ConformValueTextToType(conformToTypeName);
         }
 
@@ -286,8 +285,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             if (conformTypeName.Equals(Tokens.LongLong) || conformTypeName.Equals(Tokens.Long) ||
                 conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
             {
-                if (StringValueConverter.TryConvertString(ValueText, out long newVal))
-                //if (this.TryConvertValue(out long newVal))
+                if (this.TryConvertValue(out long newVal))
                 {
                     ValueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -348,8 +346,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Double) || conformTypeName.Equals(Tokens.Single))
             {
-                if (StringValueConverter.TryConvertString(ValueText, out double newVal))
-                //if (this.TryConvertValue(out double newVal))
+                if (this.TryConvertValue(out double newVal))
                 {
                     ValueText = newVal.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
@@ -359,8 +356,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.Boolean))
             {
-                if (StringValueConverter.TryConvertString(ValueText, out bool newVal))
-                //if (this.TryConvertValue(out bool newVal))
+                if (this.TryConvertValue(out bool newVal))
                 {
                     ValueText = newVal.ToString();
                     ParsesToConstantValue = true;
@@ -370,15 +366,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (conformTypeName.Equals(Tokens.String))
             {
-                //ParsesToConstantValue = true;
                 ParsesToConstantValue = IsStringConstant(_inputValue);
                 return;
             }
 
             if (conformTypeName.Equals(Tokens.Currency))
             {
-                if (StringValueConverter.TryConvertString(this.ValueText, out decimal newVal))
-                //if (this.TryConvertValue(out decimal newVal))
+                if (this.TryConvertValue(out decimal newVal))
                 {
                     ValueText = newVal.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
@@ -444,124 +438,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public static class ParseTreeValueExtensions
     {
-        public static (IParseTreeValue lhs, IParseTreeValue rhs)
-            CreateOperandPair(this IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
-        {
-            var operands = value.ValueText.Split(new string[] { opSymbol }, StringSplitOptions.None);
-            if (operands.Count() == 2)
-            {
-                var lhs = factory.Create(operands[0].Trim());
-                var rhs = factory.Create(operands[1].Trim());
-                return (lhs, rhs);
-            }
-
-            if (operands.Count() == 1)
-            {
-                var lhs = new ParseTreeValue(operands[0].Trim());
-                return (lhs, null);
-            }
-            return (null, null);
-        }
-
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out long value)
-        {
-            value = default;
-            var valueText = parseTreeValue.ValueText;
-            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
-            {
-                value = valueText.Equals(Tokens.True) ? -1 : 0;
-                return true;
-            }
-
-            var typeName = parseTreeValue.TypeName;
-            if ((typeName == Tokens.Byte
-                    || typeName == Tokens.Integer
-                    || typeName == Tokens.Long
-                    || typeName == Tokens.LongLong)
-                && long.TryParse(valueText, out var integralValue))
-            {
-                value = integralValue;
-                return true;
-            }
-
-            if (typeName == Tokens.Currency && decimal.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-            {
-                value = Convert.ToInt64(decimalValue);
-                return true;
-            }
-
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
-            {
-                value = Convert.ToInt64(rationalValue);
-                return true;
-            }
-
-            return false;
-        }    
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out double value)
-        {
-            value = default;
-            var valueText = parseTreeValue.ValueText;
-            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
-            {
-                value = valueText.Equals(Tokens.True) ? -1 : 0;
-                return true;
-            }
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rational))
-            {
-                value = rational;
-                return true;
-            }
-            return false;
-        }
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out decimal value)
-        {
-            value = default;
-            var inspVal = parseTreeValue.ValueText;
-            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
-            {
-                value = inspVal.Equals(Tokens.True) ? -1 : 0;
-                return true;
-            }
-
-            if (decimal.TryParse(inspVal, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-            {
-                value = decimalValue;
-                return true;
-            }
-
-            if (double.TryParse(inspVal, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
-            {
-                value = Convert.ToDecimal(rationalValue);
-                return true;
-            }
-
-            return false;
-        }
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out bool value)
-        {
-            value = default;
-            var valueText = parseTreeValue.ValueText;
-            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
-            {
-                value = valueText.Equals(Tokens.True);
-                return true;
-            }
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                value = Math.Abs(doubleValue) >= double.Epsilon;
-                return true;
-            }
-            return false;
-        }
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out string value)
-        {
-            value = parseTreeValue.ValueText;
-            return true;
-        }
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
     }
 }

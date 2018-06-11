@@ -282,7 +282,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_EqvOperatorBoolean(bool lhs, bool rhs, bool expected)
         {
-            var result = VBALogicOperators.Eqv(lhs, rhs);
+            var result = ParseTreeExpressionEvaluator.Eqv(lhs, rhs);
             Assert.AreEqual(expected, result);
         }
 
@@ -292,7 +292,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_EqvOperatorInts(int lhs, int rhs, int expected)
         {
-            var result = VBALogicOperators.Eqv(lhs, rhs);
+            var result = ParseTreeExpressionEvaluator.Eqv(lhs, rhs);
             Assert.AreEqual(expected, result);
         }
 
@@ -303,7 +303,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_ImpOperatorBoolean(bool lhs, bool rhs, bool expected)
         {
-            var result = VBALogicOperators.Imp(lhs, rhs);
+            var result = ParseTreeExpressionEvaluator.Imp(lhs, rhs);
             Assert.AreEqual(expected, result);
         }
 
@@ -313,7 +313,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_ImpOperatorInts(int lhs, int rhs, int expected)
         {
-            var result = VBALogicOperators.Imp(lhs, rhs);
+            var result = ParseTreeExpressionEvaluator.Imp(lhs, rhs);
             Assert.AreEqual(expected, result);
         }
 

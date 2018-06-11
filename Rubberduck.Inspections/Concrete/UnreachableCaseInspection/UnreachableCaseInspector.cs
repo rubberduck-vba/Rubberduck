@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +10,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspector
     {
-        //string SelectExpressionTypeName { get; }
         void InspectForUnreachableCases();
         List<ParserRuleContext> UnreachableCases { get; }
         List<ParserRuleContext> MismatchTypeCases { get; }
@@ -29,11 +27,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly ParserRuleContext _caseElseContext;
         private readonly IParseTreeValueFactory _valueFactory;
 
+        private Dictionary<string, IExpressionFilter> _filters;
+
         public UnreachableCaseInspector(VBAParser.SelectCaseStmtContext selectCaseContext, IParseTreeVisitorResults inspValues, IParseTreeValueFactory valueFactory)
         {
             _valueFactory = valueFactory;
             _caseClauses = selectCaseContext.caseClause();
             _caseElseContext = selectCaseContext.caseElseClause();
+            _filters = new Dictionary<string, IExpressionFilter>();
             ParseTreeValueResults = inspValues;
             SetSelectExpressionTypeName(selectCaseContext as ParserRuleContext, inspValues);
         }
@@ -54,6 +55,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var expressionFilter = ExpressionFilterFactory.Create(SelectExpressionTypeName);
+            _filters.Add("SelectCase", expressionFilter);
 
             foreach (var caseClause in _caseClauses)
             {
@@ -225,6 +227,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 else
                 {
                     var symbol = GetLogicSymbol(resultContexts.First() as VBAParser.ExpressionContext);
+
+                    Debug.Assert(!symbol.Equals(string.Empty), "Unhandled ExpressionContext detected");
                     if (symbol == string.Empty) { return null; }
 
                     var resultContext = resultContexts.First();
@@ -236,7 +240,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                             || resultContext is VBAParser.LogicalEqvOpContext
                             || resultContext is VBAParser.LogicalImpOpContext)
                     {
-                        (IParseTreeValue lhs, IParseTreeValue rhs) = clauseValue.CreateOperandPair(symbol, _valueFactory);
+                        (IParseTreeValue lhs, IParseTreeValue rhs) = CreateOperandPair(clauseValue, symbol, _valueFactory);
                         return new BinaryExpression(lhs, rhs, symbol);
                     }
                 }
@@ -248,29 +252,48 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return null;
         }
 
+        private static (IParseTreeValue lhs, IParseTreeValue rhs)
+            CreateOperandPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
+        {
+            var operands = value.ValueText.Split(new string[] { opSymbol }, StringSplitOptions.None);
+            if (operands.Count() == 2)
+            {
+                var lhs = factory.Create(operands[0].Trim());
+                var rhs = factory.Create(operands[1].Trim());
+                return (lhs, rhs);
+            }
+
+            if (operands.Count() == 1)
+            {
+                var lhs = new ParseTreeValue(operands[0].Trim());
+                return (lhs, null);
+            }
+            return (null, null);
+        }
+
         private static string GetLogicSymbol<T>(T context) where T : VBAParser.ExpressionContext
         {
-            int ttype = 0;
-            var result = string.Empty;
-            if (context is VBAParser.RelationalOpContext ctxt)
+            switch (context)
             {
-                var terminalNode = ctxt.EQ() ?? ctxt.GEQ() ?? ctxt.GT() ?? ctxt.LEQ()
-                    ?? ctxt.LIKE() ?? ctxt.LT() ?? ctxt.NEQ();
-                result = terminalNode.GetText();
+                case VBAParser.RelationalOpContext ctxt:
+                    var terminalNode = ctxt.EQ() ?? ctxt.GEQ() ?? ctxt.GT() ?? ctxt.LEQ()
+                        ?? ctxt.LIKE() ?? ctxt.LT() ?? ctxt.NEQ();
+                    return terminalNode.GetText();
+                case VBAParser.LogicalXorOpContext _:
+                    return context.GetToken(VBAParser.XOR, 0).GetText();
+                case VBAParser.LogicalAndOpContext _:
+                    return context.GetToken(VBAParser.AND, 0).GetText();
+                case VBAParser.LogicalOrOpContext _:
+                    return context.GetToken(VBAParser.OR, 0).GetText();
+                case VBAParser.LogicalEqvOpContext _:
+                    return context.GetToken(VBAParser.EQV, 0).GetText();
+                case VBAParser.LogicalImpOpContext _:
+                    return context.GetToken(VBAParser.IMP, 0).GetText();
+                case VBAParser.LogicalNotOpContext _:
+                    return context.GetToken(VBAParser.NOT, 0).GetText();
+                default:
+                    return string.Empty;
             }
-            else if (context is VBAParser.LogicalXorOpContext) { ttype = VBAParser.XOR; }
-            else if (context is VBAParser.LogicalAndOpContext) { ttype = VBAParser.AND; }
-            else if (context is VBAParser.LogicalOrOpContext) { ttype = VBAParser.OR; }
-            else if (context is VBAParser.LogicalEqvOpContext) { ttype = VBAParser.EQV; }
-            else if (context is VBAParser.LogicalImpOpContext) { ttype = VBAParser.IMP; }
-            else if (context is VBAParser.LogicalNotOpContext) { ttype = VBAParser.NOT; }
-
-            if (ttype != 0)
-            {
-                result = context.GetToken(ttype, 0).GetText();
-            }
-            Debug.Assert(!result.Equals(string.Empty), "Unhandled ExpressionContext detected");
-            return result;
         }
     }
 }

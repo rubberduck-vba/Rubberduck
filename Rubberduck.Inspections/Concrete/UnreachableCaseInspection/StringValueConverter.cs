@@ -1,46 +1,59 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-//TODO: This class may need to go away - compare and update per IParseTreeValueExtensions class
+using System.Globalization;
+
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public delegate bool StringToValueConversion<T>(string value, out T result);
+    //The 'typeName' parameter is only used for Integral types, but since this delegate is assigned 
+    //to ExpressionFilters (a generic class) during construction, the signatures for the
+    //non-integral types have to match
+    public delegate bool StringToValueConversion<T>(string value, string typeName, out T result);
 
     public class StringValueConverter
     {
-        public static bool TryConvertString(string valueAsText, out long value)
+        public static bool TryConvertString(string valueText, string typeName, out long value)
         {
             value = default;
-            if (valueAsText.Equals(Tokens.True) || valueAsText.Equals(Tokens.False))
+            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
             {
-                value = valueAsText.Equals(Tokens.True) ? -1 : 0;
+                value = valueText.Equals(Tokens.True) ? -1 : 0;
                 return true;
             }
-            if (double.TryParse(valueAsText, out double rational))
+
+            if ((typeName == Tokens.Byte
+                    || typeName == Tokens.Integer
+                    || typeName == Tokens.Long
+                    || typeName == Tokens.LongLong)
+                && long.TryParse(valueText, out var integralValue))
             {
-                //protect against double.NaN
-                try
-                {
-                    value = Convert.ToInt64(rational);
-                    return true;
-                }
-                catch (OverflowException) { }
+                value = integralValue;
+                return true;
             }
+
+            if (typeName == Tokens.Currency && decimal.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                value = Convert.ToInt64(decimalValue);
+                return true;
+            }
+
+            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
+            {
+                value = Convert.ToInt64(rationalValue);
+                return true;
+            }
+
             return false;
         }
 
-        public static bool TryConvertString(string inspVal, out double value)
+        public static bool TryConvertString(string valueText, string typeName, out double value)
         {
             value = default;
-            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
+            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
             {
-                value = inspVal.Equals(Tokens.True) ? -1 : 0;
+                value = valueText.Equals(Tokens.True) ? -1 : 0;
                 return true;
             }
-            if (double.TryParse(inspVal, out double rational))
+            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rational))
             {
                 value = rational;
                 return true;
@@ -48,41 +61,49 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertString(string inspVal, out decimal value)
+        public static bool TryConvertString(string valueText, string typeName, out decimal value)
         {
             value = default;
-            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
+            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
             {
-                value = inspVal.Equals(Tokens.True) ? -1 : 0;
+                value = valueText.Equals(Tokens.True) ? -1 : 0;
                 return true;
             }
-            if (decimal.TryParse(inspVal, out decimal rational))
+
+            if (decimal.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                value = rational;
+                value = decimalValue;
+                return true;
+            }
+
+            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
+            {
+                value = Convert.ToDecimal(rationalValue);
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool TryConvertString(string valueText, string typeName, out bool value)
+        {
+            value = default;
+            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
+            {
+                value = valueText.Equals(Tokens.True);
+                return true;
+            }
+            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var doubleValue))
+            {
+                value = Math.Abs(doubleValue) >= double.Epsilon;
                 return true;
             }
             return false;
         }
 
-        public static bool TryConvertString(string inspVal, out bool value)
+        public static bool TryConvertString(string valueText, string typeName, out string value)
         {
-            value = default;
-            if (inspVal.Equals(Tokens.True) || inspVal.Equals(Tokens.False))
-            {
-                value = inspVal.Equals(Tokens.True);
-                return true;
-            }
-            if (double.TryParse(inspVal, out double dVal))
-            {
-                value = Math.Abs(dVal) >= double.Epsilon;
-                return true;
-            }
-            return false;
-        }
-
-        public static bool TryConvertString(string inspVal, out string value)
-        {
-            value = inspVal;
+            value = valueText;
             return true;
         }
     }

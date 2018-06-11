@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -55,7 +57,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public static Dictionary<string, Func<string, string, bool>> LogicOpsString = new Dictionary<string, Func<string, string, bool>>()
         {
-            [Tokens.Like] = VBALogicOperators.Like
+            [Tokens.Like] = Like
         };
 
         private static readonly List<string> ResultTypeRanking = new List<string>()
@@ -106,8 +108,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                             var lhsOperand = Convert.ToInt64(lhs.value);
                             var rhsOperand = Convert.ToInt64(rhs.value);
                             var result = opSymbol.Equals(LogicSymbols.EQV) ?
-                                VBALogicOperators.Eqv(lhsOperand, rhsOperand)
-                                : VBALogicOperators.Imp(lhsOperand, rhsOperand);
+                                Eqv(lhsOperand, rhsOperand)
+                                : Imp(lhsOperand, rhsOperand);
                             return _valueFactory.Create(result.ToString(), Tokens.Long);
                         }
                     }
@@ -278,6 +280,39 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || LogicOpsUnary.ContainsKey(opSymbol)
                 || LogicOpsString.ContainsKey(opSymbol);
         }
+
+        public static bool Eqv(bool lhs, bool rhs) => !(lhs ^ rhs) || (lhs && rhs);
+
+        public static int Eqv(int lhs, int rhs) => ~(lhs ^ rhs) | (lhs & rhs);
+
+        public static long Eqv(long lhs, long rhs) => ~(lhs ^ rhs) | (lhs & rhs);
+
+        public static bool Imp(bool lhs, bool rhs) => rhs || (!lhs && !rhs);
+
+        public static int Imp(int lhs, int rhs) => rhs | (~lhs & ~rhs);
+
+        public static long Imp(long lhs, long rhs) => rhs | (~lhs & ~rhs);
+
+        public static bool Like(string input, string pattern)
+        {
+            if (pattern.Equals("*"))
+            {
+                return true;
+            }
+            var regExpression = new StringBuilder(@"^" + pattern);
+            regExpression.Replace("#", "[0-9]");
+            regExpression.Replace("?", "+");
+            regExpression.Replace("[!", "[^");
+            regExpression.Replace("[+]", "[?]");
+            regExpression.Replace("[[0-9]]", "[#]");
+            if (!regExpression.ToString().EndsWith("*"))
+            {
+                regExpression.Append("$");
+            }
+            var regex = new Regex(regExpression.ToString());
+            var result = regex.IsMatch(input);
+            return result;
+        }
     }
 
     internal static class MathSymbols
@@ -318,6 +353,52 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _plus = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.PLUS).Replace("'", "");
             _minusSign = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.MINUS).Replace("'", "");
             _exponent = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.POW).Replace("'", "");
+            return VBAParser.DefaultVocabulary.GetLiteralName(target).Replace("'", "");
+        }
+    }
+
+    internal static class LogicSymbols
+    {
+        private static string _lessThan;
+        private static string _greaterThan;
+        private static string _equalTo;
+
+        public static string EQ => _equalTo ?? LoadSymbols(VBAParser.EQ);
+        public static string NEQ => "<>";
+        public static string LT => _lessThan ?? LoadSymbols(VBAParser.LT);
+        public static string LTE => "<=";
+        public static string GT => _greaterThan ?? LoadSymbols(VBAParser.GT);
+        public static string GTE => ">=";
+        public static string AND => Tokens.And;
+        public static string OR => Tokens.Or;
+        public static string XOR => Tokens.XOr;
+        public static string NOT => Tokens.Not;
+        public static string EQV => Tokens.Eqv;
+        public static string IMP => Tokens.Imp;
+        public static string LIKE => Tokens.Like;
+
+        public static List<string> LogicSymbolList = new List<string>()
+        {
+            EQ,
+            NEQ,
+            LT,
+            LTE,
+            GT,
+            GTE,
+            AND,
+            OR,
+            XOR,
+            NOT,
+            EQV,
+            IMP,
+            LIKE,
+        };
+
+        private static string LoadSymbols(int target)
+        {
+            _lessThan = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.LT).Replace("'", "");
+            _greaterThan = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.GT).Replace("'", "");
+            _equalTo = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.EQ).Replace("'", "");
             return VBAParser.DefaultVocabulary.GetLiteralName(target).Replace("'", "");
         }
     }

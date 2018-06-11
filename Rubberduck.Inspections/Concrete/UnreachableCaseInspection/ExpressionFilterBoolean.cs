@@ -5,13 +5,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterBoolean : ExpressionFilter<bool>
     {
-        public ExpressionFilterBoolean(StringToValueConversion<bool> converter) : base(converter) { }
+        public ExpressionFilterBoolean(StringToValueConversion<bool> converter) : base(converter, Tokens.Boolean) { }
 
         protected override bool AddIsClause(IsClauseExpression expression)
         {
             if (expression.LHSValue.ParsesToConstantValue)
             {
-                if (Converter(expression.LHS, out bool bVal))
+                //if(expression.LHSValue.TryConvertValue(out bool bVal))
+                if (Converter(expression.LHS, Tokens.Boolean, out bool bVal))
                 {
                     return AddIsClause(bVal, expression);
                 }
@@ -77,7 +78,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected override bool TryGetMinimum(out bool minimum) { minimum = default; return false; }
 
-        protected override bool AddValueRange(RangeValues<bool> range)
+        //protected override bool AddValueRange(RangeValues<bool> range)
+        protected override bool AddValueRange((bool Start, bool End) range)
         {
             var addsStart = AddSingleValue(range.Start);
             var addsEnd = AddSingleValue(range.End);

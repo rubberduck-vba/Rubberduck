@@ -3,15 +3,8 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-/*<<<<<<< HEAD
-using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-=======
-*/
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Resources.Inspections;
-//>>>>>>> rubberduck-vba/next
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System;
@@ -35,748 +28,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
                     _factoryProvider = new UnreachableCaseInspectionFactoryProvider();
                 }
                 return _factoryProvider;
-//<<<<<<<< HEAD
-//=======
-//             }
-//        }
-
-//        private IParseTreeValueFactory ValueFactory
-//        {
-//            get
-//            {
-//                if (_valueFactory is null)
-//                {
-//                    _valueFactory = FactoryProvider.CreateIParseTreeValueFactory();
-//                }
-//                return _valueFactory;
-//            }
-//        }
-
-//        private IParseTreeExpressionEvaluator Calculator
-//        {
-//            get
-//            {
-//                if (_calculator is null)
-//                {
-//                    _calculator = new ParseTreeExpressionEvaluator(ValueFactory);
-//                }
-//                return _calculator;
-//            }
-//        }
-
-//        private IParseTreeValueVisitorFactory ValueVisitorFactory
-//        {
-//            get
-//            {
-//                if (_visitorFactory is null)
-//                {
-//                    _visitorFactory = FactoryProvider.CreateIParseTreeValueVisitorFactory();
-//                }
-//                return _visitorFactory;
-//            }
-//        }
-
-//        private IRangeClauseFilterFactory RangeClauseFilterFactory
-//        {
-//            get
-//            {
-//                if (_rangeClauseFilterFactory is null)
-//                {
-//                    _rangeClauseFilterFactory = FactoryProvider.CreateIRangeClauseFilterFactory();
-//                }
-//                return _rangeClauseFilterFactory;
-//            }
-//        }
-
-//        private IRangeClauseContextWrapperFactory InspectionRangeFactory
-//        {
-//            get
-//            {
-//                if (_rangeFactory is null)
-//                {
-//                    _rangeFactory = FactoryProvider.CreateIRangeClauseContextWrapperFactory();
-//                }
-//                return _rangeFactory;
-//            }
-//        }
-
-//        private ISelectCaseStmtContextWrapperFactory InspectionSelectStmtFactory
-//        {
-//            get
-//            {
-//                if (_selectStmtFactory is null)
-//                {
-//                    _selectStmtFactory = FactoryProvider.CreateISelectStmtContextWrapperFactory();
-//                }
-//                return _selectStmtFactory;
-//            }
-//        }
-
-//        [TestCase("2", "2")]
-//        [TestCase("2.54", "2.54")]
-//        [TestCase("2.54?Long", "3")]
-//        [TestCase("2.54?Double", "2.54")]
-//        [TestCase("2.54?Boolean", "True")]
-//        [Category("Inspections")]
-//        public void UciUnit_ConformedToType(string operands, string expectedValueText)
-//        {
-//            var value = CreateInspValueFrom(operands);
-//            Assert.AreEqual(expectedValueText, value.ValueText);
-//        }
-
-//        [Test]
-//        [Category("Inspections")]
-//        public void UciUnit_NullInputValue()
-//        {
-//            IParseTreeValue test = null;
-//            try
-//            {
-//                test = ValueFactory.Create(null);
-//                Assert.Fail("Null input to UnreachableCaseInspectionValue did not generate an Argument exception");
-//            }
-//            catch (ArgumentException)
-//            {
-
-//            }
-//            catch
-//            {
-//                Assert.Fail("Null input to UnreachableCaseInspectionValue did not generate an exception");
-//            }
-//        }
-
-//        [TestCase("x", "", "x")]
-//        [TestCase("x?Variant", "Variant", "x")]
-//        [TestCase("x?String", "String", "x")]
-//        [TestCase("x?Double", "Double", "x")]
-//        [TestCase("x456", "", "x456")]
-//        [TestCase(@"""x456""", "String", "x456")]
-//        [TestCase("x456?String", "String", "x456")]
-//        [TestCase("45E2", "Double", "4500")]
-//        [TestCase(@"""10.51""", "String", "10.51")]
-//        [TestCase(@"""What@""", "String", "What@")]
-//        [TestCase(@"""What!""", "String", "What!")]
-//        [TestCase(@"""What#""", "String", "What#")]
-//        [TestCase("What%", "Integer", "What")]
-//        [TestCase("What&", "Long", "What")]
-//        [TestCase("What@", "Currency", "What")]
-//        [TestCase("What!", "Single", "What")]
-//        [TestCase("What#", "Double", "What")]
-//        [TestCase("What$", "String", "What")]
-//        [TestCase("345%", "Integer", "345")]
-//        [TestCase("45#", "Double", "45")]
-//        [TestCase("45@", "Currency", "45")]
-//        [TestCase("45!", "Single", "45")]
-//        [TestCase("45^", "LongLong", "45")]
-//        [TestCase("32767", "Integer", "32767")]
-//        [TestCase("32768", "Long", "32768")]
-//        [TestCase("2147483647", "Long", "2147483647")]
-//        [TestCase("2147483648", "Double", "2147483648")]
-//        [TestCase("&H10", "Integer", "16")]
-//        [TestCase("&o10", "Integer", "8")]
-//        [TestCase("&H8000", "Integer", "-32768")]
-//        [TestCase("&o100000", "Integer", "-32768")]
-//        [TestCase("&H8000&", "Long", "32768")]
-//        [TestCase("&o100000&", "Long", "32768")]
-//        [TestCase("&H10&", "Long", "16")]
-//        [TestCase("&o10&", "Long", "8")]
-//        [TestCase("&H80000000", "Long", "-2147483648")]
-//        [TestCase("&o20000000000", "Long", "-2147483648")]
-//        [TestCase("&H80000000^", "LongLong", "2147483648")]
-//        [TestCase("&o20000000000^", "LongLong", "2147483648")]
-//        [TestCase("&H10^", "LongLong", "16")]
-//        [TestCase("&o10^", "LongLong", "8")]
-//        [TestCase("&HFFFFFFFFFFFFFFFF^", "LongLong", "-1")]
-//        [TestCase("&o1777777777777777777777^", "LongLong", "-1")]
-//        [Category("Inspections")]
-//        public void UciUnit_VariableTypes(string operands, string expectedTypeName, string expectedValueText)
-//        {
-//            var value = CreateInspValueFrom(operands);
-//            Assert.AreEqual(expectedTypeName, value.TypeName);
-//            Assert.AreEqual(expectedValueText, value.ValueText);
-//        }
-
-//        [TestCase("45.5?Double", "Double", "45.5")]
-//        [TestCase("45.5?Currency", "Currency", "45.5")]
-//        [TestCase(@"""45E2""?Long", "Long", "4500")]
-//        [TestCase(@"""95E-2""?Double", "Double", "0.95")]
-//        [TestCase(@"""95E-2""?Byte", "Byte", "1")]
-//        [TestCase("True?Double", "Double", "-1")]
-//        [TestCase("True?Long", "Long", "-1")]
-//        [TestCase("&H10", "Integer", "16")]
-//        [TestCase("&o10", "Integer", "8")]
-//        [TestCase("&H8000", "Integer", "-32768")]
-//        [TestCase("&o100000", "Integer", "-32768")]
-//        [TestCase("&H8000", "Long", "32768")]
-//        [TestCase("&o100000", "Long", "32768")]
-//        [TestCase("&H10", "Long", "16")]
-//        [TestCase("&o10", "Long", "8")]
-//        [TestCase("&H80000000", "Long", "-2147483648")]
-//        [TestCase("&o20000000000", "Long", "-2147483648")]
-//        [TestCase("&H80000000", "LongLong", "2147483648")]
-//        [TestCase("&o20000000000", "LongLong", "2147483648")]
-//        [TestCase("&H10", "LongLong", "16")]
-//        [TestCase("&o10", "LongLong", "8")]
-//        [TestCase("&HFFFFFFFFFFFFFFFF", "LongLong", "-1")]
-//        [TestCase("&o1777777777777777777777", "LongLong", "-1")]
-//        [Category("Inspections")]
-//        public void UciUnit_ConformToType(string operands, string conformToType, string expectedValueText)
-//        {
-//            var value = CreateInspValueFrom(operands, conformToType);
-            
-//            Assert.AreEqual(conformToType, value.TypeName);
-//            Assert.AreEqual(expectedValueText, value.ValueText);
-//        }
-
-//        [TestCase("x?Byte_-_2?Long", "x - 2", "Long")]
-//        [TestCase("2_-_x?Byte", "2 - x", "Integer")]
-//        [TestCase("x?Byte_+_2?Long", "x + 2", "Long")]
-//        [TestCase("x?Double_/_11.2?Double", "x / 11.2", "Double")]
-//        [TestCase("x?Double_*_11.2?Double", "x * 11.2", "Double")]
-//        [TestCase("x?Double_*_y?Double", "x * y", "Double")]
-//        [TestCase("x?Double_Mod_11.2?Double", "x Mod 11.2", "Double")]
-//        [TestCase("x?Long_*_y?Double", "x * y", "Double")]
-//        [TestCase("x?Long_^_11.2?Double", "x ^ 11.2", "Double")]
-//        [Category("Inspections")]
-//        public void UciUnit_VariableMath(string operands, string expected, string typeName)
-//        {
-//            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
-//            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-//            Assert.AreEqual(result.ValueText, expected);
-//            Assert.AreEqual(typeName, result.TypeName);
-//            Assert.IsFalse(result.ParsesToConstantValue);
-//        }
-
-//        [TestCase("-1_>_0", "False", "Boolean")]
-//        [TestCase("-1.0_>_0.0?Currency", "False", "Boolean")]
-//        [TestCase("-1_<_0", "True", "Boolean")]
-//        [TestCase("-1.0_<_0.0?Single", "True", "Boolean")]
-//        [Category("Inspections")]
-//        public void UciUnit_RelationalOp(string input, string expected, string typeName)
-//        {
-//            GetBinaryOpValues(input, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
-//            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-//            Assert.AreEqual(expected, result.ValueText);
-//        }
-
-//        [TestCase("False", "False")]
-//        [TestCase("True", "True")]
-//        [TestCase("-1", "True")]
-//        [TestCase("x < 5.55", "x < 5.55")]
-//        [Category("Inspections")]
-//        public void UciUnit_ConvertToBoolText(string input, string expected)
-//        {
-//            var result = ValueFactory.Create(input, Tokens.Boolean);
-//            Assert.IsNotNull(result, $"Type conversion to {Tokens.Boolean} return null interface");
-//            Assert.AreEqual(expected, result.ValueText);
-//        }
-
-//        [TestCase("Yahoo", "Long")]
-//        [TestCase("Yahoo", "Double")]
-//        [TestCase("Yahoo", "Boolean")]
-//        [Category("Inspections")]
-//        public void UciUnit_ConvertToType(string input, string convertToTypeName)
-//        {
-//            var result =ValueFactory.Create(input, convertToTypeName);
-//            Assert.IsNotNull(result, $"Type conversion to {convertToTypeName} return null interface");
-//            Assert.AreEqual("Yahoo", result.ValueText);
-//        }
-
-//        [TestCase("NaN", "String")]
-//        [Category("Inspections")]
-//        public void UciUnit_ConvertToNanType(string input, string convertToTypeName)
-//        {
-//            var result = ValueFactory.Create(input, convertToTypeName);
-//            Assert.IsNotNull(result, $"Type conversion to {convertToTypeName} return null interface");
-//            Assert.AreEqual("NaN", result.ValueText);
-//        }
-
-//        [TestCase("10.51_*_11.2?Currency", "117.712", "Currency")]
-//        [TestCase("10.51?Currency_*_11.2", "117.712", "Currency")]
-//        [Category("Inspections")]
-//        public void UciUnit_MathOpCurrency(string operands, string expected, string typeName)
-//        {
-//            var result = TestBinaryOp(MathSymbols.MULTIPLY, operands, expected, typeName);
-//            Assert.AreEqual(typeName, result.TypeName);
-//        }
-
-//        [TestCase("10.51?Long_*_11.2", "123.2", "Double")]
-//        [TestCase("10.51?Integer_*_11.2", "123.2", "Double")]
-//        [TestCase("10.51?Byte_*_11.2", "123.2", "Double")]
-//        [TestCase("10.51?Double_*_11.2", "117.712", "Double")]
-//        [TestCase("10_*_11.2", "112", "Double")]
-//        [TestCase("11.2_*_10", "112", "Long")]
-//        [TestCase("10.51_*_11.2", "117.712", "Double")]
-//        [TestCase("10.51?Single_*_11.2?Single", "117.712", "Single")]
-//        [TestCase("10.51?Currency_*_11.2?Currency", "117.712", "Single")]
-//        [TestCase("10_*_11", "110", "long")]
-//        [TestCase("True_*_10", "-10", "Long")]
-//        [TestCase("10_*_True", "-10", "Long")]
-//        [Category("Inspections")]
-//        public void UciUnit_Multiplication(string operands, string expected, string typeName)
-//        {
-//            TestBinaryOp(MathSymbols.MULTIPLY, operands, expected, typeName);
-//        }
-
-//        [TestCase("10_/_2", "5", "Long")]
-//        [TestCase("2_/_10", "0", "Long")]
-//        [TestCase("10_/_11.2", "0.89285", "Double")]
-//        [TestCase("11.2_/_10", "1.12", "Double")]
-//        [TestCase("10.51_/_11.2", "0.93839286", "Double")]
-//        [TestCase("10_/_11", "1", "Long")]
-//        [TestCase(@"""10.51""_/_11.2", "0.93839286", "Double")]
-//        [TestCase("True_/_10.5", "-0.0952", "Double")]
-//        [TestCase("10.5_/_True", "-10.5", "Double")]
-//        [Category("Inspections")]
-//        public void UciUnit_Division(string operands, string expected, string typeName)
-//        {
-//            TestBinaryOp(MathSymbols.DIVIDE, operands, expected, typeName);
-//        }
-
-//        [TestCase(@"9.5_\_2.4", "5", "Long")]
-//        [TestCase(@"10_\_4", "2", "Long")]
-//        [TestCase(@"5.423_\_1", "5", "Long")]
-//        [Category("Inspections")]
-//        public void UciUnit_IntegerDivision(string operands, string expected, string typeName)
-//        {
-//            TestBinaryOp(MathSymbols.INTEGER_DIVIDE, operands, expected, typeName);
-//        }
-
-//        [TestCase("10.51_+_11.2", "21.71", "Double")]
-//        [TestCase("10_+_11.2", "21.2", "Double")]
-//        [TestCase("11.2_+_10", "21.2", "Double")]
-//        [TestCase("10_+_11", "21", "Long")]
-//        [TestCase("True_+_10.5", "9.5", "Double")]
-//        [TestCase("10.5_+_True", "9.5", "Double")]
-//        [Category("Inspections")]
-//        public void UciUnit_Addition(string operands, string expected, string typeName)
-//        {
-//            TestBinaryOp(MathSymbols.PLUS, operands, expected, typeName);
-//        }
-
-//        [TestCase("10.51_-_11.2", "-0.69", "Double")]
-//        [TestCase("10_-_11", "-1", "Long")]
-//        [TestCase("True_-_10", "-11", "Long")]
-//        [TestCase("11_-_True", "12", "Long")]
-//        [Category("Inspections")]
-//        public void UciUnit_Subtraction(string operands, string expected, string typeName)
-//        {
-//            TestBinaryOp(MathSymbols.MINUS, operands, expected, typeName);
-//        }
-
-//        [TestCase("10_^_2", "100", "Double")]
-//        [TestCase("10.5?Currency_^_2.2?Currency", "176.44789", "Currency")]
-//        [Category("Inspections")]
-//        public void UciUnit_Powers(string operands, string expected, string typeName)
-//        {
-//            TestBinaryOp(MathSymbols.EXPONENT, operands, expected, typeName);
-//        }
-
-//        [TestCase("10_Mod_3", "1", "Currency")]
-//        [Category("Inspections")]
-//        public void UciUnit_Modulo(string operands, string expected, string typeName)
-//        {
-//            TestBinaryOp(MathSymbols.MODULO, operands, expected, typeName);
-//        }
-
-//        [TestCase("10_=_3", "False")]
-//        [TestCase("10_=_10", "True")]
-//        [TestCase("10_<>_3", "True")]
-//        [TestCase("10_<>_10", "False")]
-//        [TestCase("10_<_3", "False")]
-//        [TestCase("10_<=_10", "True")]
-//        [TestCase("10_>_11", "False")]
-//        [TestCase("10_>=_10", "True")]
-//        [TestCase("5_And_0", "False")]
-//        [TestCase("5_Or_0", "True")]
-//        [TestCase("5_Xor_6", "False")]
-//        [TestCase("6.5_>_5.2", "True")]
-//        [Category("Inspections")]
-//        public void UciUnit_LogicBinaryConstants(string operands, string expected)
-//        {
-//            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
-
-//            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-
-//            Assert.AreEqual(expected, result.ValueText);
-//            Assert.IsTrue(result.ParsesToConstantValue);
-//        }
-
-//        [TestCase("True_Eqv_True", "True")]
-//        [TestCase("False_Eqv_True", "False")]
-//        [TestCase("True_Eqv_False", "False")]
-//        [TestCase("False_Eqv_False", "True")]
-//        [Category("Inspections")]
-//        public void UciUnit_LogicEqvOperator(string operands, string expected)
-//        {
-//            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
-
-//            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-
-//            Assert.AreEqual(expected, result.ValueText);
-//            Assert.IsTrue(result.ParsesToConstantValue);
-//        }
-
-//        [TestCase("True_Imp_True", "True")]
-//        [TestCase("False_Imp_True", "True")]
-//        [TestCase("True_Imp_False", "False")]
-//        [TestCase("False_Imp_False", "True")]
-//        [Category("Inspections")]
-//        public void UciUnit_LogicImpOperator(string operands, string expected)
-//        {
-//            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
-
-//            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-
-//            Assert.AreEqual(expected, result.ValueText);
-//            Assert.IsTrue(result.ParsesToConstantValue);
-//        }
-
-//        [TestCase("Not_False", "True")]
-//        [TestCase("Not_True", "False")]
-//        [TestCase("Not_1", "True")]
-//        [Category("Inspections")]
-//        public void UciUnit_LogicUnaryConstants(string operands, string expected)
-//        {
-//            GetUnaryOpValues(operands, out IParseTreeValue theValue, out string opSymbol);
-
-//            var result = Calculator.Evaluate(theValue, opSymbol, Tokens.Boolean);
-
-//            Assert.AreEqual(expected, result.ValueText);
-//            Assert.IsTrue(result.ParsesToConstantValue, "Expected IsConstantValue field to be 'True'");
-//        }
-
-//        [TestCase("-_45", "-45")]
-//        [TestCase("-_23.78", "-23.78")]
-//        [TestCase("-_True", "True?Boolean")]
-//        [TestCase("-_False", "False?Boolean")]
-//        [TestCase("-_True", "1?Integer")]
-//        [TestCase("-_-1", "1?Long")]
-//        [TestCase("-_0", "False?Boolean")]
-//        [TestCase("-_1?Double", "-1?Double")]
-//        [TestCase("-_-1?Double", "1?Double")]
-//        [Category("Inspections")]
-//        public void UciUnit_MinusUnaryOp(string operands, string expected)
-//        {
-//            var expectedVal = CreateInspValueFrom(expected);
-//            GetUnaryOpValues(operands, out IParseTreeValue LHS, out string opSymbol);
-//            var result = Calculator.Evaluate(LHS, opSymbol, expectedVal.TypeName);
-
-//            Assert.AreEqual(expectedVal.ValueText, result.ValueText);
-//            Assert.IsTrue(result.ParsesToConstantValue);
-//        }
-
-//        [TestCase("IsLT=5", "", "IsLT=5")]
-//        [TestCase("IsGT=5", "", "IsGT=5")]
-//        [TestCase("IsLT=5", "IsGT=300", "IsLT=5!IsGT=300")]
-//        [TestCase("IsLT=5,Range=45:55", "IsGT=300", "IsLT=5!IsGT=300!Range=45:55")]
-//        [TestCase("IsLT=5,Range=45:55", "IsGT=300,Single=200", "IsLT=5!IsGT=300!Range=45:55!Single=200")]
-//        [TestCase("IsLT=-2,Range=45:55", "IsGT=300,Single=200,RelOp=x < 50", "IsLT=-2!IsGT=300!Range=45:55!Single=200!RelOp=x < 50")]
-//        [TestCase("Range=45:55", "Range=60:65", "Range=45:55,60:65")]
-//        [TestCase("Single=45,Single=46", "Single=60", "Single=45,46,60")]
-//        [TestCase("RelOp=x < 50", "RelOp=x > 75", "RelOp=x < 50,x > 75")]
-//        [Category("Inspections")]
-//        public void UciUnit_ToString(string firstCase, string secondCase, string expected)
-//        {
-//            var filters = RangeDescriptorsToFilters(new string[] { firstCase, secondCase }, Tokens.Long);
-//            filters[0].Add(filters[1]);
-
-//            Assert.AreEqual(expected, filters[0].ToString());
-//        }
-
-//        [TestCase("50?Long_To_50?Long", "Long", "Single=50")]
-//        [TestCase("50?Long_To_x?Long", "Long", "Range=50:x")]
-//        [TestCase("50?Long_To_100?Long", "Long", "Range=50:100")]
-//        [TestCase("Soup?String_To_Nuts?String", "String", "Range=Nuts:Soup")]
-//        [TestCase("50.3?Double_To_100.2?Double", "Long", "Range=50:100")]
-//        [TestCase("50.3?Double_To_100.2?Double", "Double", "Range=50.3:100.2")]
-//        [TestCase("50_To_100,75_To_125", "Long", "Range=50:100,Range=75:125")]
-//        [TestCase("50_To_100,175_To_225", "Long", "Range=50:100,Range=175:225")]
-//        [TestCase("500?Long_To_100?Long", "Long", "Range=100:500")]
-//        [Category("Inspections")]
-//        public void UciUnit_AddRangeClauses(string firstCase, string filterTypeName, string expectedClauses)
-//        {
-//            var UUT = RangeClauseFilterFactory.Create(filterTypeName, ValueFactory);
-
-//            var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
-//            foreach (var clause in clauses)
-//            {
-//                GetBinaryOpValues(clause, out IParseTreeValue start, out IParseTreeValue end, out string symbol);
-//                UUT.AddValueRange((start, end));
-//            }
-
-//            clauses = expectedClauses.Split(new string[] { "," }, StringSplitOptions.None);
-//            var testFilter = CreateTestFilter(clauses.ToList(), filterTypeName);
-//            Assert.AreEqual(testFilter, UUT);
-//        }
-
-//        [TestCase("Is_>_50", "Long", "IsGT=50")]
-//        [TestCase("Is_>_50.49", "Long", "IsGT=50.49")]
-//        [TestCase("Is_>_50#", "Double", "IsGT=50")]
-//        [TestCase("Is_>_True", "Boolean", "RelOp=Is > True")]
-//        [TestCase("Is_>=_50", "Long", "IsGT=50,Single=50")]
-//        [TestCase("Is_>=_50.49", "Double", "IsGT=50.49,Single=50.49")]
-//        [TestCase("Is_>=_50#", "Double", "IsGT=50,Single=50")]
-//        [TestCase("Is_>=_True", "Boolean", "Single=True")]
-//        [TestCase("Is_<_50", "Long", "IsLT=50")]
-//        [TestCase("Is_<_50,Is_<_25", "Long", "IsLT=50")]
-//        [TestCase("Is_<_50,Is_<_75", "Long", "IsLT=75")]
-//        [TestCase("Is_<_50,Is_<_75,Is_>_300", "Long", "IsLT=75,IsGT=300")]
-//        [TestCase("Is_<=_50", "Long", "IsLT=50,Single=50")]
-//        [TestCase("Is_<=_50,Is_>=_51", "Long", "IsLT=50,IsGT=51,Single=50,Single=51")]
-//        [TestCase("Is_=_100", "Long", "Single=100")]
-//        [TestCase("Is_=_100.49", "Double", "Single=100.49")]
-//        [TestCase("Is_=_100#", "Double", "Single=100")]
-//        [TestCase("Is_=_True", "Long", "Single=-1")]
-//        [TestCase(@"Is_=_""100""", "Long", "Single=100")]
-//        [TestCase("Is_<>_100", "Long", "IsLT=100,IsGT=100")]
-//        [TestCase("Is_<>_100.49", "Double", "IsLT=100.49,IsGT=100.49")]
-//        [TestCase("Is_<>_100#", "Double", "IsLT=100,IsGT=100")]
-//        [TestCase("Is_<>_True", "Boolean", "RelOp=Is <> True")]
-//        [TestCase(@"Is_<>_""100""", "Long", "IsLT=100,IsGT=100")]
-//        [TestCase("Is_>_x", "Long", "IsLT=x")]
-//        [Category("Inspections")]
-//        public void UciUnit_AddIsClauses(string firstCase, string filterTypeName, string expectedRangeClauses)
-//        {
-//            var UUT = RangeClauseFilterFactory.Create(filterTypeName, ValueFactory);
-
-//            var expectedResult = RangeDescriptorsToFilters(new string[] { expectedRangeClauses }, filterTypeName);
-
-//            var clauses = firstCase.Split(new string[] { "," }, StringSplitOptions.None);
-//            foreach (var clause in clauses)
-//            {
-//                GetBinaryOpValues(clause, out IParseTreeValue start, out IParseTreeValue end, out string symbol);
-//                UUT.AddIsClause(end, symbol);
-//            }
-//            Assert.AreEqual(expectedResult.First().ToString(), UUT.ToString());
-//        }
-
-//        [TestCase("IsLT=z,Single=45", "IsLT=z", "Single=45")]
-//        [TestCase("Single=z,Single=45", "Single=z", "Single=45")]
-//        [TestCase("Range=20:x,Single=45", "Range=20:x", "Single=45")]
-//        [TestCase("IsLT=45,Range=20:70", "IsLT=45", "Range=45:70")]
-//        [TestCase("IsLT=45,Range=20:70", "Range=10:70", "IsLT=45")]
-//        [TestCase("IsLT=45,IsGT=105,Range=20:70", "IsLT=45,Single=200", "IsGT=105,Range=45:70,Single=200")]
-//        [TestCase("IsLT=45,IsGT=205,Range=20:70,Single=200", "IsLT=45,IsGT=205,Range=20:70", "Single=200")]
-//        [TestCase("Range=60:80", "Range=20:70,Range=65:100", "")]
-//        [TestCase("Range=60:80", "IsLT=100", "")]
-//        [TestCase("Range=60:80", "IsGT=1", "")]
-//        [TestCase("Single=17", "Range=1:4,Range=7:9,Range=15:20", "")]
-//        [TestCase("Single=17", "IsLT=45", "")]
-//        [TestCase("Single=17", "IsGT=-45000", "")]
-//        [TestCase("Single=17,Single=20", "Single=16,Single=17,Single=18,Single=19", "Single=20")]
-//        [TestCase("Range=101:149", "Range=101:149,Range=1:100", "")]
-//        [TestCase("RelOp=x < 50", "Single=-1,Single=0", "")]
-//        [TestCase("RelOp=x < 50", "Single=-1, RelOp=x < 50", "")]
-//        [Category("Inspections")]
-//        public void UciUnit_RemovalRangeClauses(string candidateClauseInput, string existingClauseInput, string expectedClauses)
-//        {
-//            var sumClauses = RangeDescriptorsToFilters(new string[] { candidateClauseInput, existingClauseInput }, Tokens.Long);
-//            var clausesToFilter = sumClauses[0];
-//            var filter = sumClauses[1];
-
-//            var filterResults = RangeClauseFilterFactory.Create(Tokens.Long, ValueFactory);
-
-//            filterResults = clausesToFilter.FilterUnreachableClauses(filter);
-//            if (filterResults.ContainsFilters)
-//            {
-//                var clauses = expectedClauses.Split(new string[] { "," }, StringSplitOptions.None);
-//                var expected = CreateTestFilter(clauses.ToList(), Tokens.Long);
-//                Assert.AreEqual(expected, filterResults);
-//            }
-//            else
-//            {
-//                if (!expectedClauses.Equals(""))
-//                {
-//                    Assert.Fail("Function fails to return Interface");
-//                }
-//            }
-//        }
-
-//        [TestCase("Range=0:10", "Single=50", "Boolean")]
-//        [TestCase("Range=True:False", "Single=50", "Boolean")]
-//        [TestCase("Range=False:True", "Single=50", "Boolean")]
-//        [TestCase("Single=-5000", "Single=False", "Boolean")]
-//        [TestCase("Single=True", "Single=0", "Boolean")]
-//        [TestCase("Single=500", "Single=0", "Boolean")]
-//        [TestCase("IsLT=5", "IsGT=-5000", "Long")]
-//        [TestCase("IsLT=40,IsGT=40", "Range=35:45", "Long")]
-//        [TestCase("IsLT=40,IsGT=44", "Range=35:45", "Long")]
-//        [TestCase("IsLT=40,IsGT=40", "Single=40", "Long")]
-//        [TestCase("IsGT=240,Range=150:239", "Single=240, Single=0,Single=1,Range=2:150", "Byte")]
-//        [TestCase("Range=151:255", "Single=150, Single=0,Single=1,Range=2:149", "Byte")]
-//        [TestCase("IsLT=13,IsGT=30,Range=30:100", "Single=13,Single=14,Single=15,Single=16,Single=17,Single=18,Range=19:30", "Long")]
-//        [Category("Inspections")]
-//        public void UciUnit_FiltersAll(string firstCase, string secondCase, string typeName)
-//        {
-//            var cummulativeFilter = RangeClauseFilterFactory.Create(typeName, ValueFactory);
-//            var sumClauses = RangeDescriptorsToFilters(new string[] { firstCase, secondCase }, typeName);
-//            for (var idx = 0; idx < sumClauses.Count; idx++)
-//            {
-//                var filteredResults = sumClauses[idx].FilterUnreachableClauses(cummulativeFilter);
-//                cummulativeFilter.Add(filteredResults);
-//            }
-//            Assert.IsTrue(cummulativeFilter.FiltersAllValues, cummulativeFilter.ToString());
-//        }
-
-//        [TestCase("IsLT=True, IsGT=True", "RelOp=x > 6", "Single=False,RelOp=Is > True")]
-//        [TestCase("IsLT=False, IsGT=False", "RelOp=x > 6", "Single=False,RelOp=Is < False")]
-//        [TestCase("IsGT=False", "RelOp=x > 6", "Single=False")]
-//        [TestCase("Single=True, Single=False", "Single=False,Single=True", "")]
-//        [Category("Inspections")]
-//        public void UciUnit_FilterBoolean(string firstCase, string secondCase, string expectedClauses)
-//        {
-//            var sumClauses = RangeDescriptorsToFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
-
-//            var candidateClause = sumClauses[0];
-//            var filter = sumClauses[1];
-//            var expected = sumClauses[2];
-//            var filteredResults = candidateClause.FilterUnreachableClauses(filter);
-//            Assert.AreEqual(expected, filteredResults);
-//        }
-
-//        [TestCase("Range:3:55", "Single=x.Item(2)", "Range:3:55,Single=x.Item(2)")]
-//        [TestCase("Range=3:55", "IsLT=6", "IsLT=6,Range=6:55")]
-//        [TestCase("Range=3:55", "IsGT=6", "IsGT=6,Range=3:6")]
-//        [TestCase("IsLT=6", "Range=1:5", "IsLT=6")]
-//        [TestCase("Single=5,Single=6,Single=7", "IsGT=6", "IsGT=6,Single=5,Single=6")]
-//        [TestCase("Single=5,Single=6,Single=7", "IsLT=6", "IsLT=6,Single=6,Single=7")]
-//        [TestCase("IsLT=5,IsGT=75", "Single=85", "IsLT=5,IsGT=75")]
-//        [TestCase("IsLT=5,IsGT=75", "Single=0", "IsLT=5,IsGT=75")]
-//        [TestCase("Range=45:85", "Single=50", "Range=45:85")]
-//        [TestCase("Single=5,Single=6,Single=7,Single=8", "Range=6:8", "Range=6:8,Single=5")]
-//        [TestCase("IsLT=400,Range=15:160", "Range=500:505", "IsLT=400,Range=500:505")]
-//        [TestCase("Range=101:149", "Range=15:160", "Range=15:160")]
-//        [TestCase("Range=101:149", "Range=15:148", "Range=15:149")]
-//        [TestCase("Range=150:250,Range=1:100,Range=101:149", "Range=25:249", "Range=1:250")]
-//        [TestCase("Range=150:250,Range=1:100,Range=-5:-2,Range=101:149", "Range=25:249", "Range=-5:-2,Range=1:250")]
-//        [Category("Inspections")]
-//        public void UciUnit_AddFiltersInteger(string existing, string toAdd, string expectedClause)
-//        {
-//            AddFiltersTestSupport(new string[] { existing, toAdd, expectedClause }, Tokens.Long);
-//        }
-
-//        [TestCase("Range=101.45:149.00007", "Range=101.57:110.63", "Range=101.45:149.00007")]
-//        [TestCase("Range=101.45:149.0007", "Range=15.67:148.9999", "Range=15.67:149.0007")]
-//        [Category("Inspections")]
-//        public void UciUnit_AddFiltersRational(string firstCase, string secondCase, string expectedClauses)
-//        {
-//            AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Double);
-//        }
-
-//        [TestCase(@"Range=""Alpha"":""Omega""", @"Range=""Nuts"":""Soup""", @"Range=""Alpha"":""Soup""")]
-//        [Category("Inspections")]
-//        public void UciUnit_AddFiltersString(string firstCase, string secondCase, string expectedClauses)
-//        {
-//            AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.String);
-//        }
-
-//        [TestCase(@"Range=""True:True""", "Single=True", "Single=True")]
-//        [TestCase(@"Range=""True:False""", "Single=True", "Single=False,Single=True")]
-//        [TestCase("IsLT=5", "RelOp=x < 5", "Single=False,RelOp=x < 5")]
-//        [Category("Inspections")]
-//        public void UciUnit_AddFiltersBoolean(string firstCase, string secondCase, string expectedClauses)
-//        {
-//            AddFiltersTestSupport(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
-//        }
-
-//        [TestCase("Single=-1,Single=0", "RelOp=x < 3", "Single=-1,Single=0")]
-//        [TestCase("Range=-5:15", "RelOp=x < 3", "Range=-5:15")]
-//        [TestCase("IsLT=1", "RelOp=x < 3", "IsLT=1")]
-//        [TestCase("IsGT=-2", "RelOp=x < 3", "IsGT=-2")]
-//        [Category("Inspections")]
-//        public void UciUnit_FiltersRelationalOps(string firstCase, string secondCase, string expectedClauses)
-//        {
-//            var sumClauses = RangeDescriptorsToFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Long);
-//            var firstClause = sumClauses[0];
-//            var secondClause = sumClauses[1];
-//            var expected = sumClauses[2];
-
-//            firstClause.Add(secondClause);
-
-//            Assert.AreEqual(expected, firstClause);
-//        }
-
-//        [TestCase("Long")]
-//        [TestCase("Integer")]
-//        [TestCase("Byte")]
-//        [TestCase("Single")]
-//        [TestCase("Currency")]
-//        [Category("Inspections")]
-//        public void UciUnit_Extents(string typeName)
-//        {
-//            var filter = RangeClauseFilterFactory.Create(typeName, ValueFactory);
-
-//            if (typeName.Equals(Tokens.Long))
-//            {
-//                var check = (IRangeClauseFilterTestSupport<long>)filter;
-//                CheckExtents(check, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegralNumberExtents[typeName].Item1, Rubberduck.Inspections.Concrete.UnreachableCaseInspection.RangeClauseFilterFactory.IntegralNumberExtents[typeName].Item2);
-//            }
-//            else if (typeName.Equals(Tokens.Single))
-//            {
-//                var check = (IRangeClauseFilterTestSupport<double>)filter;
-//                CheckExtents(check, CompareExtents.SINGLEMIN, CompareExtents.SINGLEMAX);
-//            }
-//            else if (typeName.Equals(Tokens.Currency))
-//            {
-//                var check = (IRangeClauseFilterTestSupport<decimal>)filter;
-//                CheckExtents(check, CompareExtents.CURRENCYMIN, CompareExtents.CURRENCYMAX);
-//            }
-//        }
-
-//        /*
-//         * The test cases below cover the truth table
-//         * for 'Is' clauses present in Boolean Select Case Statements.
-//         * See UCIRangeClauseFilter.AddIsClauseBoolean(...)
-//         * Cases that always resolve to True (or False) are stored as Single values.
-//         * All others (outcome depends on the Select Case value) are 
-//         * stored as variable RelationalOp expressions.
-//        */
-//        [TestCase("Is < True", "Single=False")] //Always False
-//        [TestCase("Is <= True", "RelOp=Is <= True")]
-//        [TestCase("Is > True", "RelOp=Is > True")]
-//        [TestCase("Is >= True", "Single=True")] //Always True
-//        [TestCase("Is = True", "RelOp=Is = True")]
-//        [TestCase("Is <> True", "RelOp=Is <> True")]
-//        [TestCase("Is > False", "Single=False")] //Alsways False
-//        [TestCase("Is >= False", "RelOp=Is >= False")]
-//        [TestCase("Is < False", "RelOp=Is < False")]
-//        [TestCase("Is <= False", "Single=True")]    //Always True
-//        [TestCase("Is = False", "RelOp=Is = False")]
-//        [TestCase("Is <> False", "RelOp=Is <> False")]
-//        [Category("Inspections")]
-//        public void UciUnit_BooleanIsClauseTruthTable(string firstCase, string expected)
-//        {
-//            string inputCode =
-//@"Sub Foo( x As Boolean)
-
-//        Select Case x
-//            Case <firstCase>
-//            'OK
-//            Case Else
-//            'Foo
-//        End Select
-//End Sub";
-//            inputCode = inputCode.Replace("<firstCase>", firstCase);
-//            var results = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext);
-//            var range = selectStmtContext.GetDescendent<VBAParser.RangeClauseContext>();
-//            var inspRange = InspectionRangeFactory.Create(range, results);
-//            inspRange.EvaluationTypeName = Tokens.Boolean;
-
-//            var expectedFilters = RangeDescriptorsToFilters(new string[] { expected }, Tokens.Boolean);
-//            Assert.AreEqual(expectedFilters.First().ToString(), inspRange.AsFilter.ToString());
-//        }
-
-//        private IParseTreeValue TestBinaryOp(string opSymbol, string operands, string expected, string typeName)
-//        {
-//            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out _);
-
-//            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-
-//            if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single) || typeName.Equals(Tokens.Currency))
-//            {
-//                var compareLength = expected.Length > 5 ? 5 : expected.Length;
-//                Assert.IsTrue(Math.Abs(double.Parse(result.ValueText.Substring(0, compareLength)) - double.Parse(expected.Substring(0, compareLength))) <= double.Epsilon, $"Actual={result.ValueText} Expected={expected}");
-//>>>>>>> rubberduck-vba/next
             }
         }
 
@@ -989,7 +240,8 @@ $@"
 
             inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
             inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: triggersCaseElse ? 1 : 0);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: triggersCaseElse ? 1 : 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("95", "55", "Integer")]
@@ -1044,7 +296,8 @@ $@"Sub Foo(x As {type})
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1071,28 +324,30 @@ $@"Sub Foo(x As {type})
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         //TODO: we need a test for the other operators <=, > , >= Note: probably belongs 
         //in rangefilter tests
-        [Test]
-        [Category("Inspections")]
-        public void UnreachableCaseInspection_RelationalOp1()
-        {
-            string inputCode =
-@"Sub Foo(x As Long)
-    Select Case x
-        Case x < 100
-        'OK
-        Case 100 > x
-        'Unreachable
-        Case x < 50
-        'Unreachable
-    End Select
-End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
-        }
+//        [Test]
+//        [Category("Inspections")]
+//        public void UnreachableCaseInspection_RelationalOp1()
+//        {
+//            string inputCode =
+//@"Sub Foo(x As Long)
+//    Select Case x
+//        Case x < 100
+//        'OK
+//        Case 100 > x
+//        'Unreachable
+//        Case x < 50
+//        'Unreachable
+//    End Select
+//End Sub";
+//            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+//            Assert.AreEqual(expectedMsg, actualMsg);
+//        }
 
         [Test]
         [Category("Inspections")]
@@ -1112,7 +367,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("fromVal")]
@@ -1136,7 +392,8 @@ End Sub";
         End Sub";
 
             inputCode = inputCode.Replace("<caseClause>", caseClause);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("x ^ 2 = 49, x ^ 3 = 8", "x ^ 2 = 49, x ^ 3 = 8")]
@@ -1159,7 +416,8 @@ End Sub";
                 End Sub";
             inputCode = inputCode.Replace("<complexClause1>", complexClause1);
             inputCode = inputCode.Replace("<complexClause2>", complexClause2);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1181,7 +439,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase(@"1 To ""Forever""", 1, 1)]
@@ -1208,7 +467,8 @@ End Sub";
         End Sub";
 
             inputCode = inputCode.Replace("<firstCase>", firstCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, mismatch: mismatchCount);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, mismatch: mismatchCount);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1230,7 +490,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1256,7 +517,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1285,7 +547,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 4);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 4);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1314,7 +577,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1343,7 +607,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1366,7 +631,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1394,7 +660,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1416,7 +683,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1440,7 +708,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1460,7 +729,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1483,7 +753,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1508,7 +779,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("True", "Is <= False", 2)]
@@ -1531,7 +803,8 @@ Select Case x
         End Sub";
             inputCode = inputCode.Replace("<firstCase>", firstCase);
             inputCode = inputCode.Replace("<secondCase>", secondCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: expected);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expected);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1555,7 +828,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1581,7 +855,8 @@ Select Case x
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1602,7 +877,8 @@ Select Case x
             'OK
         End Select
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1627,7 +903,8 @@ Sub Foo( x As Long, y As Double)
         'OK
     End Select
 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         //TODO: should there be another error type - Range is high to low?
@@ -1653,7 +930,8 @@ Sub Foo(x As Boolean)
     End Select
 End Sub";
             inputCode = inputCode.Replace("<firstCase>", firstCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, caseElse: caseElseCount);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, caseElse: caseElseCount);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1675,7 +953,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, mismatch: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, mismatch: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1699,7 +978,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1721,7 +1001,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, mismatch: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, mismatch: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1742,7 +1023,8 @@ End Sub";
                 'OK
             End Select
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1763,7 +1045,8 @@ End Sub";
             'OK
             End Select
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1784,7 +1067,8 @@ End Sub";
                 'OK
             End Select
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1805,7 +1089,8 @@ End Sub";
                 'OK
             End Select
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1826,7 +1111,8 @@ End Sub";
             'Unreachable
         End Select
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1848,7 +1134,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1870,7 +1157,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1897,7 +1185,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1918,7 +1207,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1940,7 +1230,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -1973,7 +1264,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2005,7 +1297,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2031,7 +1324,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2061,7 +1355,8 @@ End Sub";
                 End Select
 
                 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 0, caseElse: 0);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0, caseElse: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2089,7 +1384,8 @@ End Sub";
                 End Select
 
                 End Sub";
-            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2110,7 +1406,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("( z * 3 ) - 2", "Is > maxValue", 2)]
@@ -2140,7 +1437,8 @@ End Sub";
 
             inputCode = inputCode.Replace("<selectExpr>", selectExpr);
             inputCode = inputCode.Replace("<firstCase>", firstCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: expected);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expected);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2167,7 +1465,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2194,7 +1493,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2214,7 +1514,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2237,7 +1538,8 @@ End Sub";
         End Select
 
         End Sub";
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("<")]
@@ -2270,48 +1572,9 @@ End Sub";
         End Sub";
 
             inputCode = inputCode.Replace("<opSymbol>", opSymbol);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
-
-        //        [TestCase("3 Eqv 10", "True")]
-        //        [TestCase("0 Eqv 0", "True")]
-        //        [TestCase("3 Eqv 0", "True")]
-        //        [TestCase("-1 Eqv 0", "False")]
-        //        [TestCase("0 Eqv 10", "True")]
-        //        [TestCase("0 Eqv -1", "False")]
-        //        [Category("Inspections")]
-        //        public void UnreachableCaseInspection_EqvOperator( string secondCase, string thirdCase)
-        //        {
-        //            string inputCode =
-        //@"
-        //        Sub Foo(x As Long, y As Long, z As Boolean)
-        //        Select Case z
-        //            Case Is < x 
-        //            'OK
-        //            Case <secondCase>
-        //            'OK
-        //            Case <thirdCase>
-        //            'Unreachable
-        //        End Select
-
-        //        End Sub";
-
-        //            inputCode = inputCode.Replace("<secondCase>", secondCase);
-        //            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
-        //            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
-        //        }
-
-        //Eqv operator truth-table
-        //[TestCase(true, true, true)]
-        //[TestCase(false, true, false)]
-        //[TestCase(true, false, false)]
-        //[TestCase(false, false, true)]
-
-        //Imp operator truth-table
-        //[TestCase(true, true, true)]
-        //[TestCase(false, true, true)] => differs from Eqv
-        //[TestCase(true, false, false)]
-        //[TestCase(false, false, true)]
 
         [TestCase("-1 Eqv -1", "True")]
         [TestCase("-1 Imp -1", "True")]
@@ -2346,7 +1609,8 @@ End Sub";
 
             inputCode = inputCode.Replace("<secondCase>", secondCase);
             inputCode = inputCode.Replace("<thirdCase>", thirdCase);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("Eqv")]
@@ -2373,7 +1637,8 @@ End Sub";
         End Sub";
 
             inputCode = inputCode.Replace("<op>", op);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2394,7 +1659,8 @@ End Sub";
 
         End Sub";
 
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         //Issue# 3885
@@ -2430,7 +1696,8 @@ Sub FooCount(x As Long)
 End Sub
 ";
 
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2456,7 +1723,8 @@ Sub FooCount(x As Long)
 End Sub
 ";
 
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         //Issue# 3885 - replicates with UDT rather than a built-in
@@ -2501,7 +1769,8 @@ End Property
                 ("Class1", inputClassCode)
             };
 
-            CheckActualResultsEqualsExpected(components, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(components, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("Long")]
@@ -2547,7 +1816,8 @@ End Property
                 ("Class1", inputClassCode)
             };
 
-            CheckActualResultsEqualsExpected(components, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(components, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase("Long = 300")]
@@ -2582,7 +1852,8 @@ Public Const MY_CONSTANT As <propertyTypeAndAssignment>
                 ("TestModule2", inputModule2Code)
             };
 
-            CheckActualResultsEqualsExpected(components, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(components, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2614,7 +1885,8 @@ Sub SecondSub(x As Boolean)
 End Sub
 ";
 
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase(@"x Like ", @"""*Bar""", 1)]
@@ -2641,7 +1913,8 @@ End Sub
 ";
             inputCode = inputCode.Replace("<caseClauseExpression>", caseClauseExpression);
             inputCode = inputCode.Replace("<likePattern>", likePattern);
-            CheckActualResultsEqualsExpected(inputCode, unreachable: expectedUnreachable, mismatch: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expectedUnreachable, mismatch: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [Test]
@@ -2664,20 +1937,21 @@ Sub FirstSub(x As String)
 End Sub
 ";
 
-            CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        private static void CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
+        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var components = new List<(string moduleName, string inputCode)>()
             {
                 ("TestModule1", inputCode)
             };
 
-            CheckActualResultsEqualsExpected(components, unreachable, mismatch, caseElse);
+            return CheckActualResultsEqualsExpected(components, unreachable, mismatch, caseElse);
         }
 
-        private static void CheckActualResultsEqualsExpected(List<(string moduleName, string inputBlock)> inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
+        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(List<(string moduleName, string inputBlock)> inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var expected = new Dictionary<string, int>
             {
@@ -2706,7 +1980,7 @@ End Sub
             var actualMsg = BuildResultString(actualUnreachable.Count(), actualMismatches.Count(), actualUnreachableCaseElses.Count());
             var expectedMsg = BuildResultString(expected[InspectionResults.UnreachableCaseInspection_Unreachable], expected[InspectionResults.UnreachableCaseInspection_TypeMismatch], expected[InspectionResults.UnreachableCaseInspection_CaseElse]);
 
-            Assert.AreEqual(expectedMsg, actualMsg);
+            return (expectedMsg, actualMsg);
         }
 
         private static ComponentType NameToComponentType(string name)
@@ -2723,22 +1997,6 @@ End Sub
             return  $"Unreachable={unreachableCount}, Mismatch={mismatchCount}, CaseElse={caseElseCount}";
         }
 
-//<<<<<<< HEAD
-//=======
-//        private void CheckExtents<T>(IRangeClauseFilterTestSupport<T> check, T min, T max) where T : IComparable<T>
-//        {
-//            if (check.TryGetIsLessThanValue(out T ltResult) && check.TryGetIsGreaterThanValue(out T gtResult))
-//            {
-//                Assert.AreEqual(min.ToString().Substring(0, 8), ltResult.ToString().Substring(0, 8), "LT result failed");
-//                Assert.AreEqual(max.ToString().Substring(0, 8), gtResult.ToString().Substring(0, 8));
-//            }
-//            else
-//            {
-//                Assert.Fail($"Extents not applied for typeName = {typeof(T).ToString()}");
-//            }
-//        }
-
-//>>>>>>> rubberduck-vba/next
         private string GetSelectExpressionType(string inputCode)
         {
             var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext);
@@ -2765,113 +2023,5 @@ End Sub
             }
             return valueResults;
         }
-//<<<<<<< HEAD
-//=======
-
-//        private Dictionary<string, List<string>> CasesToRanges(string[] caseClauses)
-//        {
-//            var caseToRanges = new Dictionary<string, List<string>>();
-//            var idx = 0;
-//            foreach (var cc in caseClauses)
-//            {
-//                idx++;
-//                caseToRanges.Add($"{idx}{cc}", new List<string>());
-//                var rgs = cc.Split(new string[] { "," }, StringSplitOptions.None);
-//                foreach (var rg in rgs)
-//                {
-//                    caseToRanges[$"{idx}{cc}"].Add(rg.Trim());
-//                }
-//            }
-//            return caseToRanges;
-//        }
-
-//        private IRangeClauseFilter CreateTestFilter(List<string> annotations, string typeName)
-//        {
-//            var result = RangeClauseFilterFactory.Create(typeName, ValueFactory);
-//            var clauseItem = string.Empty;
-//            foreach (var item in annotations)
-//            {
-//                var modifiedString = false;
-//                clauseItem = item;
-//                if (ModifyItemStringForRelationalOps(item, out clauseItem))
-//                {
-//                    modifiedString = true;
-//                }
-
-//                var element = clauseItem.Trim().Split(new string[] { "=" }, StringSplitOptions.None);
-//                if (element[0].Equals(string.Empty) || element.Count() < 2)
-//                {
-//                    continue;
-//                }
-//                var clauseType = element[0];
-//                var clauseExpression = element[1];
-//                var values = clauseExpression.Split(new string[] { "," }, StringSplitOptions.None);
-//                foreach (var expr in values)
-//                {
-//                    if (clauseType.Equals("IsLT"))
-//                    {
-//                        var uciVal = ValueFactory.Create(clauseExpression, typeName);
-//                        result.AddIsClause(uciVal, LogicSymbols.LT);
-//                    }
-//                    else if (clauseType.Equals("IsGT"))
-//                    {
-//                        var uciVal = ValueFactory.Create(clauseExpression, typeName);
-//                        result.AddIsClause(uciVal, LogicSymbols.GT);
-//                    }
-//                    else if (clauseType.Equals("Range"))
-//                    {
-//                        var startEnd = clauseExpression.Split(new string[] { ":" }, StringSplitOptions.None);
-//                        var uciValStart = ValueFactory.Create(startEnd[0], typeName);
-//                        var uciValEnd = ValueFactory.Create(startEnd[1], typeName);
-//                        result.AddValueRange((uciValStart, uciValEnd));
-//                    }
-//                    else if (clauseType.Equals("Single"))
-//                    {
-//                        var uciVal = ValueFactory.Create(clauseExpression, typeName);
-//                        result.AddSingleValue(uciVal);
-//                    }
-//                    else if (clauseType.Equals("RelOp"))
-//                    {
-//                        if (modifiedString)
-//                        {
-//                            clauseExpression = RestoreModifieStringForRelationalOps(clauseExpression);
-//                        }
-//                        var uciVal = ValueFactory.Create(clauseExpression, typeName);
-//                        result.AddRelationalOperator(uciVal);
-//                    }
-//                    else
-//                    {
-//                        Assert.Fail($"Invalid clauseType ({clauseType}) encountered");
-//                    }
-//                }
-//            }
-//            return result;
-//        }
-
-//        private bool ModifyItemStringForRelationalOps(string item, out string clauseItem)
-//        {
-//            clauseItem = item;
-//            if (item.Contains(">=") || item.Contains("<="))
-//            {
-//                clauseItem = item.Contains(">=") ? item.Replace(">=", ">") : item.Replace("<=", "<");
-//                return true;
-//            }
-//            else if (item.Contains(" = "))
-//            {
-//                clauseItem = item.Replace(" = ", " @ ");
-//                return true;
-//            }
-//            return false;
-//        }
-
-//        private string RestoreModifieStringForRelationalOps(string modified)
-//        {
-//            var clauseExpression = string.Empty;
-//            clauseExpression = modified.Replace("<", "<=");
-//            clauseExpression = clauseExpression.Replace(">", ">=");
-//            clauseExpression = clauseExpression.Replace(" @ ", " = ");
-//            return clauseExpression;
-//        }
-//>>>>>>> rubberduck-vba/next
     }
 }

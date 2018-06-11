@@ -79,20 +79,46 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("RelOp!z < x", "RelOp!y < 35", "Min(typeMin)Max(typeMax)Predicates(y < 35,x > z)")]
         [TestCase("RelOp!x < 55", "RelOp!y < 35", "Min(typeMin)Max(typeMax)Predicates(x < 55,y < 35)")]
         [TestCase("RelOp!x < 55", "RelOp!x < 55", "Min(typeMin)Max(typeMax)Predicates(x < 55)")]
-        [TestCase("RelOp!x < 55", "RelOp!x < 35", "Min(typeMin)Max(typeMax)Predicates(x < 55)")]
-        [TestCase("RelOp!x < 55", "RelOp!x < 65", "Min(typeMin)Max(typeMax)Predicates(x < 65)")]
-        [TestCase("RelOp!x < 55,RelOp!Is < x", "RelOp!x < 65", "Min(typeMin)Max(typeMax)Is(Is < x)Predicates(x < 65)")]
         [Category("Inspections")]
         public void ExpressionFilter_ToString(string firstCase, string secondCase, string expected)
         {
             var filter = ExpressionFilterFactory.Create(Tokens.Long);
             var expressions = RangeDescriptorsToExpressions(new string[] { firstCase, secondCase }, Tokens.Long);
-            foreach( var expr in expressions)
+            foreach (var expr in expressions)
             {
                 filter.AddExpression(expr);
             }
             Assert.AreEqual(expected, filter.ToString());
         }
+
+        //TODO: Put these tests back in
+        //[TestCase("RelOp!x < 65", "RelOp!x < 55", "RelOp!x < 65")]
+        //[TestCase("RelOp!x < 55", "RelOp!x < 65", "RelOp!x < 65")]
+        //[TestCase("RelOp!x > 65", "RelOp!x > 55", "RelOp!x > 55")]
+        //[TestCase("RelOp!x > 55", "RelOp!x > 65", "RelOp!x > 55")]
+        //[TestCase("RelOp!55 < x", "RelOp!x > 65", "RelOp!x > 55")]
+        //[TestCase("RelOp!x >= 65", "RelOp!x >= 55", "RelOp!x >= 55")]
+        //[TestCase("RelOp!x <= 55", "RelOp!x <= 65", "RelOp!x <= 65")]
+        //[TestCase("RelOp!x <> 55", "RelOp!x <> 65, RelOp!y < 34", "RelOp!x <> 55,RelOp!x <> 65")]
+        //[TestCase("RelOp!x <> 55", "RelOp!x <> 65, RelOp!y <> 34", "RelOp!x <> 55,RelOp!x <> 65")]
+        //[TestCase("RelOp!x > 65", "RelOp!x >= 55", "RelOp!x >= 55")]
+        //[TestCase("RelOp!x And 55", "RelOp!x And 65", "RelOp!x")]
+        //[TestCase("RelOp!x Or 55", "RelOp!x Or 65", "Value!-1")]
+        //[TestCase("RelOp!x = 55", "RelOp!x = 65", "RelOp!x = 55,RelOp!x = 65")]
+        [Category("Inspections")]
+        //public void ExpressionFilter_VariableRelationalOps(string firstCase, string secondCase, string expected)
+        //{
+        //    var filter = ExpressionFilterFactory.Create(Tokens.Long);
+        //    var expressions = RangeDescriptorsToExpressions(new string[] { firstCase, secondCase }, Tokens.Long);
+        //    foreach (var expr in expressions)
+        //    {
+        //        filter.AddExpression(expr);
+        //    }
+
+        //    var expectedFilter = RangeDescriptorsToFilters(new string[] { expected }, Tokens.Long).First();
+
+        //    Assert.AreEqual(expectedFilter, filter);
+        //}
 
         [TestCase("150?Long_To_50?Long", "Long", "")]
         [TestCase("50?Long_To_50?Long", "Boolean", "Value!True")]
@@ -378,7 +404,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
             return result;
         }
-
+//TODO: Take a hard look at the helpers...overlap? redundancy?
         private void GetBinaryOpValues(string operands, out IParseTreeValue LHS, out IParseTreeValue RHS, string selectExpressionType, out string opSymbol)
         {
             var operandItems = RetrieveDelimitedElements(operands, OPERAND_DELIMITER);
@@ -514,11 +540,11 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         var startEnd = clauseExpression.Split(new string[] { RANGE_STARTEND_DELIMITER }, StringSplitOptions.None);
                         var testValStart = ValueFactory.Create(startEnd[0], conformToTypeName: conformToType);
                         var testValEnd = ValueFactory.Create(startEnd[1], conformToTypeName: conformToType);
-                        if (!conformToType.Equals(string.Empty))
-                        {
+                        //if (!conformToType.Equals(string.Empty))
+                        //{
                             //testValStart.ParsesToConstantValue = !testValStart.IsVariable;
                             //testValEnd.ParsesToConstantValue = !testValEnd.IsVariable;
-                        }
+                        //}
                         var expression = new RangeValuesExpression(testValStart, testValEnd);
                         result.AddExpression(expression);
                     }

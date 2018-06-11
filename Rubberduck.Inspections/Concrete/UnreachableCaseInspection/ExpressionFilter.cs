@@ -26,14 +26,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly T _trueValue;
         private readonly T _falseValue;
+        private readonly string _filterTypeName;
 
         public ExpressionFilter() { }
 
-        public ExpressionFilter(StringToValueConversion<T> converter)
+        public ExpressionFilter(StringToValueConversion<T> converter, string typeName)
         {
             Converter = converter;
-            converter("True", out _trueValue);
-            converter("False", out _falseValue);
+            _filterTypeName = typeName;
+            converter("True", _filterTypeName, out _trueValue);
+            converter("False", _filterTypeName, out _falseValue);
         }
 
         private HashSet<IRangeClauseExpression> LikePredicates { get; } = new HashSet<IRangeClauseExpression>();
@@ -52,7 +54,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected HashSet<T> SingleValues { set; get; } = new HashSet<T>();
 
-        protected HashSet<RangeValues<T>> Ranges { set; get; } = new HashSet<RangeValues<T>>();
+        protected HashSet<(T Start, T End)> Ranges { set; get; } = new HashSet<(T Start, T End)>();
+
+        protected FilterLimits<T> Limits { get; } = new FilterLimits<T>();
 
         public override bool Equals(object obj)
         {
@@ -71,8 +75,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 && this[VariableClauseTypes.Is].SetEquals(filter[VariableClauseTypes.Is])
                 && Limits.Equals(filter.Limits);
         }
-
-        protected FilterLimits<T> Limits { get; } = new FilterLimits<T>();
 
         public void SetExtents(T min, T max) => Limits.SetExtents(min, max);
 
@@ -107,32 +109,25 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             DescriptorIsDirty = true;
 
-            var result = false;
-            if (!Converter(rhs, out T rhsVal))
+            if (!Converter(rhs, _filterTypeName, out T rhsVal))
             {
                 throw new ArgumentOutOfRangeException($"Unable to convert {rhs} to {typeof(T)}");
             }
 
             var predicate = new PredicateValueExpression<T>(lhs, rhsVal, opSymbol);
 
-            var matchingVariables = ComparablePredicates
+            var matchingVariablesAndSymbol = ComparablePredicates
                 .Where(pv => pv.LHS.CompareTo(predicate.LHS) == 0 && pv.OpSymbol.Equals(predicate.OpSymbol));
-            if (matchingVariables.Any())
+
+            if (matchingVariablesAndSymbol.Any(cv => cv.Equals(predicate)))
             {
-                var current = matchingVariables.First();
-                if (!current.Filters(predicate))
-                {
-                    ComparablePredicates.Remove(current);
-                    ComparablePredicates.Add(predicate);
-                    result = true;
-                }
+                return false;
             }
             else
             {
                 ComparablePredicates.Add(predicate);
-                result = true;
+                return true;
             }
-            return result;
         }
 
         protected bool AddSingleValue(T value)
@@ -140,7 +135,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return AddToContainer(SingleValues, value);
         }
 
-        protected virtual bool AddValueRange(RangeValues<T> range)
+        protected virtual bool AddValueRange((T Start, T End) range)
         {
             DescriptorIsDirty = true;
             if (FiltersRange(range))
@@ -150,12 +145,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (Limits.HasMinimum)
             {
-                range = range.TrimStart(Limits.Minimum);
+                range = TrimStart(range, Limits.Minimum);
             }
 
             if (Limits.HasMaximum)
             {
-                range = range.TrimEnd(Limits.Maximum);
+                range = TrimEnd(range, Limits.Maximum);
             }
 
             if (!Ranges.Any())
@@ -176,18 +171,42 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private bool FiltersRange(RangeValues<T> range)
+        private bool Covers((T Start, T End) existingRange, (T Start, T End) range)
+            => existingRange.Start.CompareTo(range.Start) <= 0 && existingRange.End.CompareTo(range.End) >= 0;
+
+        private bool Covers((T Start, T End) range, T value)
+            => range.Start.CompareTo(value) <= 0 && range.End.CompareTo(value) >= 0;
+
+        private (T Start, T End) TrimStart((T Start, T End) rangeToTrim, T value)
         {
-            return Limits.FiltersRange(range.Start, range.End)
-                || Ranges.Any(rg => rg.Covers(range));
+            if (rangeToTrim.Start.CompareTo(value) < 0)
+            {
+                return (value, rangeToTrim.End);
+            }
+            return (rangeToTrim.Start, rangeToTrim.End);
+        }
+
+        private (T Start, T End) TrimEnd((T Start, T End) rangeToTrim, T value)
+        {
+            if (rangeToTrim.End.CompareTo(value) > 0)
+            {
+                return (rangeToTrim.Start, value);
+            }
+            return (rangeToTrim.Start, rangeToTrim.End);
+        }
+
+        private bool FiltersRange((T Start, T End) range)
+        {
+            return Limits.CoversRange(range)
+                || Ranges.Any(rg => Covers(rg, range));
         }
 
         private bool FiltersValue(T value) =>
             SingleValues.Contains(value)
-            || RangesFilterValue(value)
-            || Limits.FiltersValue(value);
+            || RangesCoversValue(value)
+            || Limits.CoversValue(value);
 
-        private bool RangesFilterValue(T value)
+        private bool RangesCoversValue(T value)
             => Ranges.Any(rg => rg.Start.CompareTo(value) <= 0 && rg.End.CompareTo(value) > 0);
 
         public virtual bool FiltersAllValues
@@ -197,14 +216,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (Limits.HasMinAndMaxLimits)
                 {
                     return Limits.Minimum.CompareTo(Limits.Maximum) > 0
-                        || Ranges.Any(rg => rg.Covers(new RangeValues<T>(Limits.Minimum, Limits.Maximum)))
+                        || Ranges.Any(rg => Covers(rg, (Limits.Minimum, Limits.Maximum)))
                         || SingleValues.Any(sv => Limits.Minimum.CompareTo(Limits.Maximum) == 0 && sv.CompareTo(Limits.Minimum) == 0);
                 }
                 return false;
             }
         }
 
-        protected bool FiltersTrueFalse => FiltersValue(_trueValue) && FiltersValue(_falseValue);
+        protected bool FiltersTrueFalse => (FiltersValue(_trueValue) && FiltersValue(_falseValue))
+            || ComparablePredicates.Where(cp => cp.OpSymbol.Equals(LogicSymbols.NEQ)).Count() > 1;
 
         private HashSet<string> this[VariableClauseTypes eType]
         {
@@ -228,134 +248,190 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool AddExpressionInternal(IRangeClauseExpression expression)
         {
-            if (expression is IsClauseExpression isClause)
+            switch (expression)
             {
-                return AddIsClause(isClause);
-            }
-            if (expression is RangeValuesExpression)
-            {
-                if (expression.LHSValue.ParsesToConstantValue && expression.RHSValue.ParsesToConstantValue)
-                {
-                    var (start, end) = ConvertRangeValues(expression.LHS, expression.RHS);
-                    var range = new RangeValues<T>(start, end);
-                    if (range.IsUnreachable)
+                case IsClauseExpression isClause:
+                    return AddIsClause(isClause);
+                case RangeValuesExpression rangeExpr:
+                    if (rangeExpr.LHSValue.ParsesToConstantValue && rangeExpr.RHSValue.ParsesToConstantValue)
                     {
-                        expression.IsUnreachable = true;
+                        var (start, end) = ConvertRangeValues(expression.LHS, expression.RHS);
+                        if (typeof(T) == typeof(bool) ? end.CompareTo(start) > 0 : start.CompareTo(end) > 0)
+                        {
+                            rangeExpr.IsUnreachable = true;
+                            return false;
+                        }
+                        return start.CompareTo(end) == 0 ?
+                            AddSingleValue(start) : AddValueRange((start, end));
+                    }
+                    else
+                    {
+                        return AddToContainer(Variables[VariableClauseTypes.Range], expression.ToString());
+                    }
+                case ValueExpression valueExpr:
+                    if (valueExpr.LHSValue.ParsesToConstantValue)
+                    {
+                        if (Converter(valueExpr.LHS, _filterTypeName, out T result))
+                        {
+                            return FiltersValue(result) ? false : AddSingleValue(result);
+                        }
+                        throw new ArgumentException();
+                    }
+                    else
+                    {
+                        return AddToContainer(Variables[VariableClauseTypes.Value], valueExpr.ToString());
+                    }
+                case UnaryExpression unaryExpr:
+                    if (FiltersTrueFalse) { return false; }
+
+                    if (unaryExpr.LHSValue.ParsesToConstantValue)
+                    {
+                        if (Converter(unaryExpr.LHS, _filterTypeName, out T result))
+                        {
+                            return FiltersValue(result) ? false : AddSingleValue(result);
+                        }
+                        throw new ArgumentException();
+                    }
+                    else
+                    {
+                        return AddToContainer(Variables[VariableClauseTypes.Predicate], expression.ToString());
+                    }
+                case BinaryExpression binary:
+                    var opSymbol = binary.OpSymbol;
+                    if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol)
+                        && !(binary.OpSymbol.Equals(LogicSymbols.EQV) || binary.OpSymbol.Equals(LogicSymbols.IMP)))
+                    {
                         return false;
                     }
-                    if (range.IsSingleValue)
-                    {
-                        return AddSingleValue(range.Start);
-                    }
-                    return AddValueRange(range);
-                }
-                else
-                {
-                    return AddToContainer(Variables[VariableClauseTypes.Range], expression.ToString());
-                }
-            }
-            if (expression is ValueExpression)
-            {
-                if (expression.LHSValue.ParsesToConstantValue)
-                {
-                    if (Converter(expression.LHS, out T result))
-                    {
-                        if (FiltersValue(result))
-                        {
-                            return false;
-                        }
-                        return AddSingleValue(result);
-                    }
-                    else
-                    {
-                        throw new ArgumentException();
-                    }
-                }
-                else
-                {
-                    return AddToContainer(Variables[VariableClauseTypes.Value], expression.ToString());
-                }
-            }
-            if(expression is UnaryExpression)
-            {
-                if (FiltersTrueFalse) { return false; }
 
-                if (expression.LHSValue.ParsesToConstantValue)
-                {
-                    if (Converter(expression.LHS, out T result))
+                    if (opSymbol.Equals(LogicSymbols.LIKE))
                     {
-                        if (FiltersValue(result))
+                        if (binary.RHS.Equals("*"))
                         {
-                            return false;
+                            return AddToContainer(SingleValues, _trueValue);
                         }
-                        return AddSingleValue(result);
+                        return AddLike(binary);
                     }
-                    else
+
+                    if (!expression.LHSValue.ParsesToConstantValue && expression.RHSValue.ParsesToConstantValue)
                     {
-                        throw new ArgumentException();
+                        if (!Converter(expression.RHS, _filterTypeName, out T value))
+                        {
+                            throw new ArgumentException();
+                        }
+
+                        DescriptorIsDirty = true;
+                        var ptv = new PredicateValueExpression<T>(expression.LHS, value, expression.OpSymbol);
+                        return AddComparablePredicate(expression.LHS, expression.RHS, expression.OpSymbol);
+                        //var currentVars = ComparablePredicates.Where(pv => pv.LHS.Equals(expression.LHS) && pv.OpSymbol.Equals(opSymbol));
+                        //var replaceCurrent = false;
+                        //var add = false;
+
+                        //if (currentVars.Any(cv => cv.Equals(ptv)))
+                        //{
+                        //    return false;
+                        //}
+                        ////TODO: Need to handle all the commented (below) logic types
+                        ////TODO: Put the comparisons here in a loop like the comparison for Copy/Paste above
+
+                        //if (!currentVars.Any())
+                        //{
+                        //    ComparablePredicates.Add(ptv);
+                        //    return true;
+                        //}
+                        //else
+                        //{
+                        //    foreach (var cv in currentVars)
+                        //    {
+                        //        //DONEpublic static string EQ => _equalTo ?? LoadSymbols(VBAParser.EQ);
+                        //        //DONEpublic static string NEQ => "<>";
+                        //        //DONEpublic static string LT => _lessThan ?? LoadSymbols(VBAParser.LT);
+                        //        //DONEpublic static string LTE => "<=";
+                        //        //DONEpublic static string GT => _greaterThan ?? LoadSymbols(VBAParser.GT);
+                        //        //DONEpublic static string GTE => ">=";
+                        //        //public static string AND => Tokens.And;
+                        //        //public static string OR => Tokens.Or;
+                        //        //public static string XOR => Tokens.XOr;
+                        //        //public static string NOT => Tokens.Not;
+                        //        //public static string EQV => Tokens.Eqv;
+                        //        //public static string IMP => Tokens.Imp;
+                        //        //public static string LIKE => Tokens.Like;
+
+                        //        var current = currentVars.First();
+                        //        if (current.OpSymbol.Equals(LogicSymbols.LT))
+                        //        {
+                        //            replaceCurrent = current.RHS.CompareTo(value) < 0;
+                        //        }
+                        //        else if (current.OpSymbol.Equals(LogicSymbols.LTE))
+                        //        {
+                        //            replaceCurrent = current.RHS.CompareTo(value) <= 0;
+                        //        }
+                        //        else if (current.OpSymbol.Equals(LogicSymbols.GT))
+                        //        {
+                        //            replaceCurrent = current.RHS.CompareTo(value) > 0;
+                        //        }
+                        //        else if (current.OpSymbol.Equals(LogicSymbols.GTE))
+                        //        {
+                        //            replaceCurrent = current.RHS.CompareTo(value) >= 0;
+                        //        }
+                        //        else if (current.OpSymbol.Equals(LogicSymbols.NEQ))
+                        //        {
+                        //            add = true;
+                        //        }
+                        //        else if (current.OpSymbol.Equals(LogicSymbols.EQ))
+                        //        {
+                        //            add = true;
+                        //        }
+                        //    }
+                        //}
+                        ////else
+                        ////{
+                        ////    ComparablePredicates.Add(ptv);
+                        ////    return true;
+                        ////}
+
+                        //if (replaceCurrent)
+                        //{
+                        //    ComparablePredicates.Remove(currentVars.First());
+                        //    ComparablePredicates.Add(ptv);
+                        //}
+                        //if (add)
+                        //{
+                        //    ComparablePredicates.Add(ptv);
+                        //}
+                        //return replaceCurrent;
                     }
-                }
-                else
-                {
-                    return AddToContainer(Variables[VariableClauseTypes.Predicate], expression.ToString());
-                }
-            }
-            if (expression is BinaryExpression binary)
-            {
-                if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol)
-                    && !(binary.OpSymbol.Equals(LogicSymbols.EQV) || binary.OpSymbol.Equals(LogicSymbols.IMP)))
-                {
+                    else if (!expression.LHSValue.ParsesToConstantValue && !expression.RHSValue.ParsesToConstantValue)
+                    {
+                        return AddToContainer(Variables[VariableClauseTypes.Predicate], binary.ToString());
+                    }
                     return false;
-                }
-
-                if (binary.OpSymbol.Equals(LogicSymbols.LIKE))
-                {
-                    if (binary.RHS.Equals("*"))
-                    {
-                        return AddToContainer(SingleValues, _trueValue);
-                    }
-                    return AddLike(binary);
-                }
-
-                if (!expression.LHSValue.ParsesToConstantValue && expression.RHSValue.ParsesToConstantValue)
-                {
-                    if (!Converter(expression.RHS, out T value))
-                    {
-                        throw new ArgumentException();
-                    }
-
-                    DescriptorIsDirty = true;
-                    var ptv = new PredicateValueExpression<T>(expression.LHS, value, expression.OpSymbol);
-                    var currentVars = ComparablePredicates.Where(pv => pv.LHS.Equals(ptv.LHS) && pv.OpSymbol.Equals(ptv.OpSymbol));
-                    var replace = false;
-                    if (currentVars.Any())
-                    {
-                        //TODO: Need other Logic symbols here
-                        var current = currentVars.First();
-                        if (current.OpSymbol.Equals(LogicSymbols.LT))
-                        {
-                            replace = current.RHS.CompareTo(value) < 0;
-                        }
-                    }
-                    else
-                    {
-                        ComparablePredicates.Add(ptv);
-                        return true;
-                    }
-                    if (replace)
-                    {
-                        ComparablePredicates.Remove(currentVars.First());
-                        ComparablePredicates.Add(ptv);
-                    }
-                    return replace;
-                }
-                else if (!expression.LHSValue.ParsesToConstantValue && !expression.RHSValue.ParsesToConstantValue)
-                {
-                    return AddToContainer(Variables[VariableClauseTypes.Predicate], binary.ToString());
-                }
+                default:
+                    return false;
             }
+        }
+        private bool AddVariablePredicate(IRangeClauseExpression expression)
+        {
+            //x < 65, if x > <val>, where <val> < 65 exists or x = <val> and x > <val> where <val> = 65 exists,
+            //then T/F is covered
+            //LT,LTE
+            //if (LT)RHS < MinLimit - unreachable 
+            //if (LTE)RHS is in SingleValues, and RHS < MinLimit - unreachable
             return false;
         }
+        //private bool AddVariableRange(IRangeClauseExpression expression)
+        //{
+        //    if (Variables[VariableClauseTypes.Range].Contains(expression.ToString()))
+        //    {
+        //        return false;
+        //    }
+
+        //    if (expression.LHSValue.ParsesToConstantValue)
+        //    {
+        //        var 
+        //    }
+        //    return AddToContainer(Variables[VariableClauseTypes.Range], expression.ToString());
+        //}
 
         protected bool AddToContainer<K>(HashSet<K> container, K value)
         {
@@ -369,23 +445,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private (T start, T end) ConvertRangeValues(string startVal, string endVal)
         {
-            if (!Converter(startVal, out T start) || !Converter(endVal, out T end))
+            if (!Converter(startVal, _filterTypeName, out T start) || !Converter(endVal, _filterTypeName, out T end))
             {
                 throw new ArgumentException();
             }
             return (start, end);
         }
 
-        //private (bool hasValue, T value) TValue(IParseTreeValue ptValue)
-        //{
-        //    bool hasValue = Converter(ptValue.ToString(), out T value);
-        //    return (hasValue, value);
-        //}
-
         protected virtual bool AddIsClause(IsClauseExpression expression)
         {
             DescriptorIsDirty = true;
-            if (Converter(expression.LHS, out T value))
+            if (Converter(expression.LHS, _filterTypeName, out T value))
             {
                 if (IsClauseAdders.ContainsKey(expression.OpSymbol))
                 {
@@ -407,10 +477,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var result = Limits.SetMinimum(value);
             if(TryGetMinimum(out T min))
             {
-                var newRanges = new HashSet<RangeValues<T>>();
-                foreach( var range in Ranges)
+                var newRanges = new HashSet<(T Start, T End)>();
+                foreach ( var range in Ranges)
                 {
-                    newRanges.Add(range.TrimStart(min));
+                    newRanges.Add(TrimStart(range, min));
                 }
                 Ranges = newRanges;
 
@@ -426,10 +496,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var result =  Limits.SetMaximum(value);
             if (TryGetMaximum(out T max))
             {
-                var newRanges = new HashSet<RangeValues<T>>();
+                var newRanges = new HashSet<(T Start, T End)>();
                 foreach (var range in Ranges)
                 {
-                    newRanges.Add(range.TrimEnd(max));
+                    newRanges.Add(TrimEnd(range, max));
                 }
                 Ranges = newRanges;
 
@@ -442,7 +512,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected void RemoveRangesCoveredByLimits()
         {
-            var rangesToRemove = Ranges.Where(rg => Limits.FiltersRange(rg.Start, rg.End));
+            var rangesToRemove = Ranges.Where(rg => Limits.CoversRange(rg)); //.Start, rg.End));
             foreach(var range in rangesToRemove)
             {
                 Ranges.Remove(range);
@@ -450,20 +520,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         }
 
-        protected void RemoveRangesCoveredByRange(RangeValues<T> range)
+        protected void RemoveRangesCoveredByRange((T Start, T End) range)
         {
-            var rangesToRemove = Ranges.Where(rg => range.Covers(rg)).ToList();
+            var rangesToRemove = Ranges.Where(rg => Covers(range, rg)).ToList();
             rangesToRemove.ForEach(rtr => Ranges.Remove(rtr));
         }
 
         protected void RemoveSingleValuesCoveredByRanges()
-            => SingleValues.Where(sv => Ranges.Any(rg => rg.Covers(sv)))
+            => SingleValues.Where(sv => Ranges.Any(rg => Covers(rg, sv)))
             .ToList().ForEach(tr => SingleValues.Remove(tr));
 
-        protected bool TryMergeWithOverlappingRange(RangeValues<T> range)
+        protected bool TryMergeWithOverlappingRange((T Start, T End) range)
         {
-            var endIsWithin = Ranges.Where(currentRange => currentRange.Covers(range.End));
-            var startIsWithin = Ranges.Where(currentRange => currentRange.Covers(range.Start));
+            var endIsWithin = Ranges.Where(currentRange => Covers(currentRange, range.End));
+            var startIsWithin = Ranges.Where(currentRange => Covers(currentRange, range.Start));
 
             var rangeIsAdded = false;
             if (endIsWithin.Any() || startIsWithin.Any())
@@ -471,15 +541,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 rangeIsAdded = true;
                 if (endIsWithin.Any())
                 {
-                    var original = endIsWithin.First();
+                    (T Start, T End) = endIsWithin.First();
                     Ranges.Remove(endIsWithin.First());
-                    Ranges.Add(new RangeValues<T>(range.Start, original.End));
+                    Ranges.Add((range.Start, End));
                 }
                 else
                 {
-                    var original = startIsWithin.First();
+                    (T Start, T End) = startIsWithin.First();
                     Ranges.Remove(startIsWithin.First());
-                    Ranges.Add(new RangeValues<T>(original.Start, range.End));
+                    Ranges.Add((Start, range.End));
                 }
             }
             return rangeIsAdded;

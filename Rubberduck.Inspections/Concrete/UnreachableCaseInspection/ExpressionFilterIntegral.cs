@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.Parsing.Grammar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,9 +7,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterIntegral : ExpressionFilter<long>
     {
-        public ExpressionFilterIntegral(StringToValueConversion<long> converter) : base(converter) { }
+        public ExpressionFilterIntegral(StringToValueConversion<long> converter) : base(converter, Tokens.Long) { }
 
-        protected override bool AddValueRange(RangeValues<long> range)
+        protected override bool AddValueRange((long Start, long End) range)
         {
             var addsRange = base.AddValueRange(range);
 
@@ -38,14 +39,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void ConcatenateRanges()
         {
-            var concatenatedRanges = new List<RangeValues<long>>();
+            var concatenatedRanges = new List<(long Start, long End)>();
             var indexesToRemove = new List<int>();
-            var sortedRanges = Ranges.Select(rg => new RangeValues<long>(rg.Start, rg.End)).OrderBy(k => k.Start).ToList();
+            var sortedRanges = Ranges.Select(rg => (rg.Start, rg.End)).OrderBy(k => k.Start).ToList();
             for (int idx = sortedRanges.Count() - 1; idx > 0;)
             {
                 if (sortedRanges[idx].Start == sortedRanges[idx - 1].End || sortedRanges[idx].Start - sortedRanges[idx - 1].End == 1)
                 {
-                    concatenatedRanges.Add(new RangeValues<long>(sortedRanges[idx - 1].Start, sortedRanges[idx].End));
+                    concatenatedRanges.Add((sortedRanges[idx - 1].Start, sortedRanges[idx].End));
                     indexesToRemove.Add(idx);
                     indexesToRemove.Add(idx - 1);
                     idx = -1;
@@ -57,7 +58,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             if (concatenatedRanges.Any())
             {
                 int idx = 0;
-                var allRanges = new Dictionary<int, RangeValues<long>>();
+                var allRanges = new Dictionary<int, (long Start, long End)>();
                 foreach( var range in Ranges)
                 {
                     allRanges.Add(idx++, range);
@@ -65,10 +66,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
                 indexesToRemove.ForEach(id => sortedRanges.RemoveAt(id));
 
-                var tRanges = new List<RangeValues<long>>();
-                sortedRanges.ForEach(sr => tRanges.Add(new RangeValues<long>(sr.Start,sr.End)));
+                var tRanges = new List<(long Start, long End)>();
+                sortedRanges.ForEach(sr => tRanges.Add((sr.Start, sr.End)));
 
-                concatenatedRanges.ForEach(sr => tRanges.Add(new RangeValues<long>(sr.Start, sr.End)));
+                concatenatedRanges.ForEach(sr => tRanges.Add((sr.Start, sr.End)));
 
                 Ranges.Clear();
                 var removalKeys = allRanges.Keys.Where(k => tRanges.Contains(allRanges[k]));

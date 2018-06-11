@@ -5,10 +5,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         //IParseTreeValueVisitorFactory CreateIParseTreeValueVisitorFactory();
         IParseTreeValueFactory CreateIParseTreeValueFactory();
-        IRangeClauseFilterFactory CreateIRangeClauseFilterFactory();
-        ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory();
+        //IRangeClauseFilterFactory CreateIRangeClauseFilterFactory();
+        //ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory();
         IUnreachableCaseInspectorFactory CreateIUnreachableInspectorFactory();
-        IRangeClauseContextWrapperFactory CreateIRangeClauseContextWrapperFactory();
+        //IRangeClauseContextWrapperFactory CreateIRangeClauseContextWrapperFactory();
     }
 
     public class UnreachableCaseInspectionFactoryProvider : IUnreachableCaseInspectionFactoryProvider
@@ -23,26 +23,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return new ParseTreeValueFactory();
         }
 
-        public IRangeClauseFilterFactory CreateIRangeClauseFilterFactory()
-        {
-            return new RangeClauseFilterFactory();
-        }
+        //public IRangeClauseFilterFactory CreateIRangeClauseFilterFactory()
+        //{
+        //    return new RangeClauseFilterFactory();
+        //}
 
-        public ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory()
-        {
-            return new SelectCaseStmtContextWrapperFactory()
-            {
-                FactoryProvider = this
-            };
-        }
+        //public ISelectCaseStmtContextWrapperFactory CreateISelectStmtContextWrapperFactory()
+        //{
+        //    return new SelectCaseStmtContextWrapperFactory()
+        //    {
+        //        FactoryProvider = this
+        //    };
+        //}
 
-        public IRangeClauseContextWrapperFactory CreateIRangeClauseContextWrapperFactory()
-        {
-            return new RangeClauseContextWrapperFactory()
-            {
-                FactoryProvider = this
-            };
-        }
+        //public IRangeClauseContextWrapperFactory CreateIRangeClauseContextWrapperFactory()
+        //{
+        //    return new RangeClauseContextWrapperFactory()
+        //    {
+        //        FactoryProvider = this
+        //    };
+        //}
 
         public IUnreachableCaseInspectorFactory CreateIUnreachableInspectorFactory()
         {

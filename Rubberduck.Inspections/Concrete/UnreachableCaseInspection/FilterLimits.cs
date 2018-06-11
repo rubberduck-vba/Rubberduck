@@ -67,7 +67,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public class FilterLimits<T> where T : IComparable<T>
     {
-
         private Limit<T> _min;
         private Limit<T> _max;
 
@@ -173,9 +172,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public bool FiltersValue(T value) => _min > value || _max < value;
+        public bool CoversValue(T value) => _min > value || _max < value;
 
-        public bool FiltersRange(T start, T end) => _min > end || _max < start;
+        public bool CoversRange((T Start, T End) range) => _min > range.End || _max < range.Start;
 
         public bool FiltersLimits(FilterLimits<T> limits)
         {

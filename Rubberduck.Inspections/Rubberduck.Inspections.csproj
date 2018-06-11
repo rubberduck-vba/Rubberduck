@@ -86,14 +86,9 @@
     <Compile Include="Concrete\UnreachableCaseInspection\ExpressionFilterIntegral.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\FilterLimits.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValueFactory.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\ContextWrapperBase.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseExpression.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\RangeValues.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\StringValueConverter.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectionFactoryProvider.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseContextWrapper.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseContextWrapperFactory.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\SelectCaseStmtContextWrapper.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeExpressionEvaluator.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeVisitorResults.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValueVisitor.cs" />
@@ -103,12 +98,9 @@
     <Compile Include="Concrete\UnhandledOnErrorResumeNextInspection.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\RangeClauseFilter.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValue.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\ParseTreeValueVisitorFactory.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\SelectCaseStmtContextWrapperFactory.cs" />
     <Compile Include="Concrete\SheetAccessedUsingStringInspection.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspector.cs" />
     <Compile Include="Concrete\UnreachableCaseInspection\UnreachableCaseInspectorFactory.cs" />
-    <Compile Include="Concrete\UnreachableCaseInspection\VBALogicOperators.cs" />
     <Compile Include="ParseTreeListeners\AttributeAnnotationListener.cs" />
     <Compile Include="Concrete\ConstantNotUsedInspection.cs" />
     <Compile Include="Concrete\DefaultProjectNameInspection.cs" />

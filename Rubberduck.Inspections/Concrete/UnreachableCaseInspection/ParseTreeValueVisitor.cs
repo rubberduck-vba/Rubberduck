@@ -18,19 +18,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public class ParseTreeValueVisitor : IParseTreeValueVisitor
     {
         private IParseTreeVisitorResults _contextValues;
-        //private RubberduckParserState _state;
         private IParseTreeValueFactory _inspValueFactory;
-
-        //public ParseTreeValueVisitor(RubberduckParserState state, IParseTreeValueFactory valueFactory)
-        //{
-        //    _state = state;
-        //    _inspValueFactory = valueFactory;
-        //    Calculator = new ParseTreeExpressionEvaluator(valueFactory);
-        //    _contextValues = new ParseTreeVisitorResults();
-        //    OnValueResultCreated += _contextValues.OnNewValueResult;
-        //    //TODO: TEMPORARY LINE OF CODE
-        //    IdRefRetriever = GetIdentifierReferenceForContext;
-        //}
 
         public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
         {
@@ -40,32 +28,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
         }
-
-        //TODO: TEMPORARY CODE
-
-        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
-        //private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)
-        //{
-        //    return GetIdentifierReferenceForContext(context, State);
-        //}
-
-        //public static to support tests
-        //public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, RubberduckParserState state)
-        //{
-        //    IdentifierReference idRef = null;
-        //    var success = false;
-        //    var identifierReferences = (state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
-        //        .Where(rf => rf.Context == context);
-        //    if (identifierReferences.Count() == 1)
-        //    {
-        //        idRef = identifierReferences.First();
-        //        success = true;
-        //    }
-        //    return (success, idRef);
-        //}
-
-        //TODO: END TEMPORARY CODE
-
 
         //used only within UnreachableCaseInspection tests
         public RubberduckParserState State { set; get; } = null;
@@ -129,32 +91,65 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void Visit(ParserRuleContext parserRuleContext)
         {
-            if (IsUnaryResultContext(parserRuleContext))
+            switch (parserRuleContext)
             {
-                VisitUnaryResultContext(parserRuleContext);
+                case VBAParser.LExprContext lExpr:
+                    Visit(lExpr);
+                    return;
+                case VBAParser.LiteralExprContext litExpr:
+                    Visit(litExpr);
+                    return;
+                case VBAParser.CaseClauseContext caseClause:
+                    VisitImpl(caseClause);
+                    StoreVisitResult(caseClause, _inspValueFactory.Create(caseClause.GetText()));
+                    return;
+                case VBAParser.RangeClauseContext rangeClause:
+                    VisitImpl(rangeClause);
+                    StoreVisitResult(rangeClause, _inspValueFactory.Create(rangeClause.GetText()));
+                    return;
+                default:
+                    if (IsUnaryResultContext(parserRuleContext))
+                    {
+                        VisitUnaryResultContext(parserRuleContext);
+                    }
+                    else if (IsBinaryMathContext(parserRuleContext) 
+                        || IsBinaryLogicalContext(parserRuleContext))
+                    {
+                        VisitBinaryOpEvaluationContext(parserRuleContext);
+                    }
+                    else if (IsUnaryLogicalContext(parserRuleContext) 
+                        || IsUnaryMathContext(parserRuleContext))
+                    {
+                        VisitUnaryOpEvaluationContext(parserRuleContext);
+                    }
+                    return;
             }
-            else if (parserRuleContext is VBAParser.LExprContext lExpr)
-            {
-                Visit(lExpr);
-            }
-            else if (parserRuleContext is VBAParser.LiteralExprContext litExpr)
-            {
-                Visit(litExpr);
-            }
-            else if (parserRuleContext is VBAParser.CaseClauseContext
-                || parserRuleContext is VBAParser.RangeClauseContext)
-            {
-                VisitImpl(parserRuleContext);
-                StoreVisitResult(parserRuleContext, _inspValueFactory.Create(parserRuleContext.GetText()));
-            }
-            else if (IsBinaryMathContext(parserRuleContext) || IsBinaryLogicalContext(parserRuleContext))
-            {
-                VisitBinaryOpEvaluationContext(parserRuleContext);
-            }
-            else if  (IsUnaryLogicalContext(parserRuleContext) || IsUnaryMathContext(parserRuleContext))
-            {
-                VisitUnaryOpEvaluationContext(parserRuleContext);
-            }
+            //if (IsUnaryResultContext(parserRuleContext))
+            //{
+            //    VisitUnaryResultContext(parserRuleContext);
+            //}
+            //else if (parserRuleContext is VBAParser.LExprContext lExpr)
+            //{
+            //    Visit(lExpr);
+            //}
+            //else if (parserRuleContext is VBAParser.LiteralExprContext litExpr)
+            //{
+            //    Visit(litExpr);
+            //}
+            //else if (parserRuleContext is VBAParser.CaseClauseContext
+            //    || parserRuleContext is VBAParser.RangeClauseContext)
+            //{
+            //    VisitImpl(parserRuleContext);
+            //    StoreVisitResult(parserRuleContext, _inspValueFactory.Create(parserRuleContext.GetText()));
+            //}
+            //else if (IsBinaryMathContext(parserRuleContext) || IsBinaryLogicalContext(parserRuleContext))
+            //{
+            //    VisitBinaryOpEvaluationContext(parserRuleContext);
+            //}
+            //else if  (IsUnaryLogicalContext(parserRuleContext) || IsUnaryMathContext(parserRuleContext))
+            //{
+            //    VisitUnaryOpEvaluationContext(parserRuleContext);
+            //}
         }
 
         private void Visit(VBAParser.LExprContext context)

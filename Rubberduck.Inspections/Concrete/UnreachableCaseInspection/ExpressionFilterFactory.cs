@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             }
             else if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
             {
-                var rationalNumberFilter = new ExpressionFilter<double>(StringValueConverter.TryConvertString);
+                var rationalNumberFilter = new ExpressionFilter<double>(StringValueConverter.TryConvertString, typeName);
                 if (typeName.Equals(Tokens.Single))
                 {
                     rationalNumberFilter.SetExtents(CompareExtents.SINGLEMIN, CompareExtents.SINGLEMAX);
@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var decimalTypeFilter = new ExpressionFilter<decimal>(StringValueConverter.TryConvertString);
+                var decimalTypeFilter = new ExpressionFilter<decimal>(StringValueConverter.TryConvertString, typeName);
                 decimalTypeFilter.SetExtents(CompareExtents.CURRENCYMIN, CompareExtents.CURRENCYMAX);
                 return decimalTypeFilter;
             }
@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             {
                 return new ExpressionFilterBoolean(StringValueConverter.TryConvertString);
             }
-            return new ExpressionFilter<string>(StringValueConverter.TryConvertString);
+            return new ExpressionFilter<string>(StringValueConverter.TryConvertString, typeName);
         }
     }
 }
