@@ -353,6 +353,10 @@
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj">
+      <Project>{D4B6A510-14E1-420A-A8D5-6A09890FD7D8}</Project>
+      <Name>Rubberduck.Refactorings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
       <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
       <Name>Rubberduck.RegexAssistant</Name>

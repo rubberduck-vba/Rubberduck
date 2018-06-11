@@ -30,7 +30,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
             ViewModel.Parameters = new ObservableCollection<Parameter>(Model.Parameters);
 
-            Show();
+            base.Show();
             if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;

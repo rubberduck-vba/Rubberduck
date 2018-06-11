@@ -63,6 +63,7 @@
     <Compile Include="IRefactoring.cs" />
     <Compile Include="IRefactoringDialog.cs" />
     <Compile Include="IRefactoringPresenterFactory.cs" />
+    <Compile Include="IRefactoringView.cs" />
     <Compile Include="IRefactoringViewModel.cs" />
     <Compile Include="MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

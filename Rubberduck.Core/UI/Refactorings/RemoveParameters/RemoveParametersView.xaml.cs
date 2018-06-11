@@ -1,10 +1,10 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using Rubberduck.Refactorings.RemoveParameters;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public partial class RemoveParametersView
+    public partial class RemoveParametersView : IRefactoringView
     {
         public RemoveParametersView()
         {

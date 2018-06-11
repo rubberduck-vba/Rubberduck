@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.UI.Refactorings
 {
-    partial class RefactoringDialogBase<TModel, TView, TViewModel>
+    partial class RefactoringDialogBase
     {
         /// <summary>
         /// Required designer variable.
@@ -24,7 +24,7 @@
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RefactoringDialogBase<TModel, TView, TViewModel>));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RefactoringDialogBase));
             this.elementHost = new System.Windows.Forms.Integration.ElementHost();
             this.SuspendLayout();
             // 
@@ -35,16 +35,17 @@
             this.elementHost.Location = new System.Drawing.Point(0, 0);
             this.elementHost.Margin = new System.Windows.Forms.Padding(5);
             this.elementHost.Name = "elementHost";
-            this.elementHost.Size = new System.Drawing.Size(284, 262);
+            this.elementHost.Size = new System.Drawing.Size(384, 112);
             this.elementHost.TabIndex = 0;
             this.elementHost.Child = null;
             // 
             // RefactoringDialogBase
             // 
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(384, 112);
             this.Controls.Add(this.elementHost);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RefactoringDialogBase";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -53,6 +54,5 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost elementHost;
-        private System.Windows.Controls.UserControl userControl;
     }
 }

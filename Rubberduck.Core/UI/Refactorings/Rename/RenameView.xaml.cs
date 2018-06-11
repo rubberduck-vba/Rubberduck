@@ -1,6 +1,8 @@
-﻿namespace Rubberduck.UI.Refactorings.Rename
+﻿using Rubberduck.Refactorings;
+
+namespace Rubberduck.UI.Refactorings.Rename
 {
-    public partial class RenameView
+    public partial class RenameView : IRefactoringView
     {
         public RenameView()
         {

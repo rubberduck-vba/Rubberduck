@@ -1,11 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
     /// <summary>
     /// Interaction logic for EncapsulateFieldView.xaml
     /// </summary>
-    public partial class EncapsulateFieldView : UserControl
+    public partial class EncapsulateFieldView : IRefactoringView
     {
         public EncapsulateFieldView()
         {

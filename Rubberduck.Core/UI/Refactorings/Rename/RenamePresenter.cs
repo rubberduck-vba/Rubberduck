@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         
         public override RenameModel Show()
         {
-            return Model.Target == null ? null : Show(Model.Target);
+            return Model.Target == null ? null : base.Show();
         }
 
         public RenameModel Show(Declaration target)

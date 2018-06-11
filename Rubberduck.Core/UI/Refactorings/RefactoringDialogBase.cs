@@ -1,45 +1,38 @@
-﻿using Forms = System.Windows.Forms;
-using Rubberduck.Refactorings;
+﻿using System.Windows.Forms;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public partial class RefactoringDialogBase<TModel, TView, TViewModel> : Forms.Form, IRefactoringDialog<TModel, TView, TViewModel>
-        where TModel : class
-        where TView : System.Windows.Controls.UserControl, new()
-        where TViewModel : class, IRefactoringViewModel<TModel>
+    public partial class RefactoringDialogBase : Form
     {
-        public RefactoringDialogBase(TViewModel viewModel)
+        protected virtual int MinWidth => 400;
+        protected virtual int MinHeight => 150;
+
+        protected RefactoringDialogBase()
         {
             InitializeComponent();
-            ViewModel = viewModel;
-            userControl = new TView
-            {
-                DataContext = ViewModel
-            };
-            ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;
+            elementHost.AutoSize = true;
         }
 
-        public TViewModel ViewModel { get; set; }
-        public new RefactoringDialogResult DialogResult { get; protected set; }
-        public new virtual RefactoringDialogResult ShowDialog()
+        private UserControl _userControl;
+        protected UserControl UserControl
         {
-            var result = base.ShowDialog();
-            if (result == Forms.DialogResult.OK || result == Forms.DialogResult.Yes)
+            get => _userControl;
+            set
             {
-                DialogResult = RefactoringDialogResult.Execute;
+                _userControl = value;
+                elementHost.Child = _userControl;
+                var proposedSize = elementHost.GetPreferredSize(new System.Drawing.Size(int.MaxValue, int.MaxValue));
+                if (proposedSize.Height < MinHeight)
+                {
+                    proposedSize.Height = MinHeight;
+                }
+                if (proposedSize.Width < MinWidth)
+                {
+                    proposedSize.Width = MinWidth;
+                }
+                ClientSize = proposedSize;
             }
-            else
-            {
-                DialogResult = RefactoringDialogResult.Cancel;
-            }
-
-            return DialogResult;
-        }
-
-        protected virtual void ViewModel_OnWindowClosed(object sender, RefactoringDialogResult result)
-        {
-            DialogResult = result;
-            Close();
         }
     }
 }

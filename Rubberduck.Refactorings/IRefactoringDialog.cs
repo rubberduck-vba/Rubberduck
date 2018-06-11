@@ -8,11 +8,13 @@ namespace Rubberduck.Refactorings
         Cancel
     }
 
-    public interface IRefactoringDialog<TModel, TView, TViewModel> : IRefactoringDialog
+    public interface IRefactoringDialog<out TModel, out TView, out TViewModel> : IRefactoringDialog
         where TModel : class
-        where TView : class, new()
+        where TView : class, IRefactoringView, new()
         where TViewModel : class, IRefactoringViewModel<TModel>
     {
+        TModel Model { get; }
+        TView View { get; }
         TViewModel ViewModel { get; }
     }
 

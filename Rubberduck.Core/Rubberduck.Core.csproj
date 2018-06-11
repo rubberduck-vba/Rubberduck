@@ -482,11 +482,15 @@
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
     <Compile Include="UI\Refactorings\IAssignedByValParameterQuickFixDialogFactory.cs" />
     <Compile Include="UI\Refactorings\IRefactoringDialogFactory.cs" />
+    <Compile Include="UI\Refactorings\IRefactoringPresenterBase.cs" />
     <Compile Include="UI\Refactorings\RefactoringDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Refactorings\RefactoringDialogBase.Designer.cs">
       <DependentUpon>RefactoringDialogBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Refactorings\RefactoringDialogBaseGeneric.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Refactorings\RefactoringPresenterBase.cs" />
     <Compile Include="UI\Refactorings\RefactoringViewModelBase.cs" />

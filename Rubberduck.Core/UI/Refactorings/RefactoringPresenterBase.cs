@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Refactorings
 {
     public class RefactoringPresenterBase<TModel, TDialog, TView, TViewModel> : IDisposable, IRefactoringPresenter<TModel, TDialog, TView, TViewModel> 
         where TModel : class
-        where TView : System.Windows.Controls.UserControl, new()
+        where TView : System.Windows.Controls.UserControl, IRefactoringView, new()
         where TViewModel : RefactoringViewModelBase<TModel>
         where TDialog : RefactoringDialogBase<TModel, TView, TViewModel>
     {
@@ -16,7 +16,7 @@ namespace Rubberduck.UI.Refactorings
         {
             _factory = factory;
             var viewModel = _factory.CreateViewModel<TModel, TViewModel>(model);
-            _dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(viewModel);
+            _dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(model, viewModel);
         }
 
         public TModel Model => _dialog.ViewModel.Model;

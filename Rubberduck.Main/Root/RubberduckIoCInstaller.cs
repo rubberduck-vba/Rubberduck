@@ -45,6 +45,8 @@ using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
+using Rubberduck.Refactorings;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
@@ -567,9 +569,8 @@ namespace Rubberduck.Root
 
         private void RegisterRefactoringDialogs(IWindsorContainer container)
         {
-            container.Register(Component.For<IRefactoringDialog<RenameViewModel>>()
-                .ImplementedBy<RenameDialog>()
-                .LifestyleTransient());
+            //container.Register(Component.For<IRefactoringPresenterFactory>().AsFactory());
+            //container.Register(Component.For<IRefactoringDialogFactory>().AsFactory());
         }
 
         private void RegisterCommandMenuItems(IWindsorContainer container)
