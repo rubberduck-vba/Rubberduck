@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IProjectManager _projectManager;
         private readonly IParsingCacheService _parsingCacheService;
         private readonly IParserStateManager _parserStateManager;
-        private ConcurrentStack<object> _queuedRequestors;
+        private readonly ConcurrentStack<object> _RequestorStack;
 
         private readonly bool _isTestScope;
 
@@ -65,7 +65,7 @@ namespace Rubberduck.Parsing.VBA
             state.ParseRequest += ReparseRequested;
             state.SuspendRequest += SuspendRequested;
 
-            _queuedRequestors = new ConcurrentStack<object>();
+            _RequestorStack = new ConcurrentStack<object>();
         }
 
         // Do not access this from anywhere but ReparseRequested.
@@ -74,6 +74,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly object _cancellationSyncObject = new object();
         private readonly object _parsingRunSyncObject = new object();
+        private readonly ReaderWriterLockSlim _parsingSuspendLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
         private void ReparseRequested(object sender, EventArgs e)
         {
@@ -82,7 +83,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (State.Status == ParserState.Busy)
                 {
-                    _queuedRequestors.Push(sender);
+                    _RequestorStack.Push(sender);
                     return;
                 }
 
@@ -102,25 +103,35 @@ namespace Rubberduck.Parsing.VBA
 
         public void SuspendRequested(object sender, RubberduckStatusSuspendParserEventArgs e)
         {
-            lock (_cancellationSyncObject)
+            try
             {
-                if (State.Status != ParserState.Ready)
-                {
-                    throw new InvalidOperationException(
-                        "Cannot suspend the parser while it is running. Either cancel or wait for Ready status");
-                }
-
+                _parsingSuspendLock.EnterWriteLock();
+                var originalStatus = State.Status;
                 State.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy, CancellationToken.None);
                 e.BusyAction.Invoke();
-                if (_queuedRequestors.TryPop(out var lastRequestor))
+                if (_RequestorStack.TryPop(out var lastRequestor))
                 {
-                    _queuedRequestors.Clear();
+                    _RequestorStack.Clear();
                     BeginParse(lastRequestor, _currentCancellationTokenSource.Token);
                 }
                 else
                 {
-                    State.SetStatusAndFireStateChanged(e.Requestor, ParserState.Ready, CancellationToken.None);
+                    if (originalStatus != ParserState.Ready)
+                    {
+                        // We can't assume that we can return to any other state that's not "Ready"; it's better
+                        // to request a new parse and let parser set the correct state itself.
+                        BeginParse(this, _currentCancellationTokenSource.Token);
+                    }
+                    else
+                    {
+                        State.SetStatusAndFireStateChanged(e.Requestor, originalStatus, CancellationToken.None);
+                    }
                 }
+                _RequestorStack.Clear();
+            }
+            finally
+            {
+                _parsingSuspendLock.ExitWriteLock();
             }
         }
 
@@ -182,6 +193,7 @@ namespace Rubberduck.Parsing.VBA
             var lockTaken = false;
             try
             {
+                _parsingSuspendLock.EnterReadLock();
                 Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
                 ParseAllInternal(this, token);
             }
@@ -191,7 +203,11 @@ namespace Rubberduck.Parsing.VBA
             }
             finally
             {
-                if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
+                if (lockTaken)
+                {
+                    Monitor.Exit(_parsingRunSyncObject);
+                }
+                _parsingSuspendLock.ExitReadLock();
             }
         }
 
