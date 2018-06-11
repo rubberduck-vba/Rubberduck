@@ -74,7 +74,7 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly object _cancellationSyncObject = new object();
         private readonly object _parsingRunSyncObject = new object();
-        private readonly ReaderWriterLockSlim _parsingSuspendLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        private readonly ReaderWriterLockSlim _parsingSuspendLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         private void ReparseRequested(object sender, EventArgs e)
         {
@@ -131,7 +131,10 @@ namespace Rubberduck.Parsing.VBA
             }
             finally
             {
-                _parsingSuspendLock.ExitWriteLock();
+                if (_parsingSuspendLock.IsWriteLockHeld)
+                {
+                    _parsingSuspendLock.ExitWriteLock();
+                }
             }
         }
 
@@ -193,9 +196,11 @@ namespace Rubberduck.Parsing.VBA
             var lockTaken = false;
             try
             {
-                _parsingSuspendLock.EnterReadLock();
-                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
-                ParseAllInternal(this, token);
+                if (_parsingSuspendLock.TryEnterReadLock(-1))
+                {
+                    Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
+                    ParseAllInternal(this, token);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -207,7 +212,10 @@ namespace Rubberduck.Parsing.VBA
                 {
                     Monitor.Exit(_parsingRunSyncObject);
                 }
-                _parsingSuspendLock.ExitReadLock();
+                if (_parsingSuspendLock.IsReadLockHeld)
+                {
+                    _parsingSuspendLock.ExitReadLock();
+                }
             }
         }
 

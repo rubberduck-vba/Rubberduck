@@ -24,19 +24,21 @@ namespace RubberduckTests.ParserStateTests
 
         [Test]
         [Category("ParserState")]
-        public void Test_RPS_SuspendParser_ThrowsException()
+        public void Test_RPS_SuspendParser_NonReadyState_IsQueued()
         {
             var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
             var state = MockParser.CreateAndParse(vbe.Object);
-            
+
+            var wasSuspended = false;
+
             state.SetStatusAndFireStateChanged(this, ParserState.Pending, CancellationToken.None);
-            Assert.Throws<InvalidOperationException>(() =>
+
+            state.OnSuspendParser(this, () =>
             {
-                state.OnSuspendParser(this, () =>
-                {
-                    Assert.IsTrue(state.Status == ParserState.Busy);
-                });
+                wasSuspended = true;
             });
+
+            Assert.IsTrue(wasSuspended);
         }
 
         [Test]
