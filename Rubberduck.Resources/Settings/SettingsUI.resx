@@ -126,6 +126,9 @@
   <data name="ImportPageSettingsButton" xml:space="preserve">
     <value>Import</value>
   </data>
+  <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
+    <value>Autocompletion Settings</value>
+  </data>
   <data name="PageHeader_GeneralSettings" xml:space="preserve">
     <value>General Settings</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="PageHeader_WindowSettings" xml:space="preserve">
     <value>Window Settings</value>
+  </data>
+  <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
+    <value>Configure which autocompletions are enabled.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
     <value>Click [Ok] to close the window and apply changes, or [Cancel] to discard them.</value>
@@ -164,6 +170,9 @@
   </data>
   <data name="ResetSettingsButton" xml:space="preserve">
     <value>Reset</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>All</value>
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Settings</value>

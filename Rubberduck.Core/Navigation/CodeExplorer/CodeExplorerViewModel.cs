@@ -378,51 +378,50 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
+            
+            var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
+                .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false);
+
+            if (projectNode == null)
             {
-                var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                    .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false);
-
-                if (projectNode == null)
-                {
-                    return;
-                }
-
-                SetErrorState(projectNode, e.Module);
-
-                if (_errorStateSet) { return; }
-
-                // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
-                var projectName = componentProject.Name;
-                var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
-
-                _uiDispatcher.Invoke(() =>
-                {
-                    try
-                    {
-                        if (folderNode == null)
-                        {
-                            folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName, _state.ProjectsProvider);
-                            projectNode.AddChild(folderNode);
-                        }
-
-                        var declaration = CreateDeclaration(e.Module);
-                        var newNode =
-                            new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>(), _state.ProjectsProvider)
-                            {
-                                IsErrorState = true
-                            };
-
-                        folderNode.AddChild(newNode);
-
-                        // Force a refresh. OnPropertyChanged("Projects") didn't work.
-                        Projects = Projects;
-                    }
-                    catch (Exception exception)
-                    {
-                        Logger.Error(exception, "Exception thrown trying to refresh the code explorer view on the UI thread.");
-                    }
-                });
+                return;
             }
+
+            SetErrorState(projectNode, e.Module);
+
+            if (_errorStateSet) { return; }
+
+            // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
+            var projectName = componentProject.Name;
+            var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
+
+            _uiDispatcher.Invoke(() =>
+            {
+                try
+                {
+                    if (folderNode == null)
+                    {
+                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName, _state.ProjectsProvider);
+                        projectNode.AddChild(folderNode);
+                    }
+
+                    var declaration = CreateDeclaration(e.Module);
+                    var newNode =
+                        new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>(), _state.ProjectsProvider)
+                        {
+                            IsErrorState = true
+                        };
+
+                    folderNode.AddChild(newNode);
+
+                    // Force a refresh. OnPropertyChanged("Projects") didn't work.
+                    Projects = Projects;
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception, "Exception thrown trying to refresh the code explorer view on the UI thread.");
+                }
+            });
         }
 
         private Declaration CreateDeclaration(QualifiedModuleName module)

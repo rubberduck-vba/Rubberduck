@@ -168,4 +168,10 @@
   <data name="ConfirmResetSettings" xml:space="preserve">
     <value>Réinitialiser les paramètres par défaut?</value>
   </data>
+  <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
+    <value>Activer ou désactiver les autocomplétions</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Tous</value>
+  </data>
 </root>

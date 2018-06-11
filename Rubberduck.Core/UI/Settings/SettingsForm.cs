@@ -62,6 +62,11 @@ namespace Rubberduck.UI.Settings
                 },
                 new SettingsView
                 {
+                    Control = new AutoCompleteSettings(new AutoCompleteSettingsViewModel(config)),
+                    View = SettingsViews.AutoCompleteSettings
+                },
+                new SettingsView
+                {
                     Control = new WindowSettings(new WindowSettingsViewModel(config)),
                     View = SettingsViews.WindowSettings
                 },

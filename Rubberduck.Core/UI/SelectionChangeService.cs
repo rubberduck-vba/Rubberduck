@@ -9,6 +9,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI
 {
+
     public interface ISelectionChangeService
     {
         event EventHandler<DeclarationChangedEventArgs> SelectedDeclarationChanged;

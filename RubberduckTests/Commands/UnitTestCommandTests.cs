@@ -241,7 +241,7 @@ Private Assert As Object
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var messageBox = new Mock<IMessageBox>();
-                var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+                var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
                 var config = GetUnitTestConfig();
                 settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
@@ -312,7 +312,7 @@ End Property";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+                var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
                 var config = GetUnitTestConfig();
                 settings.Setup(x => x.LoadConfiguration()).Returns(config);
 
@@ -343,7 +343,7 @@ End Property";
         {
             var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, false, false, false);
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
     }

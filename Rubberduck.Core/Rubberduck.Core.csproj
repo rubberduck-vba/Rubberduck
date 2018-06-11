@@ -296,6 +296,22 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AppMenu.cs" />
+    <Compile Include="AutoComplete\AutoCompleteBlockBase.cs" />
+    <Compile Include="AutoComplete\AutoCompleteDoBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteEnumBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteForBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteIfBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteOnErrorResumeNextBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompletePrecompilerIfBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteSelectBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteTypeBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteWhileBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteWithBlock.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\AggregationLevel.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\CodeMetric.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricResult.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricsParseTreeListener.cs" />
     <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
@@ -322,13 +338,11 @@
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
     <Compile Include="Common\UndocumentedAttribute.cs" />
-    <Compile Include="Inspections\IInspectionProvider.cs" />
-    <Compile Include="Inspections\InspectionProvider.cs" />
+    <Compile Include="AutoComplete\AutoCompleteProvider.cs" />
+    <Compile Include="CodeAnalysis\Inspections\IInspectionProvider.cs" />
+    <Compile Include="CodeAnalysis\Inspections\InspectionProvider.cs" />
     <Compile Include="Navigation\CodeExplorer\ICodeExplorerDeclarationViewModel.cs" />
-    <Compile Include="Navigation\CodeMetrics\CodeMetricsAnalyst.cs" />
-    <Compile Include="Navigation\CodeMetrics\CodeMetricsResult.cs" />
-    <Compile Include="Navigation\CodeMetrics\CodeMetricsViewModel.cs" />
-    <Compile Include="Navigation\CodeMetrics\ICodeMetricsAnalyst.cs" />
+    <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricsAnalyst.cs" />
     <Compile Include="Navigation\Folders\FolderHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -353,6 +367,9 @@
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodProc.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodRule.cs" />
     <Compile Include="Refactorings\ExtractMethod\IExtractMethodSelectionValidation.cs" />
+    <Compile Include="Settings\AutoCompleteConfigProvider.cs" />
+    <Compile Include="Settings\AutoCompleteSetting.cs" />
+    <Compile Include="Settings\AutoCompleteSettings.cs" />
     <Compile Include="Settings\CodeInspectionConfigProvider.cs" />
     <Compile Include="Settings\ExperimentalFeatures.cs" />
     <Compile Include="Settings\DefaultSettings.cs" />
@@ -375,6 +392,12 @@
     <Compile Include="UI\About\AboutDialog.Designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="AutoComplete\AutoCompleteBase.cs" />
+    <Compile Include="AutoComplete\AutoCompleteClosingBrace.cs" />
+    <Compile Include="AutoComplete\AutoCompleteClosingBracket.cs" />
+    <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
+    <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
+    <Compile Include="AutoComplete\AutoCompleteService.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
@@ -388,6 +411,7 @@
     <Compile Include="UI\CodeMetrics\CodeMetricsDockablePresenter.cs" />
     <Compile Include="UI\Command\CodeMetricsCommand.cs" />
     <Compile Include="UI\Command\MenuItems\CodeMetricsCommandMenuItem.cs" />
+    <Compile Include="UI\Converters\DeclarationToMemberSignatureConverter.cs" />
     <Compile Include="UI\Converters\StringHasNoValueToVisibilityConverter.cs" />
     <Compile Include="UI\Converters\StringHasValueToVisibilityConverter.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsControl.xaml.cs">
@@ -423,6 +447,7 @@
     <Compile Include="UI\Converters\SubtractionConverter.cs" />
     <Compile Include="UI\CustomComWrappers\IOleWrapper.cs" />
     <Compile Include="UI\EnvironmentProvider.cs" />
+    <Compile Include="AutoComplete\IAutoComplete.cs" />
     <Compile Include="UI\Inspections\AggregateInspectionResult.cs" />
     <Compile Include="UI\ModernFolderBrowser.cs" />
     <Compile Include="UI\Refactorings\AssignedByValParameterQuickFixDialog.cs">
@@ -495,6 +520,10 @@
     </Compile>
     <Compile Include="UI\Refactorings\ReorderParameters\ReorderParametersViewModel.cs" />
     <Compile Include="UI\SelectionChangeService.cs" />
+    <Compile Include="UI\Settings\AutoCompleteSettings.xaml.cs">
+      <DependentUpon>AutoCompleteSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Settings\AutoCompleteSettingsViewModel.cs" />
     <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
@@ -1006,6 +1035,10 @@
     <Page Include="UI\RegexAssistant\RegexAssistant.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Settings\AutoCompleteSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\GeneralSettings.xaml">
       <SubType>Designer</SubType>

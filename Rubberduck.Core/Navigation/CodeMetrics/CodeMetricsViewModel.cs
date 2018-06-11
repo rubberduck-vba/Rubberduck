@@ -1,9 +1,8 @@
-﻿using NLog;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
-using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Rubberduck.Navigation.CodeMetrics
@@ -22,10 +21,19 @@ namespace Rubberduck.Navigation.CodeMetrics
 
         private void OnStateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State == ParserState.Ready)
+            if (e.State != ParserState.Ready && e.State != ParserState.Error && e.State != ParserState.ResolverError && e.State != ParserState.UnexpectedError)
             {
                 IsBusy = true;
-                ModuleMetrics = _analyst.ModuleMetrics(_state);
+            }
+
+            if (e.State == ParserState.Ready)
+            {
+                ModuleMetrics = new ObservableCollection<ModuleMetricsResult>(_analyst.ModuleMetrics(_state));
+                IsBusy = false;
+            }
+
+            if  (e.State == ParserState.Error || e.State == ParserState.ResolverError || e.State == ParserState.UnexpectedError)
+            {
                 IsBusy = false;
             }
         }
@@ -35,12 +43,26 @@ namespace Rubberduck.Navigation.CodeMetrics
             _state.StateChanged -= OnStateChanged;
         }
 
-        private IEnumerable<ModuleMetricsResult> _moduleMetrics;
-        public IEnumerable<ModuleMetricsResult> ModuleMetrics {
+        private ModuleMetricsResult _selectedMetric;
+        public ModuleMetricsResult SelectedMetric
+        {
+            get => _selectedMetric;
+            set
+            {
+                _selectedMetric = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<ModuleMetricsResult> _moduleMetrics;
+        public ObservableCollection<ModuleMetricsResult> ModuleMetrics {
             get => _moduleMetrics;
             private set
             {
                 _moduleMetrics = value;
+                SelectedMetric = ModuleMetrics.Any(i => SelectedMetric.ModuleName == i.ModuleName)
+                    ? ModuleMetrics.First(i => SelectedMetric.ModuleName == i.ModuleName)
+                    : ModuleMetrics.FirstOrDefault();
                 OnPropertyChanged();
             }
         }
@@ -52,9 +74,23 @@ namespace Rubberduck.Navigation.CodeMetrics
             set
             {
                 _isBusy = value;
+                EmptyUIRefreshMessageVisibility = false;
                 OnPropertyChanged();
-                // If the window is "busy" then hide the Refresh message
-                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
+            }
+        }
+
+
+        private bool _emptyUIRefreshMessageVisibility = true;
+        public bool EmptyUIRefreshMessageVisibility
+        {
+            get => _emptyUIRefreshMessageVisibility;
+            set
+            {
+                if (_emptyUIRefreshMessageVisibility != value)
+                {
+                    _emptyUIRefreshMessageVisibility = value;
+                    OnPropertyChanged();
+                }
             }
         }
     }

@@ -120,18 +120,18 @@ namespace Rubberduck.Parsing.ComReflection
                         case TYPEKIND.TKIND_ENUM:
                             var enumeration = type ?? new ComEnumeration(typeLibrary, info, typeAttributes, index);
                             _enumerations.Add(enumeration as ComEnumeration);
-                            if (type != null) KnownTypes.TryAdd(typeAttributes.guid, enumeration);
+                            if (type == null) KnownTypes.TryAdd(typeAttributes.guid, enumeration);
                             break;
                         case TYPEKIND.TKIND_COCLASS:
                             var coclass = type ?? new ComCoClass(typeLibrary, info, typeAttributes, index);
                             _classes.Add(coclass as ComCoClass);
-                            if (type != null) KnownTypes.TryAdd(typeAttributes.guid, coclass);
+                            if (type == null) KnownTypes.TryAdd(typeAttributes.guid, coclass);
                             break;
                         case TYPEKIND.TKIND_DISPATCH:
                         case TYPEKIND.TKIND_INTERFACE:
                             var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
                             _interfaces.Add(intface as ComInterface);
-                            if (type != null) KnownTypes.TryAdd(typeAttributes.guid, intface);
+                            if (type == null) KnownTypes.TryAdd(typeAttributes.guid, intface);
                             break;
                         case TYPEKIND.TKIND_RECORD:
                             var structure = new ComStruct(typeLibrary, info, typeAttributes, index);
@@ -140,7 +140,7 @@ namespace Rubberduck.Parsing.ComReflection
                         case TYPEKIND.TKIND_MODULE:
                             var module = type ?? new ComModule(typeLibrary, info, typeAttributes, index);
                             _modules.Add(module as ComModule);
-                            if (type != null) KnownTypes.TryAdd(typeAttributes.guid, module);
+                            if (type == null) KnownTypes.TryAdd(typeAttributes.guid, module);
                             break;
                         case TYPEKIND.TKIND_ALIAS:
                             var alias = new ComAlias(typeLibrary, info, index, typeAttributes);
