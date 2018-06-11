@@ -50,7 +50,7 @@ namespace Rubberduck.AutoComplete
                 return;
             }
 
-            using (var pane = e.CodePane)
+            var pane = e.CodePane;
             using (var module = pane.CodeModule)
             {
                 var qualifiedSelection = module.GetQualifiedSelection();
