@@ -120,10 +120,12 @@ namespace Rubberduck.UnitTesting
                         var capturedModule = module;
                         var moduleTestMethods = testMethods
                             .Where(test =>
-                                test.Declaration.QualifiedName.QualifiedModuleName.ProjectId ==
-                                capturedModule.Key.ProjectId
-                                && test.Declaration.QualifiedName.QualifiedModuleName.ComponentName ==
-                                capturedModule.Key.ComponentName);
+                            {
+                                var qmn = test.Declaration.QualifiedName.QualifiedModuleName;
+
+                                return qmn.ProjectId == capturedModule.Key.ProjectId
+                                       && qmn.ComponentName == capturedModule.Key.ComponentName;
+                            });
 
                         var fakes = _fakesFactory.Create();
                         var initializeMethods = module.Key.FindModuleInitializeMethods(_state);
@@ -165,7 +167,7 @@ namespace Rubberduck.UnitTesting
                             catch (COMException ex)
                             {
                                 Logger.Error(ex, "Unexpected COM exception while running tests.");
-                        test.UpdateResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException);
+                                test.UpdateResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException);
                             }
                             finally
                             {
