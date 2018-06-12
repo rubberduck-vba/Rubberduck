@@ -8,9 +8,16 @@ namespace Rubberduck.VBEditor.WindowsApi
         protected FocusSource(IntPtr hwnd) : base(hwnd, hwnd) { }
 
         public event EventHandler<WindowChangedEventArgs> FocusChange;
+        public event EventHandler<KeyPressEventArgs> KeyDown;
+
         protected void OnFocusChange(WindowChangedEventArgs eventArgs)
         {
             FocusChange?.Invoke(this, eventArgs);
+        }
+
+        protected void OnKeyDown(KeyPressEventArgs eventArgs)
+        {
+            KeyDown?.Invoke(this, eventArgs);
         }
 
         protected virtual void DispatchFocusEvent(FocusType type)

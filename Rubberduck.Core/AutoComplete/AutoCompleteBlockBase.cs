@@ -1,9 +1,14 @@
 ﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Rubberduck.AutoComplete
 {
@@ -28,46 +33,74 @@ namespace Rubberduck.AutoComplete
 
         protected virtual bool IndentBody => true;
 
-        public override bool Execute(AutoCompleteEventArgs e)
+        public override bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (SkipPreCompilerDirective && e.OldCode.Trim().StartsWith("#"))
+            var ignoreTab = e.Keys == Keys.Tab && !settings.CompleteBlockOnTab;
+            if (IsInlineCharCompletion || e.Keys == Keys.None || ignoreTab)
             {
                 return false;
             }
 
-            var selection = e.CodePane.Selection;
-
-            var pattern = SkipPreCompilerDirective
-                            ? $"\\b{InputToken}\\b"
-                            : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
-
-            var isMatch = MatchInputTokenAtEndOfLineOnly 
-                            ? e.OldCode.EndsWith(InputToken)
-                            : Regex.IsMatch(e.OldCode.Trim(), pattern);
-
-            if (!e.OldCode.HasComment(out _) && isMatch && (!ExecuteOnCommittedInputOnly || e.IsCommitted))
+            var module = e.CodeModule;
+            using (var pane = module.CodePane)
             {
-                var indent = e.OldCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
-                using (var module = e.CodePane.CodeModule)
+                var selection = pane.Selection;
+                var code = module.GetLines(selection);
+
+                if (SkipPreCompilerDirective && code.Trim().StartsWith("#"))
                 {
-                    var code = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
-                    if (module.GetLines(selection.NextLine) == code)
-                    {
-                        return false;
-                    }
+                    return false;
+                }
+
+                var pattern = SkipPreCompilerDirective
+                                ? $"\\b{InputToken}\\b"
+                                : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
+
+                var isMatch = MatchInputTokenAtEndOfLineOnly
+                                ? code.EndsWith(InputToken, System.StringComparison.OrdinalIgnoreCase)
+                                : Regex.IsMatch(code.Trim(), pattern, RegexOptions.IgnoreCase);
+
+                if (isMatch && !code.HasComment(out _) && !IsBlockCompleted(module, selection))
+                {
+                    var indent = code.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+                    var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
 
                     var stdIndent = IndentBody ? IndenterSettings.Create().IndentSpaces : 0;
 
-                    module.InsertLines(selection.StartLine + 1, code);
+                    module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
 
-                    module.ReplaceLine(selection.StartLine, new string(' ', indent + stdIndent));
-                    e.CodePane.Selection = new VBEditor.Selection(selection.StartLine, indent + stdIndent + 1);
+                    module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
+                    pane.Selection = new Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
 
-                    e.NewCode = e.OldCode;
+                    e.Handled = true;
                     return true;
                 }
+                return false;
             }
-            return false;
+        }
+
+        private bool IsBlockCompleted(ICodeModule module, Selection selection)
+        {
+            string content;
+            var proc = module.GetProcOfLine(selection.StartLine);
+            if (proc == null)
+            {
+                content = module.GetLines(1, module.CountOfDeclarationLines);
+            }
+            else
+            {
+                var procKind = module.GetProcKindOfLine(selection.StartLine);
+                var startLine = module.GetProcStartLine(proc, procKind);
+                var lineCount = module.GetProcCountLines(proc, procKind);
+                content = module.GetLines(startLine, lineCount);
+            }
+
+            var options = RegexOptions.IgnoreCase;
+            var inputPattern = $"(?<!{OutputToken.Replace(InputToken, string.Empty)})\\b{InputToken}\\b";
+            var inputMatches = Regex.Matches(content, inputPattern, options).Count;
+            var outputMatches = Regex.Matches(content, $"\\b{OutputToken}\\b", options).Count;
+
+            return inputMatches > 0 && inputMatches == outputMatches;
         }
     }
 }

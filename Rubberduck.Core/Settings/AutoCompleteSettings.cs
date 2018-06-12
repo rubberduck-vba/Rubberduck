@@ -20,6 +20,9 @@ namespace Rubberduck.Settings
         [XmlArrayItem("AutoComplete", IsNullable = false)]
         public HashSet<AutoCompleteSetting> AutoCompletes { get; set; }
 
+        [XmlAttribute]
+        public bool CompleteBlockOnTab { get; set; }
+
         public AutoCompleteSettings() : this(Enumerable.Empty<AutoCompleteSetting>())
         {
             /* default constructor required for XML serialization */

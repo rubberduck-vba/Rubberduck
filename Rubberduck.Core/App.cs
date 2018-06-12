@@ -47,7 +47,7 @@ namespace Rubberduck
             _checkVersionCommand = checkVersionCommand;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
-            
+
             UiContextProvider.Initialize();
         }
 

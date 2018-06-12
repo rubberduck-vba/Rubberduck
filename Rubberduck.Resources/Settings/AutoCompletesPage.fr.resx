@@ -159,6 +159,9 @@
   <data name="AutoCompleteWithBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'With'</value>
   </data>
+  <data name="HandleTabKey" xml:space="preserve">
+    <value>Autocompléter les blocs avec TAB</value>
+  </data>
   <data name="PageHeader" xml:space="preserve">
     <value>Autocompletion Settings</value>
   </data>
