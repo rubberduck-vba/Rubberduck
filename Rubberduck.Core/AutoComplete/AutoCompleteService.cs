@@ -48,21 +48,24 @@ namespace Rubberduck.AutoComplete
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
-            if (e.Keys == Keys.Delete)
+            var module = e.CodeModule;
+            var qualifiedSelection = module.GetQualifiedSelection();
+            var selection = qualifiedSelection.Value.Selection;
+
+            if (e.Keys != Keys.None && selection.LineCount > 1 || selection.StartColumn != selection.EndColumn)
             {
                 return;
             }
 
-            var module = e.CodeModule;
-            var qualifiedSelection = module.GetQualifiedSelection();
-            var selection = qualifiedSelection.Value.Selection;
             var currentContent = module.GetLines(selection);
 
+            var handleDelete = e.Keys == Keys.Delete && selection.EndColumn <= currentContent.Length;
+            var handleBackspace = e.Keys == Keys.Back && selection.StartColumn > 1;
             foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled))
             {
-                if (e.Keys == Keys.Back && selection.StartColumn > 1)
+                if (handleDelete || handleBackspace)
                 {
-                    if (HandleBackspace(e, autoComplete))
+                    if (DeleteAroundCaret(e, autoComplete))
                     {
                         break;
                     }
@@ -77,10 +80,9 @@ namespace Rubberduck.AutoComplete
             }
         }
 
-        private bool HandleBackspace(AutoCompleteEventArgs e, IAutoComplete autoComplete)
+        private bool DeleteAroundCaret(AutoCompleteEventArgs e, IAutoComplete autoComplete)
         {
-            var isInlineAutoComplete = autoComplete.InputToken.Length == 1;
-            if (isInlineAutoComplete)
+            if (autoComplete.IsInlineCharCompletion)
             {
                 var code = e.CurrentLine;
                 // If caret LHS is the AC input token and RHS is the AC output token, we can remove both.

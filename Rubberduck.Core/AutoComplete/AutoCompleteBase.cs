@@ -13,13 +13,14 @@ namespace Rubberduck.AutoComplete
             OutputToken = outputToken;
         }
 
+        public bool IsInlineCharCompletion => InputToken.Length == 1 && OutputToken.Length == 1;
         public bool IsEnabled { get; set; }
         public string InputToken { get; }
         public string OutputToken { get; }
 
         public virtual bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (!e.IsCharacter)
+            if (!e.IsCharacter || !IsInlineCharCompletion)
             {
                 return false;
             }

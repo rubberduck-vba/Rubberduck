@@ -35,7 +35,7 @@ namespace Rubberduck.AutoComplete
 
         public override bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (e.Keys != Keys.Enter && (settings.CompleteBlockOnTab && e.Keys != Keys.Tab))
+            if (IsInlineCharCompletion || e.Keys == Keys.None || (e.Keys != Keys.Enter && (settings.CompleteBlockOnTab && e.Keys != Keys.Tab)))
             {
                 return false;
             }
@@ -56,7 +56,7 @@ namespace Rubberduck.AutoComplete
                                 : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
 
                 var isMatch = MatchInputTokenAtEndOfLineOnly
-                                ? code.EndsWith(InputToken)
+                                ? code.EndsWith(InputToken, System.StringComparison.OrdinalIgnoreCase)
                                 : Regex.IsMatch(code.Trim(), pattern, RegexOptions.IgnoreCase);
 
                 if (isMatch && !code.HasComment(out _) && !IsBlockCompleted(module, selection))
