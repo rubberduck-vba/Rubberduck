@@ -38,7 +38,7 @@ namespace Rubberduck.Settings
 
             foreach (var loadedSetting in loaded.AutoCompletes.Where(e => !settings.Contains(e) && _foundAutoCompleteKeys.Contains(e.Key)))
             {
-                var matchingDefaultSetting = _defaultSettings.AutoCompletes.FirstOrDefault(e => e.Equals(loadedSetting));
+                var matchingDefaultSetting = _defaultSettings.AutoCompletes.FirstOrDefault(e => !loaded.AutoCompletes.Contains(e) && e.Equals(loadedSetting));
                 if (matchingDefaultSetting != null)
                 {
                     loadedSetting.IsEnabled = matchingDefaultSetting.IsEnabled;

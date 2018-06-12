@@ -187,6 +187,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autocomplete blocks on TAB.
+        /// </summary>
+        public static string HandleTabKey {
+            get {
+                return ResourceManager.GetString("HandleTabKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autocompletion Settings.
         /// </summary>
         public static string PageHeader {

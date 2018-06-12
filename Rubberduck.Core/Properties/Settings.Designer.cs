@@ -431,7 +431,7 @@ namespace Rubberduck.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<AutoCompleteSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+<AutoCompleteSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" CompleteBlockOnTab=""true"">
   <AutoCompletes>
     <AutoComplete Key=""AutoCompleteClosingBrace"" IsEnabled=""true"" />
     <AutoComplete Key=""AutoCompleteClosingBracket"" IsEnabled=""true"" />

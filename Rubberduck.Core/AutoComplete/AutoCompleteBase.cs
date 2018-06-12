@@ -1,4 +1,7 @@
-﻿using Rubberduck.VBEditor.Events;
+﻿using Rubberduck.Settings;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
+using System;
 
 namespace Rubberduck.AutoComplete
 {
@@ -10,27 +13,29 @@ namespace Rubberduck.AutoComplete
             OutputToken = outputToken;
         }
 
+        public bool IsInlineCharCompletion => InputToken.Length == 1 && OutputToken.Length == 1;
         public bool IsEnabled { get; set; }
         public string InputToken { get; }
         public string OutputToken { get; }
 
-        public virtual bool Execute(AutoCompleteEventArgs e)
+        public virtual bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            using (var pane = e.CodePane)
+            if (!e.IsCharacter || !IsInlineCharCompletion)
+            {
+                return false;
+            }
+
+            var module = e.CodeModule;
+            using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
-                if (selection.StartColumn < 2) { return false; }
-                
-                if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken)
+                if (e.Character.ToString() == InputToken)
                 {
-                    using (var module = pane.CodeModule)
-                    {
-                        var newCode = e.OldCode.Insert(selection.StartColumn - 1, OutputToken);
-                        module.ReplaceLine(selection.StartLine, newCode);
-                        pane.Selection = selection;
-                        e.NewCode = newCode;
-                        return true;
-                    }
+                    var code = module.GetLines(selection).Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
+                    module.ReplaceLine(selection.StartLine, code);
+                    pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 1);
+                    e.Handled = true;
+                    return true;
                 }
                 return false;
             }
