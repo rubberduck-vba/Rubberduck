@@ -166,20 +166,17 @@ namespace Rubberduck.VBEditor.Events
             if (pane != null) SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs(pane));
         }
 
-        //private static string _currentLine;
         public static event EventHandler<AutoCompleteEventArgs> KeyDown; 
         private static void OnKeyDown(KeyPressEventArgs e)
         {
             using (var pane = GetCodePaneFromHwnd(e.Hwnd))
-            using (var module = pane.CodeModule)
             {
-                var args = new AutoCompleteEventArgs(module, e);
-                //if (_currentLine != args.CurrentLine)
-                //{
+                using (var module = pane.CodeModule)
+                {
+                    var args = new AutoCompleteEventArgs(module, e);
                     KeyDown?.Invoke(_vbe, args);
-                    //_currentLine = args.NewCode;
                     e.Handled = args.Handled;
-                //}
+                }
             }
         }
 
@@ -194,7 +191,10 @@ namespace Rubberduck.VBEditor.Events
             try
             {
                 var caption = hwnd.GetWindowText();
-                return _vbe.CodePanes.FirstOrDefault(x => x.Window.Caption.Equals(caption));
+                using (var panes = _vbe.CodePanes)
+                {
+                    return panes.FirstOrDefault(x => x.Window.Caption.Equals(caption));
+                }
             }
             catch
             {
@@ -213,7 +213,10 @@ namespace Rubberduck.VBEditor.Events
             }
 
             var caption = hwnd.GetWindowText();
-            return _vbe.Windows.FirstOrDefault(x => x.Caption.Equals(caption));
+            using (var windows = _vbe.Windows)
+            {
+                return windows.FirstOrDefault(x => x.Caption.Equals(caption));
+            }
         }
 
         /// <summary>

@@ -1,9 +1,14 @@
 ﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Rubberduck.AutoComplete
 {
@@ -28,9 +33,9 @@ namespace Rubberduck.AutoComplete
 
         protected virtual bool IndentBody => true;
 
-        public override bool Execute(AutoCompleteEventArgs e)
+        public override bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (e.Keys != System.Windows.Forms.Keys.Enter /*&& e.Keys != System.Windows.Forms.Keys.Tab*/)
+            if (e.Keys != Keys.Enter && (settings.CompleteBlockOnTab && e.Keys != Keys.Tab))
             {
                 return false;
             }
@@ -54,27 +59,47 @@ namespace Rubberduck.AutoComplete
                                 ? code.EndsWith(InputToken)
                                 : Regex.IsMatch(code.Trim(), pattern, RegexOptions.IgnoreCase);
 
-                if (!code.HasComment(out _) && isMatch)
+                if (isMatch && !code.HasComment(out _) && !IsBlockCompleted(module, selection))
                 {
                     var indent = code.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                     var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
-                    if (module.GetLines(selection.NextLine.NextLine) == newCode)
-                    {
-                        return false;
-                    }
 
                     var stdIndent = IndentBody ? IndenterSettings.Create().IndentSpaces : 0;
 
                     module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
 
                     module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
-                    pane.Selection = new VBEditor.Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
+                    pane.Selection = new Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
 
                     e.Handled = true;
                     return true;
                 }
                 return false;
             }
+        }
+
+        private bool IsBlockCompleted(ICodeModule module, Selection selection)
+        {
+            string content;
+            var proc = module.GetProcOfLine(selection.StartLine);
+            if (proc == null)
+            {
+                content = module.GetLines(1, module.CountOfDeclarationLines);
+            }
+            else
+            {
+                var procKind = module.GetProcKindOfLine(selection.StartLine);
+                var startLine = module.GetProcStartLine(proc, procKind);
+                var lineCount = module.GetProcCountLines(proc, procKind);
+                content = module.GetLines(startLine, lineCount);
+            }
+
+            var options = RegexOptions.IgnoreCase;
+            var inputPattern = $"(?<!{OutputToken.Replace(InputToken, string.Empty)})\\b{InputToken}\\b";
+            var inputMatches = Regex.Matches(content, inputPattern, options).Count;
+            var outputMatches = Regex.Matches(content, $"\\b{OutputToken}\\b", options).Count;
+
+            return inputMatches > 0 && inputMatches == outputMatches;
         }
     }
 }

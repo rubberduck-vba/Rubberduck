@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.AutoComplete
@@ -15,11 +14,13 @@ namespace Rubberduck.AutoComplete
         private readonly IGeneralConfigService _configService;
         private readonly List<IAutoComplete> _autoCompletes;
 
+        private AutoCompleteSettings _settings;
+
         public AutoCompleteService(IGeneralConfigService configService, IAutoCompleteProvider provider)
         {
             _configService = configService;
             _autoCompletes = provider.AutoCompletes.ToList();
-            UpdateEnabledAutoCompletes(configService.LoadConfiguration());
+            ApplyAutoCompleteSettings(configService.LoadConfiguration());
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             VBENativeServices.KeyDown += HandleKeyDown;
@@ -28,11 +29,12 @@ namespace Rubberduck.AutoComplete
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
             var config = _configService.LoadConfiguration();
-            UpdateEnabledAutoCompletes(config);
+            ApplyAutoCompleteSettings(config);
         }
 
-        private void UpdateEnabledAutoCompletes(Configuration config)
+        private void ApplyAutoCompleteSettings(Configuration config)
         {
+            _settings = config.UserSettings.AutoCompleteSettings;
             foreach (var autoComplete in _autoCompletes)
             {
                 var setting = config.UserSettings.AutoCompleteSettings.AutoCompletes.FirstOrDefault(s => s.Key == autoComplete.GetType().Name);
@@ -67,7 +69,7 @@ namespace Rubberduck.AutoComplete
                 }
                 else
                 {
-                    if (autoComplete.Execute(e))
+                    if (autoComplete.Execute(e, _settings))
                     {
                         break;
                     }
@@ -89,8 +91,7 @@ namespace Rubberduck.AutoComplete
                     ? code.Substring(e.CurrentSelection.StartColumn - 1, 1)
                     : string.Empty;
 
-                if (caretLHS == autoComplete.InputToken && caretRHS == autoComplete.OutputToken
-                    /*&& !string.IsNullOrEmpty(code.Substring(e.CurrentSelection.StartColumn - 1))*/)
+                if (caretLHS == autoComplete.InputToken && caretRHS == autoComplete.OutputToken)
                 {
                     var left = code.Substring(0, e.CurrentSelection.StartColumn - 2);
                     var right = code.Substring(e.CurrentSelection.StartColumn);

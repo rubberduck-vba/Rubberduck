@@ -1,8 +1,7 @@
-﻿using Rubberduck.VBEditor;
+﻿using Rubberduck.Settings;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
-using System.Collections.Generic;
 
 namespace Rubberduck.AutoComplete
 {
@@ -18,20 +17,7 @@ namespace Rubberduck.AutoComplete
         public string InputToken { get; }
         public string OutputToken { get; }
 
-        private readonly Stack<Tuple<int, string>> OriginalLines;
-
-        public void Revert()
-        {
-            if (OriginalLines.Count > 0)
-            {
-                var original = OriginalLines.Pop();
-                var line = original.Item1;
-                var content = original.Item2;
-
-            }
-        }
-
-        public virtual bool Execute(AutoCompleteEventArgs e)
+        public virtual bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
             if (!e.IsCharacter)
             {

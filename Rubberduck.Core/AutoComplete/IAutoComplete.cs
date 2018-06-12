@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor.Events;
+﻿using Rubberduck.Settings;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.AutoComplete
 {
@@ -6,8 +7,7 @@ namespace Rubberduck.AutoComplete
     {
         string InputToken { get; }
         string OutputToken { get; }
-        bool Execute(AutoCompleteEventArgs e);
-        void Revert();
+        bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings);
         bool IsEnabled { get; set; }
     }
 }

@@ -18,12 +18,9 @@ namespace Rubberduck.Common
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IVBE _vbe;
-
         public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory, AutoCompleteService autoComplete)
             : base((IntPtr)vbe.MainWindow.HWnd, (IntPtr)vbe.MainWindow.HWnd)
         {
-            _vbe = vbe;
             _config = config;
             _hotkeyFactory = hotkeyFactory;
             AutoComplete = autoComplete;

@@ -8,22 +8,25 @@ namespace Rubberduck.VBEditor.Events
     {
         public AutoCompleteEventArgs(ICodeModule module, WindowsApi.KeyPressEventArgs e)
         {
-            Character = e.Character;
-            CodeModule = module;
-            CurrentSelection = module.GetQualifiedSelection().Value.Selection;
-            CurrentLine = module.GetLines(CurrentSelection);
-
-            if (e.Key == Keys.Delete || 
+            if (e.Key == Keys.Delete ||
                 e.Key == Keys.Back ||
-                e.Key == Keys.Enter)
+                e.Key == Keys.Enter ||
+                e.Key == Keys.Tab)
             {
                 Keys = e.Key;
             }
+            else
+            {
+                Character = e.Character;
+            }
+            CodeModule = module;
+            CurrentSelection = module.GetQualifiedSelection().Value.Selection;
+            CurrentLine = module.GetLines(CurrentSelection);
         }
 
         /// <summary>
         /// <c>true</c> if the character has been handled, i.e. written to the code pane.
-        /// Set to <c>false</c> to swallow the character and prevent the WM message from reaching the code pane.
+        /// Set to <c>true</c> to swallow the character and prevent the WM message from reaching the code pane.
         /// </summary>
         public bool Handled { get; set; }
 
