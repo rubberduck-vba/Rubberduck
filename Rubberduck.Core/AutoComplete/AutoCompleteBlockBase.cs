@@ -35,7 +35,8 @@ namespace Rubberduck.AutoComplete
 
         public override bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (IsInlineCharCompletion || e.Keys == Keys.None || (e.Keys != Keys.Enter && (settings.CompleteBlockOnTab && e.Keys != Keys.Tab)))
+            var ignoreTab = e.Keys == Keys.Tab && !settings.CompleteBlockOnTab;
+            if (IsInlineCharCompletion || e.Keys == Keys.None || ignoreTab)
             {
                 return false;
             }

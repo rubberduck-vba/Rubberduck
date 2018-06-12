@@ -41,12 +41,28 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
+            config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab = CompleteBlockOnTab;
             config.UserSettings.AutoCompleteSettings.AutoCompletes = new HashSet<AutoCompleteSetting>(_settings);
         }
 
         private void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
         {
+            CompleteBlockOnTab = toLoad.CompleteBlockOnTab;
             Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
+        }
+
+        private bool _completeBlockOnTab;
+        public bool CompleteBlockOnTab
+        {
+            get { return _completeBlockOnTab; }
+            set
+            {
+                if (_completeBlockOnTab != value)
+                {
+                    _completeBlockOnTab = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private bool _selectAll;
@@ -99,7 +115,8 @@ namespace Rubberduck.UI.Settings
                 var service = new XmlPersistanceService<Rubberduck.Settings.AutoCompleteSettings> { FilePath = dialog.FileName };
                 service.Save(new Rubberduck.Settings.AutoCompleteSettings
                 {
-                     AutoCompletes = new HashSet<AutoCompleteSetting>(Settings),
+                    CompleteBlockOnTab = this.CompleteBlockOnTab,
+                    AutoCompletes = new HashSet<AutoCompleteSetting>(Settings),
                 });
             }
         }
