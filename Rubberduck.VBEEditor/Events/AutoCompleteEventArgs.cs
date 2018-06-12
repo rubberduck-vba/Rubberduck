@@ -35,13 +35,29 @@ namespace Rubberduck.VBEditor.Events
         /// </summary>
         public ICodeModule CodeModule { get; }
 
+        /// <summary>
+        /// <c>true</c> if the event is originating from a <c>WM_CHAR</c> message.
+        /// <c>false</c> if the event is originating from a <c>WM_KEYDOWN</c> message.
+        /// </summary>
+        /// <remarks>
+        /// Inline completion is handled on WM_CHAR; deletions and block completion on WM_KEYDOWN.
+        /// </remarks>
         public bool IsCharacter => Keys == default;
+        /// <summary>
+        /// The character whose key was pressed. Undefined value if <see cref="Keys"/> isn't `<see cref="Keys.None"/>.
+        /// </summary>
         public char Character { get; }
+        /// <summary>
+        /// The actionnable key that was pressed. Value is <see cref="Keys.None"/> when <see cref="IsCharacter"/> is <c>true</c>.
+        /// </summary>
         public Keys Keys { get; }
 
+        /// <summary>
+        /// The current location of the caret.
+        /// </summary>
         public Selection CurrentSelection { get; }
         /// <summary>
-        /// If not committed, the entire current line of code. If committed, the line of code immediately preceding the current selection.
+        /// The contents of the current line of code.
         /// </summary>
         public string CurrentLine { get; }
     }
