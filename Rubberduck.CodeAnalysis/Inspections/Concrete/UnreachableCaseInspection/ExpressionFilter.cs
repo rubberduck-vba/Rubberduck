@@ -1,9 +1,7 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -66,11 +64,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             return Ranges.SetEquals(filter.Ranges)
-                && this[VariableClauseTypes.Range].SetEquals(filter[VariableClauseTypes.Range])
                 && SingleValues.SetEquals(filter.SingleValues)
-                && this[VariableClauseTypes.Value].SetEquals(filter[VariableClauseTypes.Value])
                 && ComparablePredicates.SetEquals(filter.ComparablePredicates)
                 && LikePredicates.SetEquals(filter.LikePredicates)
+                && this[VariableClauseTypes.Range].SetEquals(filter[VariableClauseTypes.Range])
+                && this[VariableClauseTypes.Value].SetEquals(filter[VariableClauseTypes.Value])
                 && this[VariableClauseTypes.Predicate].SetEquals(filter[VariableClauseTypes.Predicate])
                 && this[VariableClauseTypes.Is].SetEquals(filter[VariableClauseTypes.Is])
                 && Limits.Equals(filter.Limits);

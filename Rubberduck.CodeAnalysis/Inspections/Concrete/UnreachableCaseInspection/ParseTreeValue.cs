@@ -13,8 +13,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool ParsesToConstantValue { get; set; }
     }
 
-    public delegate bool TryConvertParseTreeValue<T>(IParseTreeValue value, out T result);
-
     public class ParseTreeValue : IParseTreeValue
     {
         private readonly string _inputValue;
@@ -384,6 +382,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public struct PredicateValueExpression<T> where T : IComparable<T>
     {
+        private readonly int _hashCode;
+
         public string LHS { private set; get; }
         public T RHS { private set; get; }
         public string OpSymbol { private set; get; }
@@ -393,12 +393,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             LHS = lhs;
             RHS = rhs;
             OpSymbol = opSymbol;
+            _hashCode = ($"{LHS} {OpSymbol} {RHS}").GetHashCode();
         }
 
-        public override string ToString()
-        {
-            return $"{LHS} {OpSymbol} {RHS}";
-        }
+        public override string ToString() => $"{LHS} {OpSymbol} {RHS}";
+
+        public override int GetHashCode() => _hashCode;
 
         public override bool Equals(object obj)
         {
@@ -407,32 +407,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return false;
             }
             return ToString().Equals(expression.ToString());
-        }
-
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
-
-        public bool Filters(PredicateValueExpression<T> predicate)
-        {
-            if (OpSymbol != predicate.OpSymbol)
-            {
-                return false;
-            }
-            if (OpSymbol.Equals(LogicSymbols.LT) || OpSymbol.Equals(LogicSymbols.LTE))
-            {
-                return RHS.CompareTo(predicate.RHS) >= 0;
-            }
-            else if (OpSymbol.Equals(LogicSymbols.GT) || OpSymbol.Equals(LogicSymbols.GTE))
-            {
-                return RHS.CompareTo(predicate.RHS) <= 0;
-            }
-            else if (OpSymbol.Equals(LogicSymbols.EQ) || OpSymbol.Equals(LogicSymbols.NEQ))
-            {
-                return RHS.CompareTo(predicate.RHS) == 0;
-            }
-            return false;
         }
     }
 

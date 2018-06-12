@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -152,43 +148,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public bool TryGetMaximum(out T maximum)
         {
-            maximum = default;
-            if (HasMaximum)
-            {
-                maximum = Maximum;
-                return true;
-            }
-            return false;
+            maximum = HasMaximum ? Maximum : default;
+            return HasMaximum;
         }
 
         public bool TryGetMinimum(out T minimum)
         {
-            minimum = default;
-            if (HasMinimum)
-            {
-                minimum = Minimum;
-                return true;
-            }
-            return false;
+            minimum = HasMinimum ? Minimum : default;
+            return HasMinimum;
         }
 
         public bool CoversValue(T value) => _min > value || _max < value;
 
         public bool CoversRange((T Start, T End) range) => _min > range.End || _max < range.Start;
-
-        public bool FiltersLimits(FilterLimits<T> limits)
-        {
-            var results = new List<bool>();
-            if (limits.HasMinimum)
-            {
-                results.Add(HasMinimum ? _min >= limits._min : false);
-            }
-            if (limits.HasMaximum)
-            {
-                results.Add(HasMaximum ? _max <= limits._max : false);
-            }
-            return results.All(r => r == true);
-        }
 
         public override bool Equals(object obj)
         {
@@ -229,7 +201,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var maxString = string.Empty;
             if (_min.HasValue)
             {
-                minString = MinimumExtent.HasValue && _min == MinimumExtent 
+                minString = MinimumExtent.HasValue && _min == MinimumExtent
                     ? $"Min(typeMin)" : $"Min({_min.ToString()})";
             }
 
