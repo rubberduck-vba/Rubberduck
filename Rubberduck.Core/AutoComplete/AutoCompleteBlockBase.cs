@@ -47,7 +47,7 @@ namespace Rubberduck.AutoComplete
                 var selection = pane.Selection;
                 var code = module.GetLines(selection);
 
-                if (SkipPreCompilerDirective && code.Trim().StartsWith("#"))
+                if (SkipPreCompilerDirective && code.Trim().StartsWith("#") || code.Contains(" Declare "))
                 {
                     return false;
                 }
