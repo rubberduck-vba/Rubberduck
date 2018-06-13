@@ -11,7 +11,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (expression.LHSValue.ParsesToConstantValue)
             {
-                //if(expression.LHSValue.TryConvertValue(out bool bVal))
                 if (Converter(expression.LHS, Tokens.Boolean, out bool bVal))
                 {
                     return AddIsClause(bVal, expression);
@@ -56,8 +55,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || (opSymbol.Equals(LogicSymbols.LTE) && bVal)
                 )
             {
-                var inputPredicate = new PredicateValueExpression<string>(Tokens.Is, val.ToString(), opSymbol);
-                AddComparablePredicate(Tokens.Is, val.ToString(), opSymbol);
+                AddComparablePredicate(Tokens.Is, expression);
             }
             else if (opSymbol.Equals(LogicSymbols.GT) || opSymbol.Equals(LogicSymbols.GTE))
             {
@@ -78,7 +76,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected override bool TryGetMinimum(out bool minimum) { minimum = default; return false; }
 
-        //protected override bool AddValueRange(RangeValues<bool> range)
         protected override bool AddValueRange((bool Start, bool End) range)
         {
             var addsStart = AddSingleValue(range.Start);

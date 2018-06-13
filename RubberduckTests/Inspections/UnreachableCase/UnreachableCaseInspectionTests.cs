@@ -328,45 +328,30 @@ $@"Sub Foo(x As {type})
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        //TODO: we need a test for the other operators <=, > , >= Note: probably belongs 
-        //in rangefilter tests
-//        [Test]
-//        [Category("Inspections")]
-//        public void UnreachableCaseInspection_RelationalOp1()
-//        {
-//            string inputCode =
-//@"Sub Foo(x As Long)
-//    Select Case x
-//        Case x < 100
-//        'OK
-//        Case 100 > x
-//        'Unreachable
-//        Case x < 50
-//        'Unreachable
-//    End Select
-//End Sub";
-//            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
-//            Assert.AreEqual(expectedMsg, actualMsg);
-//        }
-
-        [Test]
+        //For all values of 'y', one of prior case statements equals Case #3
+        [TestCase("y < 55", "y > 30", "True")]
+        [TestCase("y = 2", "y = 30", "False")]
+        [TestCase("y <= 55", "y > 75", "y <= 55")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_RelationalOpExpression()
+        public void UnreachableCaseInspection_ComparablePredicates(string case1, string case2, string case3)
         {
             string inputCode =
-@"Sub Foo(x As Long)
-
-        Private Const fromVal As Long = 500
-        Private Const toVal As Long = 1000
+@"Sub Foo(x As Long, y As Double)
 
         Select Case x
-           Case toVal < fromVal * 6
+           Case <case1>
             'OK
-           Case True
+           Case <case2>
+            'OK
+           Case <case3>
             'Unreachable
         End Select
 
         End Sub";
+
+            inputCode = inputCode.Replace("<case1>", case1);
+            inputCode = inputCode.Replace("<case2>", case2);
+            inputCode = inputCode.Replace("<case3>", case3);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2002,7 +1987,7 @@ End Sub
             var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext);
 
             var inspector = IUnreachableCaseInspectorFactory.Create(selectStmtContext, selectStmtValueResults, ValueFactory);
-            return ((IUnreachableCaseInspectorTest)inspector).SelectExpressionTypeName;
+            return inspector.SelectExpressionTypeName;
         }
 
         private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt)

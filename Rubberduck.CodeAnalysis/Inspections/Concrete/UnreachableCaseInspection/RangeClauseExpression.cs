@@ -1,9 +1,5 @@
 ﻿using Rubberduck.Parsing.Grammar;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -18,9 +14,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool IsUnreachable { set; get; }
     }
 
-    public class RangeValuesExpression : RangeClauseExpression
+    public class RangeOfValuesExpression : RangeClauseExpression
     {
-        public RangeValuesExpression(IParseTreeValue lhs, IParseTreeValue rhs)
+        public RangeOfValuesExpression(IParseTreeValue lhs, IParseTreeValue rhs)
             : base(lhs, rhs, Tokens.To) { }
     }
 
@@ -85,7 +81,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public bool IsMismatch { set => _data.IsMismatch = value; get => _data.IsMismatch; }
         public bool IsUnreachable { set => _data.IsUnreachable = value; get => _data.IsUnreachable; }
 
-
         public RangeClauseExpression(IParseTreeValue rhs, IParseTreeValue lhs, string opSymbol, bool sortOperands = false)
         {
             _data = new ClauseExpressionData(rhs, lhs, opSymbol);
@@ -131,14 +126,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static Dictionary<string, string> AlgebraicInverses = new Dictionary<string, string>()
         {
             [LogicSymbols.LT] = LogicSymbols.GT,
-            [LogicSymbols.LTE] = LogicSymbols.GTE,
-            [LogicSymbols.GT] = LogicSymbols.LT,
-            [LogicSymbols.GTE] = LogicSymbols.LTE,
-            [LogicSymbols.EQ] = LogicSymbols.EQ,
             [LogicSymbols.NEQ] = LogicSymbols.NEQ,
             [LogicSymbols.AND] = LogicSymbols.AND,
             [LogicSymbols.OR] = LogicSymbols.OR,
             [LogicSymbols.XOR] = LogicSymbols.XOR,
+            [LogicSymbols.LTE] = LogicSymbols.GTE,
+            [LogicSymbols.GT] = LogicSymbols.LT,
+            [LogicSymbols.GTE] = LogicSymbols.LTE,
+            [LogicSymbols.EQ] = LogicSymbols.EQ,
         };
 
         private struct ClauseExpressionData : IRangeClauseExpression

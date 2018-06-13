@@ -91,34 +91,30 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expected, filter.ToString());
         }
 
-        //TODO: Put these tests back in
-        //[TestCase("RelOp!x < 65", "RelOp!x < 55", "RelOp!x < 65")]
-        //[TestCase("RelOp!x < 55", "RelOp!x < 65", "RelOp!x < 65")]
-        //[TestCase("RelOp!x > 65", "RelOp!x > 55", "RelOp!x > 55")]
-        //[TestCase("RelOp!x > 55", "RelOp!x > 65", "RelOp!x > 55")]
-        //[TestCase("RelOp!55 < x", "RelOp!x > 65", "RelOp!x > 55")]
-        //[TestCase("RelOp!x >= 65", "RelOp!x >= 55", "RelOp!x >= 55")]
-        //[TestCase("RelOp!x <= 55", "RelOp!x <= 65", "RelOp!x <= 65")]
-        //[TestCase("RelOp!x <> 55", "RelOp!x <> 65, RelOp!y < 34", "RelOp!x <> 55,RelOp!x <> 65")]
-        //[TestCase("RelOp!x <> 55", "RelOp!x <> 65, RelOp!y <> 34", "RelOp!x <> 55,RelOp!x <> 65")]
-        //[TestCase("RelOp!x > 65", "RelOp!x >= 55", "RelOp!x >= 55")]
-        //[TestCase("RelOp!x And 55", "RelOp!x And 65", "RelOp!x")]
-        //[TestCase("RelOp!x Or 55", "RelOp!x Or 65", "Value!-1")]
-        //[TestCase("RelOp!x = 55", "RelOp!x = 65", "RelOp!x = 55,RelOp!x = 65")]
+        //TODO: Test Boolean and other types?
+        [TestCase("RelOp!x < 65", "RelOp!x < 55", "RelOp!x < 65,RelOp!x < 55")]
+        [TestCase("RelOp!x > 55", "RelOp!x < 65", "Value!-1,RelOp!x > 55,RelOp!x < 65")]
+        [TestCase("RelOp!x > 65", "RelOp!x < 55", "Value!0, RelOp!x > 65,RelOp!x < 55")]
+        [TestCase("RelOp!x <> 55", "RelOp!x <> 60,RelOp!x = 95", "Value!-1,RelOp!x <> 55,RelOp!x <> 60,RelOp!x = 95")]
+        [TestCase("Value!0,RelOp!x > 55", "RelOp!x < 65,RelOp!x = 70", "RelOp!x > 55,RelOp!x < 65,Value!0,Value!-1")]
+        [TestCase("Value!-1,RelOp!x = 55", "RelOp!x = 65,RelOp!x = 0", "RelOp!x = 55,RelOp!x = 65,Value!-1,Value!0")]
+        [TestCase("RelOp!x <= 55", "RelOp!x > 65", "Value!0,RelOp!x <= 55,RelOp!x > 65")]
         [Category("Inspections")]
-        //public void ExpressionFilter_VariableRelationalOps(string firstCase, string secondCase, string expected)
-        //{
-        //    var filter = ExpressionFilterFactory.Create(Tokens.Long);
-        //    var expressions = RangeDescriptorsToExpressions(new string[] { firstCase, secondCase }, Tokens.Long);
-        //    foreach (var expr in expressions)
-        //    {
-        //        filter.AddExpression(expr);
-        //    }
+        public void ExpressionFilter_VariableRelationalOps(string firstCase, string secondCase, string expected)
+        {
+            var filter = ExpressionFilterFactory.Create(Tokens.Long);
+            filter.AddComparablePredicateFilter("x", Tokens.Long);
 
-        //    var expectedFilter = RangeDescriptorsToFilters(new string[] { expected }, Tokens.Long).First();
+            var expressions = RangeDescriptorsToExpressions(new string[] { firstCase, secondCase }, Tokens.Long);
+            foreach (var expr in expressions)
+            {
+                filter.AddExpression(expr);
+            }
 
-        //    Assert.AreEqual(expectedFilter, filter);
-        //}
+            var expectedFilter = RangeDescriptorsToFilters(new string[] { expected }, Tokens.Long).First();
+
+            Assert.AreEqual(expectedFilter, filter);
+        }
 
         [TestCase("150?Long_To_50?Long", "Long", "")]
         [TestCase("50?Long_To_50?Long", "Boolean", "Value!True")]
@@ -141,7 +137,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             foreach (var clause in clauses)
             {
                 GetBinaryOpValues(clause, out IParseTreeValue start, out IParseTreeValue end, selectExpressionTypename, out string symbol);
-                filter.AddExpression(new RangeValuesExpression(start, end));
+                filter.AddExpression(new RangeOfValuesExpression(start, end));
             }
 
             var expected = RangeDescriptorsToFilters(new string[] { expectedRangeClauses }, selectExpressionTypename).First();
@@ -438,7 +434,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         return ValueFactory.Create(value, conformToTypeName: conformTo);
                     }
                     var ptValue = ValueFactory.Create(value, declaredType, conformTo);
-                    //ptValue.ParsesToConstantValue = !ptValue.IsVariable;
                     return ptValue;
                 }
             }
@@ -545,7 +540,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
                             //testValStart.ParsesToConstantValue = !testValStart.IsVariable;
                             //testValEnd.ParsesToConstantValue = !testValEnd.IsVariable;
                         //}
-                        var expression = new RangeValuesExpression(testValStart, testValEnd);
+                        var expression = new RangeOfValuesExpression(testValStart, testValEnd);
                         result.AddExpression(expression);
                     }
                     else if (clauseType.Equals("Value"))
@@ -649,12 +644,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         var startEnd = clauseExpression.Split(new string[] { RANGE_STARTEND_DELIMITER }, StringSplitOptions.None);
                         var testValStart = ValueFactory.Create(startEnd[0], conformToTypeName: conformToType);
                         var testValEnd = ValueFactory.Create(startEnd[1], conformToTypeName: conformToType);
-                        if (!conformToType.Equals(string.Empty))
-                        {
+                        //if (!conformToType.Equals(string.Empty))
+                        //{
                             //testValStart.ParsesToConstantValue = !testValStart.IsVariable;
                             //testValEnd.ParsesToConstantValue = !testValEnd.IsVariable;
-                        }
-                        results.Add(new RangeValuesExpression(testValStart, testValEnd));
+                        //}
+                        results.Add(new RangeOfValuesExpression(testValStart, testValEnd));
                     }
                     else if (clauseType.Equals("Value"))
                     {

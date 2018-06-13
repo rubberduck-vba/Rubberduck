@@ -15,30 +15,62 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public interface IExpressionFilter
     {
-        IRangeClauseExpression AddExpression(IRangeClauseExpression expression);
+        void AddExpression(IRangeClauseExpression expression);
+        void AddComparablePredicateFilter(string variable, string variableTypeName);
         bool HasFilters { get; }
         bool FiltersAllValues { get; }
     }
 
     public class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
     {
+        private struct PredicateValueExpression
+        {
+            private readonly int _hashCode;
+            private readonly string _toString;
+
+            public string LHS { private set; get; }
+            public T RHS { private set; get; }
+            public string OpSymbol { private set; get; }
+
+            public PredicateValueExpression(string lhs, T rhs, string opSymbol)
+            {
+                LHS = lhs;
+                RHS = rhs;
+                OpSymbol = opSymbol;
+                _toString = $"{LHS} {OpSymbol} {RHS}";
+                _hashCode = _toString.GetHashCode();
+            }
+
+            public override string ToString() => _toString;
+            public override int GetHashCode() => _hashCode;
+            public override bool Equals(object obj)
+            {
+                if (!(obj is PredicateValueExpression expression))
+                {
+                    return false;
+                }
+                return _toString.Equals(expression.ToString());
+            }
+        }
+
         private readonly T _trueValue;
         private readonly T _falseValue;
         private readonly string _filterTypeName;
-
-        public ExpressionFilter() { }
+        private string _toString;
 
         public ExpressionFilter(StringToValueConversion<T> converter, string typeName)
         {
             Converter = converter;
             _filterTypeName = typeName;
-            converter("True", _filterTypeName, out _trueValue);
-            converter("False", _filterTypeName, out _falseValue);
+            converter("True", typeName, out _trueValue);
+            converter("False", typeName, out _falseValue);
         }
 
         private HashSet<IRangeClauseExpression> LikePredicates { get; } = new HashSet<IRangeClauseExpression>();
 
-        private HashSet<PredicateValueExpression<T>> ComparablePredicates { get; } = new HashSet<PredicateValueExpression<T>>();
+        private HashSet<PredicateValueExpression> ComparablePredicates { get; } = new HashSet<PredicateValueExpression>();
+
+        private bool IsDirty { set; get; } = true;
 
         protected Dictionary<VariableClauseTypes, HashSet<string>> Variables { get; } = new Dictionary<VariableClauseTypes, HashSet<string>>()
         {
@@ -48,13 +80,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [VariableClauseTypes.Value] = new HashSet<string>(),
         };
 
-        protected StringToValueConversion<T> Converter { set; get; } = null;
+    protected StringToValueConversion<T> Converter { set; get; } = null;
 
         protected HashSet<T> SingleValues { set; get; } = new HashSet<T>();
 
         protected HashSet<(T Start, T End)> Ranges { set; get; } = new HashSet<(T Start, T End)>();
 
         protected FilterLimits<T> Limits { get; } = new FilterLimits<T>();
+
+        private Dictionary<string, IExpressionFilter> ComparablePredicateFilters { set; get; } = new Dictionary<string, IExpressionFilter>();
+
+        private Dictionary<string, IExpressionFilter> ComparablePredicateFiltersInverse { set; get; } = new Dictionary<string, IExpressionFilter>();
+
+        public void AddComparablePredicateFilter(string variable, string variableTypeName)
+        {
+            if (variable is null || variable.Length == 0 || variableTypeName is null || variableTypeName.Length == 0)
+            {
+                return;
+            }
+
+            if (!ComparablePredicateFilters.ContainsKey(variable))
+            {
+                ComparablePredicateFilters.Add(variable, ExpressionFilterFactory.Create(variableTypeName));
+                ComparablePredicateFiltersInverse.Add(variable, ExpressionFilterFactory.Create(variableTypeName));
+            }
+        }
 
         public override bool Equals(object obj)
         {
@@ -80,6 +130,38 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected virtual bool TryGetMinimum(out T minimum) => Limits.TryGetMinimum(out minimum);
 
+        public void AddExpression(IRangeClauseExpression expression)
+        {
+            if (expression is null) { return; }
+
+            try
+            {
+                switch (expression)
+                {
+                    case IsClauseExpression isClause:
+                        expression.IsUnreachable =  !AddIsClause(isClause);
+                        return;
+                    case RangeOfValuesExpression rangeExpr:
+                        expression.IsUnreachable = !AddRangeOfValuesExpression(rangeExpr);
+                        return;
+                    case ValueExpression valueExpr:
+                        expression.IsUnreachable = !AddValueExpression(valueExpr);
+                        return;
+                    case UnaryExpression unaryExpr:
+                        expression.IsUnreachable = !AddUnaryExpression(unaryExpr);
+                        return;
+                    case BinaryExpression binary:
+                        expression.IsUnreachable = !AddBinaryExpression(binary);
+                        return;
+                }
+
+            }
+            catch (ArgumentException)
+            {
+                expression.IsMismatch = true;
+            }
+        }
+
         public virtual bool HasFilters => Ranges.Any()
                     || SingleValues.Any()
                     || Limits.Any()
@@ -94,53 +176,66 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (FiltersTrueFalse) { return false; }
 
-            DescriptorIsDirty = true;
-
             return predicate.RHS.Equals("*") ? AddSingleValue(_trueValue) 
                 : AddToContainer(LikePredicates, predicate);
         }
 
-
-        protected bool AddComparablePredicate(string lhs, string rhs, string opSymbol)
+        protected bool AddComparablePredicate(string lhs, IRangeClauseExpression expression)
         {
             if (FiltersTrueFalse) { return false; }
 
-            DescriptorIsDirty = true;
-
-            if (!Converter(rhs, _filterTypeName, out T rhsVal))
+            if (!Converter(expression.RHS, _filterTypeName, out T rhsVal))
             {
-                throw new ArgumentOutOfRangeException($"Unable to convert {rhs} to {typeof(T)}");
+                throw new ArgumentOutOfRangeException($"Unable to convert {expression.RHS} to {typeof(T)}");
             }
 
-            var predicate = new PredicateValueExpression<T>(lhs, rhsVal, opSymbol);
-
-            var matchingVariablesAndSymbol = ComparablePredicates
-                .Where(pv => pv.LHS.CompareTo(predicate.LHS) == 0 && pv.OpSymbol.Equals(predicate.OpSymbol));
-
-            if (matchingVariablesAndSymbol.Any(cv => cv.Equals(predicate)))
+            if (ComparablePredicateFilters.ContainsKey(lhs))
             {
-                return false;
+                var positiveLogic = ComparablePredicateFilters[lhs];
+                if (!positiveLogic.FiltersAllValues)
+                {
+                    IRangeClauseExpression predicateExpression = new IsClauseExpression(expression.RHSValue, expression.OpSymbol);
+                    positiveLogic.AddExpression(predicateExpression);
+                    if (positiveLogic.FiltersAllValues)
+                    {
+                        AddSingleValue(_trueValue);
+                    }
+                }
+
+                var negativeLogic = ComparablePredicateFiltersInverse[lhs];
+                if (!negativeLogic.FiltersAllValues)
+                {
+                    IRangeClauseExpression predicateExpressionInverse
+                        = new IsClauseExpression(expression.RHSValue, RelationalInverse(expression.OpSymbol));
+                    negativeLogic.AddExpression(predicateExpressionInverse);
+                    if (negativeLogic.FiltersAllValues)
+                    {
+                        AddSingleValue(_falseValue);
+                    }
+                }
             }
-            else
+
+            var predicate = new PredicateValueExpression(lhs, rhsVal, expression.OpSymbol);
+            var matchingVariablesNames = ComparablePredicates.Where(pv => pv.LHS.CompareTo(predicate.LHS) == 0);
+
+            if (!matchingVariablesNames.Any(cv => cv.Equals(predicate)))
             {
-                ComparablePredicates.Add(predicate);
+                AddToContainer(ComparablePredicates, predicate);
                 return true;
             }
+            return false;
         }
 
-        protected bool AddSingleValue(T value)
-        {
-            return AddToContainer(SingleValues, value);
-        }
+        protected bool AddSingleValue(T value) => AddToContainer(SingleValues, value);
 
         protected virtual bool AddValueRange((T Start, T End) range)
         {
-            DescriptorIsDirty = true;
             if (FiltersRange(range))
             {
                 return false;
             }
 
+            IsDirty = true;
             if (Limits.HasMinimum)
             {
                 range = TrimStart(range, Limits.Minimum);
@@ -221,243 +316,99 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        protected bool FiltersTrueFalse => (FiltersValue(_trueValue) && FiltersValue(_falseValue))
-            || ComparablePredicates.Where(cp => cp.OpSymbol.Equals(LogicSymbols.NEQ)).Count() > 1;
+        protected bool FiltersTrueFalse => FiltersValue(_trueValue) && FiltersValue(_falseValue);
 
-        private HashSet<string> this[VariableClauseTypes eType]
+        private HashSet<string> this[VariableClauseTypes eType] => Variables[eType];
+
+        private bool AddRangeOfValuesExpression(RangeOfValuesExpression rangeExpr)
         {
-            get => Variables.ContainsKey(eType) ? Variables[eType] : new HashSet<string>();
-        }
-
-        public IRangeClauseExpression AddExpression(IRangeClauseExpression expression)
-        {
-            var result = false;
-            try
+            if (rangeExpr.LHSValue.ParsesToConstantValue && rangeExpr.RHSValue.ParsesToConstantValue)
             {
-                result = AddExpressionInternal(expression);
-                expression.IsUnreachable = !result;
-            }
-            catch (ArgumentException)
-            {
-                expression.IsMismatch = true;
-            }
-            return expression;
-        }
+                var (start, end) = ConvertRangeValues(rangeExpr.LHS, rangeExpr.RHS);
 
-        private bool AddExpressionInternal(IRangeClauseExpression expression)
-        {
-            switch (expression)
-            {
-                case IsClauseExpression isClause:
-                    return AddIsClause(isClause);
-                case RangeValuesExpression rangeExpr:
-                    if (rangeExpr.LHSValue.ParsesToConstantValue && rangeExpr.RHSValue.ParsesToConstantValue)
-                    {
-                        var (start, end) = ConvertRangeValues(expression.LHS, expression.RHS);
-                        if (typeof(T) == typeof(bool) ? end.CompareTo(start) > 0 : start.CompareTo(end) > 0)
-                        {
-                            rangeExpr.IsUnreachable = true;
-                            return false;
-                        }
-                        return start.CompareTo(end) == 0 ?
-                            AddSingleValue(start) : AddValueRange((start, end));
-                    }
-                    else
-                    {
-                        return AddToContainer(Variables[VariableClauseTypes.Range], expression.ToString());
-                    }
-                case ValueExpression valueExpr:
-                    if (valueExpr.LHSValue.ParsesToConstantValue)
-                    {
-                        if (Converter(valueExpr.LHS, _filterTypeName, out T result))
-                        {
-                            return FiltersValue(result) ? false : AddSingleValue(result);
-                        }
-                        throw new ArgumentException();
-                    }
-                    else
-                    {
-                        return AddToContainer(Variables[VariableClauseTypes.Value], valueExpr.ToString());
-                    }
-                case UnaryExpression unaryExpr:
-                    if (FiltersTrueFalse) { return false; }
-
-                    if (unaryExpr.LHSValue.ParsesToConstantValue)
-                    {
-                        if (Converter(unaryExpr.LHS, _filterTypeName, out T result))
-                        {
-                            return FiltersValue(result) ? false : AddSingleValue(result);
-                        }
-                        throw new ArgumentException();
-                    }
-                    else
-                    {
-                        return AddToContainer(Variables[VariableClauseTypes.Predicate], expression.ToString());
-                    }
-                case BinaryExpression binary:
-                    var opSymbol = binary.OpSymbol;
-                    if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol)
-                        && !(binary.OpSymbol.Equals(LogicSymbols.EQV) || binary.OpSymbol.Equals(LogicSymbols.IMP)))
-                    {
-                        return false;
-                    }
-
-                    if (opSymbol.Equals(LogicSymbols.LIKE))
-                    {
-                        if (binary.RHS.Equals("*"))
-                        {
-                            return AddToContainer(SingleValues, _trueValue);
-                        }
-                        return AddLike(binary);
-                    }
-
-                    if (!expression.LHSValue.ParsesToConstantValue && expression.RHSValue.ParsesToConstantValue)
-                    {
-                        if (!Converter(expression.RHS, _filterTypeName, out T value))
-                        {
-                            throw new ArgumentException();
-                        }
-
-                        DescriptorIsDirty = true;
-                        var ptv = new PredicateValueExpression<T>(expression.LHS, value, expression.OpSymbol);
-                        return AddComparablePredicate(expression.LHS, expression.RHS, expression.OpSymbol);
-                        //var currentVars = ComparablePredicates.Where(pv => pv.LHS.Equals(expression.LHS) && pv.OpSymbol.Equals(opSymbol));
-                        //var replaceCurrent = false;
-                        //var add = false;
-
-                        //if (currentVars.Any(cv => cv.Equals(ptv)))
-                        //{
-                        //    return false;
-                        //}
-                        ////TODO: Need to handle all the commented (below) logic types
-                        ////TODO: Put the comparisons here in a loop like the comparison for Copy/Paste above
-
-                        //if (!currentVars.Any())
-                        //{
-                        //    ComparablePredicates.Add(ptv);
-                        //    return true;
-                        //}
-                        //else
-                        //{
-                        //    foreach (var cv in currentVars)
-                        //    {
-                        //        //DONEpublic static string EQ => _equalTo ?? LoadSymbols(VBAParser.EQ);
-                        //        //DONEpublic static string NEQ => "<>";
-                        //        //DONEpublic static string LT => _lessThan ?? LoadSymbols(VBAParser.LT);
-                        //        //DONEpublic static string LTE => "<=";
-                        //        //DONEpublic static string GT => _greaterThan ?? LoadSymbols(VBAParser.GT);
-                        //        //DONEpublic static string GTE => ">=";
-                        //        //public static string AND => Tokens.And;
-                        //        //public static string OR => Tokens.Or;
-                        //        //public static string XOR => Tokens.XOr;
-                        //        //public static string NOT => Tokens.Not;
-                        //        //public static string EQV => Tokens.Eqv;
-                        //        //public static string IMP => Tokens.Imp;
-                        //        //public static string LIKE => Tokens.Like;
-
-                        //        var current = currentVars.First();
-                        //        if (current.OpSymbol.Equals(LogicSymbols.LT))
-                        //        {
-                        //            replaceCurrent = current.RHS.CompareTo(value) < 0;
-                        //        }
-                        //        else if (current.OpSymbol.Equals(LogicSymbols.LTE))
-                        //        {
-                        //            replaceCurrent = current.RHS.CompareTo(value) <= 0;
-                        //        }
-                        //        else if (current.OpSymbol.Equals(LogicSymbols.GT))
-                        //        {
-                        //            replaceCurrent = current.RHS.CompareTo(value) > 0;
-                        //        }
-                        //        else if (current.OpSymbol.Equals(LogicSymbols.GTE))
-                        //        {
-                        //            replaceCurrent = current.RHS.CompareTo(value) >= 0;
-                        //        }
-                        //        else if (current.OpSymbol.Equals(LogicSymbols.NEQ))
-                        //        {
-                        //            add = true;
-                        //        }
-                        //        else if (current.OpSymbol.Equals(LogicSymbols.EQ))
-                        //        {
-                        //            add = true;
-                        //        }
-                        //    }
-                        //}
-                        ////else
-                        ////{
-                        ////    ComparablePredicates.Add(ptv);
-                        ////    return true;
-                        ////}
-
-                        //if (replaceCurrent)
-                        //{
-                        //    ComparablePredicates.Remove(currentVars.First());
-                        //    ComparablePredicates.Add(ptv);
-                        //}
-                        //if (add)
-                        //{
-                        //    ComparablePredicates.Add(ptv);
-                        //}
-                        //return replaceCurrent;
-                    }
-                    else if (!expression.LHSValue.ParsesToConstantValue && !expression.RHSValue.ParsesToConstantValue)
-                    {
-                        return AddToContainer(Variables[VariableClauseTypes.Predicate], binary.ToString());
-                    }
+                //If an expression is X To Y where X > Y, then the Range Clause will never execute
+                if (typeof(T) == typeof(bool) ? end.CompareTo(start) > 0 : start.CompareTo(end) > 0)
+                {
+                    rangeExpr.IsUnreachable = true;
                     return false;
-                default:
-                    return false;
+                }
+                return start.CompareTo(end) == 0 ?
+                    AddSingleValue(start) : AddValueRange((start, end));
             }
+            return AddToContainer(Variables[VariableClauseTypes.Range], rangeExpr.ToString());
         }
-        private bool AddVariablePredicate(IRangeClauseExpression expression)
+
+        private bool AddValueExpression(ValueExpression valueExpr)
         {
-            //x < 65, if x > <val>, where <val> < 65 exists or x = <val> and x > <val> where <val> = 65 exists,
-            //then T/F is covered
-            //LT,LTE
-            //if (LT)RHS < MinLimit - unreachable 
-            //if (LTE)RHS is in SingleValues, and RHS < MinLimit - unreachable
-            return false;
+            if (valueExpr.LHSValue.ParsesToConstantValue)
+            {
+                if (Converter(valueExpr.LHS, _filterTypeName, out T result))
+                {
+                    return FiltersValue(result) ? false : AddSingleValue(result);
+                }
+                throw new ArgumentException();
+            }
+            return AddToContainer(Variables[VariableClauseTypes.Value], valueExpr.ToString());
         }
-        //private bool AddVariableRange(IRangeClauseExpression expression)
-        //{
-        //    if (Variables[VariableClauseTypes.Range].Contains(expression.ToString()))
-        //    {
-        //        return false;
-        //    }
 
-        //    if (expression.LHSValue.ParsesToConstantValue)
-        //    {
-        //        var 
-        //    }
-        //    return AddToContainer(Variables[VariableClauseTypes.Range], expression.ToString());
-        //}
-
-        protected bool AddToContainer<K>(HashSet<K> container, K value)
+        private bool AddUnaryExpression(UnaryExpression unaryExpr)
         {
-            if (container.Contains(value))
+            if (FiltersTrueFalse) { return false; }
+
+            if (unaryExpr.LHSValue.ParsesToConstantValue)
+            {
+                if (Converter(unaryExpr.LHS, _filterTypeName, out T result))
+                {
+                    return FiltersValue(result) ? false : AddSingleValue(result);
+                }
+                throw new ArgumentException();
+            }
+            return AddToContainer(Variables[VariableClauseTypes.Predicate], unaryExpr.ToString());
+        }
+
+        private bool AddBinaryExpression(BinaryExpression binary)
+        {
+            var opSymbol = binary.OpSymbol;
+            if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol)
+                && !(binary.OpSymbol.Equals(LogicSymbols.EQV) || binary.OpSymbol.Equals(LogicSymbols.IMP)))
             {
                 return false;
             }
-            container.Add(value);
-            return true;
-        }
 
-        private (T start, T end) ConvertRangeValues(string startVal, string endVal)
-        {
-            if (!Converter(startVal, _filterTypeName, out T start) || !Converter(endVal, _filterTypeName, out T end))
+            if (opSymbol.Equals(LogicSymbols.LIKE))
             {
-                throw new ArgumentException();
+                if (binary.RHS.Equals("*"))
+                {
+                    return AddToContainer(SingleValues, _trueValue);
+                }
+                return AddLike(binary);
             }
-            return (start, end);
+
+            if (!binary.LHSValue.ParsesToConstantValue && binary.RHSValue.ParsesToConstantValue)
+            {
+                if (!Converter(binary.RHS, _filterTypeName, out T value))
+                {
+                    throw new ArgumentException();
+                }
+
+                return AddComparablePredicate(binary.LHS, binary);
+            }
+
+            if (!binary.LHSValue.ParsesToConstantValue && !binary.RHSValue.ParsesToConstantValue)
+            {
+                return AddToContainer(Variables[VariableClauseTypes.Predicate], binary.ToString());
+            }
+            return false;
         }
 
         protected virtual bool AddIsClause(IsClauseExpression expression)
         {
-            DescriptorIsDirty = true;
             if (Converter(expression.LHS, _filterTypeName, out T value))
             {
+                IsDirty = true;
                 if (IsClauseAdders.ContainsKey(expression.OpSymbol))
                 {
-                    if(IsClauseAdders[expression.OpSymbol](this, value))
+                    if (IsClauseAdders[expression.OpSymbol](this, value))
                     {
                         return true;
                     }
@@ -472,6 +423,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected virtual bool AddMinimum(T value)
         {
+            IsDirty = true;
             var result = Limits.SetMinimum(value);
             if(TryGetMinimum(out T min))
             {
@@ -485,12 +437,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 SingleValues.Where(sv => sv.CompareTo(min) < 0).ToList()
                     .ForEach(sv => SingleValues.Remove(sv));
             }
-            DescriptorIsDirty = true;
             return result;
         }
 
         protected virtual bool AddMaximum(T value)
         {
+            IsDirty = true;
             var result =  Limits.SetMaximum(value);
             if (TryGetMaximum(out T max))
             {
@@ -504,13 +456,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 SingleValues.Where(sv => sv.CompareTo(max) > 0).ToList()
                     .ForEach(sv => SingleValues.Remove(sv));
             }
-            DescriptorIsDirty = true;
             return result;
         }
 
         protected void RemoveRangesCoveredByLimits()
         {
-            var rangesToRemove = Ranges.Where(rg => Limits.CoversRange(rg)); //.Start, rg.End));
+            var rangesToRemove = Ranges.Where(rg => Limits.CoversRange(rg));
             foreach(var range in rangesToRemove)
             {
                 Ranges.Remove(range);
@@ -553,17 +504,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return rangeIsAdded;
         }
 
-        private bool DescriptorIsDirty { set; get; }
-
-        private string CachedToStringResult { set; get; }
-
-        private bool StoreVariable(Dictionary<VariableClauseTypes, HashSet<string>> storage, VariableClauseTypes variableType, string value)
+        private (T start, T end) ConvertRangeValues(string startVal, string endVal)
         {
-            if (!storage.ContainsKey(variableType))
+            if (!Converter(startVal, _filterTypeName, out T start) || !Converter(endVal, _filterTypeName, out T end))
             {
-                storage.Add(variableType, new HashSet<string>());
+                throw new ArgumentException();
             }
-            return AddToContainer(storage[variableType], value);
+            return (start, end);
+        }
+
+        protected bool AddToContainer<K>(HashSet<K> container, K value)
+        {
+            if (container.Contains(value))
+            {
+                return false;
+            }
+            IsDirty = true;
+            container.Add(value);
+            return true;
         }
 
         private static Dictionary<string, Func<ExpressionFilter<T>, T, bool>> IsClauseAdders = new Dictionary<string, Func<ExpressionFilter<T>, T, bool>>()
@@ -576,11 +534,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [LogicSymbols.NEQ] = delegate (ExpressionFilter<T> rg, T value) { var min = rg.AddMinimum(value); var max = rg.AddMaximum(value); return min || max; },
         };
 
+        private string RelationalInverse(string opSymbol)
+            => RelationalInverses.Keys.Contains(opSymbol) ? RelationalInverses[opSymbol] : opSymbol;
+
+        private static Dictionary<string, string> RelationalInverses = new Dictionary<string, string>()
+        {
+            [LogicSymbols.LT] = LogicSymbols.GTE,
+            [LogicSymbols.LTE] = LogicSymbols.GTE,
+            [LogicSymbols.GT] = LogicSymbols.LTE,
+            [LogicSymbols.GTE] = LogicSymbols.LT,
+            [LogicSymbols.EQ] = LogicSymbols.NEQ,
+            [LogicSymbols.NEQ] = LogicSymbols.EQ,
+        };
+
         public override string ToString()
         {
-            if (!DescriptorIsDirty && CachedToStringResult != null)
+            if (!IsDirty && _toString != null)
             {
-                return CachedToStringResult;
+                return _toString;
             }
 
             var descriptors = new HashSet<string>
@@ -600,9 +571,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 descriptor.Append(descriptors.ElementAt(idx));
             }
 
-            CachedToStringResult = descriptor.ToString();
-            DescriptorIsDirty = false;
-            return CachedToStringResult;
+            _toString = descriptor.ToString();
+            IsDirty = false;
+            return _toString;
         }
 
         private string GetSinglesDescriptor()

@@ -380,36 +380,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    public struct PredicateValueExpression<T> where T : IComparable<T>
-    {
-        private readonly int _hashCode;
-
-        public string LHS { private set; get; }
-        public T RHS { private set; get; }
-        public string OpSymbol { private set; get; }
-
-        public PredicateValueExpression(string lhs, T rhs, string opSymbol)
-        {
-            LHS = lhs;
-            RHS = rhs;
-            OpSymbol = opSymbol;
-            _hashCode = ($"{LHS} {OpSymbol} {RHS}").GetHashCode();
-        }
-
-        public override string ToString() => $"{LHS} {OpSymbol} {RHS}";
-
-        public override int GetHashCode() => _hashCode;
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is PredicateValueExpression<T> expression))
-            {
-                return false;
-            }
-            return ToString().Equals(expression.ToString());
-        }
-    }
-
     public static class ParseTreeValueExtensions
     {
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out long value)

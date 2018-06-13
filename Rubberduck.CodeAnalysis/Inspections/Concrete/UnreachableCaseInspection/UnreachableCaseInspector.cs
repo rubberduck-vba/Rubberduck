@@ -11,33 +11,33 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public interface IUnreachableCaseInspector
     {
         void InspectForUnreachableCases();
+        string SelectExpressionTypeName { get; }
+        Func<string, ParserRuleContext, string> GetVariableDeclarationTypeName { set; get; }
         List<ParserRuleContext> UnreachableCases { get; }
         List<ParserRuleContext> MismatchTypeCases { get; }
         List<ParserRuleContext> UnreachableCaseElseCases { get; }
     }
 
-    public interface IUnreachableCaseInspectorTest
-    {
-        string SelectExpressionTypeName { get; }
-    }
-
-    public class UnreachableCaseInspector : IUnreachableCaseInspector, IUnreachableCaseInspectorTest
+    public class UnreachableCaseInspector : IUnreachableCaseInspector
     {
         private readonly IEnumerable<VBAParser.CaseClauseContext> _caseClauses;
         private readonly ParserRuleContext _caseElseContext;
         private readonly IParseTreeValueFactory _valueFactory;
 
-        private Dictionary<string, IExpressionFilter> _filters;
-
-        public UnreachableCaseInspector(VBAParser.SelectCaseStmtContext selectCaseContext, IParseTreeVisitorResults inspValues, IParseTreeValueFactory valueFactory)
+        public UnreachableCaseInspector(VBAParser.SelectCaseStmtContext selectCaseContext, 
+            IParseTreeVisitorResults inspValues, 
+            IParseTreeValueFactory valueFactory,
+            Func<string,ParserRuleContext,string> GetVariableTypeName = null)
         {
             _valueFactory = valueFactory;
             _caseClauses = selectCaseContext.caseClause();
             _caseElseContext = selectCaseContext.caseElseClause();
-            _filters = new Dictionary<string, IExpressionFilter>();
+            GetVariableDeclarationTypeName = GetVariableTypeName;
             ParseTreeValueResults = inspValues;
             SetSelectExpressionTypeName(selectCaseContext as ParserRuleContext, inspValues);
         }
+
+        public Func<string, ParserRuleContext, string> GetVariableDeclarationTypeName { set; get; }
 
         public List<ParserRuleContext> UnreachableCases { set; get; } = new List<ParserRuleContext>();
 
@@ -45,7 +45,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> UnreachableCaseElseCases { set; get; } = new List<ParserRuleContext>();
 
-        public string SelectExpressionTypeName { private set; get; }
+        public string SelectExpressionTypeName { private set; get; } = string.Empty;
+
+        private IParseTreeVisitorResults ParseTreeValueResults { set; get; }
 
         public void InspectForUnreachableCases()
         {
@@ -54,15 +56,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            var expressionFilter = ExpressionFilterFactory.Create(SelectExpressionTypeName);
-            _filters.Add("SelectCase", expressionFilter);
-
+            var rangeClauseFilter = BuildRangeClauseFilter();
             foreach (var caseClause in _caseClauses)
             {
                 var rangeClauseExpressions = (from range in caseClause.rangeClause()
                                    select GetRangeClauseExpression(range)).ToList();
 
-                rangeClauseExpressions.ForEach(expr => expressionFilter.AddExpression(expr));
+                rangeClauseExpressions.ForEach(expr => rangeClauseFilter.AddExpression(expr));
 
                 if (rangeClauseExpressions.All(expr => expr.IsMismatch))
                 {
@@ -74,28 +74,33 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
 
-            if (_caseElseContext != null && expressionFilter.FiltersAllValues)
+            if (_caseElseContext != null && rangeClauseFilter.FiltersAllValues)
             {
                 UnreachableCaseElseCases.Add(_caseElseContext);
             }
         }
 
-        private IParseTreeVisitorResults ParseTreeValueResults { set; get; }
-
-        private static List<string> InspectableTypes = new List<string>()
+        private IExpressionFilter BuildRangeClauseFilter()
         {
-            Tokens.Byte,
-            Tokens.Integer,
-            Tokens.Int,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.Single,
-            Tokens.Double,
-            Tokens.Decimal,
-            Tokens.Currency,
-            Tokens.Boolean,
-            Tokens.String
-        };
+            var rangeClauseFilter = ExpressionFilterFactory.Create(SelectExpressionTypeName);
+
+            if (!(GetVariableDeclarationTypeName is null))
+            {
+                foreach (var caseClause in _caseClauses)
+                {
+                    foreach (var rangeClause in caseClause.rangeClause())
+                    {
+                        var expression = GetRangeClauseExpression(rangeClause);
+                        if (!expression.LHSValue.ParsesToConstantValue)
+                        {
+                            var typeName = GetVariableDeclarationTypeName(expression.LHS, rangeClause);
+                             rangeClauseFilter.AddComparablePredicateFilter(expression.LHS, typeName);
+                        }
+                    }
+                }
+            }
+            return rangeClauseFilter;
+        }
 
         private void SetSelectExpressionTypeName(ParserRuleContext context, IParseTreeVisitorResults inspValues)
         {
@@ -202,7 +207,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (!resultContexts.Any())
             {
-                throw new NullReferenceException("No result context(s) found");
+                return null;
             }
 
             var clauseValue = ParseTreeValueResults.GetValue(resultContexts.First());
@@ -211,12 +216,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 var rangeStartValue = ParseTreeValueResults.GetValue(rangeClause.GetChild<VBAParser.SelectStartValueContext>());
                 var rangeEndValue = ParseTreeValueResults.GetValue(rangeClause.GetChild<VBAParser.SelectEndValueContext>());
-                return new RangeValuesExpression(rangeStartValue, rangeEndValue);
+                return new RangeOfValuesExpression(rangeStartValue, rangeEndValue);
             }
             else if (rangeClause.IS() != null)
             {
-                var isClauseSymbol = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>().GetText();
-                return new IsClauseExpression(clauseValue, isClauseSymbol);
+                var opSymbol = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>().GetText();
+                return new IsClauseExpression(clauseValue, opSymbol);
             }
             else if (rangeClause.children.Any(ch => ParseTreeValueVisitor.IsLogicalContext(ch)))
             {
@@ -295,5 +300,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     return string.Empty;
             }
         }
+
+        private static List<string> InspectableTypes = new List<string>()
+        {
+            Tokens.Byte,
+            Tokens.Integer,
+            Tokens.Int,
+            Tokens.Long,
+            Tokens.LongLong,
+            Tokens.Single,
+            Tokens.Double,
+            Tokens.Decimal,
+            Tokens.Currency,
+            Tokens.Boolean,
+            Tokens.String
+        };
     }
 }

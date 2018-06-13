@@ -26,6 +26,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
         private static Dictionary<string, (long typeMin, long typeMax)> IntegralNumberExtents = new Dictionary<string, (long typeMin, long typeMax)>()
         {
             [Tokens.Long] = (CompareExtents.LONGMIN, CompareExtents.LONGMAX),
+            [Tokens.LongLong] = (CompareExtents.LONGMIN, CompareExtents.LONGMAX),
             [Tokens.Integer] = (CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
             [Tokens.Int] = (CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
             [Tokens.Byte] = (CompareExtents.BYTEMIN, CompareExtents.BYTEMAX)
@@ -33,16 +34,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
 
         public static IExpressionFilter Create(string typeName)
         {
-            if (!(IntegralNumberExtents.Keys.Contains(typeName)
-                || typeName.Equals(Tokens.Double)
-                || typeName.Equals(Tokens.Single)
-                || typeName.Equals(Tokens.Currency)
-                || typeName.Equals(Tokens.Boolean)
-                || typeName.Equals(Tokens.String)))
-            {
-                throw new ArgumentException($"Unsupported TypeName ({typeName})");
-            }
-
             if (IntegralNumberExtents.Keys.Contains(typeName))
             {
                 var integralNumberFilter = new ExpressionFilterIntegral(StringValueConverter.TryConvertString);
@@ -68,6 +59,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             {
                 return new ExpressionFilterBoolean(StringValueConverter.TryConvertString);
             }
+
             return new ExpressionFilter<string>(StringValueConverter.TryConvertString, typeName);
         }
     }

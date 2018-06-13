@@ -56,13 +56,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
             {
                 qualifiedSelectCaseStmt.Context.Accept(parseTreeValueVisitor);
-                var caseInspector = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults, _valueFactory);
+                var selectCaseInspector = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults, _valueFactory, GetVariableTypeName);
 
-                caseInspector.InspectForUnreachableCases();
+                selectCaseInspector.InspectForUnreachableCases();
 
-                caseInspector.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[CaseInpectionResult.Unreachable]));
-                caseInspector.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.MismatchType]));
-                caseInspector.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInpectionResult.CaseElse]));
+                selectCaseInspector.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[CaseInpectionResult.Unreachable]));
+                selectCaseInspector.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.MismatchType]));
+                selectCaseInspector.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInpectionResult.CaseElse]));
             }
             return _inspectionResults;
         }
@@ -101,6 +101,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return (success, idRef);
         }
 
+        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
+        private string GetVariableTypeName(string variableName, ParserRuleContext ancestor)
+        {
+            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>().Where(desc => desc.GetText().Equals(variableName));
+            if (descendents.Any())
+            {
+                (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), State);
+                if (success)
+                {
+                    return idRef.Declaration.AsTypeName;
+                }
+            }
+            return string.Empty;
+        }
 
         #region UnreachableCaseInspectionListeners
         public class UnreachableCaseInspectionListener : VBAParserBaseListener, IInspectionListener
