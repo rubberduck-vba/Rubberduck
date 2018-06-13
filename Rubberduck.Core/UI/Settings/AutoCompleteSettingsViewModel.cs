@@ -61,6 +61,30 @@ namespace Rubberduck.UI.Settings
                 {
                     _completeBlockOnTab = value;
                     OnPropertyChanged();
+                    if (!_completeBlockOnTab && !_completeBlockOnEnter)
+                    {
+                        // one must be enabled...
+                        CompleteBlockOnEnter = true;
+                    }
+                }
+            }
+        }
+        
+        private bool _completeBlockOnEnter;
+        public bool CompleteBlockOnEnter
+        {
+            get { return _completeBlockOnEnter; }
+            set
+            {
+                if (_completeBlockOnEnter != value)
+                {
+                    _completeBlockOnEnter = value;
+                    OnPropertyChanged();
+                    if (!_completeBlockOnTab && !_completeBlockOnEnter)
+                    {
+                        // one must be enabled...
+                        CompleteBlockOnTab = true;
+                    }
                 }
             }
         }
