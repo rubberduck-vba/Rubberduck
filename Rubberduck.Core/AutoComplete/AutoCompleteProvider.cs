@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Settings;
-using NLog;
 
 namespace Rubberduck.AutoComplete
 {
@@ -12,8 +11,6 @@ namespace Rubberduck.AutoComplete
 
     public class AutoCompleteProvider : IAutoCompleteProvider
     {
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        
         public AutoCompleteProvider(IEnumerable<IAutoComplete> autoCompletes)
         {
             var defaults = new DefaultSettings<AutoCompleteSettings>().Default;
@@ -26,7 +23,6 @@ namespace Rubberduck.AutoComplete
             }
 
             AutoCompletes = autoCompletes;
-            _logger.Trace($"{AutoCompletes.Count()} IAutoComplete implementations registered.");
         }
 
         public IEnumerable<IAutoComplete> AutoCompletes { get; }
