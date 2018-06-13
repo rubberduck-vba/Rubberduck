@@ -268,10 +268,13 @@
     &lt;AutoComplete Key="AutoCompleteDoBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteEnumBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteForBlock" IsEnabled="true" /&gt;
+    &lt;AutoComplete Key="AutoCompleteFunctionBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteIfBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteOnErrorResumeNextBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompletePrecompilerIfBlock" IsEnabled="true" /&gt;
+    &lt;AutoComplete Key="AutoCompletePropertyBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteSelectBlock" IsEnabled="true" /&gt;
+    &lt;AutoComplete Key="AutoCompleteSubBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteTypeBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteWhileBlock" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteWithBlock" IsEnabled="true" /&gt;
