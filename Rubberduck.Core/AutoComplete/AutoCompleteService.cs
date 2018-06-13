@@ -20,7 +20,6 @@ namespace Rubberduck.AutoComplete
         {
             _configService = configService;
             _autoCompletes = provider.AutoCompletes.ToList();
-            ApplyAutoCompleteSettings(configService.LoadConfiguration());
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             VBENativeServices.KeyDown += HandleKeyDown;
@@ -31,8 +30,8 @@ namespace Rubberduck.AutoComplete
             var config = _configService.LoadConfiguration();
             ApplyAutoCompleteSettings(config);
         }
-
-        private void ApplyAutoCompleteSettings(Configuration config)
+        
+        public void ApplyAutoCompleteSettings(Configuration config)
         {
             _settings = config.UserSettings.AutoCompleteSettings;
             foreach (var autoComplete in _autoCompletes)
