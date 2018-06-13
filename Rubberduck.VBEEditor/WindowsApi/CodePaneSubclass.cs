@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         {
             CodePane = pane;
         }
-/* DISABLING AC HOOK TO SEE IF THIS IS WHAT'S CRASHING
+        
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
         {
             KeyPressEventArgs args;
@@ -62,7 +62,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
             return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
         }
-*/
+
         protected override void DispatchFocusEvent(FocusType type)
         {
             var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
