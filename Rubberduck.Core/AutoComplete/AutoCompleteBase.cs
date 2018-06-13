@@ -29,11 +29,21 @@ namespace Rubberduck.AutoComplete
             using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
-                if (e.Character.ToString() == InputToken)
+                var original = module.GetLines(selection);
+                var nextChar = original.Substring(selection.StartColumn, 1);
+                var input = e.Character.ToString();
+                if (input == InputToken && (input != OutputToken || nextChar != OutputToken))
                 {
-                    var code = module.GetLines(selection).Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
+                    var code = original.Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
                     module.ReplaceLine(selection.StartLine, code);
                     pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 1);
+                    e.Handled = true;
+                    return true;
+                }
+                else if (input == OutputToken && nextChar == OutputToken)
+                {
+                    // just move caret one character to the right & suppress the keypress
+                    pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 2);
                     e.Handled = true;
                     return true;
                 }
