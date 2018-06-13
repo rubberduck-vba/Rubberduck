@@ -81,6 +81,7 @@
                     </DockPanel>
                 </Label>
                 <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
+                <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="AutoCompleteSettingsGrid"
                               ItemsSource="{Binding Settings}"
