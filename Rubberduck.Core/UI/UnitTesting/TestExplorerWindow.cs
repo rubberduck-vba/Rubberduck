@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting

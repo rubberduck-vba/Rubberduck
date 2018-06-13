@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Antlr4.Runtime.Tree;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -35,12 +36,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool BlockContainsExecutableStatements(VBAParser.BlockContext block)
         {
-            return block?.children != null && ContainsExecutableStatements(block);
+            return block?.children != null && ContainsExecutableStatements(block.children);
         }
 
-        private bool ContainsExecutableStatements(VBAParser.BlockContext block)
+        private bool ContainsExecutableStatements(IList<IParseTree> blockChildren)
         {
-            foreach (var child in block.children)
+            foreach (var child in blockChildren)
             {
                 if (child is VBAParser.BlockStmtContext blockStmt)
                 {
@@ -75,6 +76,19 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             return false;
+        }
+
+        public void InspectBlockForExecutableStatements<T>(VBAParser.UnterminatedBlockContext block, T context) where T : ParserRuleContext
+        {
+            if (!BlockContainsExecutableStatements(block))
+            {
+                AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+            }
+        }
+
+        private bool BlockContainsExecutableStatements(VBAParser.UnterminatedBlockContext block)
+        {
+            return block?.children != null && ContainsExecutableStatements(block.children);
         }
     }
 }
