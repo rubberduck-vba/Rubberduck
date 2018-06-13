@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.AutoComplete
 {
-    public class AutoCompleteService : SubclassingWindow, IDisposable
+    public class AutoCompleteService : IDisposable
     {
         private readonly IGeneralConfigService _configService;
         private readonly List<IAutoComplete> _autoCompletes;
