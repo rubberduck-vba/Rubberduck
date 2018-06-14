@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
@@ -17,6 +16,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public class ParseTreeExpressionEvaluator : IParseTreeExpressionEvaluator
     {
         private readonly IParseTreeValueFactory _valueFactory;
+        private readonly string _ampersand;
 
         //TODO: Review to get these Dictionaries back to private
         public static readonly Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
@@ -28,6 +28,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [MathSymbols.MINUS] = delegate (double LHS, double RHS) { return LHS - RHS; },
             [MathSymbols.EXPONENT] = Math.Pow,
             [MathSymbols.MODULO] = delegate (double LHS, double RHS) { return LHS % RHS; },
+            [MathSymbols.EQV] = delegate (double LHS, double RHS) { return Eqv(Convert.ToInt64(LHS), Convert.ToInt64(RHS)); },
+            [MathSymbols.IMP] = delegate (double LHS, double RHS) { return Imp(Convert.ToInt64(LHS), Convert.ToInt64(RHS)); },
         };
 
         public static readonly Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
@@ -41,8 +43,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [LogicSymbols.AND] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) && Convert.ToBoolean(RHS); },
             [LogicSymbols.OR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) || Convert.ToBoolean(RHS); },
             [LogicSymbols.XOR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) ^ Convert.ToBoolean(RHS); },
-            [LogicSymbols.EQV] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS).Equals(Convert.ToBoolean(RHS)); },
-            [LogicSymbols.IMP] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS).Equals(Convert.ToBoolean(RHS)) || Convert.ToBoolean(RHS); },
         };
 
         public static readonly Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
@@ -75,67 +75,48 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public ParseTreeExpressionEvaluator(IParseTreeValueFactory valueFactory)
         {
             _valueFactory = valueFactory;
+            _ampersand = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.AMPERSAND).Replace("'", "");
         }
 
         public IParseTreeValue Evaluate(IParseTreeValue LHS, IParseTreeValue RHS, string opSymbol)
         {
             var isMathOp = MathOpsBinary.ContainsKey(opSymbol);
             var isLogicOp = LogicOpsBinary.ContainsKey(opSymbol);
-            var isBinaryStringOp = LogicOpsString.ContainsKey(opSymbol);
+            var isBinaryStringOp = LogicOpsString.ContainsKey(opSymbol) || opSymbol.Equals(_ampersand);
             Debug.Assert(IsSupportedSymbol(opSymbol));
-            //Debug.Assert(isMathOp || isLogicOp);
 
-            //var opResultTypeName = isMathOp ? DetermineMathResultType(LHS, RHS) : Tokens.Boolean;
-            //var operands = PrepareOperands(new IParseTreeValue[] { LHS, RHS });
-            var (lhs,rhs) = PrepareOperands(LHS, RHS);
+            var (lhs, rhs) = PrepareOperands(LHS, RHS);
 
-            if (!lhs.typeName.Equals(string.Empty) && !rhs.typeName.Equals(string.Empty))  //operands.Count == 2)
+            if (!lhs.typeName.Equals(string.Empty) && !rhs.typeName.Equals(string.Empty))
             {
                 if (isMathOp)
                 {
-                    //var mathResult = MathOpsBinary[opSymbol](operands[0], operands[1]);
                     var mathResult = MathOpsBinary[opSymbol](lhs.value, rhs.value);
-                    //return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), opResultTypeName);
                     return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), DetermineMathResultType(lhs.typeName, rhs.typeName));
                 }
                 else if (isLogicOp)
                 {
-                    if (opSymbol.Equals(LogicSymbols.EQV) || opSymbol.Equals(LogicSymbols.IMP))
-                    {
-                        if (LHS.TypeName == RHS.TypeName
-                            && (LHS.TypeName.Equals(Tokens.Long) || LHS.TypeName.Equals(Tokens.Integer)))
-                        {
-                            var lhsOperand = Convert.ToInt64(lhs.value);
-                            var rhsOperand = Convert.ToInt64(rhs.value);
-                            var result = opSymbol.Equals(LogicSymbols.EQV) ?
-                                Eqv(lhsOperand, rhsOperand)
-                                : Imp(lhsOperand, rhsOperand);
-                            return _valueFactory.Create(result.ToString(), Tokens.Long);
-                        }
-                    }
-                    if (LogicOpsBinary.ContainsKey(opSymbol))
-                    {
-                        var logicResult = LogicOpsBinary[opSymbol](lhs.value, rhs.value);
-                        return _valueFactory.Create(logicResult.ToString(), Tokens.Boolean);
-                    }
-
+                    var logicResult = LogicOpsBinary[opSymbol](lhs.value, rhs.value);
+                    return _valueFactory.Create(logicResult.ToString(CultureInfo.InvariantCulture), Tokens.Boolean);
                 }
-                //var logicResult = LogicOpsBinary[opSymbol](operands[0], operands[1]);
-                //return _valueFactory.Create(logicResult.ToString(), opResultTypeName);
             }
 
             if (isBinaryStringOp)
             {
+                if (opSymbol.Equals(_ampersand))
+                {
+                    var concatResult = $"{Concat(LHS.ValueText, RHS.ValueText)}";
+                    return _valueFactory.Create(concatResult, Tokens.String);
+                }
+
                 if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
                 {
-                    var stringOpResult = LogicOpsString[opSymbol](LHS.ValueText, RHS.ValueText);
+                   var stringOpResult = LogicOpsString[opSymbol](LHS.ValueText, RHS.ValueText);
                     return _valueFactory.Create(stringOpResult.ToString(), Tokens.Boolean);
                 }
             }
             var opResultTypeName = isMathOp ? DetermineMathResultType(LHS.TypeName, RHS.TypeName) : Tokens.Boolean;
             return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opResultTypeName);
-            //return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}",
-            //    isMathOp ? DetermineMathResultType(LHS.TypeName, RHS.TypeName) : Tokens.Boolean); //opResultTypeName);
         }
 
         public IParseTreeValue Evaluate(IParseTreeValue value, string opSymbol, string requestedResultType)
@@ -144,40 +125,30 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var isLogicOp = LogicOpsUnary.ContainsKey(opSymbol);
             Debug.Assert(isMathOp || isLogicOp);
 
-            //var operands = PrepareOperands(new IParseTreeValue[] { value });
             var operand = PrepareOperand(value);
-            if (!operand.value.Equals(string.Empty))  //operands.Count == 1)
+            if (!operand.value.Equals(string.Empty))
             {
                 if (isMathOp)
                 {
-                    //var mathResult = MathOpsUnary[opSymbol](operands[0]);
                     var mathResult = MathOpsUnary[opSymbol](operand.value);
                     return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), requestedResultType);
                 }
 
                 //Unary Not (!) operator
-                if  (!value.TypeName.Equals(Tokens.Boolean) &&  value.TryConvertValue(out long opValue))
+                if (!value.TypeName.Equals(Tokens.Boolean) && value.TryConvertValue(out long opValue))
                 {
                     var bitwiseComplement = ~opValue;
                     return _valueFactory.Create(Convert.ToBoolean(bitwiseComplement).ToString(), requestedResultType);
                 }
 
-                if  (value.TypeName.Equals(Tokens.Boolean))
+                if (value.TypeName.Equals(Tokens.Boolean))
                 {
                     var logicResult = LogicOpsUnary[opSymbol](operand.value);
-                    //var logicResult = LogicOpsUnary[opSymbol](operands[0]);
                     return _valueFactory.Create(logicResult.ToString(), requestedResultType);
                 }
             }
             return _valueFactory.Create($"{opSymbol} {value.ValueText}", requestedResultType);
         }
-
-        //private static string DetermineMathResultType(IParseTreeValue LHS, IParseTreeValue RHS)
-        //{
-        //    var lhsTypeNameIndex = ResultTypeRanking.FindIndex(el => el.Equals(LHS.TypeName));
-        //    var rhsTypeNameIndex = ResultTypeRanking.FindIndex(el => el.Equals(RHS.TypeName));
-        //    return lhsTypeNameIndex <= rhsTypeNameIndex ? LHS.TypeName : RHS.TypeName;
-        //}
 
         private static string DetermineMathResultType(string lhsTypeName, string rhsTypeName)
         {
@@ -186,45 +157,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return lhsTypeNameIndex <= rhsTypeNameIndex ? lhsTypeName : rhsTypeName;
         }
 
-        //private static List<double> PrepareOperands(string[] args)
-        //{
-        //    var results = new List<double>();
-        //    foreach (var arg in args)
-        //    {
-        //        string parseArg = arg;
-        //        if (arg.Equals(Tokens.True) || arg.Equals(Tokens.False))
-        //        {
-        //            parseArg = arg.Equals(Tokens.True) ? "-1" : "0";
-        //        }
-
-        //        if (double.TryParse(parseArg, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
-        //        {
-        //            results.Add(result);
-        //        }
-        //    }
-        //    return results;
-        //}
-
-        //private static List<double> PrepareOperands(IParseTreeValue[] args)
-        //{
-        //    var results = new List<double>();
-        //    foreach (var arg in args)
-        //    {
-        //        if (arg.TryConvertValue(out double value))
-        //        {
-        //            results.Add(value);
-        //        }
-        //    }
-        //    return results;
-        //}
-
         private static ((string typeName, double value) lhs, (string typeName, double value) rhs)
             PrepareOperands(IParseTreeValue LHS, IParseTreeValue RHS)
         {
             return (PrepareOperand(LHS), PrepareOperand(RHS));
         }
 
-        //<<<<<<< HEAD
         private static (string typeName, double value) PrepareOperand(IParseTreeValue parseTreeValue)
         {
             if (!parseTreeValue.ParsesToConstantValue)
@@ -234,41 +172,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             (string typeName, double value) lhs = (string.Empty, default);
             if (parseTreeValue.TryConvertValue(out double value))
             {
-                //results.Add(value);
                 lhs = (parseTreeValue.TypeName, value);
             }
-/*
-            if (parseTreeValue.TypeName.Equals(Tokens.Currency))
-            {
-                //TODO: does this need to find its way to to different math/logic op?
-                //lhs = (Tokens.Currency, double.Parse(parseTreeValue.ValueText));
-                //=======
-                //if (double.TryParse(parseArg, NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
-                if(double.TryParse(lhs.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
-                {
-                    //results.Add(result);
-                    lhs = (Tokens.Currency, result);
-                }
-                //>>>>>>> rubberduck-vba/next
-            }
-            else if (parseTreeValue.TypeName.Equals(Tokens.Long))
-            {
-                lhs = (Tokens.Long, double.Parse(parseTreeValue.ValueText));
-            }
-            else if (long.TryParse(parseTreeValue.ValueText, out long result))
-            {
-                lhs = (Tokens.Long, Convert.ToDouble(result));
-            }
-            else if (parseTreeValue.ValueText.Equals(Tokens.True) || parseTreeValue.ValueText.Equals(Tokens.False))
-            {
-                result = parseTreeValue.ValueText.Equals(Tokens.True) ? -1 : 0;
-                lhs = (Tokens.Long, Convert.ToDouble(result));
-            }
-            else if (double.TryParse(parseTreeValue.ValueText, out double dResult))
-            {
-                lhs = (Tokens.Double, dResult);
-            }
-*/
             return lhs;
         }
 
@@ -278,7 +183,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || MathOpsUnary.ContainsKey(opSymbol)
                 || LogicOpsBinary.ContainsKey(opSymbol)
                 || LogicOpsUnary.ContainsKey(opSymbol)
-                || LogicOpsString.ContainsKey(opSymbol);
+                || LogicOpsString.ContainsKey(opSymbol)
+                || opSymbol.Equals(_ampersand);
         }
 
         public static bool Eqv(bool lhs, bool rhs) => !(lhs ^ rhs) || (lhs && rhs);
@@ -293,26 +199,59 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public static long Imp(long lhs, long rhs) => rhs | (~lhs & ~rhs);
 
+        public static string Concat<T, U>(T lhs, U rhs) => $"{ @""""}{lhs}{rhs}{ @""""}";
+
         public static bool Like(string input, string pattern)
         {
             if (pattern.Equals("*"))
             {
                 return true;
             }
-            var regExpression = new StringBuilder(@"^" + pattern);
-            regExpression.Replace("#", "[0-9]");
-            regExpression.Replace("?", "+");
-            regExpression.Replace("[!", "[^");
-            regExpression.Replace("[+]", "[?]");
-            regExpression.Replace("[[0-9]]", "[#]");
-            if (!regExpression.ToString().EndsWith("*"))
-            {
-                regExpression.Append("$");
-            }
-            var regex = new Regex(regExpression.ToString());
-            var result = regex.IsMatch(input);
+
+            var regexPattern = ConvertLikeToRegex(pattern);
+            var regex = new Regex(regexPattern);
+            return regex.IsMatch(input);
+        }
+
+        public static string ConvertLikeToRegex(string likePattern)
+        {
+            //The order of replacements matter
+
+            var result = $"^{likePattern}";
+            Regex rgx = new Regex("\\*$");
+            result = rgx.IsMatch(result) ? result : $"{result}$";
+
+            //Convert . to \\.
+            rgx = new Regex("\\.");
+            result = rgx.Replace(result, "\\.");
+
+            //Convert [*] to \\*
+            rgx = new Regex("\\[\\*\\]");
+            result = rgx.Replace(result, "\\*");
+
+            //Convert ? to .
+            rgx = new Regex("\\?(?=[^\\]])");
+            result = rgx.Replace(result, ".");
+
+            //Convert [?] to ?
+            rgx = new Regex("\\[\\?\\]");
+            result = rgx.Replace(result, "?");
+
+            //Convert # to \d
+            rgx = new Regex("#(?=[^\\]])");
+            result = rgx.Replace(result, "\\d");
+
+            //Convert [#] to \\#
+            rgx = new Regex("\\[#\\]");
+            result = rgx.Replace(result, "\\#");
+
+            //Convert [! to [^
+            rgx = new Regex("\\[!");
+            result = rgx.Replace(result, "[^");
+
             return result;
         }
+
     }
 
     internal static class MathSymbols
@@ -332,6 +271,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static string ADDITIVE_INVERSE => MINUS;
         public static string EXPONENT => _exponent ?? LoadSymbols(VBAParser.POW);
         public static string MODULO => Tokens.Mod;
+        public static string EQV => Tokens.Eqv;
+        public static string IMP => Tokens.Imp;
 
         public static List<string> MathSymbolList = new List<string>()
         {
@@ -343,6 +284,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             ADDITIVE_INVERSE,
             EXPONENT,
             MODULO,
+            EQV,
+            IMP,
         };
 
         private static string LoadSymbols(int target)
@@ -357,7 +300,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    internal static class LogicSymbols
+    public static class LogicSymbols
     {
         private static string _lessThan;
         private static string _greaterThan;
@@ -373,8 +316,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static string OR => Tokens.Or;
         public static string XOR => Tokens.XOr;
         public static string NOT => Tokens.Not;
-        public static string EQV => Tokens.Eqv;
-        public static string IMP => Tokens.Imp;
         public static string LIKE => Tokens.Like;
 
         public static List<string> LogicSymbolList = new List<string>()
@@ -389,8 +330,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             OR,
             XOR,
             NOT,
-            EQV,
-            IMP,
             LIKE,
         };
 

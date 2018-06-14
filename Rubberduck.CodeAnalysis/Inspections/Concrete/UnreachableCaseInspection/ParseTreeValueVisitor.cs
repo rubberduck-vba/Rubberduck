@@ -113,7 +113,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         VisitUnaryResultContext(parserRuleContext);
                     }
                     else if (IsBinaryMathContext(parserRuleContext) 
-                        || IsBinaryLogicalContext(parserRuleContext))
+                        || IsBinaryLogicalContext(parserRuleContext)
+                        || parserRuleContext is VBAParser.ConcatOpContext)
                     {
                         VisitBinaryOpEvaluationContext(parserRuleContext);
                     }
@@ -124,32 +125,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     }
                     return;
             }
-            //if (IsUnaryResultContext(parserRuleContext))
-            //{
-            //    VisitUnaryResultContext(parserRuleContext);
-            //}
-            //else if (parserRuleContext is VBAParser.LExprContext lExpr)
-            //{
-            //    Visit(lExpr);
-            //}
-            //else if (parserRuleContext is VBAParser.LiteralExprContext litExpr)
-            //{
-            //    Visit(litExpr);
-            //}
-            //else if (parserRuleContext is VBAParser.CaseClauseContext
-            //    || parserRuleContext is VBAParser.RangeClauseContext)
-            //{
-            //    VisitImpl(parserRuleContext);
-            //    StoreVisitResult(parserRuleContext, _inspValueFactory.Create(parserRuleContext.GetText()));
-            //}
-            //else if (IsBinaryMathContext(parserRuleContext) || IsBinaryLogicalContext(parserRuleContext))
-            //{
-            //    VisitBinaryOpEvaluationContext(parserRuleContext);
-            //}
-            //else if  (IsUnaryLogicalContext(parserRuleContext) || IsUnaryMathContext(parserRuleContext))
-            //{
-            //    VisitUnaryOpEvaluationContext(parserRuleContext);
-            //}
         }
 
         private void Visit(VBAParser.LExprContext context)
@@ -318,19 +293,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        //private bool TryGetIdentifierReferenceForContext2(ParserRuleContext context, out IdentifierReference idRef)
-        //{
-        //    idRef = null;
-        //    var identifierReferences = (State.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
-        //        .Where(rf => rf.Context == context);
-        //    if (identifierReferences.Count() == 1)
-        //    {
-        //        idRef = identifierReferences.First();
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
         private bool TryGetIdentifierReferenceForContext(ParserRuleContext context, out IdentifierReference idRef)
         {
             idRef = null;
@@ -433,6 +395,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             return IsMathContext(context)
                     || IsLogicalContext(context)
+                    || context is VBAParser.ConcatOpContext
                     || context is VBAParser.SelectStartValueContext
                     || context is VBAParser.SelectEndValueContext
                     || context is VBAParser.ParenthesizedExprContext

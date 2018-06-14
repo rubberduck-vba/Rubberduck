@@ -346,7 +346,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("x_Like_[A-Z]*", "RelOp!x Like [A-Z]*")]
         [TestCase("x_Like_[A-Z]*, x_Like_Fo*oBar", "RelOp!x Like [A-Z]*,RelOp!x Like Fo*oBar")]
         [Category("Inspections")]
-        public void ExpressionFilter_LikesLoadings(string rangeClause, string expectedClause)
+        public void ExpressionFilter_LikeAddToFilter(string rangeClause, string expectedClause)
         {
             var filter = ExpressionFilterFactory.Create(Tokens.String);
 
@@ -366,7 +366,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("RelOp!x Like *Bar", "Value!True", "RelOp!x Like *Bar,Value!True")]
         [TestCase("RelOp!x Like *", "Value!True", "RelOp!x Like *")]
         [Category("Inspections")]
-        public void ExpressionFilter_FiltersLike(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_LikeFiltersDuplicates(string firstCase, string secondCase, string expectedClauses)
         {
             (IExpressionFilter expected, IExpressionFilter actual) = TestAddFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
             Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");

@@ -80,7 +80,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [VariableClauseTypes.Value] = new HashSet<string>(),
         };
 
-    protected StringToValueConversion<T> Converter { set; get; } = null;
+        protected StringToValueConversion<T> Converter { set; get; } = null;
 
         protected HashSet<T> SingleValues { set; get; } = new HashSet<T>();
 
@@ -369,8 +369,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private bool AddBinaryExpression(BinaryExpression binary)
         {
             var opSymbol = binary.OpSymbol;
-            if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol)
-                && !(binary.OpSymbol.Equals(LogicSymbols.EQV) || binary.OpSymbol.Equals(LogicSymbols.IMP)))
+            if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol))
             {
                 return false;
             }

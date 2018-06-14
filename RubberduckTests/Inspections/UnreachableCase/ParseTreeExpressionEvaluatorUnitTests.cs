@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Text;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
@@ -367,6 +368,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
+        [TestCase(@"""a?bc""_Like_""[a-e][?][a-e]*""", "True")]
+        [TestCase(@"""axabc""_Like_""a?abc""", "True")]
         [TestCase(@"""Doggy""_Like_""*Dog*""", "True")]
         [TestCase(@"""Animal""_Like_""[A-Z]*""", "True")]
         [TestCase(@"""123-345-678""_Like_""###[-.]###[-.]###""", "True")]
@@ -378,14 +381,47 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase(@"""**ShineA*SoYouCanSee""_Like_""[*]*Shine*""", "True")]
         [TestCase(@"""FooBard""_Like_""*Bar""", "False")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_LikeOperators(string operands, string expected)
+        public void ParseTreeValueExpressionEvaluator_LikeOperator(string operands, string expected)
         {
             var ops = operands.Split(new string[] { "_" }, StringSplitOptions.None);
             var LHS = ValueFactory.Create(ops[0], Tokens.String);
             var RHS = ValueFactory.Create(ops[2], Tokens.String);
             var result = Calculator.Evaluate(LHS, RHS, ops[1]);
 
-            Assert.AreEqual(expected, result.ValueText,$"{LHS} Like {RHS}");
+            Assert.AreEqual(expected, result.ValueText, $"{LHS} Like {RHS}");
+            Assert.IsTrue(result.ParsesToConstantValue);
+        }
+
+        [TestCase(@"[a-e]", "^[a-e]$")]
+        [TestCase(@"Bar*", "^Bar*")]
+        [TestCase(@"[#][1-6]", "^\\#[1-6]$")]
+        [TestCase(@"#[a-e]", "^\\d[a-e]$")]
+        [TestCase(@"abc?xy", "^abc.xy$")]
+        [TestCase(@"abc[?]xy", "^abc?xy$")]
+        [TestCase(@"[!A-E]", "^[^A-E]$")]
+        [TestCase(@"#[!A-E][#][!5-6][#]*", "^\\d[^A-E]\\#[^5-6]\\#*")]
+        [TestCase(@"abc.xy", "^abc\\.xy$")]
+        [TestCase(@"abc[*]xy", "^abc\\*xy$")]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_LikeRegexConversion(string likePattern, string expectedPattern)
+        {
+            var result = ParseTreeExpressionEvaluator.ConvertLikeToRegex(likePattern);
+            Assert.AreEqual(expectedPattern, result);
+        }
+
+
+
+        [TestCase(@"""Foo""_&_""Bar""", "FooBar")]
+        [TestCase(@"1_&_""Bar""", "1Bar")]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_AmpersandOperator(string operands, string expected)
+        {
+            var ops = operands.Split(new string[] { "_" }, StringSplitOptions.None);
+            var LHS = ValueFactory.Create(ops[0]);
+            var RHS = ValueFactory.Create(ops[2]);
+            var result = Calculator.Evaluate(LHS, RHS, ops[1]);
+
+            Assert.AreEqual(expected, result.ValueText);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 

@@ -1877,7 +1877,7 @@ End Sub
         [TestCase(@"x Like ", @"""*Bar""", 1)]
         [TestCase(@"y Like ", @"""*Bar""", 1)]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_Likes(string caseClauseExpression, string likePattern, int expectedUnreachable)
+        public void UnreachableCaseInspection_Like(string caseClauseExpression, string likePattern, int expectedUnreachable)
         {
             string inputCode =
 @"
@@ -1923,6 +1923,73 @@ End Sub
 ";
 
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_Ampersand()
+        {
+            string inputCode =
+@"
+Private Const TEST_CONST As String = ""Bar""
+
+Sub FirstSub(x As String)
+    Select Case x
+        Case ""Foo"" & TEST_CONST
+            'OK
+        Case ""FooBar""
+            'Unreachable
+    End Select
+End Sub
+";
+
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_AmpersandWithVariable()
+        {
+            string inputCode =
+@"
+Sub FirstSub(x As String, y As Long)
+Private Const TEST_CONST As String = ""o""
+
+Select Case x
+        Case ""Foo"" & y & ""Bar""
+            'OK
+        'Case ""Foo1""
+            'OK
+        Case ""Fo"" & TEST_CONST & y & ""Bar""
+            'Unreachable
+    End Select
+End Sub
+";
+
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_AmpersandMismatch()
+        {
+            string inputCode =
+@"
+Sub FirstSub(x As String, y As Long)
+
+Select Case y
+        Case 45 & ""B""
+            'Mismatch
+        Case 45 + 2
+            'OK
+    End Select
+End Sub
+";
+
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0, mismatch: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
