@@ -18,8 +18,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly IParseTreeValueFactory _valueFactory;
         private readonly string _ampersand;
 
-        //TODO: Review to get these Dictionaries back to private
-        public static readonly Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
+        private static readonly Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
         {
             [MathSymbols.MULTIPLY] = delegate (double LHS, double RHS) { return LHS * RHS; },
             [MathSymbols.DIVIDE] = delegate (double LHS, double RHS) { return LHS / RHS; },
@@ -32,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [MathSymbols.IMP] = delegate (double LHS, double RHS) { return Imp(Convert.ToInt64(LHS), Convert.ToInt64(RHS)); },
         };
 
-        public static readonly Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
+        private static readonly Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
         {
             [LogicSymbols.EQ] = delegate (double LHS, double RHS) { return LHS == RHS; },
             [LogicSymbols.NEQ] = delegate (double LHS, double RHS) { return LHS != RHS; },
@@ -45,17 +44,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [LogicSymbols.XOR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) ^ Convert.ToBoolean(RHS); },
         };
 
-        public static readonly Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
+        private static readonly Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
         {
             [MathSymbols.ADDITIVE_INVERSE] = delegate (double value) { return value * -1.0; }
         };
 
-        public static readonly Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
+        private static readonly Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
         {
             [LogicSymbols.NOT] = delegate (double value) { return !(Convert.ToBoolean(value)); }
         };
 
-        public static Dictionary<string, Func<string, string, bool>> LogicOpsString = new Dictionary<string, Func<string, string, bool>>()
+        private static Dictionary<string, Func<string, string, bool>> LogicOpsString = new Dictionary<string, Func<string, string, bool>>()
         {
             [Tokens.Like] = Like
         };
@@ -208,12 +207,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return true;
             }
 
-            var regexPattern = ConvertLikeToRegex(pattern);
+            var regexPattern = ConvertLikePatternToRegex(pattern);
             var regex = new Regex(regexPattern);
             return regex.IsMatch(input);
         }
 
-        public static string ConvertLikeToRegex(string likePattern)
+        public static string ConvertLikePatternToRegex(string likePattern)
         {
             //The order of replacements matter
 

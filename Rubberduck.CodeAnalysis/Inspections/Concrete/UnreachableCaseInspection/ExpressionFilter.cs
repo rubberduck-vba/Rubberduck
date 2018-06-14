@@ -369,7 +369,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private bool AddBinaryExpression(BinaryExpression binary)
         {
             var opSymbol = binary.OpSymbol;
-            if (FiltersTrueFalse && ParseTreeExpressionEvaluator.LogicOpsBinary.ContainsKey(binary.OpSymbol))
+            if (FiltersTrueFalse && LogicSymbols.LogicSymbolList.Contains(opSymbol))
             {
                 return false;
             }

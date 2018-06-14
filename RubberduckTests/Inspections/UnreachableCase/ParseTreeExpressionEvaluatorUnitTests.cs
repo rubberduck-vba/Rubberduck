@@ -73,49 +73,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
         }
 
-        [Test]
-        [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_LogicalOperatorsAlign()
-        {
-            var failtMsg = string.Empty;
-            var symbols = ParseTreeExpressionEvaluator.LogicOpsBinary.Keys.ToList();
-            symbols.AddRange(ParseTreeExpressionEvaluator.LogicOpsUnary.Keys);
-            symbols.AddRange(ParseTreeExpressionEvaluator.LogicOpsString.Keys);
-            var testLogicVersusList = LogicSymbols.LogicSymbolList.Where(ls => !symbols.Contains(ls));
-            if (testLogicVersusList.Any())
-            {
-                var missingMsg = new StringBuilder();
-                missingMsg.Append("Missing logic operators: ");
-                foreach (var missing in testLogicVersusList)
-                {
-                    missingMsg.Append($"{missing},");
-                }
-                failtMsg = missingMsg.ToString().Substring(0, missingMsg.Length - 1);
-            }
-            Assert.IsFalse(testLogicVersusList.Any(), failtMsg);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_MathOperatorsAlign()
-        {
-            var failtMsg = string.Empty;
-            var symbols = ParseTreeExpressionEvaluator.MathOpsBinary.Keys.ToList();
-            symbols.AddRange(ParseTreeExpressionEvaluator.MathOpsUnary.Keys);
-            var testMath = MathSymbols.MathSymbolList.Where(ls => !symbols.Contains(ls));
-            if (testMath.Any())
-            {
-                var missingMsg = new StringBuilder();
-                missingMsg.Append("Missing math operators: ");
-                foreach (var missing in testMath)
-                {
-                    missingMsg.Append($"{missing},");
-                }
-                failtMsg = missingMsg.ToString().Substring(0, missingMsg.Length - 1);
-            }
-            Assert.IsFalse(testMath.Any(), failtMsg);
-        }
-
         [TestCase("x?Byte_-_2?Long", "x - 2", "Long")]
         [TestCase("2_-_x?Byte", "2 - x", "Integer")]
         [TestCase("x?Byte_+_2?Long", "x + 2", "Long")]
@@ -405,7 +362,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_LikeRegexConversion(string likePattern, string expectedPattern)
         {
-            var result = ParseTreeExpressionEvaluator.ConvertLikeToRegex(likePattern);
+            var result = ParseTreeExpressionEvaluator.ConvertLikePatternToRegex(likePattern);
             Assert.AreEqual(expectedPattern, result);
         }
 
