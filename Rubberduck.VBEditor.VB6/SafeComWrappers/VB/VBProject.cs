@@ -62,7 +62,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 using (var vbe = VBE)
                 using (var mainWindow = vbe.MainWindow)
                 {
-                    var caption = mainWindow.Caption;
+                    var caption = mainWindow.Caption.ToLowerInvariant();
 
                     if (caption.EndsWith("[design]"))
                     {
@@ -204,9 +204,5 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 }
             }
         }
-
-        private const string DllName = "vba6.dll";
-        [DllImport(DllName)]
-        private static extern int EbMode();
     }
 }
