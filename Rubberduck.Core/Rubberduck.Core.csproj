@@ -942,6 +942,9 @@
     <Content Include="EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="AutoComplete\AutoCompleteFunctionBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompletePropertyBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteSubBlock.cs" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

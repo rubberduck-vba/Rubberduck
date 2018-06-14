@@ -32,6 +32,7 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             var config = _config.LoadConfiguration();
+            AutoComplete.ApplyAutoCompleteSettings(config);
             var settings = config.UserSettings.HotkeySettings;
 
             foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))

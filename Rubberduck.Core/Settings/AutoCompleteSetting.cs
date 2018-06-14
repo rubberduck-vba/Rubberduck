@@ -43,12 +43,12 @@ namespace Rubberduck.Settings
         public override bool Equals(object obj)
         {
             var other = obj as AutoCompleteSetting;
-            return other != null && other.Key == Key && other.IsEnabled == IsEnabled;
+            return other != null && other.Key == Key;
         }
 
         public override int GetHashCode()
         {
-            return VBEditor.HashCode.Compute(Key, IsEnabled);
+            return VBEditor.HashCode.Compute(Key);
         }
     }
 }

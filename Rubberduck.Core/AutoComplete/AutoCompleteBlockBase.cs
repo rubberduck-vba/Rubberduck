@@ -5,7 +5,6 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -36,7 +35,8 @@ namespace Rubberduck.AutoComplete
         public override bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
             var ignoreTab = e.Keys == Keys.Tab && !settings.CompleteBlockOnTab;
-            if (IsInlineCharCompletion || e.Keys == Keys.None || ignoreTab)
+            var ignoreEnter = e.Keys == Keys.Enter && !settings.CompleteBlockOnEnter;
+            if (IsInlineCharCompletion || e.Keys == Keys.None || ignoreTab || ignoreEnter)
             {
                 return false;
             }
@@ -47,20 +47,12 @@ namespace Rubberduck.AutoComplete
                 var selection = pane.Selection;
                 var code = module.GetLines(selection);
 
-                if (SkipPreCompilerDirective && code.Trim().StartsWith("#"))
+                if (SkipPreCompilerDirective && code.Trim().StartsWith("#") || code.Contains(" Declare "))
                 {
                     return false;
                 }
 
-                var pattern = SkipPreCompilerDirective
-                                ? $"\\b{InputToken}\\b"
-                                : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
-
-                var isMatch = MatchInputTokenAtEndOfLineOnly
-                                ? code.EndsWith(InputToken, System.StringComparison.OrdinalIgnoreCase)
-                                : Regex.IsMatch(code.Trim(), pattern, RegexOptions.IgnoreCase);
-
-                if (isMatch && !code.HasComment(out _) && !IsBlockCompleted(module, selection))
+                if (IsMatch(code) && !IsBlockCompleted(module, selection))
                 {
                     var indent = code.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                     var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
@@ -77,6 +69,18 @@ namespace Rubberduck.AutoComplete
                 }
                 return false;
             }
+        }
+
+        public override bool IsMatch(string code)
+        {
+            var pattern = SkipPreCompilerDirective
+                            ? $"\\b{InputToken}\\b"
+                            : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
+            var regexOk = MatchInputTokenAtEndOfLineOnly
+                ? code.EndsWith(InputToken, System.StringComparison.OrdinalIgnoreCase)
+                : Regex.IsMatch(code.Trim(), pattern, RegexOptions.IgnoreCase);
+
+            return regexOk && !code.HasComment(out _);
         }
 
         private bool IsBlockCompleted(ICodeModule module, Selection selection)
