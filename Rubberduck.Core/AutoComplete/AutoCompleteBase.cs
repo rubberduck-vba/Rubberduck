@@ -30,7 +30,7 @@ namespace Rubberduck.AutoComplete
             {
                 var selection = pane.Selection;
                 var original = module.GetLines(selection);
-                var nextChar = original.Substring(selection.StartColumn, 1);
+                var nextChar = selection.StartColumn - 1 == original.Length ? string.Empty : original.Substring(selection.StartColumn - 1, 1);
                 var input = e.Character.ToString();
                 if (input == InputToken && (input != OutputToken || nextChar != OutputToken))
                 {
