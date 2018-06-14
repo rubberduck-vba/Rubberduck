@@ -80,8 +80,10 @@
                         </StackPanel>
                     </DockPanel>
                 </Label>
-                <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
-                <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
+                <DockPanel HorizontalAlignment="Stretch">
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
+                </DockPanel>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="AutoCompleteSettingsGrid"
                               ItemsSource="{Binding Settings}"
@@ -115,7 +117,7 @@
                                 <DataGridCheckBoxColumn.Header>
                                     <CheckBox HorizontalContentAlignment="Center" 
                                               HorizontalAlignment="Stretch"
-                                              IsChecked="{Binding SelectAll}" 
+                                              IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type settings:AutoCompleteSettings}}, Path=DataContext.SelectAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                               Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
                                 </DataGridCheckBoxColumn.Header>
                             </DataGridCheckBoxColumn>

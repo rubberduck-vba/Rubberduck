@@ -14,6 +14,8 @@ namespace Rubberduck.UI.Settings
         public AutoCompleteSettingsViewModel(Configuration config)
         {
             Settings = new ObservableCollection<AutoCompleteSetting>(config.UserSettings.AutoCompleteSettings.AutoCompletes);
+            CompleteBlockOnEnter = config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter;
+            CompleteBlockOnTab = config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab;
 
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
@@ -29,7 +31,7 @@ namespace Rubberduck.UI.Settings
                 {
                     _settings = value;
                     OnPropertyChanged();
-                    SelectAll = value.All(e => e.IsEnabled);
+                    SelectAll = _settings.All(e => e.IsEnabled) || _settings.Any(e => e.IsEnabled) ? (bool?)null : true;
                 }
             }
         }
@@ -42,12 +44,14 @@ namespace Rubberduck.UI.Settings
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab = CompleteBlockOnTab;
+            config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter = CompleteBlockOnEnter;
             config.UserSettings.AutoCompleteSettings.AutoCompletes = new HashSet<AutoCompleteSetting>(_settings);
         }
 
         private void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
         {
             CompleteBlockOnTab = toLoad.CompleteBlockOnTab;
+            CompleteBlockOnEnter = toLoad.CompleteBlockOnEnter;
             Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
         }
 
@@ -89,8 +93,8 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool _selectAll;
-        public bool SelectAll
+        private bool? _selectAll;
+        public bool? SelectAll
         {
             get
             {
@@ -103,7 +107,7 @@ namespace Rubberduck.UI.Settings
                     _selectAll = value;
                     foreach (var setting in Settings)
                     {
-                        setting.IsEnabled = value;
+                        setting.IsEnabled = value.Value;
                     }
                     OnPropertyChanged();
                 }
