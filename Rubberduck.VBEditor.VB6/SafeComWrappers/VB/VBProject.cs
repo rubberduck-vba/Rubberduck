@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -58,14 +59,30 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             get
             {
-                if (IsWrappingNullReference)
+                using (var vbe = VBE)
+                using (var mainWindow = vbe.MainWindow)
                 {
-                    return 0;
-                }
+                    var caption = mainWindow.Caption;
 
-                return (EnvironmentMode) EbMode();
+                    if (caption.EndsWith("[design]"))
+                    {
+                        return EnvironmentMode.Design;
+                    }
+                    if (caption.EndsWith("[break]"))
+                    {
+                        return EnvironmentMode.Break;
+                    }
+                    if (caption.EndsWith("[run]"))
+                    {
+                        return EnvironmentMode.Run;
+                    }                    
+
+                    // Shouldn't ever get here
+                    Debug.Assert(false, "Unable to detect environment mode from main window caption");
+                    return EnvironmentMode.Run; // Return most pessimistic result
+                }
             }
-        }                   
+        }
 
         public IVBProjects Collection => new VBProjects(IsWrappingNullReference ? null : Target.Collection);
 
