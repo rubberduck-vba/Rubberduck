@@ -20,7 +20,8 @@ namespace Rubberduck.AutoComplete
 
         public virtual bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (!e.IsCharacter || !IsInlineCharCompletion)
+            var input = e.Character.ToString();
+            if (!IsMatch(input))
             {
                 return false;
             }
@@ -31,7 +32,6 @@ namespace Rubberduck.AutoComplete
                 var selection = pane.Selection;
                 var original = module.GetLines(selection);
                 var nextChar = selection.StartColumn - 1 == original.Length ? string.Empty : original.Substring(selection.StartColumn - 1, 1);
-                var input = e.Character.ToString();
                 if (input == InputToken && (input != OutputToken || nextChar != OutputToken))
                 {
                     var code = original.Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
@@ -50,5 +50,8 @@ namespace Rubberduck.AutoComplete
                 return false;
             }
         }
+
+        public virtual bool IsMatch(string input) => 
+            (IsInlineCharCompletion && !string.IsNullOrEmpty(input) && (input == InputToken || input == OutputToken));
     }
 }
