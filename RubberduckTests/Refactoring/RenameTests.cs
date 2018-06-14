@@ -1767,6 +1767,123 @@ End Sub"
         }
 
         #endregion
+        #region Rename UDT Tests
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePublicUDT()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePrivateUDT()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameUDTMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "bar", newName: "fooBar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Private Type UserType
+    foo As String
+    bar| As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Private Type UserType
+    foo As String
+    fooBar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.fooBar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        #endregion
         #region Rename Label Tests
         [Test]
         [Category("Refactorings")]
@@ -2253,7 +2370,9 @@ End Property";
                 if (inputOutput.CheckExpectedEqualsActual)
                 {
                     var rewriter = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule.Parent);
-                    Assert.AreEqual(inputOutput.Expected, rewriter.GetText());
+                    var expected = inputOutput.Expected;
+                    var actual = rewriter.GetText();
+                    Assert.AreEqual(expected, actual);
                 }
             }
         }
