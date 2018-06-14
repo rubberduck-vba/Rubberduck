@@ -6,6 +6,7 @@ using Rubberduck.UI.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System;
 
 namespace Rubberduck.UI.Settings
 {
@@ -31,7 +32,6 @@ namespace Rubberduck.UI.Settings
                 {
                     _settings = value;
                     OnPropertyChanged();
-                    SelectAll = _settings.All(e => e.IsEnabled) || _settings.Any(e => e.IsEnabled) ? (bool?)null : true;
                 }
             }
         }
@@ -107,7 +107,10 @@ namespace Rubberduck.UI.Settings
                     _selectAll = value;
                     foreach (var setting in Settings)
                     {
-                        setting.IsEnabled = value.Value;
+                        if (setting.IsEnabled != (value ?? false))
+                        {
+                            setting.IsEnabled = value ?? false;
+                        }
                     }
                     OnPropertyChanged();
                 }
