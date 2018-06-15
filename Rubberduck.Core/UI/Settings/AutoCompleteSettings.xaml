@@ -47,7 +47,11 @@
 
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Label Background="DarkGray"
                        HorizontalContentAlignment="Stretch"
@@ -80,7 +84,10 @@
                         </StackPanel>
                     </DockPanel>
                 </Label>
-                <CheckBox IsChecked="{Binding SelectAll}" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
+                <DockPanel HorizontalAlignment="Stretch">
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
+                </DockPanel>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="AutoCompleteSettingsGrid"
                               ItemsSource="{Binding Settings}"
@@ -92,7 +99,6 @@
                               CanUserSortColumns="False"
                               HorizontalGridLinesBrush="Transparent"
                               VerticalGridLinesBrush="Transparent"
-                              HeadersVisibility="None"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                               ItemContainerStyle="{StaticResource PrettifyRow}"
                               ColumnHeaderHeight="22"
@@ -106,11 +112,20 @@
                         </DataGrid.CellStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="Auto" Binding="{Binding Description}" IsReadOnly="True" />
-                            <DataGridCheckBoxColumn Width="*" Binding="{Binding IsEnabled, Mode=TwoWay}" />
+                            <DataGridCheckBoxColumn Width="*" Binding="{Binding IsEnabled, Mode=TwoWay}">
+                                <DataGridCheckBoxColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                    </Style>
+                                </DataGridCheckBoxColumn.HeaderStyle>
+                            </DataGridCheckBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
             </StackPanel>
         </ScrollViewer>
+        <CheckBox Grid.Row="1" HorizontalAlignment="Right" Margin="5"
+                  IsChecked="{Binding Path=SelectAll}" 
+                  Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
     </Grid>
 </UserControl>

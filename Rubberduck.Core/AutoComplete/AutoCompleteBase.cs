@@ -1,4 +1,7 @@
-﻿using Rubberduck.VBEditor.Events;
+﻿using Rubberduck.Settings;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
+using System;
 
 namespace Rubberduck.AutoComplete
 {
@@ -10,30 +13,45 @@ namespace Rubberduck.AutoComplete
             OutputToken = outputToken;
         }
 
+        public bool IsInlineCharCompletion => InputToken.Length == 1 && OutputToken.Length == 1;
         public bool IsEnabled { get; set; }
         public string InputToken { get; }
         public string OutputToken { get; }
 
-        public virtual bool Execute(AutoCompleteEventArgs e)
+        public virtual bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            using (var pane = e.CodePane)
+            var input = e.Character.ToString();
+            if (!IsMatch(input))
+            {
+                return false;
+            }
+
+            var module = e.CodeModule;
+            using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
-                if (selection.StartColumn < 2) { return false; }
-                
-                if (!e.IsCommitted && e.OldCode.Substring(selection.StartColumn - 2, 1) == InputToken)
+                var original = module.GetLines(selection);
+                var nextChar = selection.StartColumn - 1 == original.Length ? string.Empty : original.Substring(selection.StartColumn - 1, 1);
+                if (input == InputToken && (input != OutputToken || nextChar != OutputToken))
                 {
-                    using (var module = pane.CodeModule)
-                    {
-                        var newCode = e.OldCode.Insert(selection.StartColumn - 1, OutputToken);
-                        module.ReplaceLine(selection.StartLine, newCode);
-                        pane.Selection = selection;
-                        e.NewCode = newCode;
-                        return true;
-                    }
+                    var code = original.Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
+                    module.ReplaceLine(selection.StartLine, code);
+                    pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 1);
+                    e.Handled = true;
+                    return true;
+                }
+                else if (input == OutputToken && nextChar == OutputToken)
+                {
+                    // just move caret one character to the right & suppress the keypress
+                    pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 2);
+                    e.Handled = true;
+                    return true;
                 }
                 return false;
             }
         }
+
+        public virtual bool IsMatch(string input) => 
+            (IsInlineCharCompletion && !string.IsNullOrEmpty(input) && (input == InputToken || input == OutputToken));
     }
 }

@@ -6,6 +6,7 @@ using Rubberduck.UI.Command;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System;
 
 namespace Rubberduck.UI.Settings
 {
@@ -14,6 +15,8 @@ namespace Rubberduck.UI.Settings
         public AutoCompleteSettingsViewModel(Configuration config)
         {
             Settings = new ObservableCollection<AutoCompleteSetting>(config.UserSettings.AutoCompleteSettings.AutoCompletes);
+            CompleteBlockOnEnter = config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter;
+            CompleteBlockOnTab = config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab;
 
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
@@ -29,7 +32,6 @@ namespace Rubberduck.UI.Settings
                 {
                     _settings = value;
                     OnPropertyChanged();
-                    SelectAll = value.All(e => e.IsEnabled);
                 }
             }
         }
@@ -41,16 +43,58 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
+            config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab = CompleteBlockOnTab;
+            config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter = CompleteBlockOnEnter;
             config.UserSettings.AutoCompleteSettings.AutoCompletes = new HashSet<AutoCompleteSetting>(_settings);
         }
 
         private void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
         {
+            CompleteBlockOnTab = toLoad.CompleteBlockOnTab;
+            CompleteBlockOnEnter = toLoad.CompleteBlockOnEnter;
             Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
         }
 
-        private bool _selectAll;
-        public bool SelectAll
+        private bool _completeBlockOnTab;
+        public bool CompleteBlockOnTab
+        {
+            get { return _completeBlockOnTab; }
+            set
+            {
+                if (_completeBlockOnTab != value)
+                {
+                    _completeBlockOnTab = value;
+                    OnPropertyChanged();
+                    if (!_completeBlockOnTab && !_completeBlockOnEnter)
+                    {
+                        // one must be enabled...
+                        CompleteBlockOnEnter = true;
+                    }
+                }
+            }
+        }
+        
+        private bool _completeBlockOnEnter;
+        public bool CompleteBlockOnEnter
+        {
+            get { return _completeBlockOnEnter; }
+            set
+            {
+                if (_completeBlockOnEnter != value)
+                {
+                    _completeBlockOnEnter = value;
+                    OnPropertyChanged();
+                    if (!_completeBlockOnTab && !_completeBlockOnEnter)
+                    {
+                        // one must be enabled...
+                        CompleteBlockOnTab = true;
+                    }
+                }
+            }
+        }
+
+        private bool? _selectAll;
+        public bool? SelectAll
         {
             get
             {
@@ -63,7 +107,10 @@ namespace Rubberduck.UI.Settings
                     _selectAll = value;
                     foreach (var setting in Settings)
                     {
-                        setting.IsEnabled = value;
+                        if (setting.IsEnabled != (value ?? false))
+                        {
+                            setting.IsEnabled = value ?? false;
+                        }
                     }
                     OnPropertyChanged();
                 }
@@ -99,7 +146,8 @@ namespace Rubberduck.UI.Settings
                 var service = new XmlPersistanceService<Rubberduck.Settings.AutoCompleteSettings> { FilePath = dialog.FileName };
                 service.Save(new Rubberduck.Settings.AutoCompleteSettings
                 {
-                     AutoCompletes = new HashSet<AutoCompleteSetting>(Settings),
+                    CompleteBlockOnTab = this.CompleteBlockOnTab,
+                    AutoCompletes = new HashSet<AutoCompleteSetting>(Settings),
                 });
             }
         }

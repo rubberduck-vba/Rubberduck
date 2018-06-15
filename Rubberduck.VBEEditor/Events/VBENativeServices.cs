@@ -80,12 +80,6 @@ namespace Rubberduck.VBEditor.Events
             {
                 OnSelectionChanged(hwnd);             
             }
-            else if (hwnd != IntPtr.Zero &&
-                (idObject == (int)ObjId.Caret && eventType == (uint)WinEvent.ObjectHide) &&
-                hwnd.ToWindowType() == WindowType.CodePane)
-            {
-                OnCaretHidden(hwnd);
-            }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
                 var type = hwnd.ToWindowType();
@@ -125,8 +119,14 @@ namespace Rubberduck.VBEditor.Events
                     : new DesignerWindowSubclass(hwnd);
                 var info = new WindowInfo(hwnd, window, source);
                 source.FocusChange += FocusDispatcher;
+                source.KeyDown += KeyDownDispatcher;
                 TrackedWindows.Add(hwnd, info);
             }           
+        }
+
+        private static void KeyDownDispatcher(object sender, KeyPressEventArgs e)
+        {
+            OnKeyDown(e);
         }
 
         private static void DetachWindow(IntPtr hwnd)
@@ -136,6 +136,7 @@ namespace Rubberduck.VBEditor.Events
                 Debug.Assert(TrackedWindows.ContainsKey(hwnd));
                 var info = TrackedWindows[hwnd];
                 info.Subclass.FocusChange -= FocusDispatcher;
+                info.Subclass.KeyDown -= KeyDownDispatcher;
                 info.Subclass.Dispose();
                 TrackedWindows.Remove(hwnd);
             }             
@@ -165,18 +166,16 @@ namespace Rubberduck.VBEditor.Events
             if (pane != null) SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs(pane));
         }
 
-        private static string _currentLine;
-        public static event EventHandler<AutoCompleteEventArgs> CaretHidden; // not CodeChanged because wouldn't fire on paste
-        private static void OnCaretHidden(IntPtr hwnd)
+        public static event EventHandler<AutoCompleteEventArgs> KeyDown; 
+        private static void OnKeyDown(KeyPressEventArgs e)
         {
-            var pane = GetCodePaneFromHwnd(hwnd);
-            if (pane?.Selection.IsSingleCharacter ?? false)
+            using (var pane = GetCodePaneFromHwnd(e.Hwnd))
             {
-                var args = new AutoCompleteEventArgs(pane);
-                if (_currentLine != args.OldCode && !string.IsNullOrEmpty(args.OldCode))
+                using (var module = pane.CodeModule)
                 {
-                    CaretHidden?.Invoke(_vbe, args);
-                    _currentLine = args.NewCode;
+                    var args = new AutoCompleteEventArgs(module, e);
+                    KeyDown?.Invoke(_vbe, args);
+                    e.Handled = args.Handled;
                 }
             }
         }
@@ -192,7 +191,10 @@ namespace Rubberduck.VBEditor.Events
             try
             {
                 var caption = hwnd.GetWindowText();
-                return _vbe.CodePanes.FirstOrDefault(x => x.Window.Caption.Equals(caption));
+                using (var panes = _vbe.CodePanes)
+                {
+                    return panes.FirstOrDefault(x => x.Window.Caption.Equals(caption));
+                }
             }
             catch
             {
@@ -211,7 +213,10 @@ namespace Rubberduck.VBEditor.Events
             }
 
             var caption = hwnd.GetWindowText();
-            return _vbe.Windows.FirstOrDefault(x => x.Caption.Equals(caption));
+            using (var windows = _vbe.Windows)
+            {
+                return windows.FirstOrDefault(x => x.Caption.Equals(caption));
+            }
         }
 
         /// <summary>

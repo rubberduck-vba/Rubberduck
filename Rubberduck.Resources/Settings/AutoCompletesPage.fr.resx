@@ -159,6 +159,21 @@
   <data name="AutoCompleteWithBlockDescription" xml:space="preserve">
     <value>Fermer les blocs 'With'</value>
   </data>
+  <data name="AutoCompleteSubBlockDescription" xml:space="preserve">
+    <value>Prendre en charge la fermeture des blocs 'Sub'</value>
+  </data>
+  <data name="AutoCompleteFunctionBlockDescription" xml:space="preserve">
+    <value>Prendre en charge la fermeture des blocs 'Function'</value>
+  </data>
+  <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
+    <value>Prendre en charge la fermeture des blocs 'Property'</value>
+  </data>
+  <data name="HandleTabKey" xml:space="preserve">
+    <value>Autocompléter les blocs avec TAB</value>
+  </data>
+  <data name="HandleEnterKey" xml:space="preserve">
+    <value>Autocompléter les blocs avec ENTER</value>
+  </data>
   <data name="PageHeader" xml:space="preserve">
     <value>Autocompletion Settings</value>
   </data>
