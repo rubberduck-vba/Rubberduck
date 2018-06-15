@@ -209,16 +209,27 @@ namespace Rubberduck.VBEditor.Events
                 var caption = hwnd.GetWindowText();
                 using (var panes = _vbe.CodePanes)
                 {
+                    var foundIt = false;
                     foreach (var pane in panes)
                     {
-                        using (var window = pane.Window)
+                        try
                         {
-                            if (window.Caption.Equals(caption))
+                            using (var window = pane.Window)
                             {
-                                return pane;
+                                if (window.Caption.Equals(caption))
+                                {
+                                    foundIt = true;
+                                    return pane;
+                                }
                             }
                         }
-                        pane.Dispose();
+                        finally
+                        {
+                            if(!foundIt)
+                            {
+                                pane.Dispose();
+                            }
+                        }
                     }
 
                     return null;
@@ -243,13 +254,25 @@ namespace Rubberduck.VBEditor.Events
             var caption = hwnd.GetWindowText();
             using (var windows = _vbe.Windows)
             {
+                var foundIt = false;
                 foreach (var window in windows)
                 {
-                    if (window.Caption.Equals(caption))
+                    try
                     {
-                        return window;
+                        if (window.Caption.Equals(caption))
+                        {
+                            foundIt = true;
+                            return window;
+                        }
+
                     }
-                    window.Dispose();
+                    finally
+                    {
+                        if (!foundIt)
+                        {
+                            window.Dispose();
+                        }
+                    }
                 }
                 return null;
             }
