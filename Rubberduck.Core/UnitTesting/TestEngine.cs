@@ -101,104 +101,106 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            _state.OnSuspendParser(this, () =>
+            _state.OnSuspendParser(this, () => RunWhileSuspended(tests));
+        }
+
+        private void RunWhileSuspended(IEnumerable<TestMethod> tests)
+        {
+            var testMethods = tests as IList<TestMethod> ?? tests.ToList();
+            if (!testMethods.Any())
             {
-                var testMethods = tests as IList<TestMethod> ?? tests.ToList();
-                if (!testMethods.Any())
-                {
-                    return;
-                }
+                return;
+            }
 
-                try
+            try
+            {
+                var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
+                foreach (var module in modules)
                 {
-                    var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
-                    foreach (var module in modules)
+                    var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
+                    var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
+
+                    var capturedModule = module;
+                    var moduleTestMethods = testMethods
+                        .Where(test =>
+                        {
+                            var qmn = test.Declaration.QualifiedName.QualifiedModuleName;
+
+                            return qmn.ProjectId == capturedModule.Key.ProjectId
+                                   && qmn.ComponentName == capturedModule.Key.ComponentName;
+                        });
+
+                    var fakes = _fakesFactory.Create();
+                    var initializeMethods = module.Key.FindModuleInitializeMethods(_state);
+                    try
                     {
-                        var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
-                        var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
-
-                        var capturedModule = module;
-                        var moduleTestMethods = testMethods
-                            .Where(test =>
-                            {
-                                var qmn = test.Declaration.QualifiedName.QualifiedModuleName;
-
-                                return qmn.ProjectId == capturedModule.Key.ProjectId
-                                       && qmn.ComponentName == capturedModule.Key.ComponentName;
-                            });
-
-                        var fakes = _fakesFactory.Create();
-                        var initializeMethods = module.Key.FindModuleInitializeMethods(_state);
-                        try
+                        RunInternal(initializeMethods);
+                    }
+                    catch (COMException ex)
+                    {
+                        Logger.Error(ex,
+                            "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.",
+                            module.Key.Name);
+                        foreach (var method in moduleTestMethods)
                         {
-                            RunInternal(initializeMethods);
+                            method.UpdateResult(TestOutcome.Unknown, AssertMessages.Assert_ComException);
                         }
-                        catch (COMException ex)
+                        continue;
+                    }
+                    foreach (var test in moduleTestMethods)
+                    {
+                        // no need to run setup/teardown for ignored tests
+                        if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
                         {
-                            Logger.Error(ex,
-                                "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.",
-                                module.Key.Name);
-                            foreach (var method in moduleTestMethods)
-                            {
-                                method.UpdateResult(TestOutcome.Unknown, AssertMessages.Assert_ComException);
-                            }
+                            test.UpdateResult(TestOutcome.Ignored);
+                            OnTestCompleted();
                             continue;
                         }
-                        foreach (var test in moduleTestMethods)
-                        {
-                            // no need to run setup/teardown for ignored tests
-                            if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
-                            {
-                                test.UpdateResult(TestOutcome.Ignored);
-                                OnTestCompleted();
-                                continue;
-                            }
 
-                            var stopwatch = new Stopwatch();
-                            stopwatch.Start();
+                        var stopwatch = new Stopwatch();
+                        stopwatch.Start();
 
-                            try
-                            {
-                                fakes.StartTest();
-                                RunInternal(testInitialize);
-                                test.Run();
-                                RunInternal(testCleanup);
-                            }
-                            catch (COMException ex)
-                            {
-                                Logger.Error(ex, "Unexpected COM exception while running tests.");
-                                test.UpdateResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException);
-                            }
-                            finally
-                            {
-                                fakes.StopTest();
-                            }
-
-                            stopwatch.Stop();
-                            test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
-
-                            OnTestCompleted();
-                            Model.AddExecutedTest(test);
-                        }
-                        var cleanupMethods = module.Key.FindModuleCleanupMethods(_state);
                         try
                         {
-                            RunInternal(cleanupMethods);
+                            fakes.StartTest();
+                            RunInternal(testInitialize);
+                            test.Run();
+                            RunInternal(testCleanup);
                         }
                         catch (COMException ex)
                         {
-                            Logger.Error(ex,
-                                "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
-                                module.Key.Name);
-                            break;
+                            Logger.Error(ex, "Unexpected COM exception while running tests.");
+                            test.UpdateResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException);
                         }
+                        finally
+                        {
+                            fakes.StopTest();
+                        }
+
+                        stopwatch.Stop();
+                        test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
+
+                        OnTestCompleted();
+                        Model.AddExecutedTest(test);
+                    }
+                    var cleanupMethods = module.Key.FindModuleCleanupMethods(_state);
+                    try
+                    {
+                        RunInternal(cleanupMethods);
+                    }
+                    catch (COMException ex)
+                    {
+                        Logger.Error(ex,
+                            "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
+                            module.Key.Name);
+                        break;
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
-                }
-            });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
+            }
         }
 
         private void RunInternal(IEnumerable<Declaration> members)

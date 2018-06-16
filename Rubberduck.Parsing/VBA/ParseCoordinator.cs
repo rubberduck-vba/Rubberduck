@@ -123,6 +123,12 @@ namespace Rubberduck.Parsing.VBA
 
             try
             {
+                if (_parsingSuspendLock.IsReadLockHeld)
+                {
+                    Logger.Warn("A suspension action was attempted while a read lock was held.");
+                    e.Declined = true;
+                    return;
+                }
                 _parsingSuspendLock.EnterWriteLock();
                 Interlocked.Add(ref _suspensionIteration, 1);
                 var originalStatus = State.Status;

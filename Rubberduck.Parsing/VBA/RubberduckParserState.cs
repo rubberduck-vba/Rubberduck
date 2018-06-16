@@ -65,6 +65,7 @@ namespace Rubberduck.Parsing.VBA
             BusyAction = busyAction;
         }
 
+        public bool Declined { get; set; }
         public object Requestor { get; }
         public Action BusyAction { get; }
     }
@@ -931,14 +932,17 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void OnSuspendParser(object requestor, Action busyAction)
+        public bool OnSuspendParser(object requestor, Action busyAction)
         {
             var handler = SuspendRequest;
             if (handler != null && IsEnabled)
             {
                 var args = new RubberduckStatusSuspendParserEventArgs(requestor, busyAction);
                 handler.Invoke(requestor, args);
+                return !args.Declined;
             }
+
+            return false;
         }
 
         public bool IsNewOrModified(IVBComponent component)
