@@ -326,7 +326,6 @@
     <Compile Include="Common\IOperatingSystem.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
-    <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\VariableNameValidator.cs" />
     <Compile Include="Common\WinAPI\RegistryAccess.cs" />

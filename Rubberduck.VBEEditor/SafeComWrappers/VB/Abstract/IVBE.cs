@@ -25,5 +25,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
         bool IsInDesignMode { get; }
         int ProjectsCount { get; }
+        ISourceCodeHandler SourceCodeHandler { get; }
     }
 }
