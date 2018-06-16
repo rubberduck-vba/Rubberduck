@@ -30,18 +30,7 @@ namespace Rubberduck.VBEditor.VB6
                 ? Encoding.UTF8
                 : Encoding.Default;
 
-            var code = File.ReadAllText(fileName, encoding);
-            try
-            {
-                File.Delete(fileName);
-            }
-            catch
-            {
-                // Meh.
-            }            
-
-            return code;
-        }
-        
+            return File.ReadAllText(fileName, encoding);
+        }        
     }
 }
