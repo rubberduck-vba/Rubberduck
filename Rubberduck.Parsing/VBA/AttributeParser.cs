@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.VBA
             cancellationToken.ThrowIfCancellationRequested();
             var component = _projectsProvider.Component(module);
 
-            var path = component.VBE.Kind == VBEKind.Embedded
+            var path = component.VBE.Kind == VBEKind.Hosted
                 ? _exporter.Export(component)
                 : component.GetFileName(1); 
 
@@ -57,15 +57,18 @@ namespace Rubberduck.Parsing.VBA
                 code = File.ReadAllText(path, Encoding.Default);    //The VBE exports encoded in the current ANSI codepage from the windows settings.
             }
 
-            try
+            if (component.VBE.Kind == VBEKind.Hosted)
             {
-                File.Delete(path);
+                try
+                {
+                    File.Delete(path);
+                }
+                catch
+                {
+                    // Meh.
+                }
             }
-            catch
-            {
-                // Meh.
-            }
-           
+
             cancellationToken.ThrowIfCancellationRequested();
 
             var type = module.ComponentType == ComponentType.StandardModule

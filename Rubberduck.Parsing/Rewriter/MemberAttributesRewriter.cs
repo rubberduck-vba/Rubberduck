@@ -39,7 +39,7 @@ namespace Rubberduck.Parsing.Rewriter
                 return;
             }
 
-            var file = vbeKind == VBEKind.Embedded
+            var file = vbeKind == VBEKind.Hosted
                 ? _exporter.Export(component)
                 : component.GetFileName(1);    
 

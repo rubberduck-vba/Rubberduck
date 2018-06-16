@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Rubberduck.VBEditor.SafeComWrappers
+﻿namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public enum VBEKind
     {
-        /// <summary>Embedded VB editor (Visual Basic for Applications).</summary>
-        Embedded,
+        /// <summary>
+        /// Hosted VB editor (Visual Basic for Applications).
+        /// </summary>
+        Hosted,
 
-        /// <summary>Standalone VB editor (Visual Basic).</summary>
+        /// <summary>
+        /// Standalone VB editor (Visual Basic).
+        /// </summary>
         Standalone
     }
 }
