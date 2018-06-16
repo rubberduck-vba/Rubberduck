@@ -64,7 +64,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     return 0;
                 }
 
-                // Note - the value returned by the EbMode function does NOT match with the EbMode enum, hence remapped below.
+                // Note - the value returned by the EbMode function does NOT match with the EnvironmentMode enum, hence remapped below.
                 var ebMode = EbMode();
                 switch (ebMode)
                 {
@@ -74,11 +74,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                         return EnvironmentMode.Run;
                     case 2:
                         return EnvironmentMode.Break;
-                }
-
-                // Should never get here
-                Debug.Assert(false, $"Unexpected value '{ebMode}' returned from EbMode");
-                return EnvironmentMode.Design;
+                    default:
+                        Debug.Assert(false, $"Unexpected value '{ebMode}' returned from EbMode");
+                        return EnvironmentMode.Design;
+                }                
             }
         }                   
 
