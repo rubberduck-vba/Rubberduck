@@ -42,13 +42,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 Parallel.ForEach(modules,
                     options,
-                    module =>
-                    {
-                        if (module.IsParsable)
-                        {
-                            ParseModule(module, token);
-                        }
-                    }
+                    module => ParseModule(module, token)
                 );
             }
             catch (AggregateException exception)
