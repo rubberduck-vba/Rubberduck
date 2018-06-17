@@ -89,8 +89,7 @@ namespace Rubberduck.Inspections.Concrete
             return context.variableStmt() == null
                    && context.constStmt() == null
                    && context.enumerationStmt() == null
-                   && context.privateTypeDeclaration() == null
-                   && context.publicTypeDeclaration() == null
+                   && context.udtDeclaration() == null
                    && context.eventStmt() == null
                    && context.implementsStmt() == null
                    && context.declareStmt() == null;
