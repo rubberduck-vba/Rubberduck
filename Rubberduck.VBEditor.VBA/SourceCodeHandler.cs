@@ -19,9 +19,11 @@ namespace Rubberduck.VBEditor.VBA
 
         public void Import(IVBComponent component, string fileName)
         {
-            var components = component.Collection;
-            components.Remove(component);
-            components.ImportSourceFile(fileName);
+            using (var components = component.Collection)
+            {
+                components.Remove(component);
+                components.ImportSourceFile(fileName);
+            }
         }
 
         public string Read(IVBComponent component)
