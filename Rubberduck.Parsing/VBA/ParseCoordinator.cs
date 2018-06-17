@@ -84,6 +84,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 try
                 {
+                    // Removes the need for recursion policy. In unlikely event where the 
+                    // same thread that is executing the busyAction of the suspendRequest
+                    // has requested a reparse, we can skip taking a read lock, since we already
+                    // have the write lock further up the thread's call stack.
                     if (!_parsingSuspendLock.IsWriteLockHeld)
                     {
                         _parsingSuspendLock.EnterReadLock();
@@ -205,7 +209,6 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// For the use of tests only
         /// </summary>
-        /// 
         public void Parse(CancellationTokenSource token)
         {
             SetSavedCancellationTokenSource(token);
@@ -215,7 +218,6 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// For the use of tests only
         /// </summary>
-        /// 
         private void SetSavedCancellationTokenSource(CancellationTokenSource tokenSource)
         {
             var oldTokenSource = _currentCancellationTokenSource;
@@ -230,7 +232,6 @@ namespace Rubberduck.Parsing.VBA
             var lockTaken = false;
             try
             {
-                _parsingSuspendLock.EnterReadLock();
                 Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
                 ParseAllInternal(this, token);
             }
@@ -243,10 +244,6 @@ namespace Rubberduck.Parsing.VBA
                 if (lockTaken)
                 {
                     Monitor.Exit(_parsingRunSyncObject);
-                }
-                if (_parsingSuspendLock.IsReadLockHeld)
-                {
-                    _parsingSuspendLock.ExitReadLock();
                 }
             }
         }
