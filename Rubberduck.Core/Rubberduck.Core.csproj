@@ -312,7 +312,6 @@
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricResult.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricsParseTreeListener.cs" />
-    <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Text;
-using Rubberduck.Common;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
