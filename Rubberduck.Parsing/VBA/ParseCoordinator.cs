@@ -136,6 +136,7 @@ namespace Rubberduck.Parsing.VBA
                 _parsingSuspendLock.EnterWriteLock();
                 Interlocked.Add(ref _suspensionIteration, 1);
                 var originalStatus = State.Status;
+                Cancel();
                 _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy,
                     CancellationToken.None);
                 e.BusyAction.Invoke();
