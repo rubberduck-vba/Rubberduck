@@ -242,6 +242,8 @@ POW : '^';
 RPAREN : ')';
 L_SQUARE_BRACKET : '[';
 R_SQUARE_BRACKET : ']';
+L_BRACE : '{';
+R_BRACE : '}';
 STRINGLITERAL : '"' (~["\r\n] | '""')* '"';
 OCTLITERAL : '&O' [0-8]+ INTEGERTYPESUFFIX?;
 HEXLITERAL : '&H' [0-9A-F]+ INTEGERTYPESUFFIX?;
