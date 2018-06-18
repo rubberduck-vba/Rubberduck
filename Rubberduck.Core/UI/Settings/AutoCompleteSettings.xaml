@@ -47,7 +47,11 @@
 
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Label Background="DarkGray"
                        HorizontalContentAlignment="Stretch"
@@ -80,7 +84,10 @@
                         </StackPanel>
                     </DockPanel>
                 </Label>
-                <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
+                <DockPanel HorizontalAlignment="Stretch">
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
+                </DockPanel>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="AutoCompleteSettingsGrid"
                               ItemsSource="{Binding Settings}"
@@ -111,17 +118,14 @@
                                         <Setter Property="HorizontalContentAlignment" Value="Center" />
                                     </Style>
                                 </DataGridCheckBoxColumn.HeaderStyle>
-                                <DataGridCheckBoxColumn.Header>
-                                    <CheckBox HorizontalContentAlignment="Center" 
-                                              HorizontalAlignment="Stretch"
-                                              IsChecked="{Binding SelectAll}" 
-                                              Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
-                                </DataGridCheckBoxColumn.Header>
                             </DataGridCheckBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>
             </StackPanel>
         </ScrollViewer>
+        <CheckBox Grid.Row="1" HorizontalAlignment="Right" Margin="5"
+                  IsChecked="{Binding Path=SelectAll}" 
+                  Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
     </Grid>
 </UserControl>

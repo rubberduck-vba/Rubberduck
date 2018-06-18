@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
@@ -9,7 +10,7 @@ using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.AutoComplete
 {
-    public class AutoCompleteService : SubclassingWindow, IDisposable
+    public class AutoCompleteService : IDisposable
     {
         private readonly IGeneralConfigService _configService;
         private readonly List<IAutoComplete> _autoCompletes;
@@ -20,7 +21,6 @@ namespace Rubberduck.AutoComplete
         {
             _configService = configService;
             _autoCompletes = provider.AutoCompletes.ToList();
-            ApplyAutoCompleteSettings(configService.LoadConfiguration());
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             VBENativeServices.KeyDown += HandleKeyDown;
@@ -31,8 +31,8 @@ namespace Rubberduck.AutoComplete
             var config = _configService.LoadConfiguration();
             ApplyAutoCompleteSettings(config);
         }
-
-        private void ApplyAutoCompleteSettings(Configuration config)
+        
+        public void ApplyAutoCompleteSettings(Configuration config)
         {
             _settings = config.UserSettings.AutoCompleteSettings;
             foreach (var autoComplete in _autoCompletes)
@@ -52,7 +52,7 @@ namespace Rubberduck.AutoComplete
             var qualifiedSelection = module.GetQualifiedSelection();
             var selection = qualifiedSelection.Value.Selection;
 
-            if (e.Keys != Keys.None && selection.LineCount > 1 || selection.StartColumn != selection.EndColumn)
+            if (e.Keys != Keys.None && selection.LineCount > 1)
             {
                 return;
             }
@@ -61,9 +61,29 @@ namespace Rubberduck.AutoComplete
 
             var handleDelete = e.Keys == Keys.Delete && selection.EndColumn <= currentContent.Length;
             var handleBackspace = e.Keys == Keys.Back && selection.StartColumn > 1;
+            var handleTab = e.Keys == Keys.Tab && !selection.IsSingleCharacter;
+            var handleEnter = e.Keys == Keys.Enter && !selection.IsSingleCharacter;
+
             foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled))
             {
-                if (handleDelete || handleBackspace)
+                if ((handleTab || handleEnter) && autoComplete.IsMatch(currentContent))
+                {
+                    using (var pane = module.CodePane)
+                    {
+                        if (!string.IsNullOrWhiteSpace(module.GetLines(selection.StartLine + 1, 1)))
+                        {
+                            module.InsertLines(selection.StartLine + 1, string.Empty);
+                            e.Handled = e.Keys != Keys.Tab; // swallow ENTER, let TAB through
+                        }
+                        else
+                        {
+                            pane.Selection = new Selection(selection.StartLine + 1, selection.EndColumn);
+                            e.Handled = true; // base.Execute added the indentation as applicable already.
+                        }
+                        break;
+                    }
+                }
+                else if (handleDelete || handleBackspace)
                 {
                     if (DeleteAroundCaret(e, autoComplete))
                     {

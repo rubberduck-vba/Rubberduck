@@ -20,7 +20,8 @@ namespace Rubberduck.AutoComplete
 
         public virtual bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (!e.IsCharacter || !IsInlineCharCompletion)
+            var input = e.Character.ToString();
+            if (!IsMatch(input))
             {
                 return false;
             }
@@ -29,16 +30,28 @@ namespace Rubberduck.AutoComplete
             using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
-                if (e.Character.ToString() == InputToken)
+                var original = module.GetLines(selection);
+                var nextChar = selection.StartColumn - 1 == original.Length ? string.Empty : original.Substring(selection.StartColumn - 1, 1);
+                if (input == InputToken && (input != OutputToken || nextChar != OutputToken))
                 {
-                    var code = module.GetLines(selection).Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
+                    var code = original.Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
                     module.ReplaceLine(selection.StartLine, code);
                     pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 1);
+                    e.Handled = true;
+                    return true;
+                }
+                else if (input == OutputToken && nextChar == OutputToken)
+                {
+                    // just move caret one character to the right & suppress the keypress
+                    pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 2);
                     e.Handled = true;
                     return true;
                 }
                 return false;
             }
         }
+
+        public virtual bool IsMatch(string input) => 
+            (IsInlineCharCompletion && !string.IsNullOrEmpty(input) && (input == InputToken || input == OutputToken));
     }
 }

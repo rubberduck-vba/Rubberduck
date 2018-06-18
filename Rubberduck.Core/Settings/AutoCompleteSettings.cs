@@ -22,6 +22,9 @@ namespace Rubberduck.Settings
 
         [XmlAttribute]
         public bool CompleteBlockOnTab { get; set; }
+        
+        [XmlAttribute]
+        public bool CompleteBlockOnEnter { get; set; }
 
         public AutoCompleteSettings() : this(Enumerable.Empty<AutoCompleteSetting>())
         {

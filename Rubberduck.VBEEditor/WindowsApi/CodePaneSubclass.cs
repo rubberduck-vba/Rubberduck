@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         {
             CodePane = pane;
         }
-
+        
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
         {
             KeyPressEventArgs args;

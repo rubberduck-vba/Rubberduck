@@ -751,30 +751,21 @@ namespace Rubberduck.Parsing.Symbols
             AddDeclaration(declaration);
         }
 
-        public override void EnterPublicTypeDeclaration(VBAParser.PublicTypeDeclarationContext context)
+        public override void EnterUdtDeclaration(VBAParser.UdtDeclarationContext context)
         {
-            AddUdtDeclaration(context.udtDeclaration(), Accessibility.Public, context);
+            AddUdtDeclaration(context);
         }
 
-        public override void ExitPublicTypeDeclaration(VBAParser.PublicTypeDeclarationContext context)
+        public override void ExitUdtDeclaration(VBAParser.UdtDeclarationContext context)
         {
             _parentDeclaration = _moduleDeclaration;
         }
 
-        public override void EnterPrivateTypeDeclaration(VBAParser.PrivateTypeDeclarationContext context)
+        private void AddUdtDeclaration(VBAParser.UdtDeclarationContext context)
         {
-            AddUdtDeclaration(context.udtDeclaration(), Accessibility.Private, context);
-        }
-
-        public override void ExitPrivateTypeDeclaration(VBAParser.PrivateTypeDeclarationContext context)
-        {
-            _parentDeclaration = _moduleDeclaration;
-        }
-
-        private void AddUdtDeclaration(VBAParser.UdtDeclarationContext udtDeclaration, Accessibility accessibility, ParserRuleContext context)
-        {
-            var identifier = Identifier.GetName(udtDeclaration.untypedIdentifier());
-            var identifierSelection = Identifier.GetNameSelection(udtDeclaration.untypedIdentifier());
+            var identifier = Identifier.GetName(context.untypedIdentifier());
+            var identifierSelection = Identifier.GetNameSelection(context.untypedIdentifier());
+            var accessibility = context.visibility()?.PRIVATE() != null ? Accessibility.Private : Accessibility.Public; 
             var declaration = CreateDeclaration(
                 identifier,
                 null,

@@ -89,7 +89,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private IEnumerable<IReference> GetReferencesToLoadAndSaveReferencePriority(IReadOnlyList<IVBProject> projects)
+        private ICollection<IReference> GetReferencesToLoadAndSaveReferencePriority(IReadOnlyList<IVBProject> projects)
         {
             var referencesToLoad = new List<IReference>();
 
