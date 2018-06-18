@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -63,7 +64,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     return 0;
                 }
 
-                return (EnvironmentMode) EbMode();
+                // Note - the value returned by the EbMode function does NOT match with the EnvironmentMode enum, hence remapped below.
+                var ebMode = EbMode();
+                switch (ebMode)
+                {
+                    case 0:
+                        return EnvironmentMode.Design;
+                    case 1:
+                        return EnvironmentMode.Run;
+                    case 2:
+                        return EnvironmentMode.Break;
+                    default:
+                        Debug.Assert(false, $"Unexpected value '{ebMode}' returned from EbMode");
+                        return EnvironmentMode.Design;
+                }                
             }
         }                   
 
