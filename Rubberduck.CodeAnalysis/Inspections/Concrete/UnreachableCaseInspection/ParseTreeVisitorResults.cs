@@ -42,10 +42,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (child is ParserRuleContext prCtxt  && Contains(prCtxt))
                     {
-                        //if (Contains(prCtxt))
-                        //{
-                            results.Add(prCtxt);
-                        //}
+                        results.Add(prCtxt);
                     }
                 }
             }

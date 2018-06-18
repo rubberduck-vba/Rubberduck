@@ -164,7 +164,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override bool Equals(object obj)
         {
-            if( !(obj is FilterLimits<T> filter))
+            if (!(obj is FilterLimits<T> filter))
             {
                 return false;
             }
@@ -176,7 +176,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     return false;
                 }
             }
-            else if(HasMinimum || filter.HasMinimum)
+            else if (HasMinimum || filter.HasMinimum)
             {
                 return false;
             }

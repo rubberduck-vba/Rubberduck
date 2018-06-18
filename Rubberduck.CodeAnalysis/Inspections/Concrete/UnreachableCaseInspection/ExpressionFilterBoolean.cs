@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (expression.LHSValue.ParsesToConstantValue)
             {
-                if (Converter(expression.LHS, Tokens.Boolean, out bool bVal))
+                if (Converter(expression.LHS, out bool bVal))
                 {
                     return AddIsClause(bVal, expression);
                 }

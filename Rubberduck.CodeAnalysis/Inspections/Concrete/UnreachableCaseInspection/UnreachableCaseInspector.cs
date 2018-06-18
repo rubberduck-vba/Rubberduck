@@ -155,7 +155,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryGetSelectExpressionTypeNameFromTypes(IEnumerable<string> typeNames, out string typeName)
         {
             typeName = string.Empty;
-            if(!typeNames.Any()) { return false; }
+            if (!typeNames.Any()) { return false; }
 
             var typeList = typeNames.ToList();
 

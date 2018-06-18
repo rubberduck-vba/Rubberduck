@@ -62,8 +62,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             Converter = converter;
             _filterTypeName = typeName;
-            converter("True", typeName, out _trueValue);
-            converter("False", typeName, out _falseValue);
+            converter("True", out _trueValue, typeName);
+            converter("False", out _falseValue, typeName);
         }
 
         private HashSet<IRangeClauseExpression> LikePredicates { get; } = new HashSet<IRangeClauseExpression>();
@@ -184,7 +184,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (FiltersTrueFalse) { return false; }
 
-            if (!Converter(expression.RHS, _filterTypeName, out T rhsVal))
+            if (!Converter(expression.RHS, out T rhsVal, _filterTypeName))
             {
                 throw new ArgumentOutOfRangeException($"Unable to convert {expression.RHS} to {typeof(T)}");
             }
@@ -342,7 +342,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (valueExpr.LHSValue.ParsesToConstantValue)
             {
-                if (Converter(valueExpr.LHS, _filterTypeName, out T result))
+                if (Converter(valueExpr.LHS, out T result, _filterTypeName))
                 {
                     return FiltersValue(result) ? false : AddSingleValue(result);
                 }
@@ -357,7 +357,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (unaryExpr.LHSValue.ParsesToConstantValue)
             {
-                if (Converter(unaryExpr.LHS, _filterTypeName, out T result))
+                if (Converter(unaryExpr.LHS, out T result, _filterTypeName))
                 {
                     return FiltersValue(result) ? false : AddSingleValue(result);
                 }
@@ -385,7 +385,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (!binary.LHSValue.ParsesToConstantValue && binary.RHSValue.ParsesToConstantValue)
             {
-                if (!Converter(binary.RHS, _filterTypeName, out T value))
+                if (!Converter(binary.RHS, out T value, _filterTypeName))
                 {
                     throw new ArgumentException();
                 }
@@ -402,7 +402,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected virtual bool AddIsClause(IsClauseExpression expression)
         {
-            if (Converter(expression.LHS, _filterTypeName, out T value))
+            if (Converter(expression.LHS, out T value, _filterTypeName))
             {
                 IsDirty = true;
                 if (IsClauseAdders.ContainsKey(expression.OpSymbol))
@@ -424,7 +424,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             IsDirty = true;
             var result = Limits.SetMinimum(value);
-            if(TryGetMinimum(out T min))
+            if (TryGetMinimum(out T min))
             {
                 var newRanges = new HashSet<(T Start, T End)>();
                 foreach ( var range in Ranges)
@@ -505,7 +505,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private (T start, T end) ConvertRangeValues(string startVal, string endVal)
         {
-            if (!Converter(startVal, _filterTypeName, out T start) || !Converter(endVal, _filterTypeName, out T end))
+            if (!Converter(startVal, out T start, _filterTypeName) || !Converter(endVal, out T end, _filterTypeName))
             {
                 throw new ArgumentException();
             }

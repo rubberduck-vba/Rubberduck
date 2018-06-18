@@ -383,18 +383,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public static class ParseTreeValueExtensions
     {
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out long value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value, parseTreeValue.TypeName);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out double value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out decimal value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out bool value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out string value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, parseTreeValue.TypeName, out value);
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
     }
 }
