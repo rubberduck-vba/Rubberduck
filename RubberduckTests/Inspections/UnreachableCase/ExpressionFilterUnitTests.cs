@@ -507,7 +507,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
             {
                 clauseItem = item;
                 
-                //var element = clauseItem.Trim().Split(new string[] { CLAUSETYPE_VALUE_DELIMITER }, StringSplitOptions.None);
                 var element = RetrieveDelimitedElements(clauseItem.Trim(), CLAUSETYPE_VALUE_DELIMITER);
                 if (!element.Any() || element[0].Equals(string.Empty) || element.Count() < 2)
                 {
@@ -535,11 +534,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         var startEnd = clauseExpression.Split(new string[] { RANGE_STARTEND_DELIMITER }, StringSplitOptions.None);
                         var testValStart = ValueFactory.Create(startEnd[0], conformToTypeName: conformToType);
                         var testValEnd = ValueFactory.Create(startEnd[1], conformToTypeName: conformToType);
-                        //if (!conformToType.Equals(string.Empty))
-                        //{
-                            //testValStart.ParsesToConstantValue = !testValStart.IsVariable;
-                            //testValEnd.ParsesToConstantValue = !testValEnd.IsVariable;
-                        //}
                         var expression = new RangeOfValuesExpression(testValStart, testValEnd);
                         result.AddExpression(expression);
                     }
@@ -558,15 +552,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         {
                             var lhs = ValueFactory.Create(sides[0].Trim(), conformToTypeName: conformToType);
                             var rhs = ValueFactory.Create(sides[1].Trim(), conformToTypeName: conformToType);
-                            //if (lhs.ValueText.Equals(Tokens.Is))
-                            //{
-                                result.AddExpression(new IsClauseExpression(rhs, symbol));
-                            //}
-                            //else
-                            //{
-                            //    result.AddExpression(new BinaryExpression(lhs, rhs, symbol));
-                            //}
-
+                            result.AddExpression(new IsClauseExpression(rhs, symbol));
                         }
                         else
                         {
@@ -611,7 +597,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
         private List<IRangeClauseExpression> CreateTestExpressions(List<string> annotations, string conformToType = null)
         {
-            //var result = RangeClauseFilterFactory.Create(conformToType, ValueFactory);
             var results = new List<IRangeClauseExpression>();
             var clauseItem = string.Empty;
             foreach (var item in annotations)
@@ -619,7 +604,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 clauseItem = item;
 
                 var element = RetrieveDelimitedElements(clauseItem.Trim(), CLAUSETYPE_VALUE_DELIMITER);
-                //var element = clauseItem.Trim().Split(new string[] { CLAUSETYPE_VALUE_DELIMITER }, StringSplitOptions.None);
                 if ( !element.Any() || element[0].Equals(string.Empty) || element.Count() < 2)
                 {
                     continue;
@@ -644,11 +628,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         var startEnd = clauseExpression.Split(new string[] { RANGE_STARTEND_DELIMITER }, StringSplitOptions.None);
                         var testValStart = ValueFactory.Create(startEnd[0], conformToTypeName: conformToType);
                         var testValEnd = ValueFactory.Create(startEnd[1], conformToTypeName: conformToType);
-                        //if (!conformToType.Equals(string.Empty))
-                        //{
-                            //testValStart.ParsesToConstantValue = !testValStart.IsVariable;
-                            //testValEnd.ParsesToConstantValue = !testValEnd.IsVariable;
-                        //}
                         results.Add(new RangeOfValuesExpression(testValStart, testValEnd));
                     }
                     else if (clauseType.Equals("Value"))
@@ -692,16 +671,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         {
                             var lhs = ValueFactory.Create(sides[0].Trim(), conformToTypeName: conformToType);
                             var rhs = ValueFactory.Create(sides[1].Trim(), conformToTypeName: conformToType);
-                            //if (lhs.ValueText.Equals(Tokens.Is))
-                            //{
-                                results.Add(new IsClauseExpression(rhs, symbol));
-                            //}
+                            results.Add(new IsClauseExpression(rhs, symbol));
                         }
-                        //else
-                        //{
-                        //    var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                        //    results.Add(new UnaryExpression(uciVal, symbol));
-                        //}
                     }
                     else
                     {

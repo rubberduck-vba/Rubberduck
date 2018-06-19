@@ -56,7 +56,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static Dictionary<string, Func<string, string, bool>> LogicOpsString = new Dictionary<string, Func<string, string, bool>>()
         {
-            [Tokens.Like] = Like
+            [Tokens.Like] = LikeBinary,
+            ["LikeText"] = LikeIgnoreCase,
+            ["LikeDatabase"] = LikeIgnoreCase,
         };
 
         private static readonly List<string> ResultTypeRanking = new List<string>()
@@ -108,10 +110,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     return _valueFactory.Create(concatResult, Tokens.String);
                 }
 
-                if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
+                if (opSymbol.Contains(Tokens.Like))
                 {
-                   var stringOpResult = LogicOpsString[opSymbol](LHS.ValueText, RHS.ValueText);
-                    return _valueFactory.Create(stringOpResult.ToString(), Tokens.Boolean);
+                    if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
+                    {
+                        var stringOpResult = LogicOpsString[opSymbol](LHS.ValueText, RHS.ValueText);
+                        return _valueFactory.Create(stringOpResult.ToString(), Tokens.Boolean);
+                    }
                 }
             }
             var opResultTypeName = isMathOp ? DetermineMathResultType(LHS.TypeName, RHS.TypeName) : Tokens.Boolean;
@@ -200,57 +205,69 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public static string Concat<T, U>(T lhs, U rhs) => $"{ @""""}{lhs}{rhs}{ @""""}";
 
-        public static bool Like(string input, string pattern)
+        private static bool LikeBinary(string input, string pattern)
         {
-            if (pattern.Equals("*"))
+            return Like(input, pattern, RegexOptions.None);
+        }
+
+        private static bool LikeIgnoreCase(string input, string pattern)
+        {
+            return Like(input, pattern, RegexOptions.IgnoreCase);
+        }
+
+        private static bool Like(string input, string likePattern, RegexOptions option = RegexOptions.None)
+        {
+            if (likePattern.Equals("*"))
             {
                 return true;
             }
 
-            var regexPattern = ConvertLikePatternToRegex(pattern);
-            var regex = new Regex(regexPattern);
+            var regexPattern = ConvertLikePatternToRegexPattern(likePattern);
+            var regex = new Regex(regexPattern, option);
             return regex.IsMatch(input);
         }
 
-        public static string ConvertLikePatternToRegex(string likePattern)
+        public static string ConvertLikePatternToRegexPattern(string likePattern)
         {
             //The order of replacements matter
 
-            var result = $"^{likePattern}";
-            Regex rgx = new Regex("\\*$");
-            result = rgx.IsMatch(result) ? result : $"{result}$";
+            string regexPattern = likePattern;
 
-            //Convert . to \\.
-            rgx = new Regex("\\.");
-            result = rgx.Replace(result, "\\.");
+            //Escape Regex special characters that are not 'Like' special characters
+            foreach (var ch in new char[] { '.', '$', '^', '{', '|', '(', ')', '+' })
+            {
+                regexPattern = Regex.Replace(regexPattern, $"\\{ch}", $"\\{ch}");
+            }
 
-            //Convert [*] to \\*
-            rgx = new Regex("\\[\\*\\]");
-            result = rgx.Replace(result, "\\*");
+            //If the Like pattern does not end with "*", force the last character to match
+            regexPattern = $"^{regexPattern}";
+            var rgx = new Regex("\\*$");
+            regexPattern = rgx.IsMatch(regexPattern) ? rgx.Replace(regexPattern, "[\\D\\d\\s]*") : $"{regexPattern}$";
 
-            //Convert ? to .
-            rgx = new Regex("\\?(?=[^\\]])");
-            result = rgx.Replace(result, ".");
+            //Replace non-escaped *'s with Regex equivalent
+            regexPattern = Regex.Replace(regexPattern, "\\*(?=[^\\]])", "[\\D\\d\\s]*");
 
-            //Convert [?] to ?
-            rgx = new Regex("\\[\\?\\]");
-            result = rgx.Replace(result, "?");
+            //Replace non-escaped ?'s with Regex equivalent
+            regexPattern = Regex.Replace(regexPattern, "\\?(?=[^\\]])", ".");
 
-            //Convert # to \d
-            rgx = new Regex("#(?=[^\\]])");
-            result = rgx.Replace(result, "\\d");
+            //Replace non-escaped #'s with Regex equivalent
+            regexPattern = Regex.Replace(regexPattern, "\\#(?=[^\\]])", "\\d");
 
-            //Convert [#] to \\#
-            rgx = new Regex("\\[#\\]");
-            result = rgx.Replace(result, "\\#");
+            //Escape Regex special characters that are also escaped 
+            //special characters in the Like expressions
+            foreach (var ch in new char[] { '*', '?', '[' })
+            {
+                regexPattern = Regex.Replace(regexPattern, $"\\[\\{ch}]", $"\\{ch}");
+            }
 
-            //Convert [! to [^
-            rgx = new Regex("\\[!");
-            result = rgx.Replace(result, "[^");
+            //Replace escaped special character # with Regex equivalent
+            regexPattern = Regex.Replace(regexPattern, "\\[#\\]", "#");
 
-            return result;
+            //Replace character group negation with Regex equivalent
+            regexPattern = Regex.Replace(regexPattern, "\\[!", "[^");
+
+            return regexPattern;
         }
-
     }
 
     internal static class MathSymbols

@@ -175,6 +175,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
+            if (opSymbol.Equals(Tokens.Like))
+            {
+                var moduleContext = context.GetAncestor<VBAParser.ModuleContext>();
+                var option = moduleContext.GetDescendent<VBAParser.OptionCompareStmtContext>();
+                if (!(option is null) && !option.GetText().Contains(Tokens.Binary))
+                {
+                    var compareType = option.GetText().Replace("Option Compare", "").Trim();
+                    opSymbol = $"{Tokens.Like}{compareType}";
+                }
+            }
+
             var nResult = Calculator.Evaluate(operands[0], operands[1], opSymbol);
 
             StoreVisitResult(context, nResult);

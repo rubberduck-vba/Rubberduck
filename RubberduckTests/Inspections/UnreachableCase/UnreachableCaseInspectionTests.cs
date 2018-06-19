@@ -1902,27 +1902,37 @@ End Sub
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        [Test]
+        [TestCase(@"Option Compare Binary", @"""f"" Like ""[a-z]*""", 2)]
+        [TestCase(@"", @"""f"" Like ""[a-z]*""", 2)]
+        [TestCase(@"Option Compare Binary", @"""F"" Like ""[a-z]*""", 1)]
+        [TestCase(@"", @"""F"" Like ""[a-z]*""", 1)]
+        [TestCase(@"Option Compare Text", @"""f"" Like ""[a-z]*""", 2)]
+        [TestCase(@"Option Compare Text", @"""F"" Like ""[a-z]*""", 2)]
+        [TestCase(@"Option Compare Database", @"""f"" Like ""[a-z]*""", 2)]
+        [TestCase(@"Option Compare Database", @"""F"" Like ""[a-z]*""", 2)]
+        [TestCase(@"", @"x Like ""*""", 2)]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_LikeFiltersToTrue()
+        public void UnreachableCaseInspection_LikeRespectsOptionCompareSetting( string option, string case1, int expectedUnreachable)
         {
             string inputCode =
 @"
-Private Const TEST_CONST As String = ""FooBar""
+Option Explicit
+<option>
 
 Sub FirstSub(x As String)
     Select Case True
-        Case x Like ""*""
+        Case <case1>
             'OK
         Case 5 < 6
-            'Unreachable
+            'Unreachable - if case1 is True
         Case 9 > 8
             'Unreachable
     End Select
 End Sub
 ";
-
-            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            inputCode = inputCode.Replace("<option>", option);
+            inputCode = inputCode.Replace("<case1>", case1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expectedUnreachable);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 

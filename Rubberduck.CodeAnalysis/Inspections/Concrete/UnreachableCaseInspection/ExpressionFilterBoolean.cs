@@ -7,6 +7,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         public ExpressionFilterBoolean(StringToValueConversion<bool> converter) : base(converter, Tokens.Boolean) { }
 
+        public override bool FiltersAllValues => FiltersTrueFalse;
+
         protected override bool AddIsClause(IsClauseExpression expression)
         {
             if (expression.LHSValue.ParsesToConstantValue)
@@ -18,6 +20,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 throw new ArgumentException();
             }
             return AddToContainer(Variables[VariableClauseTypes.Is], expression.ToString());
+        }
+
+        protected override bool AddMinimum(bool value) { return false; }
+
+        protected override bool AddMaximum(bool value) {return false; }
+
+        protected override bool TryGetMaximum(out bool maximum) { maximum = default; return false; }
+
+        protected override bool TryGetMinimum(out bool minimum) { minimum = default; return false; }
+
+        protected override bool AddValueRange((bool Start, bool End) range)
+        {
+            var addsStart = AddSingleValue(range.Start);
+            var addsEnd = AddSingleValue(range.End);
+            return addsStart || addsEnd;
         }
 
         private bool AddIsClause(bool val, IRangeClauseExpression expression)
@@ -67,22 +84,5 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             return false;
         }
-
-        protected override bool AddMinimum(bool value) { return false; }
-
-        protected override bool AddMaximum(bool value) {return false; }
-
-        protected override bool TryGetMaximum(out bool maximum) { maximum = default; return false; }
-
-        protected override bool TryGetMinimum(out bool minimum) { minimum = default; return false; }
-
-        protected override bool AddValueRange((bool Start, bool End) range)
-        {
-            var addsStart = AddSingleValue(range.Start);
-            var addsEnd = AddSingleValue(range.End);
-            return addsStart || addsEnd;
-        }
-
-        public override bool FiltersAllValues => FiltersTrueFalse;
     }
 }

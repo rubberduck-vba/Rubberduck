@@ -9,6 +9,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         public ExpressionFilterIntegral(StringToValueConversion<long> converter) : base(converter, Tokens.Long) { }
 
+        public override bool FiltersAllValues => base.FiltersAllValues
+            || Limits.HasMinAndMaxLimits && (Limits.Maximum - Limits.Minimum + 1 <= RangesValuesCount + SingleValues.Count());
+
         protected override bool AddValueRange((long Start, long End) range)
         {
             var addsRange = base.AddValueRange(range);
@@ -18,9 +21,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             RemoveSingleValuesCoveredByRanges();
             return addsRange;
         }
-
-        public override bool FiltersAllValues => base.FiltersAllValues
-            || Limits.HasMinAndMaxLimits && (Limits.Maximum - Limits.Minimum + 1 <= RangesValuesCount + SingleValues.Count());
 
         private long RangesValuesCount => Ranges.Sum(rg => Convert.ToInt64(rg.End) - Convert.ToInt64(rg.Start) + 1);
 

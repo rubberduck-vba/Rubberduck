@@ -325,6 +325,14 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
+
+        [TestCase(@"""A plus sign looks like '+'""_Like_""*+*""", "True")]
+        [TestCase(@"""(this is |the d)ay""_Like_""(th*|the*)??""", "True")]
+        [TestCase(@"""AB{5} = 25""_Like_""?B{5}*##""", "True")]
+        [TestCase(@"""5^2 is 25""_Like_""#^#*##""", "True")]
+        [TestCase(@"""$12.50""_Like_""$##[.,]##""", "True")]
+        [TestCase(@"""F""_Like_""[a-z]*""", "False")]
+        [TestCase(@"""f""_Like_""[a-z]*""", "True")]
         [TestCase(@"""a?bc""_Like_""[a-e][?][a-e]*""", "True")]
         [TestCase(@"""axabc""_Like_""a?abc""", "True")]
         [TestCase(@"""Doggy""_Like_""*Dog*""", "True")]
@@ -335,6 +343,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase(@"""aM5b""_Like_""a[L-P]#[!c-e]""", "True")]
         [TestCase(@"""OK?""_Like_""*[?]""", "True")]
         [TestCase(@"""#TryThis""_Like_""[#]*""", "True")]
+        [TestCase(@"""#TryThis""_Like_""[#]TryThi?""", "True")]
         [TestCase(@"""**ShineA*SoYouCanSee""_Like_""[*]*Shine*""", "True")]
         [TestCase(@"""FooBard""_Like_""*Bar""", "False")]
         [Category("Inspections")]
@@ -349,20 +358,21 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
+        [TestCase(@"test[[]LBracket", "^test\\[LBracket$")]
         [TestCase(@"[a-e]", "^[a-e]$")]
-        [TestCase(@"Bar*", "^Bar*")]
-        [TestCase(@"[#][1-6]", "^\\#[1-6]$")]
+        [TestCase(@"Bar*", "^Bar[\\D\\d\\s]*")]
+        [TestCase(@"[#][1-6]", "^#[1-6]$")]
         [TestCase(@"#[a-e]", "^\\d[a-e]$")]
         [TestCase(@"abc?xy", "^abc.xy$")]
-        [TestCase(@"abc[?]xy", "^abc?xy$")]
+        [TestCase(@"abc[?]xy", "^abc\\?xy$")]
         [TestCase(@"[!A-E]", "^[^A-E]$")]
-        [TestCase(@"#[!A-E][#][!5-6][#]*", "^\\d[^A-E]\\#[^5-6]\\#*")]
+        [TestCase(@"#[!A-E][#][!5-6][#]*", "^\\d[^A-E]#[^5-6]#[\\D\\d\\s]*")]
         [TestCase(@"abc.xy", "^abc\\.xy$")]
         [TestCase(@"abc[*]xy", "^abc\\*xy$")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_LikeRegexConversion(string likePattern, string expectedPattern)
+        public void ParseTreeValueExpressionEvaluator_LikeRegexConversions(string likePattern, string expectedPattern)
         {
-            var result = ParseTreeExpressionEvaluator.ConvertLikePatternToRegex(likePattern);
+            var result = ParseTreeExpressionEvaluator.ConvertLikePatternToRegexPattern(likePattern);
             Assert.AreEqual(expectedPattern, result);
         }
 
