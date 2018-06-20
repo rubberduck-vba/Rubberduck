@@ -236,7 +236,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all occurences in all open projects.
+        ///   Looks up a localized string similar to Fix all occurrences in all open projects.
         /// </summary>
         public static string QuickFix_AllOpenProjects {
             get {
