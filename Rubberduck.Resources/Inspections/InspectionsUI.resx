@@ -138,8 +138,8 @@
   <data name="QualifiedSelectionInspection" xml:space="preserve">
     <value>{0}: {1} - {2} {3}.{4}, line {5}</value>
   </data>
-  <data name="QuickFix_All" xml:space="preserve">
-    <value>Fix all occurences</value>
+  <data name="QuickFix_AllOpenProjects" xml:space="preserve">
+    <value>Fix all occurences in all open projects</value>
   </data>
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
     <value>Fix all occurrences in procedure</value>
