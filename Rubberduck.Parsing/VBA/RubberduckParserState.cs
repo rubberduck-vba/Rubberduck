@@ -84,6 +84,8 @@ namespace Rubberduck.Parsing.VBA
 
     public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider
     {
+        public const int NoTimeout = -1;
+
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
@@ -934,9 +936,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool OnSuspendParser(object requestor, Action busyAction, int millisecondsTimeout = 10000)
+        public bool OnSuspendParser(object requestor, Action busyAction, int millisecondsTimeout = NoTimeout)
         {
-            if (millisecondsTimeout <= 0)
+            if (millisecondsTimeout <= NoTimeout)
             {
                 throw new ArgumentOutOfRangeException(nameof(millisecondsTimeout));
             }
