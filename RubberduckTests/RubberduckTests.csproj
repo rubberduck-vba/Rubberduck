@@ -113,6 +113,7 @@
     <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="Inspections\InspectionProviderTests.cs" />
+    <Compile Include="UnitTesting\PermissiveAssertTests.cs" />
     <Compile Include="VBEditor\Utility\DisposalActionContainerTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
