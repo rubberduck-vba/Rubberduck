@@ -236,11 +236,11 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all occurrences in all open projects.
+        ///   Looks up a localized string similar to Fix all occurrences.
         /// </summary>
-        public static string QuickFix_AllOpenProjects {
+        public static string QuickFix_All {
             get {
-                return ResourceManager.GetString("QuickFix_AllOpenProjects", resourceCulture);
+                return ResourceManager.GetString("QuickFix_All", resourceCulture);
             }
         }
         
