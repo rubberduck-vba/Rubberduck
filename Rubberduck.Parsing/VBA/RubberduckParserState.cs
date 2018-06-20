@@ -59,15 +59,17 @@ namespace Rubberduck.Parsing.VBA
 
     public class RubberduckStatusSuspendParserEventArgs : EventArgs
     {
-        public RubberduckStatusSuspendParserEventArgs(object requestor, Action busyAction)
+        public RubberduckStatusSuspendParserEventArgs(object requestor, Action busyAction, int millisecondsTimeout)
         {
             Requestor = requestor;
             BusyAction = busyAction;
+            MillisecondsTimeout = millisecondsTimeout;
         }
 
-        public bool Declined { get; set; }
         public object Requestor { get; }
         public Action BusyAction { get; }
+        public int MillisecondsTimeout { get; }
+        public bool TimedOut { get; set; }
     }
 
     public class RubberduckStatusMessageEventArgs : EventArgs
@@ -932,14 +934,19 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public bool OnSuspendParser(object requestor, Action busyAction)
+        public bool OnSuspendParser(object requestor, Action busyAction, int millisecondsTimeout = 10000)
         {
+            if (millisecondsTimeout <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(millisecondsTimeout));
+            }
+
             var handler = SuspendRequest;
             if (handler != null && IsEnabled)
             {
-                var args = new RubberduckStatusSuspendParserEventArgs(requestor, busyAction);
+                var args = new RubberduckStatusSuspendParserEventArgs(requestor, busyAction, millisecondsTimeout);
                 handler.Invoke(requestor, args);
-                return !args.Declined;
+                return !args.TimedOut;
             }
 
             return false;

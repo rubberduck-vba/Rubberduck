@@ -128,7 +128,6 @@ namespace RubberduckTests.ParserStateTests
                                 wasBusy = state.Status == ParserState.Busy;
                             });
                         });
-                        result.Wait();
                         wasBusy = false;
                     }
                 }
@@ -149,6 +148,48 @@ namespace RubberduckTests.ParserStateTests
             Assert.AreEqual(1, reparseAfterBusy);
         }
 
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_Interrupted_Deadlock()
+        {            
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            var state = MockParser.CreateAndParse(vbe.Object);
+
+            var wasSuspended = false;
+            var wasSuspensionExecuted = false;
+
+            // The cancellation token exists primarily to prevent
+            // unwanted inlining of the tasks.
+            // See: https://stackoverflow.com/questions/12245935/is-task-factory-startnew-guaranteed-to-use-another-thread-than-the-calling-thr
+            var source = new CancellationTokenSource();
+            Task result2 = null;
+
+            state.StateChanged += (o, e) =>
+            {
+                if (e.State == ParserState.Started)
+                {
+                    result2 = Task.Run(() =>
+                    {
+                        wasSuspensionExecuted =
+                            state.OnSuspendParser(this, () => { wasSuspended = state.Status == ParserState.Busy; },
+                                20);
+                    }, source.Token);
+                    result2.Wait(source.Token);
+                }
+            };
+            var result1 = Task.Run(() =>
+            {
+                state.OnParseRequested(this);
+            }, source.Token);
+            result1.Wait(source.Token);
+            while (result2 == null)
+            {
+                Thread.Sleep(1);
+            }
+            result2.Wait();
+            Assert.IsFalse(wasSuspended, "wasSuspended was set to true");
+            Assert.IsFalse(wasSuspensionExecuted, "wasSuspensionExecuted was set to true");
+        }
 
         [Test]
         [Category("ParserState")]
@@ -175,7 +216,6 @@ namespace RubberduckTests.ParserStateTests
                             wasRunning = true;
                             result2 = Task.Run(() => state.OnParseRequested(this));
                         });
-                        result1.Wait();
                         return;
                     }
                 }
