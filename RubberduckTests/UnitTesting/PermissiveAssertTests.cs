@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using Rubberduck.UnitTesting;
 
@@ -315,12 +314,12 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
-        public void DifferentTypesEqualityIsNotConclusive()
+        public void DifferentTypesEqualitySucceeds()
         {
             var assert = new PermissiveAssertClass();
             assert.AreEqual(42, "42");
 
-            Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
         [Category("Unit Testing")]
