@@ -162,6 +162,7 @@ namespace RubberduckTests.ParserStateTests
             // unwanted inlining of the tasks.
             // See: https://stackoverflow.com/questions/12245935/is-task-factory-startnew-guaranteed-to-use-another-thread-than-the-calling-thr
             var source = new CancellationTokenSource();
+            var token = source.Token;
             Task result2 = null;
 
             state.StateChanged += (o, e) =>
@@ -173,20 +174,20 @@ namespace RubberduckTests.ParserStateTests
                         wasSuspensionExecuted =
                             state.OnSuspendParser(this, () => { wasSuspended = state.Status == ParserState.Busy; },
                                 20);
-                    }, source.Token);
-                    result2.Wait(source.Token);
+                    }, token);
+                    result2.Wait(token);
                 }
             };
             var result1 = Task.Run(() =>
             {
                 state.OnParseRequested(this);
-            }, source.Token);
-            result1.Wait(source.Token);
+            }, token);
+            result1.Wait(token);
             while (result2 == null)
             {
                 Thread.Sleep(1);
             }
-            result2.Wait();
+            result2.Wait(token);
             Assert.IsFalse(wasSuspended, "wasSuspended was set to true");
             Assert.IsFalse(wasSuspensionExecuted, "wasSuspensionExecuted was set to true");
         }

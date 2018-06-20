@@ -138,7 +138,9 @@ namespace Rubberduck.Parsing.VBA
                 _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy,
                     CancellationToken.None);
                 e.BusyAction.Invoke();
-
+            }
+            finally
+            {
                 lock (_suspendStackSyncObject)
                 {
                     _isSuspended = false;
@@ -148,9 +150,7 @@ namespace Rubberduck.Parsing.VBA
                         parseRequestor = lastRequestor;
                     }
                 }
-            }
-            finally
-            {
+
                 if (_parsingSuspendLock.IsWriteLockHeld)
                 {
                     _parsingSuspendLock.ExitWriteLock();
@@ -159,7 +159,6 @@ namespace Rubberduck.Parsing.VBA
 
             if (parseRequestor != null)
             {
-                Cancel();
                 BeginParse(parseRequestor, _currentCancellationTokenSource.Token);
             }
             else if (originalStatus != ParserState.Ready)
@@ -231,11 +230,16 @@ namespace Rubberduck.Parsing.VBA
             var lockTaken = false;
             try
             {
-                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
                 if (!_parsingSuspendLock.IsWriteLockHeld)
                 {
                     _parsingSuspendLock.EnterReadLock();
                 }
+                lock (_cancellationSyncObject)
+                {
+                    Cancel();
+                    token = _currentCancellationTokenSource.Token;
+                }
+                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
                 ParseAllInternal(this, token);
             }
             catch (OperationCanceledException)
@@ -244,13 +248,13 @@ namespace Rubberduck.Parsing.VBA
             }
             finally
             {
-                if (_parsingSuspendLock.IsReadLockHeld)
-                {
-                    _parsingSuspendLock.ExitReadLock();
-                }
                 if (lockTaken)
                 {
                     Monitor.Exit(_parsingRunSyncObject);
+                }
+                if (_parsingSuspendLock.IsReadLockHeld)
+                {
+                    _parsingSuspendLock.ExitReadLock();
                 }
             }
         }
@@ -404,12 +408,17 @@ namespace Rubberduck.Parsing.VBA
             var lockTaken = false;
             try
             {
-                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
                 if (!_parsingSuspendLock.IsWriteLockHeld)
                 {
                     _parsingSuspendLock.EnterReadLock();
                 }
-
+                lock (_cancellationSyncObject)
+                {
+                    Cancel();
+                    token = _currentCancellationTokenSource.Token;
+                }
+                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
+                
                 watch = Stopwatch.StartNew();
                 Logger.Debug("Parsing run started. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
                 
@@ -431,11 +440,11 @@ namespace Rubberduck.Parsing.VBA
             finally
             {
                 if (watch != null && watch.IsRunning) watch.Stop();
+                if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
                 if (_parsingSuspendLock.IsReadLockHeld)
                 {
                     _parsingSuspendLock.ExitReadLock();
                 }
-                if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
             }
             if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
         }
