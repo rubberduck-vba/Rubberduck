@@ -938,7 +938,7 @@ namespace Rubberduck.Parsing.VBA
 
         public bool OnSuspendParser(object requestor, Action busyAction, int millisecondsTimeout = NoTimeout)
         {
-            if (millisecondsTimeout <= NoTimeout)
+            if (millisecondsTimeout < NoTimeout)
             {
                 throw new ArgumentOutOfRangeException(nameof(millisecondsTimeout));
             }
