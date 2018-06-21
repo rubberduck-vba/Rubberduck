@@ -199,7 +199,7 @@
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInAllProjectsCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_All}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_AllOpenProjects}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"

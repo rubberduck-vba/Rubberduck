@@ -1232,7 +1232,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -1310,7 +1310,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -1494,7 +1494,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -1524,7 +1524,7 @@ End Sub"
             tdo.MsgBoxReturn = DialogResult.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         #endregion
@@ -1634,7 +1634,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
@@ -1671,7 +1671,7 @@ End Sub";
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
@@ -2280,7 +2280,7 @@ End Property";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
@@ -2363,7 +2363,7 @@ End Property";
 
             tdo.MsgBox = new Mock<IMessageBox>();
             // FIXME this might be a bit broken now
-            tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(tdo.MsgBoxReturn == DialogResult.Yes);
+            tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == DialogResult.Yes);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
             tdo.ParserState = MockParser.CreateAndParse(tdo.VBE, testLibraries: testLibraries);

@@ -61,15 +61,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code Quality Issues.
-        /// </summary>
-        public static string CodeInspectionSettings_CodeQualityIssues {
-            get {
-                return ResourceManager.GetString("CodeInspectionSettings_CodeQualityIssues", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Language Opportunities.
         /// </summary>
         public static string CodeInspectionSettings_LanguageOpportunities {
@@ -236,7 +227,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all occurences.
+        ///   Looks up a localized string similar to Fix all detected occurrences.
         /// </summary>
         public static string QuickFix_All {
             get {
