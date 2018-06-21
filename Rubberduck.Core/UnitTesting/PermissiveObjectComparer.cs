@@ -16,6 +16,12 @@ namespace Rubberduck.UnitTesting
             var expected = x;
             var actual = y;
 
+            //VBA will coerce any numeric-apparent-value to test them
+            if (double.TryParse(expected.ToString(), out double numericExpected) && double.TryParse(actual.ToString(), out double numericActual))
+            {
+                return numericExpected.Equals(numericActual);
+            }
+
             // try promoting integral types first.
             if (expected is ulong && actual is ulong)
             {
