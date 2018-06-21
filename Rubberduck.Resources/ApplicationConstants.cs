@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Rubberduck.Common
+namespace Rubberduck.Resources
 {
     public static class ApplicationConstants
     {

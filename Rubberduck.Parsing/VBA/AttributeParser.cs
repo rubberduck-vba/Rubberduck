@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -16,13 +17,13 @@ namespace Rubberduck.Parsing.VBA
 {
     public class AttributeParser : IAttributeParser
     {
-        private readonly IModuleExporter _exporter;
+        private readonly ISourceCodeHandler _sourceCodeHandler;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private readonly IProjectsProvider _projectsProvider;
 
-        public AttributeParser(IModuleExporter exporter, Func<IVBAPreprocessor> preprocessorFactory, IProjectsProvider projectsProvider)
+        public AttributeParser(ISourceCodeHandler sourceCodeHandler, Func<IVBAPreprocessor> preprocessorFactory, IProjectsProvider projectsProvider)
         {
-            _exporter = exporter;
+            _sourceCodeHandler = sourceCodeHandler;
             _preprocessorFactory = preprocessorFactory;
             _projectsProvider = projectsProvider;
         }
@@ -37,35 +38,12 @@ namespace Rubberduck.Parsing.VBA
             cancellationToken.ThrowIfCancellationRequested();
             var component = _projectsProvider.Component(module);
 
-            var path = component.VBE.Kind == VBEKind.Embedded
-                ? _exporter.Export(component)
-                : component.GetFileName(1); 
-
-            if (!File.Exists(path))
+            var code = _sourceCodeHandler.Read(component);
+            if (code == null)
             {
-                // a document component without any code wouldn't be exported (file would be empty anyway).
                 return (null, null, new Dictionary<Tuple<string, DeclarationType>, Attributes>());
             }
 
-            string code;
-            if (module.ComponentType == ComponentType.Document)
-            {
-                code = File.ReadAllText(path, Encoding.UTF8);   //We export the code from Documents as UTF8.
-            }
-            else
-            {
-                code = File.ReadAllText(path, Encoding.Default);    //The VBE exports encoded in the current ANSI codepage from the windows settings.
-            }
-
-            try
-            {
-                File.Delete(path);
-            }
-            catch
-            {
-                // Meh.
-            }
-           
             cancellationToken.ThrowIfCancellationRequested();
 
             var type = module.ComponentType == ComponentType.StandardModule

@@ -14,12 +14,12 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             Func<IVBAPreprocessor> preprocessorFactory,
             IAttributeParser attributeParser,
-            IModuleExporter exporter) 
+            ISourceCodeHandler sourceCodeHandler) 
         :base(state, 
             parserStateManager, 
             preprocessorFactory, 
             attributeParser,
-            exporter)
+            sourceCodeHandler)
         { }
 
 
