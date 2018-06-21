@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using Rubberduck.UnitTesting;
 
@@ -204,18 +205,6 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [Category("Unit Testing")]
-        [Test]
-        public void AreNotEqualShouldBeInconclusiveWithDifferentTypes()
-        {
-            int obj1 = 10;
-            double obj2 = 10;
-
-            var assert = new PermissiveAssertClass();
-            assert.AreNotEqual(obj1, obj2);
-
-            Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
-        }
 
         [Category("Unit Testing")]
         [Test]
@@ -309,17 +298,7 @@ namespace RubberduckTests.UnitTesting
             var assert = new PermissiveAssertClass();
             assert.AreEqual(42, null);
 
-            Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
-        }
-
-        [Category("Unit Testing")]
-        [Test]
-        public void DifferentTypesEqualitySucceeds()
-        {
-            var assert = new PermissiveAssertClass();
-            assert.AreEqual(42, "42");
-
-            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
         [Category("Unit Testing")]
@@ -327,6 +306,228 @@ namespace RubberduckTests.UnitTesting
         public void OnAssertSucceeded_ReturnsResultSuccess()
         {
             AssertHandler.OnAssertSucceeded();
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithIdenticalStrings()
+        {
+            string obj1 = "foo";
+            string obj2 = "foo";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldFailWithDifferentStrings()
+        {
+            string obj1 = "foo";
+            string obj2 = "bar";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithIntegerAndInteger()
+        {
+            Int16 vbaInteger1 = 1;
+            Int16 vbaInteger2 = 1;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger1, vbaInteger2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithIntegerAndLong()
+        {
+            Int16 vbaInteger = 1;
+            int vbaLong = 1;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, vbaLong);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithIntegerAndString()
+        {
+            Int16 obj1 = 1;
+            string obj2 = "1";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithIntegerAndDouble()
+        {
+            Int16 vbaInteger = 1;
+            double obj2 = 1;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithIntegerAndByte()
+        {
+            Int16 vbaInteger = 1;
+            byte vbaByte = 1;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, vbaByte);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithLongAndLong()
+        {
+            Int16 vbaInteger1 = 1;
+            Int16 vbaInteger2 = 1;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger1, vbaInteger2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
+        public void AreEqualShouldSucceedWithLongAndString()
+        {
+            Int16 vbaInteger = 1;
+            string obj2 = "1";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithLongAndDouble()
+        {
+            Int16 vbaInteger = 10;
+            double obj2 = 10;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithLongAndByte()
+        {
+            Int16 vbaInteger = 10;
+            byte obj2 = 10;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithStringAndString()
+        {
+            string string1 = "10";
+            string string2 = "10";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(string1, string2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithStringAndDouble()
+        {
+            string obj1 = "10.57";
+            double obj2 = 10.57;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithStringAndByte()
+        {
+            string obj1 = "10";
+            byte obj2 = 10;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithDoubleAndDouble()
+        {
+            double obj1 = 11.25;
+            double obj2 = 11.25;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithDoubleAndByte()
+        {
+            double obj1 = 11;
+            byte obj2 = 11;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithByteAndByte()
+        {
+            byte obj1 = 11;
+            byte obj2 = 11;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
 
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
