@@ -1912,12 +1912,12 @@ End Sub
         [TestCase(@"Option Compare Database", @"""F"" Like ""[a-z]*""", 2)]
         [TestCase(@"", @"x Like ""*""", 2)]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_LikeRespectsOptionCompareSetting( string option, string case1, int expectedUnreachable)
+        public void UnreachableCaseInspection_LikeRespectsOptionCompareSetting( string optionCompare, string case1, int expectedUnreachable)
         {
             string inputCode =
 @"
 Option Explicit
-<option>
+<optionCompare>
 
 Sub FirstSub(x As String)
     Select Case True
@@ -1930,9 +1930,40 @@ Sub FirstSub(x As String)
     End Select
 End Sub
 ";
-            inputCode = inputCode.Replace("<option>", option);
+            inputCode = inputCode.Replace("<optionCompare>", optionCompare);
             inputCode = inputCode.Replace("<case1>", case1);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expectedUnreachable);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [TestCase(@"Option Compare Binary", @"""A"" > ""a""", 2)]
+        [TestCase(@"Option Compare Text", @"""A"" > ""a""", 1)]
+        [TestCase(@"Option Compare Binary", @"""A"" = ""a""", 1)]
+        [TestCase(@"Option Compare Text", @"""A"" = ""a""", 2)]
+        [TestCase(@"", @"""A"" = ""a""", 1)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_StringCompareRespectsOptionCompareSetting(string optionCompare, string case1, int unreachable)
+        {
+            string inputCode =
+@"
+<optionCompare>
+
+Sub FirstSub(y As Boolean)
+
+Select Case y
+        Case <case1>
+            'OK
+        Case 10 > 2
+            'Unreachable
+        Case 7 < 10
+            'Unreachable
+    End Select
+End Sub
+";
+
+            inputCode = inputCode.Replace("<optionCompare>", optionCompare);
+            inputCode = inputCode.Replace("<case1>", case1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachable);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 

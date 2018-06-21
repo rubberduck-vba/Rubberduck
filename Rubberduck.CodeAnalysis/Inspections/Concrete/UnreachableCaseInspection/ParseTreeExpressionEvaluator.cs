@@ -17,6 +17,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly IParseTreeValueFactory _valueFactory;
         private readonly string _ampersand;
+        private readonly bool _isOptionCompareBinary;
 
         private static readonly Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
         {
@@ -44,6 +45,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [LogicSymbols.XOR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) ^ Convert.ToBoolean(RHS); },
         };
 
+        private readonly Dictionary<string, Func<string, string, bool>> LogicOpsString;
+
         private static readonly Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
         {
             [MathSymbols.ADDITIVE_INVERSE] = delegate (double value) { return value * -1.0; }
@@ -52,13 +55,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static readonly Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
         {
             [LogicSymbols.NOT] = delegate (double value) { return !(Convert.ToBoolean(value)); }
-        };
-
-        private static Dictionary<string, Func<string, string, bool>> LogicOpsString = new Dictionary<string, Func<string, string, bool>>()
-        {
-            [Tokens.Like] = LikeBinary,
-            ["LikeText"] = LikeIgnoreCase,
-            ["LikeDatabase"] = LikeIgnoreCase,
         };
 
         private static readonly List<string> ResultTypeRanking = new List<string>()
@@ -73,31 +69,54 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Tokens.String
         };
 
-        public ParseTreeExpressionEvaluator(IParseTreeValueFactory valueFactory)
+        public ParseTreeExpressionEvaluator(IParseTreeValueFactory valueFactory, bool isOptionCompareBinary = true)
         {
             _valueFactory = valueFactory;
+            _isOptionCompareBinary = isOptionCompareBinary;
             _ampersand = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.AMPERSAND).Replace("'", "");
+
+            LogicOpsString = new Dictionary<string, Func<string, string, bool>>()
+            {
+                [LogicSymbols.EQ] = delegate (string LHS, string RHS) { return AreEqual(LHS,RHS); },
+                [LogicSymbols.NEQ] = delegate (string LHS, string RHS) { return !AreEqual(LHS, RHS); },
+                [LogicSymbols.LT] = delegate (string LHS, string RHS) { return IsLessThan(LHS, RHS); },
+                [LogicSymbols.LTE] = delegate (string LHS, string RHS) { return AreEqual(LHS, RHS) || IsLessThan(LHS, RHS); },
+                [LogicSymbols.GT] = delegate (string LHS, string RHS) { return IsGreaterThan(LHS, RHS); },
+                [LogicSymbols.GTE] = delegate (string LHS, string RHS) { return AreEqual(LHS, RHS) || IsGreaterThan(LHS, RHS); },
+            };
+
         }
 
         public IParseTreeValue Evaluate(IParseTreeValue LHS, IParseTreeValue RHS, string opSymbol)
         {
             var isMathOp = MathOpsBinary.ContainsKey(opSymbol);
             var isLogicOp = LogicOpsBinary.ContainsKey(opSymbol);
-            var isBinaryStringOp = LogicOpsString.ContainsKey(opSymbol) || opSymbol.Equals(_ampersand);
+            var isBinaryStringOp = opSymbol.Equals(Tokens.Like) || opSymbol.Equals(_ampersand);
             Debug.Assert(IsSupportedSymbol(opSymbol));
 
-            var (lhs, rhs) = PrepareOperands(LHS, RHS);
+            (string lhsTypeName, double lhsValue) = PrepareOperand(LHS);
+            (string rhsTypeName, double rhsValue) = PrepareOperand(RHS);
 
-            if (!lhs.typeName.Equals(string.Empty) && !rhs.typeName.Equals(string.Empty))
+            if (!lhsTypeName.Equals(string.Empty) && !rhsTypeName.Equals(string.Empty))
             {
                 if (isMathOp)
                 {
-                    var mathResult = MathOpsBinary[opSymbol](lhs.value, rhs.value);
-                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), DetermineMathResultType(lhs.typeName, rhs.typeName));
+                    var mathResult = MathOpsBinary[opSymbol](lhsValue, rhsValue);
+                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), DetermineMathResultType(lhsTypeName, rhsTypeName));
                 }
                 else if (isLogicOp)
                 {
-                    var logicResult = LogicOpsBinary[opSymbol](lhs.value, rhs.value);
+                    if (lhsTypeName.Equals(Tokens.String) && rhsTypeName.Equals(Tokens.String))
+                    {
+                        if (LogicOpsString.ContainsKey(opSymbol))
+                        {
+                            var stringLogicResult = LogicOpsString[opSymbol](LHS.ValueText, RHS.ValueText);
+                            return _valueFactory.Create(stringLogicResult.ToString(CultureInfo.InvariantCulture), Tokens.Boolean);
+                        }
+                        //Store invalid string logic op result as variable predicate
+                        return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", Tokens.Boolean);
+                    }
+                    var logicResult = LogicOpsBinary[opSymbol](lhsValue, rhsValue);
                     return _valueFactory.Create(logicResult.ToString(CultureInfo.InvariantCulture), Tokens.Boolean);
                 }
             }
@@ -114,7 +133,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
                     {
-                        var stringOpResult = LogicOpsString[opSymbol](LHS.ValueText, RHS.ValueText);
+                        var stringOpResult = Like(LHS.ValueText, RHS.ValueText);
                         return _valueFactory.Create(stringOpResult.ToString(), Tokens.Boolean);
                     }
                 }
@@ -161,12 +180,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return lhsTypeNameIndex <= rhsTypeNameIndex ? lhsTypeName : rhsTypeName;
         }
 
-        private static ((string typeName, double value) lhs, (string typeName, double value) rhs)
-            PrepareOperands(IParseTreeValue LHS, IParseTreeValue RHS)
-        {
-            return (PrepareOperand(LHS), PrepareOperand(RHS));
-        }
-
         private static (string typeName, double value) PrepareOperand(IParseTreeValue parseTreeValue)
         {
             if (!parseTreeValue.ParsesToConstantValue)
@@ -178,6 +191,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 lhs = (parseTreeValue.TypeName, value);
             }
+            else if (parseTreeValue.TypeName.Equals(Tokens.String))
+            {
+                lhs = (parseTreeValue.TypeName, default);
+            }
             return lhs;
         }
 
@@ -187,7 +204,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || MathOpsUnary.ContainsKey(opSymbol)
                 || LogicOpsBinary.ContainsKey(opSymbol)
                 || LogicOpsUnary.ContainsKey(opSymbol)
-                || LogicOpsString.ContainsKey(opSymbol)
+                || opSymbol.Equals(Tokens.Like)
                 || opSymbol.Equals(_ampersand);
         }
 
@@ -205,27 +222,47 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public static string Concat<T, U>(T lhs, U rhs) => $"{ @""""}{lhs}{rhs}{ @""""}";
 
-        private static bool LikeBinary(string input, string pattern)
+        private bool Like(string input, string pattern)
         {
-            return Like(input, pattern, RegexOptions.None);
-        }
-
-        private static bool LikeIgnoreCase(string input, string pattern)
-        {
-            return Like(input, pattern, RegexOptions.IgnoreCase);
-        }
-
-        private static bool Like(string input, string likePattern, RegexOptions option = RegexOptions.None)
-        {
-            if (likePattern.Equals("*"))
+            if (pattern.Equals("*"))
             {
                 return true;
             }
 
-            var regexPattern = ConvertLikePatternToRegexPattern(likePattern);
-            var regex = new Regex(regexPattern, option);
+            var regexPattern = ConvertLikePatternToRegexPattern(pattern);
+
+            RegexOptions option = _isOptionCompareBinary ? RegexOptions.None : RegexOptions.IgnoreCase;
+            var regex = new Regex(regexPattern, option | RegexOptions.CultureInvariant);
+
             return regex.IsMatch(input);
         }
+
+        private bool AreEqual(string lhs, string rhs)
+        {
+            return string.Compare(lhs, rhs, !_isOptionCompareBinary, CultureInfo.InvariantCulture) == 0;
+        }
+
+        private bool IsLessThan(string lhs, string rhs)
+        {
+            return string.Compare(lhs, rhs, !_isOptionCompareBinary, CultureInfo.InvariantCulture) < 0;
+        }
+
+        private bool IsGreaterThan(string lhs, string rhs)
+        {
+            return string.Compare(lhs, rhs, !_isOptionCompareBinary, CultureInfo.InvariantCulture) > 0;
+        }
+
+        //private static bool Like2(string input, string likePattern, RegexOptions option = RegexOptions.None)
+        //{
+        //    if (likePattern.Equals("*"))
+        //    {
+        //        return true;
+        //    }
+
+        //    var regexPattern = ConvertLikePatternToRegexPattern(likePattern);
+        //    var regex = new Regex(regexPattern, option | RegexOptions.CultureInvariant);
+        //    return regex.IsMatch(input);
+        //}
 
         public static string ConvertLikePatternToRegexPattern(string likePattern)
         {

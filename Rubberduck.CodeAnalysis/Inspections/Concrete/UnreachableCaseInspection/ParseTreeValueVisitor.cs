@@ -24,7 +24,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _inspValueFactory = valueFactory;
             IdRefRetriever = idRefRetriever;
-            Calculator = new ParseTreeExpressionEvaluator(valueFactory);
             _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
         }
@@ -35,8 +34,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { set; get; } = null;
 
         public event EventHandler<ValueResultEventArgs> OnValueResultCreated;
-
-        public IParseTreeExpressionEvaluator Calculator { set; get; }
 
         public virtual IParseTreeVisitorResults Visit(IParseTree tree)
         {
@@ -175,18 +172,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            if (opSymbol.Equals(Tokens.Like))
-            {
-                var moduleContext = context.GetAncestor<VBAParser.ModuleContext>();
-                var option = moduleContext.GetDescendent<VBAParser.OptionCompareStmtContext>();
-                if (!(option is null) && !option.GetText().Contains(Tokens.Binary))
-                {
-                    var compareType = option.GetText().Replace("Option Compare", "").Trim();
-                    opSymbol = $"{Tokens.Like}{compareType}";
-                }
-            }
-
-            var nResult = Calculator.Evaluate(operands[0], operands[1], opSymbol);
+            var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
+            var nResult = calculator.Evaluate(operands[0], operands[1], opSymbol);
 
             StoreVisitResult(context, nResult);
         }
@@ -200,7 +187,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            var result = Calculator.Evaluate(operands[0], opSymbol, operands[0].TypeName);
+            var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
+            var result = calculator.Evaluate(operands[0], opSymbol, operands[0].TypeName);
             StoreVisitResult(context, result);
         }
 

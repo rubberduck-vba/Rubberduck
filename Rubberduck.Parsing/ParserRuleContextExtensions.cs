@@ -173,6 +173,27 @@ namespace Rubberduck.Parsing
             return opCtxt != null;
         }
 
+        /// <summary>
+        /// Determines if the context's module declares or defaults to 
+        /// Option Compare Binary 
+        /// </summary>
+        public static bool IsOptionCompareBinary(this ParserRuleContext context)
+        {
+            if( !(context is VBAParser.ModuleContext moduleContext))
+            {
+                moduleContext = context.GetAncestor<VBAParser.ModuleContext>()
+                    ?? context.GetDescendent<VBAParser.ModuleContext>();
+
+                if (moduleContext is null)
+                {
+                    return true; //the default
+                }
+            }
+
+            var optionContext = moduleContext.GetDescendent<VBAParser.OptionCompareStmtContext>();
+            return (optionContext is null) || !(optionContext.BINARY() is null);
+        }
+
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
         {
             private readonly HashSet<TContext> _matches = new HashSet<TContext>();

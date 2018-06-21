@@ -392,6 +392,49 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
+        [TestCase(@"""A""_=_""A""", "True", true)]
+        [TestCase(@"""A""_=_""a""", "False", true)]
+        [TestCase(@"""A""_=_""a""", "True", false)]
+        [TestCase(@"""A""_<_""a""", "False", true)]
+        [TestCase(@"""A""_<_""a""", "False", false)]
+        [TestCase(@"""A""_<=_""a""", "True", false)]
+        [TestCase(@"""A""_<>_""a""", "True", true)]
+        [TestCase(@"""A""_<>_""a""", "False", false)]
+        [TestCase(@"""A""_>_""a""", "True", true)]
+        [TestCase(@"""A""_>_""a""", "False", false)]
+        [TestCase(@"""A""_>=_""a""", "True", true)]
+        [TestCase(@"""A""_>=_""a""", "True", false)]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_StringCompares(string operands, string expected, bool optionCompareBinary /*true = caseSensitive*/)
+        {
+            var ops = operands.Split(new string[] { "_" }, StringSplitOptions.None);
+            var LHS = ValueFactory.Create(ops[0]);
+            var RHS = ValueFactory.Create(ops[2]);
+
+            var calculator = new ParseTreeExpressionEvaluator(ValueFactory, optionCompareBinary);
+            var result = calculator.Evaluate(LHS, RHS, ops[1]);
+
+            Assert.AreEqual(expected, result.ValueText);
+            Assert.IsTrue(result.ParsesToConstantValue);
+        }
+
+        //Valid logic operators, but invalid with strings.
+        //VBA compiles, but a runtime error would occur - inspection does not flag runtime typemismatch
+        [TestCase(@"""A""_And_""a""", "A And a", false)]
+        [TestCase(@"""A""_Or_""a""", "A Or a", false)]
+        [TestCase(@"""A""_Xor_""a""", "A Xor a", false)]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_StringCompareTypeMismatches(string operands, string expected, bool optionCompareBinary /*true = caseSensitive*/)
+        {
+            var ops = operands.Split(new string[] { "_" }, StringSplitOptions.None);
+            var LHS = ValueFactory.Create(ops[0]);
+            var RHS = ValueFactory.Create(ops[2]);
+
+            var calculator = new ParseTreeExpressionEvaluator(ValueFactory, optionCompareBinary);
+            var result = calculator.Evaluate(LHS, RHS, ops[1]);
+
+            Assert.AreEqual(expected, result.ValueText);
+        }
 
         private void GetBinaryOpValues(string operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol)
         {
