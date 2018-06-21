@@ -1,6 +1,7 @@
 using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -19,12 +20,12 @@ namespace Rubberduck.Parsing.Rewriter
     /// </remarks>
     public class MemberAttributesRewriter : ModuleRewriter
     {
-        private readonly IModuleExporter _exporter;
+        private readonly ISourceCodeHandler _sourceCodeHandler;
 
-        public MemberAttributesRewriter(IModuleExporter exporter, ICodeModule module, TokenStreamRewriter rewriter)
+        public MemberAttributesRewriter(ISourceCodeHandler sourceCodeHandler, ICodeModule module, TokenStreamRewriter rewriter)
             : base(module, rewriter)
         {
-            _exporter = exporter;
+            _sourceCodeHandler = sourceCodeHandler;
         }
 
         public override void Rewrite()
@@ -32,28 +33,18 @@ namespace Rubberduck.Parsing.Rewriter
             if(!IsDirty) { return; }
 
             var component = Module.Parent;
-            var vbeKind = component.VBE.Kind;
             if (component.Type == ComponentType.Document)
             {
                 // can't re-import a document module
                 return;
             }
 
-            var file = vbeKind == VBEKind.Embedded
-                ? _exporter.Export(component)
-                : component.GetFileName(1);    
+            var file = _sourceCodeHandler.Export(component);
 
             var content = Rewriter.GetText();
             File.WriteAllText(file, content);
-
-            if (vbeKind == VBEKind.Standalone)
-            {
-                return;
-            }
-
-            var components = component.Collection;
-            components.Remove(component);
-            components.ImportSourceFile(file);
+            
+            _sourceCodeHandler.Import(component, file);
         }
     }
 }

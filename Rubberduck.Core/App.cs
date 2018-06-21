@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
