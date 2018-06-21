@@ -34,13 +34,13 @@ namespace Rubberduck.UnitTesting
             expected = expected ?? string.Empty;
             actual = actual ?? string.Empty;
 
-            if (!PermissiveComparer.Equals(expected, actual))
+            if (PermissiveComparer.Equals(expected, actual))
             {
-                AssertHandler.OnAssertFailed(message);
+                AssertHandler.OnAssertSucceeded(); 
             }
             else
             {
-                AssertHandler.OnAssertSucceeded();
+                AssertHandler.OnAssertFailed(message);
             }
         }
 
@@ -50,13 +50,13 @@ namespace Rubberduck.UnitTesting
             expected = expected ?? string.Empty;
             actual = actual ?? string.Empty;
 
-            if (PermissiveComparer.Equals(expected, actual))
+            if (!PermissiveComparer.Equals(expected, actual))
             {
-                AssertHandler.OnAssertFailed(message);
+                AssertHandler.OnAssertSucceeded(); 
             }
             else
             {
-                AssertHandler.OnAssertSucceeded();
+                AssertHandler.OnAssertFailed(message);
             }
         }
 
