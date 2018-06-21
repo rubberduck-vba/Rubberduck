@@ -38,7 +38,10 @@ namespace Rubberduck.UnitTesting
             {
                 AssertHandler.OnAssertFailed(message);
             }
-            AssertHandler.OnAssertSucceeded();
+            else
+            {
+                AssertHandler.OnAssertSucceeded();
+            }
         }
 
         public override void AreNotEqual(object expected, object actual, string message = "")
@@ -51,7 +54,10 @@ namespace Rubberduck.UnitTesting
             {
                 AssertHandler.OnAssertFailed(message);
             }
-            AssertHandler.OnAssertSucceeded();
+            else
+            {
+                AssertHandler.OnAssertSucceeded();
+            }
         }
 
         public override void SequenceEquals(object expected, object actual, string message = "")
