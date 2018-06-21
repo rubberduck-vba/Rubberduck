@@ -16,14 +16,14 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private readonly IAttributeParser _attributeParser;
-        private readonly IModuleExporter _exporter;
+        private readonly ISourceCodeHandler _sourceCodeHandler;
 
         protected ParseRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             Func<IVBAPreprocessor> preprocessorFactory,
             IAttributeParser attributeParser, 
-            IModuleExporter exporter)
+            ISourceCodeHandler sourceCodeHandler)
         {
             if (state == null)
             {
@@ -46,7 +46,7 @@ namespace Rubberduck.Parsing.VBA
             StateManager = parserStateManager;
             _preprocessorFactory = preprocessorFactory;
             _attributeParser = attributeParser;
-            _exporter = exporter;
+            _sourceCodeHandler = sourceCodeHandler;
         }
 
 
@@ -65,7 +65,7 @@ namespace Rubberduck.Parsing.VBA
             var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
 
             var preprocessor = _preprocessorFactory();
-            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, _exporter, _state.ProjectsProvider, rewriter);
+            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, _sourceCodeHandler, _state.ProjectsProvider, rewriter);
 
             parser.ParseFailure += (sender, e) =>
             {

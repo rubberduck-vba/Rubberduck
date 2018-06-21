@@ -90,8 +90,7 @@ moduleDeclarationsElement :
     | implementsStmt
     | variableStmt
     | moduleOption
-    | publicTypeDeclaration
-    | privateTypeDeclaration)
+    | udtDeclaration)
 ;
 
 moduleBody : 
@@ -518,10 +517,8 @@ subStmt :
 subroutineName : identifier;
 
 // 5.2.3.3 User Defined Type Declarations
-publicTypeDeclaration : ((GLOBAL | PUBLIC) whiteSpace)? udtDeclaration;
-privateTypeDeclaration : PRIVATE whiteSpace udtDeclaration;
 // member list includes trailing endOfStatement
-udtDeclaration : TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList END_TYPE;  
+udtDeclaration : (visibility whiteSpace)? TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList END_TYPE;  
 udtMemberList : (udtMember endOfStatement)+; 
 udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
 untypedNameMemberDeclaration : untypedIdentifier whiteSpace? optionalArrayClause;

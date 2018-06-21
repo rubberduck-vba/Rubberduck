@@ -1232,7 +1232,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -1310,7 +1310,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -1494,7 +1494,7 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -1524,7 +1524,7 @@ End Sub"
             tdo.MsgBoxReturn = DialogResult.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
-            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         #endregion
@@ -1634,7 +1634,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
@@ -1671,7 +1671,7 @@ End Sub";
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
@@ -1762,6 +1762,212 @@ Sub DoSomething()
 End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        #endregion
+        #region Rename UDT Tests
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePublicUDT()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePrivateUDT()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameUDTMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "bar", newName: "fooBar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Private Type UserType
+    foo As String
+    bar| As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Private Type UserType
+    foo As String
+    fooBar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.fooBar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePublicUDT_ReferenceInDifferentModule()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type",
+
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type"
+            };
+
+            var otherModule = new RenameTestModuleDefinition("Module2", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput, otherModule);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePublicUDTMember_ReferenceInDifferentModule()
+        {
+            var tdo = new RenameTestsDataObject(selection: "bar", newName: "fooBar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType
+    foo As String
+    bar| As Long
+End Type",
+                Expected =
+                    @"Option Explicit
+
+Public Type UserType
+    foo As String
+    fooBar As Long
+End Type"
+            };
+
+            var otherModule = new RenameTestModuleDefinition("Module2", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.fooBar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput, otherModule);
 
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
@@ -2074,7 +2280,7 @@ End Property";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
@@ -2157,7 +2363,7 @@ End Property";
 
             tdo.MsgBox = new Mock<IMessageBox>();
             // FIXME this might be a bit broken now
-            tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>())).Returns(tdo.MsgBoxReturn == DialogResult.Yes);
+            tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == DialogResult.Yes);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
             tdo.ParserState = MockParser.CreateAndParse(tdo.VBE, testLibraries: testLibraries);
@@ -2253,7 +2459,9 @@ End Property";
                 if (inputOutput.CheckExpectedEqualsActual)
                 {
                     var rewriter = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule.Parent);
-                    Assert.AreEqual(inputOutput.Expected, rewriter.GetText());
+                    var expected = inputOutput.Expected;
+                    var actual = rewriter.GetText();
+                    Assert.AreEqual(expected, actual);
                 }
             }
         }
