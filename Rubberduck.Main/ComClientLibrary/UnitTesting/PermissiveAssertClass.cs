@@ -4,8 +4,9 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Rubberduck.Resources.Registration;
 using Rubberduck.Resources.UnitTesting;
+using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.ComClientLibrary.UnitTesting
 {	
     [
         ComVisible(true),

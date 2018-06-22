@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.UnitTesting;
 
 namespace RubberduckTests.UnitTesting
