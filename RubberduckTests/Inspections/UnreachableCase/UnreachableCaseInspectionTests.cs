@@ -1341,6 +1341,70 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        //Issue #4119
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationNumberRangeConflicts2()
+        {
+            const string inputCode =
+@"
+                private Enum Fruit
+                    Apple = 0
+                    Pear
+                    Orange
+                End Enum
+
+                Sub Foo(z As Fruit)
+
+                Select Case z
+                    Case Apple
+                    'OK
+                    Case Pear 
+                    'OK     
+                    Case Orange        
+                    'OK
+                    Case Else
+                    'OK - avoid flagging CaseElse for enums so guard clauses such as below are retained
+                    Err.Raise 5, ""MyFunction"", ""Invalid value given for the enumeration.""
+                End Select
+
+                End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0, caseElse: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        //Issue #4119
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationNumberRangeConflicts3()
+        {
+            const string inputCode =
+@"
+                private Enum Fruit
+                    Apple = 0
+                    Pear
+                    Orange
+                End Enum
+
+                Sub Foo(z As Fruit)
+
+                Select Case z
+                    Case Apple
+                    'OK
+                    Case 1 
+                    'Unreachable     
+                    Case Orange        
+                    'OK
+                    Case Else
+                    'OK - avoid flagging CaseElse for enums so guard clauses such as below are retained
+                    Err.Raise 5, ""MyFunction"", ""Invalid value given for the enumeration.""
+                End Select
+
+                End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspection_EnumerationNumberCaseElse()
