@@ -6,14 +6,12 @@ namespace Rubberduck.UnitTesting
     {
         public AssertCompletedEventArgs(TestOutcome outcome, string message = "")
         {
-            _outcome = outcome;
-            _message = message;
+            Outcome = outcome;
+            Message = message;
         }
 
-        private readonly TestOutcome _outcome;
-        public TestOutcome Outcome { get { return _outcome; } }
+        public TestOutcome Outcome { get; }
 
-        private readonly string _message;
-        public string Message { get { return _message; } }
+        public string Message { get; }
     }
 }
