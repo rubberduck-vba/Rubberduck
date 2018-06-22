@@ -51,9 +51,10 @@ namespace Rubberduck.AutoComplete
 
                 var isDeclareStatement = Regex.IsMatch(code.Trim(), $"\\b{Tokens.Declare}\\b", RegexOptions.IgnoreCase);
                 var isExitStatement = Regex.IsMatch(code.Trim(), $"\\b{Tokens.Exit}\\b", RegexOptions.IgnoreCase);
+                var isNamedArg = Regex.IsMatch(code.Trim(), $"\\b{InputToken}\\:\\=", RegexOptions.IgnoreCase);
 
                 if ((SkipPreCompilerDirective && code.Trim().StartsWith("#"))
-                    || isDeclareStatement || isExitStatement)
+                    || isDeclareStatement || isExitStatement || isNamedArg)
                 {
                     return false;
                 }
