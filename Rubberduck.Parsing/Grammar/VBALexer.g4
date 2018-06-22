@@ -302,6 +302,7 @@ WS : [ \t];
 GUIDLITERAL : '{' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '}';
 IDENTIFIER :  ~[[\](){}\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\-] ~[[\](){}\r\n\t.,'"|!@#$%^&*\-+:=; -]*;
 LINE_CONTINUATION : [ \t]* UNDERSCORE [ \t]* '\r'? '\n';
+BARE_HEX_LITERAL : [0-9a-fA-F]+;
 fragment LETTER : [a-zA-Z_äöüÄÖÜ];
 fragment DIGIT : [0-9];
 fragment LETTERORDIGIT : [a-zA-Z0-9_äöüÄÖÜ];

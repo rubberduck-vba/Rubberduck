@@ -62,7 +62,7 @@ moduleConfigProperty :
 ;
 
 moduleConfigElement :
-    lExpression whiteSpace? EQ whiteSpace? (shortcut | DOLLAR? expression) (COLON (numberLiteral | IDENTIFIER))? endOfStatement
+    (unrestrictedIdentifier | lExpression) whiteSpace? EQ whiteSpace? (shortcut | DOLLAR? expression) (COLON (numberLiteral | BARE_HEX_LITERAL | unrestrictedIdentifier))? endOfStatement
 ;
 
 shortcut :
