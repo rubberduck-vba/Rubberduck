@@ -3,7 +3,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection

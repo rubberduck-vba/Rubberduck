@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.Parsing.Grammar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,8 +65,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Converter = converter;
             _filterTypeName = typeName;
             _hashCode = _filterTypeName.GetHashCode();
-            converter("True", out _trueValue, typeName);
-            converter("False", out _falseValue, typeName);
+            converter(Tokens.True, out _trueValue, typeName);
+            converter(Tokens.False, out _falseValue, typeName);
         }
 
         private HashSet<IRangeClauseExpression> LikePredicates { get; } = new HashSet<IRangeClauseExpression>();

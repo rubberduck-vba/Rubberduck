@@ -91,7 +91,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expected, filter.ToString());
         }
 
-        //TODO: Test Boolean and other types?
         [TestCase("RelOp!x < 65", "RelOp!x < 55", "RelOp!x < 65,RelOp!x < 55")]
         [TestCase("RelOp!x > 55", "RelOp!x < 65", "Value!-1,RelOp!x > 55,RelOp!x < 65")]
         [TestCase("RelOp!x > 65", "RelOp!x < 55", "Value!0, RelOp!x > 65,RelOp!x < 55")]
@@ -112,6 +111,30 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
 
             var expectedFilter = RangeDescriptorsToFilters(new string[] { expected }, Tokens.Long).First();
+
+            Assert.AreEqual(expectedFilter, filter);
+        }
+
+        [TestCase("RelOp!x < 65.45", "RelOp!x < 55.97", "RelOp!x < 65.45,RelOp!x < 55.97")]
+        [TestCase("RelOp!x > 55.97", "RelOp!x < 65.45", "Value!-1,RelOp!x > 55.97,RelOp!x < 65.45")]
+        [TestCase("RelOp!x > 65.45", "RelOp!x < 55.97", "Value!0, RelOp!x > 65.45,RelOp!x < 55.97")]
+        [TestCase("RelOp!x <> 55.97", "RelOp!x <> 60,RelOp!x = 95", "Value!-1,RelOp!x <> 55.97,RelOp!x <> 60,RelOp!x = 95")]
+        [TestCase("Value!0,RelOp!x > 55.97", "RelOp!x < 65.45,RelOp!x = 70", "RelOp!x > 55.97,RelOp!x < 65.45,Value!0,Value!-1")]
+        [TestCase("Value!-1,RelOp!x = 55.97", "RelOp!x = 65.45,RelOp!x = 0", "RelOp!x = 55.97,RelOp!x = 65.45,Value!-1,Value!0")]
+        [TestCase("RelOp!x <= 55.97", "RelOp!x > 65.45", "Value!0,RelOp!x <= 55.97,RelOp!x > 65.45")]
+        [Category("Inspections")]
+        public void ExpressionFilter_VariableRelationalOpsDouble(string firstCase, string secondCase, string expected)
+        {
+            var filter = ExpressionFilterFactory.Create(Tokens.Single);
+            filter.AddComparablePredicateFilter("x", Tokens.Single);
+
+            var expressions = RangeDescriptorsToExpressions(new string[] { firstCase, secondCase }, Tokens.Single);
+            foreach (var expr in expressions)
+            {
+                filter.AddExpression(expr);
+            }
+
+            var expectedFilter = RangeDescriptorsToFilters(new string[] { expected }, Tokens.Single).First();
 
             Assert.AreEqual(expectedFilter, filter);
         }
@@ -276,35 +299,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expected, actual);
         }
 
-        //TODO: put this test back in somehow
-        //[TestCase("Long")]
-        //[TestCase("Integer")]
-        //[TestCase("Byte")]
-        //[TestCase("Single")]
-        //[TestCase("Currency")]
-        //[Category("Inspections")]
-        //public void ExpressionFilter_Extents(string selectExpressionTypename)
-        //{
-        //    var filter = RangeClauseFilterFactory.Create(selectExpressionTypename, ValueFactory);
-        //    if (selectExpressionTypename.Equals(Tokens.Long)
-        //        || selectExpressionTypename.Equals(Tokens.Integer)
-        //        || selectExpressionTypename.Equals(Tokens.Byte))
-        //    {
-        //        Assert.IsTrue(((RangeClauseFilterFacade<long>)filter).Content.Limits.MaximumExtent.HasValue 
-        //            && ((RangeClauseFilterFacade<long>)filter).Content.Limits.MinimumExtent.HasValue);
-        //    }
-        //    else if (selectExpressionTypename.Equals(Tokens.Single))
-        //    {
-        //        Assert.IsTrue(((RangeClauseFilterFacade<double>)filter).Content.Limits.MaximumExtent.HasValue 
-        //            && ((RangeClauseFilterFacade<double>)filter).Content.Limits.MinimumExtent.HasValue);
-        //    }
-        //    else if (selectExpressionTypename.Equals(Tokens.Currency))
-        //    {
-        //        Assert.IsTrue(((RangeClauseFilterFacade<decimal>)filter).Content.Limits.MaximumExtent.HasValue
-        //            && ((RangeClauseFilterFacade<decimal>)filter).Content.Limits.MinimumExtent.HasValue);
-        //    }
-        //}
-
         /*
          * The test cases below cover the truth table
          * for 'Is' clauses present in Boolean Select Case Statements.
@@ -328,7 +322,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ExpressionFilter_BooleanIsClauseTruthTable(string rangeClause, string expected)
         {
-            var filter = ExpressionFilterFactory.Create(Tokens.Boolean); //, ValueFactory);
+            var filter = ExpressionFilterFactory.Create(Tokens.Boolean);
 
             var clauses = RetrieveDelimitedElements(rangeClause, RANGECLAUSE_DELIMITER);
             foreach (var clause in clauses)
@@ -381,7 +375,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             {
 
                 var index = rangeClauses.IndexOf(CLAUSETYPE_VALUE_DELIMITER);
-                if(index < 0)
+                if (index < 0)
                 {
                     return result;
                 }
@@ -502,95 +496,10 @@ namespace RubberduckTests.Inspections.UnreachableCase
         private IExpressionFilter CreateTestFilter(List<string> annotations, string conformToType = null)
         {
             var result = ExpressionFilterFactory.Create(conformToType);
-            var clauseItem = string.Empty;
-            foreach (var item in annotations)
+            var expressions = CreateTestExpressions(annotations, conformToType);
+            foreach (var expression in expressions)
             {
-                clauseItem = item;
-                
-                var element = RetrieveDelimitedElements(clauseItem.Trim(), CLAUSETYPE_VALUE_DELIMITER);
-                if (!element.Any() || element[0].Equals(string.Empty) || element.Count() < 2)
-                {
-                    continue;
-                }
-                var clauseType = element[0];
-                var clauseExpression = element[1];
-                var values = RetrieveDelimitedElements(clauseExpression, RANGECLAUSE_DELIMITER);
-                foreach (var expr in values)
-                {
-                    if (clauseType.Equals("Min"))
-                    {
-                        var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                        var expression = new IsClauseExpression(uciVal, LogicSymbols.LT);
-                        result.AddExpression(expression);
-                    }
-                    else if (clauseType.Equals("Max"))
-                    {
-                        var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                        var expression = new IsClauseExpression(uciVal, LogicSymbols.GT);
-                        result.AddExpression(expression);
-                    }
-                    else if (clauseType.Equals("Range"))
-                    {
-                        var startEnd = clauseExpression.Split(new string[] { RANGE_STARTEND_DELIMITER }, StringSplitOptions.None);
-                        var testValStart = ValueFactory.Create(startEnd[0], conformToTypeName: conformToType);
-                        var testValEnd = ValueFactory.Create(startEnd[1], conformToTypeName: conformToType);
-                        var expression = new RangeOfValuesExpression(testValStart, testValEnd);
-                        result.AddExpression(expression);
-                    }
-                    else if (clauseType.Equals("Value"))
-                    {
-                        var testVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                        result.AddExpression(new ValueExpression(testVal));
-                    }
-                    else if (clauseType.Equals("Is"))
-                    {
-                        string symbol = string.Empty;
-                        TryExtractSymbol(item, out symbol);
-                        var sides = clauseExpression.Split(new string[] { symbol }, StringSplitOptions.None);
-
-                        if(sides.Count() == 2)
-                        {
-                            var lhs = ValueFactory.Create(sides[0].Trim(), conformToTypeName: conformToType);
-                            var rhs = ValueFactory.Create(sides[1].Trim(), conformToTypeName: conformToType);
-                            result.AddExpression(new IsClauseExpression(rhs, symbol));
-                        }
-                        else
-                        {
-                            var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                            result.AddExpression(new UnaryExpression(uciVal, symbol));
-                        }
-                    }
-                    else if (clauseType.Equals("RelOp"))
-                    {
-                        string symbol = string.Empty;
-                        TryExtractSymbol(item, out symbol);
-                        var sides = clauseExpression.Split(new string[] { symbol }, StringSplitOptions.None);
-
-                        if (sides.Count() == 2)
-                        {
-                            var lhs = ValueFactory.Create(sides[0].Trim(), conformToTypeName: conformToType);
-                            var rhs = ValueFactory.Create(sides[1].Trim(), conformToTypeName: conformToType);
-                            if (lhs.ValueText.Equals(Tokens.Is))
-                            {
-                                result.AddExpression(new IsClauseExpression(rhs, symbol));
-                            }
-                            else
-                            {
-                                result.AddExpression(new BinaryExpression(lhs, rhs, symbol));
-                            }
-
-                        }
-                        else
-                        {
-                            var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                            result.AddExpression(new UnaryExpression(uciVal, symbol));
-                        }
-                    }
-                    else
-                    {
-                        Assert.Fail($"Invalid clauseType ({clauseType}) encountered");
-                    }
-                }
+                result.AddExpression(expression);
             }
             return result;
         }

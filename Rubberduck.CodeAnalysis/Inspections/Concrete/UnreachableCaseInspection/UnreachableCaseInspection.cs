@@ -31,7 +31,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public UnreachableCaseInspection(RubberduckParserState state) : base(state)
         {
-            //TODO_Question: IUnreachableCaseInspectionFactoryFactory - candidate for IoCInstaller?
             var factoryProvider = new UnreachableCaseInspectionFactoryProvider();
 
             _unreachableCaseInspectorFactory = factoryProvider.CreateIUnreachableInspectorFactory();

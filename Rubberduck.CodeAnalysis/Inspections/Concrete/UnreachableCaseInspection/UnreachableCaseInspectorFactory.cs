@@ -19,5 +19,4 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return new UnreachableCaseInspector(selectStmt, results, valueFactory, func);
         }
     }
-
 }

@@ -155,7 +155,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             VisitImpl(context);
 
             RetrieveOpEvaluationElements(context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) binaryData);
-            if(binaryData.LHS is null || binaryData.RHS is null)
+            if (binaryData.LHS is null || binaryData.RHS is null)
             {
                 return;
             }

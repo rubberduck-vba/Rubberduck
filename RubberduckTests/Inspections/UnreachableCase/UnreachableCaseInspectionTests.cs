@@ -3,11 +3,9 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -892,7 +890,6 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        //TODO: should there be another error type - Range is high to low?
         [TestCase("False To True", 1, 0)] //<firstCase> is unreachable - malformed
         [TestCase("True To False", 1, 1)] //<firstCase> filters all possible values
         [Category("Inspections")]

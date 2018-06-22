@@ -2,9 +2,6 @@
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing.Grammar;
 using System;
-using System.Text;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
@@ -16,7 +13,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
     2. The ParseTreeValueExpressionEvaluator uses Double to work with Singles and Doubles.
 
     1 and 2 mean that, for simplicity, the expressions may be evaluated as a type different than their
-    strict, per spec VBA result type.The goal of the supported inspection is to look for unreachable
+    strict, per-spec VBA result type.The goal of the supported inspection is to look for unreachable
     code rather than to precisely replicate VBA's math engine.
 
     Test Parameter encoding:
