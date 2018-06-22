@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+using System;
 
 namespace Rubberduck.Parsing
 {
@@ -181,12 +182,10 @@ namespace Rubberduck.Parsing
         {
             if( !(context is VBAParser.ModuleContext moduleContext))
             {
-                moduleContext = context.GetAncestor<VBAParser.ModuleContext>()
-                    ?? context.GetDescendent<VBAParser.ModuleContext>();
-
+                moduleContext = context.GetAncestor<VBAParser.ModuleContext>();
                 if (moduleContext is null)
                 {
-                    return true; //the default
+                    throw new ArgumentException($"Unable to obtain a VBAParser.ModuleContext reference from 'context'");
                 }
             }
 

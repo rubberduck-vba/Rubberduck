@@ -252,18 +252,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return string.Compare(lhs, rhs, !_isOptionCompareBinary, CultureInfo.InvariantCulture) > 0;
         }
 
-        //private static bool Like2(string input, string likePattern, RegexOptions option = RegexOptions.None)
-        //{
-        //    if (likePattern.Equals("*"))
-        //    {
-        //        return true;
-        //    }
-
-        //    var regexPattern = ConvertLikePatternToRegexPattern(likePattern);
-        //    var regex = new Regex(regexPattern, option | RegexOptions.CultureInvariant);
-        //    return regex.IsMatch(input);
-        //}
-
         public static string ConvertLikePatternToRegexPattern(string likePattern)
         {
             //The order of replacements matter

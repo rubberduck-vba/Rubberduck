@@ -144,6 +144,7 @@
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />
+    <Compile Include="ExpressionContextExtensions.cs" />
     <Compile Include="Inspections\RequiredHostAttribute.cs" />
     <Compile Include="ProjectsProviderExtensions.cs" />
     <Compile Include="Common\ExperimentalAttribute.cs" />

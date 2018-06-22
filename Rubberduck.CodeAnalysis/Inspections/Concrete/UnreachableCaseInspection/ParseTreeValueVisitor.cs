@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             OnValueResultCreated += _contextValues.OnNewValueResult;
         }
 
-        //used only within UnreachableCaseInspection tests
+        //used only by UnreachableCaseInspection tests
         public RubberduckParserState State { set; get; } = null;
 
         private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { set; get; } = null;
@@ -66,16 +66,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _contextValues;
         }
 
-        internal static bool IsMathContext<T>(T context)
-        {
-            return IsBinaryMathContext(context) || IsUnaryMathContext(context);
-        }
-
-        internal static bool IsLogicalContext<T>(T context)
-        {
-            return IsBinaryLogicalContext(context) || IsUnaryLogicalContext(context);
-        }
-
         private void StoreVisitResult(ParserRuleContext context, IParseTreeValue inspValue)
         {
             OnValueResultCreated(this, new ValueResultEventArgs(context, inspValue));
@@ -109,14 +99,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     {
                         VisitUnaryResultContext(parserRuleContext);
                     }
-                    else if (IsBinaryMathContext(parserRuleContext) 
-                        || IsBinaryLogicalContext(parserRuleContext)
-                        || parserRuleContext is VBAParser.ConcatOpContext)
+                    else if (IsBinaryResultContext(parserRuleContext))
                     {
                         VisitBinaryOpEvaluationContext(parserRuleContext);
                     }
-                    else if (IsUnaryLogicalContext(parserRuleContext) 
-                        || IsUnaryMathContext(parserRuleContext))
+                    else if (parserRuleContext is VBAParser.LogicalNotOpContext
+                        || parserRuleContext is VBAParser.UnaryMinusOpContext)
                     {
                         VisitUnaryOpEvaluationContext(parserRuleContext);
                     }
@@ -166,49 +154,57 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             VisitImpl(context);
 
-            var operands = RetrieveRelevantOpData(context, out string opSymbol);
-            if (operands.Count != 2 || operands.All(opr => opr is null))
+            RetrieveOpEvaluationElements(context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) binaryData);
+            if(binaryData.LHS is null || binaryData.RHS is null)
             {
                 return;
             }
 
             var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
-            var nResult = calculator.Evaluate(operands[0], operands[1], opSymbol);
+            var result = calculator.Evaluate(binaryData.LHS, binaryData.RHS, binaryData.Symbol);
 
-            StoreVisitResult(context, nResult);
+            StoreVisitResult(context, result);
         }
 
         private void VisitUnaryOpEvaluationContext(ParserRuleContext context)
         {
             VisitImpl(context);
-            var operands = RetrieveRelevantOpData(context, out string opSymbol);
-            if (operands.Count != 1 || operands.All(opr => opr is null))
+            RetrieveOpEvaluationElements(context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) unaryData);
+            if (unaryData.LHS is null || unaryData.RHS != null)
             {
                 return;
             }
 
             var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
-            var result = calculator.Evaluate(operands[0], opSymbol, operands[0].TypeName);
+            var result = calculator.Evaluate(unaryData.LHS, unaryData.Symbol, unaryData.LHS.TypeName);
             StoreVisitResult(context, result);
         }
 
-        private List<IParseTreeValue> RetrieveRelevantOpData(ParserRuleContext context, out string opSymbol)
+        private void RetrieveOpEvaluationElements(ParserRuleContext context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) operandElements)
         {
-            opSymbol = string.Empty;
+            operandElements.Symbol = string.Empty;
+            operandElements.LHS = null;
+            operandElements.RHS = null;
             var values = new List<IParseTreeValue>();
             var contextsOfInterest = NonWhitespaceChildren(context);
             for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
             {
                 if (contextsOfInterest.ElementAt(idx) is ParserRuleContext ctxt)
                 {
-                    values.Add(_contextValues.GetValue(ctxt));
+                    if (operandElements.LHS is null)
+                    {
+                        operandElements.LHS = _contextValues.GetValue(ctxt);
+                    }
+                    else if (operandElements.RHS is null)
+                    {
+                        operandElements.RHS = _contextValues.GetValue(ctxt);
+                    }
                 }
                 else
                 {
-                    opSymbol = contextsOfInterest.ElementAt(idx).GetText();
+                    operandElements.Symbol = contextsOfInterest.ElementAt(idx).GetText();
                 }
             }
-            return values;
         }
 
         private void VisitUnaryResultContext(ParserRuleContext parserRuleContext)
@@ -353,20 +349,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
-        private static bool IsBinaryMathContext<T>(T context)
-        {
-            return context is VBAParser.MultOpContext   //MultOpContext includes both * and /
-                || context is VBAParser.AddOpContext    //AddOpContet includes both + and -
-                || context is VBAParser.PowOpContext
-                || context is VBAParser.IntDivOpContext
-                || context is VBAParser.ModOpContext;
-        }
-
-        private static bool IsUnaryMathContext<T>(T context)
-        {
-            return context is VBAParser.UnaryMinusOpContext;
-        }
-
         private static bool IsUnaryResultContext<T>(T context)
         {
             return context is VBAParser.SelectStartValueContext
@@ -375,32 +357,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || context is VBAParser.SelectExpressionContext;
         }
 
-        private static bool IsBinaryLogicalContext<T>(T context)
+        private static bool IsBinaryResultContext<T>(T context)
         {
-            return context is VBAParser.RelationalOpContext
-                || context is VBAParser.LogicalXorOpContext
-                || context is VBAParser.LogicalAndOpContext
-                || context is VBAParser.LogicalOrOpContext
-                || context is VBAParser.LogicalImpOpContext
-                || context is VBAParser.LogicalEqvOpContext;
-        }
+            if (context is VBAParser.ExpressionContext expressionContext)
+            {
 
-        private static bool IsUnaryLogicalContext<T>(T context)
-        {
-            return context is VBAParser.LogicalNotOpContext;
-        }
-
-        public static bool IsResultContext<TContext>(TContext context)
-        {
-            return IsMathContext(context)
-                    || IsLogicalContext(context)
-                    || context is VBAParser.ConcatOpContext
-                    || context is VBAParser.SelectStartValueContext
-                    || context is VBAParser.SelectEndValueContext
-                    || context is VBAParser.ParenthesizedExprContext
-                    || context is VBAParser.SelectEndValueContext
-                    || context is VBAParser.LExprContext
-                    || context is VBAParser.LiteralExprContext;
+                return expressionContext.IsBinaryMathContext()
+                    || expressionContext.IsBinaryLogicalContext()
+                    || context is VBAParser.ConcatOpContext;
+            }
+            return false;
         }
     }
 
