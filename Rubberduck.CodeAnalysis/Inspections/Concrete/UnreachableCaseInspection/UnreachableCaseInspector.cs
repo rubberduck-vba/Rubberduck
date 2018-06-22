@@ -136,7 +136,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     {
                         var typeNames = from context in range.children
                                 where context is ParserRuleContext 
-                                    && ParseTreeValueVisitor.IsResultContext(context)
+                                    && IsResultContext(context)
                                 select inspValues.GetTypeName(context as ParserRuleContext);
 
                         caseClauseTypeNames.AddRange(typeNames);
@@ -202,15 +202,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private IRangeClauseExpression GetRangeClauseExpression(VBAParser.RangeClauseContext rangeClause)
         {
             var resultContexts = from ctxt in rangeClause.children
-                             where ctxt is ParserRuleContext && ParseTreeValueVisitor.IsResultContext(ctxt)
+                             where ctxt is ParserRuleContext && IsResultContext(ctxt)
                              select ctxt as ParserRuleContext;
 
             if (!resultContexts.Any())
             {
                 return null;
             }
-
-            var clauseValue = ParseTreeValueResults.GetValue(resultContexts.First());
 
             if (rangeClause.TO() != null)
             {
@@ -220,41 +218,46 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else if (rangeClause.IS() != null)
             {
+                var clauseValue = ParseTreeValueResults.GetValue(resultContexts.First());
                 var opSymbol = rangeClause.GetChild<VBAParser.ComparisonOperatorContext>().GetText();
                 return new IsClauseExpression(clauseValue, opSymbol);
             }
-            else if (rangeClause.children.Any(ch => ParseTreeValueVisitor.IsLogicalContext(ch)))
+            else if (TryGetLogicSymbol(resultContexts.First(), out string symbol))
             {
+                var resultContext = resultContexts.First();
+                var clauseValue = ParseTreeValueResults.GetValue(resultContext);
                 if (clauseValue.ParsesToConstantValue)
                 {
                     return new ValueExpression(clauseValue);
                 }
-                else
+
+                if (resultContext is VBAParser.LogicalNotOpContext)
                 {
-                    var symbol = GetLogicSymbol(resultContexts.First() as VBAParser.ExpressionContext);
-
-                    Debug.Assert(!symbol.Equals(string.Empty), "Unhandled ExpressionContext detected");
-                    if (symbol == string.Empty) { return null; }
-
-                    var resultContext = resultContexts.First();
-                    if (resultContext is VBAParser.LogicalNotOpContext)
-                    {
-                        return new UnaryExpression(clauseValue, symbol);
-                    }
-                    else if (resultContext is VBAParser.RelationalOpContext
-                            || resultContext is VBAParser.LogicalEqvOpContext
-                            || resultContext is VBAParser.LogicalImpOpContext)
-                    {
-                        (IParseTreeValue lhs, IParseTreeValue rhs) = CreateOperandPair(clauseValue, symbol, _valueFactory);
-                        return new BinaryExpression(lhs, rhs, symbol);
-                    }
+                    return new UnaryExpression(clauseValue, symbol);
                 }
+                else if (resultContext is VBAParser.RelationalOpContext
+                        || resultContext is VBAParser.LogicalEqvOpContext
+                        || resultContext is VBAParser.LogicalImpOpContext)
+                {
+                    (IParseTreeValue lhs, IParseTreeValue rhs) = CreateOperandPair(clauseValue, symbol, _valueFactory);
+                    return new BinaryExpression(lhs, rhs, symbol);
+                }
+                return null;
             }
             else
             {
-                return new ValueExpression(clauseValue);
+                return new ValueExpression(ParseTreeValueResults.GetValue(resultContexts.First()));
             }
-            return null;
+        }
+
+        private static bool TryGetLogicSymbol(ParserRuleContext context, out string opSymbol)
+        {
+            opSymbol = string.Empty;
+            if (context is VBAParser.ExpressionContext expressionContext)
+            {
+                return expressionContext.TryGetLogicalContextSymbol(out opSymbol);
+            }
+            return false;
         }
 
         private static (IParseTreeValue lhs, IParseTreeValue rhs)
@@ -276,29 +279,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return (null, null);
         }
 
-        private static string GetLogicSymbol<T>(T context) where T : VBAParser.ExpressionContext
+        private static bool IsResultContext<TContext>(TContext context)
         {
-            switch (context)
+            if (context is VBAParser.ExpressionContext expressionContext)
             {
-                case VBAParser.RelationalOpContext ctxt:
-                    var terminalNode = ctxt.EQ() ?? ctxt.GEQ() ?? ctxt.GT() ?? ctxt.LEQ()
-                        ?? ctxt.LIKE() ?? ctxt.LT() ?? ctxt.NEQ();
-                    return terminalNode.GetText();
-                case VBAParser.LogicalXorOpContext _:
-                    return context.GetToken(VBAParser.XOR, 0).GetText();
-                case VBAParser.LogicalAndOpContext _:
-                    return context.GetToken(VBAParser.AND, 0).GetText();
-                case VBAParser.LogicalOrOpContext _:
-                    return context.GetToken(VBAParser.OR, 0).GetText();
-                case VBAParser.LogicalEqvOpContext _:
-                    return context.GetToken(VBAParser.EQV, 0).GetText();
-                case VBAParser.LogicalImpOpContext _:
-                    return context.GetToken(VBAParser.IMP, 0).GetText();
-                case VBAParser.LogicalNotOpContext _:
-                    return context.GetToken(VBAParser.NOT, 0).GetText();
-                default:
-                    return string.Empty;
+                return  expressionContext.IsMathContext()
+                        || expressionContext.IsLogicalContext()
+                        || expressionContext is VBAParser.ConcatOpContext
+                        || expressionContext is VBAParser.ParenthesizedExprContext
+                        || expressionContext is VBAParser.LExprContext
+                        || expressionContext is VBAParser.LiteralExprContext;
             }
+            return context is VBAParser.SelectStartValueContext
+                    || context is VBAParser.SelectEndValueContext;
         }
 
         private static List<string> InspectableTypes = new List<string>()
