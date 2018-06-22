@@ -810,6 +810,8 @@ End
         [TestCase(@"{F12}")]
         [TestCase(@"^{F1}")]
         [TestCase(@"^{F12}")]
+        [TestCase(@"+{F1}")]
+        [TestCase(@"+{F12}")]
         [TestCase(@"+^{F1}")]
         [TestCase(@"+^{F12}")]
         [TestCase(@"^{INSERT}")]
