@@ -25,7 +25,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly QualifiedModuleName _module;
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
-        private readonly IModuleExporter _exporter;
+        private readonly ISourceCodeHandler _sourceCodeHandler;
         private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
         private readonly IProjectsProvider _projectsProvider;
@@ -36,12 +36,12 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, IModuleExporter exporter, IProjectsProvider projectsProvider, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsProvider projectsProvider, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _attributeParser = attributeParser;
-            _exporter = exporter;
+            _sourceCodeHandler = sourceCodeHandler;
             _preprocessor = preprocessor;
             _module = module;
             _rewriter = rewriter;
@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var rewriter = new MemberAttributesRewriter(_exporter, _projectsProvider.Component(_module).CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
+                var rewriter = new MemberAttributesRewriter(_sourceCodeHandler, _projectsProvider.Component(_module).CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
