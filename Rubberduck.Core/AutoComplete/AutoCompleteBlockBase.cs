@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
@@ -40,14 +41,19 @@ namespace Rubberduck.AutoComplete
             {
                 return false;
             }
-
+            
             var module = e.CodeModule;
             using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
                 var code = module.GetLines(selection);
+                var hasComment = code.HasComment(out int commentStart);
 
-                if (SkipPreCompilerDirective && code.Trim().StartsWith("#") || code.Contains(" Declare "))
+                var isDeclareStatement = Regex.IsMatch(code.Trim(), $"\\b{Tokens.Declare}\\b", RegexOptions.IgnoreCase);
+                var isExitStatement = Regex.IsMatch(code.Trim(), $"\\b{Tokens.Exit}\\b", RegexOptions.IgnoreCase);
+
+                if ((SkipPreCompilerDirective && code.Trim().StartsWith("#"))
+                    || isDeclareStatement || isExitStatement)
                 {
                     return false;
                 }
@@ -73,14 +79,16 @@ namespace Rubberduck.AutoComplete
 
         public override bool IsMatch(string code)
         {
+            code = code.Trim().StripStringLiterals();
             var pattern = SkipPreCompilerDirective
                             ? $"\\b{InputToken}\\b"
                             : $"{InputToken}\\b"; // word boundary marker (\b) would prevent matching the # character
             var regexOk = MatchInputTokenAtEndOfLineOnly
-                ? code.EndsWith(InputToken, System.StringComparison.OrdinalIgnoreCase)
-                : Regex.IsMatch(code.Trim(), pattern, RegexOptions.IgnoreCase);
+                ? !code.StartsWith(Tokens.Else, System.StringComparison.OrdinalIgnoreCase) 
+                    && code.EndsWith(InputToken, System.StringComparison.OrdinalIgnoreCase)
+                : Regex.IsMatch(code, pattern, RegexOptions.IgnoreCase);
 
-            return regexOk && !code.HasComment(out _);
+            return regexOk && (code.HasComment(out int commentIndex) ? code.IndexOf(InputToken) < commentIndex : true);
         }
 
         private bool IsBlockCompleted(ICodeModule module, Selection selection)

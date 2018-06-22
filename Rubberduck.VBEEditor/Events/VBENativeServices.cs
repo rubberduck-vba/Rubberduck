@@ -84,13 +84,23 @@ namespace Rubberduck.VBEditor.Events
             {
                 OnSelectionChanged(hwnd);             
             }
-            else if (eventType == (uint)WinEvent.SystemMenuPopupStart)
+            else if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectShow /*&& idObject == 0*/)
             {
-                OnPopup(true);
+                var nameBuilder = new StringBuilder(255);
+                User32.GetClassName(hwnd, nameBuilder, 255);
+                if (nameBuilder.ToString() == "NameListWndClass")
+                {
+                    OnIntelliSenseChanged(true);
+                }
             }
-            else if (eventType == (uint)WinEvent.SystemMenuPopupEnd)
+            else if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectHide /*&& idObject == 0*/)
             {
-                OnPopup(false);
+                var nameBuilder = new StringBuilder(255);
+                User32.GetClassName(hwnd, nameBuilder, 255);
+                if (nameBuilder.ToString() == "NameListWndClass")
+                {
+                    OnIntelliSenseChanged(false);
+                }
             }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
@@ -190,19 +200,11 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
-        public static event EventHandler PopupShown;
-        public static event EventHandler PopupHidden;
+        public static event EventHandler<IntelliSenseEventArgs> IntelliSenseChanged;
 
-        public static void OnPopup(bool shown)
+        public static void OnIntelliSenseChanged(bool shown)
         {
-            if (shown)
-            {
-                PopupShown?.Invoke(_vbe, EventArgs.Empty);
-            }
-            else
-            {
-                PopupHidden?.Invoke(_vbe, EventArgs.Empty);
-            }
+            IntelliSenseChanged?.Invoke(_vbe, shown ? IntelliSenseEventArgs.Shown : IntelliSenseEventArgs.Hidden);
         }
 
         public static event EventHandler<AutoCompleteEventArgs> KeyDown;

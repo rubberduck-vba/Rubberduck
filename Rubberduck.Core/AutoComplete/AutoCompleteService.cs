@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.AutoComplete
 {
@@ -23,18 +24,12 @@ namespace Rubberduck.AutoComplete
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             VBENativeServices.KeyDown += HandleKeyDown;
-            VBENativeServices.PopupShown += HandleIntelliSenseShown;
-            VBENativeServices.PopupHidden += HandleIntelliSenseHidden;
+            VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
         }
 
-        private void HandleIntelliSenseHidden(object sender, EventArgs e)
+        private void HandleIntelliSenseChanged(object sender, IntelliSenseEventArgs e)
         {
-            _popupShown = false;
-        }
-
-        private void HandleIntelliSenseShown(object sender, EventArgs e)
-        {
-            _popupShown = true;
+            _popupShown = e.Visible;
         }
 
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
@@ -94,7 +89,7 @@ namespace Rubberduck.AutoComplete
                         break;
                     }
                 }
-                else if (handleDelete || handleBackspace)
+                else if (handleBackspace)
                 {
                     if (DeleteAroundCaret(e, autoComplete))
                     {

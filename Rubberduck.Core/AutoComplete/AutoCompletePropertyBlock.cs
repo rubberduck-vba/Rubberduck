@@ -20,13 +20,26 @@ namespace Rubberduck.AutoComplete
             using (var pane = module.CodePane)
             {
                 var original = module.GetLines(e.CurrentSelection);
+                var hasAsToken = Regex.IsMatch(original, $"\\)\\s+{Tokens.As}", RegexOptions.IgnoreCase) ||
+                 Regex.IsMatch(original, $"{Tokens.Property} {Tokens.Get}\\s+\\(.*\\)\\s+{Tokens.As} ", RegexOptions.IgnoreCase);
+                var hasAsType = Regex.IsMatch(original, $"{Tokens.Property} {Tokens.Get}\\s+\\w+\\(.*\\)\\s+{Tokens.As}\\s+\\w+", RegexOptions.IgnoreCase);
+                var asTypeClause = hasAsToken && hasAsType
+                    ? string.Empty
+                    : hasAsToken
+                        ? $" {Tokens.Variant}"
+                        : $" {Tokens.As} {Tokens.Variant}";
+
+
                 if (result && Regex.IsMatch(original, $"{Tokens.Property} {Tokens.Get}"))
                 {
-                    var asTypeClause = $" {Tokens.As} {Tokens.Variant}";
-                    var code = original + (Regex.IsMatch(original, $"\\) {Tokens.As} ") ? string.Empty : asTypeClause);
+                    var code = original + asTypeClause;
                     module.ReplaceLine(e.CurrentSelection.StartLine, code);
-                    pane.Selection = new Selection(e.CurrentSelection.StartLine, code.Length - Tokens.Variant.Length + 1,
-                                                    e.CurrentSelection.StartLine, code.Length + 1);
+                    var newCode = module.GetLines(e.CurrentSelection);
+                    if (code == newCode)
+                    {
+                        pane.Selection = new Selection(e.CurrentSelection.StartLine, code.Length - Tokens.Variant.Length + 1,
+                                                        e.CurrentSelection.StartLine, code.Length + 1);
+                    }
                 }
             }
 
