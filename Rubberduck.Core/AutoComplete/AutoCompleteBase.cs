@@ -36,7 +36,16 @@ namespace Rubberduck.AutoComplete
                 {
                     var code = original.Insert(Math.Max(0, selection.StartColumn - 1), InputToken + OutputToken);
                     module.ReplaceLine(selection.StartLine, code);
-                    pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 1);
+                    var newCode = module.GetLines(selection);
+                    if (newCode == code)
+                    {
+                        pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 1);
+                    }
+                    else
+                    {
+                        // VBE added a space; need to compensate:
+                        pane.Selection = new Selection(selection.StartLine, selection.StartColumn + 2);
+                    }
                     e.Handled = true;
                     return true;
                 }
