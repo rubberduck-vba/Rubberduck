@@ -2033,11 +2033,7 @@ End Sub
 
         private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
-            var components = new List<(string moduleName, string inputCode)>()
-            {
-                ("TestModule1", inputCode)
-            };
-
+            var components = new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) };
             return CheckActualResultsEqualsExpected(components, unreachable, mismatch, caseElse);
         }
 
@@ -2053,14 +2049,12 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected);
             inputCode.ForEach(input => project.AddComponent(input.moduleName, NameToComponentType(input.moduleName), input.inputBlock));
-            builder = builder.AddProject(project.Build());
-            var vbe = builder.Build();
+            var vbe = builder.AddProject(project.Build()).Build();
 
             IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspector = InspectionsHelper.GetInspector(new UnreachableCaseInspection(state));
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
@@ -2074,18 +2068,10 @@ End Sub
         }
 
         private static ComponentType NameToComponentType(string name)
-        {
-            if (name.StartsWith("Class"))
-            {
-                return ComponentType.ClassModule;
-            }
-            return ComponentType.StandardModule;
-        }
+            => name.StartsWith("Class") ? ComponentType.ClassModule : ComponentType.StandardModule;
 
         private static string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount)
-        {
-            return  $"Unreachable={unreachableCount}, Mismatch={mismatchCount}, CaseElse={caseElseCount}";
-        }
+            => $"Unreachable={unreachableCount}, Mismatch={mismatchCount}, CaseElse={caseElseCount}";
 
         private string GetSelectExpressionType(string inputCode)
         {

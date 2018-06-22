@@ -213,7 +213,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 var rangeStartValue = ParseTreeValueResults.GetValue(rangeClause.GetChild<VBAParser.SelectStartValueContext>());
                 var rangeEndValue = ParseTreeValueResults.GetValue(rangeClause.GetChild<VBAParser.SelectEndValueContext>());
-                return new RangeOfValuesExpression(rangeStartValue, rangeEndValue);
+                return new RangeOfValuesExpression((rangeStartValue, rangeEndValue));
             }
             else if (rangeClause.IS() != null)
             {

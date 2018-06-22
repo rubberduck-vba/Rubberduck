@@ -16,8 +16,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public class RangeOfValuesExpression : RangeClauseExpression
     {
-        public RangeOfValuesExpression(IParseTreeValue lhs, IParseTreeValue rhs)
-            : base(lhs, rhs, Tokens.To) { }
+        public RangeOfValuesExpression((IParseTreeValue lhs, IParseTreeValue rhs) rangeOfValues)
+            : base(rangeOfValues.lhs, rangeOfValues.rhs, Tokens.To) { }
     }
 
     public class BinaryExpression : RangeClauseExpression
