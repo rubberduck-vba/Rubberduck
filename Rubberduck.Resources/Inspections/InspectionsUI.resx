@@ -139,7 +139,7 @@
     <value>{0}: {1} - {2} {3}.{4}, line {5}</value>
   </data>
   <data name="QuickFix_All" xml:space="preserve">
-    <value>Fix all occurences</value>
+    <value>Fix all detected occurrences</value>
   </data>
   <data name="QuickFix_ThisProcedure" xml:space="preserve">
     <value>Fix all occurrences in procedure</value>

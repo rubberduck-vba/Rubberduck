@@ -309,7 +309,6 @@
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricResult.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricsParseTreeListener.cs" />
-    <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
@@ -323,7 +322,6 @@
     <Compile Include="Common\IOperatingSystem.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
-    <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\VariableNameValidator.cs" />
     <Compile Include="Common\WinAPI\RegistryAccess.cs" />
