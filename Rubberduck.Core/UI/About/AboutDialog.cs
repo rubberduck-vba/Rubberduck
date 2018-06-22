@@ -1,15 +1,18 @@
-﻿using System.Windows.Forms;
+﻿using Rubberduck.VersionCheck;
+using System.Windows.Forms;
 
 namespace Rubberduck.UI.About
 {
     public partial class AboutDialog : Form
     {
+        public AboutDialog(IVersionCheck versionCheck) : this()
+        {
+            ViewModel = new AboutControlViewModel(versionCheck);
+        }
+
         public AboutDialog()
         {
             InitializeComponent();
-
-            // todo: inject these dependencies?
-            ViewModel = new AboutControlViewModel(new VersionCheck.VersionCheck());
         }
 
         private AboutControlViewModel _viewModel;
