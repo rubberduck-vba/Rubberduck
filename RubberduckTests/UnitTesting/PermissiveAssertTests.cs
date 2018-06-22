@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.UnitTesting;
 
 namespace RubberduckTests.UnitTesting
@@ -293,12 +294,12 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
-        public void NullIsNotComparableWithValues()
+        public void NullIsNotComparableWithNumbers()
         {
             var assert = new PermissiveAssertClass();
             assert.AreEqual(42, null);
 
-            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
+            Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
         [Category("Unit Testing")]
@@ -403,6 +404,19 @@ namespace RubberduckTests.UnitTesting
 
         [Category("UnitTesting")]
         [Test]
+        public void AreEqualShouldSucceedWithIntegerAndSingle()
+        {
+            Int16 vbaInteger = 1;
+            Single obj2 = 1;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("UnitTesting")]
+        [Test]
         public void AreEqualShouldSucceedWithLongAndLong()
         {
             Int16 vbaInteger1 = 1;
@@ -456,6 +470,19 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
+        public void AreEqualShouldSucceedWithLongAndSingle()
+        {
+            Int16 vbaInteger = 10;
+            Single obj2 = 10;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(vbaInteger, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
         public void AreEqualShouldSucceedWithStringAndString()
         {
             string string1 = "10";
@@ -495,6 +522,19 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
+        public void AreEqualShouldSucceedWithStringAndSingle()
+        {
+            string obj1 = "10.23";
+            const Single obj2 = 10.23f;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
         public void AreEqualShouldSucceedWithDoubleAndDouble()
         {
             double obj1 = 11.25;
@@ -521,10 +561,36 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
+        public void AreEqualShouldSucceedWithDoubleAndSingle()
+        {
+            double obj1 = 11.43;
+            Single obj2 = 11.43f;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
         public void AreEqualShouldSucceedWithByteAndByte()
         {
             byte obj1 = 11;
             byte obj2 = 11;
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithByteAndSingle()
+        {
+            byte obj1 = 11;
+            Single obj2 = 11;
 
             var assert = new PermissiveAssertClass();
             assert.AreEqual(obj1, obj2);

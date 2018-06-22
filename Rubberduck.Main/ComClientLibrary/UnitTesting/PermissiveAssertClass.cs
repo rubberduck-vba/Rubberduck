@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Rubberduck.Resources.Registration;
+using Rubberduck.Resources.UnitTesting;
+using Rubberduck.UnitTesting;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.ComClientLibrary.UnitTesting
 {	
     [
         ComVisible(true),
@@ -40,7 +42,14 @@ namespace Rubberduck.UnitTesting
             }
             else
             {
-                AssertHandler.OnAssertFailed(message);
+                if (expected.GetType().ToString() == actual.GetType().ToString())
+                {
+                    AssertHandler.OnAssertFailed(message);
+                }
+                else
+                {
+                    AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_MismatchedTypes));
+                }
             }
         }
 
