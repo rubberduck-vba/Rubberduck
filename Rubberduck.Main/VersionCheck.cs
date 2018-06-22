@@ -9,10 +9,11 @@ namespace Rubberduck.VersionCheck
 {
     public class VersionCheck : IVersionCheck
     {
-        private readonly Lazy<Version> _currentVersion;
-        public VersionCheck()
+        private readonly Version _currentVersion;
+        /// <param name="version">That would be the version of the assembly for the <c>_Extension</c> class.</param>
+        public VersionCheck(Version version)
         {
-            _currentVersion = new Lazy<Version>(() => Assembly.GetExecutingAssembly().GetName().Version);
+            _currentVersion = version;
         }
 
         private Version _latestVersion;
@@ -39,6 +40,6 @@ namespace Rubberduck.VersionCheck
             }
         }
 
-        public Version CurrentVersion => _currentVersion.Value;
+        public Version CurrentVersion => _currentVersion;
     }
 }
