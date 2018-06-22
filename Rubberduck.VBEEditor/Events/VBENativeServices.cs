@@ -70,15 +70,27 @@ namespace Rubberduck.VBEditor.Events
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime)
         {
+            if (hwnd == IntPtr.Zero) { return; }
             //This is an output window firehose, leave this here, but comment it out when done.
-            //if (idObject != (int)ObjId.Cursor) Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild);
+            if (idObject != (int)ObjId.Cursor)
+            {
+                Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild);
+            }
 
-            if (hwnd != IntPtr.Zero && 
-                idObject == (int)ObjId.Caret && 
-                (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate) &&
-                hwnd.ToWindowType() == WindowType.CodePane)
+            var windowType = hwnd.ToWindowType();
+
+            if (windowType == WindowType.CodePane && idObject == (int)ObjId.Caret && 
+                (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate))
             {
                 OnSelectionChanged(hwnd);             
+            }
+            else if (eventType == (uint)WinEvent.SystemMenuPopupStart)
+            {
+                OnPopup(true);
+            }
+            else if (eventType == (uint)WinEvent.SystemMenuPopupEnd)
+            {
+                OnPopup(false);
             }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
@@ -104,6 +116,10 @@ namespace Rubberduck.VBEditor.Events
                 {
                     FocusDispatcher(_vbe, new WindowChangedEventArgs(parent, null, null, FocusType.ChildFocus));
                 }                
+            }
+            else
+            {
+
             }
         }
 
@@ -174,7 +190,22 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
-        public static event EventHandler<AutoCompleteEventArgs> KeyDown; 
+        public static event EventHandler PopupShown;
+        public static event EventHandler PopupHidden;
+
+        public static void OnPopup(bool shown)
+        {
+            if (shown)
+            {
+                PopupShown?.Invoke(_vbe, EventArgs.Empty);
+            }
+            else
+            {
+                PopupHidden?.Invoke(_vbe, EventArgs.Empty);
+            }
+        }
+
+        public static event EventHandler<AutoCompleteEventArgs> KeyDown;
         private static void OnKeyDown(KeyPressEventArgs e)
         {
             using (var pane = GetCodePaneFromHwnd(e.Hwnd))

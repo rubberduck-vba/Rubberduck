@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.AutoComplete
 {
@@ -16,6 +14,7 @@ namespace Rubberduck.AutoComplete
         private readonly List<IAutoComplete> _autoCompletes;
 
         private AutoCompleteSettings _settings;
+        private bool _popupShown;
 
         public AutoCompleteService(IGeneralConfigService configService, IAutoCompleteProvider provider)
         {
@@ -24,6 +23,18 @@ namespace Rubberduck.AutoComplete
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             VBENativeServices.KeyDown += HandleKeyDown;
+            VBENativeServices.PopupShown += HandleIntelliSenseShown;
+            VBENativeServices.PopupHidden += HandleIntelliSenseHidden;
+        }
+
+        private void HandleIntelliSenseHidden(object sender, EventArgs e)
+        {
+            _popupShown = false;
+        }
+
+        private void HandleIntelliSenseShown(object sender, EventArgs e)
+        {
+            _popupShown = true;
         }
 
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
@@ -52,7 +63,7 @@ namespace Rubberduck.AutoComplete
             var qualifiedSelection = module.GetQualifiedSelection();
             var selection = qualifiedSelection.Value.Selection;
 
-            if (e.Keys != Keys.None && selection.LineCount > 1)
+            if (_popupShown || (e.Keys != Keys.None && selection.LineCount > 1))
             {
                 return;
             }
