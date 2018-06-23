@@ -71,7 +71,7 @@ shortcut :
 ;
 
 resource :
-	DOLLAR? expression (COLON (numberLiteral | BARE_HEX_LITERAL | unrestrictedIdentifier))?
+	DOLLAR? expression COLON (numberLiteral | BARE_HEX_LITERAL | unrestrictedIdentifier)
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)*;
