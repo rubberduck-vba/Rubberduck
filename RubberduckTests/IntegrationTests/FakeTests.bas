@@ -303,3 +303,35 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub DateFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Date
+        .Returns #1/1/1993#
+        Assert.IsTrue Date = #1/1/1993#
+        .Verify.Once
+    End With
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub DateFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Date
+        .Returns #9:00:00 AM#
+        .Passthrough = True
+        Assert.IsTrue Date <> #1/1/1993#
+        .Verify.Once
+    End With
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
