@@ -75,6 +75,7 @@ namespace Rubberduck.UnitTesting
         public IFake CurDir => RetrieveOrCreateFunction<IFake>(typeof(CurDir));
         public IFake Now => RetrieveOrCreateFunction<IFake>(typeof(Now));
         public IFake Time => RetrieveOrCreateFunction<IFake>(typeof(Time));
+        public IFake Date => RetrieveOrCreateFunction<IFake>(typeof(Date));
 
 
         #endregion
