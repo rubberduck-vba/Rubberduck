@@ -20,9 +20,8 @@ namespace Rubberduck.AutoComplete
             using (var pane = module.CodePane)
             {
                 var original = module.GetLines(e.CurrentSelection);
-                var hasAsToken = Regex.IsMatch(original, $"\\)\\s+{Tokens.As}", RegexOptions.IgnoreCase) ||
-                 Regex.IsMatch(original, $"{Tokens.Property} {Tokens.Get}\\s+\\(.*\\)\\s+{Tokens.As} ", RegexOptions.IgnoreCase);
-                var hasAsType = Regex.IsMatch(original, $"{Tokens.Property} {Tokens.Get}\\s+\\w+\\(.*\\)\\s+{Tokens.As}\\s+\\w+", RegexOptions.IgnoreCase);
+                var hasAsToken = Regex.IsMatch(original, $@"{Tokens.Property} {Tokens.Get}\s+\(.*\)\s+{Tokens.As}\s?", RegexOptions.IgnoreCase);
+                var hasAsType = Regex.IsMatch(original, $@"{Tokens.Property} {Tokens.Get}\s+\w+\(.*\)\s+{Tokens.As}\s+(?<Identifier>\w+)", RegexOptions.IgnoreCase);
                 var asTypeClause = hasAsToken && hasAsType
                     ? string.Empty
                     : hasAsToken

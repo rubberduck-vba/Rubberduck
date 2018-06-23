@@ -98,7 +98,7 @@ namespace Rubberduck.AutoComplete
             var proc = module.GetProcOfLine(selection.StartLine);
             if (proc == null)
             {
-                content = module.GetLines(1, module.CountOfDeclarationLines);
+                content = module.GetLines(1, module.CountOfDeclarationLines).StripStringLiterals();
             }
             else
             {
