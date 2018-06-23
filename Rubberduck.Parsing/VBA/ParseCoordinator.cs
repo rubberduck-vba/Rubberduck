@@ -12,6 +12,10 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
+    /// <remarks>
+    /// Note that for unit tests, TestParseCoodrinator is used in its place
+    /// to support synchronous parse from BeginParse.
+    /// </remarks>
     public class ParseCoordinator : IParseCoordinator
     {
         public RubberduckParserState State { get; }
@@ -25,15 +29,12 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentStack<object> _requestorStack;
         private bool _isSuspended;
 
-        private readonly bool _isTestScope;
-
         public ParseCoordinator(
             RubberduckParserState state,
             IParsingStageService parsingStageService,
             IParsingCacheService parsingCacheService,
             IProjectManager projectManager,
-            IParserStateManager parserStateManager,
-            bool isTestScope = false)
+            IParserStateManager parserStateManager)
         {
             if (state == null)
             {
@@ -61,7 +62,6 @@ namespace Rubberduck.Parsing.VBA
             _projectManager = projectManager;
             _parsingCacheService = parsingCacheService;
             _parserStateManager = parserStateManager;
-            _isTestScope = isTestScope;
 
             state.ParseRequest += ReparseRequested;
             state.SuspendRequest += SuspendRequested;
@@ -174,16 +174,13 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void BeginParse(object sender, CancellationToken token)
+        /// <remarks>
+        /// Overriden in the unit test project to facilicate synchronous unit tests
+        /// Refer to TestParserCoordinator class in the unit test project.
+        /// </remarks>
+        protected virtual void BeginParse(object sender, CancellationToken token)
         {
-            if (!_isTestScope)
-            {
-                Task.Run(() => ParseAll(sender, token), token);
-            }
-            else
-            {
-                ParseInternal(token);
-            }
+            Task.Run(() => ParseAll(sender, token), token);
         }
 
         private void Cancel(bool createNewTokenSource = true)
@@ -205,7 +202,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// For the use of tests only
+        /// For the use of tests & reflection API only
         /// </summary>
         public void Parse(CancellationTokenSource token)
         {
@@ -214,7 +211,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
-        /// For the use of tests only
+        /// For the use of tests & reflection API only
         /// </summary>
         private void SetSavedCancellationTokenSource(CancellationTokenSource tokenSource)
         {
@@ -225,7 +222,7 @@ namespace Rubberduck.Parsing.VBA
             oldTokenSource?.Dispose();
         }
 
-        private void ParseInternal(CancellationToken token)
+        protected void ParseInternal(CancellationToken token)
         {
             var lockTaken = false;
             try

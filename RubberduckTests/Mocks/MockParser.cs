@@ -15,11 +15,31 @@ using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
+    internal class TestParseCoordinator : ParseCoordinator
+    {
+        public TestParseCoordinator(
+            RubberduckParserState state,
+            IParsingStageService parsingStageService,
+            IParsingCacheService parsingCacheService,
+            IProjectManager projectManager,
+            IParserStateManager parserStateManager) : base(
+                state, 
+                parsingStageService, 
+                parsingCacheService,
+                projectManager, 
+                parserStateManager)
+        { }
+
+        protected override void BeginParse(object sender, CancellationToken token)
+        {
+            ParseInternal(token);
+        }
+    }
+
     public static class MockParser
     {
         public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
@@ -105,13 +125,12 @@ namespace RubberduckTests.Mocks
                 supertypeClearer
                 );
 
-            return new ParseCoordinator(
+            return new TestParseCoordinator(
                 state,
                 parsingStageService,
                 parsingCacheService,
                 projectManager,
-                parserStateManager,
-                true);
+                parserStateManager);
         }
         
         public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener, IEnumerable<string> testLibraries = null)
