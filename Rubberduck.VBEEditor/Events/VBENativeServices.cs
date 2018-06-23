@@ -70,13 +70,30 @@ namespace Rubberduck.VBEditor.Events
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime)
         {
+            if (hwnd == IntPtr.Zero) { return; }
             //This is an output window firehose, leave this here, but comment it out when done.
-            //if (idObject != (int)ObjId.Cursor) Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild);
+            //if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
 
-            if (hwnd != IntPtr.Zero && 
-                idObject == (int)ObjId.Caret && 
-                (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate) &&
-                hwnd.ToWindowType() == WindowType.CodePane)
+            var windowType = hwnd.ToWindowType();
+            var nameBuilder = new StringBuilder(255);
+            User32.GetClassName(hwnd, nameBuilder, 255);
+            var className = nameBuilder.ToString();
+
+            if (className == "NameListWndClass")
+            {
+                /* intellisense */
+                if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectShow /*&& idObject == 0*/)
+                {
+                    OnIntelliSenseChanged(true);
+                }
+                else if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectHide /*&& idObject == 0*/)
+                {
+                    OnIntelliSenseChanged(false);
+                }
+            }
+
+            if (windowType == WindowType.CodePane && idObject == (int)ObjId.Caret && 
+                (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate))
             {
                 OnSelectionChanged(hwnd);             
             }
@@ -174,7 +191,14 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
-        public static event EventHandler<AutoCompleteEventArgs> KeyDown; 
+        public static event EventHandler<IntelliSenseEventArgs> IntelliSenseChanged;
+
+        public static void OnIntelliSenseChanged(bool shown)
+        {
+            IntelliSenseChanged?.Invoke(_vbe, shown ? IntelliSenseEventArgs.Shown : IntelliSenseEventArgs.Hidden);
+        }
+
+        public static event EventHandler<AutoCompleteEventArgs> KeyDown;
         private static void OnKeyDown(KeyPressEventArgs e)
         {
             using (var pane = GetCodePaneFromHwnd(e.Hwnd))
