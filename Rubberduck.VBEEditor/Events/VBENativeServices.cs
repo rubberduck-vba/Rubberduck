@@ -75,29 +75,27 @@ namespace Rubberduck.VBEditor.Events
             //if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
 
             var windowType = hwnd.ToWindowType();
+            var nameBuilder = new StringBuilder(255);
+            User32.GetClassName(hwnd, nameBuilder, 255);
+            var className = nameBuilder.ToString();
+
+            if (className == "NameListWndClass")
+            {
+                /* intellisense */
+                if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectShow /*&& idObject == 0*/)
+                {
+                    OnIntelliSenseChanged(true);
+                }
+                else if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectHide /*&& idObject == 0*/)
+                {
+                    OnIntelliSenseChanged(false);
+                }
+            }
 
             if (windowType == WindowType.CodePane && idObject == (int)ObjId.Caret && 
                 (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate))
             {
                 OnSelectionChanged(hwnd);             
-            }
-            else if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectShow /*&& idObject == 0*/)
-            {
-                var nameBuilder = new StringBuilder(255);
-                User32.GetClassName(hwnd, nameBuilder, 255);
-                if (nameBuilder.ToString() == "NameListWndClass")
-                {
-                    OnIntelliSenseChanged(true);
-                }
-            }
-            else if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectHide /*&& idObject == 0*/)
-            {
-                var nameBuilder = new StringBuilder(255);
-                User32.GetClassName(hwnd, nameBuilder, 255);
-                if (nameBuilder.ToString() == "NameListWndClass")
-                {
-                    OnIntelliSenseChanged(false);
-                }
             }
             else if (idObject == (int)ObjId.Window && (eventType == (uint)WinEvent.ObjectCreate || eventType == (uint)WinEvent.ObjectDestroy))
             {
@@ -123,10 +121,6 @@ namespace Rubberduck.VBEditor.Events
                 {
                     FocusDispatcher(_vbe, new WindowChangedEventArgs(parent, null, null, FocusType.ChildFocus));
                 }                
-            }
-            else
-            {
-
             }
         }
 
