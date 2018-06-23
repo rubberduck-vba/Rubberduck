@@ -302,7 +302,8 @@ WS : [ \t];
 GUIDLITERAL : '{' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '-' [0-9A-F]+ '}';
 IDENTIFIER :  ~[[\](){}\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\-] ~[[\](){}\r\n\t.,'"|!@#$%^&*\-+:=; -]*;
 LINE_CONTINUATION : [ \t]* UNDERSCORE [ \t]* '\r'? '\n';
-BARE_HEX_LITERAL : [0-9a-fA-F]+;
+// The following rule is needed in order to capture hex literals without format prefixes which start with a digit. Needed for VBForm resources.
+BARE_HEX_LITERAL : [0-9] [0-9a-fA-F]*;
 fragment LETTER : [a-zA-Z_äöüÄÖÜ];
 fragment DIGIT : [0-9];
 fragment LETTERORDIGIT : [a-zA-Z0-9_äöüÄÖÜ];
