@@ -62,7 +62,7 @@ namespace Rubberduck.AutoComplete
 
                 if (IsMatch(code) && !IsBlockCompleted(module, selection))
                 {
-                    var indent = code.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+                    var indent = originalCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                     var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
 
                     var stdIndent = IndentBody 
@@ -99,9 +99,8 @@ namespace Rubberduck.AutoComplete
                 regexOk = Regex.IsMatch(code, pattern, RegexOptions.IgnoreCase);
             }
 
-            return regexOk && 
-                code.HasComment(out int commentIndex) && 
-                code.IndexOf(InputToken) < commentIndex;
+            var hasComment = code.HasComment(out int commentIndex);
+            return regexOk && (!hasComment || code.IndexOf(InputToken) < commentIndex);
         }
 
         private bool IsBlockCompleted(ICodeModule module, Selection selection)
