@@ -2859,6 +2859,21 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//commentOrAnnotation", matches => matches.Count == 1);
         }
 
+        [Category("Parser")]
+        [Test]
+        public void MidStatement()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    Mid(TestString, 5, 3) = ""fox""
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
+        }
+        
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);
