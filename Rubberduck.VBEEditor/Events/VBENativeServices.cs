@@ -72,10 +72,7 @@ namespace Rubberduck.VBEditor.Events
         {
             if (hwnd == IntPtr.Zero) { return; }
             //This is an output window firehose, leave this here, but comment it out when done.
-            if (idObject != (int)ObjId.Cursor)
-            {
-                Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild);
-            }
+            //if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
 
             var windowType = hwnd.ToWindowType();
 
