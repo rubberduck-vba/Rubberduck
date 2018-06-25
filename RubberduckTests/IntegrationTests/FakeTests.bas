@@ -325,7 +325,7 @@ Public Sub DateFakePassThroughWorks()
     On Error GoTo TestFail
 
     With Fakes.Date
-        .Returns #9:00:00 AM#
+        .Returns #1/1/1993#
         .Passthrough = True
         Assert.IsTrue Date <> #1/1/1993#
         .Verify.Once
