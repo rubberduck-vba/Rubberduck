@@ -410,7 +410,7 @@ listOrLabel :
     lineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
     | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
-sameLineStatement : blockStmt;
+sameLineStatement : mainBlockStmt;
 booleanExpression : expression;
 
 implementsStmt : IMPLEMENTS whiteSpace expression;
