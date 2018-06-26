@@ -2859,6 +2859,132 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//commentOrAnnotation", matches => matches.Count == 1);
         }
 
+        [Category("Parser")]
+        [Test]
+        public void MidStatement()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    Mid(TestString, 5, 3) = ""fox""
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void MidDollarStatement()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    Mid$(TestString, 5, 3) = ""fox""
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
+        }
+
+        public void MidBStatement()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    MidB(TestString, 5, 3) = ""fox""
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void MidBDollarStatement()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    MidB$(TestString, 5, 3) = ""fox""
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void MidFunction()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    If Mid(TestString, 5, 3) = ""fox"" Then
+        MsgBox ""Found""
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void MidDollarFunction()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    If Mid$(TestString, 5, 3) = ""fox"" Then
+        MsgBox ""Found""
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void MidBFunction()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    If MidB(TestString, 5, 3) = ""fox"" Then
+        MsgBox ""Found""
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void MidBDollarFunction()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim TestString As String
+    TestString = ""The dog jumps""
+    If MidB$(TestString, 5, 3) = ""fox"" Then
+        MsgBox ""Found""
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);

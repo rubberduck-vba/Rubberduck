@@ -130,6 +130,7 @@ mainBlockStmt :
     | ifStmt
     | singleLineIfStmt
     | implementsStmt
+    | midStatement
     | letStmt
     | lsetStmt
     | onErrorStmt
@@ -462,9 +463,9 @@ redimVariableDeclaration : expression (whiteSpace asTypeClause)?;
 // This needs to be explicitly defined to distinguish between Mid as a function and Mid as a keyword.
 midStatement : modeSpecifier 
     LPAREN whiteSpace? 
-    lExpression whiteSpace? COMMA whiteSpace? lExpression whiteSpace? (COMMA whiteSpace? lExpression whiteSpace?)? 
+    lExpression whiteSpace? COMMA whiteSpace? expression whiteSpace? (COMMA whiteSpace? expression whiteSpace?)? 
     RPAREN 
-    whiteSpace? ASSIGN whiteSpace? 
+    whiteSpace? EQ whiteSpace? 
     expression;
 modeSpecifier :	(MID | MIDB) DOLLAR? ;
 
