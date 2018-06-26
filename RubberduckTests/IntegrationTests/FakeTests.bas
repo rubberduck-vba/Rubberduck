@@ -335,3 +335,43 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub MsgBoxAfterInputBoxAnyInvocationFakeWorks()
+    On Error GoTo TestFail
+
+    Dim userInput As String
+
+    Fakes.InputBox.ReturnsWhen "Prompt", "Second", "User entry 2"
+    Fakes.MsgBox.Returns vbOK
+
+    Dim msgBoxRetVal As Integer
+    msgBoxRetVal = MsgBox("This is faked", Title:="My Title")
+
+    Assert.IsTrue msgBoxRetVal = vbOK
+    Fakes.MsgBox.Verify.Once
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub InputBoxFakeReturnsWhenWorks()
+    On Error GoTo TestFail
+
+    Dim userInput As String
+    Fakes.InputBox.ReturnsWhen "prompt", "Dummy1", "dummy1 user input"
+    Fakes.InputBox.ReturnsWhen "prompt", "Expected", "expected user input"
+    Fakes.InputBox.ReturnsWhen "prompt", "Dummy2", "dummy2 user input"
+
+    userInput = InputBox(prompt:="Expected")
+
+    Assert.AreEqual "expected user input", userInput
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub

@@ -59,8 +59,9 @@ namespace Rubberduck.UnitTesting
         protected bool TrySetReturnValue(bool any = false)
         {
             var returnInfo =
-                ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount))
-                    .ToList();
+                ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount) &&
+                                   r.Argument != null &&
+                                   r.Argument == string.Empty).ToList();
 
             if (returnInfo.Count <= 0)
             {
