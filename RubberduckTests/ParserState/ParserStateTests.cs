@@ -242,7 +242,7 @@ namespace RubberduckTests.ParserStateTests
                 result2.Wait(token);
             }
             Assert.IsFalse(wasSuspended, "wasSuspended was set to true");
-            Assert.AreEqual(SuspensionResult.Completed, result);
+            Assert.AreEqual(SuspensionResult.TimedOut, result);
         }
 
         [Test]

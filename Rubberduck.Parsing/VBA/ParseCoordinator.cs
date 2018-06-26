@@ -132,6 +132,11 @@ namespace Rubberduck.Parsing.VBA
                     CancellationToken.None);
                 e.BusyAction.Invoke();
             }
+            catch
+            {
+                e.Result = SuspensionResult.UnexpectedError;
+                throw;
+            }
             finally
             {
                 lock (SuspendStackSyncObject)
@@ -153,12 +158,16 @@ namespace Rubberduck.Parsing.VBA
                         // evaluation to the state manager.
                         _parserStateManager.EvaluateOverallParserState(CancellationToken.None);
                     }
-                    e.Result = SuspensionResult.Completed;
                 }
 
                 if (ParsingSuspendLock.IsWriteLockHeld)
                 {
                     ParsingSuspendLock.ExitWriteLock();
+                }
+
+                if (e.Result == SuspensionResult.Pending)
+                {
+                    e.Result = SuspensionResult.Completed;
                 }
             }
 
