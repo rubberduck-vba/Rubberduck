@@ -1370,6 +1370,150 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        //#4119
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationIssue4119Scenario()
+        {
+            const string inputCode =
+@"
+Option Explicit
+
+Public Enum LogLevel
+    TraceLevel = 0
+    DebugLevel
+    InfoLevel
+    WarnLevel
+    ErrorLevel
+    FatalLevel
+End Enum
+
+Public Function LogLevelToString(ByVal level As LogLevel) As String
+    Select Case level
+
+        Case LogLevel.DebugLevel
+            LogLevelToString = ""DEBUG""
+        Case LogLevel.ErrorLevel
+            LogLevelToString = ""ERROR""
+        Case LogLevel.FatalLevel
+            LogLevelToString = ""FATAL""
+        Case LogLevel.InfoLevel
+            LogLevelToString = ""INFO""
+        Case LogLevel.TraceLevel
+            LogLevelToString = ""TRACE""
+        Case LogLevel.WarnLevel
+            LogLevelToString = ""WARNING""
+        Case 5 'Fatal Level
+            'Unreachable - find something in order to test the test
+    End Select
+End Function";
+
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationDefaultsNoAssignments()
+        {
+            const string inputCode =
+@"
+private Enum Fruit
+    Apple
+    Pear
+    Orange
+End Enum
+
+Sub Foo(z As Fruit)
+    Select Case z
+        Case Apple
+        'OK
+        Case Pear 
+        'OK     
+        Case 1        
+        'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationDefaultsNonIncremental()
+        {
+            const string inputCode =
+@"
+private Enum Fruit
+    Apple = 0
+    Pear = 10
+    Orange
+End Enum
+
+Sub Foo(z As Fruit)
+    Select Case z
+        Case 11
+        'OK
+        Case Pear 
+        'OK     
+        Case Orange        
+        'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationDefaultsRespectsPriorValues1()
+        {
+            const string inputCode =
+@"
+private Enum BitCountMaxValues
+    max1Bit = 2 ^ 0
+    max2Bits = 2 ^ 1 + max1Bit
+    max3Bits
+    max4Bits = 2 ^ 3 + max3Bits
+End Enum
+
+Sub Foo(z As BitCountMaxValues)
+    Select Case z
+        Case BitCountMaxValues.max3Bits
+        'OK
+        Case 4
+        'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationDefaultsRespectsPriorValues2()
+        {
+            const string inputCode =
+@"
+private Enum BitCountMaxValues
+    max1Bit
+    max2Bits = 2 ^ 1 + max1Bit
+    max3Bits
+    max4Bits = 2 ^ 3 + max3Bits
+End Enum
+
+Sub Foo(z As BitCountMaxValues)
+    Select Case z
+        Case BitCountMaxValues.max3Bits
+        'OK
+        Case 3
+        'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspection_CaseElseByte()
@@ -2091,7 +2235,7 @@ End Sub
                 var firstParserRuleContext = (ParserRuleContext)state.ParseTrees.Where(pt => pt.Value is ParserRuleContext).First().Value;
                 selectStmt = firstParserRuleContext.GetDescendent<VBAParser.SelectCaseStmtContext>();
                 var visitor = UnreachableCaseInspection.CreateParseTreeValueVisitor
-                    (   ValueFactory, 
+                    (   ValueFactory, new List<VBAParser.EnumerationStmtContext>(), 
                         (ParserRuleContext context) =>
                             { return UnreachableCaseInspection.GetIdentifierReferenceForContext(context, state); }
                     );

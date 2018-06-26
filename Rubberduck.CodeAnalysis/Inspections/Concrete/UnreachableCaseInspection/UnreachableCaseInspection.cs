@@ -49,7 +49,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var qualifiedSelectCaseStmts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
-            var parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, GetIdentifierReferenceForContext);
+            var listener = (UnreachableCaseInspectionListener)Listener;
+            var parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, listener.EnumerationStmtContexts.ToList(), GetIdentifierReferenceForContext);
             parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
@@ -74,9 +75,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _inspectionResults.Add(result);
         }
 
-        public static IParseTreeValueVisitor CreateParseTreeValueVisitor(IParseTreeValueFactory valueFactory, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
+        public static IParseTreeValueVisitor CreateParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
         {
-            return new ParseTreeValueVisitor(valueFactory, func);
+            return new ParseTreeValueVisitor(valueFactory, allEnums, func);
         }
 
         //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
@@ -121,6 +122,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
+            private readonly List<VBAParser.EnumerationStmtContext> _enumStmts = new List<VBAParser.EnumerationStmtContext>();
+            public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts => _enumStmts;
+
             public QualifiedModuleName CurrentModuleName { get; set; }
 
             public void ClearContexts()
@@ -131,6 +135,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             public override void EnterSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
             {
                 _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+            }
+
+            public override void EnterEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context)
+            {
+                _enumStmts.Add(context);
             }
         }
         #endregion

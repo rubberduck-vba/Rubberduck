@@ -17,16 +17,35 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public class ParseTreeValueVisitor : IParseTreeValueVisitor
     {
+        private class EnumMember
+        {
+            public EnumMember(VBAParser.EnumerationStmt_ConstantContext constContext, long initValue)
+            {
+                ConstantContext = constContext;
+                Value = initValue;
+                HasAssignment = constContext.children.Any(ch => ch.Equals(constContext.GetToken(VBAParser.EQ, 0)));
+            }
+            public VBAParser.EnumerationStmt_ConstantContext ConstantContext { set; get; }
+            public long Value { set; get; }
+            public bool HasAssignment { set; get; }
+        }
+
         private IParseTreeVisitorResults _contextValues;
         private IParseTreeValueFactory _inspValueFactory;
+        private List<VBAParser.EnumerationStmtContext> _enumStmtContexts;
+        private List<EnumMember> _enumMembers;
 
-        public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
+        public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
         {
             _inspValueFactory = valueFactory;
             IdRefRetriever = idRefRetriever;
             _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
+            _enumStmtContexts = allEnums;
+            _enumMembers = new List<EnumMember>();
+            LoadEnumMemberValues();
         }
+
 
         //used only by UnreachableCaseInspection tests
         public RubberduckParserState State { set; get; } = null;
@@ -275,14 +294,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 expressionValue = rangeClauseIdentifierReference.IdentifierName;
                 declaredTypeName = GetBaseTypeForDeclaration(declaration);
 
-                if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
-                    || declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
+                if (declaration.DeclarationType.HasFlag(DeclarationType.Constant))
                 {
-                    expressionValue = GetConstantDeclarationValueToken(declaration);
+                    expressionValue = GetConstantContextValueToken(declaration.Context);
                     if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
                         && declaredTypeName.Equals(Tokens.String))
                     {
                         expressionValue = "\"" + expressionValue + "\"";
+                    }
+                }
+                else if (declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
+                {
+                    declaredTypeName = Tokens.Long;
+                    expressionValue = GetConstantContextValueToken(declaration.Context);
+                    if (expressionValue.Equals(string.Empty))
+                    {
+                        var enumValues = _enumMembers.Where(dt => dt.ConstantContext == declaration.Context);
+                        if (enumValues.Any())
+                        {
+                            var enumValue = enumValues.First();
+                            expressionValue = enumValue.Value.ToString();
+                        }
                     }
                 }
             }
@@ -310,10 +342,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private string GetConstantDeclarationValueToken(Declaration constantDeclaration)
+        private string GetConstantContextValueToken(ParserRuleContext context)
         {
-            var declarationContextChildren = constantDeclaration.Context.children.ToList();
-            var equalsSymbolIndex = declarationContextChildren.FindIndex(ch => ch.Equals(constantDeclaration.Context.GetToken(VBAParser.EQ, 0)));
+            var declarationContextChildren = context.children.ToList();
+            var equalsSymbolIndex = declarationContextChildren.FindIndex(ch => ch.Equals(context.GetToken(VBAParser.EQ, 0)));
 
             var contextsOfInterest = new List<ParserRuleContext>();
             for (int idx = equalsSymbolIndex + 1; idx < declarationContextChildren.Count(); idx++)
@@ -367,6 +399,30 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     || context is VBAParser.ConcatOpContext;
             }
             return false;
+        }
+
+        private void LoadEnumMemberValues()
+        {
+            foreach (var enumStmt in _enumStmtContexts)
+            {
+                long enumAssignedValue = -1;
+                var enumConstContexts = enumStmt.children.Where(ch => ch is VBAParser.EnumerationStmt_ConstantContext).Cast<VBAParser.EnumerationStmt_ConstantContext>();
+                foreach (var enumConstContext in enumConstContexts)
+                {
+                    enumAssignedValue++;
+                    var enumMember = new EnumMember(enumConstContext, enumAssignedValue);
+                    if (enumMember.HasAssignment)
+                    {
+                        var valueText = GetConstantContextValueToken(enumMember.ConstantContext);
+                        if (!valueText.Equals(string.Empty))
+                        {
+                            enumMember.Value = long.Parse(valueText);
+                            enumAssignedValue = enumMember.Value;
+                        }
+                    }
+                    _enumMembers.Add(enumMember);
+                }
+            }
         }
     }
 
