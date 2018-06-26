@@ -11,6 +11,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         int CountOfVisibleLines { get; }
         ICodeModule CodeModule { get; }
         CodePaneView CodePaneView { get; }
+        /// <summary>
+        /// Gets or sets a 1-based <see cref="Selection"/> representing the current selection in the code pane.
+        /// </summary>
         Selection Selection { get; set; }
         QualifiedSelection? GetQualifiedSelection();
         QualifiedModuleName QualifiedModuleName { get; }

@@ -41,7 +41,7 @@ namespace Rubberduck.UnitTesting
             SuppressesCall = false;
         }
 
-        private bool TrySetReturnValue(string parameter, object value, bool any = false)
+        protected bool TrySetReturnValue(string parameter, object value, bool any = false)
         {
             var returnInfo =
                 ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount) &&
@@ -56,7 +56,7 @@ namespace Rubberduck.UnitTesting
             return true;
         }
 
-        private bool TrySetReturnValue(bool any = false)
+        protected bool TrySetReturnValue(bool any = false)
         {
             var returnInfo =
                 ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount))

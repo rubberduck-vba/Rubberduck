@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
@@ -16,6 +15,7 @@ namespace Rubberduck.AutoComplete
         private readonly List<IAutoComplete> _autoCompletes;
 
         private AutoCompleteSettings _settings;
+        private bool _popupShown;
 
         public AutoCompleteService(IGeneralConfigService configService, IAutoCompleteProvider provider)
         {
@@ -24,6 +24,12 @@ namespace Rubberduck.AutoComplete
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             VBENativeServices.KeyDown += HandleKeyDown;
+            VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+        }
+
+        private void HandleIntelliSenseChanged(object sender, IntelliSenseEventArgs e)
+        {
+            _popupShown = e.Visible;
         }
 
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
@@ -52,7 +58,7 @@ namespace Rubberduck.AutoComplete
             var qualifiedSelection = module.GetQualifiedSelection();
             var selection = qualifiedSelection.Value.Selection;
 
-            if (e.Keys != Keys.None && selection.LineCount > 1)
+            if (_popupShown || (e.Keys != Keys.None && selection.LineCount > 1))
             {
                 return;
             }
@@ -83,7 +89,7 @@ namespace Rubberduck.AutoComplete
                         break;
                     }
                 }
-                else if (handleDelete || handleBackspace)
+                else if (handleBackspace)
                 {
                     if (DeleteAroundCaret(e, autoComplete))
                     {

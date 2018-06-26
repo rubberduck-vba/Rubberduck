@@ -238,3 +238,100 @@ TestExit:
 TestFail:
     Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+'@TestMethod
+Public Sub NowFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Now
+        .Returns #1/1/2018 9:00:00 AM#
+        Assert.IsTrue Now = #1/1/2018 9:00:00 AM#
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub NowFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Now
+        .Returns #1/1/2018 9:00:00 AM#
+        .Passthrough = True
+        Assert.IsTrue Now <> #1/1/2018 9:00:00 AM#
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub TimeFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Time
+        .Returns #9:00:00 AM#
+        Assert.IsTrue Time = #9:00:00 AM#
+        .Verify.Once
+    End With
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub TimeFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Time
+        .Returns #9:00:00 AM#
+        .Passthrough = True
+        Assert.IsTrue Time <> #9:00:00 AM#
+        .Verify.Once
+    End With
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+'@TestMethod
+Public Sub DateFakeWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Date
+        .Returns #1/1/1993#
+        Assert.IsTrue Date = #1/1/1993#
+        .Verify.Once
+    End With
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub DateFakePassThroughWorks()
+    On Error GoTo TestFail
+
+    With Fakes.Date
+        .Returns #1/1/1993#
+        .Passthrough = True
+        Assert.IsTrue Date <> #1/1/1993#
+        .Verify.Once
+    End With
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
