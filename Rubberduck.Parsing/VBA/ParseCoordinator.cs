@@ -96,24 +96,24 @@ namespace Rubberduck.Parsing.VBA
 
         public void SuspendRequested(object sender, RubberduckStatusSuspendParserEventArgs e)
         {
-            object parseRequestor = null;
-            ParserState originalStatus;
+            if (ParsingSuspendLock.IsReadLockHeld)
+            {
+                e.Result = SuspensionResult.UnexpectedError;
+                const string errorMessage =
+                    "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
+                Logger.Error(errorMessage);
+#if DEBUG
+                Debug.Assert(false, errorMessage);
+#endif
+                return;
+            }
 
+            object parseRequestor = null;
             try
             {
-                if (ParsingSuspendLock.IsReadLockHeld)
-                {
-                    const string errorMessage =
-                        "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
-                    Logger.Error(errorMessage);
-#if DEBUG
-                    Debug.Assert(false, errorMessage);
-#endif
-                    return;
-                }
                 if (!ParsingSuspendLock.TryEnterWriteLock(e.MillisecondsTimeout))
                 {
-                    e.TimedOut = true;
+                    e.Result = SuspensionResult.TimedOut;
                     return;
                 }
 
@@ -122,7 +122,12 @@ namespace Rubberduck.Parsing.VBA
                     _isSuspended = true;
                 }
 
-                originalStatus = State.Status;
+                var originalStatus = State.Status;
+                if (!e.AllowedRunStates.Contains(originalStatus))
+                {
+                    e.Result = SuspensionResult.IncompatibleState;
+                    return;
+                }
                 _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy,
                     CancellationToken.None);
                 e.BusyAction.Invoke();
@@ -148,6 +153,7 @@ namespace Rubberduck.Parsing.VBA
                         // evaluation to the state manager.
                         _parserStateManager.EvaluateOverallParserState(CancellationToken.None);
                     }
+                    e.Result = SuspensionResult.Completed;
                 }
 
                 if (ParsingSuspendLock.IsWriteLockHeld)

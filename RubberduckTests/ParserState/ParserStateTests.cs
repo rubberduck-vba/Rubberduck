@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -11,6 +14,16 @@ namespace RubberduckTests.ParserStateTests
     [TestFixture]
     public class ParserStateTests
     {
+        private static IEnumerable<ParserState> AllowedRunStates = new [] {ParserState.Ready};
+
+        [SetUp]
+        public void SetUp()
+        {
+            // Replace pop-up assert trace listener with one that simply logs a message.
+            Debug.Listeners.Clear();
+            Debug.Listeners.Add(new ConsoleTraceListener());
+        }
+
         [Test]
         [Category("ParserState")]
         public void Test_RPS_SuspendParser_IsBusy()
@@ -18,7 +31,7 @@ namespace RubberduckTests.ParserStateTests
             var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.OnSuspendParser(this, () =>
+                state.OnSuspendParser(this, AllowedRunStates, () =>
                 {
                     Assert.IsTrue(state.Status == ParserState.Busy);
                 });
@@ -34,11 +47,11 @@ namespace RubberduckTests.ParserStateTests
             var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
+                var allowedRunStates = new[] {ParserState.Pending, ParserState.Ready};
 
                 state.SetStatusAndFireStateChanged(this, ParserState.Pending, CancellationToken.None);
 
-                state.OnSuspendParser(this, () =>
+                state.OnSuspendParser(this, allowedRunStates, () =>
                 {
                     wasSuspended = true;
                 });
@@ -65,7 +78,7 @@ namespace RubberduckTests.ParserStateTests
                     }
                 };
 
-                state.OnSuspendParser(this, () =>
+                state.OnSuspendParser(this, AllowedRunStates, () =>
                 {
                     wasBusy = state.Status == ParserState.Busy;
                     // This is a cheap hack to avoid the multi-threading setup... Lo and behold the laziness of me
@@ -75,6 +88,35 @@ namespace RubberduckTests.ParserStateTests
                 });
             }
             Assert.IsTrue(wasReparsed);
+        }
+
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_Exception_Suspending_Inside_Parse()
+        {
+            var result = SuspensionResult.Pending;
+            var wasRun = false;
+            var wasSuspended = false;
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                state.StateChanged += (o, e) =>
+                {
+                    if (e.State == ParserState.Ready && !wasRun)
+                    {
+                        wasRun = true;
+                        result = state.OnSuspendParser(this, AllowedRunStates, () =>
+                        {
+                            // Cheap hack to run in same thread. Should not be done in production
+                            wasSuspended = true;
+                        });
+                    }
+                };
+                state.OnParseRequested(this);
+            }
+            Assert.IsFalse(wasSuspended);
+            Assert.AreEqual(SuspensionResult.UnexpectedError, result);
         }
 
         [Test]
@@ -97,7 +139,7 @@ namespace RubberduckTests.ParserStateTests
                     }
                 };
 
-                state.OnSuspendParser(this, () =>
+                state.OnSuspendParser(this, AllowedRunStates, () =>
                 {
                     wasBusy = state.Status == ParserState.Busy;
                     Task.Run(() =>
@@ -131,7 +173,7 @@ namespace RubberduckTests.ParserStateTests
                         {
                             result = Task.Run(() =>
                             {
-                                state.OnSuspendParser(this, () =>
+                                state.OnSuspendParser(this, AllowedRunStates, () =>
                                 {
                                     wasBusy = state.Status == ParserState.Busy;
                                 });
@@ -162,7 +204,7 @@ namespace RubberduckTests.ParserStateTests
         public void Test_RPS_SuspendParser_Interrupted_Deadlock()
         {
             var wasSuspended = false;
-            var wasSuspensionExecuted = false;
+            var result = SuspensionResult.Pending;
 
             var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -180,8 +222,9 @@ namespace RubberduckTests.ParserStateTests
                     {
                         result2 = Task.Run(() =>
                         {
-                            wasSuspensionExecuted =
-                                state.OnSuspendParser(this, () => { wasSuspended = state.Status == ParserState.Busy; },
+                            result =
+                                state.OnSuspendParser(this, AllowedRunStates,
+                                    () => { wasSuspended = state.Status == ParserState.Busy; },
                                     20);
                         }, token);
                         result2.Wait(token);
@@ -199,7 +242,7 @@ namespace RubberduckTests.ParserStateTests
                 result2.Wait(token);
             }
             Assert.IsFalse(wasSuspended, "wasSuspended was set to true");
-            Assert.IsFalse(wasSuspensionExecuted, "wasSuspensionExecuted was set to true");
+            Assert.AreEqual(SuspensionResult.Completed, result);
         }
 
         [Test]
@@ -236,7 +279,7 @@ namespace RubberduckTests.ParserStateTests
                     {
                         suspendTask = Task.Run(() =>
                         {
-                            state.OnSuspendParser(this, () =>
+                            state.OnSuspendParser(this, AllowedRunStates, () =>
                             {
                                 wasBusy = state.Status == ParserState.Busy;
                             });

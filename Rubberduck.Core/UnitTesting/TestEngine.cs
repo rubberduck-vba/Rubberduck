@@ -101,7 +101,7 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            _state.OnSuspendParser(this, () => RunWhileSuspended(tests));
+            _state.OnSuspendParser(this, AllowedRunStates, () => RunWhileSuspended(tests));
         }
 
         private void RunWhileSuspended(IEnumerable<TestMethod> tests)
