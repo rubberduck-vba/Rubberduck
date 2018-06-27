@@ -66,6 +66,7 @@
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />
     <Compile Include="HashCode.cs" />
+    <Compile Include="ISourceCodeHandler.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowsApi\SubclassingWindow.cs" />
     <Compile Include="WindowsApi\User32.cs" />
+    <Compile Include="WindowsApi\WindowsHook.cs" />
     <Compile Include="WindowsApi\WinEvent.cs" />
     <Compile Include="WindowsApi\WinEventFlags.cs" />
     <Compile Include="WindowsApi\WM.cs" />

@@ -146,8 +146,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void ReplaceLine(int line, string content)
         {
-            if (IsWrappingNullReference) return;           
-            Target.ReplaceLine(line, content);
+            if (IsWrappingNullReference) return;
+            if (Target.CountOfLines == 0)
+            {
+                Target.AddFromString(content);
+            }
+            else
+            {
+                try
+                {
+                    Target.ReplaceLine(line, content);
+                }
+                catch { /* "too many line continuations" is one possible cause */ }
+            }
         }
 
         public Selection? Find(string target, bool wholeWord = false, bool matchCase = false, bool patternSearch = false)

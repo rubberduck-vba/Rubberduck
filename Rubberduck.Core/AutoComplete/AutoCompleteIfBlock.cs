@@ -9,6 +9,7 @@ namespace Rubberduck.AutoComplete
         public AutoCompleteIfBlock(IConfigProvider<IndenterSettings> indenterSettings) 
             : base(indenterSettings, $"{Tokens.Then}", $"{Tokens.End} {Tokens.If}") { }
 
+        // matching "If" would trigger erroneous block completion on inline if..then..else syntax.
         protected override bool MatchInputTokenAtEndOfLineOnly => true;
     }
 }

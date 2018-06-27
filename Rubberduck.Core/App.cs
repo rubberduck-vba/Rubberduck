@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -47,7 +48,7 @@ namespace Rubberduck
             _checkVersionCommand = checkVersionCommand;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
-            
+
             UiContextProvider.Initialize();
         }
 
@@ -153,7 +154,7 @@ namespace Rubberduck
             {
                 Logger.Error(exception, "Error Setting Culture for Rubberduck");
                 // not accessing resources here, because setting resource culture literally just failed.
-                _messageBox.NotifyError(exception.Message, "Rubberduck");
+                _messageBox.NotifyWarn(exception.Message, "Rubberduck");
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
                 _configService.SaveConfiguration(_config);
             }

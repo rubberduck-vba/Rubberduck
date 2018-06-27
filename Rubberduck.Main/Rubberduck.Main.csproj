@@ -243,6 +243,9 @@
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IFakesProvider.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IStub.cs" />
     <Compile Include="ComClientLibrary\Abstract\UnitTesting\IVerify.cs" />
+    <Compile Include="ComClientLibrary\UnitTesting\Fakes\Date.cs" />
+    <Compile Include="ComClientLibrary\UnitTesting\Fakes\Time.cs" />
+    <Compile Include="ComClientLibrary\UnitTesting\Fakes\Now.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\PermissiveAssertClass.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\FakeBase.cs" />
     <Compile Include="ComClientLibrary\UnitTesting\Fakes\CurDir.cs" />
@@ -334,7 +337,6 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />

@@ -243,8 +243,8 @@
     <Reference Include="extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.8.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.8.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.8.4.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.4\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -312,7 +312,6 @@
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricResult.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\ICodeMetricsParseTreeListener.cs" />
-    <Compile Include="Common\ApplicationConstants.cs" />
     <Compile Include="Common\DeclarationIconCache.cs" />
     <Compile Include="Common\ExportFormatter.cs" />
     <Compile Include="Common\ClipboardWriter.cs" />
@@ -326,14 +325,12 @@
     <Compile Include="Common\IOperatingSystem.cs" />
     <Compile Include="Common\IRubberduckHooks.cs" />
     <Compile Include="Common\LogLevelHelper.cs" />
-    <Compile Include="Common\ModuleExporter.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\VariableNameValidator.cs" />
     <Compile Include="Common\WinAPI\RegistryAccess.cs" />
     <Compile Include="Common\RubberduckHooks.cs" />
     <Compile Include="Common\WinAPI\POINT.cs" />
     <Compile Include="Common\WinAPI\Kernel32.cs" />
-    <Compile Include="Common\KeyHookEventArgs.cs" />
     <Compile Include="Common\WinAPI\User32.cs" />
     <Compile Include="Common\WinAPI\WindowLongFlags.cs" />
     <Compile Include="Common\WindowsOperatingSystem.cs" />
@@ -846,6 +843,7 @@
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorRemoveParametersCommand.cs" />
+    <Compile Include="VersionCheck\VersionCheck.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\About\AboutDialog.resx">
@@ -923,6 +921,9 @@
     <Content Include="EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="AutoComplete\AutoCompleteFunctionBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompletePropertyBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteSubBlock.cs" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

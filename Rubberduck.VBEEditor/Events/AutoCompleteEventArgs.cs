@@ -1,57 +1,64 @@
 ﻿using System;
+using System.Windows.Forms;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
     public class AutoCompleteEventArgs : EventArgs
     {
-        public AutoCompleteEventArgs(ICodePane pane)
+        public AutoCompleteEventArgs(ICodeModule module, WindowsApi.KeyPressEventArgs e)
         {
-            CodePane = pane;
-            var selection = pane.Selection;
-            using (var module = pane.CodeModule)
+            if (e.Key == Keys.Delete ||
+                e.Key == Keys.Back ||
+                e.Key == Keys.Enter ||
+                e.Key == Keys.Tab)
             {
-                ContentHash = module.ContentHash();
-                var atSelection = module.GetLines(selection);
-                if (string.IsNullOrWhiteSpace(atSelection))
-                {
-                    IsCommitted = true;
-                    OldCode = module.GetLines(selection.PreviousLine);
-                }
-                else
-                {
-                    OldCode = module.GetLines(selection);
-                }
+                Keys = e.Key;
             }
+            else
+            {
+                Character = e.Character;
+            }
+            CodeModule = module;
+            CurrentSelection = module.GetQualifiedSelection().Value.Selection;
+            CurrentLine = module.GetLines(CurrentSelection);
         }
 
         /// <summary>
-        /// The CodePane wrapper for the module being edited.
+        /// <c>true</c> if the character has been handled, i.e. written to the code pane.
+        /// Set to <c>true</c> to swallow the character and prevent the WM message from reaching the code pane.
         /// </summary>
-        public ICodePane CodePane { get; }
+        public bool Handled { get; set; }
 
         /// <summary>
-        /// Indicates whether the line of code held in <see cref="OldCode"/> is committed or not.
+        /// The CodeModule wrapper for the module being edited.
+        /// </summary>
+        public ICodeModule CodeModule { get; }
+
+        /// <summary>
+        /// <c>true</c> if the event is originating from a <c>WM_CHAR</c> message.
+        /// <c>false</c> if the event is originating from a <c>WM_KEYDOWN</c> message.
         /// </summary>
         /// <remarks>
-        /// If the line is committed, <see cref="OldCode"/> is located on the line that precedes the current selection in the <see cref="CodePane"/>.
+        /// Inline completion is handled on WM_CHAR; deletions and block completion on WM_KEYDOWN.
         /// </remarks>
-        public bool IsCommitted { get; }
+        public bool IsCharacter => Keys == default;
+        /// <summary>
+        /// The character whose key was pressed. Undefined value if <see cref="Keys"/> isn't `<see cref="Keys.None"/>.
+        /// </summary>
+        public char Character { get; }
+        /// <summary>
+        /// The actionnable key that was pressed. Value is <see cref="Keys.None"/> when <see cref="IsCharacter"/> is <c>true</c>.
+        /// </summary>
+        public Keys Keys { get; }
 
         /// <summary>
-        /// The content hash for the module before autocompletion. Used to prevent misfiring autocompletes.
+        /// The current location of the caret.
         /// </summary>
-        public string ContentHash { get; }
-
+        public Selection CurrentSelection { get; }
         /// <summary>
-        /// If not committed, the entire current line of code. If committed, the line of code immediately preceding the current selection.
+        /// The contents of the current line of code.
         /// </summary>
-        public string OldCode { get; }
-
-        /// <summary>
-        /// The autocompleted line of code, assigned by the autocomplete implementation. Used for caching, to prevent misfiring autocompletes.
-        /// If autocomplete works off committed input, this should match the <see cref="OldCode"/>.
-        /// </summary>
-        public string NewCode { get; set; }
+        public string CurrentLine { get; }
     }
 }

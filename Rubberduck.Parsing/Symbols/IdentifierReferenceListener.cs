@@ -86,22 +86,12 @@ namespace Rubberduck.Parsing.Symbols
             SetCurrentScope();
         }
 
-        public override void EnterPublicTypeDeclaration(VBAParser.PublicTypeDeclarationContext context)
+        public override void EnterUdtDeclaration(VBAParser.UdtDeclarationContext context)
         {
-            SetCurrentScope(Identifier.GetName(context.udtDeclaration().untypedIdentifier()), DeclarationType.UserDefinedType);
+            SetCurrentScope(Identifier.GetName(context.untypedIdentifier()), DeclarationType.UserDefinedType);
         }
 
-        public override void ExitPublicTypeDeclaration(VBAParser.PublicTypeDeclarationContext context)
-        {
-            SetCurrentScope();
-        }
-
-        public override void EnterPrivateTypeDeclaration(VBAParser.PrivateTypeDeclarationContext context)
-        {
-            SetCurrentScope(Identifier.GetName(context.udtDeclaration().untypedIdentifier()), DeclarationType.UserDefinedType);
-        }
-
-        public override void ExitPrivateTypeDeclaration(VBAParser.PrivateTypeDeclarationContext context)
+        public override void ExitUdtDeclaration(VBAParser.UdtDeclarationContext context)
         {
             SetCurrentScope();
         }

@@ -4,6 +4,7 @@ namespace Rubberduck.VBEditor
 {
     public struct Selection : IEquatable<Selection>, IComparable<Selection>
     {
+
         public Selection(int line, int column) : this(line, column, line, column) { }
 
         public Selection(int startLine, int startColumn, int endLine, int endColumn)
@@ -20,6 +21,11 @@ namespace Rubberduck.VBEditor
         public static Selection Home => new Selection(1, 1, 1, 1);
 
         public static Selection Empty => new Selection();
+
+        public Selection ToZeroBased() => 
+            new Selection(StartLine - 1, StartColumn - 1, EndLine - 1, EndColumn - 1);
+        public Selection ToOneBased() =>
+            new Selection(StartLine + 1, StartColumn + 1, EndLine + 1, EndColumn + 1);
 
         public bool IsEmpty()
         {
@@ -65,7 +71,7 @@ namespace Rubberduck.VBEditor
         public bool IsSingleCharacter => StartLine == EndLine && StartColumn == EndColumn;
 
         public Selection PreviousLine => StartLine == 1 ? Home : new Selection(StartLine - 1, 1);
-        public Selection NextLine => StartLine == 1 ? Home : new Selection(StartLine + 1, 1);
+        public Selection NextLine => new Selection(StartLine + 1, 1);
 
         public int StartLine { get; }
 

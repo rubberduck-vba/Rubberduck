@@ -57,14 +57,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override void OnExecute(object parameter)
         {
             var message = string.Format(CodeExplorerUI.ExportBeforeRemove_Prompt, ((CodeExplorerComponentViewModel)parameter).Name);
-            var result = _messageBox.Confirm(message, CodeExplorerUI.ExportBeforeRemove_Caption, true);
+            var result = _messageBox.Confirm(message, CodeExplorerUI.ExportBeforeRemove_Caption, ConfirmationOutcome.Yes);
 
-            if (!result.HasValue)
+            if (result == ConfirmationOutcome.Cancel)
             {
                 return;
             }
 
-            if (result.Value && !ExportFile((CodeExplorerComponentViewModel)parameter))
+            if (result == ConfirmationOutcome.Yes && !ExportFile((CodeExplorerComponentViewModel)parameter))
             {
                 return;
             }

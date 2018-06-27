@@ -6,22 +6,20 @@ namespace Rubberduck.VBEditor.WindowsApi
 {
     public abstract class SubclassingWindow : IDisposable
     {
-        private readonly IntPtr _subclassId;
+        private /*readonly*/ IntPtr _subclassId;
         private readonly SubClassCallback _wndProc;
         private bool _listening;
 
         private readonly object _subclassLock = new object();
 
-        public delegate int SubClassCallback(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass,
-            IntPtr dwRefData);
+        public delegate int SubClassCallback(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool IsWindow(IntPtr hWnd);
 
         [DllImport("ComCtl32.dll", CharSet = CharSet.Auto)]
-        private static extern int SetWindowSubclass(IntPtr hWnd, SubClassCallback newProc, IntPtr uIdSubclass,
-            IntPtr dwRefData);
+        private static extern int SetWindowSubclass(IntPtr hWnd, SubClassCallback newProc, IntPtr uIdSubclass, IntPtr dwRefData);
 
         [DllImport("ComCtl32.dll", CharSet = CharSet.Auto)]
         private static extern int RemoveWindowSubclass(IntPtr hWnd, SubClassCallback newProc, IntPtr uIdSubclass);
@@ -29,13 +27,34 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("ComCtl32.dll", CharSet = CharSet.Auto)]
         private static extern int DefSubclassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam);
 
-        public IntPtr Hwnd { get; }
+
+        public IntPtr Hwnd { get; private set; }
+
+        protected SubclassingWindow()
+        {
+            _wndProc = SubClassProc;
+        }
 
         protected SubclassingWindow(IntPtr subclassId, IntPtr hWnd)
         {
             _subclassId = subclassId;
-            Hwnd = hWnd;
             _wndProc = SubClassProc;
+            Hwnd = hWnd;
+
+            AssignHandle();
+        }
+
+
+        public void AssignHandle(IntPtr subclassId, IntPtr hWnd)
+        {
+            if (_listening)
+            {
+                return;
+                //throw new InvalidOperationException();
+            }
+
+            _subclassId = subclassId;
+            Hwnd = hWnd;
             AssignHandle();
         }
 
@@ -59,7 +78,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
         }
 
-        private void ReleaseHandle()
+        protected void ReleaseHandle()
         {
             lock (_subclassLock)
             {
@@ -77,8 +96,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
         }
 
-        public virtual int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass,
-            IntPtr dwRefData)
+        public virtual int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
         {
             if (!_listening)
             {
