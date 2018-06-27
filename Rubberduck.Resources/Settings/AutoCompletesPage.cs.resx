@@ -180,4 +180,7 @@
   <data name="PageInstructions" xml:space="preserve">
     <value>Configure which Rubberduck autocompletions are enabled.</value>
   </data>
+  <data name="EnableSmartConcat" xml:space="preserve">
+    <value>Enable smart concatenation</value>
+  </data>
 </root>
