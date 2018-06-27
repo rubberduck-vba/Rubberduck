@@ -3,7 +3,6 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,10 +45,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             LoadEnumMemberValues();
         }
 
-
-        //used only by UnreachableCaseInspection tests
-        public RubberduckParserState State { set; get; } = null;
-
         private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { set; get; } = null;
 
         public event EventHandler<ValueResultEventArgs> OnValueResultCreated;
@@ -90,10 +85,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             OnValueResultCreated(this, new ValueResultEventArgs(context, inspValue));
         }
 
-        private bool ContextHasResult(ParserRuleContext context)
-        {
-            return _contextValues.Contains(context);
-        }
+        private bool HasResult(ParserRuleContext context)
+         => _contextValues.Contains(context);
 
         private void Visit(ParserRuleContext parserRuleContext)
         {
@@ -106,11 +99,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     Visit(litExpr);
                     return;
                 case VBAParser.CaseClauseContext caseClause:
-                    VisitImpl(caseClause);
+                    VisitChildren(caseClause);
                     StoreVisitResult(caseClause, _inspValueFactory.Create(caseClause.GetText()));
                     return;
                 case VBAParser.RangeClauseContext rangeClause:
-                    VisitImpl(rangeClause);
+                    VisitChildren(rangeClause);
                     StoreVisitResult(rangeClause, _inspValueFactory.Create(rangeClause.GetText()));
                     return;
                 default:
@@ -118,7 +111,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     {
                         VisitUnaryResultContext(parserRuleContext);
                     }
-                    else if (IsBinaryResultContext(parserRuleContext))
+                    else if (IsBinaryOpEvaluationContext(parserRuleContext))
                     {
                         VisitBinaryOpEvaluationContext(parserRuleContext);
                     }
@@ -133,7 +126,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void Visit(VBAParser.LExprContext context)
         {
-            if (ContextHasResult(context))
+            if (HasResult(context))
             {
                 return;
             }
@@ -162,7 +155,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void Visit(VBAParser.LiteralExprContext context)
         {
-            if (!ContextHasResult(context))
+            if (!HasResult(context))
             {
                 var nResult = _inspValueFactory.Create(context.GetText());
                 StoreVisitResult(context, nResult);
@@ -171,7 +164,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void VisitBinaryOpEvaluationContext(ParserRuleContext context)
         {
-            VisitImpl(context);
+            VisitChildren(context);
 
             RetrieveOpEvaluationElements(context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) binaryData);
             if (binaryData.LHS is null || binaryData.RHS is null)
@@ -187,7 +180,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void VisitUnaryOpEvaluationContext(ParserRuleContext context)
         {
-            VisitImpl(context);
+            VisitChildren(context);
+
             RetrieveOpEvaluationElements(context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) unaryData);
             if (unaryData.LHS is null || unaryData.RHS != null)
             {
@@ -201,14 +195,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void RetrieveOpEvaluationElements(ParserRuleContext context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) operandElements)
         {
-            operandElements.Symbol = string.Empty;
-            operandElements.LHS = null;
-            operandElements.RHS = null;
-            var values = new List<IParseTreeValue>();
-            var contextsOfInterest = NonWhitespaceChildren(context);
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
+            operandElements = (null, null, string.Empty);
+            foreach (var child in NonWhitespaceChildren(context))
             {
-                if (contextsOfInterest.ElementAt(idx) is ParserRuleContext ctxt)
+                if (child is ParserRuleContext ctxt)
                 {
                     if (operandElements.LHS is null)
                     {
@@ -221,30 +211,25 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 else
                 {
-                    operandElements.Symbol = contextsOfInterest.ElementAt(idx).GetText();
+                    operandElements.Symbol = child.GetText();
                 }
             }
         }
 
         private void VisitUnaryResultContext(ParserRuleContext parserRuleContext)
         {
-            VisitImpl(parserRuleContext);
+            VisitChildren(parserRuleContext);
 
-            var contextsOfInterest = ParserRuleContextChildren(parserRuleContext);
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
+            foreach (var ctxt in ParserRuleContextChildren(parserRuleContext).Where(ct => HasResult(ct)))
             {
-                var ctxt = contextsOfInterest.ElementAt(idx);
-                if (_contextValues.Contains(ctxt))
-                {
-                    var value = _contextValues.GetValue(ctxt);
-                    StoreVisitResult(parserRuleContext, value);
-                }
+                StoreVisitResult(parserRuleContext, _contextValues.GetValue(ctxt));
+                return;
             }
         }
 
-        private void VisitImpl(ParserRuleContext context)
+        private void VisitChildren(ParserRuleContext context)
         {
-            if (!ContextHasResult(context))
+            if (!HasResult(context))
             {
                 foreach (var ctxt in ParserRuleContextChildren(context))
                 {
@@ -253,15 +238,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private static IEnumerable<ParserRuleContext> ParserRuleContextChildren(IParseTree ptParent)
-        {
-            return ((ParserRuleContext)ptParent).children.Where(ch => !(ch is VBAParser.WhiteSpaceContext) && ch is ParserRuleContext).Select(item => (ParserRuleContext)item);
-        }
+        private static IEnumerable<ParserRuleContext> ParserRuleContextChildren(ParserRuleContext ptParent)
+            => NonWhitespaceChildren(ptParent).Where(ch => ch is ParserRuleContext).Cast<ParserRuleContext>();
 
         private static IEnumerable<IParseTree> NonWhitespaceChildren(ParserRuleContext ptParent)
-        {
-            return ptParent.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext));
-        }
+            => ptParent.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext));
 
         private bool TryGetLExprValue(VBAParser.LExprContext lExprContext, out string expressionValue, out string declaredTypeName)
         {
@@ -329,16 +310,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 idRef = idReference;
                 return success;
             }
-            else if (State != null) //State is set to non-null for testing
-            {
-                var identifierReferences = (State.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
-                    .Where(rf => rf.Context == context);
-                if (identifierReferences.Count() == 1)
-                {
-                    idRef = identifierReferences.First();
-                    return true;
-                }
-            }
             return false;
         }
 
@@ -389,7 +360,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || context is VBAParser.SelectExpressionContext;
         }
 
-        private static bool IsBinaryResultContext<T>(T context)
+        private static bool IsBinaryOpEvaluationContext<T>(T context)
         {
             if (context is VBAParser.ExpressionContext expressionContext)
             {
