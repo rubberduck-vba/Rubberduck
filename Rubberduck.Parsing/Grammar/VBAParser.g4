@@ -62,7 +62,16 @@ moduleConfigProperty :
 ;
 
 moduleConfigElement :
-    unrestrictedIdentifier whiteSpace? EQ whiteSpace? expression (COLON numberLiteral)? endOfStatement
+    (unrestrictedIdentifier | lExpression) whiteSpace? EQ whiteSpace? (shortcut | resource | expression) endOfStatement
+;
+
+shortcut :
+	(POW singleLetter)
+	| ((PERCENT | PLUS? POW?) L_BRACE IDENTIFIER R_BRACE)
+;
+
+resource :
+	DOLLAR? expression COLON (numberLiteral | BARE_HEX_LITERAL | unrestrictedIdentifier)
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)*;

@@ -667,6 +667,185 @@ End
 
         [Category("Parser")]
         [Test]
+        public void TestVBFormWithHexLiteralModuleConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   BackColor = &H00FFFFFF&
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestVBFormWithAbsoluteResourcePathConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   BackColor = &H00FFFFFF&
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""C:\Test\Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestVBFormWithDnsUncResourcePathConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   BackColor = &H00FFFFFF&
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""\\initech.com\server01\c$\Test\Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestVBFormWithIPUncResourcePathConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   BackColor = &H00FFFFFF&
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""\\127.0.0.1\Test\Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestVBFormWithDollarPrependedResourceModuleConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   $""Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestVBFormWithAlphaLeadingHexLiteralResourceOffsetModuleConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""Form1.frx"":ACBD
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestVBFormWithNumericLeadingHexLiteralResourceOffsetModuleConfig()
+        {
+            string code = @"
+Begin VB.Form Form1 
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""Form1.frx"":9ABC
+   StartUpPosition =   1  'CenterOwner
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        [TestCase(@"^A")]
+        [TestCase(@"^Z")]
+        [TestCase(@"{F1}")]
+        [TestCase(@"{F12}")]
+        [TestCase(@"^{F1}")]
+        [TestCase(@"^{F12}")]
+        [TestCase(@"+{F1}")]
+        [TestCase(@"+{F12}")]
+        [TestCase(@"+^{F1}")]
+        [TestCase(@"+^{F12}")]
+        [TestCase(@"^{INSERT}")]
+        [TestCase(@"+{INSERT}")]
+        [TestCase(@"{DEL}")]
+        [TestCase(@"+{DEL}")]
+        [TestCase(@"%{BKSP}")]
+        public void TestVBFormWithMenuShortcutModuleConfig(string shortcut)
+        {
+            string code = @"
+Begin VB.Form Form1 
+   Caption         =   ""Form1""
+   ClientHeight    =   2640
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   4710
+   OleObjectBlob   =   ""Form1.frx"":0000
+   StartUpPosition =   1  'CenterOwner
+   Begin VB.Menu FileMenu 
+      Caption         =   ""File""
+      Begin VB.Menu FileOpenMenu
+         Caption     = ""Open""
+         Shortcut    =   " + shortcut + @"
+      End
+   End 
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 3);
+        }
+
+
+        [Category("Parser")]
+        [Test]
         public void TestNestedVbFormModuleConfig()
         {
             string code = @"
