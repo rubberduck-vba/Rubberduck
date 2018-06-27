@@ -65,7 +65,7 @@ namespace Rubberduck.AutoComplete
             }
 
             var currentContent = module.GetLines(pSelection);
-            if (e.Keys == Keys.Enter && IsInsideStringLiteral(pSelection, ref currentContent))
+            if (e.Keys == Keys.Enter && _settings.EnableSmartConcat && IsInsideStringLiteral(pSelection, ref currentContent))
             {
                 var indent = currentContent.NthIndexOf('"', 1);
                 var whitespace = new string(' ', indent);
