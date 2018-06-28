@@ -84,10 +84,11 @@
                         </StackPanel>
                     </DockPanel>
                 </Label>
-                <DockPanel HorizontalAlignment="Stretch">
+                <WrapPanel HorizontalAlignment="Center">
                     <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
                     <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
-                </DockPanel>
+                    <CheckBox Margin="10,10" IsChecked="{Binding EnableSmartConcat}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSmartConcat}" />
+                </WrapPanel>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="AutoCompleteSettingsGrid"
                               ItemsSource="{Binding Settings}"
