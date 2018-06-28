@@ -2488,6 +2488,18 @@ End Sub";
 
         [Category("Parser")]
         [Test]
+        public void TestLineAccessReport_WithoutStartingTuple()
+        {
+            string code = @"
+Sub Test()
+    Me.Line -(2, 2)
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
+        }
+
+        [Category("Parser")]
+        [Test]
         public void TestLineAccessReport_WithoutStep()
         {
             string code = @"
