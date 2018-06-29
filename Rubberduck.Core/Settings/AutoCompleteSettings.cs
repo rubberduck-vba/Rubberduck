@@ -26,6 +26,9 @@ namespace Rubberduck.Settings
         [XmlAttribute]
         public bool CompleteBlockOnEnter { get; set; }
 
+        [XmlAttribute]
+        public bool EnableSmartConcat { get; set; }
+
         public AutoCompleteSettings() : this(Enumerable.Empty<AutoCompleteSetting>())
         {
             /* default constructor required for XML serialization */

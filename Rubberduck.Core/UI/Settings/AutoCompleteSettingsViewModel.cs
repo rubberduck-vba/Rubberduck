@@ -17,6 +17,7 @@ namespace Rubberduck.UI.Settings
             Settings = new ObservableCollection<AutoCompleteSetting>(config.UserSettings.AutoCompleteSettings.AutoCompletes);
             CompleteBlockOnEnter = config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter;
             CompleteBlockOnTab = config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab;
+            EnableSmartConcat = config.UserSettings.AutoCompleteSettings.EnableSmartConcat;
 
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
@@ -45,6 +46,7 @@ namespace Rubberduck.UI.Settings
         {
             config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab = CompleteBlockOnTab;
             config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter = CompleteBlockOnEnter;
+            config.UserSettings.AutoCompleteSettings.EnableSmartConcat = EnableSmartConcat;
             config.UserSettings.AutoCompleteSettings.AutoCompletes = new HashSet<AutoCompleteSetting>(_settings);
         }
 
@@ -52,6 +54,7 @@ namespace Rubberduck.UI.Settings
         {
             CompleteBlockOnTab = toLoad.CompleteBlockOnTab;
             CompleteBlockOnEnter = toLoad.CompleteBlockOnEnter;
+            EnableSmartConcat = toLoad.EnableSmartConcat;
             Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
         }
 
@@ -73,7 +76,21 @@ namespace Rubberduck.UI.Settings
                 }
             }
         }
-        
+
+        private bool _enableSmartConcat;
+        public bool EnableSmartConcat
+        {
+            get { return _enableSmartConcat; }
+            set
+            {
+                if (_enableSmartConcat != value)
+                {
+                    _enableSmartConcat = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool _completeBlockOnEnter;
         public bool CompleteBlockOnEnter
         {
