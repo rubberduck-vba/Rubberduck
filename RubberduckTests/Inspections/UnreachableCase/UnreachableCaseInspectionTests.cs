@@ -2175,6 +2175,34 @@ End Sub
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        //From Issue #3962
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_AdditionString()
+        {
+            string inputCode =
+@"
+private Const AVALUE as Double = 15
+
+Sub FirstSub()
+
+    Dim bar As Double
+    bar = 22
+    Select Case bar
+        Case 4
+        Case 20 + 2
+        Case ""2"" + ""2""
+            'Unreachable
+        Case AVALUE + ""7""
+            'Unreachable
+    End Select
+End Sub
+";
+
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var components = new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) };

@@ -89,9 +89,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IParseTreeValue Evaluate(IParseTreeValue LHS, IParseTreeValue RHS, string opSymbol)
         {
-            var isMathOp = MathOpsBinary.ContainsKey(opSymbol);
+            var isMathOp = MathOpsBinary.ContainsKey(opSymbol) && !(LHS.TypeName.Equals(Tokens.String) && RHS.TypeName.Equals(Tokens.String));
             var isLogicOp = LogicOpsBinary.ContainsKey(opSymbol);
-            var isBinaryStringOp = opSymbol.Equals(Tokens.Like) || opSymbol.Equals(_ampersand);
+            var isBinaryStringOp = opSymbol.Equals(Tokens.Like) || opSymbol.Equals(_ampersand) || (LHS.TypeName.Equals(Tokens.String) && (RHS.TypeName.Equals(Tokens.String)));
             Debug.Assert(IsSupportedSymbol(opSymbol));
 
             (string lhsTypeName, double lhsValue) = PrepareOperand(LHS);
@@ -123,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (isBinaryStringOp)
             {
-                if (opSymbol.Equals(_ampersand))
+                if (opSymbol.Equals(_ampersand)|| opSymbol.Equals(MathSymbols.PLUS))
                 {
                     var concatResult = $"{Concat(LHS.ValueText, RHS.ValueText)}";
                     return _valueFactory.Create(concatResult, Tokens.String);

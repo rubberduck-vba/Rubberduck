@@ -433,6 +433,15 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expected, result.ValueText);
         }
 
+        [TestCase(@"""2""_+_""2""", "22", "String")]
+        [TestCase(@"""2""_+_2", "4", "Long")]
+        [TestCase(@"""256""_+_""2""", "2562", "Long")]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_AdditionString(string operands, string expected, string selectExpressionTypename)
+        {
+            TestBinaryOp(MathSymbols.PLUS, operands, expected, selectExpressionTypename);
+        }
+
         private void GetBinaryOpValues(string operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol)
         {
             var operandItems = operands.Split(new string[] { OPERAND_SEPARATOR }, StringSplitOptions.None);
