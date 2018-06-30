@@ -131,6 +131,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
                 if (opSymbol.Contains(Tokens.Like))
                 {
+                    if (RHS.ValueText.Equals("*"))
+                    {
+                        return _valueFactory.Create("True", Tokens.Boolean);
+                    }
+
                     if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
                     {
                         var stringOpResult = Like(LHS.ValueText, RHS.ValueText);

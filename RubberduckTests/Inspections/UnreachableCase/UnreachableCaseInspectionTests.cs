@@ -2077,6 +2077,29 @@ End Sub
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_LikeSpecialCaseAsterisk()
+        {
+            string inputCode =
+@"
+Sub FirstSub(x As String, y As String)
+    Select Case True
+        Case foo Like ""*""
+            'OK
+        Case Not foo Like ""*""
+            'OK
+        Case foo Like ""???*""
+            'Unreachable
+        Case Else
+            'Unreachable
+    End Select
+End Sub
+";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         [TestCase(@"Option Compare Binary", @"""A"" > ""a""", 2)]
         [TestCase(@"Option Compare Text", @"""A"" > ""a""", 1)]
         [TestCase(@"Option Compare Binary", @"""A"" = ""a""", 1)]
