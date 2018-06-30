@@ -119,7 +119,6 @@
     <Compile Include="VBEditor\ReferenceEqualityComparerTests.cs" />
     <Compile Include="VBEditor\ComSafeTests.cs" />
     <Compile Include="Commands\ExportAllCommandTests.cs" />
-    <Compile Include="Commands\RefactorCommandTests.cs" />
     <Compile Include="Commands\IndentCommandTests.cs" />
     <Compile Include="Commands\UnitTestCommandTests.cs" />
     <Compile Include="Grammar\ParserRuleContextExtensionTests.cs" />
@@ -269,8 +268,6 @@
     <Compile Include="Mocks\Windows.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorTests.cs" />
     <Compile Include="PreProcessing\VBAPreprocessorVisitorTests.cs" />
-    <Compile Include="Refactoring\EncapsulateFieldTests.cs" />
-    <Compile Include="Refactoring\ExtractInterfaceTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractedMethodRefactoringTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodExtractionTests.cs" />
     <Compile Include="Refactoring\ExtractMethod\ExtractMethodParameterClassificationTests.cs" />
@@ -286,9 +283,6 @@
     <Compile Include="Refactoring\IntroduceFieldTests.cs" />
     <Compile Include="Refactoring\MoveCloserToUsageTests.cs" />
     <Compile Include="Refactoring\IntroduceParameterTests.cs" />
-    <Compile Include="Refactoring\RemoveParametersTests.cs" />
-    <Compile Include="Refactoring\RenameTests.cs" />
-    <Compile Include="Refactoring\ReorderParametersTests.cs" />
     <Compile Include="Settings\HotkeySettingsTests.cs" />
     <Compile Include="Settings\InspectionSettingsTests.cs" />
     <Compile Include="Settings\GeneralSettingsTests.cs" />
