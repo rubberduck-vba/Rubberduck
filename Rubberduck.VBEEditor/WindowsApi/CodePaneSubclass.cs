@@ -5,6 +5,18 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
+    public class IntelliSenseEventArgs : EventArgs
+    {
+        public static IntelliSenseEventArgs Shown => new IntelliSenseEventArgs(true);
+        public static IntelliSenseEventArgs Hidden => new IntelliSenseEventArgs(false);
+        internal IntelliSenseEventArgs(bool visible)
+        {
+            Visible = visible;
+        }
+
+        public bool Visible { get; }
+    }
+
     public class KeyPressEventArgs
     {
         public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, char character = default)
