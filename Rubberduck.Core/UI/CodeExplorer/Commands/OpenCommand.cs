@@ -1,4 +1,5 @@
 using NLog;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 

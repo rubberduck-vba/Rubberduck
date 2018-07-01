@@ -758,7 +758,6 @@
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
-    <Compile Include="UI\Controls\INavigateSelection.cs" />
     <Compile Include="UI\Splash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -783,7 +782,6 @@
     <Compile Include="UI\Inspections\InspectionResultsWindow.Designer.cs">
       <DependentUpon>InspectionResultsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\Inspections\QuickFixEventArgs.cs" />
     <Compile Include="UI\DockableToolwindowPresenter.cs" />
     <Compile Include="Settings\Configuration.cs" />

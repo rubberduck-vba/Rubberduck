@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
