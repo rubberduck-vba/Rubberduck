@@ -2014,6 +2014,66 @@ End Sub
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void RedimStmt_RedimVariableDeclarationCausesVariableDeclarationToBeCreated()
+        {
+            var code = @"
+Public Sub Test()
+    ReDim referenced1(1), referenced2(1)
+End Sub
+";
+            using (var state = Resolve(code))
+            {
+                var declaration1 = state.AllUserDeclarations.SingleOrDefault(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced1");
+                Assert.NotNull(declaration1);
+                var declaration2 = state.AllUserDeclarations.SingleOrDefault(item =>
+                     item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced2");
+                Assert.NotNull(declaration2);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void RedimStmt_RedimVariableDeclarationWithSeparateVariableDeclarationReferencesItself()
+        {
+            var code = @"
+Public Sub Test()
+    ReDim referenced(1)
+End Sub
+";
+            using (var state = Resolve(code))
+            {
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+                
+                Assert.AreEqual(1, declaration.References.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void RedimStmt_RedimVariableDeclarationWithSeparateVariableDeclarationCreatesReferencesCorrectly()
+        {
+            var code = @"
+Public Sub Test()
+    ReDim referenced(1)
+    ReDim referenced(1)
+End Sub
+";
+            using (var state = Resolve(code))
+            {
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+                Assert.AreEqual(2, declaration.References.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void OpenStmt_IsReferenceToLocalVariable()
         {
             var code = @"

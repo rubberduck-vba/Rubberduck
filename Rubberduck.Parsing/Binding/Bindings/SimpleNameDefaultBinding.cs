@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing.Binding
             _name = context.Start.Text == "[" && context.Stop.Text == "]" ? "[" + name + "]" : name;
             _propertySearchType = StatementContext.GetSearchDeclarationType(statementContext);
         }
-        
+
         public bool IsPotentialLeftMatch { get; internal set; }
 
         public IBoundExpression Resolve()
@@ -69,20 +69,36 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-
+            var redimVariable = GetRedimVariable();
             if (_context.Start.Text == "[" && _context.Stop.Text == "]")
             {
                 var bracketedExpression = _declarationFinder.OnBracketedExpression(_context.GetText(), _context);
                 return new SimpleNameExpression(bracketedExpression, ExpressionClassification.Unbound, _context);
             }
-            //TODO - this is a complete and total hack to prevent `Mid` and `Mid$` from creating undeclared variables
-            //pending an actual fix to the grammar.  See #2618
-            else if (!_name.Equals("Mid") && !_name.Equals("Mid$"))
+            else if (redimVariable != null && _context is VBAParser.SimpleNameExprContext)
+            {
+                var newVariable = _declarationFinder.OnRedimVariable(_parent, _name, (VBAParser.SimpleNameExprContext)_context, redimVariable);
+                return new SimpleNameExpression(newVariable, ExpressionClassification.Variable, _context);
+            }
+            else
             {
                 var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
                 return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
             }
-            return new ResolutionFailedExpression();
+        }
+
+        private VBAParser.RedimVariableDeclarationContext GetRedimVariable()
+        {
+            RuleContext current = _context;
+            while (current != null)
+            {
+                if (current is VBAParser.RedimVariableDeclarationContext)
+                {
+                    return (VBAParser.RedimVariableDeclarationContext)current;
+                }
+                current = current.Parent;
+            }
+            return null;
         }
 
         private IBoundExpression ResolveProcedureNamespace()
@@ -100,9 +116,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _context);
             }
-            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
-                ?? _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
-                ;
+            var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable);
             if (IsValidMatch(localVariable, _name))
             {
                 return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _context);
@@ -143,10 +157,10 @@ namespace Rubberduck.Parsing.Binding
                 return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _context);
             }
             // Prioritize return value assignments over any other let/set property references.
-            if (_parent.DeclarationType == DeclarationType.PropertyGet && _declarationFinder.IsMatch(_parent.IdentifierName, _name))
-            {
-                return new SimpleNameExpression(_parent, ExpressionClassification.Property, _context);
-            }
+            //if (_parent.DeclarationType == DeclarationType.PropertyGet && _declarationFinder.IsMatch(_parent.IdentifierName, _name))
+            //{
+            //    return new SimpleNameExpression(_parent, ExpressionClassification.Property, _context);
+            //}
             var property = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, _propertySearchType);
             if (IsValidMatch(property, _name))
             {
@@ -380,19 +394,19 @@ namespace Rubberduck.Parsing.Binding
             return true;
         }
 
-            private static bool IsFunctionSubroutinePropertyGet(Declaration match)
-            {
-                return match.DeclarationType == DeclarationType.Function
-                        || match.DeclarationType == DeclarationType.Procedure
-                        || match.DeclarationType == DeclarationType.PropertyGet;
-            }
+        private static bool IsFunctionSubroutinePropertyGet(Declaration match)
+        {
+            return match.DeclarationType == DeclarationType.Function
+                    || match.DeclarationType == DeclarationType.Procedure
+                    || match.DeclarationType == DeclarationType.PropertyGet;
+        }
 
-            private static bool IsTypeDeclarationOfSpecificBaseType(Declaration match)
-            {
-                return match.AsTypeName != null
-                        && match.AsTypeName.ToUpperInvariant() != "VARIANT"
-                        && match.AsTypeName.ToUpperInvariant() != "OBJECT"
-                        && match.AsTypeIsBaseType;
-            }
+        private static bool IsTypeDeclarationOfSpecificBaseType(Declaration match)
+        {
+            return match.AsTypeName != null
+                    && match.AsTypeName.ToUpperInvariant() != "VARIANT"
+                    && match.AsTypeName.ToUpperInvariant() != "OBJECT"
+                    && match.AsTypeIsBaseType;
+        }
     }
 }

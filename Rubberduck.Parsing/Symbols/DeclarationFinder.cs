@@ -74,7 +74,7 @@ namespace Rubberduck.Parsing.Symbols
         private Lazy<List<Declaration>> _eventHandlers;
         private Lazy<List<Declaration>> _projects;
         private Lazy<List<Declaration>> _classes;
-        
+
         private static QualifiedSelection GetGroupingKey(Declaration declaration)
         {
             // we want the procedures' whole body, not just their identifier:
@@ -110,7 +110,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var actions = new List<Action>();
 
-            actions.Add(() => 
+            actions.Add(() =>
                 _unresolved = unresolvedMemberDeclarations
                     .ToList()
                 );
@@ -119,12 +119,12 @@ namespace Rubberduck.Parsing.Symbols
                     .GroupBy(node => node.QualifiedSelection.QualifiedName)
                     .ToDictionary()
                 );
-            actions.Add(() => 
+            actions.Add(() =>
                 _declarations = declarations
                     .GroupBy(item => item.QualifiedName.QualifiedModuleName)
                     .ToDictionary()
                 );
-            actions.Add(() => 
+            actions.Add(() =>
                 _declarationsByName = declarations
                     .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
                     .ToDictionary()
@@ -135,7 +135,7 @@ namespace Rubberduck.Parsing.Symbols
                     .GroupBy(GetGroupingKey)
                     .ToDictionary()
                 );
-            actions.Add(() => 
+            actions.Add(() =>
                 _referencesBySelection = declarations
                     .SelectMany(declaration => declaration.References)
                     .GroupBy(reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
@@ -199,14 +199,14 @@ namespace Rubberduck.Parsing.Symbols
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
-                    .Where(reference => reference.Context is VBAParser.ImplementsStmtContext 
+                    .Where(reference => reference.Context is VBAParser.ImplementsStmtContext
                         || (reference.Context).IsDescendentOf<VBAParser.ImplementsStmtContext>())
                     .Select(reference =>
                         new
                         {
                             IdentifierReference = reference,
-                            Context = reference.Context is VBAParser.ImplementsStmtContext ? 
-                                (VBAParser.ImplementsStmtContext)reference.Context 
+                            Context = reference.Context is VBAParser.ImplementsStmtContext ?
+                                (VBAParser.ImplementsStmtContext)reference.Context
                                     : reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>()
                         }
                     )
@@ -292,7 +292,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            
+
             var qualifiedSelection = activeCodePane.GetQualifiedSelection();
             if (!qualifiedSelection.HasValue || qualifiedSelection.Value.Equals(default(QualifiedSelection)))
             {
@@ -369,7 +369,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             return _nonBaseAsType.Value;
         }
- 
+
         public IEnumerable<Declaration> FindEventHandlers()
         {
             return _eventHandlers.Value;
@@ -409,8 +409,8 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<Declaration> FindHandlersForWithEventsField(Declaration field)
         {
             List<Declaration> result;
-            return _handlersByWithEventsField.Value.TryGetValue(field, out result) 
-                ? result 
+            return _handlersByWithEventsField.Value.TryGetValue(field, out result)
+                ? result
                 : Enumerable.Empty<Declaration>();
         }
 
@@ -434,8 +434,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public ParameterDeclaration FindParameter(Declaration procedure, string parameterName)
         {
-            return _parametersByParent.TryGetValue(procedure, out List<ParameterDeclaration> parameters) 
-                ? parameters.SingleOrDefault(parameter => parameter.IdentifierName == parameterName) 
+            return _parametersByParent.TryGetValue(procedure, out List<ParameterDeclaration> parameters)
+                ? parameters.SingleOrDefault(parameter => parameter.IdentifierName == parameterName)
                 : null;
         }
 
@@ -458,8 +458,8 @@ namespace Rubberduck.Parsing.Symbols
         public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
         {
             List<IAnnotation> result;
-            return _annotations.TryGetValue(module, out result) 
-                ? result 
+            return _annotations.TryGetValue(module, out result)
+                ? result
                 : Enumerable.Empty<IAnnotation>();
         }
 
@@ -473,8 +473,8 @@ namespace Rubberduck.Parsing.Symbols
             Debug.Assert(module != null);
 
             var members = Members(module.QualifiedName.QualifiedModuleName);
-            return members == null 
-                ? Enumerable.Empty<Declaration>() 
+            return members == null
+                ? Enumerable.Empty<Declaration>()
                 : members.Where(declaration => declaration.DeclarationType == DeclarationType.Event);
         }
 
@@ -494,8 +494,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             var normalizedName = ToNormalizedName(name);
             List<Declaration> result;
-            return _declarationsByName.TryGetValue(normalizedName, out result) 
-                ? result 
+            return _declarationsByName.TryGetValue(normalizedName, out result)
+                ? result
                 : Enumerable.Empty<Declaration>();
         }
 
@@ -515,7 +515,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration result = null;
             try
             {
-                result = MatchName(name).SingleOrDefault(project => 
+                result = MatchName(name).SingleOrDefault(project =>
                     project.DeclarationType.HasFlag(DeclarationType.Project)
                     && (currentScope == null || project.ProjectId == currentScope.ProjectId));
             }
@@ -587,7 +587,7 @@ namespace Rubberduck.Parsing.Symbols
             var nameMatches = MatchName(defaultInstanceVariableClassName);
             var moduleMatches = nameMatches.Where(m =>
                 m.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)m).HasDefaultInstanceVariable
-                && Declaration.GetProjectParent(m).Equals(callingProject)).ToList(); 
+                && Declaration.GetProjectParent(m).Equals(callingProject)).ToList();
             var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
             var match = accessibleModules.FirstOrDefault();
             return match;
@@ -621,7 +621,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName,
                 p => referencedProject.Equals(Declaration.GetProjectParent(p))
-                    && p.DeclarationType == DeclarationType.ClassModule 
+                    && p.DeclarationType == DeclarationType.ClassModule
                     && ((ClassModuleDeclaration)p).HasDefaultInstanceVariable);
             var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
             var match = accessibleModules.FirstOrDefault();
@@ -643,7 +643,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             return ClassModuleDeclaration
                 .GetSupertypes(parent)
-                .Select(supertype => 
+                .Select(supertype =>
                     FindMemberWithParent(callingProject, callingModule, callingParent, supertype, memberName, memberType))
                 .FirstOrDefault(supertypeMember => supertypeMember != null);
         }
@@ -696,12 +696,92 @@ namespace Rubberduck.Parsing.Symbols
                 return memberMatches.FirstOrDefault();
             }
 
-            if (memberType == DeclarationType.Variable && NameComparer.Equals(enclosingProcedure.IdentifierName, memberName))
-            {
-                return enclosingProcedure;
-            }
+            //if (memberType == DeclarationType.Variable && NameComparer.Equals(enclosingProcedure.IdentifierName, memberName))
+            //{
+            //    return enclosingProcedure;
+            //}
 
             return null;
+        }
+
+        public Declaration OnRedimVariable(Declaration enclosingProcedure, string identifierName, VBAParser.SimpleNameExprContext context, VBAParser.RedimVariableDeclarationContext redimVariable)
+        {
+            var typeHint = Identifier.GetTypeHintValue(context.identifier());
+            var asTypeClause = redimVariable.asTypeClause();
+            var asTypeName = typeHint == null
+                ? asTypeClause == null
+                    ? Tokens.Variant
+                    : asTypeClause.type().GetText()
+                : SymbolList.TypeHintToTypeName[typeHint];
+            var annotations = _annotationService.FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line).ToList();
+            var newVariable =
+                new Declaration(
+                    new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
+                    enclosingProcedure,
+                    enclosingProcedure,
+                    asTypeName,
+                    typeHint,
+                    isSelfAssigned: false,
+                    isWithEvents: false,
+                    Accessibility.Implicit,
+                    DeclarationType.Variable,
+                    context,
+                    context.GetSelection(),
+                    isArray: true,
+                    asTypeClause,
+                    isUserDefined: true,
+                    annotations,
+                    null,
+                    undeclared: false,
+                    isRedimVariable: true);
+            // Note: We do not add annotations again because those get added for the redim statement separately.
+            // We have to add the newly created declaration to the lookup dictionaries because we're in the middle of the binding process
+            // and a Redim statement after this one could reference the same variable.
+            List<Declaration> tempDeclarations = null;
+            if (_declarations.TryGetValue(newVariable.QualifiedName.QualifiedModuleName, out tempDeclarations))
+            {
+                tempDeclarations.Add(newVariable);
+            }
+            else
+            {
+                tempDeclarations = new List<Declaration>();
+                tempDeclarations.Add(newVariable);
+                _declarations[newVariable.QualifiedName.QualifiedModuleName] = tempDeclarations;
+            }
+            tempDeclarations = null;
+            if (_declarationsByName.TryGetValue(newVariable.IdentifierName.ToLowerInvariant(), out tempDeclarations))
+            {
+                tempDeclarations.Add(newVariable);
+            }
+            else
+            {
+                tempDeclarations = new List<Declaration>();
+                tempDeclarations.Add(newVariable);
+                _declarationsByName[newVariable.IdentifierName.ToLowerInvariant()] = tempDeclarations;
+            }
+            tempDeclarations = null;
+            if (_declarationsBySelection.TryGetValue(GetGroupingKey(newVariable), out tempDeclarations))
+            {
+                tempDeclarations.Add(newVariable);
+            }
+            else
+            {
+                tempDeclarations = new List<Declaration>();
+                tempDeclarations.Add(newVariable);
+                _declarationsBySelection[GetGroupingKey(newVariable)] = tempDeclarations;
+            }
+            tempDeclarations = null;
+            if (_userDeclarationsByType.TryGetValue(newVariable.DeclarationType, out tempDeclarations))
+            {
+                tempDeclarations.Add(newVariable);
+            }
+            else
+            {
+                tempDeclarations = new List<Declaration>();
+                tempDeclarations.Add(newVariable);
+                _userDeclarationsByType[newVariable.DeclarationType] = tempDeclarations;
+            }
+            return newVariable;
         }
 
         public Declaration OnUndeclaredVariable(Declaration enclosingProcedure, string identifierName, ParserRuleContext context)
@@ -738,7 +818,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddUnboundContext(Declaration parentDeclaration, VBAParser.LExpressionContext context, IBoundExpression withExpression)
         {
-            
+
             //The only forms we care about right now are MemberAccessExprContext or WithMemberAccessExprContext.
             if (!(context is VBAParser.MemberAccessExprContext) && !(context is VBAParser.WithMemberAccessExprContext))
             {
@@ -749,7 +829,7 @@ namespace Rubberduck.Parsing.Symbols
             var annotations = _annotationService.FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line);
 
             var declaration = new UnboundMemberDeclaration(parentDeclaration, identifier,
-                (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context, 
+                (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context,
                 annotations);
 
             _newUnresolved.Add(declaration);
@@ -777,8 +857,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             var allMatches = MatchName(memberName);
             var memberMatches = allMatches.Where(m => m.DeclarationType.HasFlag(memberType)
-                && (Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule 
-                    || memberType == DeclarationType.Enumeration 
+                && (Declaration.GetModuleParent(m).DeclarationType == DeclarationType.ProceduralModule
+                    || memberType == DeclarationType.Enumeration
                     || memberType == DeclarationType.EnumerationMember)
                 && Declaration.GetProjectParent(m).Equals(callingProject)
                 && !callingModule.Equals(Declaration.GetModuleParent(m)))
@@ -791,7 +871,7 @@ namespace Rubberduck.Parsing.Symbols
         private static bool IsInstanceSensitive(DeclarationType memberType)
         {
             return memberType.HasFlag(DeclarationType.Procedure)
-                || memberType.HasFlag(DeclarationType.Function) 
+                || memberType.HasFlag(DeclarationType.Function)
                 || memberType.HasFlag(DeclarationType.Variable)
                 || memberType.HasFlag(DeclarationType.Constant);
         }
@@ -813,7 +893,7 @@ namespace Rubberduck.Parsing.Symbols
 
             return ClassModuleDeclaration
                 .GetSupertypes(memberModule)
-                .Select(supertype => 
+                .Select(supertype =>
                     FindMemberEnclosedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType))
                 .FirstOrDefault(supertypeMember => supertypeMember != null);
         }
@@ -838,11 +918,11 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindMemberReferencedProjectInGlobalClassModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, string memberName, DeclarationType memberType)
         {
             var memberMatches = FindAllInReferencedProjectByPriority(
-                callingProject, 
-                memberName, 
-                p => p.DeclarationType.HasFlag(memberType) 
-                    && (Declaration.GetModuleParent(p) == null 
-                        || Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule) 
+                callingProject,
+                memberName,
+                p => p.DeclarationType.HasFlag(memberType)
+                    && (Declaration.GetModuleParent(p) == null
+                        || Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule)
                     && ((ClassModuleDeclaration)Declaration.GetModuleParent(p)).IsGlobalClassModule);
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
@@ -852,9 +932,9 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindMemberReferencedProjectInModule(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration memberModule, string memberName, DeclarationType memberType)
         {
             var memberMatches = FindAllInReferencedProjectByPriority(
-                callingProject, 
-                memberName, 
-                p => p.DeclarationType.HasFlag(memberType) 
+                callingProject,
+                memberName,
+                p => p.DeclarationType.HasFlag(memberType)
                     && memberModule.Equals(Declaration.GetModuleParent(p)
                 ));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
@@ -865,7 +945,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             return ClassModuleDeclaration
                 .GetSupertypes(memberModule)
-                .Select(supertype => 
+                .Select(supertype =>
                     FindMemberReferencedProjectInModule(callingProject, callingModule, callingParent, supertype, memberName, memberType))
                 .FirstOrDefault(supertypeMember => supertypeMember != null);
         }
@@ -873,12 +953,12 @@ namespace Rubberduck.Parsing.Symbols
         public Declaration FindMemberReferencedProject(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration referencedProject, string memberName, DeclarationType memberType)
         {
             var memberMatches = FindAllInReferencedProjectByPriority(
-                callingProject, 
-                memberName, 
-                p => p.DeclarationType.HasFlag(memberType) 
+                callingProject,
+                memberName,
+                p => p.DeclarationType.HasFlag(memberType)
                     && referencedProject.Equals(Declaration.GetProjectParent(p)
                 ));
-            return memberMatches.FirstOrDefault(m => 
+            return memberMatches.FirstOrDefault(m =>
                     AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
         }
 
@@ -960,8 +1040,8 @@ namespace Rubberduck.Parsing.Symbols
             return _declarations.AllValues()
                 .Where(callee => AccessibilityCheck.IsAccessible(
                     Declaration.GetProjectParent(target),
-                    Declaration.GetModuleParent(target), 
-                    target.ParentDeclaration, 
+                    Declaration.GetModuleParent(target),
+                    target.ParentDeclaration,
                     callee));
         }
 
@@ -1003,14 +1083,14 @@ namespace Rubberduck.Parsing.Symbols
 
             //Filter accessible declarations to those that would result in name collisions or hiding
             var declarationsToAvoid = GetAccessibleUserDeclarations(declaration).Where(candidate =>
-                                        (IsAccessibleInOtherProcedureModule(candidate,declaration)
+                                        (IsAccessibleInOtherProcedureModule(candidate, declaration)
                                         || candidate.DeclarationType == DeclarationType.Project
                                         || candidate.DeclarationType.HasFlag(DeclarationType.Module)
                                         || IsDeclarationInSameProcedureScope(candidate, declaration)
                                         )).ToHashSet();
 
             //Add local variables when the target is a method or property
-            if(IsSubroutineOrProperty(declaration))
+            if (IsSubroutineOrProperty(declaration))
             {
                 var localVariableDeclarations = _declarations.AllValues()
                     .Where(dec => declaration == dec.ParentDeclaration);
@@ -1068,7 +1148,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Creates a dictionary of identifier references, keyed by module.
         /// </summary>
-        public IReadOnlyDictionary<QualifiedModuleName,IEnumerable<IdentifierReference>> IdentifierReferences()
+        public IReadOnlyDictionary<QualifiedModuleName, IEnumerable<IdentifierReference>> IdentifierReferences()
         {
             return new ReadOnlyDictionary<QualifiedModuleName, IEnumerable<IdentifierReference>>(
                 _referencesByModule.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.AsEnumerable()));

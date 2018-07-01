@@ -178,6 +178,7 @@
     <Compile Include="Symbols\ParsingExceptions\ParsePassSyntaxErrorInfo.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseSyntaxErrorException.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
+    <Compile Include="Symbols\ResultVariableDeclaration.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="UIContext\UiDispatcher.cs" />
     <Compile Include="VBA\RepositoryProjectManager.cs" />
