@@ -292,7 +292,7 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(tests);
+            _testEngine.Run(tests.Select(vm => vm.Method));
             stopwatch.Stop();
 
             Model.IsBusy = false;
@@ -309,7 +309,7 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown));
+            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown).Select(vm => vm.Method));
             stopwatch.Stop();
 
             Model.IsBusy = false;
@@ -326,7 +326,7 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive));
+            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive).Select(vm => vm.Method));
             stopwatch.Stop();
 
             Model.IsBusy = false;
@@ -343,7 +343,7 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed));
+            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed).Select(vm => vm.Method));
             stopwatch.Stop();
 
             Model.IsBusy = false;
@@ -360,7 +360,7 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded));
+            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded).Select(vm => vm.Method));
             stopwatch.Stop();
 
             Model.IsBusy = false;

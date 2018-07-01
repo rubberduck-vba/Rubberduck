@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
 {
     public interface ITestEngine
     {
-        TestExplorerModel Model { get; }
+        //TestExplorerModel Model { get; }
         void Run();
         void Run(IEnumerable<TestMethod> tests);
         void Refresh();
@@ -20,15 +19,14 @@ namespace Rubberduck.UnitTesting
     {
         public TestModuleEventArgs(QualifiedModuleName qualifiedModuleName)
         {
-            _qualifiedModuleName = qualifiedModuleName;
+            QualifiedModuleName = qualifiedModuleName;
         }
-
-        private readonly QualifiedModuleName _qualifiedModuleName;
-        public QualifiedModuleName QualifiedModuleName { get { return _qualifiedModuleName; } }
+        public QualifiedModuleName QualifiedModuleName { get; }
     }
 
     public class TestCompletedEventArgs : EventArgs
     {
+        // FIXME this needs to actually encapsulate the result as well
         public TestMethod Test { get; private set; }
 
         public TestCompletedEventArgs(TestMethod test)

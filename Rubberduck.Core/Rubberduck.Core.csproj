@@ -512,10 +512,7 @@
       <DependentUpon>AutoCompleteSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\AutoCompleteSettingsViewModel.cs" />
-    <Compile Include="UnitTesting\IFakes.cs" />
-    <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
-    <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
-    <Compile Include="UnitTesting\TestCategory.cs" />
+    <Compile Include="UI\UnitTesting\ViewModels\TestMethodViewModel.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
@@ -815,16 +812,7 @@
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ViewModelBase.cs" />
-    <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
-    <Compile Include="UnitTesting\AssertHandler.cs" />
-    <Compile Include="UnitTesting\UnitTestUtils.cs" />
-    <Compile Include="UnitTesting\ITestEngine.cs" />
-    <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
-    <Compile Include="UnitTesting\TestEngine.cs" />
-    <Compile Include="UnitTesting\TestMethod.cs" />
-    <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UI\UnitTesting\TestOutcomeImageSourceConverter.cs" />
-    <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
@@ -960,6 +948,10 @@
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
+      <Project>{68f55404-32ca-4414-96b8-e284f3b1f846}</Project>
+      <Name>Rubberduck.UnitTesting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>

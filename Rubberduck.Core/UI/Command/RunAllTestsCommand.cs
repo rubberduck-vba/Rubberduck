@@ -89,7 +89,7 @@ namespace Rubberduck.UI.Command
             stopwatch.Start();
             try
             {
-                _engine.Run(_model.Tests);
+                _engine.Run(_model.Tests.Select(vm => vm.Method));
             }
             finally
             {

@@ -109,7 +109,7 @@ End Sub";
                 }
 
                 model.Tests.First().Result = new TestResult(TestOutcome.Succeeded);
-                model.AddExecutedTest(model.Tests.First());
+                model.AddExecutedTest(model.Tests.First().Method);
 
                 Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
             }
@@ -140,7 +140,7 @@ End Sub";
                 }
 
                 model.Tests.First().Result = new TestResult(TestOutcome.Failed);
-                model.AddExecutedTest(model.Tests.First());
+                model.AddExecutedTest(model.Tests.First().Method);
 
                 Assert.AreEqual(model.ProgressBarColor, Colors.Red);
             }
@@ -171,7 +171,7 @@ End Sub";
                 }
 
                 model.Tests.First().Result = new TestResult(TestOutcome.Inconclusive);
-                model.AddExecutedTest(model.Tests.First());
+                model.AddExecutedTest(model.Tests.First().Method);
 
                 Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
             }
@@ -218,10 +218,10 @@ End Sub";
                 model.Tests[2].Result = new TestResult(TestOutcome.Failed);
                 model.Tests[3].Result = new TestResult(TestOutcome.Ignored);
 
-                model.AddExecutedTest(model.Tests[0]);
-                model.AddExecutedTest(model.Tests[1]);
-                model.AddExecutedTest(model.Tests[2]);
-                model.AddExecutedTest(model.Tests[3]);
+                model.AddExecutedTest(model.Tests[0].Method);
+                model.AddExecutedTest(model.Tests[1].Method);
+                model.AddExecutedTest(model.Tests[2].Method);
+                model.AddExecutedTest(model.Tests[3].Method);
 
                 Assert.AreEqual(model.ProgressBarColor, Colors.Red);
             }
@@ -263,9 +263,9 @@ End Sub";
                 model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
                 model.Tests[2].Result = new TestResult(TestOutcome.Ignored);
 
-                model.AddExecutedTest(model.Tests[0]);
-                model.AddExecutedTest(model.Tests[1]);
-                model.AddExecutedTest(model.Tests[2]);
+                model.AddExecutedTest(model.Tests[0].Method);
+                model.AddExecutedTest(model.Tests[1].Method);
+                model.AddExecutedTest(model.Tests[2].Method);
 
                 Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
             }
@@ -302,8 +302,8 @@ End Sub";
                 model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
                 model.Tests[1].Result = new TestResult(TestOutcome.Ignored);
 
-                model.AddExecutedTest(model.Tests[0]);
-                model.AddExecutedTest(model.Tests[1]);
+                model.AddExecutedTest(model.Tests[0].Method);
+                model.AddExecutedTest(model.Tests[1].Method);
 
                 Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
             }
@@ -336,7 +336,7 @@ End Sub";
                 Assert.AreEqual(0, model.ExecutedCount);
 
                 model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[0].Method);
 
                 Assert.AreEqual(1, model.ExecutedCount);
             }
@@ -369,7 +369,7 @@ End Sub";
                 Assert.AreEqual(0, model.LastRun.Count);
 
                 model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[0].Method);
 
                 Assert.AreEqual(1, model.LastRun.Count);
             }
@@ -400,7 +400,7 @@ End Sub";
                 }
 
                 model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[0].Method);
 
                 Assert.AreEqual(1, model.LastRun.Count);
 

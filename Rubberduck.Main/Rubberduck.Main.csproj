@@ -362,6 +362,10 @@
       <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
       <Name>Rubberduck.CodeAnalysis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
+      <Project>{68f55404-32ca-4414-96b8-e284f3b1f846}</Project>
+      <Name>Rubberduck.UnitTesting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
       <Project>{5d683117-21f1-4a01-a0c7-6ae6f30a16a7}</Project>
       <Name>Rubberduck.VBEditor.VB6</Name>

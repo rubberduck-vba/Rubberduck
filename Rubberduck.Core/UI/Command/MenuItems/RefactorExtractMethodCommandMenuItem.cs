@@ -7,7 +7,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
 namespace Rubberduck.UI.Command.MenuItems
 {
 #if !DEBUG
-    [Disabled]
+    [Parsing.Common.Disabled]
 #endif 
     public class RefactorExtractMethodCommandMenuItem : CommandMenuItemBase
     {

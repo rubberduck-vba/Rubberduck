@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -33,38 +34,40 @@ namespace Rubberduck.UI.UnitTesting
             {
                 var tests = UnitTestUtils.GetAllTests(_vbe, _state).ToList();
 
-                var removedTests = Tests.Where(test =>
-                             !tests.Any(t =>
-                                     t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                                     t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                                     t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
+                //var removedTests = Tests.Where(test =>
+                //             !tests.Any(t =>
+                //                     t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                //                     t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                //                     t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
 
-                // remove old tests
-                foreach (var test in removedTests)
-                {
-                    Tests.Remove(test);
-                }
+                //// remove old tests
+                //foreach (var test in removedTests)
+                //{
+                //    Tests.Remove(test);
+                //}
 
-                // update declarations for existing tests--declarations are immutable
-                foreach (var test in Tests.Except(removedTests))
-                {
-                    var declaration = tests.First(t =>
-                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
+                //// update declarations for existing tests--declarations are immutable
+                //foreach (var test in Tests.Except(removedTests))
+                //{
+                //    var declaration = tests.First(t =>
+                //        t.Declaration.ComponentName == test.Declaration.ComponentName &&
+                //        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                //        t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
 
-                    test.SetDeclaration(declaration);
-                }
+                //    test.SetDeclaration(declaration);
+                //}
 
+                // refresh all tests
+                Tests.Clear();
                 // add new tests
                 foreach (var test in tests)
                 {
                     if (!Tests.Any(t =>
-                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Declaration.ProjectId == test.Declaration.ProjectId))
+                        t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
+                        t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                        t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
                     {
-                        Tests.Add(test);
+                        Tests.Add(new TestMethodViewModel(test));
                     }
                 }
             });
@@ -72,9 +75,9 @@ namespace Rubberduck.UI.UnitTesting
             OnTestsRefreshed();
         }
 
-        public ObservableCollection<TestMethod> Tests { get; } = new ObservableCollection<TestMethod>();
+        internal ObservableCollection<TestMethodViewModel> Tests { get; } = new ObservableCollection<TestMethodViewModel>();
 
-        public List<TestMethod> LastRun { get; } = new List<TestMethod>();
+        internal List<TestMethodViewModel> LastRun { get; } = new List<TestMethodViewModel>();
 
         public void ClearLastRun()
         {
@@ -83,7 +86,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public void AddExecutedTest(TestMethod test)
         {
-            LastRun.Add(test);
+            LastRun.Add(Tests.First(m => m.Method == test));
             ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
             if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
@@ -98,11 +101,11 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             if (!Tests.Any(t =>
-                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Declaration.ProjectId == test.Declaration.ProjectId))
+                        t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
+                        t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+                        t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
             {
-                Tests.Add(test);
+                Tests.Add(new TestMethodViewModel(test));
             }
         }
 

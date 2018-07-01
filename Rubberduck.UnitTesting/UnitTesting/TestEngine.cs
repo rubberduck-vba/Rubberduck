@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.UnitTesting;
-using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -36,10 +35,10 @@ namespace Rubberduck.UnitTesting
         private bool _testRequested;
         private IEnumerable<TestMethod> _tests;
 
-        public TestEngine(TestExplorerModel model, IVBE vbe, RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
+        public TestEngine(IVBE vbe, RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
         {
             Debug.WriteLine("TestEngine created.");
-            Model = model;
+            //Model = model;
             _vbe = vbe;
             _state = state;
             _fakesFactory = fakesFactory;
@@ -66,7 +65,7 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public TestExplorerModel Model { get; }
+        //public TestExplorerModel Model { get; }
 
         public event EventHandler TestCompleted;
 
@@ -76,15 +75,17 @@ namespace Rubberduck.UnitTesting
             handler?.Invoke(this, EventArgs.Empty);
         }
 
+        // FIXME ?? wut
         public void Refresh()
         {
-            Model.Refresh();
+            //Model.Refresh();
         }
 
         public void Run()
         {
             _testRequested = true;
-            _tests = Model.LastRun;
+            // FIXME
+            //_tests = Model.LastRun;
             // We will run the tests once parsing has completed
             Refresh();
         }
@@ -181,7 +182,6 @@ namespace Rubberduck.UnitTesting
                         test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
 
                         OnTestCompleted();
-                        Model.AddExecutedTest(test);
                     }
                     var cleanupMethods = module.Key.FindModuleCleanupMethods(_state);
                     try
