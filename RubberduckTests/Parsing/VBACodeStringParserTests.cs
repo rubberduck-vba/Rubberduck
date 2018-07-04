@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using NUnit.Framework;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
 
@@ -73,6 +72,32 @@ End Sub";
             var parser = new VBACodeStringParser("test", inputCode);
             
             Assert.IsInstanceOf<TokenStreamRewriter>(parser.Rewriter);
+        }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void Parse_ExplicitSll()
+        {
+            const string inputCode = @"
+Public Sub Foo
+    MsgBox ""hi""
+End Sub";
+            var parser = new VBACodeStringParser("test", inputCode, VBACodeStringParser.ParserMode.Sll);
+
+            Assert.IsInstanceOf<IParseTree>(parser.ParseTree);
+        }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void Parse_ExplicitLl()
+        {
+            const string inputCode = @"
+Public Sub Foo
+    MsgBox ""hi""
+End Sub";
+            var parser = new VBACodeStringParser("test", inputCode, VBACodeStringParser.ParserMode.Ll);
+
+            Assert.IsInstanceOf<IParseTree>(parser.ParseTree);
         }
     }
 }
