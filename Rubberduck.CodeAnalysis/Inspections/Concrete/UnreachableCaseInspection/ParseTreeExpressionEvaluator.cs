@@ -154,7 +154,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Debug.Assert(isMathOp || isLogicOp);
 
             var operand = PrepareOperand(value);
-            if (!operand.value.Equals(string.Empty))
+            if (!operand.typeName.Equals(string.Empty))
             {
                 if (isMathOp)
                 {

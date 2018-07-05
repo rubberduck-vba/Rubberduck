@@ -41,20 +41,17 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void UnreachableCaseInspection_SelectExprTypeHint(string typeHintExpr, string firstCase, string expected)
         {
             string inputCode =
-@"
+$@"
         Sub Foo()
 
-        <typeHintExprAndSelectCase>
-            Case <firstCaseVal>
+        {typeHintExpr}
+            Case {firstCase}
             'OK
             Case Else
             'Unreachable
         End Select
 
         End Sub";
-            inputCode = inputCode.Replace("<typeHintExprAndSelectCase>", typeHintExpr);
-            inputCode = inputCode.Replace("<firstCaseVal>", firstCase);
-
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
@@ -68,22 +65,19 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void UnreachableCaseInspection_CaseClauseTypeHint(string typeHintExpr, string firstCase, string expected)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Variant)
 
-        <typeHintExpr>
+        {typeHintExpr}
 
         Select Case x
-            Case <firstCaseVal>
+            Case {firstCase}
             'OK
             Case Else
             'Unreachable
         End Select
 
         End Sub";
-            inputCode = inputCode.Replace("<typeHintExprAndSelectCase>", typeHintExpr);
-            inputCode = inputCode.Replace("<firstCaseVal>", firstCase);
-
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
@@ -98,7 +92,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void UnreachableCaseInspection_SelectExpressionType(string selectExpr, string argList, string expected)
         {
             string inputCode =
-@"
+$@"
         Private Function ToLong(val As Variant) As Long
             ToLong = 5
         End Function
@@ -107,9 +101,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
             ToString = ""Foo""
         End Function
 
-        Sub Foo(<argList>)
+        Sub Foo({argList})
 
-            Select Case <selectExpr>
+            Select Case {selectExpr}
                 Case 45
                 'OK
                 Case Else
@@ -117,10 +111,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
             End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<selectExpr>", selectExpr);
-            inputCode = inputCode.Replace("<argList>", argList);
-
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
@@ -134,7 +124,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void UnreachableCaseInspection_CaseClauseType(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
-@"
+$@"
         Private Function ToLong(val As Variant) As Long
             ToLong = 5
         End Function
@@ -146,16 +136,13 @@ namespace RubberduckTests.Inspections.UnreachableCase
         Sub Foo(x As Variant)
 
             Select Case x
-                Case <rangeExpr1>, <rangeExpr2>
+                Case {rangeExpr1}, {rangeExpr2}
                 'OK
                 Case Else
                 'OK
             End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
-            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
@@ -182,7 +169,6 @@ $@"
             End Select
 
         End Sub";
-
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
@@ -195,23 +181,20 @@ $@"
         public void UnreachableCaseInspection_CaseClauseTypeUnrecognizedCaseExpressionType(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Collection)
             Select Case x(3)
-                Case <rangeExpr1>
+                Case {rangeExpr1}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'OK
                 Case Else
                 'OK
             End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
-            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
@@ -222,22 +205,19 @@ $@"
         public void UnreachableCaseInspection_CaseClauseTypeUnrecognizedCaseExpressionType2(string rangeExpr1, string rangeExpr2, bool triggersCaseElse)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Collection)
             Select Case x(3)
-                Case <rangeExpr1>
+                Case {rangeExpr1}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'unreachable
                 Case Else
                 'Depends on flag
             End Select
         End Sub";
-
-            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
-            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: triggersCaseElse ? 1 : 0);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -251,23 +231,20 @@ $@"
         public void UnreachableCaseInspection_CaseClauseTypeVariantSelectExpression(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Variant)
             Select Case x
-                Case <rangeExpr1>
+                Case {rangeExpr1}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'OK
                 Case Else
                 'OK
             End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
-            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
@@ -334,22 +311,18 @@ $@"Sub Foo(x As {type})
         public void UnreachableCaseInspection_ComparablePredicates(string case1, string case2, string case3)
         {
             string inputCode =
-@"Sub Foo(x As Long, y As Double)
+$@"Sub Foo(x As Long, y As Double)
 
         Select Case x
-           Case <case1>
+           Case {case1}
             'OK
-           Case <case2>
+           Case {case2}
             'OK
-           Case <case3>
+           Case {case3}
             'Unreachable
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<case1>", case1);
-            inputCode = inputCode.Replace("<case2>", case2);
-            inputCode = inputCode.Replace("<case3>", case3);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -360,21 +333,19 @@ $@"Sub Foo(x As {type})
         public void UnreachableCaseInspection_LogicalOpUnary(string caseClause)
         {
             string inputCode =
-@"Sub Foo(x As Boolean)
+$@"Sub Foo(x As Boolean)
 
         Private Const fromVal As Long = 500
         Private Const toVal As Long = 0
 
         Select Case x
-           Case <caseClause>
+           Case {caseClause}
             'OK
            Case True
             'Unreachable
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<caseClause>", caseClause);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -387,18 +358,16 @@ $@"Sub Foo(x As {type})
         public void UnreachableCaseInspection_CopyPaste(string complexClause1, string complexClause2)
         {
             string inputCode =
-@"Sub Foo(x As Long)
+$@"Sub Foo(x As Long)
 
                 Select Case x
-                    Case <complexClause1>
+                    Case {complexClause1}
                     'OK
-                    Case <complexClause2>
+                    Case {complexClause2}
                     'Unreachable - detected by text compare of range clause(s)
                 End Select
 
                 End Sub";
-            inputCode = inputCode.Replace("<complexClause1>", complexClause1);
-            inputCode = inputCode.Replace("<complexClause2>", complexClause2);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -436,10 +405,10 @@ $@"Sub Foo(x As {type})
         public void UnreachableCaseInspection_NumberRangeMixedTypes(string firstCase, int unreachableCount, int mismatchCount)
         {
             string inputCode =
-@"Sub Foo(x As Integer, z As String)
+$@"Sub Foo(x As Integer, z As String)
 
         Select Case x
-            Case <firstCase>
+            Case {firstCase}
             'Mismatch - unreachable
             Case 1 To 50
             'OK
@@ -448,8 +417,6 @@ $@"Sub Foo(x As {type})
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, mismatch: mismatchCount);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -766,26 +733,24 @@ Select Case x
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        [TestCase("True", "Is <= False", 2)]
-        [TestCase("Is >= True", "False", 1)]
+        [TestCase("True", "Is <= False", 1)]
+        [TestCase("Is >= True", "False", 2)]
         [Category("Inspections")]
         public void UnreachableCaseInspection_BooleanRelationalOps(string firstCase, string secondCase, int expected)
         {
             string inputCode =
-@"Sub Foo( x As Boolean)
+$@"Sub Foo( x As Boolean)
 
         Select Case x
-            Case <firstCase>
+            Case {firstCase}
             'OK
-            Case <secondCase>
+            Case {secondCase}
             'Unreachable
             Case 95
             'Unreachable
         End Select
 
         End Sub";
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
-            inputCode = inputCode.Replace("<secondCase>", secondCase);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expected);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -890,20 +855,22 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        [TestCase("False To True", 1, 0)] //<firstCase> is unreachable - malformed
-        [TestCase("True To False", 1, 1)] //<firstCase> filters all possible values
+        [TestCase("False To True", 1, 0)] //firstCase is unreachable - malformed
+        [TestCase("True To False", 1, 1)] //firstCase filters all possible values
+        [TestCase("Is < True", 1, 0)]   //firstCase is inherently unreachable
+        [TestCase("Is >= True", 1, 1)]   //firstCase filters all possible values
         [Category("Inspections")]
-        public void UnreachableCaseInspection_BooleanExpressionUnreachableCaseElseInvertBooleanRange(string firstCase, int unreachableCount, int caseElseCount)
+        public void UnreachableCaseInspection_BooleanExpression(string firstCase, int unreachableCount, int caseElseCount)
         {
             string inputCode =
-@"
+$@"
 Private Function Random() As Double
     Random = VBA.Rnd()
 End Function
 
 Sub Foo(x As Boolean)
     Select Case Random() > 0.5
-        Case <firstCase> 
+        Case {firstCase} 
         'Reachable depends on firstCase
         Case True
         'Reachable depends on firstCase
@@ -911,7 +878,6 @@ Sub Foo(x As Boolean)
         'Reachable depends on firstCase
     End Select
 End Sub";
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, caseElse: caseElseCount);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1541,13 +1507,13 @@ End Sub";
         public void UnreachableCaseInspection_SelectCaseUsesConstantReferenceExpr(string selectExpr, string firstCase, int expected)
         {
             string inputCode =
-@"
+$@"
         private Const maxValue As Long = 5000
 
         Sub Foo(z As Long)
 
-        Select Case <selectExpr>
-            Case <firstCase>
+        Select Case {selectExpr}
+            Case {firstCase}
             'OK
             Case 15
             'OK
@@ -1560,9 +1526,6 @@ End Sub";
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<selectExpr>", selectExpr);
-            inputCode = inputCode.Replace("<firstCase>", firstCase);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expected);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1678,26 +1641,24 @@ End Sub";
         public void UnreachableCaseInspection_IsStmtVariables(string opSymbol)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Long, y As Long, z As Long)
         Select Case z
             Case 95 
             'OK
-            Case Is <opSymbol> x
+            Case Is {opSymbol} x
             'OK
             Case -3 To 10 
             'OK - covers True and False
-            Case Is <opSymbol> y 
+            Case Is {opSymbol} y 
             'OK
-            Case Is <opSymbol> x 
+            Case Is {opSymbol} x 
             'Unreachable
             Case z < x
             'Unreachable
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<opSymbol>", opSymbol);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1720,21 +1681,18 @@ End Sub";
         public void UnreachableCaseInspection_ImpEqvOperators(string secondCase, string thirdCase)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Long, y As Long, z As Long)
         Select Case z
             Case Is < x 
             'OK
-            Case <secondCase>
+            Case {secondCase}
             'OK
-            Case <thirdCase>
+            Case {thirdCase}
             'Unreachable
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<secondCase>", secondCase);
-            inputCode = inputCode.Replace("<thirdCase>", thirdCase);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1745,24 +1703,22 @@ End Sub";
         public void UnreachableCaseInspection_ImpEqvOperatorsVariable(string op)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Long, y As Long, z As Long)
         Select Case z
             Case Is < x 
             'OK
-            Case x <op> y
+            Case x {op} y
             'OK
             Case -3 To 10 
             'OK
-            Case x <op> y
+            Case x {op} y
             'Unreachable
-            Case x <op> z
+            Case x {op} z
             'OK
         End Select
 
         End Sub";
-
-            inputCode = inputCode.Replace("<op>", op);
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1784,7 +1740,6 @@ End Sub";
         End Select
 
         End Sub";
-
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1819,9 +1774,7 @@ Sub FooCount(x As Long)
             'Unreachable - just to make sure the test finds something 
             MsgBox ""Bar""
     End Select
-End Sub
-";
-
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1846,9 +1799,7 @@ Sub FooCount(x As Long)
         Case 5900 + 2 + 1
             'Unreachable
     End Select
-End Sub
-";
-
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -1875,20 +1826,19 @@ Sub AddVariable(testClass As Class1)
 End Sub";
 
             string inputClassCode =
-@"
+$@"
 Option Explicit
 
-Private myVal As <propertyType>
+Private myVal As {propertyType}
 
-Public Property Set AValue(val As <propertyType>)
+Public Property Set AValue(val As {propertyType})
     myVal = val
 End Property
 
-Public Property Get AValue() As <propertyType>
+Public Property Get AValue() As {propertyType}
     AValue = myVal
 End Property
 ";
-            inputClassCode = inputClassCode.Replace("<propertyType>", propertyType);
             var components = new List<(string moduleName, string inputCode)>()
             {
                 ("TestModule1", inputCode),
@@ -1922,20 +1872,19 @@ Sub AddVariable(x As Long)
 End Sub";
 
             string inputClassCode =
-@"
+$@"
 Option Explicit
 
-Private myVal As <propertyType>
+Private myVal As {propertyType}
 
-Public Property Set AValue(val As <propertyType>)
+Public Property Set AValue(val As {propertyType})
     myVal = val
 End Property
 
-Public Property Get AValue() As <propertyType>
+Public Property Get AValue() As {propertyType}
     AValue = myVal
 End Property
 ";
-            inputClassCode = inputClassCode.Replace("<propertyType>", propertyType);
             var components = new List<(string moduleName, string inputCode)>()
             {
                 ("TestModule1",inputCode),
@@ -1966,12 +1915,11 @@ Sub AddVariable(x As Variant)
 End Sub";
 
             string inputModule2Code =
-@"
+$@"
 Option Explicit
 
-Public Const MY_CONSTANT As <propertyTypeAndAssignment> 
+Public Const MY_CONSTANT As {propertyType} 
 ";
-            inputModule2Code = inputModule2Code.Replace("<propertyTypeAndAssignment>", propertyType);
             var components = new List<(string moduleName, string inputCode)>()
             {
                 ("TestModule1",inputCode),
@@ -2008,9 +1956,7 @@ Sub SecondSub(x As Boolean)
         Case Else
             MsgBox ""Unreachable""
     End Select
-End Sub
-";
-
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2021,32 +1967,29 @@ End Sub
         public void UnreachableCaseInspection_Like(string caseClauseExpression, string likePattern, int expectedUnreachable)
         {
             string inputCode =
-@"
+$@"
 Private Const TEST_CONST As String = ""FooBar""
 
 Sub FirstSub(x As String, y As String)
     Select Case True
-        Case <caseClauseExpression><likePattern>
+        Case {caseClauseExpression}{likePattern}
             'OK
         Case TEST_CONST
             'Mismatch
-        Case ""CandyBar"" Like <likePattern>
+        Case ""CandyBar"" Like {likePattern}
             'OK
-        Case ""HandleBar"" Like <likePattern>
+        Case ""HandleBar"" Like {likePattern}
             'Unreachable
     End Select
-End Sub
-";
-            inputCode = inputCode.Replace("<caseClauseExpression>", caseClauseExpression);
-            inputCode = inputCode.Replace("<likePattern>", likePattern);
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expectedUnreachable, mismatch: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
         [TestCase(@"Option Compare Binary", @"""f"" Like ""[a-z]*""", 2)]
         [TestCase(@"", @"""f"" Like ""[a-z]*""", 2)]
-        [TestCase(@"Option Compare Binary", @"""F"" Like ""[a-z]*""", 1)]
-        [TestCase(@"", @"""F"" Like ""[a-z]*""", 1)]
+        [TestCase(@"Option Compare Binary", @"""F"" Like ""[a-z]*""", 2)]
+        [TestCase(@"", @"""F"" Like ""[a-z]*""", 2)]
         [TestCase(@"Option Compare Text", @"""f"" Like ""[a-z]*""", 2)]
         [TestCase(@"Option Compare Text", @"""F"" Like ""[a-z]*""", 2)]
         [TestCase(@"Option Compare Database", @"""f"" Like ""[a-z]*""", 2)]
@@ -2056,23 +1999,20 @@ End Sub
         public void UnreachableCaseInspection_LikeRespectsOptionCompareSetting( string optionCompare, string case1, int expectedUnreachable)
         {
             string inputCode =
-@"
+$@"
 Option Explicit
-<optionCompare>
+{optionCompare}
 
 Sub FirstSub(x As String)
     Select Case True
-        Case <case1>
-            'OK
+        Case {case1}
+            'Unreachable - if case1 is false
         Case 5 < 6
             'Unreachable - if case1 is True
         Case 9 > 8
             'Unreachable
     End Select
-End Sub
-";
-            inputCode = inputCode.Replace("<optionCompare>", optionCompare);
-            inputCode = inputCode.Replace("<case1>", case1);
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: expectedUnreachable);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2083,20 +2023,43 @@ End Sub
         {
             string inputCode =
 @"
-Sub FirstSub(x As String, y As String)
-    Select Case True
-        Case foo Like ""*""
+Sub FirstSub(x As String, y As String, flag As Boolean)
+    Select Case flag
+        Case x Like ""*""
             'OK
-        Case Not foo Like ""*""
+        Case Not x Like ""*""
             'OK
-        Case foo Like ""???*""
+        Case y Like ""???*""
             'Unreachable
         Case Else
             'Unreachable
     End Select
-End Sub
-";
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [TestCase("Select Case 100", @"""100""", 2)]
+        [TestCase("Select Case True", @"x Like ""*""", 2)]
+        [TestCase("Select Case False", @"Not x Like ""*""", 2)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SelectExpressionIsAConstant( string selectCase, string case1, int unreachableCount)
+        {
+            string inputCode =
+$@"
+Sub FirstSub(x As String, y As String)
+    {selectCase}
+        Case {case1}
+            'OK
+        Case y Like ""*""
+            'Unreachable
+        Case y Like ""???*""
+            'Unreachable
+        Case Else
+            'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, caseElse: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
@@ -2109,24 +2072,20 @@ End Sub
         public void UnreachableCaseInspection_StringCompareRespectsOptionCompareSetting(string optionCompare, string case1, int unreachable)
         {
             string inputCode =
-@"
-<optionCompare>
+$@"
+{optionCompare}
 
 Sub FirstSub(y As Boolean)
 
 Select Case y
-        Case <case1>
+        Case {case1}
             'OK
         Case 10 > 2
             'Unreachable
         Case 7 < 10
             'Unreachable
     End Select
-End Sub
-";
-
-            inputCode = inputCode.Replace("<optionCompare>", optionCompare);
-            inputCode = inputCode.Replace("<case1>", case1);
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachable);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2146,9 +2105,7 @@ Sub FirstSub(x As String)
         Case ""FooBar""
             'Unreachable
     End Select
-End Sub
-";
-
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2170,9 +2127,7 @@ Select Case x
         Case ""Fo"" & TEST_CONST & y & ""Bar""
             'Unreachable
     End Select
-End Sub
-";
-
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2191,9 +2146,7 @@ Select Case y
         Case 45 + 2
             'OK
     End Select
-End Sub
-";
-
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0, mismatch: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2219,10 +2172,39 @@ Sub FirstSub()
         Case AVALUE + ""7""
             'Unreachable
     End Select
-End Sub
-";
-
+End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [TestCase("As Double")]
+        [TestCase("As Long")]
+        [TestCase("As Byte")]
+        [TestCase("As Currency")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_SelectExpressionConstant(string typeName)
+        {
+            string inputCode =
+$@"
+private Const AVALUE <typeName> = 15
+
+Sub FirstSub()
+
+    Dim bar {typeName}
+    bar = 15
+
+    Select Case AVALUE
+        Case bar
+            'Unreachable
+        Case 22
+            'Unreachable
+        Case 89
+            'Unreachable
+        Case 0 To 10
+            'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 

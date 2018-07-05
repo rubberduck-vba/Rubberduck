@@ -49,7 +49,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return results;
         }
 
-
         public string GetTypeName(ParserRuleContext context)
         {
             return GetValue(context).TypeName;

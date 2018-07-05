@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override string ToString()
         {
-            return $"{OpSymbol}{LHSValue}";
+            return $"{OpSymbol} {LHSValue}";
         }
     }
 
@@ -81,9 +81,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public bool IsMismatch { set => _data.IsMismatch = value; get => _data.IsMismatch; }
         public bool IsUnreachable { set => _data.IsUnreachable = value; get => _data.IsUnreachable; }
 
-        public RangeClauseExpression(IParseTreeValue rhs, IParseTreeValue lhs, string opSymbol, bool sortOperands = false)
+        public RangeClauseExpression(IParseTreeValue lhs, IParseTreeValue rhs, string opSymbol, bool sortOperands = false)
         {
-            _data = new ClauseExpressionData(rhs, lhs, opSymbol);
+            _data = new ClauseExpressionData(lhs, rhs, opSymbol);
             if (sortOperands)
             {
                 SortExpressionOperands();

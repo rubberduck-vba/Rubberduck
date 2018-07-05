@@ -4,28 +4,30 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
     /*
-        RangeClauseFilter is a support class of the UnreachableCaseInspection
+        ExpressionFilter is a support class of the UnreachableCaseInspection
 
         Notes:
-        Filter Parameter encoding
-        Min!5 is interpreted as to "Case Is < 5"
-        Max!5 is interpreted as to "Case Is > 5"
-        Range!5:50 is interpreted as to "Case 5 To 50"
-        Value!5 is interpreted as to "Case 5"
-        RelOp!x < 5 is interpreted as to "Case x < 5"
-        Or, RelOp!True is interpreted as "Case True" <- simulates a resolved expression like x < 7, where 'x' is a constant == 6
+        FilterContentToken Parameter encoding:
+            Min!5 is the result of adding expression: Is < 5"
+            Max!5 is the result of adding expression: Is > 5"
+            Range!5:50 adds range 5 To 50"
+            Value!5 adds a single value "5"
+            RelOp!x < 5 adds RelationalOp "x < 5"
+            Or, RelOp!True is interpreted as "Case True" <- simulates a resolved expression like x < 7, where 'x' is a constant == 6
 
+        RangeClauseToken encoding:
+            <operand>?<declaredType>_<opSymbol> _<operand>?<declaredType>, <expression>,<selectExpressionType>
+            If there is no "?<declaredType>", then<operand>'s type is derived by the ParseTreeValue instance.
+            The<selectExpressionType> is the type that the calculation must yield in order to
+            make comparisons.
 
-        Operations encoding:
-        <operand>?<declaredType>_<mathSymbol> _<operand>?<declaredType>, <expression>,<selectExpressionType>
-        If there is no "?<declaredType>", then<operand>'s type is derived by the ParseTreeValue instance.
-        The<selectExpressionType> is the type that the calculation must yield in order to
-        make comparisons in the Select Case statement under inspection.
+        When comparing filters for test pass/fail:
+            FilterContentTokens are used to load the 'expected' filter.
+            RangeClauseTokens are used to load the filter under test (actual)
     */
 
     [TestFixture]
@@ -82,46 +84,36 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ExpressionFilter_ToString(string firstCase, string secondCase, string expected)
         {
-            var filter = RangeDescriptorsToFilter(new string[] { firstCase, secondCase }, Tokens.Long);
+            var filter = FilterContentTokensToFilter(new string[] { firstCase, secondCase }, Tokens.Long);
             Assert.AreEqual(expected, filter.ToString());
         }
 
-        [TestCase("RelOp!x < 65", "RelOp!x < 55", "RelOp!x < 65,RelOp!x < 55")]
-        [TestCase("RelOp!x > 55", "RelOp!x < 65", "Value!-1,RelOp!x > 55,RelOp!x < 65")]
-        [TestCase("RelOp!x > 65", "RelOp!x < 55", "Value!0, RelOp!x > 65,RelOp!x < 55")]
-        [TestCase("RelOp!x <> 55", "RelOp!x <> 60,RelOp!x = 95", "Value!-1,RelOp!x <> 55,RelOp!x <> 60,RelOp!x = 95")]
-        [TestCase("Value!0,RelOp!x > 55", "RelOp!x < 65,RelOp!x = 70", "RelOp!x > 55,RelOp!x < 65,Value!0,Value!-1")]
-        [TestCase("Value!-1,RelOp!x = 55", "RelOp!x = 65,RelOp!x = 0", "RelOp!x = 55,RelOp!x = 65,Value!-1,Value!0")]
-        [TestCase("RelOp!x <= 55", "RelOp!x > 65", "Value!0,RelOp!x <= 55,RelOp!x > 65")]
+        [TestCase("x_<_65,x_<_55", "RelOp!x < 65,RelOp!x < 55", "Long")]
+        [TestCase("x_>_55,x_<_65", "Value!-1,RelOp!x > 55,RelOp!x < 65", "Long")]
+        [TestCase("x_>_65,x_<_55", "Value!0, RelOp!x > 65,RelOp!x < 55", "Long")]
+        [TestCase("x_<>_55,x_<>_60,x_=_95", "Value!-1,RelOp!x <> 55,RelOp!x <> 60,RelOp!x = 95", "Long")]
+        [TestCase("0,x_>_55,x_<_65,x_=_70", "RelOp!x > 55,RelOp!x < 65,Value!0,Value!-1", "Long")]
+        [TestCase("-1,x_=_55,x_=_65,x_=_0", "RelOp!x = 55,RelOp!x = 65,Value!-1,Value!0", "Long")]
+        [TestCase("x_<=_55,x_>_65", "Value!0,RelOp!x <= 55,RelOp!x > 65", "Long")]
+        [TestCase("x_<_65.45,x_<_55.97", "RelOp!x < 65.45,RelOp!x < 55.97", "Single")]
+        [TestCase("x_>_55.97,x_<_65.45", "Value!-1,RelOp!x > 55.97,RelOp!x < 65.45", "Single")]
+        [TestCase("x_>_65.45,x_<_55.97", "Value!0, RelOp!x > 65.45,RelOp!x < 55.97", "Single")]
+        [TestCase("x_<>_55.97,x_<>_60,x_=_95", "Value!-1,RelOp!x <> 55.97,RelOp!x <> 60,RelOp!x = 95", "Single")]
+        [TestCase("0,x_>_55.97,x_<_65.45,x_=_70", "RelOp!x > 55.97,RelOp!x < 65.45,Value!0,Value!-1", "Single")]
+        [TestCase("-1,x_=_55.97,x_=_65.45,x_=_0", "RelOp!x = 55.97,RelOp!x = 65.45,Value!-1,Value!0", "Single")]
+        [TestCase("x_<=_55.97,x_>_65.45", "Value!0,RelOp!x <= 55.97,RelOp!x > 65.45", "Single")]
         [Category("Inspections")]
-        public void ExpressionFilter_VariableRelationalOps(string firstCase, string secondCase, string expected)
+        public void ExpressionFilter_VariableRelationalOps(string firstCase, string expected, string typeName)
         {
-            var actualFilter = ExpressionFilterFactory.Create(Tokens.Long);
-            actualFilter.AddComparablePredicateFilter("x", Tokens.Long);
-            actualFilter = RangeDescriptorsToFilter(new string[] { firstCase, secondCase }, Tokens.Long, actualFilter);
+            var actualFilter = ExpressionFilterFactory.Create(typeName);
+            actualFilter.AddComparablePredicateFilter("x", typeName);
 
-            var expectedFilter = RangeDescriptorsToFilter(new string[] { expected }, Tokens.Long);
+            actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, typeName, actualFilter);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expected }, typeName);
 
             Assert.AreEqual(expectedFilter, actualFilter);
-        }
-
-        [TestCase("RelOp!x < 65.45", "RelOp!x < 55.97", "RelOp!x < 65.45,RelOp!x < 55.97")]
-        [TestCase("RelOp!x > 55.97", "RelOp!x < 65.45", "Value!-1,RelOp!x > 55.97,RelOp!x < 65.45")]
-        [TestCase("RelOp!x > 65.45", "RelOp!x < 55.97", "Value!0, RelOp!x > 65.45,RelOp!x < 55.97")]
-        [TestCase("RelOp!x <> 55.97", "RelOp!x <> 60,RelOp!x = 95", "Value!-1,RelOp!x <> 55.97,RelOp!x <> 60,RelOp!x = 95")]
-        [TestCase("Value!0,RelOp!x > 55.97", "RelOp!x < 65.45,RelOp!x = 70", "RelOp!x > 55.97,RelOp!x < 65.45,Value!0,Value!-1")]
-        [TestCase("Value!-1,RelOp!x = 55.97", "RelOp!x = 65.45,RelOp!x = 0", "RelOp!x = 55.97,RelOp!x = 65.45,Value!-1,Value!0")]
-        [TestCase("RelOp!x <= 55.97", "RelOp!x > 65.45", "Value!0,RelOp!x <= 55.97,RelOp!x > 65.45")]
-        [Category("Inspections")]
-        public void ExpressionFilter_VariableRelationalOpsDouble(string firstCase, string secondCase, string expected)
-        {
-            var actualFilter = ExpressionFilterFactory.Create(Tokens.Single);
-            actualFilter.AddComparablePredicateFilter("x", Tokens.Single);
-            actualFilter = RangeDescriptorsToFilter(new string[] { firstCase, secondCase }, Tokens.Single, actualFilter);
-
-            var expectedFilter = RangeDescriptorsToFilter(new string[] { expected }, Tokens.Single);
-
-            Assert.AreEqual(expectedFilter, actualFilter);
+            Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+            Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
         }
 
         [TestCase("150?Long_To_50?Long", "Long", "")]
@@ -139,17 +131,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ExpressionFilter_AddRangeClauses(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
         {
-            var filter = ExpressionFilterFactory.Create(selectExpressionTypename);
-
-            var rangeClauses = RetrieveDelimitedElements(firstCase, RANGECLAUSE_DELIMITER);
-            foreach (var clause in rangeClauses)
-            {
-                (IParseTreeValue start, IParseTreeValue end, string symbol) = GetBinaryOpValues(clause, selectExpressionTypename);
-                filter.AddExpression(new RangeOfValuesExpression((start, end)));
-            }
-
-            var expected = RangeDescriptorsToFilter(new string[] { expectedRangeClauses }, selectExpressionTypename);
-            Assert.AreEqual(expected, filter);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, selectExpressionTypename);
+            var expected = FilterContentTokensToFilter(new string[] { expectedRangeClauses }, selectExpressionTypename);
+            Assert.AreEqual(expected, actualFilter);
         }
 
         [TestCase("Is_>_50", "Long", "Max!50")]
@@ -159,7 +143,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("Is_>=_50", "Long", "Max!50,Value!50")]
         [TestCase("Is_>=_50.49", "Double", "Max!50.49,Value!50.49")]
         [TestCase("Is_>=_50#", "Double", "Max!50,Value!50")]
-        [TestCase("Is_>=_True", "Boolean", "Value!True")]
+        [TestCase("Is_>=_True", "Boolean", "Value!True,Value!False")]
         [TestCase("Is_<_50", "Long", "Min!50")]
         [TestCase("Is_<_50,Is_<_25", "Long", "Min!50")]
         [TestCase("Is_<_50,Is_<_75", "Long", "Min!75")]
@@ -180,140 +164,190 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ExpressionFilter_AddIsClause(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
         {
-            var filter = ExpressionFilterFactory.Create(selectExpressionTypename);
-
-            var rangeClauses = RetrieveDelimitedElements(firstCase, RANGECLAUSE_DELIMITER);
-            foreach (var clause in rangeClauses)
-            {
-                (IParseTreeValue lhs, IParseTreeValue rhs, string symbol) = GetBinaryOpValues(clause, selectExpressionTypename);
-                filter.AddExpression(new IsClauseExpression(rhs, symbol));
-            }
-
-            var expected = RangeDescriptorsToFilter(new string[] { expectedRangeClauses }, selectExpressionTypename);
-            Assert.AreEqual(expected,filter);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, selectExpressionTypename);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedRangeClauses }, selectExpressionTypename);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+            Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
         }
 
-        [TestCase("Min!45.61", "Max!45.6", "Double")]
-        [TestCase("Min!45.61,Max!60.5", "Range!39.2:65.1", "Double")]
-        [TestCase("Range!True:False", "Value!50", "Boolean")]
-        [TestCase("Value!-5000", "Value!False", "Boolean")]
-        [TestCase("Value!True", "Value!0", "Boolean")]
-        [TestCase("Value!500", "Value!0", "Boolean")]
-        [TestCase("Min!5", "Max!-5000", "Long")]
-        [TestCase("Min!40,Max!40", "Range!35:45", "Long")]
-        [TestCase("Min!40,Max!44", "Range!35:45", "Long")]
-        [TestCase("Min!40,Max!40", "Value!40", "Long")]
-        [TestCase("Max!240,Range!150:239", "Value!240, Value!0,Value!1,Range!2:150", "Byte")]
-        [TestCase("Range!151:255", "Value!150, Value!0,Value!1,Range!2:149", "Byte")]
-        [TestCase("Min!13,Max!30,Range!12:100", "Value!13,Value!14,Value!15,Value!16,Value!17,Value!18,Range!12:30", "Long")]
+        [TestCase("Is_<_45.61", "Is_>_45.6", "Double")]
+        [TestCase("Is_<_45.61,Is_>_60.5", "39.2_To_66.1", "Double")]
+        [TestCase("False_To_False", "50", "Boolean")]
+        [TestCase("True_To_False", "", "Boolean")]
+        [TestCase("-5000", "False", "Boolean")]
+        [TestCase("True", "0", "Boolean")]
+        [TestCase("Is_<_5", "Is_>_-5000", "Long")]
+        [TestCase("Is_<_40,Is_>_40", "35_To_45", "Long")]
+        [TestCase("Is_<_40,Is_>_44", "35_To_45", "Long")]
+        [TestCase("Is_<_40,Is_>_40", "40", "Long")]
+        [TestCase("Is_>_240,150_To_239", "240, 0,1,2_To_150", "Byte")]
+        [TestCase("151_To_255", "150,0,1,2_To_149", "Byte")]
+        [TestCase("Is_<_13,Is_>_30,13_To_100", "", "Long")]
         [Category("Inspections")]
         public void ExpressionFilter_FiltersAll(string firstCase, string secondCase, string SelectExpessionTypeName)
         {
-            var filter = RangeDescriptorsToFilter(new string[] { firstCase, secondCase }, SelectExpessionTypeName);
+            var filter = RangeClauseTokensToFilter(new string[] { firstCase, secondCase }, SelectExpessionTypeName);
             Assert.IsTrue(filter.FiltersAllValues, filter.ToString());
         }
 
-        [TestCase("RelOp!x < 3", "Is!Is < 3", "RelOp!x < 3,Min!3")]
-        [TestCase("RelOp!!x", "Value!-x,RelOp!!x", "RelOp!!x,Value!-x")]
-        [TestCase("RelOp!!x", "RelOp!Is < x", "RelOp!!x,RelOp!Is < x")]
-        [TestCase("RelOp!Is < x,RelOp!Is < y", "RelOp!Is < x", "RelOp!Is < x,RelOp!Is < y")]
-        [TestCase("Value!-x,Value!-y", "Value!-x", "Value!-x,Value!-y")]
-        [TestCase("Range:3:55", "Value!x.Item(2)", "Range:3:55,Value!x.Item(2)")]
-        [TestCase("Range!3:55", "Min!6", "Min!6,Range!6:55")]
-        [TestCase("Range!3:55", "Max!6", "Max!6,Range!3:6")]
-        [TestCase("Min!6", "Range!1:5", "Min!6")]
-        [TestCase("Value!5,Value!6,Value!7", "Max!6", "Max!6,Value!5,Value!6")]
-        [TestCase("Value!5,Value!6,Value!7", "Min!6", "Min!6,Value!6,Value!7")]
-        [TestCase("Min!5,Max!75", "Value!85", "Min!5,Max!75")]
-        [TestCase("Min!5,Max!75", "Value!0", "Min!5,Max!75")]
-        [TestCase("Range!45:85", "Value!50", "Range!45:85")]
-        [TestCase("Value!5,Value!6,Value!7,Value!8", "Range!6:8", "Range!6:8,Value!5")]
-        [TestCase("Min!400,Range!15:160", "Range!500:505", "Min!400,Range!500:505")]
-        [TestCase("Range!101:149", "Range!15:160", "Range!15:160")]
-        [TestCase("Range!101:149", "Range!15:148", "Range!15:149")]
-        [TestCase("Range!150:250,Range!1:100,Range!101:149", "Range!25:249", "Range!1:250")]
-        [TestCase("Range!150:250,Range!1:100,Range!-5:-2,Range!101:149", "Range!25:249", "Range!-5:-2,Range!1:250")]
-        [TestCase("Range!5:5,Value!x,Value!y", "", "Value!5,Value!x,Value!y")]
+        [TestCase("x_<_3", "Is_<_3", "RelOp!x < 3,Min!3")]
+        [TestCase("Not_x", "-x,Not_x", "RelOp!Not x,Value!-x")]
+        [TestCase("Is_<_x,Is_<_y", "Is_<_x", "RelOp!Is < x,RelOp!Is < y")]
+        [TestCase("-x,-y", "-x", "Value!-x,Value!-y")]
+        [TestCase("3_To_55", "x.Item(2)", "Range!3:55,Value!x.Item(2)")]
+        [TestCase("3_To_55", "Is_<_6", "Min!6,Range!6:55")]
+        [TestCase("3_To_55", "Is_>_6", "Max!6,Range!3:6")]
+        [TestCase("Is_<_6", "1_To_5", "Min!6")]
+        [TestCase("5,6,7", "Is_>_6", "Max!6,Value!5,Value!6")]
+        [TestCase("5,6,7", "Is_<_6", "Min!6,Value!6,Value!7")]
+        [TestCase("Is_<_5,Is_>_75", "85", "Min!5,Max!75")]
+        [TestCase("Is_<_5,Is_>_75", "0", "Min!5,Max!75")]
+        [TestCase("45_To_85", "50", "Range!45:85")]
+        [TestCase("5,6,7,8", "6_To_8", "Range!6:8,Value!5")]
+        [TestCase("Is_<_400,15_To_160", "500_To_505", "Min!400,Range!500:505")]
+        [TestCase("101_To_149", "15_To_160", "Range!15:160")]
+        [TestCase("101_To_149", "15_To_148", "Range!15:149")]
+        [TestCase("150_To_250,1_To_100,101_To_149", "25_To_249", "Range!1:250")]
+        [TestCase("150_To_250,1_To_100,-5_To_-2,101_To_149", "25_To_249", "Range!-5:-2,Range!1:250")]
+        [TestCase("5_To_5,x,y", "", "Value!5,Value!x,Value!y")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddFiltersIntegers(string existing, string toAdd, string expectedClause)
+        public void ExpressionFilter_AddFiltersInteger(string firstCase, string secondCase, string expectedClauses)
         {
-           (IExpressionFilter expected, IExpressionFilter actual) = CreateTestFilters(new string[] { existing, toAdd, expectedClause }, Tokens.Long);
-            Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
-            Assert.AreEqual(expected, actual);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase, secondCase }, Tokens.Long);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.Long);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+            Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
         }
 
-        [TestCase("Range!101.45:149.00007", "Range!101.57:110.63", "Range!101.45:149.00007")]
-        [TestCase("Range!101.45:149.0007", "Range!15.67:148.9999", "Range!15.67:149.0007")]
-        [TestCase("Range!101.45:149.2", "Range!149.2:150.5", "Range!101.45:150.5")]
+        [TestCase("101.45_To_149.00007", "101.57_To_110.63", "Range!101.45:149.00007")]
+        [TestCase("101.45_To_149.0007", "15.67_To_148.9999", "Range!15.67:149.0007")]
+        [TestCase("101.45_To_149.2", "149.2_To_150.5", "Range!101.45:150.5")]
         [Category("Inspections")]
         public void ExpressionFilter_AddFiltersRational(string firstCase, string secondCase, string expectedClauses)
         {
-            (IExpressionFilter expected, IExpressionFilter actual) = CreateTestFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Double);
-            Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
-            Assert.AreEqual(expected, actual);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase, secondCase }, Tokens.Double);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.Double);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+            Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
         }
 
-        [TestCase(@"Range!""Alpha"":""Omega""", @"Range!""Nuts"":""Soup""", @"Range!""Alpha"":""Soup""")]
+        [TestCase(@"""Alpha""_To_""Omega"",""Nuts""_To_""Soup""", @"Range!""Alpha"":""Soup""")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddFiltersStrings(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_AddFiltersString(string firstCase/*, string secondCase*/, string expectedClauses)
         {
-            (IExpressionFilter expected, IExpressionFilter actual) = CreateTestFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.String);
-            Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
-            Assert.AreEqual(expected, actual);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, Tokens.String);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.String);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+            Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
         }
 
-        [TestCase("Range!0:10", "Value!50", "Value!True")]
-        [TestCase("Range!False:True", "RelOp!x < 3", "RelOp!x < 3")]
-        [TestCase(@"Range!""True:True""", "Value!True", "Value!True")]
-        [TestCase(@"Range!""True:False""", "Value!True", "Value!False,Value!True")]
-        [TestCase("Min!5", "RelOp!x < 5", "Value!False,RelOp!x < 5")]
-        [TestCase("Value!-1,Value!0", "RelOp!x < 3", "Value!True,Value!False")]
-        [TestCase("Range!-5:15", "RelOp!x < 3", "Value!True,RelOp!x < True")]
-        [TestCase("Min!1", "RelOp!x < 3", "Min!1,RelOp!x < True")]
-        [TestCase("Max!-2", "RelOp!x < 3", "Max!-2,RelOp!x < True")]
+        [TestCase("0_To_10", "")]
+        [TestCase("10_To_0", "Value!True,Value!False")]
+        [TestCase("False_To_True,x_<_3", "RelOp!x < True")]
+        [TestCase("True_To_True", "Value!True")]
+        [TestCase("True_To_False", "Value!False,Value!True")]
+        [TestCase("Is_>_5,x_<_5", "RelOp!Is > True,RelOp!x < 5")]
+        [TestCase("Is_<_5,x_<_5", "RelOp!x < 5")]
+        [TestCase("-1,0,x_<_3", "Value!True,Value!False")]
+        [TestCase("-5_To_15,x_<_3", "Value!True,RelOp!x < True")]
+        [TestCase("Is_>_1,x_<_3", "Max!1,RelOp!x < True")]
+        [TestCase("Is_<_-2,x_<_3", "RelOp!x < True")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddFiltersBoolean(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_AddFiltersBoolean(string firstCase, string expectedClauses)
         {
-            (IExpressionFilter expected, IExpressionFilter actual) = CreateTestFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
-            Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
-            Assert.AreEqual(expected, actual);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, Tokens.Boolean);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.Boolean);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            if (expectedClauses.Length > 0)
+            {
+                Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+                Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
+            }
         }
 
         /*
          * The test cases below cover the truth table
          * for 'Is' clauses present in Boolean Select Case Statements.
-         * Cases that always resolve to True (or False) are stored as Single values.
+         * Cases that always resolve to True/False are store both as Single values.
          * All others (outcome depends on the Select Case value) are 
-         * stored as variable Predicate expressions.
+         * stored as variable Is clauses.
         */
 
-        [TestCase("Is_<_True", "Value!False")] //Always False
+        [TestCase("Is_<_True", "")] //Inherently unreachable
         [TestCase("Is_<=_True", "RelOp!Is <= True")]
         [TestCase("Is_>_True", "RelOp!Is > True")]
-        [TestCase("Is_>=_True", "Value!True")] //Always True
+        [TestCase("Is_>=_True", "Value!False,Value!True")] //Filters both True and False
         [TestCase("Is_=_True", "RelOp!Is = True")]
-        [TestCase("Is_<>_True", "RelOp!Is <> True")]
-        [TestCase("Is_>_False", "Value!False")] //Alsways False
+        [TestCase("Is_<>_True", "Value!False")]
+        [TestCase("Is_>_False", "")] //Inherently unreachable
         [TestCase("Is_>=_False", "RelOp!Is >= False")]
         [TestCase("Is_<_False", "RelOp!Is < False")]
-        [TestCase("Is_<=_False", "Value!True")]    //Always True
+        [TestCase("Is_<=_False", "Value!False,Value!True")] //Filters both True and False
         [TestCase("Is_=_False", "RelOp!Is = False")]
-        [TestCase("Is_<>_False", "RelOp!Is <> False")]
+        [TestCase("Is_<>_False", "Value!True")]
         [Category("Inspections")]
         public void ExpressionFilter_BooleanIsClauseTruthTable(string rangeClause, string expected)
         {
-            var filter = ExpressionFilterFactory.Create(Tokens.Boolean);
-
-            var rangeClauses = RetrieveDelimitedElements(rangeClause, RANGECLAUSE_DELIMITER);
-            foreach (var clause in rangeClauses)
+            var actualFilter = RangeClauseTokensToFilter(new string[] { rangeClause }, Tokens.Boolean);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expected }, Tokens.Boolean);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            if (expected.Length > 0)
             {
-                (IParseTreeValue lhs, IParseTreeValue rhs, string symbol) = GetBinaryOpValues(clause, Tokens.Boolean);
-                filter.AddExpression(new IsClauseExpression(rhs, symbol));
+                Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+                Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
             }
+        }
 
-            rangeClauses = RetrieveDelimitedElements(expected, RANGECLAUSE_DELIMITER);
-            var expectedFilter = CreateTestFilter(rangeClauses, Tokens.Boolean);
-            Assert.AreEqual(expectedFilter, filter);
+        [TestCase("True","", "Value!False")]
+        [TestCase("False", "", "Value!True")]
+
+        [TestCase("True", "Is_<_True", "Value!False")]
+        [TestCase("False", "Is_<_True", "Value!True")]
+        [TestCase("True", "Is_<_False", "Value!True,Value!False")]
+        [TestCase("False", "Is_<_False", "Value!True,Value!False")]
+
+        [TestCase("True", "Is_<=_True", "Value!True,Value!False")]
+        [TestCase("False", "Is_<=_True", "Value!True,Value!False")]
+        [TestCase("True", "Is_<=_False", "Value!True,Value!False")]
+        [TestCase("False", "Is_<=_False", "Value!True")]
+
+        [TestCase("True", "Is_>_True", "Value!False")]
+        [TestCase("False", "Is_>_True", "Value!True")]
+        [TestCase("True", "Is_>_False", "Value!False")]
+        [TestCase("False", "Is_>_False", "Value!True")]
+
+        [TestCase("True", "Is_>=_True", "Value!False,Value!True")]
+        [TestCase("False", "Is_>=_True", "Value!True")]
+        [TestCase("True", "Is_>=_False", "Value!False")]
+        [TestCase("False", "Is_>=_False", "Value!True")]
+
+        [TestCase("True", "Is_=_False", "Value!False")]
+        [TestCase("False", "Is_=_False", "Value!True")]
+        [TestCase("True", "Is_=_True", "Value!False,Value!True")]
+        [TestCase("False", "Is_=_True", "Value!True,Value!False")]
+
+        [TestCase("True", "Is_<>_False", "Value!False,Value!True")]
+        [TestCase("False", "Is_<>_False", "Value!False,Value!True")]
+        [TestCase("True", "Is_<>_True", "Value!False")]
+        [TestCase("False", "Is_<>_True", "Value!True")]
+        [Category("Inspections")]
+        public void ExpressionFilter_BooleanIsClauseTruthTableConstSelectExpression(string selectExpressionValue, string rangeClause, string expectedFilterContent)
+        {
+            var actualFilter = ExpressionFilterFactory.Create(Tokens.Boolean);
+            actualFilter.SelectExpressionValue = ValueFactory.Create(selectExpressionValue, Tokens.Boolean);
+
+            actualFilter = RangeClauseTokensToFilter(new string[] { rangeClause }, Tokens.Boolean, actualFilter);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedFilterContent }, Tokens.Boolean);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            if (expectedFilterContent.Length > 0)
+            {
+                Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+                Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
+            }
         }
 
         [TestCase("x_Like_*Bar", "RelOp!x Like *Bar")]
@@ -322,29 +356,22 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ExpressionFilter_LikeAddToFilter(string rangeClause, string expectedClause)
         {
-            var filter = ExpressionFilterFactory.Create(Tokens.String);
-
-            var rangeClauses = RetrieveDelimitedElements(rangeClause, RANGECLAUSE_DELIMITER);
-            foreach (var clause in rangeClauses)
-            {
-                (IParseTreeValue lhs, IParseTreeValue rhs, string symbol) = GetBinaryOpValues(clause, Tokens.String);
-                filter.AddExpression(new BinaryExpression(lhs, rhs, symbol));
-            }
-
-            rangeClauses = RetrieveDelimitedElements(expectedClause, RANGECLAUSE_DELIMITER);
-            var expectedFilter = CreateTestFilter(rangeClauses, Tokens.String);
-            Assert.AreEqual(expectedFilter, filter);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { rangeClause }, Tokens.String);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClause}, Tokens.String);
+            Assert.AreEqual(expectedFilter, actualFilter);
         }
 
-        [TestCase("RelOp!x Like *Bar", "RelOp!x Like *Bar", "RelOp!x Like *Bar")]
-        [TestCase("RelOp!x Like *Bar", "Value!True", "RelOp!x Like *Bar,Value!True")]
-        [TestCase("RelOp!x Like *", "Value!True", "RelOp!x Like *")]
+        [TestCase("x_Like_*Bar", "x_Like_*Bar", "RelOp!x Like *Bar")]
+        [TestCase("x_Like_*Bar", "True", "RelOp!x Like *Bar,Value!True")]
+        [TestCase("x_Like_*", "True", "RelOp!x Like *")]
         [Category("Inspections")]
-        public void ExpressionFilter_LikeFiltersDuplicates(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_LikeFiltersDuplicate(string firstCase, string secondCase, string expectedClauses)
         {
-            (IExpressionFilter expected, IExpressionFilter actual) = CreateTestFilters(new string[] { firstCase, secondCase, expectedClauses }, Tokens.Boolean);
-            Assert.IsTrue(actual.HasFilters && expected.HasFilters, "No filter content created");
-            Assert.AreEqual(expected, actual);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase, secondCase }, Tokens.Boolean);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.Boolean);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+            Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
         }
 
         private List<string> RetrieveDelimitedElements(string rangeClauses, string delimiter)
@@ -386,7 +413,38 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var LHS = CreateInspValueFrom(elements[0], conformTo: selectExpressionType);
             var RHS = CreateInspValueFrom(elements[2], conformTo: selectExpressionType);
-            return (LHS,RHS, elements[1]);
+            return (LHS, RHS, elements[1]);
+        }
+
+        private (IParseTreeValue Operand, string Symbol) GetUnaryOpValues(string delimitedElements, string selectExpressionType)
+        {
+            const int MAX_ELEMENTS = 2;
+            var elements = RetrieveDelimitedElements(delimitedElements, OPERAND_DELIMITER);
+            if (elements.Count() > MAX_ELEMENTS)
+            {
+                Assert.Inconclusive("Invalid number of operands passed to 'GetUnaryOpValues(...)'");
+            }
+
+            var operand = elements.Count() == 2 ?
+                CreateInspValueFrom(elements[1], conformTo: selectExpressionType)
+                : CreateInspValueFrom(elements[0], conformTo: selectExpressionType);
+            return elements.Count() == MAX_ELEMENTS ? (operand, elements[0]) : (operand, string.Empty);
+        }
+
+        private IRangeClauseExpression CreateRangeClauseExpression((IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) expressionElements)
+        {
+            if (expressionElements.LHS.ValueText.Equals(Tokens.Is))
+            {
+                return new IsClauseExpression(expressionElements.RHS, expressionElements.Symbol);
+            }
+            else if (expressionElements.Symbol.Equals(Tokens.To))
+            {
+                return new RangeOfValuesExpression((expressionElements.LHS, expressionElements.RHS));
+            }
+            else
+            {
+                return new BinaryExpression(expressionElements.LHS, expressionElements.RHS, expressionElements.Symbol);
+            }
         }
 
         private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)
@@ -420,18 +478,61 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 : ValueFactory.Create(valAndType, conformToTypeName: conformTo);
         }
 
-        private (IExpressionFilter expected, IExpressionFilter actual) CreateTestFilters(IEnumerable<string> inputRangeClauses, string typeName)
+        private IExpressionFilter RangeClauseTokensToFilter(IEnumerable<string> rangeClauseTokens, string filterTypeName, IExpressionFilter filter = null)
         {
-            //TestAddFilters(...) requires the expected clause/filter must be the last element of the 'input' array
-            Assert.IsTrue(inputRangeClauses.Count() >= 2, "At least two rangeClause input strings are neede for this test");
+            if (filter is null)
+            {
+                filter = ExpressionFilterFactory.Create(filterTypeName);
+            }
 
-            var actualFilter = RangeDescriptorsToFilter(inputRangeClauses.Take(inputRangeClauses.Count() - 1), typeName);
-            var expectedFilter = RangeDescriptorsToFilter(inputRangeClauses.Skip(inputRangeClauses.Count() - 1), typeName);
+            var rangeClauses = new List<string>();
+            foreach( var token in rangeClauseTokens)
+            {
+                rangeClauses.AddRange(RetrieveDelimitedElements(token, RANGECLAUSE_DELIMITER));
+            }
 
-            return (expectedFilter, actualFilter);
+            var expressions = RangeClauseTokensToExpressions(rangeClauses, filterTypeName);
+            foreach (var expression in expressions)
+            {
+                filter.AddExpression(expression);
+            }
+            return filter;
         }
 
-        private IExpressionFilter RangeDescriptorsToFilter(IEnumerable<string> caseClauses, string typeName, IExpressionFilter filter = null)
+        private IEnumerable<IRangeClauseExpression> RangeClauseTokensToExpressions(IEnumerable<string> rangeClauseLiterals, string filterTypeName)
+        {
+            var results = new List<IRangeClauseExpression>();
+            foreach (var clause in rangeClauseLiterals)
+            {
+                IRangeClauseExpression expressionClause = null;
+                var operandDelimiters = clause.Where(ch => ch.Equals('_'));
+                if (operandDelimiters.Count() == 2)
+                {
+                    (IParseTreeValue lhs, IParseTreeValue rhs, string symbol) = GetBinaryOpValues(clause, filterTypeName);
+                    expressionClause = CreateRangeClauseExpression((lhs, rhs, symbol));
+                }
+                else if (operandDelimiters.Count() <= 1)
+                {
+                    (IParseTreeValue operand, string symbol) = GetUnaryOpValues(clause, filterTypeName);
+                    if (symbol.Equals(LogicSymbols.NOT))
+                    {
+                        expressionClause = new UnaryExpression(operand, symbol);
+                    }
+                    else
+                    {
+                        expressionClause = new ValueExpression(ValueFactory.Create($"{symbol}{operand}",filterTypeName));
+                    }
+                }
+                else
+                {
+                    Assert.Inconclusive("unable to parse operands");
+                }
+                results.Add(expressionClause);
+            }
+            return results;
+        }
+
+        private IExpressionFilter FilterContentTokensToFilter(IEnumerable<string> caseClauses, string typeName, IExpressionFilter filter = null)
         {
             if(filter is null)
             {
@@ -445,19 +546,11 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 expressions.AddRange(CreateTestExpressions(rangeClauses, typeName));
             }
 
-            expressions.ForEach(expr => filter.AddExpression(expr));
-            return filter;
-        }
-
-        private IExpressionFilter CreateTestFilter(IEnumerable<string> annotations, string conformToType = null)
-        {
-            var result = ExpressionFilterFactory.Create(conformToType);
-            var expressions = CreateTestExpressions(annotations, conformToType);
-            foreach (var expression in expressions)
+            foreach (var expr in expressions)
             {
-                result.AddExpression(expression);
+                filter.AddExpression(expr);
             }
-            return result;
+            return filter;
         }
 
         private List<IRangeClauseExpression> CreateTestExpressions(IEnumerable<string> annotations, string conformToType = null)
@@ -506,7 +599,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         TryExtractSymbol(item, out symbol);
                         var sides = clauseExpression.Split(new string[] { symbol }, StringSplitOptions.None);
 
-                        if (sides.Count() == 2)
+                        if (sides.Count() == 2 && sides.All(sd => !sd.Equals(string.Empty)))
                         {
                             var lhs = ValueFactory.Create(sides[0].Trim(), conformToTypeName: conformToType);
                             var rhs = ValueFactory.Create(sides[1].Trim(), conformToTypeName: conformToType);
@@ -519,6 +612,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
                                 results.Add(new BinaryExpression(lhs, rhs, symbol));
                             }
 
+                        }
+                        else if (sides.Count() == 2 && sides.Any(sd => sd.Equals(string.Empty)))
+                        {
+                            var validValue = sides.First(sd => !sd.Equals(string.Empty));
+                            var lhs = ValueFactory.Create(validValue.Trim(), conformToTypeName: conformToType);
+                            results.Add(new UnaryExpression(lhs, symbol));
                         }
                         else
                         {
@@ -557,6 +656,14 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 symbol = matchedSymbols.First();
                 return true;
             }
+            // one more look to check for unary expression 'Not x'
+            matchedSymbols = LogicSymbols.LogicSymbolList.Where(sym => item.Contains($"{sym} "));
+            if (matchedSymbols.Any())
+            {
+                symbol = matchedSymbols.First();
+                return true;
+            }
+
             return false;
         }
     }

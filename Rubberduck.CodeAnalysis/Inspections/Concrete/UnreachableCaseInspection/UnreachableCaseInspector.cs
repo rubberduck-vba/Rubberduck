@@ -22,6 +22,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly IEnumerable<VBAParser.CaseClauseContext> _caseClauses;
         private readonly ParserRuleContext _caseElseContext;
         private readonly IParseTreeValueFactory _valueFactory;
+        private IParseTreeValue _selectExpressionValue;
 
         public UnreachableCaseInspector(VBAParser.SelectCaseStmtContext selectCaseContext, 
             IParseTreeVisitorResults inspValues, 
@@ -56,6 +57,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var rangeClauseFilter = BuildRangeClauseFilter();
+            if (!(_selectExpressionValue is null) && _selectExpressionValue.ParsesToConstantValue)
+            {
+                rangeClauseFilter.SelectExpressionValue = _selectExpressionValue;
+            }
+
             foreach (var caseClause in _caseClauses)
             {
                 var rangeClauseExpressions = (from range in caseClause.rangeClause()
@@ -112,6 +118,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             else if (inspValues.TryGetValue(selectStmt.selectExpression(), out IParseTreeValue result)
                 && InspectableTypes.Contains(result.TypeName))
             {
+                _selectExpressionValue = result;
                 SelectExpressionTypeName = result.TypeName;
             }
             else

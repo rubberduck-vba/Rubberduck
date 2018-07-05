@@ -20,6 +20,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         void AddComparablePredicateFilter(string variable, string variableTypeName);
         bool HasFilters { get; }
         bool FiltersAllValues { get; }
+        IParseTreeValue SelectExpressionValue { set; get; }
     }
 
     public class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
@@ -59,6 +60,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly string _filterTypeName;
         private readonly int _hashCode;
         private string _toString;
+        protected IParseTreeValue _selectExpressionValue;
 
         public ExpressionFilter(StringToValueConversion<T> converter, string typeName)
         {
@@ -67,6 +69,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _hashCode = _filterTypeName.GetHashCode();
             converter(Tokens.True, out _trueValue, typeName);
             converter(Tokens.False, out _falseValue, typeName);
+            _selectExpressionValue = null;
         }
 
         private HashSet<IRangeClauseExpression> LikePredicates { get; } = new HashSet<IRangeClauseExpression>();
@@ -163,9 +166,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public void SetExtents(T min, T max) => Limits.SetExtents(min, max);
 
+        public virtual IParseTreeValue SelectExpressionValue
+        {
+            set
+            {
+                _selectExpressionValue = value;
+                AddExpression(new IsClauseExpression(_selectExpressionValue, LogicSymbols.NEQ));
+            }
+            get => _selectExpressionValue;
+        }
+
         public void AddExpression(IRangeClauseExpression expression)
         {
-            if (expression is null) { return; }
+            if (expression is null || expression.ToString().Equals(string.Empty)) { return; }
 
             try
             {
@@ -226,9 +239,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (FiltersTrueFalse) { return false; }
 
-            if (!Converter(expression.RHS, out T rhsVal, _filterTypeName))
+            var parseTreeValue = expression is IsClauseExpression ? expression.LHSValue : expression.RHSValue;
+            if (!Converter(parseTreeValue.ValueText, out T expressionValue, _filterTypeName))
             {
-                throw new ArgumentOutOfRangeException($"Unable to convert {expression.RHS} to {typeof(T)}");
+                throw new ArgumentOutOfRangeException($"Unable to convert {parseTreeValue.ValueText} to {typeof(T)}");
             }
 
             if (ComparablePredicateFilters.ContainsKey(lhs))
@@ -236,7 +250,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var positiveLogic = ComparablePredicateFilters[lhs];
                 if (!positiveLogic.FiltersAllValues)
                 {
-                    IRangeClauseExpression predicateExpression = new IsClauseExpression(expression.RHSValue, expression.OpSymbol);
+                    IRangeClauseExpression predicateExpression = new IsClauseExpression(parseTreeValue, expression.OpSymbol);
                     positiveLogic.AddExpression(predicateExpression);
                     if (positiveLogic.FiltersAllValues)
                     {
@@ -248,7 +262,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (!negativeLogic.FiltersAllValues)
                 {
                     IRangeClauseExpression predicateExpressionInverse
-                        = new IsClauseExpression(expression.RHSValue, RelationalInverse(expression.OpSymbol));
+                        = new IsClauseExpression(parseTreeValue, RelationalInverse(expression.OpSymbol));
                     negativeLogic.AddExpression(predicateExpressionInverse);
                     if (negativeLogic.FiltersAllValues)
                     {
@@ -257,7 +271,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
 
-            var predicate = new PredicateValueExpression(lhs, rhsVal, expression.OpSymbol);
+            var predicate = new PredicateValueExpression(lhs, expressionValue, expression.OpSymbol);
             var matchingVariablesNames = ComparablePredicates.Where(pv => pv.LHS.CompareTo(predicate.LHS) == 0);
 
             if (!matchingVariablesNames.Any(cv => cv.Equals(predicate)))
@@ -322,10 +336,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 return false;
             }
-            else
-            {
-                return AddToContainer(Variables[VariableClauseTypes.Is], expression.ToString());
-            }
+            return AddToContainer(Variables[VariableClauseTypes.Is], expression.ToString());
         }
 
         protected virtual bool AddMinimum(T value)
@@ -373,7 +384,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 Ranges.Remove(range);
             }
-
         }
 
         protected void RemoveRangesCoveredByRange((T Start, T End) range)
@@ -527,19 +537,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool AddBinaryExpression(BinaryExpression binary)
         {
-            var opSymbol = binary.OpSymbol;
-            if (FiltersTrueFalse && LogicSymbols.LogicSymbolList.Contains(opSymbol))
+            if (FiltersTrueFalse && LogicSymbols.LogicSymbolList.Contains(binary.OpSymbol))
             {
                 return false;
             }
 
-            if (opSymbol.Equals(LogicSymbols.LIKE))
+            if (binary.OpSymbol.Equals(LogicSymbols.LIKE))
             {
-                if (binary.RHS.Equals("*"))
-                {
-                    return AddToContainer(SingleValues, _trueValue);
-                }
-                return AddLike(binary);
+                return binary.RHS.Equals("*") ? AddToContainer(SingleValues, _trueValue)
+                                                    : AddLike(binary);
             }
 
             if (!binary.LHSValue.ParsesToConstantValue && binary.RHSValue.ParsesToConstantValue)
