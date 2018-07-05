@@ -18,7 +18,7 @@ Public Sub Foo
     MsgBox ""hi""
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode);
-            Assert.IsInstanceOf<IParseTree>(parser.ParseTree);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
 
         [Test]
@@ -32,6 +32,7 @@ Public Sub Foo
             Assert.Throws<MainParseSyntaxErrorException>(() =>
             {
                 var parser = new VBACodeStringParser("test", inputCode);
+                parser.Parse();
             });
         }
 
@@ -44,6 +45,7 @@ Public Sub Foo
             Assert.Throws<MainParseSyntaxErrorException>(() =>
             {
                 var parser = new VBACodeStringParser("test", inputCode);
+                parser.Parse();
             });
         }
 
@@ -56,7 +58,7 @@ Public Sub Foo
     MsgBox ""hi""
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode);
-            var tree = parser.ParseTree;
+            var tree = parser.Parse().parseTree;
 
             Assert.AreEqual(inputCode + "<EOF>", tree.GetChild(0).GetText());
         }
@@ -71,7 +73,7 @@ Public Sub Foo
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode);
             
-            Assert.IsInstanceOf<TokenStreamRewriter>(parser.Rewriter);
+            Assert.IsInstanceOf<TokenStreamRewriter>(parser.Parse().rewriter);
         }
 
         [Test]
@@ -84,7 +86,7 @@ Public Sub Foo
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode, VBACodeStringParser.ParserMode.Sll);
 
-            Assert.IsInstanceOf<IParseTree>(parser.ParseTree);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
 
         [Test]
@@ -97,7 +99,7 @@ Public Sub Foo
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode, VBACodeStringParser.ParserMode.Ll);
 
-            Assert.IsInstanceOf<IParseTree>(parser.ParseTree);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
     }
 }

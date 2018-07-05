@@ -26,9 +26,8 @@ namespace Rubberduck.Parsing.VBA
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly CommonTokenStream _tokenStream;
         private readonly VBAParser _parser;
-
-        public TokenStreamRewriter Rewriter => new TokenStreamRewriter(_tokenStream);
-        public IParseTree ParseTree { get; }
+        private readonly string _moduleName;
+        private readonly ParserMode _mode;
 
         /// <summary>
         /// Parse a given string representing a module code. The code passed in must be
@@ -38,19 +37,22 @@ namespace Rubberduck.Parsing.VBA
         /// <param name="moduleName">For logging purpose, provide descritpive name for where the virtual module is used</param>
         /// <param name="moduleCodeString">A string containing valid module body.</param>
         /// <param name="mode">Indicates what parser mode to use. By default we use SLL fallbacking to LL. When mode is explicitly specified, only that mode will be used with no fallback.</param>
-        public VBACodeStringParser(string moduleName, string moduleCodeString, ParserMode mode = ParserMode.Default) :
-            this(moduleName,
-                moduleCodeString)
-        {
-            ParseTree = mode == ParserMode.Default ? ParseInternal(moduleName) : ParseInternal(mode);
-        }
-
-        private VBACodeStringParser(string moduleName, string moduleCodeString)
+        public VBACodeStringParser(string moduleName, string moduleCodeString, ParserMode mode = ParserMode.Default)
         {
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             _tokenStream = tokenStreamProvider.Tokens(moduleCodeString);
             _parser = new VBAParser(_tokenStream);
             _parser.AddErrorListener(new MainParseExceptionErrorListener(moduleName, ParsePass.CodePanePass));
+            _moduleName = moduleName;
+            _mode = mode;
+        }
+
+        public (IParseTree parseTree, TokenStreamRewriter rewriter) Parse()
+        {
+            var parseTree = _mode == ParserMode.Default ? ParseInternal(_moduleName) : ParseInternal(_mode);
+            var rewriter = new TokenStreamRewriter(_tokenStream);
+
+            return (parseTree, rewriter);
         }
 
         private IParseTree ParseInternal(string moduleName)
