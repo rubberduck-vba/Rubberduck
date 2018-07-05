@@ -34,8 +34,6 @@ namespace Rubberduck.API.VBA
         Declarations AllDeclarations { get; }
         [DispId(4)]
         Declarations UserDeclarations { get; }
-        [DispId(5)]
-        void CancelParse();
     }
 
     [
@@ -165,15 +163,7 @@ namespace Rubberduck.API.VBA
             // non-blocking call
             _dispatcher.Invoke(() => _state.OnParseRequested(this));
         }
-
-        /// <summary>
-        /// Cancels the parse, if any, in progress
-        /// </summary>
-        public void CancelParse()
-        {
-            _parser.Cancel();    
-        }
-
+        
         public delegate void OnStateChangedDelegate(ParserState ParserState);
         public event OnStateChangedDelegate OnStateChanged;
         

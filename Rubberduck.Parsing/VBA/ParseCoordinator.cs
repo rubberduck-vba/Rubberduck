@@ -187,12 +187,7 @@ namespace Rubberduck.Parsing.VBA
             Task.Run(() => ParseAll(sender));
         }
 
-        public void Cancel()
-        {
-            Cancel(true);
-        }
-
-        private void Cancel(bool createNewTokenSource)
+        private void Cancel(bool createNewTokenSource = true)
         {
             lock (CancellationSyncObject)
             {
