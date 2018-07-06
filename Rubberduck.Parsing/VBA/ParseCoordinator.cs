@@ -182,7 +182,7 @@ namespace Rubberduck.Parsing.VBA
         /// Overriden in the unit test project to facilicate synchronous unit tests
         /// Refer to TestParserCoordinator class in the unit test project.
         /// </remarks>
-        protected virtual void BeginParse(object sender)
+        public virtual void BeginParse(object sender)
         {
             Task.Run(() => ParseAll(sender));
         }
@@ -203,17 +203,6 @@ namespace Rubberduck.Parsing.VBA
                 oldTokenSource.Cancel();
                 oldTokenSource.Dispose();
             }
-        }
-
-        /// <summary>
-        /// Support synchronous parsing.
-        /// </summary>
-        /// <remarks>Primarily used for the reflection API.
-        /// Note this is also overriden in the TestParseCoordinator class.
-        /// </remarks>
-        public virtual void Parse(object sender)
-        {
-            ParseAll(sender);
         }
 
         private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, CancellationToken token)

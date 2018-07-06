@@ -19,75 +19,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
-    internal class TestParseCoordinator : ParseCoordinator
-    {
-        public TestParseCoordinator(
-            RubberduckParserState state,
-            IParsingStageService parsingStageService,
-            IParsingCacheService parsingCacheService,
-            IProjectManager projectManager,
-            IParserStateManager parserStateManager) : base(
-                state, 
-                parsingStageService, 
-                parsingCacheService,
-                projectManager, 
-                parserStateManager)
-        { }
-
-        protected override void BeginParse(object sender)
-        {
-            ParseInternal(CurrentCancellationTokenSource.Token);
-        }
-
-        public void Parse(object sender, CancellationTokenSource token)
-        {
-            SetSavedCancellationTokenSource(token);
-            ParseInternal(token.Token);
-        }
-
-        /// <summary>
-        /// For the use of tests & reflection API only
-        /// </summary>
-        private void SetSavedCancellationTokenSource(CancellationTokenSource tokenSource)
-        {
-            var oldTokenSource = CurrentCancellationTokenSource;
-            CurrentCancellationTokenSource = tokenSource;
-
-            oldTokenSource?.Cancel();
-            oldTokenSource?.Dispose();
-        }
-
-        protected void ParseInternal(CancellationToken token)
-        {
-            var lockTaken = false;
-            try
-            {
-                if (!ParsingSuspendLock.IsWriteLockHeld)
-                {
-                    ParsingSuspendLock.EnterReadLock();
-                }
-                Monitor.Enter(ParsingRunSyncObject, ref lockTaken);
-                ParseAllInternal(this, token);
-            }
-            catch (OperationCanceledException)
-            {
-                //This is the point to which the cancellation should break.
-            }
-            finally
-            {
-                if (lockTaken)
-                {
-                    Monitor.Exit(ParsingRunSyncObject);
-                }
-                if (ParsingSuspendLock.IsReadLockHeld)
-                {
-                    ParsingSuspendLock.ExitReadLock();
-                }
-            }
-        }
-
-    }
-
     public static class MockParser
     {
         public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
@@ -105,7 +36,7 @@ namespace RubberduckTests.Mocks
             return parser.State;
         }
 
-        public static ParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
+        public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
         {
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Moq.Mock<IVBE>());
             var declarationFinderFactory = new DeclarationFinderFactory();
@@ -114,14 +45,14 @@ namespace RubberduckTests.Mocks
             return Create(vbe, state, projectRepository, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
+        public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
             var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state.ProjectsProvider);
             var sourceCodeHandler = new Mock<ISourceCodeHandler>().Object;
             return Create(vbe, state, attributeParser, sourceCodeHandler, projectRepository, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
+        public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
@@ -173,7 +104,7 @@ namespace RubberduckTests.Mocks
                 supertypeClearer
                 );
 
-            return new TestParseCoordinator(
+            return new SynchronousParseCoordinator(
                 state,
                 parsingStageService,
                 parsingCacheService,
@@ -200,7 +131,7 @@ namespace RubberduckTests.Mocks
             return parser.State;
         }
 
-        private static ParseCoordinator CreateWithLibraries(IVBE vbe, string serializedDeclarationsPath = null, IEnumerable<string> testLibraries = null)
+        private static SynchronousParseCoordinator CreateWithLibraries(IVBE vbe, string serializedDeclarationsPath = null, IEnumerable<string> testLibraries = null)
         {
             var parser = Create(vbe, serializedDeclarationsPath);
             if (testLibraries != null)

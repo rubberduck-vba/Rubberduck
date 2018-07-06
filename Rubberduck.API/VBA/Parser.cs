@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Rubberduck.Common;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
@@ -60,15 +61,17 @@ namespace Rubberduck.API.VBA
     {
         private RubberduckParserState _state;
         private AttributeParser _attributeParser;
-        private ParseCoordinator _parser;
+        private SynchronousParseCoordinator _parser;
         private IVBE _vbe;
         private IVBEEvents _vbeEvents;
         private readonly IUiDispatcher _dispatcher;
+        private readonly CancellationTokenSource _tokenSource;
 
         internal Parser()
         {
             UiContextProvider.Initialize();
             _dispatcher = new UiDispatcher(UiContextProvider.Instance());
+            _tokenSource = new CancellationTokenSource();
         }
 
         // vbe is the com coclass interface from the interop assembly.
@@ -137,7 +140,7 @@ namespace Rubberduck.API.VBA
                 supertypeClearer
                 );
 
-            _parser = new ParseCoordinator(
+            _parser = new SynchronousParseCoordinator(
                 _state,
                 parsingStageService,
                 parsingCacheService,
@@ -151,8 +154,7 @@ namespace Rubberduck.API.VBA
         /// </summary>
         public void Parse()
         {
-            // blocking call
-            _parser.Parse(this);
+            _parser.Parse(_tokenSource);
         }
 
         /// <summary>

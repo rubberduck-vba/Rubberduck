@@ -352,6 +352,7 @@
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
     <Compile Include="PreProcessing\TokensValue.cs" />
     <Compile Include="VBA\SupertypeClearer.cs" />
+    <Compile Include="VBA\SynchronousParseCoordinator.cs" />
     <Compile Include="VBA\SynchronousSupertypeClearer.cs" />
     <Compile Include="VBA\SupertypeClearerBase.cs" />
     <Compile Include="VBA\ISupertypeClearer.cs" />
