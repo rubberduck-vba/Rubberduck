@@ -381,6 +381,8 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CommandBarIcons.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionInfo.cs.resx" />
+    <EmbeddedResource Include="Inspections\InspectionNames.cs.resx" />
     <EmbeddedResource Include="Inspections\InspectionNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
@@ -396,6 +398,7 @@
       <LastGenOutput>InspectionNames.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionResults.cs.resx" />
     <EmbeddedResource Include="Inspections\InspectionResults.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionResults.Designer.cs</LastGenOutput>
@@ -426,6 +429,8 @@
       <LastGenOutput>InspectionInfo.fr.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Inspections\InspectionsUI.cs.resx" />
+    <EmbeddedResource Include="Inspections\QuickFixes.cs.resx" />
     <EmbeddedResource Include="Inspections\QuickFixes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>QuickFixes.Designer.cs</LastGenOutput>
@@ -460,6 +465,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>RubberduckMenus.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="RegexAssistant\RegexAssistantUI.cs.resx" />
     <EmbeddedResource Include="RegexAssistant\RegexAssistantUI.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RegexAssistantUI.de.Designer.cs</LastGenOutput>

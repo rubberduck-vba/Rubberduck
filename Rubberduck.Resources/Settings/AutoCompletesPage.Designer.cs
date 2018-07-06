@@ -124,6 +124,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Override &apos;Function&apos; member block completion.
+        /// </summary>
+        public static string AutoCompleteFunctionBlockDescription {
+            get {
+                return ResourceManager.GetString("AutoCompleteFunctionBlockDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close &apos;If&apos; blocks.
         /// </summary>
         public static string AutoCompleteIfBlockDescription {
@@ -151,11 +160,29 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Override &apos;Property&apos; member block completion.
+        /// </summary>
+        public static string AutoCompletePropertyBlockDescription {
+            get {
+                return ResourceManager.GetString("AutoCompletePropertyBlockDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close &apos;Select&apos; blocks.
         /// </summary>
         public static string AutoCompleteSelectBlockDescription {
             get {
                 return ResourceManager.GetString("AutoCompleteSelectBlockDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Override &apos;Sub&apos; member block completion.
+        /// </summary>
+        public static string AutoCompleteSubBlockDescription {
+            get {
+                return ResourceManager.GetString("AutoCompleteSubBlockDescription", resourceCulture);
             }
         }
         
@@ -183,6 +210,15 @@ namespace Rubberduck.Resources.Settings {
         public static string AutoCompleteWithBlockDescription {
             get {
                 return ResourceManager.GetString("AutoCompleteWithBlockDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autocomplete blocks on ENTER.
+        /// </summary>
+        public static string HandleEnterKey {
+            get {
+                return ResourceManager.GetString("HandleEnterKey", resourceCulture);
             }
         }
         
