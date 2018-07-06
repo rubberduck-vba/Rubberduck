@@ -117,40 +117,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PageHeader" xml:space="preserve">
-    <value>Unit Test Nastavení</value>
+  <data name="Inspections_Declaration" xml:space="preserve">
+    <value>Deklarace</value>
   </data>
-  <data name="PageInstructions" xml:space="preserve">
-    <value>Konfigurovat nastavení pro nové unit test moduly a metody</value>
+  <data name="Inspections_UnassignedVariableTodo" xml:space="preserve">
+    <value>TODO</value>
   </data>
-  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Typ zabezpečení:</value>
+  <data name="Inspections_Usage" xml:space="preserve">
+    <value>Použití</value>
   </data>
-  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Binding mód:</value>
+  <data name="QuickFix_ThisModule" xml:space="preserve">
+    <value>Opravit všechny výskyty v modulu</value>
   </data>
-  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
-    <value>Časný binding</value>
+  <data name="QuickFix_ThisProject" xml:space="preserve">
+    <value>Opravit všechny výskyty v projektu</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Inicializace/úklid test metody</value>
+  <data name="QuickFix_All" xml:space="preserve">
+    <value>Opravit všechny výskyty</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Vložit pahýl test metody</value>
+  <data name="QuickFix_ThisProcedure" xml:space="preserve">
+    <value>Opravit všechny výskyty v proceduře</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Inicializace/úklid test modulu</value>
+  <data name="DisableThisInspection" xml:space="preserve">
+    <value>Zakázat tuto kontrolu</value>
   </data>
-  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
-    <value>Pozdní binding</value>
+  <data name="QualifiedSelectionInspection" xml:space="preserve">
+    <value>{0}: {1} - {2} {3}.{4}, řádek {5}</value>
   </data>
-  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
-    <value>Tolerantní assert</value>
+  <data name="CodeInspectionSettings_CodeQualityIssues" xml:space="preserve">
+    <value>Problémy s Kvalitou Kódu</value>
   </data>
-  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
-    <value>Striktní assert</value>
+  <data name="CodeInspectionSettings_LanguageOpportunities" xml:space="preserve">
+    <value>Příležitosti Jazyka</value>
   </data>
-  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
-    <value>Šablona Test Modulu</value>
+  <data name="CodeInspectionSettings_MaintainabilityAndReadabilityIssues" xml:space="preserve">
+    <value>Problémy Udržovatelnosti a Čitelnosti</value>
+  </data>
+  <data name="CodeInspectionSettings_RubberduckOpportunities" xml:space="preserve">
+    <value>Příležitosti Rubberducku</value>
+  </data>
+  <data name="CodeInspectionSeverity_DoNotShow" xml:space="preserve">
+    <value>Neukazovat</value>
+  </data>
+  <data name="CodeInspectionSeverity_Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="CodeInspectionSeverity_Hint" xml:space="preserve">
+    <value>Nápověda</value>
+  </data>
+  <data name="CodeInspectionSeverity_Suggestion" xml:space="preserve">
+    <value>Návrh</value>
+  </data>
+  <data name="CodeInspectionSeverity_Warning" xml:space="preserve">
+    <value>Varování</value>
+  </data>
+  <data name="CodeInspectionSettings_Performance" xml:space="preserve">
+    <value>Výkon</value>
   </data>
 </root>

@@ -117,40 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PageHeader" xml:space="preserve">
-    <value>Unit Test Nastavení</value>
+  <data name="AnalyzerCategory" xml:space="preserve">
+    <value>Správa COM</value>
   </data>
-  <data name="PageInstructions" xml:space="preserve">
-    <value>Konfigurovat nastavení pro nové unit test moduly a metody</value>
+  <data name="MissingClassInterfaceDescription" xml:space="preserve">
+    <value>COM-viditelné třídy musí mít explicitní atribut ClassInterface a musí být nastaven na `None`. Toto je potřeba, aby se předešlo problémům s verzováním.</value>
   </data>
-  <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Typ zabezpečení:</value>
+  <data name="MissingClassInterfaceId" xml:space="preserve">
+    <value>MissingClassInterface</value>
   </data>
-  <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Binding mód:</value>
+  <data name="MissingClassInterfaceTitle" xml:space="preserve">
+    <value>Chybějící Atribut ClassInterface</value>
   </data>
-  <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
-    <value>Časný binding</value>
+  <data name="MissingComDefaultInterfaceId" xml:space="preserve">
+    <value>MissingComDefaultInterface</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Inicializace/úklid test metody</value>
+  <data name="MissingGuidId" xml:space="preserve">
+    <value>MissingGuid</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Vložit pahýl test metody</value>
+  <data name="MissingGuidTitle" xml:space="preserve">
+    <value>Chybějící Atribut Guid</value>
   </data>
-  <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Inicializace/úklid test modulu</value>
+  <data name="MissingProgIdId" xml:space="preserve">
+    <value>MissingProgId</value>
   </data>
-  <data name="UnitTestSettings_LateBinding" xml:space="preserve">
-    <value>Pozdní binding</value>
+  <data name="MissingProgIdTitle" xml:space="preserve">
+    <value>Chybějící Atribut ProgId</value>
   </data>
-  <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
-    <value>Tolerantní assert</value>
+  <data name="MissingComDefaultInterfaceTitle" xml:space="preserve">
+    <value>Chybějící Atribut ComDefaultInterface</value>
   </data>
-  <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
-    <value>Striktní assert</value>
+  <data name="MissingInterfaceTypeId" xml:space="preserve">
+    <value>MissingInterfaceType</value>
   </data>
-  <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
-    <value>Šablona Test Modulu</value>
+  <data name="MissingInterfaceTypeTitle" xml:space="preserve">
+    <value>Chybějící Atribut InterfaceType</value>
+  </data>
+  <data name="MissingClassInterfaceMessageFormat" xml:space="preserve">
+    <value>COM-viditelná třída '{0}' nemá explicitní atribut ClassInterface, který je zároveň nastaven na 'ClassInterfaceType.None'</value>
+  </data>
+  <data name="MissingComDefaultInterfaceDescription" xml:space="preserve">
+    <value>COM-viditelné třídy musí mít explicitní atribut ComDefaultInterface, který odkazuje na COM-viditelné rozhraní.</value>
+  </data>
+  <data name="MissingProgIdMessageFormat" xml:space="preserve">
+    <value>COM-viditelná třída '{0}' nemá explicitní atribut ProgId, který odkazuje na konstantu RubberduckProgId.</value>
+  </data>
+  <data name="MissingComDefaultInterfaceMessageFormat" xml:space="preserve">
+    <value>COM-viditelná třída '{0}' musí mít explicitní atribut ComDefaultInterface, který odkazuje na typeof COM-viditelné rozhraní. Nepoužívejte řetězec pro přidělení jména rozhraní.</value>
+  </data>
+  <data name="MissingGuidDescription" xml:space="preserve">
+    <value>COM-viditelné typy musí mít explicitní atribut Guid. Toto je potřeba, aby se předešlo problémům s verzováním. Odkazujte se na konstanty RubberduckGuid.</value>
+  </data>
+  <data name="MissingGuidMessageFormat" xml:space="preserve">
+    <value>COM-viditelný type '{0}' nemá explicitní atribut Guid, který odkazuje na konstantu RubberduckGuid.</value>
+  </data>
+  <data name="MissingInterfaceTypeDescription" xml:space="preserve">
+    <value>COM-viditelná rozhraní musí mít explicitní atribut InterfaceType, typicky nastaven na "Dual" nebo "Dispatch" pro události rozhraní.</value>
+  </data>
+  <data name="MissingInterfaceTypeMessageFormat" xml:space="preserve">
+    <value>COM-viditelné rozhraní '{0}' nemá explicitní atribut InterfaceType nastaven na typ rozhraní. Doporučená volba je InterfaceIsDual, pokud se nejedná o událost, v takovém případě je doporučen InterfaceIsIDispatch.</value>
+  </data>
+  <data name="MissingProgIdDescription" xml:space="preserve">
+    <value>COM-viditelné třídy musí mít explicitní atribut ProgId. Toto je potřeba, aby se předešlo problémům s verzováním. Odkazujte se na konstanty RubberduckProgId.</value>
   </data>
 </root>

@@ -117,72 +117,139 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Příspěvky</value>
+  <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
+    <value>Nahraď prázdný řetěz "" za konstantu 'vbNullString'</value>
   </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>O Rubberducku</value>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Použij property pro zapouzdři pole '{0}'</value>
   </data>
-  <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Jednou ignoruj</value>
   </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Speciální Poděkování</value>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Implementuj jako funkci a obnov použití.</value>
   </data>
-  <data name="AboutWindow_AttributionList" xml:space="preserve">
-    <value>ANTLR: Parsování
-LibGit2Sharp: Integrace GitHubu
-AvalonEdit: Zvýraznění syntaxe
-EasyHook: Nativní hooky
-Yusuke Kamiyamane: Fugue ikony
-SharpDevelop: IDE ikony
-Grant Frisken: Podpora lokalizace WPF</value>
+  <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
+    <value>Zkonvertuj funkci na proceduru</value>
   </data>
-  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>Všichni přispěvatelé do našeho GitHub repozitáře
-Všichni ti, co koukají na hvězdy, oblíbenci a následovníci,, pro ten teplý krásný pocit
-...a kohokoli, kdo to tady čte!</value>
+  <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
+    <value>Deklaruj jako explicitní 'Variant'</value>
   </data>
-  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
-    <value>Blogy:</value>
+  <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
+    <value>Předej parametr explicitně jako referenci</value>
   </data>
-  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
-    <value>Komunita:</value>
+  <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
+    <value>Nahraď 'Error' za 'Err.Raise'</value>
   </data>
-  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
-    <value>Přispěvatelé a supporteři</value>
+  <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
+    <value>Nahraď 'Global' přístupový modifikátor za 'Public'</value>
   </data>
-  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Zkopírovat informace o verzi</value>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
+    <value>Nahraď 'If/Else' zjednodušeným přidělením</value>
   </data>
-  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Klikněte zde pro zkopírování informací do schánky.</value>
+  <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
+    <value>Zaměň použití 'Rem' s použitím znaku klasických komentářů: "'"</value>
   </data>
-  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
-    <value>Informace o verzi byly zkopírovány do schránky.</value>
+  <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
+    <value>Vrať jako explicitní 'Variant'</value>
   </data>
-  <data name="AboutWindow_HostExecutable" xml:space="preserve">
-    <value>Hostitelský spouštěč: {0}</value>
+  <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
+    <value>Zapisuj proměnné na jeden řádek</value>
   </data>
-  <data name="AboutWindow_HostProduct" xml:space="preserve">
-    <value>Hostitelský produkt: {0} {1}</value>
+  <data name="OptionExplicitQuickFix" xml:space="preserve">
+    <value>Specifikuj 'Option Explicit'</value>
   </data>
-  <data name="AboutWindow_HostVersion" xml:space="preserve">
-    <value>Hostitelská Verze: {0}</value>
+  <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
+    <value>Předej parametr odkazem (ByRef)</value>
   </data>
-  <data name="AboutWindow_OperatingSystem" xml:space="preserve">
-    <value>OS: {0}, {1}</value>
+  <data name="PassParameterByValueQuickFix" xml:space="preserve">
+    <value>Předej parametr hodnotou (ByVal)</value>
   </data>
-  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
-    <value>Našli jste problém?</value>
+  <data name="UseTypedFunctionQuickFix" xml:space="preserve">
+    <value>Změň '{0}' na '{1}'</value>
   </data>
-  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
-    <value>Pomozte nám vylepšit Rubberduck!</value>
+  <data name="RemoveCommentQuickFix" xml:space="preserve">
+    <value>Odstraň komentář</value>
   </data>
-  <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
-    <value>Také nás můžete nalézt na:</value>
+  <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
+    <value>Odstraň zastaralé prohlášení</value>
   </data>
-  <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
-    <value>Nahlásit problém</value>
+  <data name="RemoveTypeHintsQuickFix" xml:space="preserve">
+    <value>Odstraň typovou nápovědu</value>
+  </data>
+  <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
+    <value>Odstraň nepřiřazenou proměnnou</value>
+  </data>
+  <data name="RemoveUnassignedVariableUsageQuickFix" xml:space="preserve">
+    <value>Odstraň použití (rozbije kód)</value>
+  </data>
+  <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
+    <value>Odstraň nepoužitou deklaraci</value>
+  </data>
+  <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
+    <value>Odstraň nepoužitý parametr</value>
+  </data>
+  <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
+    <value>Explicitně specifikuj 'Public access' modifikátor</value>
+  </data>
+  <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
+    <value>Odděl více deklarací do několika instrukcí</value>
+  </data>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Kontexový typ '{0}' není platný pro '{1}'</value>
+  </data>
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
+    <value>Použij klíčové slovo 'Set'</value>
+  </data>
+  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+    <value>Přidej accessor 'property get'</value>
+  </data>
+  <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
+    <value>Zaměň 'Dim' za 'Private'</value>
+  </data>
+  <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
+    <value>Představ lokální proměnnou</value>
+  </data>
+  <data name="WhiteListIdentifierQuickFix" xml:space="preserve">
+    <value>Přidat do Whitelistu</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">
+    <value>Použij early-bound metodu Application.WorksheetFunction.</value>
+  </data>
+  <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
+    <value>Vytvoř a použij lokální kopii tohoto parametru.</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
+    <value>Odstraň prohlášení 'Option Base'</value>
+  </data>
+  <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
+    <value>Synchronizuj v modulu atributy/anotace</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
+    <value>Odstraň prázdný If blok</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
+    <value>Odstraň 'ByRef' modifikátor</value>
+  </data>
+  <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
+    <value>Odstraň prázdný 'Else' blok</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix" xml:space="preserve">
+    <value>Zaměň typ za 'Long'</value>
+  </data>
+  <data name="RemoveStopKeywordQuickFix" xml:space="preserve">
+    <value>Odstraň použití klíčového slova 'Stop'</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionQuickFix" xml:space="preserve">
+    <value>Představ subrutinu pro zpracování chyb</value>
+  </data>
+  <data name="RemoveStepOneQuickFix" xml:space="preserve">
+    <value>Odstraň nadbytečnou klauzuli 'Step'</value>
+  </data>
+  <data name="AddStepOneQuickFix" xml:space="preserve">
+    <value>Přidej explicitní klauzuli 'Step'</value>
+  </data>
+  <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
+    <value>Odkazuj na statisticky přístupný list dle jeho kódového jména</value>
   </data>
 </root>
