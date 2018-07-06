@@ -90,7 +90,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected HashSet<T> SingleValues { set; get; } = new HashSet<T>();
 
-        protected HashSet<(T Start, T End)> Ranges { set; get; } = new HashSet<(T Start, T End)>();
+        protected HashSet<RangeOfValues> Ranges { set; get; } = new HashSet<RangeOfValues>();
 
         protected FilterLimits<T> Limits { get; } = new FilterLimits<T>();
 
@@ -224,7 +224,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (Limits.HasMinAndMaxLimits)
                 {
                     return Limits.Minimum.CompareTo(Limits.Maximum) > 0
-                        || Ranges.Any(rg => Covers(rg, (Limits.Minimum, Limits.Maximum)))
+                        || Ranges.Any(rg => rg.Filters(Limits.Minimum, Limits.Maximum))
                         || SingleValues.Any(sv => Limits.Minimum.CompareTo(Limits.Maximum) == 0 && sv.CompareTo(Limits.Minimum) == 0);
                 }
                 return false;
@@ -284,7 +284,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected bool AddSingleValue(T value) => AddToContainer(SingleValues, value);
 
-        protected virtual bool AddValueRange((T Start, T End) range)
+        protected virtual bool AddValueRange(RangeOfValues range)
         {
             if (FiltersRange(range))
             {
@@ -292,32 +292,25 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             IsDirty = true;
-            if (Limits.HasMinimum)
-            {
-                range = TrimStart(range, Limits.Minimum);
-            }
 
-            if (Limits.HasMaximum)
-            {
-                range = TrimEnd(range, Limits.Maximum);
-            }
+            range = Limits.HasMinimum ? range.TrimStart(Limits.Minimum) : range;
+            range = Limits.HasMaximum ? range.TrimEnd(Limits.Maximum) : range;
 
-            if (!Ranges.Any())
-            {
-                Ranges.Add(range);
-                return true;
-            }
-            else
-            {
-                var initial = Ranges.Count;
-                RemoveRangesCoveredByRange(range);
+            Ranges.RemoveWhere(rg => range.Filters(rg));
 
-                if (!TryMergeWithOverlappingRange(range))
+            var overlappingRanges = Ranges.Where(rg => range.Filters(rg.End) || range.Filters(rg.Start));
+            if (overlappingRanges.Any())
+            {
+                (bool wasMerged, RangeOfValues mergedRange) = range.MergeWith(overlappingRanges.First());
+                if (wasMerged)
                 {
-                    Ranges.Add(range);
+                    Ranges.Remove(overlappingRanges.First());
+                    Ranges.Add(mergedRange);
+                    return true;
                 }
-                return initial != Ranges.Count;
             }
+            Ranges.Add(range);
+            return true;
         }
 
         protected bool FiltersTrueFalse => FiltersValue(_trueValue) && FiltersValue(_falseValue);
@@ -345,15 +338,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var result = Limits.SetMinimum(value);
             if (TryGetMinimum(out T min))
             {
-                var newRanges = new HashSet<(T Start, T End)>();
+                var newRanges = new HashSet<RangeOfValues>();
                 foreach ( var range in Ranges)
                 {
-                    newRanges.Add(TrimStart(range, min));
+                    newRanges.Add(range.TrimStart(min));
                 }
                 Ranges = newRanges;
 
-                SingleValues.Where(sv => sv.CompareTo(min) < 0).ToList()
-                    .ForEach(sv => SingleValues.Remove(sv));
+                SingleValues.RemoveWhere(sv => sv.CompareTo(min) < 0);
             }
             return result;
         }
@@ -364,61 +356,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var result =  Limits.SetMaximum(value);
             if (TryGetMaximum(out T max))
             {
-                var newRanges = new HashSet<(T Start, T End)>();
+                var newRanges = new HashSet<RangeOfValues>();
                 foreach (var range in Ranges)
                 {
-                    newRanges.Add(TrimEnd(range, max));
+                    newRanges.Add(range.TrimEnd(max));
                 }
                 Ranges = newRanges;
 
-                SingleValues.Where(sv => sv.CompareTo(max) > 0).ToList()
-                    .ForEach(sv => SingleValues.Remove(sv));
+                SingleValues.RemoveWhere(sv => sv.CompareTo(max) > 0);
             }
             return result;
-        }
-
-        protected void RemoveRangesCoveredByLimits()
-        {
-            var rangesToRemove = Ranges.Where(rg => Limits.CoversRange(rg));
-            foreach(var range in rangesToRemove)
-            {
-                Ranges.Remove(range);
-            }
-        }
-
-        protected void RemoveRangesCoveredByRange((T Start, T End) range)
-        {
-            var rangesToRemove = Ranges.Where(rg => Covers(range, rg)).ToList();
-            rangesToRemove.ForEach(rtr => Ranges.Remove(rtr));
-        }
-
-        protected void RemoveSingleValuesCoveredByRanges()
-            => SingleValues.Where(sv => Ranges.Any(rg => Covers(rg, sv)))
-            .ToList().ForEach(tr => SingleValues.Remove(tr));
-
-        protected bool TryMergeWithOverlappingRange((T Start, T End) range)
-        {
-            var endIsWithin = Ranges.Where(currentRange => Covers(currentRange, range.End));
-            var startIsWithin = Ranges.Where(currentRange => Covers(currentRange, range.Start));
-
-            var rangeIsAdded = false;
-            if (endIsWithin.Any() || startIsWithin.Any())
-            {
-                rangeIsAdded = true;
-                if (endIsWithin.Any())
-                {
-                    (T Start, T End) = endIsWithin.First();
-                    Ranges.Remove(endIsWithin.First());
-                    Ranges.Add((range.Start, End));
-                }
-                else
-                {
-                    (T Start, T End) = startIsWithin.First();
-                    Ranges.Remove(startIsWithin.First());
-                    Ranges.Add((Start, range.End));
-                }
-            }
-            return rangeIsAdded;
         }
 
         private (T start, T end) ConvertRangeValues(string startVal, string endVal)
@@ -445,47 +392,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (FiltersTrueFalse) { return false; }
 
-            return predicate.RHS.Equals("*") ? AddSingleValue(_trueValue)
-                : AddToContainer(LikePredicates, predicate);
-        }
-
-        private bool Covers((T Start, T End) existingRange, (T Start, T End) range)
-            => existingRange.Start.CompareTo(range.Start) <= 0 && existingRange.End.CompareTo(range.End) >= 0;
-
-        private bool Covers((T Start, T End) range, T value)
-            => range.Start.CompareTo(value) <= 0 && range.End.CompareTo(value) >= 0;
-
-        private (T Start, T End) TrimStart((T Start, T End) rangeToTrim, T value)
-        {
-            if (rangeToTrim.Start.CompareTo(value) < 0)
+            var addsSingleValue = false;
+            if (predicate.RHS.Equals("*"))
             {
-                return (value, rangeToTrim.End);
+                addsSingleValue = AddSingleValue(_trueValue);
             }
-            return (rangeToTrim.Start, rangeToTrim.End);
+            //TODO: Enhancement - evaluate Like Pattern for superset/subset conditions.
+            //e.g., "*" would filter "?*", or "?*" would filter "a*" 
+            return AddToContainer(LikePredicates, predicate) || addsSingleValue;
         }
 
-        private (T Start, T End) TrimEnd((T Start, T End) rangeToTrim, T value)
+        private bool FiltersRange(RangeOfValues rov)
         {
-            if (rangeToTrim.End.CompareTo(value) > 0)
-            {
-                return (rangeToTrim.Start, value);
-            }
-            return (rangeToTrim.Start, rangeToTrim.End);
-        }
-
-        private bool FiltersRange((T Start, T End) range)
-        {
-            return Limits.CoversRange(range)
-                || Ranges.Any(rg => Covers(rg, range));
+            return Limits.FiltersRange(rov.Start, rov.End)
+                || Ranges.Any(rg => rg.Filters(rov));
         }
 
         private bool FiltersValue(T value) =>
             SingleValues.Contains(value)
-            || RangesCoversValue(value)
-            || Limits.CoversValue(value);
-
-        private bool RangesCoversValue(T value)
-            => Ranges.Any(rg => rg.Start.CompareTo(value) <= 0 && rg.End.CompareTo(value) > 0);
+            || Ranges.Any(rg => rg.Filters(value))
+            || Limits.FiltersValue(value);
 
         private HashSet<string> this[VariableClauseTypes eType] => Variables[eType];
 
@@ -493,16 +419,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (rangeExpr.LHSValue.ParsesToConstantValue && rangeExpr.RHSValue.ParsesToConstantValue)
             {
-                var (start, end) = ConvertRangeValues(rangeExpr.LHS, rangeExpr.RHS);
-
-                //If an expression is X To Y where X > Y, then the Range Clause will never execute
-                if (typeof(T) == typeof(bool) ? end.CompareTo(start) > 0 : start.CompareTo(end) > 0)
+                (T start, T end) = ConvertRangeValues(rangeExpr.LHS, rangeExpr.RHS);
+                var rov = new RangeOfValues(start, end);
+                if (!rov.IsMalformed)
                 {
-                    rangeExpr.IsUnreachable = true;
-                    return false;
+                    return rov.IsSingleValue ? AddSingleValue(rov.Start) : AddValueRange(rov);
                 }
-                return start.CompareTo(end) == 0 ?
-                    AddSingleValue(start) : AddValueRange((start, end));
+                return false;
             }
             return AddToContainer(Variables[VariableClauseTypes.Range], rangeExpr.ToString());
         }
@@ -597,7 +520,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string GetRangesDescriptor()
         {
-            var values = Ranges.Select(rg => $"{rg.Start}:{rg.End}").ToList();
+            var values = Ranges.Select(rg => rg.ToString()).ToList();
             values.AddRange(this[VariableClauseTypes.Range]);
             return BuildTypeDescriptor(values, "Ranges");
         }
@@ -629,6 +552,70 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             StringBuilder series = new StringBuilder();
             values.ForEach(val => series.Append($"{val},"));
             return $"{identifier}({series.ToString().Substring(0, series.Length - 1)})";
+        }
+
+        protected struct RangeOfValues
+        {
+            private readonly int _hashCode;
+            private readonly string _toString;
+            private readonly T _start;
+            private readonly T _end;
+
+            public RangeOfValues(T Start, T End)
+            {
+                _start = Start;
+                _end = End;
+                _toString = $"{_start}{":"}{_end}";
+                _hashCode = _toString.GetHashCode();
+            }
+
+            public override string ToString() => _toString;
+
+            public override int GetHashCode() => _hashCode;
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is RangeOfValues rov))
+                {
+                    return false;
+                }
+                return _toString.Equals(rov.ToString());
+            }
+
+            public bool IsMalformed => typeof(T) != typeof(bool) ? _start.CompareTo(_end) > 0
+                                                                        : _end.CompareTo(_start) > 0;
+
+            public bool IsSingleValue => _start.CompareTo(_end) == 0;
+
+            public T Start => _start;
+
+            public T End => _end;
+
+            public RangeOfValues TrimStart(T value)
+                => Start.CompareTo(value) < 0 ? new RangeOfValues(value, End) : new RangeOfValues(Start, End);
+
+            public RangeOfValues TrimEnd(T value)
+                => End.CompareTo(value) > 0 ? new RangeOfValues(Start, value) : new RangeOfValues(Start, End);
+
+            public (bool wasMerged, RangeOfValues mergedRov) MergeWith(RangeOfValues rov)
+            {
+                if (Filters(rov.Start) || Filters(rov.End))
+                {
+                    var newStart = Start.CompareTo(rov.Start) < 0 ? Start : rov.Start;
+                    var newEnd = End.CompareTo(rov.End) > 0 ? End : rov.End;
+                    return (true, new RangeOfValues(newStart, newEnd));
+                }
+                return (false, new RangeOfValues(Start, End));
+            }
+
+            public bool Filters(T value)
+                => Start.CompareTo(value) <= 0 && End.CompareTo(value) >= 0;
+
+            public bool Filters(RangeOfValues rov)
+                => Filters(rov.Start, rov.End);
+
+            public bool Filters(T start, T end)
+                => Start.CompareTo(start) <= 0 && End.CompareTo(end) >= 0;
         }
     }
 }

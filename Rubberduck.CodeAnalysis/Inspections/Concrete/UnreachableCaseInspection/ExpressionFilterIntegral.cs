@@ -12,13 +12,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public override bool FiltersAllValues => base.FiltersAllValues
             || Limits.HasMinAndMaxLimits && (Limits.Maximum - Limits.Minimum + 1 <= RangesValuesCount + SingleValues.Count());
 
-        protected override bool AddValueRange((long Start, long End) range)
+        protected override bool AddValueRange(RangeOfValues rov)
         {
-            var addsRange = base.AddValueRange(range);
+            var addsRange = base.AddValueRange(rov);
 
             ConcatenateExistingRanges();
-            RemoveRangesCoveredByLimits();
-            RemoveSingleValuesCoveredByRanges();
+            Ranges.RemoveWhere(rg => Limits.FiltersRange(rg.Start, rg.End));
+            SingleValues.RemoveWhere(sv => Ranges.Any(rg => rg.Filters(sv)));
             return addsRange;
         }
 
@@ -39,37 +39,36 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void ConcatenateRanges()
         {
-            var concatenatedRanges = new List<(long Start, long End)>();
+            var concatenatedRanges = new List<RangeOfValues>();
             var indexesToRemove = new List<int>();
-            var sortedRanges = Ranges.Select(rg => (rg.Start, rg.End)).OrderBy(k => k.Start).ToList();
+            var sortedRanges = Ranges.OrderBy(k => k.Start).ToList();
             for (int idx = sortedRanges.Count() - 1; idx > 0;)
             {
                 if (sortedRanges[idx].Start == sortedRanges[idx - 1].End || sortedRanges[idx].Start - sortedRanges[idx - 1].End == 1)
                 {
-                    concatenatedRanges.Add((sortedRanges[idx - 1].Start, sortedRanges[idx].End));
+                    concatenatedRanges.Add( new RangeOfValues(sortedRanges[idx - 1].Start, sortedRanges[idx].End));
                     indexesToRemove.Add(idx);
                     indexesToRemove.Add(idx - 1);
                     idx = -1;
                 }
                 idx--;
             }
-            //rebuild _ranges retaining the original order except placing the concatenated
-            //range added to the end
+            //rebuild _ranges retaining the original order placing the concatenated ranges at the end
             if (concatenatedRanges.Any())
             {
                 int idx = 0;
-                var allRanges = new Dictionary<int, (long Start, long End)>();
-                foreach( var range in Ranges)
+                var allRanges = new Dictionary<int, RangeOfValues>();
+                foreach ( var range in Ranges)
                 {
                     allRanges.Add(idx++, range);
                 }
 
                 indexesToRemove.ForEach(id => sortedRanges.RemoveAt(id));
 
-                var tRanges = new List<(long Start, long End)>();
-                sortedRanges.ForEach(sr => tRanges.Add((sr.Start, sr.End)));
+                var tRanges = new List<RangeOfValues>();
+                sortedRanges.ForEach(sr => tRanges.Add(sr));
 
-                concatenatedRanges.ForEach(sr => tRanges.Add((sr.Start, sr.End)));
+                concatenatedRanges.ForEach(sr => tRanges.Add(new RangeOfValues(sr.Start, sr.End)));
 
                 Ranges.Clear();
                 var removalKeys = allRanges.Keys.Where(k => tRanges.Contains(allRanges[k]));

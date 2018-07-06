@@ -40,11 +40,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected override bool TryGetMinimum(out bool minimum) { minimum = default; return false; }
 
-        protected override bool AddValueRange((bool Start, bool End) range)
+        protected override bool AddValueRange(RangeOfValues rov)
         {
-            var addsStart = AddSingleValue(range.Start);
-            var addsEnd = AddSingleValue(range.End);
-            return addsStart || addsEnd;
+            var addsStart = AddSingleValue(rov.Start);
+            return AddSingleValue(rov.End) || addsStart;
         }
 
         private bool AddIsClause(bool isValue, IRangeClauseExpression expression)

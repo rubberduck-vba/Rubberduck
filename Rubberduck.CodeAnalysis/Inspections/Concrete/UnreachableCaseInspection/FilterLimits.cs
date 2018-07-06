@@ -158,9 +158,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return HasMinimum;
         }
 
-        public bool CoversValue(T value) => _min > value || _max < value;
+        public bool FiltersValue(T value) => _min > value || _max < value;
 
-        public bool CoversRange((T Start, T End) range) => _min > range.End || _max < range.Start;
+        public bool FiltersRange(T Start, T End) => _min > End || _max < Start;
 
         public override bool Equals(object obj)
         {
