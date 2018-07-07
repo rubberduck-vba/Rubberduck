@@ -32,35 +32,8 @@ namespace Rubberduck.UI.UnitTesting
 
             _dispatcher.Invoke(() =>
             {
-                var tests = UnitTestUtils.GetAllTests(_vbe, _state).ToList();
-
-                //var removedTests = Tests.Where(test =>
-                //             !tests.Any(t =>
-                //                     t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                //                     t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                //                     t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
-
-                //// remove old tests
-                //foreach (var test in removedTests)
-                //{
-                //    Tests.Remove(test);
-                //}
-
-                //// update declarations for existing tests--declarations are immutable
-                //foreach (var test in Tests.Except(removedTests))
-                //{
-                //    var declaration = tests.First(t =>
-                //        t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                //        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                //        t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
-
-                //    test.SetDeclaration(declaration);
-                //}
-
-                // refresh all tests
                 Tests.Clear();
-                // add new tests
-                foreach (var test in tests)
+                foreach (var test in UnitTestUtils.GetAllTests(_state))
                 {
                     if (!Tests.Any(t =>
                         t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
@@ -86,6 +59,14 @@ namespace Rubberduck.UI.UnitTesting
 
         public void AddExecutedTest(TestMethod test)
         {
+            if (!Tests.Any(t =>
+            t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
+            t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+            t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
+            {
+                Tests.Add(new TestMethodViewModel(test));
+            }
+
             LastRun.Add(Tests.First(m => m.Method == test));
             ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
@@ -98,14 +79,6 @@ namespace Rubberduck.UI.UnitTesting
                 ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive)
                     ? Colors.Gold
                     : Colors.LimeGreen;
-            }
-
-            if (!Tests.Any(t =>
-                        t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
-            {
-                Tests.Add(new TestMethodViewModel(test));
             }
         }
 

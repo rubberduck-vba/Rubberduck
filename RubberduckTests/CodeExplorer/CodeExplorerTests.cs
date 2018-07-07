@@ -20,6 +20,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Interaction;
+using Rubberduck.UI.UnitTesting.Commands;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -172,8 +173,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var commands = new List<CommandBase>
                 {
-                    new Rubberduck.UI.CodeExplorer.Commands.AddTestModuleCommand(vbeWrapper,
-                        new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
+                    new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object) 
                 };
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, removeCommand.Object);
@@ -215,7 +215,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, removeCommand.Object);
 
@@ -254,7 +254,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
                 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, removeCommand.Object);
@@ -293,7 +293,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new Mock<RemoveCommand>();
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, removeCommand.Object);
@@ -332,7 +332,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var commands = new List<CommandBase>
                 {
-                    new AddTestModuleWithStubsCommand(vbeWrapper, new Rubberduck.UI.Command.AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
+                    new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object))
                 };
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, removeCommand.Object);
 

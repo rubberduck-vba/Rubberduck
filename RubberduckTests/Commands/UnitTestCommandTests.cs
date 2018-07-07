@@ -6,12 +6,11 @@ using Moq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
-using Rubberduck.UI;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.UI.UnitTesting.Commands;
 
 namespace RubberduckTests.Commands
 {

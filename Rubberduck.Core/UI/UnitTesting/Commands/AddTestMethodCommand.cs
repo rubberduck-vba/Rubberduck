@@ -6,11 +6,12 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.UnitTesting;
+using Rubberduck.UI.Command;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.UnitTesting.Commands
 {
     /// <summary>
     /// A command that adds a new test method stub to the active code pane.

@@ -12,8 +12,9 @@ using System.Text;
 using Rubberduck.Parsing.Symbols;
 using System;
 using Rubberduck.Resources.UnitTesting;
+using Rubberduck.UI.Command;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.UnitTesting.Commands
 {
     /// <summary>
     /// A command that adds a new test module to the active VBAProject.

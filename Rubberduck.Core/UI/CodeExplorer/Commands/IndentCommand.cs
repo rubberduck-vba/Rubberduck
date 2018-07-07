@@ -10,7 +10,6 @@ using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class IndentCommand : CommandBase
     {
         private readonly RubberduckParserState _state;

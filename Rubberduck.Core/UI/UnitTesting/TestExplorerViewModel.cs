@@ -13,6 +13,8 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Settings;
+using Rubberduck.UI.UnitTesting.Commands;
+using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -48,14 +50,6 @@ namespace Rubberduck.UI.UnitTesting
 
             _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
 
-            RunAllTestsCommand = new RunAllTestsCommand(vbe, state, testEngine, model, null);
-            RunAllTestsCommand.RunCompleted += RunCompleted;
-
-            AddTestModuleCommand = new AddTestModuleCommand(vbe, state, configService, _messageBox);
-            AddTestMethodCommand = new AddTestMethodCommand(vbe, state);
-            AddErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state);
-
-            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRefreshCommand, o => !Model.IsBusy && reparseCommand.CanExecute(o));
             RepeatLastRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
             RunNotExecutedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
             RunInconclusiveTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunInconclusiveTestsCommand, CanExecuteRunInconclusiveTestsCommand);
@@ -137,14 +131,19 @@ namespace Rubberduck.UI.UnitTesting
         public event EventHandler<EventArgs> TestCompleted;
         private void TestEngineTestCompleted(object sender, EventArgs e)
         {
-            var handler = TestCompleted;
-            handler?.Invoke(sender, e);
+            if (e is TestCompletedEventArgs args)
+            {
+                Model.Tests.First(vm => vm.Method == args.Test).Result = args.Result;
+                // get the UI to update
+                var handler = TestCompleted;
+                handler?.Invoke(sender, e);
+            }
         }
 
         public INavigateSource SelectedItem => SelectedTest;
 
-        private TestMethod _selectedTest;
-        public TestMethod SelectedTest
+        private TestMethodViewModel _selectedTest;
+        internal TestMethodViewModel SelectedTest
         {
             get => _selectedTest;
             set
@@ -210,15 +209,26 @@ namespace Rubberduck.UI.UnitTesting
 
         public long TotalDuration { get; private set; }
 
-        public RunAllTestsCommand RunAllTestsCommand { get; }
+        private RunAllTestsCommand _runAllTests;
+        public RunAllTestsCommand RunAllTestsCommand {
+            get { return _runAllTests; }
+            set {
+                if (_runAllTests != null)
+                {
+                    _runAllTests.RunCompleted -= RunCompleted;
+                }
+                _runAllTests = value;
+                _runAllTests.RunCompleted += RunCompleted;
+            }
+        }
 
-        public CommandBase AddTestModuleCommand { get; }
+        public AddTestModuleCommand AddTestModuleCommand { get; set; }
 
-        public CommandBase AddTestMethodCommand { get; }
+        public AddTestMethodCommand AddTestMethodCommand { get; set; }
 
-        public CommandBase AddErrorTestMethodCommand { get; }
+        public AddTestMethodExpectedErrorCommand AddErrorTestMethodCommand { get; set; }
 
-        public CommandBase RefreshCommand { get; }
+        public ReparseCommand RefreshCommand { get; set; }
 
         public CommandBase RepeatLastRunCommand { get; }
 
@@ -251,18 +261,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public TestExplorerModel Model { get; }
-
-        private void ExecuteRefreshCommand(object parameter)
-        {
-            if (Model.IsBusy)
-            {
-                return;
-            }
-
-            Model.Refresh();
-            SelectedTest = null;
-        }
-
+        
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()
         {
             var projectIdsOfMembersUsingAddInLibrary = _state.DeclarationFinder.AllUserDeclarations
@@ -387,7 +386,7 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(new[] { SelectedTest });
+            _testEngine.Run(new[] { SelectedTest.Method });
             stopwatch.Stop();
 
             Model.IsBusy = false;
@@ -432,7 +431,8 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(Model.Tests.Where(test => test.Category.Equals(SelectedTest.Category)));
+            _testEngine.Run(Model.Tests.Where(test => test.Method.Category.Equals(SelectedTest.Method.Category))
+                .Select(t => t.Method));
             stopwatch.Stop();
 
             Model.IsBusy = false;

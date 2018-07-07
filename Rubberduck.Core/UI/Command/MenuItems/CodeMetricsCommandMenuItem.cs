@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class CodeMetricsCommandMenuItem : CommandMenuItemBase
     {
-        public CodeMetricsCommandMenuItem(CommandBase command) 
+        public CodeMetricsCommandMenuItem(CodeMetricsCommand command) 
             : base(command)
         {
         }

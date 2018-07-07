@@ -13,11 +13,11 @@ namespace Rubberduck.UnitTesting
 {
     public static class UnitTestUtils // todo: reimplement using state.DeclarationFinder
     {
-        public static IEnumerable<TestMethod> GetAllTests(IVBE vbe, RubberduckParserState state)
+        public static IEnumerable<TestMethod> GetAllTests(RubberduckParserState state)
         {
             return GetTestModuleProcedures(state)
                     .Where(item => IsTestMethod(state, item))
-                    .Select(item => new TestMethod(state, item, vbe, new VBETypeLibsAPI()));
+                    .Select(item => new TestMethod(state, item, new VBETypeLibsAPI()));
         }
 
         public static IEnumerable<TestMethod> GetTests(this IVBComponent component, IVBE vbe, RubberduckParserState state)
@@ -29,7 +29,7 @@ namespace Rubberduck.UnitTesting
 
             // apparently, sometimes it thinks the components are different but knows the modules are the same
             // if the modules are the same, then the component is the same as far as we are concerned
-            return GetAllTests(vbe, state)
+            return GetAllTests(state)
                     .Where(test => state.ProjectsProvider.Component(test.Declaration).HasEqualCodeModule(component));
         }
 

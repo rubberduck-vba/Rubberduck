@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -11,6 +10,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Interaction.Navigation;
+using System.Diagnostics;
 
 namespace Rubberduck.UnitTesting
 {
@@ -22,41 +22,39 @@ namespace Rubberduck.UnitTesting
         private readonly IVBETypeLibsAPI _typeLibApi;
         private readonly RubberduckParserState _state;
 
-        public TestMethod(RubberduckParserState state, Declaration declaration, IVBE vbe, IVBETypeLibsAPI typeLibApi)
+        public TestMethod(RubberduckParserState state, Declaration declaration, IVBETypeLibsAPI typeLibApi)
         {
             _state = state;
-            _declaration = declaration;
-            _vbe = vbe;
+            Declaration = declaration;
             _typeLibApi = typeLibApi;
         }
-
-        private Declaration _declaration;
-        public Declaration Declaration => _declaration;
+        public Declaration Declaration { get; }
 
         public TestResult Run()
         {
             _assertResults.Clear(); //clear previous results to account for changes being made
 
             AssertCompletedEventArgs result;
-            var duration = new TimeSpan();
-            var startTime = DateTime.Now;
+            var duration = new Stopwatch();
             try
             {
                 AssertHandler.OnAssertCompleted += HandleAssertCompleted;
                 var project = _state.ProjectsProvider.Project(Declaration.ProjectId);
+
+                duration.Start();
+
                 _typeLibApi.ExecuteCode(project, Declaration.QualifiedModuleName.ComponentName,
                     Declaration.QualifiedName.MemberName);
+
+                duration.Stop();
                 AssertHandler.OnAssertCompleted -= HandleAssertCompleted;
-                
                 result = EvaluateResults();
             }
             catch(Exception exception)
             {
                 result = new AssertCompletedEventArgs(TestOutcome.Inconclusive, "Test raised an error. " + exception.Message);
             }
-            var endTime = DateTime.Now;
-            // TODO startTime and endTime used to be put in here as well ...
-            return new TestResult(result.Outcome, result.Message, duration.Milliseconds);
+            return new TestResult(result.Outcome, result.Message, duration.ElapsedMilliseconds);
         }
         
         public void UpdateResult(TestOutcome outcome, string message = "", long duration = 0, DateTime? startTime = null, DateTime? endTime = null)
@@ -103,20 +101,6 @@ namespace Rubberduck.UnitTesting
         public NavigateCodeEventArgs GetNavigationArgs()
         {
             return new NavigateCodeEventArgs(new QualifiedSelection(Declaration.QualifiedName.QualifiedModuleName, Declaration.Context.GetSelection()));
-        }
-
-        public object[] ToArray()
-        {
-            return new object[] {
-                Declaration.QualifiedName.QualifiedModuleName.ProjectName,
-                Declaration.QualifiedName.QualifiedModuleName.ComponentName,
-                Declaration.IdentifierName, 
-                //_result.Outcome.ToString(),
-                //_result.Output,
-                //_result.StartTime.ToString(CultureInfo.InvariantCulture),
-                //_result.EndTime.ToString(CultureInfo.InvariantCulture),
-                //_result.Duration
-            };
         }
 
         public bool Equals(TestMethod other)

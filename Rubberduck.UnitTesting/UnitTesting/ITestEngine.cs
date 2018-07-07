@@ -7,10 +7,9 @@ namespace Rubberduck.UnitTesting
 {
     public interface ITestEngine
     {
-        //TestExplorerModel Model { get; }
+        IEnumerable<TestMethod> Tests { get; }
         void Run();
         void Run(IEnumerable<TestMethod> tests);
-        void Refresh();
         event EventHandler TestCompleted;
         ParserState[] AllowedRunStates { get; }
     }
@@ -26,12 +25,13 @@ namespace Rubberduck.UnitTesting
 
     public class TestCompletedEventArgs : EventArgs
     {
-        // FIXME this needs to actually encapsulate the result as well
         public TestMethod Test { get; private set; }
+        public TestResult Result { get; private set; }
 
-        public TestCompletedEventArgs(TestMethod test)
+        public TestCompletedEventArgs(TestMethod test, TestResult result)
         {
             Test = test;
+            Result = result;
         }
     }
 }

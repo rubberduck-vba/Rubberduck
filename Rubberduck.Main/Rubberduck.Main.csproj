@@ -268,6 +268,7 @@
     <Compile Include="Extension.cs" />
     <Compile Include="Root\RootComWrapperFactory.cs" />
     <Compile Include="Root\RubberduckIoCInstaller.cs" />
+    <Compile Include="Root\RubberduckPropertiesInspector.cs" />
     <Compile Include="Root\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +338,10 @@
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
       <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
+      <Project>{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}</Project>
+      <Name>Rubberduck.Interaction</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>

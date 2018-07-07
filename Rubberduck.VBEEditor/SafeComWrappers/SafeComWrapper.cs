@@ -10,7 +10,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         where T : class
     {
 #if DEBUG
-        private const bool LogSuccessfulComRelease = false;
+        private const bool LogSuccessfulComRelease = true;
 #endif
         protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

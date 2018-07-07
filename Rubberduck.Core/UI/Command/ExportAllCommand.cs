@@ -8,7 +8,6 @@ using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Command
 {
-    [CodeExplorerCommand]
     public class ExportAllCommand : CommandBase 
     {
         private readonly IVBE _vbe;

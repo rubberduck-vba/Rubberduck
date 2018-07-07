@@ -19,6 +19,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.UI.UnitTesting.Commands;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 // ReSharper disable ExplicitCallerInfoArgument
@@ -38,11 +39,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CodeExplorerViewModel(
             FolderHelper folderHelper, 
-            RubberduckParserState state, 
-            List<CommandBase> commands,
+            RubberduckParserState state,
             IConfigProvider<GeneralSettings> generalSettingsProvider, 
             IConfigProvider<WindowSettings> windowSettingsProvider, 
-            IUiDispatcher uiDispatcher)
+            IUiDispatcher uiDispatcher,
+            RemoveCommand removeCommand)
         {
             _folderHelper = folderHelper;
             _state = state;
@@ -61,46 +62,14 @@ namespace Rubberduck.Navigation.CodeExplorer
                 _windowSettings = windowSettingsProvider.Create();
             }
 
-            var reparseCommand = commands.OfType<ReparseCommand>().SingleOrDefault();
-
-            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), 
-                reparseCommand == null ? (Action<object>)(o => { }) :
-                o => reparseCommand.Execute(o),
-                o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
-
-            OpenCommand = commands.OfType<UI.CodeExplorer.Commands.OpenCommand>().SingleOrDefault();
-            OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
-
-            AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
-            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();
-
-            AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
-            AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
-            AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
-
-            OpenProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
-            RenameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
-            IndenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
-
-            FindAllReferencesCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllReferencesCommand>().SingleOrDefault();
-            FindAllImplementationsCommand = commands.OfType<UI.CodeExplorer.Commands.FindAllImplementationsCommand>().SingleOrDefault();
-
             CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes);
             ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
 
-            ImportCommand = commands.OfType<ImportCommand>().SingleOrDefault();
-            ExportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
-            ExportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
-            
-            _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
-            if (_externalRemoveCommand != null)
+            _externalRemoveCommand = removeCommand;
+            if (removeCommand != null)
             {
-                RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
+                RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, removeCommand.CanExecute);
             }
-
-            PrintCommand = commands.OfType<PrintCommand>().SingleOrDefault();
-
-            CopyResultsCommand = commands.OfType<CopyResultsCommand>().SingleOrDefault();
 
             SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -180,7 +149,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public CommandBase CopyResultsCommand { get; }
+        public CopyResultsCommand CopyResultsCommand { get; }
 
         public CommandBase SetNameSortCommand { get; }
 
@@ -278,9 +247,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public bool CanExecuteIndenterCommand => IndenterCommand.CanExecute(SelectedItem);
-        public bool CanExecuteRenameCommand => RenameCommand.CanExecute(SelectedItem);
-        public bool CanExecuteFindAllReferencesCommand => FindAllReferencesCommand.CanExecute(SelectedItem);
+        public bool CanExecuteIndenterCommand => IndenterCommand?.CanExecute(SelectedItem) ?? false;
+        public bool CanExecuteRenameCommand => RenameCommand?.CanExecute(SelectedItem) ?? false;
+        public bool CanExecuteFindAllReferencesCommand => FindAllReferencesCommand?.CanExecute(SelectedItem) ?? false;
 
         private ObservableCollection<CodeExplorerItemViewModel> _projects;
         public ObservableCollection<CodeExplorerItemViewModel> Projects
@@ -507,38 +476,38 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public CommandBase RefreshCommand { get; }
+        public ReparseCommand RefreshCommand { get; }
 
-        public CommandBase OpenCommand { get; }
+        public OpenCommand OpenCommand { get; }
 
-        public CommandBase AddTestModuleCommand { get; }
-        public CommandBase AddTestModuleWithStubsCommand { get; }
-        public CommandBase AddStdModuleCommand { get; }
-        public CommandBase AddClassModuleCommand { get; }
-        public CommandBase AddUserFormCommand { get; }
+        public AddTestModuleCommand AddTestModuleCommand { get; }
+        public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; }
+        public AddStdModuleCommand AddStdModuleCommand { get; }
+        public AddClassModuleCommand AddClassModuleCommand { get; }
+        public AddUserFormCommand AddUserFormCommand { get; }
 
-        public CommandBase OpenDesignerCommand { get; }
-        public CommandBase OpenProjectPropertiesCommand { get; }
+        public OpenDesignerCommand OpenDesignerCommand { get; }
+        public OpenProjectPropertiesCommand OpenProjectPropertiesCommand { get; }
 
-        public CommandBase RenameCommand { get; }
+        public RenameCommand RenameCommand { get; }
 
-        public CommandBase IndenterCommand { get; }
+        public IndentCommand IndenterCommand { get; }
 
-        public CommandBase FindAllReferencesCommand { get; }
-        public CommandBase FindAllImplementationsCommand { get; }
+        public FindAllReferencesCommand FindAllReferencesCommand { get; }
+        public FindAllImplementationsCommand FindAllImplementationsCommand { get; }
 
         public CommandBase CollapseAllSubnodesCommand { get; }
         public CommandBase ExpandAllSubnodesCommand { get; }
 
-        public CommandBase ImportCommand { get; }
-        public CommandBase ExportCommand { get; }
-        public CommandBase ExportAllCommand { get; }
+        public ImportCommand ImportCommand { get; }
+        public ExportCommand ExportCommand { get; }
+        public ExportAllCommand ExportAllCommand { get; }
 
         public CommandBase RemoveCommand { get; }
 
-        public CommandBase PrintCommand { get; }
+        public PrintCommand PrintCommand { get; }
 
-        private readonly CommandBase _externalRemoveCommand;
+        private readonly RemoveCommand _externalRemoveCommand;
 
         // this is a special case--we have to reset SelectedItem to prevent a crash
         private void ExecuteRemoveComand(object param)
@@ -550,7 +519,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _externalRemoveCommand.Execute(param);
         }
 
-        private bool CanExecuteExportAllCommand => ExportAllCommand.CanExecute(SelectedItem);
+        private bool CanExecuteExportAllCommand => ExportAllCommand?.CanExecute(SelectedItem) ?? false;
 
         public Visibility ExportVisibility => CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 

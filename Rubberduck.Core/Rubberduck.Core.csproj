@@ -374,8 +374,7 @@
     <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
     <Compile Include="AutoComplete\AutoCompleteService.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsWindow.cs">
@@ -396,8 +395,6 @@
     <Compile Include="UI\Command\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\FindAllReferencesCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\FindAllImplementationsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\IndentCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RemoveCommand.cs" />
@@ -407,7 +404,6 @@
     <Compile Include="UI\CodeExplorer\Commands\OpenDesignerCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddComponentCommand.cs" />
     <Compile Include="UI\Command\FormDesignerFindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProjectCommand.cs" />
@@ -583,9 +579,9 @@
     <Compile Include="UI\Inspections\InspectionResultsViewModel.cs" />
     <Compile Include="UI\Inspections\InspectionSeverityImageSourceConverter.cs" />
     <Compile Include="UI\Command\AboutCommand.cs" />
-    <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
-    <Compile Include="UI\Command\AddTestMethodCommand.cs" />
-    <Compile Include="UI\Command\AddTestModuleCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestMethodExpectedErrorCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestMethodCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\Command\CommandBase.cs" />
     <Compile Include="UI\Command\DelegateCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProcedureCommand.cs" />

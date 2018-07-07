@@ -1,8 +1,7 @@
 using System.Drawing;
-using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
@@ -11,7 +10,7 @@ namespace Rubberduck.UI.Command.MenuItems
 #endif 
     public class RefactorExtractMethodCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorExtractMethodCommandMenuItem(CommandBase command) 
+        public RefactorExtractMethodCommandMenuItem(RefactorExtractMethodCommand command) 
             : base(command)
         {
         }

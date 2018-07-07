@@ -27,7 +27,7 @@ End Sub";
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.AreEqual(1, UnitTestUtils.GetAllTests(vbe, state).Count());
+                Assert.AreEqual(1, UnitTestUtils.GetAllTests(state).Count());
             }
         }
 
@@ -45,7 +45,7 @@ End Sub";
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, state).Any());
+                Assert.IsFalse(UnitTestUtils.GetAllTests(state).Any());
             }
         }
 
@@ -64,7 +64,7 @@ End Sub";
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, state).Any());
+                Assert.IsFalse(UnitTestUtils.GetAllTests(state).Any());
             }
         }
 

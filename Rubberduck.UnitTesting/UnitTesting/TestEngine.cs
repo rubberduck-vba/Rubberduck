@@ -11,13 +11,11 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
     public class TestEngine : ITestEngine
     {
-        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IFakesFactory _fakesFactory;
         private readonly IVBETypeLibsAPI _typeLibApi;
@@ -33,13 +31,11 @@ namespace Rubberduck.UnitTesting
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private bool _testRequested;
-        private IEnumerable<TestMethod> _tests;
+        public IEnumerable<TestMethod> Tests { get; }
 
-        public TestEngine(IVBE vbe, RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
+        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
         {
             Debug.WriteLine("TestEngine created.");
-            //Model = model;
-            _vbe = vbe;
             _state = state;
             _fakesFactory = fakesFactory;
             _typeLibApi = typeLibApi;
@@ -55,7 +51,7 @@ namespace Rubberduck.UnitTesting
                 _testRequested = false;
                 _uiDispatcher.InvokeAsync(() =>
                 {
-                    RunInternal(_tests);
+                    RunInternal(Tests);
                 });
             }
 
@@ -65,29 +61,18 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        //public TestExplorerModel Model { get; }
-
         public event EventHandler TestCompleted;
 
-        private void OnTestCompleted()
+        private void OnTestCompleted(TestMethod test, TestResult result)
         {
             var handler = TestCompleted;
             handler?.Invoke(this, EventArgs.Empty);
         }
 
-        // FIXME ?? wut
-        public void Refresh()
-        {
-            //Model.Refresh();
-        }
-
         public void Run()
         {
             _testRequested = true;
-            // FIXME
-            //_tests = Model.LastRun;
-            // We will run the tests once parsing has completed
-            Refresh();
+            Run(Tests);
         }
 
         public void Run(IEnumerable<TestMethod> tests)
@@ -145,6 +130,7 @@ namespace Rubberduck.UnitTesting
                         foreach (var method in moduleTestMethods)
                         {
                             method.UpdateResult(TestOutcome.Unknown, AssertMessages.Assert_ComException);
+                            OnTestCompleted(method, new TestResult(TestOutcome.Unknown));
                         }
                         continue;
                     }
@@ -154,7 +140,7 @@ namespace Rubberduck.UnitTesting
                         if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
                         {
                             test.UpdateResult(TestOutcome.Ignored);
-                            OnTestCompleted();
+                            OnTestCompleted(test, new TestResult(TestOutcome.Ignored));
                             continue;
                         }
 
@@ -180,8 +166,7 @@ namespace Rubberduck.UnitTesting
 
                         stopwatch.Stop();
                         test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
-
-                        OnTestCompleted();
+                        OnTestCompleted(test, new TestResult(TestOutcome.Succeeded, duration: stopwatch.ElapsedMilliseconds));
                     }
                     var cleanupMethods = module.Key.FindModuleCleanupMethods(_state);
                     try
