@@ -29,6 +29,28 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
+    public class LikeExpression : RangeClauseExpression
+    {
+        public LikeExpression(IParseTreeValue lhs, IParseTreeValue rhs)
+            : base(lhs, rhs, Tokens.Like, false)
+        {
+            _hashCode = OpSymbol.GetHashCode();
+        }
+        public string Operand => LHS;
+        public string Pattern => RHS;
+        public bool Filters(LikeExpression like)
+        {
+            //TODO: Enhancement - evaluate Like Pattern for superset/subset conditions.
+            //e.g., "*" would filter "?*", or "?*" would filter "a*" 
+            //They go here...
+            if ( like.Operand.Equals(Operand) && Pattern.Equals("*"))//The easy one
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
     public class IsClauseExpression : RangeClauseExpression
     {
         public IsClauseExpression(IParseTreeValue value, string opSymbol)

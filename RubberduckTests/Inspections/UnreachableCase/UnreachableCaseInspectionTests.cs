@@ -1986,6 +1986,28 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_LikeFilter()
+        {
+            string inputCode =
+$@"
+Private Const TEST_CONST As String = ""FooBar""
+
+Sub FirstSub(x As String, y As String)
+    Select Case True
+        Case y Like ""*Bar""
+            'OK
+        Case y Like ""*""
+            'OK
+        Case y Like ""aaaa??""
+            'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, mismatch: 0);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         [TestCase(@"Option Compare Binary", @"""f"" Like ""[a-z]*""", 2)]
         [TestCase(@"", @"""f"" Like ""[a-z]*""", 2)]
         [TestCase(@"Option Compare Binary", @"""F"" Like ""[a-z]*""", 2)]
@@ -2158,7 +2180,7 @@ End Sub";
         {
             string inputCode =
 @"
-private Const AVALUE as Double = 15
+private Const AVALUE As Double = 15
 
 Sub FirstSub()
 
@@ -2186,7 +2208,7 @@ End Sub";
         {
             string inputCode =
 $@"
-private Const AVALUE <typeName> = 15
+private Const AVALUE {typeName} = 15
 
 Sub FirstSub()
 

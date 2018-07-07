@@ -350,6 +350,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
         }
 
+        [TestCase("x_Like_*,y_Like_aa?*", "RelOp!x Like *,RelOp!y Like aa?*")]
+        [TestCase("x_Like_*,x_Like_aa?*", "RelOp!x Like *")]
         [TestCase("x_Like_*Bar", "RelOp!x Like *Bar")]
         [TestCase("x_Like_[A-Z]*", "RelOp!x Like [A-Z]*")]
         [TestCase("x_Like_[A-Z]*, x_Like_Fo*oBar", "RelOp!x Like [A-Z]*,RelOp!x Like Fo*oBar")]
@@ -441,6 +443,10 @@ namespace RubberduckTests.Inspections.UnreachableCase
             {
                 return new RangeOfValuesExpression((expressionElements.LHS, expressionElements.RHS));
             }
+            else if (expressionElements.Symbol.Equals(Tokens.Like))
+            {
+                return new LikeExpression(expressionElements.LHS, expressionElements.RHS);
+            }
             else
             {
                 return new BinaryExpression(expressionElements.LHS, expressionElements.RHS, expressionElements.Symbol);
@@ -449,7 +455,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
         private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)
         {
-            if (valAndType.Contains(VALUE_TYPE_DELIMITER))
+            if (InspectableDelimited.Any(id => valAndType.Contains(id)))
             {
                 var args = RetrieveDelimitedElements(valAndType, VALUE_TYPE_DELIMITER);
                 var value = args[0];
@@ -607,6 +613,10 @@ namespace RubberduckTests.Inspections.UnreachableCase
                             {
                                 results.Add(new IsClauseExpression(rhs, symbol));
                             }
+                            else if (symbol.Equals(Tokens.Like))
+                            {
+                                results.Add(new LikeExpression(lhs, rhs));
+                            }
                             else
                             {
                                 results.Add(new BinaryExpression(lhs, rhs, symbol));
@@ -666,5 +676,17 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             return false;
         }
+
+        private static List<string> InspectableDelimited = new List<string>()
+        {
+            "?Long",
+            "?Integer",
+            "?Byte",
+            "?Double",
+            "?Single",
+            "?Currency",
+            "?Boolean",
+            "?String",
+        };
     }
 }

@@ -72,7 +72,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _selectExpressionValue = null;
         }
 
-        private HashSet<IRangeClauseExpression> LikePredicates { get; } = new HashSet<IRangeClauseExpression>();
+        private HashSet<LikeExpression> LikePredicates { get; } = new HashSet<LikeExpression>();
 
         private HashSet<PredicateValueExpression> ComparablePredicates { get; } = new HashSet<PredicateValueExpression>();
 
@@ -198,6 +198,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         return;
                     case BinaryExpression binary:
                         expression.IsUnreachable = !AddBinaryExpression(binary);
+                        return;
+                    case LikeExpression like:
+                        expression.IsUnreachable = !AddLikeExpression(like);
                         return;
                 }
             }
@@ -388,20 +391,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return true;
         }
 
-        private bool AddLike(IRangeClauseExpression predicate)
-        {
-            if (FiltersTrueFalse) { return false; }
-
-            var addsSingleValue = false;
-            if (predicate.RHS.Equals("*"))
-            {
-                addsSingleValue = AddSingleValue(_trueValue);
-            }
-            //TODO: Enhancement - evaluate Like Pattern for superset/subset conditions.
-            //e.g., "*" would filter "?*", or "?*" would filter "a*" 
-            return AddToContainer(LikePredicates, predicate) || addsSingleValue;
-        }
-
         private bool FiltersRange(RangeOfValues rov)
         {
             return Limits.FiltersRange(rov.Start, rov.End)
@@ -458,17 +447,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return AddToContainer(Variables[VariableClauseTypes.Predicate], unaryExpr.ToString());
         }
 
+        private bool AddLikeExpression(LikeExpression like)
+        {
+            if (FiltersTrueFalse) { return false; }
+
+            var addsSingleValue = false;
+            if (like.Pattern.Equals("*"))
+            {
+                addsSingleValue = AddSingleValue(_trueValue);
+            }
+            if (LikePredicates.Any(pred => pred.Filters(like)))
+            {
+                return false;
+            }
+            return AddToContainer(LikePredicates, like);
+        }
+
         private bool AddBinaryExpression(BinaryExpression binary)
         {
             if (FiltersTrueFalse && LogicSymbols.LogicSymbolList.Contains(binary.OpSymbol))
             {
                 return false;
-            }
-
-            if (binary.OpSymbol.Equals(LogicSymbols.LIKE))
-            {
-                return binary.RHS.Equals("*") ? AddToContainer(SingleValues, _trueValue)
-                                                    : AddLike(binary);
             }
 
             if (!binary.LHSValue.ParsesToConstantValue && binary.RHSValue.ParsesToConstantValue)
