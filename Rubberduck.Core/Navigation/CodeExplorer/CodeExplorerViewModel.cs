@@ -476,36 +476,36 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public ReparseCommand RefreshCommand { get; }
+        public ReparseCommand RefreshCommand { get; set; }
 
-        public OpenCommand OpenCommand { get; }
+        public OpenCommand OpenCommand { get; set; }
 
-        public AddTestModuleCommand AddTestModuleCommand { get; }
-        public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; }
-        public AddStdModuleCommand AddStdModuleCommand { get; }
-        public AddClassModuleCommand AddClassModuleCommand { get; }
-        public AddUserFormCommand AddUserFormCommand { get; }
+        public AddTestModuleCommand AddTestModuleCommand { get; set; }
+        public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; set;  }
+        public AddStdModuleCommand AddStdModuleCommand { get; set; }
+        public AddClassModuleCommand AddClassModuleCommand { get; set; }
+        public AddUserFormCommand AddUserFormCommand { get; set; }
 
-        public OpenDesignerCommand OpenDesignerCommand { get; }
-        public OpenProjectPropertiesCommand OpenProjectPropertiesCommand { get; }
+        public OpenDesignerCommand OpenDesignerCommand { get; set; }
+        public OpenProjectPropertiesCommand OpenProjectPropertiesCommand { get; set; }
 
-        public RenameCommand RenameCommand { get; }
+        public RenameCommand RenameCommand { get; set; }
+    
+        public IndentCommand IndenterCommand { get; set; }
 
-        public IndentCommand IndenterCommand { get; }
-
-        public FindAllReferencesCommand FindAllReferencesCommand { get; }
-        public FindAllImplementationsCommand FindAllImplementationsCommand { get; }
+        public FindAllReferencesCommand FindAllReferencesCommand { get; set; }
+        public FindAllImplementationsCommand FindAllImplementationsCommand { get; set; }
 
         public CommandBase CollapseAllSubnodesCommand { get; }
         public CommandBase ExpandAllSubnodesCommand { get; }
 
-        public ImportCommand ImportCommand { get; }
-        public ExportCommand ExportCommand { get; }
-        public ExportAllCommand ExportAllCommand { get; }
+        public ImportCommand ImportCommand { get; set; }
+        public ExportCommand ExportCommand { get; set; }
+        public ExportAllCommand ExportAllCommand { get; set; }
 
         public CommandBase RemoveCommand { get; }
 
-        public PrintCommand PrintCommand { get; }
+        public PrintCommand PrintCommand { get; set; }
 
         private readonly RemoveCommand _externalRemoveCommand;
 
