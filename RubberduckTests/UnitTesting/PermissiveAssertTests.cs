@@ -154,18 +154,6 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        //[Category("Unit Testing")]
-        //[Test]
-        //public void AreNotSameShouldFailWithSameReferences()
-        //{
-        //    var assert = new PermissiveAssertClass();
-        //    var obj1 = new object();
-        //    var obj2 = obj1;
-        //    assert.AreNotSame(obj1, obj2);
-
-        //    Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
-        //}
-
         [Category("Unit Testing")]
         [Test]
         public void AreEqualShouldSucceedWithSameValues()
@@ -596,6 +584,61 @@ namespace RubberduckTests.UnitTesting
             assert.AreEqual(obj1, obj2);
 
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Ignore("Permissive assert wasn't previously tested. Needs adjustment to pass")]
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithBooleanAndStringBoolean()
+        {
+            var obj1 = true;
+            var obj2 = "true";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldFailWithNonIdenticalStringBooleans()
+        {
+            var obj1 = "True";
+            var obj2 = "true";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
+        }
+
+        [Ignore("Permissive assert wasn't previously tested. Needs adjustment to pass")]
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldSucceedWithNegativeOneAndConvertedStringBoolean()
+        {
+            var obj1 = -1;
+            Boolean.TryParse("true", out var obj2);
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
+
+        [Ignore("Permissive assert wasn't previously tested. Needs adjustment to pass")]
+        [Category("Unit Testing")]
+        [Test]
+        public void AreEqualShouldFailWithNegativeOneAndStringBoolean()
+        {
+            var obj1 = -1;
+            var obj2 = "True";
+
+            var assert = new PermissiveAssertClass();
+            assert.AreEqual(obj1, obj2);
+
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
     }
 }
