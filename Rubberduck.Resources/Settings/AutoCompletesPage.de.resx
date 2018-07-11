@@ -160,22 +160,22 @@
     <value>Schließe 'With' Blöcke</value>
   </data>
   <data name="AutoCompleteSubBlockDescription" xml:space="preserve">
-    <value>Ersetzte 'Sub' Block Vervollständigung</value>
+    <value>Überschreibe 'Sub' Vervollständigung der VBE</value>
   </data>
   <data name="AutoCompleteFunctionBlockDescription" xml:space="preserve">
-    <value>Ersetzte 'Function' Block Vervollständigung</value>
+    <value>Überschreibe 'Function' Vervollständigung der VBE</value>
   </data>
   <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
-    <value>Ersetze 'Property' Block Vervollständigung</value>
+    <value>Überschreibe 'Property' Vervollständigung der VBE</value>
   </data>
   <data name="HandleTabKey" xml:space="preserve">
-    <value>Vervollständige Blöcke bei TAB</value>
+    <value>Vervollständige Blöcke mit TAB</value>
   </data>
   <data name="HandleEnterKey" xml:space="preserve">
-    <value>Vervollständige Blöcke bei ENTER</value>
+    <value>Vervollständige Blöcke mit ENTER</value>
   </data>
   <data name="PageHeader" xml:space="preserve">
-    <value>Autovervollständigung Einstellungen</value>
+    <value>Einstellungen der automatischen Vervollständigung</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
     <value>Konfigurieren Sie, welche Rubberduck-Autokomplettierungen aktiviert sind.</value>

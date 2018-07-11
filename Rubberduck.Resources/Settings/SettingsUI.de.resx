@@ -127,7 +127,7 @@
     <value>Importieren</value>
   </data>
   <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
-    <value>Autovervollständigung Einstellungen</value>
+    <value>Einstellungen der automatischen Vervollständigung</value>
   </data>
   <data name="PageHeader_GeneralSettings" xml:space="preserve">
     <value>Allgemeine Einstellungen</value>
