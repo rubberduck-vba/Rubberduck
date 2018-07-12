@@ -350,7 +350,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (args.Length > 0)
                 {
                     string[] argsArray = args.Split(new[] { ':' });
-                    return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0], s => short.Parse(s[1]));
+                    return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0].Trim(), s => short.Parse(s[1]));
                 }
                 else
                 {
