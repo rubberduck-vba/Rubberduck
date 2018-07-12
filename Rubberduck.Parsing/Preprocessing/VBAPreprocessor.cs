@@ -36,6 +36,9 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public Dictionary<string, short> GetUserDefinedCompilationArguments(IVBProject project)
         {
+            // for the mocks, just return an empty dictionary for now
+            if (project == null) return new Dictionary<string, short>();
+
             // use the TypeLib API to grab the user defined compilation arguments.  must be obtained on the main thread.
             var providerInst = UiContextProvider.Instance();
             var task = (new UiDispatcher(providerInst)).StartTask(delegate () {

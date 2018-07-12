@@ -35,7 +35,7 @@ namespace RubberduckTests.Mocks
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
             var preprocessingErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
-            preprocessor.PreprocessTokenStream(component.ParentProject, module.ComponentName, tokens, preprocessingErrorListener, cancellationToken);
+            preprocessor.PreprocessTokenStream(null, module.ComponentName, tokens, preprocessingErrorListener, cancellationToken);
             var listener = new AttributeListener(Tuple.Create(module.ComponentName, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
