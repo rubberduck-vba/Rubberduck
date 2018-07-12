@@ -46,12 +46,12 @@ namespace Rubberduck.Parsing.PreProcessing
 
         private void AddPredefinedConstantsToSymbolTable(VBAPredefinedCompilationConstants predefinedConstants)
         {
-            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new BoolValue(predefinedConstants.VBA6));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA7_NAME, new BoolValue(predefinedConstants.VBA7));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN64_NAME, new BoolValue(predefinedConstants.Win64));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new BoolValue(predefinedConstants.Win32));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new BoolValue(predefinedConstants.Win16));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new BoolValue(predefinedConstants.Mac));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new DecimalValue(predefinedConstants.VBA6 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA7_NAME, new DecimalValue(predefinedConstants.VBA7 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN64_NAME, new DecimalValue(predefinedConstants.Win64 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new DecimalValue(predefinedConstants.Win32 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new DecimalValue(predefinedConstants.Win16 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new DecimalValue(predefinedConstants.Mac ? 1 : 0));
         }
 
         private void AddUserDefinedConstantsToSymbolTable(Dictionary<string, short> userDefinedConstants)
