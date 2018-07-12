@@ -41,6 +41,7 @@ namespace Rubberduck.Parsing.PreProcessing
             _tokenStream = tokenStream;
             _symbolTable = symbolTable;
             AddPredefinedConstantsToSymbolTable(predefinedConstants);
+            AddUserDefinedConstantsToSymbolTable(userDefinedConstants);
         }
 
         private void AddPredefinedConstantsToSymbolTable(VBAPredefinedCompilationConstants predefinedConstants)
@@ -51,6 +52,14 @@ namespace Rubberduck.Parsing.PreProcessing
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new BoolValue(predefinedConstants.Win32));
             _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new BoolValue(predefinedConstants.Win16));
             _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new BoolValue(predefinedConstants.Mac));
+        }
+
+        private void AddUserDefinedConstantsToSymbolTable(Dictionary<string, short> userDefinedConstants)
+        {
+            foreach (var constant in userDefinedConstants)
+            {
+                _symbolTable.Add(constant.Key, new DecimalValue(constant.Value));
+            }
         }
 
         public override IExpression VisitCompilationUnit([NotNull] VBAConditionalCompilationParser.CompilationUnitContext context)
