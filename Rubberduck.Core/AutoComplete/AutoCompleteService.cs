@@ -67,7 +67,7 @@ namespace Rubberduck.AutoComplete
             var qualifiedSelection = module.GetQualifiedSelection();
             var pSelection = qualifiedSelection.Value.Selection;
 
-            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1))
+            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1) || e.Keys == Keys.Delete)
             {
                 return;
             }
@@ -87,7 +87,6 @@ namespace Rubberduck.AutoComplete
                 }
             }
 
-            var handleDelete = e.Keys == Keys.Delete && pSelection.EndColumn <= currentContent.Length;
             var handleBackspace = e.Keys == Keys.Back && pSelection.StartColumn > 1;
             var handleTab = e.Keys == Keys.Tab && !pSelection.IsSingleCharacter;
             var handleEnter = e.Keys == Keys.Enter && !pSelection.IsSingleCharacter;
