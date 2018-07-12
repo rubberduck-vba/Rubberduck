@@ -108,6 +108,7 @@
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
+    <Compile Include="Parsing\VBACodeStringParserTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
     <Compile Include="Settings\AutoCompleteSettingsTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
