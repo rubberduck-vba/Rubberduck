@@ -181,7 +181,10 @@ namespace Rubberduck.Parsing.VBA
  
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            _preprocessor.PreprocessTokenStream(component.ParentProject, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
+            using (var project = component.ParentProject)
+            {
+                _preprocessor.PreprocessTokenStream(project, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
+            }
             return tokens;
         }
 
