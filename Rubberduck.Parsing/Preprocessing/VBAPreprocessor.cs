@@ -2,6 +2,7 @@
 using System.Threading;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -16,7 +17,7 @@ namespace Rubberduck.Parsing.PreProcessing
             _parser = new VBAPrecompilationParser();
         }
 
-        public void PreprocessTokenStream(string moduleName, CommonTokenStream tokenStream, BaseErrorListener errorListener, CancellationToken token)
+        public void PreprocessTokenStream(IVBProject project, string moduleName, CommonTokenStream tokenStream, BaseErrorListener errorListener, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             var symbolTable = new SymbolTable<string, IValue>();

@@ -26,7 +26,8 @@ namespace RubberduckTests.Mocks
 
         public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
-            var code = _projectsProvider.Component(module).CodeModule.Content();
+            var component = _projectsProvider.Component(module);
+            var code = component.CodeModule.Content();
             var type = module.ComponentType == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
@@ -34,7 +35,7 @@ namespace RubberduckTests.Mocks
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
             var preprocessingErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
-            preprocessor.PreprocessTokenStream(module.ComponentName, tokens, preprocessingErrorListener, cancellationToken);
+            preprocessor.PreprocessTokenStream(component.ParentProject, module.ComponentName, tokens, preprocessingErrorListener, cancellationToken);
             var listener = new AttributeListener(Tuple.Create(module.ComponentName, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes

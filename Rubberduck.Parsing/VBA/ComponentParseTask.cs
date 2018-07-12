@@ -170,9 +170,9 @@ namespace Rubberduck.Parsing.VBA
         private CommonTokenStream RewriteAndPreprocess(CancellationToken cancellationToken)
         {
             var code = _rewriter?.GetText();
+            var component = _projectsProvider.Component(_module);
             if (code == null)
             {
-                var component = _projectsProvider.Component(_module);
                 using (var codeModule = component.CodeModule)
                 {
                     code = string.Join(Environment.NewLine, GetCode(codeModule));
@@ -181,7 +181,7 @@ namespace Rubberduck.Parsing.VBA
  
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            _preprocessor.PreprocessTokenStream(_module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
+            _preprocessor.PreprocessTokenStream(component.ParentProject, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
             return tokens;
         }
 
