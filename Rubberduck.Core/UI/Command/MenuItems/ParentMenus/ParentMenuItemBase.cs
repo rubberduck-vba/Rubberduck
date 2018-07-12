@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
+using Rubberduck.Resources.Menus;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -28,7 +29,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         public string Key => Item?.Tag;
 
-        public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
+        public Func<string> Caption { get { return () => Key == null ? null : RubberduckMenus.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
 
         public virtual string ToolTipKey { get; set; }
         public virtual Func<string> ToolTipText
@@ -37,7 +38,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 return () => string.IsNullOrEmpty(ToolTipKey)
                     ? string.Empty
-                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
+                    : RubberduckMenus.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
             }
         }
 

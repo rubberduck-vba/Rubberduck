@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
+using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -165,7 +165,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public void ParentComponentHasError()
         {
-            _icon = GetImageSource(resx.Warning);
+            _icon = GetImageSource(resx.exclamation);
             OnPropertyChanged("CollapsedIcon");
             OnPropertyChanged("ExpandedIcon");
         }

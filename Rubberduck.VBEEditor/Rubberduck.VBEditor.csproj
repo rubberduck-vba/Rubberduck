@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.VBEditor</RootNamespace>
     <AssemblyName>Rubberduck.VBEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,32 +37,42 @@
     <Reference Include="CustomMarshalers" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComManagement\ComMessagePumper.cs" />
     <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
+    <Compile Include="Events\AutoCompleteEventArgs.cs" />
     <Compile Include="Factories\AddInFactory.cs" />
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />
     <Compile Include="HashCode.cs" />
+    <Compile Include="ISourceCodeHandler.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />
+    <Compile Include="SafeComWrappers\VB\Enums\VBEKind.cs" />
     <Compile Include="Utility\UiContext.cs" />
     <Compile Include="VBERuntime\IVBERuntime.cs" />
     <Compile Include="VBERuntime\Settings\IVBESettings.cs" />
@@ -161,7 +172,6 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="SubClassingWindowEventArgs.cs" />
     <Compile Include="Extensions\ComponentTypeExtensions.cs" />
-    <Compile Include="Extensions\IDEExtensions.cs" />
     <Compile Include="VBEEditorText.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -170,6 +180,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowsApi\SubclassingWindow.cs" />
     <Compile Include="WindowsApi\User32.cs" />
+    <Compile Include="WindowsApi\WindowsHook.cs" />
     <Compile Include="WindowsApi\WinEvent.cs" />
     <Compile Include="WindowsApi\WinEventFlags.cs" />
     <Compile Include="WindowsApi\WM.cs" />
@@ -181,6 +192,15 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>VBEEditorText.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
+      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
+      <Name>Rubberduck.Resources</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.xsd">

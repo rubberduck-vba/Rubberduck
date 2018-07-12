@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
@@ -12,7 +12,7 @@ namespace Rubberduck.UnitTesting.Fakes
         public Environ()
         {
             InjectDelegate(new EnvironStringDelegate(EnvironStringCallback), ProcessAddressString);
-            InjectDelegate(new EnvironVariantDelegate(EnvironStringCallback), ProcessAddressVariant);
+            InjectDelegate(new EnvironVariantDelegate(EnvironVariantCallback), ProcessAddressVariant);
         }
 
         public override bool PassThrough
@@ -22,35 +22,34 @@ namespace Rubberduck.UnitTesting.Fakes
             set
             {
                 Verifier.SuppressAsserts();
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "Environ"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_InvalidFakePassThrough, "Environ"));
             }
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.BStr)]
-        private delegate string EnvironStringDelegate(IntPtr envstring, IntPtr number);
+        private delegate string EnvironStringDelegate(IntPtr envstring);
 
-        public string EnvironStringCallback(IntPtr envstring, IntPtr number)
+        public string EnvironStringCallback(IntPtr envstring)
         {
-            TrackInvocation(envstring, number);              
+            TrackInvocation(envstring);
             return ReturnValue?.ToString() ?? string.Empty;
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
-        private delegate string EnvironVariantDelegate(IntPtr envstring, IntPtr number);
+        private delegate void EnvironVariantDelegate(IntPtr retVal, IntPtr envstring);
 
-        public object EnvironVariantCallback(IntPtr envstring, IntPtr number)
+        public void EnvironVariantCallback(IntPtr retVal, IntPtr envstring)
         {
-            TrackInvocation(envstring, number);
-            return ReturnValue?.ToString() ?? string.Empty;
+            TrackInvocation(envstring);
+            Marshal.GetNativeVariantForObject(ReturnValue?.ToString() ?? string.Empty, retVal);
         }
 
-        private void TrackInvocation(IntPtr envstring, IntPtr number)
+        private void TrackInvocation(IntPtr envstring)
         {
             OnCallBack();
 
             TrackUsage("envstring", envstring);
-            TrackUsage("number", number);
         }
     }
 }

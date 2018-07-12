@@ -3,7 +3,8 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Resources;
+using Rubberduck.Parsing.Inspections;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System;
@@ -157,14 +158,35 @@ namespace RubberduckTests.Inspections
         [TestCase(@"""What#""", "String", "What#")]
         [TestCase("What%", "Integer", "What")]
         [TestCase("What&", "Long", "What")]
-        [TestCase("What@", "Decimal", "What")]
+        [TestCase("What@", "Currency", "What")]
         [TestCase("What!", "Single", "What")]
         [TestCase("What#", "Double", "What")]
         [TestCase("What$", "String", "What")]
         [TestCase("345%", "Integer", "345")]
         [TestCase("45#", "Double", "45")]
-        [TestCase("45@", "Decimal", "45")]
+        [TestCase("45@", "Currency", "45")]
         [TestCase("45!", "Single", "45")]
+        [TestCase("45^", "LongLong", "45")]
+        [TestCase("32767", "Integer", "32767")]
+        [TestCase("32768", "Long", "32768")]
+        [TestCase("2147483647", "Long", "2147483647")]
+        [TestCase("2147483648", "Double", "2147483648")]
+        [TestCase("&H10", "Integer", "16")]
+        [TestCase("&o10", "Integer", "8")]
+        [TestCase("&H8000", "Integer", "-32768")]
+        [TestCase("&o100000", "Integer", "-32768")]
+        [TestCase("&H8000&", "Long", "32768")]
+        [TestCase("&o100000&", "Long", "32768")]
+        [TestCase("&H10&", "Long", "16")]
+        [TestCase("&o10&", "Long", "8")]
+        [TestCase("&H80000000", "Long", "-2147483648")]
+        [TestCase("&o20000000000", "Long", "-2147483648")]
+        [TestCase("&H80000000^", "LongLong", "2147483648")]
+        [TestCase("&o20000000000^", "LongLong", "2147483648")]
+        [TestCase("&H10^", "LongLong", "16")]
+        [TestCase("&o10^", "LongLong", "8")]
+        [TestCase("&HFFFFFFFFFFFFFFFF^", "LongLong", "-1")]
+        [TestCase("&o1777777777777777777777^", "LongLong", "-1")]
         [Category("Inspections")]
         public void UciUnit_VariableTypes(string operands, string expectedTypeName, string expectedValueText)
         {
@@ -180,6 +202,22 @@ namespace RubberduckTests.Inspections
         [TestCase(@"""95E-2""?Byte", "Byte", "1")]
         [TestCase("True?Double", "Double", "-1")]
         [TestCase("True?Long", "Long", "-1")]
+        [TestCase("&H10", "Integer", "16")]
+        [TestCase("&o10", "Integer", "8")]
+        [TestCase("&H8000", "Integer", "-32768")]
+        [TestCase("&o100000", "Integer", "-32768")]
+        [TestCase("&H8000", "Long", "32768")]
+        [TestCase("&o100000", "Long", "32768")]
+        [TestCase("&H10", "Long", "16")]
+        [TestCase("&o10", "Long", "8")]
+        [TestCase("&H80000000", "Long", "-2147483648")]
+        [TestCase("&o20000000000", "Long", "-2147483648")]
+        [TestCase("&H80000000", "LongLong", "2147483648")]
+        [TestCase("&o20000000000", "LongLong", "2147483648")]
+        [TestCase("&H10", "LongLong", "16")]
+        [TestCase("&o10", "LongLong", "8")]
+        [TestCase("&HFFFFFFFFFFFFFFFF", "LongLong", "-1")]
+        [TestCase("&o1777777777777777777777", "LongLong", "-1")]
         [Category("Inspections")]
         public void UciUnit_ConformToType(string operands, string conformToType, string expectedValueText)
         {
@@ -190,7 +228,7 @@ namespace RubberduckTests.Inspections
         }
 
         [TestCase("x?Byte_-_2?Long", "x - 2", "Long")]
-        [TestCase("2_-_x?Byte?Long", "2 - x", "Long")]
+        [TestCase("2_-_x?Byte", "2 - x", "Integer")]
         [TestCase("x?Byte_+_2?Long", "x + 2", "Long")]
         [TestCase("x?Double_/_11.2?Double", "x / 11.2", "Double")]
         [TestCase("x?Double_*_11.2?Double", "x * 11.2", "Double")]
@@ -203,7 +241,7 @@ namespace RubberduckTests.Inspections
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-            Assert.AreEqual(result.ValueText, expected);
+            Assert.AreEqual(expected, result.ValueText);
             Assert.AreEqual(typeName, result.TypeName);
             Assert.IsFalse(result.ParsesToConstantValue);
         }
@@ -463,7 +501,7 @@ namespace RubberduckTests.Inspections
             foreach (var clause in clauses)
             {
                 GetBinaryOpValues(clause, out IParseTreeValue start, out IParseTreeValue end, out string symbol);
-                UUT.AddValueRange(start, end);
+                UUT.AddValueRange((start, end));
             }
 
             clauses = expectedClauses.Split(new string[] { "," }, StringSplitOptions.None);
@@ -925,7 +963,7 @@ End Sub";
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase("45", "55", "Long")]
+        [TestCase("45", "55", "Integer")]
         [TestCase("45.6", "55", "Double")]
         [TestCase(@"""Test""", @"""55""", "String")]
         [TestCase("True", "y < 6", "Boolean")]
@@ -933,14 +971,14 @@ End Sub";
         public void UciUnit_CaseClauseTypeUnrecognizedSelectExpressionType(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
-@"
+$@"
         Sub Foo(x As Collection)
             Dim y As Long
             y = 8
             Select Case x(1)
-                Case <rangeExpr1>
+                Case {rangeExpr1}
                 'OK
-                Case <rangeExpr2>
+                Case {rangeExpr2}
                 'OK
                 Case Else
                 'OK
@@ -948,13 +986,11 @@ End Sub";
 
         End Sub";
 
-            inputCode = inputCode.Replace("<rangeExpr1>", rangeExpr1);
-            inputCode = inputCode.Replace("<rangeExpr2>", rangeExpr2);
             var result = GetSelectExpressionType(inputCode);
             Assert.AreEqual(expected, result);
         }
 
-        [TestCase("x.Item(2)", "55", "Long")]
+        [TestCase("x.Item(2)", "55", "Integer")]
         [TestCase("x.Item(2)", "45.6", "Double")]
         [TestCase("x.Item(2)", @"""Test""", "String")]
         [TestCase("x.Item(2)", "False", "Boolean")]
@@ -1009,7 +1045,7 @@ End Sub";
             CheckActualResultsEqualsExpected(inputCode, unreachable: 1, caseElse: triggersCaseElse ? 1 : 0);
         }
 
-        [TestCase("95", "55", "Long")]
+        [TestCase("95", "55", "Integer")]
         [TestCase("23.2", "45.6", "Double")]
         [TestCase(@"""Foo""", @"""Test""", "String")]
         [TestCase("x < 6", "x > 9", "Boolean")]
@@ -1042,16 +1078,16 @@ End Sub";
         [TestCase("Long", "2147486648#", "-2147486649#")]
         [TestCase("Integer", "40000", "-50000")]
         [TestCase("Byte", "256", "-1")]
-        [TestCase("Currency", "922337203685490.5808", "-922337203685477.5809")]
+        [TestCase("Currency", "922337203685490.5808@", "-922337203685477.5809@")]
         [TestCase("Single", "3402824E38", "-3402824E38")]
         [Category("Inspections")]
         public void UciFunctional_ExceedsLimits(string type, string value1, string value2)
         {
             string inputCode =
-@"Sub Foo(x As <Type>)
+$@"Sub Foo(x As {type})
 
-        Const firstVal As <Type> = <Value1>
-        Const secondVal As <Type> = <Value2>
+        Const firstVal As {type} = {value1}
+        Const secondVal As {type} = {value2}
 
         Select Case x
             Case firstVal
@@ -1061,9 +1097,6 @@ End Sub";
         End Select
 
         End Sub";
-            inputCode = inputCode.Replace("<Type>", type);
-            inputCode = inputCode.Replace("<Value1>", value1);
-            inputCode = inputCode.Replace("<Value2>", value2);
             CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
         }
 
@@ -2591,9 +2624,9 @@ End Sub
         {
             var expected = new Dictionary<string, int>
             {
-                { InspectionsUI.UnreachableCaseInspection_Unreachable, unreachable },
-                { InspectionsUI.UnreachableCaseInspection_TypeMismatch, mismatch },
-                { InspectionsUI.UnreachableCaseInspection_CaseElse, caseElse },
+                { InspectionResults.UnreachableCaseInspection_Unreachable, unreachable },
+                { InspectionResults.UnreachableCaseInspection_TypeMismatch, mismatch },
+                { InspectionResults.UnreachableCaseInspection_CaseElse, caseElse },
             };
 
             var builder = new MockVbeBuilder();
@@ -2609,12 +2642,12 @@ End Sub
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }
-            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_Unreachable));
-            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_TypeMismatch));
-            var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(InspectionsUI.UnreachableCaseInspection_CaseElse));
+            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
+            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_TypeMismatch));
+            var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_CaseElse));
 
             var actualMsg = BuildResultString(actualUnreachable.Count(), actualMismatches.Count(), actualUnreachableCaseElses.Count());
-            var expectedMsg = BuildResultString(expected[InspectionsUI.UnreachableCaseInspection_Unreachable], expected[InspectionsUI.UnreachableCaseInspection_TypeMismatch], expected[InspectionsUI.UnreachableCaseInspection_CaseElse]);
+            var expectedMsg = BuildResultString(expected[InspectionResults.UnreachableCaseInspection_Unreachable], expected[InspectionResults.UnreachableCaseInspection_TypeMismatch], expected[InspectionResults.UnreachableCaseInspection_CaseElse]);
 
             Assert.AreEqual(expectedMsg, actualMsg);
         }
@@ -2635,7 +2668,7 @@ End Sub
 
         private void CheckExtents<T>(IRangeClauseFilterTestSupport<T> check, T min, T max) where T : IComparable<T>
         {
-            if (check.TryGetIsLTValue(out T ltResult) && check.TryGetIsGTValue(out T gtResult))
+            if (check.TryGetIsLessThanValue(out T ltResult) && check.TryGetIsGreaterThanValue(out T gtResult))
             {
                 Assert.AreEqual(min.ToString().Substring(0, 8), ltResult.ToString().Substring(0, 8), "LT result failed");
                 Assert.AreEqual(max.ToString().Substring(0, 8), gtResult.ToString().Substring(0, 8));
@@ -2751,7 +2784,7 @@ End Sub
                         var startEnd = clauseExpression.Split(new string[] { ":" }, StringSplitOptions.None);
                         var uciValStart = ValueFactory.Create(startEnd[0], typeName);
                         var uciValEnd = ValueFactory.Create(startEnd[1], typeName);
-                        result.AddValueRange(uciValStart, uciValEnd);
+                        result.AddValueRange((uciValStart, uciValEnd));
                     }
                     else if (clauseType.Equals("Single"))
                     {
@@ -2765,7 +2798,7 @@ End Sub
                             clauseExpression = RestoreModifieStringForRelationalOps(clauseExpression);
                         }
                         var uciVal = ValueFactory.Create(clauseExpression, typeName);
-                        result.AddRelationalOp(uciVal);
+                        result.AddRelationalOperator(uciVal);
                     }
                     else
                     {

@@ -5,6 +5,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     // ReSharper disable once InconsistentNaming
     public interface IVBE : ISafeComWrapper, IEquatable<IVBE>
     {
+        VBEKind Kind { get; }
         string Version { get; }
         object HardReference { get; }
         IWindow ActiveWindow { get; }
@@ -24,5 +25,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
         bool IsInDesignMode { get; }
         int ProjectsCount { get; }
+        ISourceCodeHandler SourceCodeHandler { get; }
     }
 }

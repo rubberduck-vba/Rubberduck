@@ -62,7 +62,16 @@ moduleConfigProperty :
 ;
 
 moduleConfigElement :
-    unrestrictedIdentifier whiteSpace? EQ whiteSpace? expression (COLON numberLiteral)? endOfStatement
+    (unrestrictedIdentifier | lExpression) whiteSpace? EQ whiteSpace? (shortcut | resource | expression) endOfStatement
+;
+
+shortcut :
+	(POW singleLetter)
+	| ((PERCENT | PLUS? POW?) L_BRACE IDENTIFIER R_BRACE)
+;
+
+resource :
+	DOLLAR? expression COLON (numberLiteral | BARE_HEX_LITERAL | unrestrictedIdentifier)
 ;
 
 moduleAttributes : (attributeStmt endOfStatement)*;
@@ -90,8 +99,7 @@ moduleDeclarationsElement :
     | implementsStmt
     | variableStmt
     | moduleOption
-    | publicTypeDeclaration
-    | privateTypeDeclaration)
+    | udtDeclaration)
 ;
 
 moduleBody : 
@@ -107,6 +115,8 @@ moduleBodyElement :
 ;
 
 block : (blockStmt endOfStatement)*;
+
+unterminatedBlock : blockStmt (endOfStatement blockStmt)*;
 
 blockStmt : 
     statementLabelDefinition whiteSpace? mainBlockStmt?
@@ -129,6 +139,7 @@ mainBlockStmt :
     | ifStmt
     | singleLineIfStmt
     | implementsStmt
+    | midStatement
     | letStmt
     | lsetStmt
     | onErrorStmt
@@ -148,6 +159,7 @@ mainBlockStmt :
     | lineSpecialForm
     | circleSpecialForm
     | scaleSpecialForm
+    | pSetSpecialForm
     | callStmt
     | nameStmt
 ;
@@ -350,16 +362,18 @@ eventStmt : (visibility whiteSpace)? EVENT whiteSpace identifier whiteSpace? arg
 exitStmt : EXIT_DO | EXIT_FOR | EXIT_FUNCTION | EXIT_PROPERTY | EXIT_SUB;
 
 forEachStmt : 
-    FOR whiteSpace EACH whiteSpace expression whiteSpace IN whiteSpace expression endOfStatement
-    block
-    statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
+    FOR whiteSpace EACH whiteSpace expression whiteSpace IN whiteSpace expression 
+	(endOfStatement unterminatedBlock)?
+    (endOfStatement statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)? 
+	| whiteSpace? COMMA whiteSpace? expression)
 ;
 
 // expression EQ expression refactored to expression to allow SLL
 forNextStmt : 
-    FOR whiteSpace expression whiteSpace TO whiteSpace expression stepStmt? whiteSpace* endOfStatement 
-    block
-    statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)?
+    FOR whiteSpace expression whiteSpace TO whiteSpace expression stepStmt? whiteSpace* 
+	(endOfStatement unterminatedBlock)?
+    (endOfStatement statementLabelDefinition? whiteSpace? NEXT (whiteSpace expression)? 
+	| whiteSpace? COMMA whiteSpace? expression)
 ; 
 
 stepStmt : whiteSpace STEP whiteSpace expression;
@@ -406,7 +420,7 @@ listOrLabel :
     lineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
     | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
-sameLineStatement : blockStmt;
+sameLineStatement : mainBlockStmt;
 booleanExpression : expression;
 
 implementsStmt : IMPLEMENTS whiteSpace expression;
@@ -458,9 +472,9 @@ redimVariableDeclaration : expression (whiteSpace asTypeClause)?;
 // This needs to be explicitly defined to distinguish between Mid as a function and Mid as a keyword.
 midStatement : modeSpecifier 
     LPAREN whiteSpace? 
-    lExpression whiteSpace? COMMA whiteSpace? lExpression whiteSpace? (COMMA whiteSpace? lExpression whiteSpace?)? 
+    lExpression whiteSpace? COMMA whiteSpace? expression whiteSpace? (COMMA whiteSpace? expression whiteSpace?)? 
     RPAREN 
-    whiteSpace? ASSIGN whiteSpace? 
+    whiteSpace? EQ whiteSpace? 
     expression;
 modeSpecifier :	(MID | MIDB) DOLLAR? ;
 
@@ -513,10 +527,8 @@ subStmt :
 subroutineName : identifier;
 
 // 5.2.3.3 User Defined Type Declarations
-publicTypeDeclaration : ((GLOBAL | PUBLIC) whiteSpace)? udtDeclaration;
-privateTypeDeclaration : PRIVATE whiteSpace udtDeclaration;
 // member list includes trailing endOfStatement
-udtDeclaration : TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList END_TYPE;  
+udtDeclaration : (visibility whiteSpace)? TYPE whiteSpace untypedIdentifier endOfStatement udtMemberList END_TYPE;  
 udtMemberList : (udtMember endOfStatement)+; 
 udtMember : reservedNameMemberDeclaration | untypedNameMemberDeclaration;
 untypedNameMemberDeclaration : untypedIdentifier whiteSpace? optionalArrayClause;
@@ -548,10 +560,11 @@ withStmt :
     statementLabelDefinition? whiteSpace? END_WITH
 ;
 
-// Special forms with special syntax, only available in a report.
-lineSpecialForm : expression whiteSpace (STEP whiteSpace?)? tuple MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
+// Special forms with special syntax, only available in VBA reports or VB6 forms and pictureboxes.
+lineSpecialForm : expression whiteSpace ((STEP whiteSpace?)? tuple)? MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
+pSetSpecialForm : (expression whiteSpace? DOT whiteSpace?)? PSET (whiteSpace STEP)? whiteSpace? tuple whiteSpace? (COMMA whiteSpace? expression)?;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
 lineSpecialFormOption : {_input.Lt(1).Text.ToLower().Equals("b") || _input.Lt(1).Text.ToLower().Equals("bf")}? unrestrictedIdentifier;
 

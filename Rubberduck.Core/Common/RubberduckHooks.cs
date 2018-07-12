@@ -7,6 +7,7 @@ using Rubberduck.Settings;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
+using Rubberduck.AutoComplete;
 
 namespace Rubberduck.Common
 {
@@ -17,11 +18,12 @@ namespace Rubberduck.Common
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory)
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory, AutoCompleteService autoComplete)
             : base((IntPtr)vbe.MainWindow.HWnd, (IntPtr)vbe.MainWindow.HWnd)
         {
             _config = config;
             _hotkeyFactory = hotkeyFactory;
+            AutoComplete = autoComplete;
         }
 
         public void HookHotkeys()
@@ -30,6 +32,7 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             var config = _config.LoadConfiguration();
+            AutoComplete.ApplyAutoCompleteSettings(config);
             var settings = config.UserSettings.HotkeySettings;
 
             foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))
@@ -59,6 +62,7 @@ namespace Rubberduck.Common
         }
 
         public bool IsAttached { get; private set; }
+        public AutoCompleteService AutoComplete { get; }
 
         public void Attach()
         {
@@ -74,7 +78,6 @@ namespace Rubberduck.Common
                     hook.Attach();
                     hook.MessageReceived += hook_MessageReceived;
                 }
-
                 IsAttached = true;
             }
             catch (Win32Exception exception)

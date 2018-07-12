@@ -19,6 +19,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.Interaction;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -155,7 +156,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -197,7 +198,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -235,7 +236,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -273,7 +274,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -311,7 +312,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null);
+            var configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
 
             var projectRepository = new ProjectsRepository(vbe.Object);
@@ -772,9 +773,7 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
-                .Returns(DialogResult.Yes);
+            messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ConfirmationOutcome>())).Returns(ConfirmationOutcome.Yes);
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
@@ -817,10 +816,7 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.Cancel);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
-                .Returns(DialogResult.Yes);
+            messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
@@ -863,10 +859,7 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(),
-                    It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>()))
-                .Returns(DialogResult.No);
+            messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ConfirmationOutcome>())).Returns(ConfirmationOutcome.No);
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
@@ -909,9 +902,7 @@ namespace RubberduckTests.CodeExplorer
             saveFileDialog.Setup(o => o.OverwritePrompt);
 
             var messageBox = new Mock<IMessageBox>();
-            messageBox.Setup(m =>
-                m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>(), It.IsAny<MessageBoxDefaultButton>())).Returns(DialogResult.Cancel);
+            messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ConfirmationOutcome>())).Returns(ConfirmationOutcome.Cancel);
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
@@ -2299,7 +2290,7 @@ End Sub";
                 }
             };
 
-            var userSettings = new UserSettings(generalSettings, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(generalSettings, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 

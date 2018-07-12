@@ -50,26 +50,26 @@
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                         <Label Foreground="White"
                                    FontWeight="SemiBold" 
-                                   Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SettingsCaption_WindowSettings}">
+                                   Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_WindowSettings}">
                         </Label>
                     </StackPanel>
                 </DockPanel>
             </Label>
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=WindowSettings_StartupVisibilityHeader}"
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=WindowSettings_StartupVisibilityHeader}"
                    FontWeight="SemiBold" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeExplorerDockablePresenter_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorerDockablePresenter_Caption}"
                       IsChecked="{Binding CodeExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CodeInspections}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspections}"
                       IsChecked="{Binding CodeInspectionsVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TestExplorerWindow_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorerWindow_Caption}"
                       IsChecked="{Binding TestExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />
-            <CheckBox Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Caption}"
+            <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TodoExplorer_Caption}"
                       IsChecked="{Binding TodoExplorerVisibleOnStartup, Mode=TwoWay}"
                       Margin="5,0,0,5"
                       HorizontalAlignment="Left" />

@@ -1,0 +1,132 @@
+﻿<UserControl x:Class="Rubberduck.UI.Settings.AutoCompleteSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type settings:AutoCompleteSettingsViewModel}, IsDesignTimeCreatable=False}"
+             d:DesignWidth="500"
+             d:DesignHeight="350">
+    <UserControl.Resources>
+        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="2"/>
+                </Style>
+            </Style.Resources>
+            <Setter Property="BorderThickness" Value="0,.5,0,0" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="TextBlock.FontWeight" Value="Normal" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="1.5" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True" />
+                        <Condition Property="Selector.IsSelectionActive" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="BorderBrush" Value="LightGray"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <Label Background="DarkGray"
+                       HorizontalContentAlignment="Stretch"
+                       Margin="0,5,0,5">
+                    <Label.Style>
+                        <Style>
+                            <Style.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Label.Style>
+                    <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                            <Label Foreground="White"
+                                FontWeight="SemiBold" 
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=PageHeader}">
+                            </Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                            <controls:LinkButton
+                                Margin="2"
+                                Command="{Binding ImportButtonCommand}"
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ImportPageSettingsButton}"/>
+                            <controls:LinkButton
+                                Margin="2"
+                                Command="{Binding ExportButtonCommand}"
+                                Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ExportPageSettingsButton}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Label>
+                <WrapPanel HorizontalAlignment="Center">
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
+                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
+                    <CheckBox Margin="10,10" IsChecked="{Binding EnableSmartConcat}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSmartConcat}" />
+                </WrapPanel>
+                <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
+                    <DataGrid Name="AutoCompleteSettingsGrid"
+                              ItemsSource="{Binding Settings}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              IsReadOnly="False"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              CanUserSortColumns="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0" Height="Auto" MinHeight="70">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="Auto" Binding="{Binding Description}" IsReadOnly="True" />
+                            <DataGridCheckBoxColumn Width="*" Binding="{Binding IsEnabled, Mode=TwoWay}">
+                                <DataGridCheckBoxColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                    </Style>
+                                </DataGridCheckBoxColumn.HeaderStyle>
+                            </DataGridCheckBoxColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+        <CheckBox Grid.Row="1" HorizontalAlignment="Right" Margin="5"
+                  IsChecked="{Binding Path=SelectAll}" 
+                  Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
+    </Grid>
+</UserControl>

@@ -11,6 +11,8 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using Rubberduck.Interaction;
+using Rubberduck.UI.Refactorings.ReorderParameters;
 
 namespace RubberduckTests.Refactoring
 {
@@ -800,7 +802,6 @@ End Sub
                 var factory = SetupFactory(model);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
                 var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
@@ -871,7 +872,6 @@ End Sub
                 var factory = SetupFactory(model);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
                 var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
@@ -956,7 +956,6 @@ End Sub
                 var factory = SetupFactory(model);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
                 var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
@@ -997,7 +996,6 @@ End Sub";
                 var factory = SetupFactory(model);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, MessageBoxIcon.Warning)).Returns(DialogResult.OK);
 
                 var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
@@ -1393,9 +1391,7 @@ End Sub";
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(
-                        m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.Yes);
+                messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 //Specify Params to remove
                 var model = new ReorderParametersModel(state, qualifiedSelection, messageBox.Object);
@@ -1442,8 +1438,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.No);
+                messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ConfirmationOutcome>())).Returns(ConfirmationOutcome.No);
 
                 //Specify Params to remove
                 var model = new ReorderParametersModel(state, qualifiedSelection, messageBox.Object);
@@ -1706,8 +1701,6 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.OK);
 
                 var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, messageBox.Object);
                 var presenter = factory.Create();
@@ -1735,8 +1728,6 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.OK);
 
                 var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, messageBox.Object);
                 var presenter = factory.Create();

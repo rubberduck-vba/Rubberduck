@@ -1,12 +1,13 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -136,7 +137,7 @@ namespace Rubberduck.UI.Command
             var viewModel = CreateViewModel(declaration);
             if (!viewModel.SearchResults.Any())
             {
-                _messageBox.Show(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck);
                 return;
             }
 

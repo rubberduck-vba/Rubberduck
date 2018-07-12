@@ -9,6 +9,7 @@ using Moq;
 using Rubberduck.UI;
 using Rubberduck.VBEditor.VBERuntime.Settings;
 using System;
+using Rubberduck.Interaction;
 
 namespace RubberduckTests.Settings
 {
@@ -50,7 +51,7 @@ namespace RubberduckTests.Settings
                 new HotkeySetting {CommandTypeName = "BarCommand", IsEnabled = true, Key1 = "B"}
             });
 
-            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null, null);
+            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null, null, null);
             return new Configuration(userSettings);
         }
 
@@ -73,7 +74,7 @@ namespace RubberduckTests.Settings
                 }
             };
 
-            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null, null);
+            var userSettings = new UserSettings(generalSettings, hotkeySettings, null, null, null, null, null, null);
             return new Configuration(userSettings);
         }
 

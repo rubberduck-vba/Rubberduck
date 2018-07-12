@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {

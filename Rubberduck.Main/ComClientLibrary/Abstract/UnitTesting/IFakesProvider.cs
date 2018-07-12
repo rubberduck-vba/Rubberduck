@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.UnitTesting
 {
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.IFakesProviderGuid)]
-    [EditorBrowsable(EditorBrowsableState.Always)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IFakesProviderGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public interface IFakesProvider
     {
         [DispId(1)]
@@ -60,7 +64,20 @@ namespace Rubberduck.UnitTesting
         [Description("Configures VBA.FileSystem.ChDrive calls.")]
         IStub ChDrive { get; }
 
-        //[DispId(17)]
-        //IFake CurDir { get; }
+        [DispId(14)]
+        [Description("Configures VBA.FileSystem.CurDir calls.")]
+        IFake CurDir { get; }
+
+        [DispId(15)]
+        [Description("Configures VBA.DateTime.Now calls.")]
+        IFake Now { get; }
+
+        [DispId(16)]
+        [Description("Configures VBA.DateTime.Time calls.")]
+        IFake Time { get; }
+
+        [DispId(17)]
+        [Description("Configures VBA.DateTime.Date calls.")]
+        IFake Date { get; }
     }
 }

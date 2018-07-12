@@ -41,13 +41,13 @@ namespace Rubberduck.UnitTesting
             SuppressesCall = false;
         }
 
-        private bool TrySetReturnValue(string parameter, object value, bool any = false)
+        protected bool TrySetReturnValue(string parameter, object value, bool any = false)
         {
             var returnInfo =
                 ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount) &&
                                         r.Argument != null &&
                                         r.Parameter.Equals(parameter.ToLower()) &&
-                                        r.Argument.Equals(value)).ToList();
+                                        value.Equals(r.Argument)).ToList(); // use this order instead of r.Argument.Equals(value) to use Equals method for ComVariant
             if (returnInfo.Count <= 0)
             {
                 return false;
@@ -56,11 +56,12 @@ namespace Rubberduck.UnitTesting
             return true;
         }
 
-        private bool TrySetReturnValue(bool any = false)
+        protected bool TrySetReturnValue(bool any = false)
         {
             var returnInfo =
-                ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount))
-                    .ToList();
+                ReturnValues.Where(r => r.Invocation == (any ? FakesProvider.AllInvocations : (int) InvocationCount) &&
+                                   r.Argument != null &&
+                                   r.Argument == string.Empty).ToList();
 
             if (returnInfo.Count <= 0)
             {

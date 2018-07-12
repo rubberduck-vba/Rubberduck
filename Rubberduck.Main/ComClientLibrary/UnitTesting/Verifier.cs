@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
@@ -66,7 +66,7 @@ namespace Rubberduck.UnitTesting
             if (invocation > InvocationCount || invocation < 1)
             {
                 // ReSharper disable once ExplicitCallerInfoArgument
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_VerifyNoInvocationFormat, parameter, _usages.Count, message), methodName);
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_VerifyNoInvocationFormat, parameter, _usages.Count, message), methodName);
                 Asserted = true;
                 return null;
             }
@@ -74,7 +74,7 @@ namespace Rubberduck.UnitTesting
             var uses = _usages.Where(u => u.Parameter.Equals(parameter.ToLower()) && u.Invocation == invocation).ToArray();
             if (uses.Length != 1)
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_VerifyInternalErrorMessage);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_VerifyInternalErrorMessage);
                 Asserted = true;
                 return null;
             }
@@ -85,21 +85,21 @@ namespace Rubberduck.UnitTesting
         {
             if (value.GetType() == typeof(AssertClass))
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_EasterEggAssertClassPassed);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_EasterEggAssertClassPassed);
                 Asserted = true;
                 return true;
             }
 
             if (value.GetType() == typeof(IVerify))
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_EasterEggIVerifyPassed);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_EasterEggIVerifyPassed);
                 Asserted = true;
                 return true;
             }
 
             if (value.GetType() == typeof(IFake))
             {
-                AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_EasterEggIFakePassed);
+                AssertHandler.OnAssertInconclusive(AssertMessages.Assert_EasterEggIFakePassed);
                 Asserted = true;
                 return true;
             }
@@ -116,7 +116,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, invocations, InvocationCount, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, invocations, InvocationCount, message));
             Asserted = true;
         }
 
@@ -126,7 +126,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, 1, 0, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, 1, 0, message));
             Asserted = true;
         }
 
@@ -136,7 +136,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, invocations, InvocationCount, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, invocations, InvocationCount, message));
             Asserted = true;
         }
 
@@ -146,7 +146,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, 1, InvocationCount, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, 1, InvocationCount, message));
             Asserted = true;
         }
 
@@ -156,7 +156,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, $"{minimum} - {maximum}", InvocationCount, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, $"{minimum} - {maximum}", InvocationCount, message));
             Asserted = true;
         }
 
@@ -166,7 +166,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, invocations, InvocationCount, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, invocations, InvocationCount, message));
             Asserted = true;
         }
 
@@ -176,7 +176,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, 0, InvocationCount, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, 0, InvocationCount, message));
             Asserted = true;
         }
 
@@ -186,7 +186,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, 1, InvocationCount, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, 1, InvocationCount, message));
             Asserted = true;
         }
 
@@ -198,7 +198,7 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, value, usage.Value.Value, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, value, usage.Value.Value, message));
             Asserted = true;
         }
 
@@ -212,7 +212,7 @@ namespace Rubberduck.UnitTesting
 
             if (usage.Value.IsMissing)
             {
-                AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_VerifyParameterNotPassed, parameter, invocation, message));
+                AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_VerifyParameterNotPassed, parameter, invocation, message));
                 Asserted = true;
                 return;
             }
@@ -220,7 +220,7 @@ namespace Rubberduck.UnitTesting
             var underTest = usage.Value.Value is ComVariant ? ((ComVariant)(usage.Value.Value)).Value : usage.Value.Value;
             if (!(underTest is double))
             {
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_VerifyParameterNonNumeric, parameter, invocation, message));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_VerifyParameterNonNumeric, parameter, invocation, message));
                 Asserted = true;
                 return;
             }
@@ -231,7 +231,7 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_ParameterResultFormat, $"{minimum} - {maximum}", underTest, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_ParameterResultFormat, $"{minimum} - {maximum}", underTest, message));
             Asserted = true;
         }
 
@@ -243,7 +243,7 @@ namespace Rubberduck.UnitTesting
                 return;
             }
 
-            AssertHandler.OnAssertFailed(string.Format(RubberduckUI.Assert_VerifyParameterNotPassed, parameter, invocation, message));
+            AssertHandler.OnAssertFailed(string.Format(AssertMessages.Assert_VerifyParameterNotPassed, parameter, invocation, message));
             Asserted = true;
         }
 
@@ -256,7 +256,7 @@ namespace Rubberduck.UnitTesting
             }
 
             //TODO
-            AssertHandler.OnAssertInconclusive(RubberduckUI.Assert_NotImplemented);
+            AssertHandler.OnAssertInconclusive(AssertMessages.Assert_NotImplemented);
             //if (usage.Value.TypeName.ToLower().Equals(typeName.ToLower()))
             //{
             //    return;

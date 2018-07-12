@@ -10,12 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.Parsing</RootNamespace>
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,12 +52,17 @@
     </Reference>
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -137,6 +143,7 @@
     <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="Common\DisabledAttribute.cs" />
     <Compile Include="Inspections\RequiredHostAttribute.cs" />
     <Compile Include="ProjectsProviderExtensions.cs" />
     <Compile Include="Common\ExperimentalAttribute.cs" />
@@ -163,11 +170,6 @@
     <Compile Include="Inspections\Abstract\IInspector.cs" />
     <Compile Include="Inspections\Abstract\IParseTreeInspection.cs" />
     <Compile Include="Inspections\Abstract\IQuickFix.cs" />
-    <Compile Include="Inspections\Resources\InspectionsUI.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InspectionsUI.resx</DependentUpon>
-    </Compile>
     <Compile Include="Inspections\PropertyBag.cs" />
     <Compile Include="Symbols\ParsingExceptions\MainParseExceptionErrorListener.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprocessorExceptionErrorListener.cs" />
@@ -182,18 +184,8 @@
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
-    <Compile Include="Inspections\Resources\CodeInspectionSeverity.cs" />
-    <Compile Include="Inspections\Resources\CodeInspectionType.cs" />
-    <Compile Include="Inspections\Resources\InspectionsUI.de.Designer.cs">
-      <DependentUpon>InspectionsUI.de.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Inspections\Resources\InspectionsUI.fr.Designer.cs">
-      <DependentUpon>InspectionsUI.fr.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
+    <Compile Include="Inspections\CodeInspectionSeverity.cs" />
+    <Compile Include="Inspections\CodeInspectionType.cs" />
     <Compile Include="Rewriter\MemberAttributesRewriter.cs" />
     <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
@@ -402,7 +394,6 @@
     <Compile Include="VBA\ComponentParseTask.cs" />
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IAttributeParser.cs" />
-    <Compile Include="VBA\IModuleExporter.cs" />
     <Compile Include="VBA\IModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationResolveRunner.cs" />
     <Compile Include="VBA\ICOMReferenceSynchronizer.cs" />
@@ -417,6 +408,7 @@
     <Compile Include="VBA\ParseCoordinator.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
+    <Compile Include="VBA\VBACodeStringParser.cs" />
     <Compile Include="VBA\VBALikePatternParser.cs" />
     <Compile Include="VBA\VBADateLiteralParser.cs" />
     <Compile Include="VBA\VBAExpressionParser.cs" />
@@ -433,27 +425,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.de.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.fr.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionsUI.fr.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Inspections\Resources\InspectionsUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>InspectionsUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="ParsingText.de.resx" />
     <EmbeddedResource Include="ParsingText.fr.resx" />
     <EmbeddedResource Include="ParsingText.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ParsingText.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.xsd">

@@ -72,10 +72,7 @@ namespace Rubberduck.VBEditor.Events
                 return;    
             }
 
-            if (string.IsNullOrWhiteSpace(project.ProjectId))
-            {
-                project.AssignProjectId();
-            }
+            project.AssignProjectId();
 
             var components = project.VBComponents;
             _components.Add(project.ProjectId, components);

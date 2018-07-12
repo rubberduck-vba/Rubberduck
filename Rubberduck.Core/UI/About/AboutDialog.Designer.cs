@@ -31,21 +31,9 @@ namespace Rubberduck.UI.About
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutDialog));
-            this.HiddenButton = new System.Windows.Forms.Button();
             this.ElementHost = new System.Windows.Forms.Integration.ElementHost();
             this.AboutControl = new Rubberduck.UI.About.AboutControl();
             this.SuspendLayout();
-            // 
-            // HiddenButton
-            // 
-            this.HiddenButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.HiddenButton.Location = new System.Drawing.Point(63, 172);
-            this.HiddenButton.Name = "HiddenButton";
-            this.HiddenButton.Size = new System.Drawing.Size(75, 23);
-            this.HiddenButton.TabIndex = 1;
-            this.HiddenButton.Text = "Cancel";
-            this.HiddenButton.UseVisualStyleBackColor = true;
-            this.HiddenButton.Visible = false;
             // 
             // ElementHost
             // 
@@ -54,7 +42,7 @@ namespace Rubberduck.UI.About
             this.ElementHost.Location = new System.Drawing.Point(0, 0);
             this.ElementHost.Margin = new System.Windows.Forms.Padding(2);
             this.ElementHost.Name = "ElementHost";
-            this.ElementHost.Size = new System.Drawing.Size(512, 382);
+            this.ElementHost.Size = new System.Drawing.Size(610, 560);
             this.ElementHost.TabIndex = 0;
             this.ElementHost.Child = this.AboutControl;
             // 
@@ -62,9 +50,7 @@ namespace Rubberduck.UI.About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.HiddenButton;
-            this.ClientSize = new System.Drawing.Size(512, 382);
-            this.Controls.Add(this.HiddenButton);
+            this.ClientSize = new System.Drawing.Size(610, 560);
             this.Controls.Add(this.ElementHost);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -82,6 +68,5 @@ namespace Rubberduck.UI.About
 
         private System.Windows.Forms.Integration.ElementHost ElementHost;
         private AboutControl AboutControl;
-        private System.Windows.Forms.Button HiddenButton;
     }
 }

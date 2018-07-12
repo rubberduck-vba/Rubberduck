@@ -98,13 +98,13 @@ namespace RubberduckTests.Settings
 
         private Configuration GetDefaultConfig()
         {
-            var userSettings = new UserSettings(null, null, null, null, null, GetMockIndenterSettings(), null);
+            var userSettings = new UserSettings(null, null, null, null, null, null, GetMockIndenterSettings(), null);
             return new Configuration(userSettings);
         }
 
         private Configuration GetNondefaultConfig()
         {
-            var userSettings = new UserSettings(null, null, null, null, null, GetMockIndenterSettings(true), null);
+            var userSettings = new UserSettings(null, null, null, null, null, null, GetMockIndenterSettings(true), null);
             return new Configuration(userSettings);
         }
 

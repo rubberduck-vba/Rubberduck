@@ -7,8 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
-using Rubberduck.Parsing.Inspections.Resources;
-using RubberduckTests.Common;
+using Rubberduck.Parsing.Inspections;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -16,7 +15,6 @@ namespace RubberduckTests.QuickFixes
     public class IgnoreOnceQuickFixTests
     {
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("QuickFixes")]
         public void ApplicationWorksheetFunction_IgnoreQuickFixWorks()
         {
@@ -235,7 +233,6 @@ End Function
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("QuickFixes")]
         public void ImplicitActiveSheetReference_IgnoreQuickFixWorks()
         {
@@ -280,7 +277,6 @@ End Sub";
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("QuickFixes")]
         public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
         {
@@ -1030,7 +1026,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        [Ignore("Todo")] // not sure how to handle GetBuiltInDeclarations
+        [Ignore("Broken feature - passes locally but not in AV - see FIXME below")]
         public void UntypedFunctionUsage_IgnoreQuickFixWorks()
         {
             const string inputCode =

@@ -10,6 +10,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace RubberduckTests.Refactoring
 {
@@ -56,10 +57,6 @@ End Sub
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -165,10 +162,6 @@ End Property
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -253,13 +246,7 @@ End Function
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                foreach (var member in model.Members)
-                {
-                    if (!member.FullMemberSignature.Contains("Property"))
-                    {
-                        member.IsSelected = true;
-                    }
-                }
+                model.Members = model.Members.Where(member => !member.FullMemberSignature.Contains("Property")).ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -405,7 +392,7 @@ End Sub
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                model.Members.ElementAt(0).IsSelected = true;
+                model.Members = new[]{ model.Members.ElementAt(0) }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -437,7 +424,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                model.Members.ElementAt(0).IsSelected = true;
+                model.Members = new[] { model.Members.ElementAt(0) }.ToList();
 
                 var view = new Mock<IRefactoringDialog<ExtractInterfaceViewModel>>();
                 view.Setup(v => v.ViewModel).Returns(new ExtractInterfaceViewModel());

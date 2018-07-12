@@ -43,7 +43,7 @@
         </ComboBox>
         
         <Button Grid.Column="1" Command="local:FindSymbolControl.GoCommand">
-            <Image Height="16" Source="pack://application:,,,/Rubberduck;component/Resources/arrow.png" />
+            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
         </Button>
         
     </Grid>

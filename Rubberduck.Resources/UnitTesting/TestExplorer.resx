@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>{0} Failed</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>{0} Inconclusive</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>{0} Passed</value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="TestExplorer_Outcome" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Test Method (Expected Error)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>Test Method</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>Test Module</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>Navigate to selected</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>Method Name</value>
+  </data>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Module</value>
+  </data>
+  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+    <value>All Tests</value>
+  </data>
+  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+    <value>Failed Tests</value>
+  </data>
+  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+    <value>Repeat Last Run</value>
+  </data>
+  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+    <value>Not Run Tests</value>
+  </data>
+  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+    <value>Passed Tests</value>
+  </data>
+  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+    <value>Selected Test</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Inconclusive</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
+    <value>this method runs once per module</value>
+  </data>
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
+    <value>this method runs before every test in the module</value>
+  </data>
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
+    <value>this method runs after every test in the module</value>
+  </data>
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
+    <value>Rename test</value>
+  </data>
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
+    <value>Test raised an error</value>
+  </data>
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
+    <value>Change to expected error number</value>
+  </data>
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
+    <value>Expected error was not raised</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignored</value>
+  </data>
+  <data name="UnitTest_TotalDuration" xml:space="preserve">
+    <value>Total Duration</value>
+  </data>
+  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+    <value>Inconclusive Tests</value>
+  </data>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log.</value>
+  </data>
+</root>

@@ -352,6 +352,9 @@ namespace Rubberduck.Parsing.VBA
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
             token.ThrowIfCancellationRequested();
 
+            toParse = toParse.Where(module => module.IsParsable).ToHashSet();
+            token.ThrowIfCancellationRequested();
+
             var removedModules = RemovedModules(modules);
             token.ThrowIfCancellationRequested();
 

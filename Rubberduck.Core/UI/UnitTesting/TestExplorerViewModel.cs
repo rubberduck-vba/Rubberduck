@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;

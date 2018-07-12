@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -75,14 +74,9 @@ namespace Rubberduck.Parsing.Binding
                 var bracketedExpression = _declarationFinder.OnBracketedExpression(_context.GetText(), _context);
                 return new SimpleNameExpression(bracketedExpression, ExpressionClassification.Unbound, _context);
             }
-            //TODO - this is a complete and total hack to prevent `Mid` and `Mid$` from creating undeclared variables
-            //pending an actual fix to the grammar.  See #2618
-            else if (!_name.Equals("Mid") && !_name.Equals("Mid$"))
-            {
-                var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
-                return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
-            }
-            return new ResolutionFailedExpression();
+            
+            var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
+            return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);            
         }
 
         private IBoundExpression ResolveProcedureNamespace()
@@ -95,17 +89,17 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
+            var parameter = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Parameter);
+            if (IsValidMatch(parameter, _name))
+            {
+                return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _context);
+            }
             var localVariable = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
                 ?? _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Variable)
                 ;
             if (IsValidMatch(localVariable, _name))
             {
                 return new SimpleNameExpression(localVariable, ExpressionClassification.Variable, _context);
-            }
-            var parameter = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Parameter);
-            if (IsValidMatch(parameter, _name))
-            {
-                return new SimpleNameExpression(parameter, ExpressionClassification.Variable, _context);
             }
             var constant = _declarationFinder.FindMemberEnclosingProcedure(_parent, _name, DeclarationType.Constant);
             if (IsValidMatch(constant, _name))

@@ -12,8 +12,9 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Castle.Windsor;
 using NLog;
-using Rubberduck.Common;
 using Rubberduck.Root;
+using Rubberduck.Resources;
+using Rubberduck.Resources.Registration;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
@@ -25,10 +26,14 @@ namespace Rubberduck
     /// <remarks>
     /// Special thanks to Carlos Quintero (MZ-Tools) for providing the general structure here.
     /// </remarks>
-    [ComVisible(true)]
-    [Guid(RubberduckGuid.ExtensionGuid)]
-    [ProgId(RubberduckProgId.ExtensionProgId)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.ExtensionGuid),
+        ProgId(RubberduckProgId.ExtensionProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IDTExtensibility2)),
+        EditorBrowsable(EditorBrowsableState.Never)
+    ]
     // ReSharper disable once InconsistentNaming // note: underscore prefix hides class from COM API
     public class _Extension : IDTExtensibility2
     {
@@ -178,7 +183,7 @@ namespace Rubberduck
             }
             catch (Win32Exception)
             {
-                System.Windows.Forms.MessageBox.Show(RubberduckUI.RubberduckReloadFailure_Message, RubberduckUI.RubberduckReloadFailure_Title,
+                System.Windows.Forms.MessageBox.Show(Resources.RubberduckUI.RubberduckReloadFailure_Message, RubberduckUI.RubberduckReloadFailure_Title,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (Exception exception)

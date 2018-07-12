@@ -49,11 +49,11 @@ namespace RubberduckTests.Mocks
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
             var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state.ProjectsProvider);
-            var exporter = new Mock<IModuleExporter>().Object;
-            return Create(vbe, state, attributeParser, exporter, projectRepository, serializedDeclarationsPath);
+            var sourceCodeHandler = new Mock<ISourceCodeHandler>().Object;
+            return Create(vbe, state, attributeParser, sourceCodeHandler, projectRepository, serializedDeclarationsPath);
         }
 
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, IModuleExporter exporter, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
+        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
@@ -81,7 +81,7 @@ namespace RubberduckTests.Mocks
                 parserStateManager,
                 preprocessorFactory,
                 attributeParser,
-                exporter);
+                sourceCodeHandler);
             var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
                 state, 
                 parserStateManager, 
@@ -156,7 +156,10 @@ namespace RubberduckTests.Mocks
         public static void AddTestLibrary(this RubberduckParserState state, string serialized)
         {
             var reader = new XmlPersistableDeclarations();
-            var deserialized = reader.Load(Path.Combine("Testfiles\\Resolver", serialized));
+            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            basePath = Directory.GetParent(basePath).Parent.FullName;
+            var path = Path.Combine(basePath, "Testfiles\\Resolver", serialized);
+            var deserialized = reader.Load(path);
             AddTestLibrary(state, deserialized);
         }
 

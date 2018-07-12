@@ -38,7 +38,7 @@
                 <DockPanel Background="#FFA9A9A9" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                         <Label Foreground="#FFFFFFFF" FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="SettingsCaption_IndenterSettings"/>
+                            <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="PageHeader_IndenterSettings"/>
                         </Label>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
@@ -52,14 +52,14 @@
                                                  Margin="2"
                                                  Command="{Binding ImportButtonCommand}">
                                 <controls:LinkButton.Content>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="SettingsCaption_ImportSettings"/>
+                                    <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="ImportPageSettingsButton"/>
                                 </controls:LinkButton.Content>
                             </controls:LinkButton>
                             <controls:LinkButton Grid.Column="2"
                                                  Margin="2"
                                                  Command="{Binding ExportButtonCommand}">
                                 <controls:LinkButton.Content>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="SettingsCaption_ExportSettings"/>
+                                    <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="ExportPageSettingsButton"/>
                                 </controls:LinkButton.Content>
                             </controls:LinkButton>
                         </Grid>
@@ -82,7 +82,7 @@
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentOptionsLabel"/>
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentOptionsLabel"/>
                         </Label>
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
@@ -92,7 +92,7 @@
                                      IsChecked="{Binding IndentEntireProcedureBody,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentEntireProcedureBody"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentEntireProcedureBody"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -102,7 +102,7 @@
                                      IsChecked="{Binding IndentFirstCommentBlock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentFirstCommentBlock"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentFirstCommentBlock"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -112,7 +112,7 @@
                                      IsChecked="{Binding IndentFirstDeclarationBlock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentFirstDeclarationBlock"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentFirstDeclarationBlock"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -121,7 +121,7 @@
                                      IsChecked="{Binding IndentEnumTypeAsProcedure,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentEnumTypeAsProcedure"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentEnumTypeAsProcedure"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -130,7 +130,7 @@
                                      IsChecked="{Binding IndentCase,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentCase"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentCase"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -139,7 +139,7 @@
                                      IsChecked="{Binding IndentCompilerDirectives,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentCompilerDirectives"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentCompilerDirectives"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -148,7 +148,7 @@
                                          HorizontalAlignment="Left"
                                          TextWrapping="WrapWithOverflow">
                                 <TextBlock.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IndentSpaces"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentSpaces"/>
                                 </TextBlock.Text>
                             </TextBlock>
                             <controls:NumberPicker Margin="0,-6,0,0"
@@ -165,7 +165,7 @@
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_AlignmentOptionsLabel"/>
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignmentOptionsLabel"/>
                         </Label>
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
@@ -175,7 +175,7 @@
                                      IsChecked="{Binding AlignContinuations,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_AlignContinuations"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignContinuations"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -185,7 +185,7 @@
                                      IsChecked="{Binding IgnoreOperatorsInContinuations,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_IgnoreOperators"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IgnoreOperators"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -196,7 +196,7 @@
                                          IsChecked="{Binding AlignDims,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <AccessText TextWrapping="WrapWithOverflow">
                                     <AccessText.Text>
-                                        <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_AlignDims"/>
+                                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignDims"/>
                                     </AccessText.Text>
                                 </AccessText>
                             </CheckBox>
@@ -212,13 +212,13 @@
                                      IsChecked="{Binding AlignCommentsWithCode,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_AlignCommentsWithCode"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_AlignCommentsWithCode"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
                         <StackPanel Margin="0,0,0,22">
                             <Label FontWeight="SemiBold" HorizontalAlignment="Left">
-                                <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_EndOfLineCommentStyle"/>
+                                <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_EndOfLineCommentStyle"/>
                             </Label>
                             <StackPanel Orientation="Horizontal">
                                 <ComboBox Margin="5,0,0,5"
@@ -243,7 +243,7 @@
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_SpecialOptionsLabel"/>
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_SpecialOptionsLabel"/>
                         </Label>
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
@@ -252,7 +252,7 @@
                                      IsChecked="{Binding ForceDebugStatementsInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_ForceDebugDirectivesToColumn1"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_ForceDebugDirectivesToColumn1"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -261,7 +261,7 @@
                                      IsChecked="{Binding ForceCompilerDirectivesInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
-                                    <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_ForceCompilerDirectivesToColumn1"/>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_ForceCompilerDirectivesToColumn1"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
@@ -274,7 +274,7 @@
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_VerticalSpacingLabel"/>
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_VerticalSpacingLabel"/>
                         </Label>
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
@@ -285,7 +285,7 @@
                                          IsChecked="{Binding VerticallySpaceProcedures,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                                 <AccessText TextWrapping="WrapWithOverflow">
                                     <AccessText.Text>
-                                        <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_VerticalSpacing"/>
+                                        <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_VerticalSpacing"/>
                                     </AccessText.Text>
                                 </AccessText>
                             </CheckBox>
@@ -305,7 +305,7 @@
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
-                            <Resx ResxName="Rubberduck.UI.RubberduckUI" Key="IndenterSettings_CodeSampleHeader"/>
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_CodeSampleHeader"/>
                         </Label>
                     </Expander.Header>
                     <controls:BindableTextEditor 

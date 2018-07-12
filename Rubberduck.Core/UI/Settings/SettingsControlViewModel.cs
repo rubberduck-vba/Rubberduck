@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
+using Rubberduck.Interaction;
+using Rubberduck.Resources.Settings;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 
@@ -9,25 +11,29 @@ namespace Rubberduck.UI.Settings
 {
     public class SettingsControlViewModel : ViewModelBase
     {
+        private readonly IMessageBox _messageBox;
         private readonly IGeneralConfigService _configService;
         private readonly Configuration _config;
 
-        public SettingsControlViewModel(IGeneralConfigService configService,
+        public SettingsControlViewModel(IMessageBox messageBox,
+            IGeneralConfigService configService,
             Configuration config,
             SettingsView generalSettings,
             SettingsView todoSettings,
             SettingsView inspectionSettings,
             SettingsView unitTestSettings,
             SettingsView indenterSettings,
+            SettingsView autoCompleteSettings,
             SettingsView windowSettings,
             SettingsViews activeView = UI.Settings.SettingsViews.GeneralSettings)
         {
+            _messageBox = messageBox;
             _configService = configService;
             _config = config;
 
             SettingsViews = new ObservableCollection<SettingsView>
             {
-                generalSettings, todoSettings, inspectionSettings, unitTestSettings, indenterSettings, windowSettings
+                generalSettings, todoSettings, inspectionSettings, unitTestSettings, indenterSettings, autoCompleteSettings, windowSettings
             };
 
             SelectedSettingsView = SettingsViews.First(v => v.View == activeView);
@@ -88,6 +94,11 @@ namespace Rubberduck.UI.Settings
 
         private void ResetSettings()
         {
+            if (!_messageBox.ConfirmYesNo(SettingsUI.ConfirmResetSettings, SettingsUI.ResetSettingsButton))
+            {
+                return;
+            }
+
             var defaultConfig = _configService.GetDefaultConfiguration();
             foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
             {

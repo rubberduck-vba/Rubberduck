@@ -10,14 +10,15 @@
              x:Class="Rubberduck.UI.ToDoItems.ToDoExplorerControl"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
+             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DataContext="{d:DesignInstance {x:Type toDoItems:ToDoExplorerViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
-        
-        <BitmapImage x:Key="RefreshImage" UriSource="../../Resources/arrow-circle-double.png" />
-        <BitmapImage x:Key="DeleteImage" UriSource="../../Resources/cross-script.png" />
-        <BitmapImage x:Key="SettingsImage" UriSource="../../Resources/gear.png" />
+
+        <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+        <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
+        <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -477,23 +478,23 @@
         
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
-                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand, Mode=OneWay}" BorderThickness="0" Background="Transparent">
+                <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" Command="{Binding RefreshCommand, Mode=OneWay}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource RefreshImage}" />
                 </Button>
                 <Separator />
-                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Remove}" Command="{Binding RemoveCommand}" BorderThickness="0" Background="Transparent">
+                <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Remove}" Command="{Binding RemoveCommand}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource DeleteImage}" />
                 </Button>
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="../../Resources/Custom/PNG/GroupBy.png" />
+                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
                         </MenuItem.Icon>
 
                         <MenuItem x:Name="GroupByMarker"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByMarker}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByMarker}"
                                   IsChecked="{Binding GroupByMarker, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True"
                                   Command="{Binding SetMarkerGroupingCommand}"
@@ -502,7 +503,7 @@
                         <MenuItem x:Name="GroupByLocation"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=GroupingStyle_ByLocation}" 
+                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}" 
                                   IsChecked="{Binding GroupByLocation, UpdateSourceTrigger=PropertyChanged}" 
                                   IsCheckable="True"
                                   Command="{Binding SetLocationGroupingCommand}"
@@ -511,12 +512,12 @@
                     </MenuItem>
                 </Menu>
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Height="16" Source="../../Resources/document-copy.png" />
+                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ToDoExplorer_CopyToolTip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=ToDoExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
-                <Button ToolTip="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
+                <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTodoSettings}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource SettingsImage}" />
                 </Button>
             </ToolBar>
@@ -527,10 +528,10 @@
 			                   SelectedItem="{Binding SelectedItem}"
                                Visibility="{Binding Path=IsChecked, ElementName=GroupByMarker, Converter={StaticResource BoolToVisibility}}">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
         
@@ -539,10 +540,10 @@
 			                   SelectedItem="{Binding SelectedItem}"
                                Visibility="{Binding Path=IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
     </Grid>

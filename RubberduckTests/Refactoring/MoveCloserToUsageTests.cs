@@ -9,6 +9,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using Rubberduck.Interaction;
 
 namespace RubberduckTests.Refactoring
 {
@@ -32,7 +33,41 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-bar = True
+    bar = True
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
+
+                var rewriter = state.GetRewriter(component);
+                Assert.AreEqual(expectedCode, rewriter.GetText());
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_LineNumbers()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+Private Sub Foo()
+100 bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+Dim bar As Boolean
+100 bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -69,7 +104,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-bar = True
+    bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -155,7 +190,44 @@ End Sub";
                 @"Private Sub Foo()
     Dim bat As Integer
     Dim bar As Boolean
-bar = True
+    bar = True
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
+
+                var rewriter = state.GetRewriter(component);
+                Assert.AreEqual(expectedCode, rewriter.GetText());
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_VariableWithLineNumbers()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo()
+1   Dim bar As Boolean
+2   Dim bat As Integer
+3   bar = True
+End Sub";
+            var selection = new Selection(4, 6, 4, 8);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+1   
+2   Dim bat As Integer
+Dim bar As Boolean
+3   bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -194,7 +266,7 @@ End Sub";
                 @"Private Sub Foo()
     Dim bat As Integer
     Dim bar As Boolean
-bar = True
+    bar = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -234,7 +306,7 @@ Private bay As Date
 
 Private Sub Foo()
     Dim bat As Boolean
-bat = True
+    bat = True
 End Sub";
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -274,7 +346,7 @@ End Sub";
 
 Private Sub Foo()
     Dim bar As Integer
-bar = 3
+    bar = 3
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -314,7 +386,7 @@ End Sub";
 
 Private Sub Foo()
     Dim bat As Boolean
-bat = True
+    bat = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -354,7 +426,7 @@ End Sub";
 
 Private Sub Foo()
     Dim bay As Date
-bay = #1/13/2004#
+    bay = #1/13/2004#
 End Sub";
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -396,7 +468,7 @@ End Sub";
 
     bat = True
     Dim bar As Integer
-bar = 3
+    bar = 3
 End Sub";
             
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -438,7 +510,7 @@ End Sub";
 
     bar = 1
     Dim bat As Boolean
-bat = True
+    bat = True
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -480,7 +552,7 @@ End Sub";
 
     bar = 4
     Dim bay As Date
-bay = #1/13/2004#
+    bay = #1/13/2004#
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -516,15 +588,11 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
-                messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());
@@ -554,15 +622,11 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>())).Returns(DialogResult.OK);
 
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
-                messageBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                    It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());
             }
@@ -583,7 +647,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo(ByRef bat As Boolean)
     Dim bar As Boolean
-bat = bar
+    bat = bar
 End Sub";
             var selection = new Selection(1, 1);
 
@@ -618,7 +682,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-Baz bar
+    Baz bar
 End Sub
 Sub Baz(ByVal bat As Boolean)
 End Sub";
@@ -657,7 +721,7 @@ End Sub";
             const string expectedCode =
                 @"Private Sub Foo()
     Dim bar As Boolean
-Baz True, _
+    Baz True, _
         True, _
         bar
 End Sub
@@ -735,7 +799,7 @@ End Sub";
                 @"
 Public Sub Test()
     Dim foo As Long
-SomeSub someParam:=foo
+    SomeSub someParam:=foo
 End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
@@ -811,17 +875,13 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.OK);
 
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());
 
-                messageBox.Verify(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             }
         }
 
@@ -843,17 +903,13 @@ End Sub";
             {
 
                 var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.OK);
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
-                messageBox.Verify(m =>
-                    m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(),
-                        It.IsAny<MessageBoxIcon>()), Times.Once);
+                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 
                 var rewriter = state.GetRewriter(component);
                 Assert.AreEqual(inputCode, rewriter.GetText());
@@ -906,7 +962,7 @@ End Sub";
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
     Dim foo As Class1
-Set foo = new Class1
+    Set foo = new Class1
     foo.Name = ""FooName""
     foo.OtherProperty = 1626
 End Sub";
