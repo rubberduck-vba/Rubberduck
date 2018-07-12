@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -15,6 +16,7 @@ namespace Rubberduck.Parsing.PreProcessing
         public VBAPreprocessorVisitor(
             SymbolTable<string, IValue> symbolTable, 
             VBAPredefinedCompilationConstants predefinedConstants,
+            Dictionary<string, short> userDefinedConstants,
             ICharStream stream,
             CommonTokenStream tokenStream)
         {
