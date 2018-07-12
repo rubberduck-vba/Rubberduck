@@ -1,4 +1,8 @@
-﻿using Rubberduck.VBEditor;
+﻿using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,8 +14,9 @@ namespace Rubberduck.AutoComplete.BlockCompletion
         private static readonly string PlaceholderPattern =
             @"\$(?<placeholder>({(?<namedtabindex>\d+):(?<identifier>[^}]+)})|(?<tabindex>\d+))";
 
-        public BlockCompletion(string name, string prefix, string[] body, string description, bool onlyValidInScope = true, bool validInScope = true)
+        public BlockCompletion(string name, string prefix, string[] body, string description, ParserStartRule startRule = null, bool onlyValidInScope = true, bool validInScope = true)
         {
+            StartRule = startRule;
             Prefix = prefix;
             Description = description;
             IsOnlyValidInScope = onlyValidInScope;
@@ -56,8 +61,16 @@ namespace Rubberduck.AutoComplete.BlockCompletion
                     .ToList();
         }
 
+        public ParserStartRule StartRule { get; }
+
         private readonly IList<TabStop> _tabStops;
         public IReadOnlyList<TabStop> TabStops => _tabStops.ToArray();
+
+        public TabStop GetTabStop(int index)
+        {
+            return _tabStops[index];
+        }
+
         public string Syntax { get; }
         public string Name { get; }
         public string Prefix { get; }

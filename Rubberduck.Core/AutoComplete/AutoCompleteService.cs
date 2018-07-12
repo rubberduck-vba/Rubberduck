@@ -101,7 +101,8 @@ namespace Rubberduck.AutoComplete
 
             using (var pane = module.CodePane)
             {
-                if (_blockCompletion.Run(e.Keys, currentCode, currentSelection, module, out string newCode, out Selection newSelection))
+                var (newCode, newSelection) = _blockCompletion.Run(e.Keys, currentCode, currentSelection, module);
+                if (newCode != currentCode || newSelection != currentSelection)
                 {
                     if (newCode.Trim() != e.CurrentLine)
                     {

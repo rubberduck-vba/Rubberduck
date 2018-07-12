@@ -14,7 +14,7 @@ namespace RubberduckTests.AutoComplete
         {
             var sut = service ?? new BlockCompletionService(TestBlockCompletions);
             var module = new Mock<ICodeModule>();
-            sut.Run(Keys.None, currentLine, pSelection, module.Object, out string newCode, out Selection newSelection);
+            var (newCode, newSelection) = sut.Run(Keys.None, currentLine, pSelection, module.Object);
             return (newCode, newSelection);
         }
 

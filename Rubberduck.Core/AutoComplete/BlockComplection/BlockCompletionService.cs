@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor;
+﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,25 +22,24 @@ namespace Rubberduck.AutoComplete.BlockCompletion
             new BlockCompletion("Dim", "dim", "Dim ${1:identifier} As ${2:Variant}$0".Split('\n'), "Dim statement", onlyValidInScope:false),
             new BlockCompletion("Private", "priv", "Private ${1:identifier} As ${2:Variant}$0".Split('\n'), "Private declaration statement", onlyValidInScope:false, validInScope:false),
             new BlockCompletion("Public", "pub", "Public ${1:identifier} As ${2:Variant}$0".Split('\n'), "Public declaration statement", onlyValidInScope:false, validInScope:false),
-            new BlockCompletion("IfBlock", "if", "If ${1:condition} Then\n\t$1\nEnd If".Split('\n'), "If...EndIf conditional block"),
-            //new BlockCompletion("IfStatement", "if", "If ${1:condition} Then ${1:statement}".Split('\n'), "If...Then conditional statement"),
-            new BlockCompletion("ForEach", "foreach", "For Each ${1:item} In ${2:items}\n\t$0\nNext".Split('\n'), "For Each...Next loop"),
-            new BlockCompletion("For", "for", "For ${1:i} = ${2:lower} To ${3:upper}\n\t$0\nNext".Split('\n'), "For Each...Next loop"),
-            new BlockCompletion("DoLoop", "do", "Do\n\t$0\nLoop".Split('\n'), "Do...Loop loop"),
-            new BlockCompletion("DoWhileLoop", "dowl", "Do While ${1:condition}\n\t$0\nLoop".Split('\n'), "Do While...Loop loop"),
-            new BlockCompletion("DoWhile", "dow", "Do\n\t$0\nWhile ${1:condition}".Split('\n'), "Do...While loop"),
-            new BlockCompletion("DoUntilLoop", "doul", "Do Until ${1:condition}\n\t$0\nLoop".Split('\n'), "Do Until...Loop loop"),
-            new BlockCompletion("DoUntil", "dou", "Do\n\t$0\nUntil ${1:condition}".Split('\n'), "Do...Until loop"),
-            new BlockCompletion("While", "while", "While ${1:condition}\n\t$0\nWend".Split('\n'), "While...Wend loop"),
-            new BlockCompletion("With", "with", "With ${1:obj}\n\t$0\nEnd With".Split('\n'), "With...End With block"),
-            new BlockCompletion("Enum", "enum", "Enum ${1:identifier}\n\t$0\nEnd Enum".Split('\n'), "Enum...End Enum block", onlyValidInScope:false, validInScope:false),
-            new BlockCompletion("Type", "type", "Type ${1:identifier}\n\t$0\nEnd Type".Split('\n'), "Type...End Type block", onlyValidInScope:false, validInScope:false),
-            new BlockCompletion("SubProc", "sub", "Sub ${1:identifier}()\n\t$0\nEnd Sub".Split('\n'), "Sub...End Sub scope"),
-            new BlockCompletion("FunctionProc", "func", "Function ${1:identifier}() As ${2:Variant}\n\t$0\nEnd Function".Split('\n'), "Function...End Function scope"),
-            new BlockCompletion("PropGetProc", "pget", "Public Property Get ${1:identifier}() As ${2:Variant}\n\t$0\nEnd Property".Split('\n'), "Property Get...End Property scope"),
-            new BlockCompletion("PropLetProc", "plet", "Public Property Let ${1:identifier}(ByVal ${2:value} As ${3:Variant})\n\t$0\nEnd Property".Split('\n'), "Property Let...End Property scope"),
-            new BlockCompletion("PropSetProc", "pset", "Public Property Set ${1:identifier}(ByVal ${2:value} As ${3:Object})\n\t$0\nEnd Property".Split('\n'), "Property Set...End Property scope"),
-            new BlockCompletion("PropGetLet", "prop", "Public Property Get ${1:identifier}() As ${2:Variant}\n\t${1:identifier} = ${3:fieldname}\nEnd Property\n\nPublic Property Let ${1:identifier}(ByVal ${4:value} As ${2:Variant})\n\t${3:fieldname} = ${4:value}\nEnd Property\n$0".Split('\n'), "Property Get+Let scopes"),
+            new BlockCompletion("IfBlock", "if", "If ${1:condition} Then\n\t$1\nEnd If".Split('\n'), "If...EndIf conditional block", p => p.ifStmt()),
+            //new BlockCompletion("IfStatement", "if", "If ${1:condition} Then ${1:statement}".Split('\n'), "If...Then conditional statement", p => p.singleLineIfStmt()),
+            new BlockCompletion("ForEach", "foreach", "For Each ${1:item} In ${2:items}\n\t$0\nNext".Split('\n'), "For Each...Next loop", p => p.forEachStmt()),
+            new BlockCompletion("For", "for", "For ${1:i} = ${2:lower} To ${3:upper}\n\t$0\nNext".Split('\n'), "For...Next loop", p => p.forNextStmt()),
+            new BlockCompletion("DoLoop", "do", "Do\n\t$0\nLoop".Split('\n'), "Do...Loop loop", p => p.doLoopStmt()),
+            new BlockCompletion("DoWhileLoop", "dowl", "Do While ${1:condition}\n\t$0\nLoop".Split('\n'), "Do While...Loop loop", p => p.doLoopStmt()),
+            new BlockCompletion("DoWhile", "dow", "Do\n\t$0\nWhile ${1:condition}".Split('\n'), "Do...While loop", p => p.doLoopStmt()),
+            new BlockCompletion("DoUntilLoop", "doul", "Do Until ${1:condition}\n\t$0\nLoop".Split('\n'), "Do Until...Loop loop", p => p.doLoopStmt()),
+            new BlockCompletion("DoUntil", "dou", "Do\n\t$0\nUntil ${1:condition}".Split('\n'), "Do...Until loop", p => p.doLoopStmt()),
+            new BlockCompletion("While", "while", "While ${1:condition}\n\t$0\nWend".Split('\n'), "While...Wend loop", p => p.whileWendStmt()),
+            new BlockCompletion("With", "with", "With ${1:obj}\n\t$0\nEnd With".Split('\n'), "With...End With block", p => p.withStmt()),
+            new BlockCompletion("Enum", "enum", "Enum ${1:identifier}\n\t$0\nEnd Enum".Split('\n'), "Enum...End Enum block", p => p.enumerationStmt(), onlyValidInScope:false, validInScope:false),
+            new BlockCompletion("Type", "type", "Type ${1:identifier}\n\t$0\nEnd Type".Split('\n'), "Type...End Type block", p => p.type(), onlyValidInScope:false, validInScope:false),
+            new BlockCompletion("SubProc", "sub", "Sub ${1:identifier}()\n\t$0\nEnd Sub".Split('\n'), "Sub...End Sub scope", p => p.subStmt()),
+            new BlockCompletion("FunctionProc", "func", "Function ${1:identifier}() As ${2:Variant}\n\t$0\nEnd Function".Split('\n'), "Function...End Function scope", p => p.functionStmt()),
+            new BlockCompletion("PropGetProc", "pget", "Public Property Get ${1:identifier}() As ${2:Variant}\n\t$0\nEnd Property".Split('\n'), "Property Get...End Property scope", p => p.propertyGetStmt()),
+            new BlockCompletion("PropLetProc", "plet", "Public Property Let ${1:identifier}(ByVal ${2:value} As ${3:Variant})\n\t$0\nEnd Property".Split('\n'), "Property Let...End Property scope", p => p.propertyLetStmt()),
+            new BlockCompletion("PropSetProc", "pset", "Public Property Set ${1:identifier}(ByVal ${2:value} As ${3:Object})\n\t$0\nEnd Property".Split('\n'), "Property Set...End Property scope", p => p.propertySetStmt()),
         };
 
         public Keys[] CaptureKeys { get; } = new[] { Keys.Tab, Keys.Enter };
@@ -67,7 +67,7 @@ namespace Rubberduck.AutoComplete.BlockCompletion
 
         public bool IsMatch(string code, out IEnumerable<BlockCompletion> matches)
         {
-            matches = BlockCompletions.Where(completion => code.Trim().Equals(completion.Prefix, System.StringComparison.InvariantCultureIgnoreCase));
+            matches = BlockCompletions.Where(completion => (" " + code.Trim()).Equals(" " + completion.Prefix, System.StringComparison.InvariantCultureIgnoreCase));
             return matches.Any();
         }
 
@@ -76,14 +76,13 @@ namespace Rubberduck.AutoComplete.BlockCompletion
         /// </summary>
         /// <param name="keypress"></param>
         /// <param name="currentLine">The entire current line</param>
-        /// <param name="pSelection"></param>
-        /// <param name="newCode"></param>
-        /// <param name="newSelection"></param>
+        /// <param name="pSelection">The 1-based code pane selection</param>
+        /// <param name="codeModule"></param>
         /// <returns></returns>
-        public bool Run(Keys keypress, string currentLine, Selection pSelection, ICodeModule codeModule, out string newCode, out Selection newSelection)
+        public (string, Selection) Run(Keys keypress, string currentLine, Selection pSelection, ICodeModule codeModule)
         {
-            newCode = currentLine;
-            newSelection = pSelection;
+            var newCode = currentLine;
+            var newSelection = pSelection;
             
             var isCaptureKey = CaptureKeys.Contains(keypress);
             var isCancelKey = CancelKeys.Contains(keypress);
@@ -92,7 +91,7 @@ namespace Rubberduck.AutoComplete.BlockCompletion
 
             if (!isCaptureKey && !isCancelKey && !isMatch)
             {
-                return false;
+                return (newCode, newSelection);
             }
 
             if (isCancelKey)
@@ -102,7 +101,7 @@ namespace Rubberduck.AutoComplete.BlockCompletion
                     newSelection = new Selection(pSelection.StartLine, pSelection.StartColumn + match.Prefix.Length);
                 }
                 Current = null;
-                return true;
+                return (newCode, newSelection);
             }
 
             if (isCaptureKey && isMatch)
@@ -120,7 +119,7 @@ namespace Rubberduck.AutoComplete.BlockCompletion
                 {
                     newSelection = new Selection(pSelection.StartLine + offset.StartLine, pSelection.StartColumn + offset.StartColumn, pSelection.EndLine + offset.EndLine, pSelection.StartColumn + offset.StartColumn + placeholder.Content.Length);
                 }
-                return true;
+                return (newCode, newSelection);
             }
             else if (isMatch && (keypress == Keys.None || keypress == Keys.Space))
             {
@@ -134,7 +133,7 @@ namespace Rubberduck.AutoComplete.BlockCompletion
                     // assume prefix is already selected; set selection to end of line:
                     newSelection = new Selection(pSelection.StartLine, newCode.Length);
                 }
-                return true;
+                return (newCode, newSelection);
             }
             else if (isCaptureKey && Current != null)
             {
@@ -154,6 +153,8 @@ namespace Rubberduck.AutoComplete.BlockCompletion
                     scopeLines = codeModule.GetLines(procStart, procLnCount);
                     startLineOffset = procStart;
                 }
+                var (tree, rewriter) = VBACodeStringParser.Parse(scopeLines, Current.StartRule);
+
                 var scopeBlocks = Regex.Matches(scopeLines.Replace("\r\n", "\n"), Current.Syntax).Cast<Match>();
                 var currentBlock = (
                     from block in scopeBlocks
@@ -179,10 +180,9 @@ namespace Rubberduck.AutoComplete.BlockCompletion
                 {
                     Current = null;
                 }
-                return true;
             }
 
-            return false;
+            return (newCode, newSelection);
         }
     }
 }
