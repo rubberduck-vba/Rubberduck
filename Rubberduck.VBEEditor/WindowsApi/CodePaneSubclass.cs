@@ -19,6 +19,23 @@ namespace Rubberduck.VBEditor.WindowsApi
 
     public class KeyPressEventArgs
     {
+        public KeyPressEventArgs(Keys key)
+        {
+            Hwnd = IntPtr.Zero;
+            WParam = IntPtr.Zero;
+            LParam = IntPtr.Zero;
+            Key = key;
+        }
+
+        public KeyPressEventArgs(char character)
+        {
+            Hwnd = IntPtr.Zero;
+            WParam = IntPtr.Zero;
+            LParam = IntPtr.Zero;
+            Key = Keys.None;
+            Character = character;
+        }
+
         public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, char character = default)
         {
             Hwnd = hwnd;

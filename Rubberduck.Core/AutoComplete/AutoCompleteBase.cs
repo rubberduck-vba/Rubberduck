@@ -59,7 +59,7 @@ namespace Rubberduck.AutoComplete
                 else if (input == OutputToken && nextChar == OutputToken)
                 {
                     // just move caret one character to the right & suppress the keypress
-                    pane.Selection = new Selection(pSelection.StartLine, pSelection.StartColumn + 2);
+                    pane.Selection = new Selection(pSelection.StartLine, GetPrettifiedCaretPosition(pSelection, original, original) + 1);
                     e.Handled = true;
                     return true;
                 }

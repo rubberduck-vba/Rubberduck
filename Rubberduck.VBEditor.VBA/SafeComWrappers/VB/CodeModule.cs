@@ -155,7 +155,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 try
                 {
-                    Target.ReplaceLine(line, content);
+                    using (var pane = CodePane)
+                    {
+                        var selection = pane.Selection;
+                        Target.ReplaceLine(line, content);
+                        pane.Selection = selection;
+                    }
                 }
                 catch { /* "too many line continuations" is one possible cause */ }
             }

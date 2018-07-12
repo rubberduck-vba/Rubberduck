@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.AutoComplete.BlockCompletion;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
@@ -14,6 +15,8 @@ namespace Rubberduck.AutoComplete
     {
         private readonly IGeneralConfigService _configService;
         private readonly List<IAutoComplete> _autoCompletes;
+
+        private readonly BlockCompletionService _blockCompletion = new BlockCompletionService();
 
         private AutoCompleteSettings _settings;
         private bool _popupShown;
@@ -55,6 +58,11 @@ namespace Rubberduck.AutoComplete
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
+            if (e.Character == default && e.Keys == Keys.None)
+            {
+                return;
+            }
+
             var module = e.CodeModule;
             var qualifiedSelection = module.GetQualifiedSelection();
             var pSelection = qualifiedSelection.Value.Selection;
@@ -69,12 +77,13 @@ namespace Rubberduck.AutoComplete
             {
                 var indent = currentContent.NthIndexOf('"', 1);
                 var whitespace = new string(' ', indent);
-                var newCode = $"{currentContent} & _\r\n{whitespace}\"";
-                module.ReplaceLine(pSelection.StartLine, newCode);
+                var code = $"{currentContent} & _\r\n{whitespace}\"";
+                module.ReplaceLine(pSelection.StartLine, code);
                 using (var pane = module.CodePane)
                 {
                     pane.Selection = new Selection(pSelection.StartLine + 1, indent + 2);
                     e.Handled = true;
+                    return;
                 }
             }
 
@@ -83,7 +92,32 @@ namespace Rubberduck.AutoComplete
             var handleTab = e.Keys == Keys.Tab && !pSelection.IsSingleCharacter;
             var handleEnter = e.Keys == Keys.Enter && !pSelection.IsSingleCharacter;
 
-            foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled))
+            var currentCode = e.CurrentLine;
+            var currentSelection = e.CurrentSelection;
+            if (e.Character != default)
+            {
+                currentCode += e.Character;
+                currentSelection = new Selection(e.CurrentSelection.StartLine, e.CurrentSelection.StartColumn, e.CurrentSelection.EndLine, e.CurrentSelection.EndColumn);
+            }
+
+            using (var pane = module.CodePane)
+            {
+                if (_blockCompletion.Run(e.Keys, currentCode, currentSelection, module, out string newCode, out Selection newSelection))
+                {
+                    if (newCode.Trim() != e.CurrentLine)
+                    {
+                        module.ReplaceLine(currentSelection.StartLine, newCode);
+                    }
+                    if (pane.Selection != newSelection)
+                    {
+                        pane.Selection = newSelection;
+                    }
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled && auto.IsInlineCharCompletion))
             {
                 if ((handleTab || handleEnter) && autoComplete.IsMatch(currentContent))
                 {

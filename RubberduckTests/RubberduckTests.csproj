@@ -95,6 +95,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AutoComplete\BlockCompletionTests.cs" />
     <Compile Include="Binding\IndexDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
