@@ -38,15 +38,14 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             // use the TypeLib API to grab the user defined compilation arguments.  must be obtained on the main thread.
             var providerInst = UiContextProvider.Instance();
-            var Task = (new UiDispatcher(providerInst)).StartTask(delegate () {
-                Dictionary<string, short> compilationArgs;
+            var task = (new UiDispatcher(providerInst)).StartTask(delegate () {
                 using (var typeLib = TypeLibWrapper.FromVBProject(project))
                 {
                     return typeLib.ConditionalCompilationArguments;
                 }
             });
-            Task.Wait();
-            return Task.Result;
+            task.Wait();
+            return task.Result;
         }
     }
 }
