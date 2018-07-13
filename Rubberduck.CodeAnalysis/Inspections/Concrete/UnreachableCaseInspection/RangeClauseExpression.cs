@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             //TODO: Enhancement - evaluate Like Pattern for superset/subset conditions.
             //e.g., "*" would filter "?*", or "?*" would filter "a*" 
             //They go here...
-            if ( like.Operand.Equals(Operand) && Pattern.Equals("*"))//The easy one
+            if ( like.Operand.Equals(Operand) && Pattern.Equals("*"))//The easiest one
             {
                 return true;
             }
@@ -147,15 +147,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static Dictionary<string, string> AlgebraicInverses = new Dictionary<string, string>()
         {
-            [LogicSymbols.LT] = LogicSymbols.GT,
-            [LogicSymbols.NEQ] = LogicSymbols.NEQ,
-            [LogicSymbols.AND] = LogicSymbols.AND,
-            [LogicSymbols.OR] = LogicSymbols.OR,
-            [LogicSymbols.XOR] = LogicSymbols.XOR,
-            [LogicSymbols.LTE] = LogicSymbols.GTE,
-            [LogicSymbols.GT] = LogicSymbols.LT,
-            [LogicSymbols.GTE] = LogicSymbols.LTE,
-            [LogicSymbols.EQ] = LogicSymbols.EQ,
+            [RelationalOperators.LT] = RelationalOperators.GT,
+            [RelationalOperators.NEQ] = RelationalOperators.NEQ,
+            [LogicalOperators.AND] = LogicalOperators.AND,
+            [LogicalOperators.OR] = LogicalOperators.OR,
+            [LogicalOperators.XOR] = LogicalOperators.XOR,
+            [RelationalOperators.LTE] = RelationalOperators.GTE,
+            [RelationalOperators.LTE2] = RelationalOperators.GTE,
+            [RelationalOperators.GT] = RelationalOperators.LT,
+            [RelationalOperators.GTE] = RelationalOperators.LTE,
+            [RelationalOperators.GTE2] = RelationalOperators.LTE,
+            [RelationalOperators.EQ] = RelationalOperators.EQ,
         };
 
         private struct ClauseExpressionData : IRangeClauseExpression

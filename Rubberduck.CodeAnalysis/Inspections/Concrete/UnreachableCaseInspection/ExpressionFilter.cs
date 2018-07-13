@@ -171,7 +171,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             set
             {
                 _selectExpressionValue = value;
-                AddExpression(new IsClauseExpression(_selectExpressionValue, LogicSymbols.NEQ));
+                AddExpression(new IsClauseExpression(_selectExpressionValue, RelationalOperators.NEQ));
             }
             get => _selectExpressionValue;
         }
@@ -465,7 +465,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool AddBinaryExpression(BinaryExpression binary)
         {
-            if (FiltersTrueFalse && LogicSymbols.LogicSymbolList.Contains(binary.OpSymbol))
+            if (FiltersTrueFalse && RelationalOperators.Includes(binary.OpSymbol))
             {
                 return false;
             }
@@ -489,12 +489,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static Dictionary<string, Func<ExpressionFilter<T>, T, bool>> IsClauseAdders = new Dictionary<string, Func<ExpressionFilter<T>, T, bool>>()
         {
-            [LogicSymbols.LT] = delegate (ExpressionFilter<T> rg, T value) { return rg.AddMinimum(value); },
-            [LogicSymbols.LTE] = delegate (ExpressionFilter<T> rg, T value) { var min = rg.AddMinimum(value); var val = rg.AddSingleValue(value); return min || val; },
-            [LogicSymbols.GT] = delegate (ExpressionFilter<T> rg, T value) { return rg.AddMaximum(value); },
-            [LogicSymbols.GTE] = delegate (ExpressionFilter<T> rg, T value) { var max = rg.AddMaximum(value); var val = rg.AddSingleValue(value); return max || val; },
-            [LogicSymbols.EQ] = delegate (ExpressionFilter<T> rg, T value) { return rg.AddSingleValue(value); },
-            [LogicSymbols.NEQ] = delegate (ExpressionFilter<T> rg, T value) { var min = rg.AddMinimum(value); var max = rg.AddMaximum(value); return min || max; },
+            [RelationalOperators.LT] = delegate (ExpressionFilter<T> rg, T value) { return rg.AddMinimum(value); },
+            [RelationalOperators.LTE] = delegate (ExpressionFilter<T> rg, T value) { var min = rg.AddMinimum(value); var val = rg.AddSingleValue(value); return min || val; },
+            [RelationalOperators.LTE2] = delegate (ExpressionFilter<T> rg, T value) { var min = rg.AddMinimum(value); var val = rg.AddSingleValue(value); return min || val; },
+            [RelationalOperators.GT] = delegate (ExpressionFilter<T> rg, T value) { return rg.AddMaximum(value); },
+            [RelationalOperators.GTE] = delegate (ExpressionFilter<T> rg, T value) { var max = rg.AddMaximum(value); var val = rg.AddSingleValue(value); return max || val; },
+            [RelationalOperators.GTE2] = delegate (ExpressionFilter<T> rg, T value) { var max = rg.AddMaximum(value); var val = rg.AddSingleValue(value); return max || val; },
+            [RelationalOperators.EQ] = delegate (ExpressionFilter<T> rg, T value) { return rg.AddSingleValue(value); },
+            [RelationalOperators.NEQ] = delegate (ExpressionFilter<T> rg, T value) { var min = rg.AddMinimum(value); var max = rg.AddMaximum(value); return min || max; },
         };
 
         private string RelationalInverse(string opSymbol)
@@ -502,12 +504,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static Dictionary<string, string> RelationalInverses = new Dictionary<string, string>()
         {
-            [LogicSymbols.LT] = LogicSymbols.GTE,
-            [LogicSymbols.LTE] = LogicSymbols.GTE,
-            [LogicSymbols.GT] = LogicSymbols.LTE,
-            [LogicSymbols.GTE] = LogicSymbols.LT,
-            [LogicSymbols.EQ] = LogicSymbols.NEQ,
-            [LogicSymbols.NEQ] = LogicSymbols.EQ,
+            [RelationalOperators.LT] = RelationalOperators.GTE,
+            [RelationalOperators.LTE] = RelationalOperators.GTE,
+            [RelationalOperators.LTE2] = RelationalOperators.GTE,
+            [RelationalOperators.GT] = RelationalOperators.LTE,
+            [RelationalOperators.GTE] = RelationalOperators.LT,
+            [RelationalOperators.GTE2] = RelationalOperators.LT,
+            [RelationalOperators.EQ] = RelationalOperators.NEQ,
+            [RelationalOperators.NEQ] = RelationalOperators.EQ,
         };
 
         private string GetSinglesDescriptor()

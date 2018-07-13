@@ -75,12 +75,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return true;
             }
 
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
-            {
-                value = Convert.ToDecimal(rationalValue);
-                return true;
-            }
-
             return false;
         }
 

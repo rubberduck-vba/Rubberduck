@@ -74,28 +74,28 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (SelectExpressionValue is null)
             {
-                if (opSymbol.Equals(LogicSymbols.NEQ))
+                if (opSymbol.Equals(RelationalOperators.NEQ))
                 {
                     return AddSingleValue(!isValue);
                 }
-                else if (opSymbol.Equals(LogicSymbols.EQ))
+                else if (opSymbol.Equals(RelationalOperators.EQ))
                 {
                     return AddSingleValue(isValue);
                 }
-                else if (opSymbol.Equals(LogicSymbols.GT))
+                else if (opSymbol.Equals(RelationalOperators.GT))
                 {
                     return isValue ? AddComparablePredicate(Tokens.Is, expression) : false;
                 }
-                else if (opSymbol.Equals(LogicSymbols.GTE))
+                else if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
                 {
                     return isValue ? AddTrueAndFalse()  //True for selectExpr value of True or False
                                         : AddComparablePredicate(Tokens.Is, expression);
                 }
-                else if (opSymbol.Equals(LogicSymbols.LT))
+                else if (opSymbol.Equals(RelationalOperators.LT))
                 {
                     return isValue ? false : AddComparablePredicate(Tokens.Is, expression);
                 }
-                else if (opSymbol.Equals(LogicSymbols.LTE))
+                else if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
                 {
                     return isValue ? AddComparablePredicate(Tokens.Is, expression)
                                         : AddTrueAndFalse(); //True for selectExpr value of True or False
@@ -104,21 +104,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             else //SelectExpressionContext resolves to True or False
             {
                 var selectExpr = bool.Parse(SelectExpressionValue.ValueText);
-                if (opSymbol.Equals(LogicSymbols.NEQ))
+                if (opSymbol.Equals(RelationalOperators.NEQ))
                 {
                     return AddSingleValue(selectExpr != isValue);
                 }
-                else if (opSymbol.Equals(LogicSymbols.EQ))
+                else if (opSymbol.Equals(RelationalOperators.EQ))
                 {
                     return AddSingleValue(selectExpr == isValue);
                 }
-                else if (opSymbol.Equals(LogicSymbols.GT))
+                else if (opSymbol.Equals(RelationalOperators.GT))
                 {
                     //if Is > True and the selectExpr is False => True
                     //If Is > True and the selectExpr is True => False
                     return isValue ? AddSingleValue(!selectExpr) : false;
                 }
-                else if (opSymbol.Equals(LogicSymbols.GTE))
+                else if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
                 {
                     //if Is >= True and the selectExpr is False => True
                     //If Is >= True and the selectExpr is True => True
@@ -126,11 +126,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     //If Is >= False and the selectExpr is True => False
                     return AddSingleValue(!(!isValue && selectExpr));
                 }
-                else if (opSymbol.Equals(LogicSymbols.LT))
+                else if (opSymbol.Equals(RelationalOperators.LT))
                 {
                     return isValue ? false : AddSingleValue(selectExpr);
                 }
-                else if (opSymbol.Equals(LogicSymbols.LTE))
+                else if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
                 {
                     //if Is <= True and the selectExpr is False => False
                     //If Is <= True and the selectExpr is True => True

@@ -10,207 +10,349 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public interface IParseTreeExpressionEvaluator
     {
         IParseTreeValue Evaluate(IParseTreeValue LHS, IParseTreeValue RHS, string opSymbol);
-        IParseTreeValue Evaluate(IParseTreeValue LHS, string opSymbol, string requestedResultType);
+        IParseTreeValue Evaluate(IParseTreeValue LHS, string opSymbol);
     }
 
     public class ParseTreeExpressionEvaluator : IParseTreeExpressionEvaluator
     {
         private readonly IParseTreeValueFactory _valueFactory;
-        private readonly string _ampersand;
         private readonly bool _isOptionCompareBinary;
-
-        private static readonly Dictionary<string, Func<double, double, double>> MathOpsBinary = new Dictionary<string, Func<double, double, double>>()
-        {
-            [MathSymbols.MULTIPLY] = delegate (double LHS, double RHS) { return LHS * RHS; },
-            [MathSymbols.DIVIDE] = delegate (double LHS, double RHS) { return LHS / RHS; },
-            [MathSymbols.INTEGER_DIVIDE] = delegate (double LHS, double RHS) { return Math.Truncate(Convert.ToDouble(Convert.ToInt64(LHS) / Convert.ToInt64(RHS))); },
-            [MathSymbols.PLUS] = delegate (double LHS, double RHS) { return LHS + RHS; },
-            [MathSymbols.MINUS] = delegate (double LHS, double RHS) { return LHS - RHS; },
-            [MathSymbols.EXPONENT] = Math.Pow,
-            [MathSymbols.MODULO] = delegate (double LHS, double RHS) { return LHS % RHS; },
-            [MathSymbols.EQV] = delegate (double LHS, double RHS) { return Eqv(Convert.ToInt64(LHS), Convert.ToInt64(RHS)); },
-            [MathSymbols.IMP] = delegate (double LHS, double RHS) { return Imp(Convert.ToInt64(LHS), Convert.ToInt64(RHS)); },
-        };
-
-        private static readonly Dictionary<string, Func<double, double, bool>> LogicOpsBinary = new Dictionary<string, Func<double, double, bool>>()
-        {
-            [LogicSymbols.EQ] = delegate (double LHS, double RHS) { return LHS == RHS; },
-            [LogicSymbols.NEQ] = delegate (double LHS, double RHS) { return LHS != RHS; },
-            [LogicSymbols.LT] = delegate (double LHS, double RHS) { return LHS < RHS; },
-            [LogicSymbols.LTE] = delegate (double LHS, double RHS) { return LHS <= RHS; },
-            [LogicSymbols.GT] = delegate (double LHS, double RHS) { return LHS > RHS; },
-            [LogicSymbols.GTE] = delegate (double LHS, double RHS) { return LHS >= RHS; },
-            [LogicSymbols.AND] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) && Convert.ToBoolean(RHS); },
-            [LogicSymbols.OR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) || Convert.ToBoolean(RHS); },
-            [LogicSymbols.XOR] = delegate (double LHS, double RHS) { return Convert.ToBoolean(LHS) ^ Convert.ToBoolean(RHS); },
-        };
-
-        private readonly Dictionary<string, Func<string, string, bool>> LogicOpsString;
-
-        private static readonly Dictionary<string, Func<double, double>> MathOpsUnary = new Dictionary<string, Func<double, double>>()
-        {
-            [MathSymbols.ADDITIVE_INVERSE] = delegate (double value) { return value * -1.0; }
-        };
-
-        private static readonly Dictionary<string, Func<double, bool>> LogicOpsUnary = new Dictionary<string, Func<double, bool>>()
-        {
-            [LogicSymbols.NOT] = delegate (double value) { return !(Convert.ToBoolean(value)); }
-        };
-
-        private static readonly List<string> ResultTypeRanking = new List<string>()
-        {
-            Tokens.Currency,
-            Tokens.Double,
-            Tokens.Single,
-            Tokens.Long,
-            Tokens.Integer,
-            Tokens.Byte,
-            Tokens.Boolean,
-            Tokens.String
-        };
 
         public ParseTreeExpressionEvaluator(IParseTreeValueFactory valueFactory, bool isOptionCompareBinary = true)
         {
             _valueFactory = valueFactory;
             _isOptionCompareBinary = isOptionCompareBinary;
-            _ampersand = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.AMPERSAND).Replace("'", "");
-
-            LogicOpsString = new Dictionary<string, Func<string, string, bool>>()
-            {
-                [LogicSymbols.EQ] = delegate (string LHS, string RHS) { return AreEqual(LHS,RHS); },
-                [LogicSymbols.NEQ] = delegate (string LHS, string RHS) { return !AreEqual(LHS, RHS); },
-                [LogicSymbols.LT] = delegate (string LHS, string RHS) { return IsLessThan(LHS, RHS); },
-                [LogicSymbols.LTE] = delegate (string LHS, string RHS) { return AreEqual(LHS, RHS) || IsLessThan(LHS, RHS); },
-                [LogicSymbols.GT] = delegate (string LHS, string RHS) { return IsGreaterThan(LHS, RHS); },
-                [LogicSymbols.GTE] = delegate (string LHS, string RHS) { return AreEqual(LHS, RHS) || IsGreaterThan(LHS, RHS); },
-            };
-
         }
 
         public IParseTreeValue Evaluate(IParseTreeValue LHS, IParseTreeValue RHS, string opSymbol)
         {
-            var isMathOp = MathOpsBinary.ContainsKey(opSymbol) && !(LHS.TypeName.Equals(Tokens.String) && RHS.TypeName.Equals(Tokens.String));
-            var isLogicOp = LogicOpsBinary.ContainsKey(opSymbol);
-            var isBinaryStringOp = opSymbol.Equals(Tokens.Like) || opSymbol.Equals(_ampersand) || (LHS.TypeName.Equals(Tokens.String) && (RHS.TypeName.Equals(Tokens.String)));
-            Debug.Assert(IsSupportedSymbol(opSymbol));
-
-            (string lhsTypeName, double lhsValue) = PrepareOperand(LHS);
-            (string rhsTypeName, double rhsValue) = PrepareOperand(RHS);
-
-            if (!lhsTypeName.Equals(string.Empty) && !rhsTypeName.Equals(string.Empty))
+            if (!(IsSupportedSymbol(opSymbol)))
             {
-                if (isMathOp)
-                {
-                    var mathResult = MathOpsBinary[opSymbol](lhsValue, rhsValue);
-                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), DetermineMathResultType(lhsTypeName, rhsTypeName));
-                }
-                else if (isLogicOp)
-                {
-                    if (lhsTypeName.Equals(Tokens.String) && rhsTypeName.Equals(Tokens.String))
-                    {
-                        if (LogicOpsString.ContainsKey(opSymbol))
-                        {
-                            var stringLogicResult = LogicOpsString[opSymbol](LHS.ValueText, RHS.ValueText);
-                            return _valueFactory.Create(stringLogicResult.ToString(CultureInfo.InvariantCulture), Tokens.Boolean);
-                        }
-                        //Store invalid string logic op result as variable predicate
-                        return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", Tokens.Boolean);
-                    }
-                    var logicResult = LogicOpsBinary[opSymbol](lhsValue, rhsValue);
-                    return _valueFactory.Create(logicResult.ToString(CultureInfo.InvariantCulture), Tokens.Boolean);
-                }
+                throw new ArgumentException($"Unsupported operation ({opSymbol}) passed to Evaluate function");
             }
 
-            if (isBinaryStringOp)
+            if (opSymbol.Equals(LogicalOperators.NOT))
             {
-                if (opSymbol.Equals(_ampersand)|| opSymbol.Equals(MathSymbols.PLUS))
+                throw new ArgumentException($"Unary operator ({opSymbol}) passed to binary Evaluate function");
+            }
+
+            if (ArithmeticOperators.Includes(opSymbol))
+            {
+                return EvaluateArithmeticOp(opSymbol, LHS, RHS);
+            }
+
+            if (RelationalOperators.Includes(opSymbol))
+            {
+                return EvaluateRelationalOp(opSymbol, LHS, RHS);
+            }
+
+            return EvaluateLogicalOperator(opSymbol, LHS, RHS);
+        }
+
+        public IParseTreeValue Evaluate(IParseTreeValue parseTreeValue, string opSymbol)
+        {
+            if (!(opSymbol.Equals(ArithmeticOperators.ADDITIVE_INVERSE)
+                || opSymbol.Equals(LogicalOperators.NOT)))
+            {
+                throw new ArgumentException($"Binary operator ({opSymbol}) passed to unary evaluation function");
+            }
+
+            if (opSymbol.Equals(ArithmeticOperators.ADDITIVE_INVERSE))
+            {
+                return EvaluateUnaryMinus(parseTreeValue);
+            }
+            return EvaluateLogicalNot(parseTreeValue);
+        }
+
+        private bool IsStringCompare(IParseTreeValue LHS, IParseTreeValue RHS)
+             => (LHS.TypeName == Tokens.String) && (RHS.TypeName == Tokens.String);
+
+        private IParseTreeValue EvaluateRelationalOp(string opSymbol, IParseTreeValue LHS, IParseTreeValue RHS)
+        {
+            var opProvider = new OperatorDeclaredTypeProvider((LHS.TypeName, RHS.TypeName), opSymbol);
+            if (!(LHS.ParsesToConstantValue && RHS.ParsesToConstantValue))
+            {
+                //special case of resolve-able expression with variable LHS
+                if (opSymbol.Equals(Tokens.Like) && RHS.ValueText.Equals("*"))
                 {
-                    var concatResult = $"{Concat(LHS.ValueText, RHS.ValueText)}";
-                    return _valueFactory.Create(concatResult, Tokens.String);
+                    return _valueFactory.Create(Tokens.True, Tokens.Boolean);
+                }
+                //Unable to resolve to a value, return an expression
+                if (opProvider.OperatorDeclaredType.Equals(string.Empty))
+                {
+                    return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", Tokens.Variant);
+                }
+                return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+            }
+
+            if (opSymbol.Equals(RelationalOperators.EQ))
+            {
+                var result = IsStringCompare(LHS, RHS) ? 
+                            Compare(LHS, RHS, (string a, string b) => { return AreEqual(a,b); })
+                            : Compare(LHS, RHS, (decimal a, decimal b) => { return a == b; }, (double a, double b) => { return a == b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(RelationalOperators.NEQ))
+            {
+                var result = IsStringCompare(LHS, RHS) ?
+                            Compare(LHS, RHS, (string a, string b) => { return !AreEqual(a, b); })
+                            : Compare(LHS, RHS, (decimal a, decimal b) => { return a != b; }, (double a, double b) => { return a != b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(RelationalOperators.LT))
+            {
+                var result = IsStringCompare(LHS, RHS) ?
+                            Compare(LHS, RHS, (string a, string b) => { return IsLessThan(a, b); })
+                            : Compare(LHS, RHS, (decimal a, decimal b) => { return a < b; }, (double a, double b) => { return a < b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
+            {
+                var result = IsStringCompare(LHS, RHS) ?
+                            Compare(LHS, RHS, (string a, string b) => { return IsLessThan(a, b) || AreEqual(a,b); })
+                            : Compare(LHS, RHS, (decimal a, decimal b) => { return a <= b; }, (double a, double b) => { return a <= b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(RelationalOperators.GT))
+            {
+                var result = IsStringCompare(LHS, RHS) ?
+                            Compare(LHS, RHS, (string a, string b) => { return IsGreaterThan(a, b); })
+                            : Compare(LHS, RHS, (decimal a, decimal b) => { return a > b; }, (double a, double b) => { return a > b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
+            {
+                var result = IsStringCompare(LHS, RHS) ?
+                            Compare(LHS, RHS, (string a, string b) => { return IsGreaterThan(a, b) || AreEqual(a, b); })
+                            : Compare(LHS, RHS, (decimal a, decimal b) => { return a >= b; }, (double a, double b) => { return a >= b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(RelationalOperators.LIKE))
+            {
+                if (RHS.ValueText.Equals("*"))
+                {
+                    return _valueFactory.Create(Tokens.True, Tokens.Boolean);
                 }
 
-                if (opSymbol.Contains(Tokens.Like))
+                if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
                 {
-                    if (RHS.ValueText.Equals("*"))
-                    {
-                        return _valueFactory.Create("True", Tokens.Boolean);
-                    }
-
-                    if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
-                    {
-                        var stringOpResult = Like(LHS.ValueText, RHS.ValueText);
-                        return _valueFactory.Create(stringOpResult.ToString(), Tokens.Boolean);
-                    }
+                    var matches = Like(LHS.ValueText, RHS.ValueText);
+                    return _valueFactory.Create(matches.ToString(), Tokens.Boolean);
                 }
             }
-            var opResultTypeName = isMathOp ? DetermineMathResultType(LHS.TypeName, RHS.TypeName) : Tokens.Boolean;
-            return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opResultTypeName);
+            return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
         }
 
-        public IParseTreeValue Evaluate(IParseTreeValue value, string opSymbol, string requestedResultType)
+        private IParseTreeValue EvaluateLogicalNot(IParseTreeValue parseTreeValue)
         {
-            var isMathOp = MathOpsUnary.ContainsKey(opSymbol);
-            var isLogicOp = LogicOpsUnary.ContainsKey(opSymbol);
-            Debug.Assert(isMathOp || isLogicOp);
-
-            var operand = PrepareOperand(value);
-            if (!operand.typeName.Equals(string.Empty))
-            {
-                if (isMathOp)
-                {
-                    var mathResult = MathOpsUnary[opSymbol](operand.value);
-                    return _valueFactory.Create(mathResult.ToString(CultureInfo.InvariantCulture), requestedResultType);
-                }
-
-                //Unary Not (!) operator
-                if (!value.TypeName.Equals(Tokens.Boolean) && value.TryConvertValue(out long opValue))
-                {
-                    var bitwiseComplement = ~opValue;
-                    return _valueFactory.Create(Convert.ToBoolean(bitwiseComplement).ToString(), requestedResultType);
-                }
-
-                if (value.TypeName.Equals(Tokens.Boolean))
-                {
-                    var logicResult = LogicOpsUnary[opSymbol](operand.value);
-                    return _valueFactory.Create(logicResult.ToString(), requestedResultType);
-                }
-            }
-            return _valueFactory.Create($"{opSymbol} {value.ValueText}", requestedResultType);
-        }
-
-        private static string DetermineMathResultType(string lhsTypeName, string rhsTypeName)
-        {
-            var lhsTypeNameIndex = ResultTypeRanking.FindIndex(el => el.Equals(lhsTypeName));
-            var rhsTypeNameIndex = ResultTypeRanking.FindIndex(el => el.Equals(rhsTypeName));
-            return lhsTypeNameIndex <= rhsTypeNameIndex ? lhsTypeName : rhsTypeName;
-        }
-
-        private static (string typeName, double value) PrepareOperand(IParseTreeValue parseTreeValue)
-        {
+            var opProvider = new OperatorDeclaredTypeProvider(parseTreeValue.TypeName, LogicalOperators.NOT);
             if (!parseTreeValue.ParsesToConstantValue)
             {
-                return (string.Empty, default);
+                //Unable to resolve to a value, return an expression
+                var opType = opProvider.OperatorDeclaredType;
+                opType = opType.Equals(string.Empty) ? Tokens.Variant : opProvider.OperatorDeclaredType;
+                return _valueFactory.Create($"{LogicalOperators.NOT} {parseTreeValue.ValueText}", opType);
             }
-            (string typeName, double value) lhs = (string.Empty, default);
-            if (parseTreeValue.TryConvertValue(out double value))
+
+            if (parseTreeValue.TryConvertValue(out long value))
             {
-                lhs = (parseTreeValue.TypeName, value);
+                return _valueFactory.Create((~value).ToString(CultureInfo.InvariantCulture), opProvider.OperatorDeclaredType);
             }
-            else if (parseTreeValue.TypeName.Equals(Tokens.String))
+            throw new OverflowException($"Unable to convert {parseTreeValue} to Long");
+        }
+
+        private IParseTreeValue EvaluateLogicalOperator(string opSymbol, IParseTreeValue LHS, IParseTreeValue RHS)
+        {
+            var opProvider = new OperatorDeclaredTypeProvider((LHS.TypeName, RHS.TypeName), opSymbol);
+            if (!(LHS.ParsesToConstantValue && RHS.ParsesToConstantValue))
             {
-                lhs = (parseTreeValue.TypeName, default);
+                //Unable to resolve to a value, return an expression
+                var opType = opProvider.OperatorDeclaredType;
+                opType = opType.Equals(string.Empty) ? Tokens.Variant : opType;
+                return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opType);
             }
-            return lhs;
+
+            if (!(OperatorDeclaredTypeProvider.IntegralNumericTypes.Contains(opProvider.OperatorDeclaredType)))
+            {
+                return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+            }
+
+            if (opSymbol.Equals(LogicalOperators.AND))
+            {
+                var result = opProvider.OperatorDeclaredType.Equals(Tokens.Boolean) ?
+                    Calculate(LHS, RHS, (bool a, bool b) => { return a && b; })
+                    : Calculate(LHS, RHS, (long a, long b) => { return a & b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(LogicalOperators.OR))
+            {
+                var result = opProvider.OperatorDeclaredType.Equals(Tokens.Boolean) ?
+                    Calculate(LHS, RHS, (bool a, bool b) => { return a || b; })
+                    : Calculate(LHS, RHS, (long a, long b) => { return a | b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(LogicalOperators.XOR))
+            {
+                var result = opProvider.OperatorDeclaredType.Equals(Tokens.Boolean) ?
+                    Calculate(LHS, RHS, (bool a, bool b) => { return a ^ b; })
+                    : Calculate(LHS, RHS, (long a, long b) => { return a ^ b; });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(LogicalOperators.EQV))
+            {
+                var result = opProvider.OperatorDeclaredType.Equals(Tokens.Boolean) ?
+                    Calculate(LHS, RHS, (bool a, bool b) => { return Eqv(a, b); })
+                    : Calculate(LHS, RHS, (long a, long b) => { return Eqv(a, b); });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(LogicalOperators.IMP))
+            {
+                var result = opProvider.OperatorDeclaredType.Equals(Tokens.Boolean) ?
+                    Calculate(LHS, RHS, (bool a, bool b) => { return Imp(a, b); })
+                    : Calculate(LHS, RHS, (long a, long b) => { return Imp(a, b); });
+                return _valueFactory.Create(result, opProvider.OperatorDeclaredType);
+            }
+
+            return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+        }
+
+        private IParseTreeValue EvaluateUnaryMinus(IParseTreeValue parseTreeValue)
+        {
+            var opProvider = new OperatorDeclaredTypeProvider(parseTreeValue.TypeName, ArithmeticOperators.ADDITIVE_INVERSE);
+            if (!parseTreeValue.ParsesToConstantValue)
+            {
+                //Unable to resolve to a value, return an expression
+                var opTypeName = opProvider.OperatorDeclaredType;
+                opTypeName = opTypeName.Equals(string.Empty) ? Tokens.Variant : opTypeName;
+                return _valueFactory.Create($"{ArithmeticOperators.ADDITIVE_INVERSE} {parseTreeValue.ValueText}", opTypeName);
+            }
+
+            var declaredTypeName = opProvider.OperatorDeclaredType;
+            if (parseTreeValue.TryConvertValue(out decimal decValue))
+            {
+                return _valueFactory.Create((0 - decValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
+            }
+            if (parseTreeValue.TryConvertValue(out double dblValue))
+            {
+                return _valueFactory.Create((0 - dblValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
+            }
+            throw new ArgumentException($"Unable to process opSymbol: {ArithmeticOperators.ADDITIVE_INVERSE}");
+        }
+
+        private IParseTreeValue EvaluateArithmeticOp(string opSymbol, IParseTreeValue LHS, IParseTreeValue RHS)
+        {
+            Debug.Assert(ArithmeticOperators.Includes(opSymbol));
+
+            var opProvider = new OperatorDeclaredTypeProvider((LHS.TypeName,RHS.TypeName), opSymbol);
+            if (!(LHS.ParsesToConstantValue && RHS.ParsesToConstantValue))
+            {
+                //Unable to resolve to a value, return an expression
+                var opTypeName = opProvider.OperatorDeclaredType;
+                opTypeName = opTypeName.Equals(string.Empty) ? Tokens.Variant : opTypeName;
+                return _valueFactory.Create($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opTypeName);
+            }
+
+            if (opSymbol.Equals(ArithmeticOperators.MULTIPLY))
+            {
+                return _valueFactory.Create(Calculate(LHS, RHS, (decimal a, decimal b) => { return a * b; }, (double a, double b) => { return a * b; }), opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(ArithmeticOperators.DIVIDE))
+            {
+                return _valueFactory.Create(Calculate(LHS, RHS, (decimal a, decimal b) => { return a / b; }, (double a, double b) => { return a / b; }), opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(ArithmeticOperators.INTEGER_DIVIDE))
+            {
+                return _valueFactory.Create(Calculate(LHS, RHS, IntDivision, IntDivision), opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(ArithmeticOperators.PLUS))
+            {
+                if (LHS.TypeName.Equals(RHS.TypeName) && LHS.TypeName.Equals(Tokens.String))
+                {
+                    return _valueFactory.Create($"{Concat(LHS.ValueText, RHS.ValueText)}", Tokens.String);
+                }
+                return _valueFactory.Create(Calculate(LHS, RHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(ArithmeticOperators.MINUS))
+            {
+                //TODO: Add exception case when Date type is supported (Date - Date => Double)
+                return _valueFactory.Create(Calculate(LHS, RHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(ArithmeticOperators.EXPONENT))
+            {
+                //Exponent always results in a Double
+                return _valueFactory.Create(Calculate(LHS, RHS, null, (double a, double b) => { return Math.Pow(a, b); }), opProvider.OperatorDeclaredType);
+            }
+            else if (opSymbol.Equals(ArithmeticOperators.MODULO))
+            {
+                return _valueFactory.Create(Calculate(LHS, RHS, (decimal a, decimal b) => { return a % b; }, (double a, double b) => { return a % b; }), opProvider.OperatorDeclaredType);
+            }
+
+            //ArithmeticOperators.AMPERSAND
+            return _valueFactory.Create($"{Concat(LHS.ValueText, RHS.ValueText)}", Tokens.String);
+        }
+
+        private decimal IntDivision(decimal lhs, decimal rhs) => Math.Truncate(Convert.ToDecimal(Convert.ToInt64(lhs) / Convert.ToInt64(rhs)));
+
+        private double IntDivision(double lhs, double rhs) => Math.Truncate(Convert.ToDouble(Convert.ToInt64(lhs) / Convert.ToInt64(rhs)));
+
+        private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, decimal> DecCalc, Func<double, double, double> DblCalc)
+        {
+            if (!(DecCalc is null) && LHS.TryConvertValue(out decimal lhsValue) && RHS.TryConvertValue(out decimal rhsValue))
+            {
+                return DecCalc(lhsValue, rhsValue).ToString();
+            }
+            else if (!(DblCalc is null) && LHS.TryConvertValue(out double lhsDblValue) && RHS.TryConvertValue(out double rhsDblValue))
+            {
+                return DblCalc(lhsDblValue, rhsDblValue).ToString();
+            }
+            throw new OverflowException();
+        }
+
+        private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, bool> DecCalc, Func<double, double, bool> DblCalc)
+        {
+            if (!(DecCalc is null) && LHS.TryConvertValue(out decimal lhsValue) && RHS.TryConvertValue(out decimal rhsValue))
+            {
+                return DecCalc(lhsValue, rhsValue) ? Tokens.True : Tokens.False;
+            }
+            else if (!(DblCalc is null) && LHS.TryConvertValue(out double lhsDblValue) && RHS.TryConvertValue(out double rhsDblValue))
+            {
+                return DblCalc(lhsDblValue, rhsDblValue) ? Tokens.True : Tokens.False;
+            }
+            throw new OverflowException();
+        }
+
+        private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<string, string, bool> StringComp)
+        {
+            if (!(StringComp is null))
+            {
+                return StringComp(LHS.ValueText, RHS.ValueText) ? Tokens.True : Tokens.False;
+            }
+            throw new ArgumentNullException();
+        }
+
+        private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<long, long, long> LogicCalc)
+        {
+            if (!(LogicCalc is null) && LHS.TryConvertValue(out long lhsValue) && RHS.TryConvertValue(out long rhsValue))
+            {
+                return LogicCalc(lhsValue, rhsValue).ToString();
+            }
+            throw new ArgumentNullException();
+        }
+
+        private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> LogicCalc)
+        {
+            if (!(LogicCalc is null) && LHS.TryConvertValue(out long lhsValue) && RHS.TryConvertValue(out long rhsValue))
+            {
+                return LogicCalc(lhsValue != 0, rhsValue != 0).ToString();
+            }
+            throw new ArgumentNullException();
         }
 
         private bool IsSupportedSymbol(string opSymbol)
         {
-            return MathOpsBinary.ContainsKey(opSymbol)
-                || MathOpsUnary.ContainsKey(opSymbol)
-                || LogicOpsBinary.ContainsKey(opSymbol)
-                || LogicOpsUnary.ContainsKey(opSymbol)
-                || opSymbol.Equals(Tokens.Like)
-                || opSymbol.Equals(_ampersand);
+            return ArithmeticOperators.Includes(opSymbol)
+                || RelationalOperators.Includes(opSymbol)
+                || LogicalOperators.Incudes(opSymbol);
         }
 
         public static bool Eqv(bool lhs, bool rhs) => !(lhs ^ rhs) || (lhs && rhs);
@@ -300,13 +442,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    internal static class MathSymbols
+    public class ArithmeticOperators
     {
         private static string _multiply;
         private static string _divide;
         private static string _plus;
         private static string _minusSign;
         private static string _exponent;
+        private static string _ampersand;
         private static string _integerDivide;
 
         public static string MULTIPLY => _multiply ?? LoadSymbols(VBAParser.MULT);
@@ -317,10 +460,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static string ADDITIVE_INVERSE => MINUS;
         public static string EXPONENT => _exponent ?? LoadSymbols(VBAParser.POW);
         public static string MODULO => Tokens.Mod;
-        public static string EQV => Tokens.Eqv;
-        public static string IMP => Tokens.Imp;
+        public static string AMPERSAND => _ampersand ?? LoadSymbols(VBAParser.AMPERSAND);
 
-        public static List<string> MathSymbolList = new List<string>()
+        public static bool Includes(string opSymbol) => SymbolList.Contains(opSymbol);
+
+        public static List<string> SymbolList = new List<string>()
         {
             MULTIPLY,
             DIVIDE,
@@ -330,8 +474,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             ADDITIVE_INVERSE,
             EXPONENT,
             MODULO,
-            EQV,
-            IMP,
+            AMPERSAND,
         };
 
         private static string LoadSymbols(int target)
@@ -342,11 +485,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _plus = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.PLUS).Replace("'", "");
             _minusSign = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.MINUS).Replace("'", "");
             _exponent = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.POW).Replace("'", "");
+            _ampersand = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.AMPERSAND).Replace("'", "");
             return VBAParser.DefaultVocabulary.GetLiteralName(target).Replace("'", "");
         }
     }
 
-    public static class LogicSymbols
+    public class RelationalOperators
     {
         private static string _lessThan;
         private static string _greaterThan;
@@ -356,26 +500,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static string NEQ => "<>";
         public static string LT => _lessThan ?? LoadSymbols(VBAParser.LT);
         public static string LTE => "<=";
+        public static string LTE2 => "=<";
         public static string GT => _greaterThan ?? LoadSymbols(VBAParser.GT);
         public static string GTE => ">=";
-        public static string AND => Tokens.And;
-        public static string OR => Tokens.Or;
-        public static string XOR => Tokens.XOr;
-        public static string NOT => Tokens.Not;
+        public static string GTE2 => "=>";
         public static string LIKE => Tokens.Like;
 
-        public static List<string> LogicSymbolList = new List<string>()
+        public static bool Includes(string opSymbol) => SymbolList.Contains(opSymbol);
+
+        public static List<string> SymbolList = new List<string>()
         {
             EQ,
             NEQ,
             LT,
             LTE,
+            LTE2,
             GT,
             GTE,
-            AND,
-            OR,
-            XOR,
-            NOT,
+            GTE2,
             LIKE,
         };
 
@@ -386,5 +528,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _equalTo = VBAParser.DefaultVocabulary.GetLiteralName(VBAParser.EQ).Replace("'", "");
             return VBAParser.DefaultVocabulary.GetLiteralName(target).Replace("'", "");
         }
+    }
+
+    public class LogicalOperators
+    {
+        public static string AND => Tokens.And;
+        public static string OR => Tokens.Or;
+        public static string XOR => Tokens.XOr;
+        public static string NOT => Tokens.Not;
+        public static string EQV => Tokens.Eqv;
+        public static string IMP => Tokens.Imp;
+
+        public static bool Incudes(string opSymbol) => SymbolList.Contains(opSymbol);
+
+        public static List<string> SymbolList = new List<string>()
+        {
+            AND,
+            OR,
+            XOR,
+            NOT,
+            EQV,
+            IMP,
+        };
     }
 }

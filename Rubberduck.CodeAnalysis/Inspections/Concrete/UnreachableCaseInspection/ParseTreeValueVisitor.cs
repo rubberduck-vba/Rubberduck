@@ -189,7 +189,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
-            var result = calculator.Evaluate(unaryData.LHS, unaryData.Symbol, unaryData.LHS.TypeName);
+            var result = calculator.Evaluate(unaryData.LHS, unaryData.Symbol);
             StoreVisitResult(context, result);
         }
 

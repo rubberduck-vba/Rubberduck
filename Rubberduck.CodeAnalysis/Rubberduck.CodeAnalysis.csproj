@@ -91,6 +91,7 @@
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ExpressionFilterFactory.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ExpressionFilterIntegral.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\FilterLimits.cs" />
+    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\OperatorDeclaredTypeProvider.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeValueFactory.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\RangeClauseExpression.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\StringValueConverter.cs" />

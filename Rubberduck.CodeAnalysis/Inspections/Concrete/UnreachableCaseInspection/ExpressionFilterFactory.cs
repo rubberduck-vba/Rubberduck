@@ -11,7 +11,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
         //The following MIN/MAX values relate to VBA types
         private static class CompareExtents
         {
-            public static long LONGMIN = Int32.MinValue; //- 2147486648;
+            public static long LONGLONGMIN = long.MinValue; //-9223372036854775808
+            public static long LONGLONGMAX = long.MaxValue; //9223372036854775807
+            public static long LONGMIN = Int32.MinValue; //-2147486648;
             public static long LONGMAX = Int32.MaxValue; //2147486647
             public static long INTEGERMIN = Int16.MinValue; //- 32768;
             public static long INTEGERMAX = Int16.MaxValue; //32767
@@ -25,8 +27,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
 
         private static Dictionary<string, (long typeMin, long typeMax)> IntegralNumberExtents = new Dictionary<string, (long typeMin, long typeMax)>()
         {
+            [Tokens.LongLong] = (CompareExtents.LONGLONGMIN, CompareExtents.LONGLONGMAX),
             [Tokens.Long] = (CompareExtents.LONGMIN, CompareExtents.LONGMAX),
-            [Tokens.LongLong] = (CompareExtents.LONGMIN, CompareExtents.LONGMAX),
             [Tokens.Integer] = (CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
             [Tokens.Int] = (CompareExtents.INTEGERMIN, CompareExtents.INTEGERMAX),
             [Tokens.Byte] = (CompareExtents.BYTEMIN, CompareExtents.BYTEMAX)
@@ -42,18 +44,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             }
             else if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
             {
-                var rationalNumberFilter = new ExpressionFilter<double>(StringValueConverter.TryConvertString, typeName);
+                var floatingPointNumberFilter = new ExpressionFilter<double>(StringValueConverter.TryConvertString, typeName);
                 if (typeName.Equals(Tokens.Single))
                 {
-                    rationalNumberFilter.SetExtents(CompareExtents.SINGLEMIN, CompareExtents.SINGLEMAX);
+                    floatingPointNumberFilter.SetExtents(CompareExtents.SINGLEMIN, CompareExtents.SINGLEMAX);
                 }
-                return rationalNumberFilter;
+                return floatingPointNumberFilter;
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var decimalTypeFilter = new ExpressionFilter<decimal>(StringValueConverter.TryConvertString, typeName);
-                decimalTypeFilter.SetExtents(CompareExtents.CURRENCYMIN, CompareExtents.CURRENCYMAX);
-                return decimalTypeFilter;
+                var fixedPointNumberFilter = new ExpressionFilter<decimal>(StringValueConverter.TryConvertString, typeName);
+                fixedPointNumberFilter.SetExtents(CompareExtents.CURRENCYMIN, CompareExtents.CURRENCYMAX);
+                return fixedPointNumberFilter;
             }
             else if (typeName.Equals(Tokens.Boolean))
             {

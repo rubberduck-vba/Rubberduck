@@ -11,6 +11,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string ValueText { get; }
         string TypeName { get; }
         bool ParsesToConstantValue { get; set; }
+        decimal AsCurrency { get; }
     }
 
     public class ParseTreeValue : IParseTreeValue
@@ -42,11 +43,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             var conformToTypeName = conformToType ?? _declaredType ?? _derivedType;
             ConformValueTextToType(conformToTypeName);
+            TypeName = conformToTypeName;
         }
 
         private static bool IsStringConstant(string input) => input.StartsWith("\"") && input.EndsWith("\"");
 
-        public string TypeName => _declaredType ?? _derivedType ?? string.Empty;
+        public decimal AsCurrency
+        {
+            get
+            {
+                if (this.TryConvertValue(out decimal result))
+                {
+                    return Math.Round(result, 4, MidpointRounding.ToEven);
+                }
+                throw new OverflowException();
+            }
+        }
+
+        public string TypeName { get; set; }
 
         public string ValueText { private set; get; }
 
@@ -372,7 +386,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (this.TryConvertValue(out decimal newVal))
                 {
-                    ValueText = newVal.ToString(CultureInfo.InvariantCulture);
+                    var currencyValue = Math.Round(newVal, 4, MidpointRounding.ToEven);
+                    ValueText = currencyValue.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
                     return;
                 }

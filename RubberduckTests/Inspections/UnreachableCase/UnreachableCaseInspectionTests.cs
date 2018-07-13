@@ -2230,6 +2230,36 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        [TestCase("1# * .00125#", 4, 0)]
+        [TestCase("1@ * .0012@", 3, 1)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_Currency(string thirdCase, int unreachable, int caseElse)
+        {
+            string inputCode =
+$@"
+Sub FirstSub()
+
+        Const currencyVal As Currency = 1@ * .0012@
+        Const doubleVal As Double = 1# * .00125#
+
+        Select Case currencyVal
+            Case doubleVal  
+                'Unreachable
+            Case doubleVal * 1
+                'Unreachable
+            Case {thirdCase}
+                'Depends on thirdCase
+            Case 0.25
+                'Unreachable
+            Case Else
+                'Depends on thirdCase
+        End Select
+End Sub";
+
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachable, caseElse: caseElse);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var components = new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) };

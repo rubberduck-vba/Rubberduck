@@ -165,8 +165,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             var typeList = typeNames.ToList();
 
-            //If everything is declared as a Variant, we do not attempt to inspect the selectStatement
-            if (typeList.All(tn => new List<string>() { Tokens.Variant }.Contains(tn)))
+            //If everything is declared as a Variant or a Date (or combination), we do not attempt to inspect the selectStatement
+            //TODO: Enhancement - handle the Date type
+            if (typeList.All(tn => new List<string>() { Tokens.Variant, Tokens.Date }.Contains(tn)))
             {
                 return false;
             }
@@ -246,6 +247,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         || resultContext is VBAParser.LogicalImpOpContext)
                 {
                     (IParseTreeValue lhs, IParseTreeValue rhs) = CreateOperandPair(clauseValue, symbol, _valueFactory);
+                    if (symbol.Equals(Tokens.Like))
+                    {
+                        return new LikeExpression(lhs, rhs);
+                    }
                     return new BinaryExpression(lhs, rhs, symbol);
                 }
                 return null;

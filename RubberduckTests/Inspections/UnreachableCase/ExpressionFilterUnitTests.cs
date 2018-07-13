@@ -520,7 +520,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 else if (operandDelimiters.Count() <= 1)
                 {
                     (IParseTreeValue operand, string symbol) = GetUnaryOpValues(clause, filterTypeName);
-                    if (symbol.Equals(LogicSymbols.NOT))
+                    if (symbol.Equals(LogicalOperators.NOT))
                     {
                         expressionClause = new UnaryExpression(operand, symbol);
                     }
@@ -580,12 +580,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
                     if (clauseType.Equals("Min"))
                     {
                         var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                        results.Add(new IsClauseExpression(uciVal, LogicSymbols.LT));
+                        results.Add(new IsClauseExpression(uciVal, RelationalOperators.LT));
                     }
                     else if (clauseType.Equals("Max"))
                     {
                         var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
-                        results.Add(new IsClauseExpression(uciVal, LogicSymbols.GT));
+                        results.Add(new IsClauseExpression(uciVal, RelationalOperators.GT));
                     }
                     else if (clauseType.Equals("Range"))
                     {
@@ -660,14 +660,22 @@ namespace RubberduckTests.Inspections.UnreachableCase
         private bool TryExtractSymbol(string item, out string symbol)
         {
             symbol = string.Empty;
-            var matchedSymbols = LogicSymbols.LogicSymbolList.Where(sym => item.Contains($" {sym} "));
+            var matchedSymbols = RelationalOperators.SymbolList.Where(sym => item.Contains($" {sym} "));
+            if (!matchedSymbols.Any())
+            {
+                matchedSymbols = LogicalOperators.SymbolList.Where(sym => item.Contains($" {sym} "));
+            }
             if (matchedSymbols.Any())
             {
                 symbol = matchedSymbols.First();
                 return true;
             }
             // one more look to check for unary expression 'Not x'
-            matchedSymbols = LogicSymbols.LogicSymbolList.Where(sym => item.Contains($"{sym} "));
+            matchedSymbols = RelationalOperators.SymbolList.Where(sym => item.Contains($"{sym} "));
+            if (!matchedSymbols.Any())
+            {
+                matchedSymbols = LogicalOperators.SymbolList.Where(sym => item.Contains($"{sym} "));
+            }
             if (matchedSymbols.Any())
             {
                 symbol = matchedSymbols.First();
