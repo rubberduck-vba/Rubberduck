@@ -93,14 +93,16 @@ namespace Rubberduck.Parsing.ComReflection
                     {
                         case TYPEKIND.TKIND_ENUM:
                             var enumeration = type ?? new ComEnumeration(typeLibrary, info, typeAttributes, index);
+                            Debug.Assert(enumeration is ComEnumeration);
                             _enumerations.Add(enumeration as ComEnumeration);
-                            if (type == null)
+                            if (type == null && !enumeration.Guid.Equals(Guid.Empty))
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, enumeration);
                             }
                             break;
                         case TYPEKIND.TKIND_COCLASS:
                             var coclass = type ?? new ComCoClass(typeLibrary, info, typeAttributes, index);
+                            Debug.Assert(coclass is ComCoClass && !coclass.Guid.Equals(Guid.Empty));
                             _classes.Add(coclass as ComCoClass);
                             if (type == null)
                             {
@@ -110,6 +112,7 @@ namespace Rubberduck.Parsing.ComReflection
                         case TYPEKIND.TKIND_DISPATCH:
                         case TYPEKIND.TKIND_INTERFACE:
                             var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
+                            Debug.Assert(intface is ComInterface && !intface.Guid.Equals(Guid.Empty));
                             _interfaces.Add(intface as ComInterface);
                             if (type == null)
                             {
@@ -122,8 +125,9 @@ namespace Rubberduck.Parsing.ComReflection
                             break;
                         case TYPEKIND.TKIND_MODULE:
                             var module = type ?? new ComModule(typeLibrary, info, typeAttributes, index);
+                            Debug.Assert(module is ComModule);
                             _modules.Add(module as ComModule);
-                            if (type == null)
+                            if (type == null && !module.Guid.Equals(Guid.Empty))
                             {
                                 KnownTypes.TryAdd(typeAttributes.guid, module);
                             }

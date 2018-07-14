@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();
         private readonly List<ComInterface> _events = new List<ComInterface>();
 
-        public bool IsControl { get; private set; }
+        public bool IsControl { get; }
 
         public bool IsExtensible => _interfaces.Keys.Any(i => i.IsExtensible);
 
@@ -38,6 +38,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         public void AddInterface(ComInterface intrface, bool restricted = false)
         {
+            Debug.Assert(intrface != null);
             if (!_interfaces.ContainsKey(intrface))
             {
                 _interfaces.Add(intrface, restricted);

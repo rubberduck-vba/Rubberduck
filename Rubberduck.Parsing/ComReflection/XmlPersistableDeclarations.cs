@@ -17,7 +17,9 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 NamespaceHandling = NamespaceHandling.OmitDuplicates,
                 Encoding = Encoding.UTF8,
-                //Indent = true
+#if PRETTY_XML
+                Indent = true
+#endif
             };
 
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
