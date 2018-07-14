@@ -409,6 +409,7 @@
     <Compile Include="VBA\ParseCoordinator.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
     <Compile Include="VBA\StringExtensions.cs" />
+    <Compile Include="VBA\VBACodeStringParser.cs" />
     <Compile Include="VBA\VBALikePatternParser.cs" />
     <Compile Include="VBA\VBADateLiteralParser.cs" />
     <Compile Include="VBA\VBAExpressionParser.cs" />
