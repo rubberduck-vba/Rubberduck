@@ -110,7 +110,8 @@
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
     <Compile Include="Refactoring\MockIoC\AutoMoqResolver.cs" />
     <Compile Include="Refactoring\MockIoC\MockRefactoringContainer.cs" />
-    <Compile Include="Refactoring\MockIoC\UnitTest1.cs" />
+    <Compile Include="Refactoring\MockIoC\MockRefactoringContainerTests.cs" />
+    <Compile Include="Refactoring\RenameTests.cs" />
     <Compile Include="Settings\AutoCompleteSettingsTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Mocks\MockExtentions.cs" />

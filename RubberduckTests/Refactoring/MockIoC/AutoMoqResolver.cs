@@ -20,7 +20,9 @@ namespace RubberduckTests.Refactoring.MockIoC
             ComponentModel model,
             DependencyModel dependency)
         {
-            return dependency.TargetType.IsInterface;
+            return dependency.TargetType.Namespace.StartsWith("Rubberduck")
+                   && !dependency.TargetType.Name.EndsWith("Factory")
+                   && dependency.TargetType.IsInterface;
         }
 
         public object Resolve(

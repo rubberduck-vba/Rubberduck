@@ -14,6 +14,7 @@ using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.Rename;
 
 namespace RubberduckTests.Refactoring.MockIoC
 {
@@ -45,7 +46,12 @@ namespace RubberduckTests.Refactoring.MockIoC
             RegisterParsingEngine(container);
 
             container.Register(Component.For<IRefactoringPresenterFactory>().AsFactory().LifestyleTransient());
-            container.Register(Component.For<IRefactoringDialogFactory>().AsFactory().LifestyleTransient());
+            container.Register(Component.For<IRefactoringDialogFactory>()
+                .AsFactory()
+                .LifestyleTransient()
+                .DependsOn(Property.ForKey(typeof(IRefactoringDialog<,,>))
+                    .Is(typeof(RenameDialog))
+                ));
 
             container.Register(Classes
                 .FromAssemblyContaining(typeof(IParseCoordinator))

@@ -6,7 +6,6 @@ using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -15,6 +14,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
+using RubberduckTests.Refactoring.MockIoC;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1637,13 +1637,10 @@ End Sub";
                 msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
-                var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
+                var model = new RenameModel(state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, GetFactory(), msgbox.Object, state);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -1674,13 +1671,10 @@ End Sub";
                 msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
-                var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
+                var model = new RenameModel(state, default(QualifiedSelection)) { NewName = newName };
                 model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, GetFactory(), msgbox.Object, state);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreEqual(newName, vbe.Object.VBProjects[0].Name);
@@ -2135,9 +2129,8 @@ End Sub";
                 vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
                 var vbeWrapper = vbe.Object;
-                var factory = new RenamePresenterFactory(vbeWrapper, null, state);
-
-                var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state);
+                
+                var refactoring = new RenameRefactoring(vbeWrapper, GetFactory(), null, state);
                 refactoring.Refactor();
 
                 var rewriter = state.GetRewriter(component);
@@ -2164,11 +2157,9 @@ End Sub";
                 codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
                 codePaneMock.Setup(c => c.Selection);
                 vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
-
-                var vbeWrapper = vbe.Object;
-                var factory = new RenamePresenterFactory(vbeWrapper, null, state);
-
-                var presenter = factory.Create();
+                var selection = new QualifiedSelection(component.QualifiedModuleName, Selection.Home);
+                var model = new RenameModel(state, selection);
+                var presenter = GetFactory().Create<IRenamePresenter, RenameModel>(model);
 
                 Assert.AreEqual(null, presenter.Show());
             }
@@ -2193,10 +2184,8 @@ End Sub";
                 codePaneMock.Setup(c => c.Selection);
                 vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
-                var vbeWrapper = vbe.Object;
-                var factory = new RenamePresenterFactory(vbeWrapper, null, state);
-
-                var presenter = factory.Create();
+                var model = GetEmptyModel(state, component);
+                var presenter = GetFactory().Create<IRenamePresenter, RenameModel>(model);
                 Assert.AreEqual(null, presenter.Show());
             }
         }
@@ -2250,7 +2239,7 @@ End Sub",
                 CheckExpectedEqualsActual = false
             };
             InitializeTestDataObject(tdo, inputOutput);
-            var renameViewModel = new RenameViewModel(tdo.RenameModel.State);
+            var renameViewModel = new RenameViewModel(tdo.RenameModel.State, tdo.RenameModel);
             renameViewModel.Target = tdo.RenameModel.Target;
             renameViewModel.NewName = tdo.NewName;
             Assert.IsFalse(renameViewModel.IsValidName);
@@ -2283,13 +2272,10 @@ End Property";
                 msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
-                var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
+                var model = new RenameModel(state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, GetFactory(), msgbox.Object, state);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -2369,13 +2355,11 @@ End Property";
             tdo.ParserState = MockParser.CreateAndParse(tdo.VBE, testLibraries: testLibraries);
 
             CreateQualifiedSelectionForTestCase(tdo);
-            tdo.RenameModel = new RenameModel(tdo.VBE, tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };
+            tdo.RenameModel = new RenameModel(tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };
             Assert.IsTrue(tdo.RenameModel.Target.IdentifierName.Contains(tdo.OriginalName)
                 , $"Target aquired ({tdo.RenameModel.Target.IdentifierName} does not equal name specified ({tdo.OriginalName}) in the test");
 
-            var factory = SetupFactory(tdo.RenameModel);
-
-            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState);
+            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, GetFactory(), tdo.MsgBox.Object, tdo.ParserState);
         }
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)
@@ -2466,16 +2450,16 @@ End Property";
             }
         }
 
-        private static Mock<IRefactoringPresenterFactory<IRenamePresenter>> SetupFactory(RenameModel model)
+        private static IRefactoringPresenterFactory GetFactory()
         {
-            var presenter = new Mock<IRenamePresenter>();
-            presenter.Setup(p => p.Model).Returns(model);
-            presenter.Setup(p => p.Show()).Returns(model);
-            presenter.Setup(p => p.Show(It.IsAny<Declaration>())).Returns(model);
-
-            var factory = new Mock<IRefactoringPresenterFactory<IRenamePresenter>>();
-            factory.Setup(f => f.Create()).Returns(presenter.Object);
+            var container = RefactoringContainerInstaller.GetContainer();
+            var factory = container.Resolve<IRefactoringPresenterFactory>();
             return factory;
+        }
+
+        private static RenameModel GetEmptyModel(RubberduckParserState state, IVBComponent component)
+        {
+            return  new RenameModel(state, new QualifiedSelection(component.QualifiedModuleName, Selection.Empty));
         }
 
         private static void CreateQualifiedSelectionForTestCase(RenameTestsDataObject tdo)
