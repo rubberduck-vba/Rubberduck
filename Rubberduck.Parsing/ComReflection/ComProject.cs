@@ -17,49 +17,31 @@ namespace Rubberduck.Parsing.ComReflection
         public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
         public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>(); 
 
-        public string Path { get; set; }
-        public long MajorVersion { get; private set; }
-        public long MinorVersion { get; private set; }
+        public string Path { get; }
+        public long MajorVersion { get; }
+        public long MinorVersion { get; }
 
         // YGNI...
         // ReSharper disable once NotAccessedField.Local
         private TypeLibTypeFlags _flags;
 
         private readonly List<ComAlias> _aliases = new List<ComAlias>();
-        public IEnumerable<ComAlias> Aliases
-        {
-            get { return _aliases; }
-        }
+        public IEnumerable<ComAlias> Aliases => _aliases;
 
         private readonly List<ComInterface> _interfaces = new List<ComInterface>();
-        public IEnumerable<ComInterface> Interfaces
-        {
-            get { return _interfaces; }
-        }
+        public IEnumerable<ComInterface> Interfaces => _interfaces;
 
         private readonly List<ComEnumeration> _enumerations = new List<ComEnumeration>();
-        public IEnumerable<ComEnumeration> Enumerations
-        {
-            get { return _enumerations; }
-        }
+        public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
         private readonly List<ComCoClass> _classes = new List<ComCoClass>();
-        public IEnumerable<ComCoClass> CoClasses
-        {
-            get { return _classes; }
-        }
+        public IEnumerable<ComCoClass> CoClasses => _classes;
 
         private readonly List<ComModule> _modules = new List<ComModule>();
-        public IEnumerable<ComModule> Modules
-        {
-            get { return _modules; }
-        }
+        public IEnumerable<ComModule> Modules => _modules;
 
         private readonly List<ComStruct> _structs = new List<ComStruct>();
-        public IEnumerable<ComStruct> Structs
-        {
-            get { return _structs; }
-        }
+        public IEnumerable<ComStruct> Structs => _structs;
 
         public IEnumerable<IComType> Members
         {
@@ -75,18 +57,12 @@ namespace Rubberduck.Parsing.ComReflection
             }
         } 
 
-        public ComProject(ITypeLib typeLibrary) : base(typeLibrary, -1)
-        {   
-            ProcessLibraryAttributes(typeLibrary);
-            LoadModules(typeLibrary);
-        }
-
-        private void ProcessLibraryAttributes(ITypeLib typeLibrary)
+        public ComProject(ITypeLib typeLibrary, string path) : base(typeLibrary, -1)
         {
+            Path = path;
             try
             {
-                IntPtr attribPtr;
-                typeLibrary.GetLibAttr(out attribPtr);
+                typeLibrary.GetLibAttr(out IntPtr attribPtr);
                 var typeAttr = (TYPELIBATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPELIBATTR));
 
                 MajorVersion = typeAttr.wMajorVerNum;
@@ -97,6 +73,7 @@ namespace Rubberduck.Parsing.ComReflection
                 typeLibrary.ReleaseTLibAttr(attribPtr);
             }
             catch (COMException) { }
+            LoadModules(typeLibrary);
         }
 
         private void LoadModules(ITypeLib typeLibrary)
@@ -106,8 +83,7 @@ namespace Rubberduck.Parsing.ComReflection
             {                
                 try
                 {
-                    ITypeInfo info;
-                    typeLibrary.GetTypeInfo(index, out info);
+                    typeLibrary.GetTypeInfo(index, out ITypeInfo info);
                     info.GetTypeAttr(out var typeAttributesPointer);
                     var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
 

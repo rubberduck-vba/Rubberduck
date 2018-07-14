@@ -18,46 +18,23 @@ namespace Rubberduck.Parsing.ComReflection
 
         public bool IsControl { get; private set; }
 
-        public bool IsExtensible
-        {
-            get { return _interfaces.Keys.Any(i => i.IsExtensible); }
-        }
+        public bool IsExtensible => _interfaces.Keys.Any(i => i.IsExtensible);
 
         public ComInterface DefaultInterface { get; private set; }
 
-        public IEnumerable<ComInterface> EventInterfaces
-        {
-            get { return _events; }
-        }
-        public IEnumerable<ComInterface> ImplementedInterfaces
-        {
-            get { return _interfaces.Keys; }
-        }
+        public IEnumerable<ComInterface> EventInterfaces => _events;
 
-        public IEnumerable<ComInterface> VisibleInterfaces
-        {
-            get { return _interfaces.Where(i => !i.Value).Select(i => i.Key); }
-        }
+        public IEnumerable<ComInterface> ImplementedInterfaces => _interfaces.Keys;
 
-        public IEnumerable<ComMember> Members
-        {
-            get { return ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Members); }
-        }
+        public IEnumerable<ComInterface> VisibleInterfaces => _interfaces.Where(i => !i.Value).Select(i => i.Key);
 
-        public ComMember DefaultMember
-        {
-            get { return DefaultInterface.DefaultMember; }
-        }
+        public IEnumerable<ComMember> Members => ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Members);
 
-        public IEnumerable<ComMember> SourceMembers
-        {
-            get { return _events.SelectMany(i => i.Members); }
-        }
+        public ComMember DefaultMember => DefaultInterface.DefaultMember;
 
-        public bool WithEvents
-        {
-            get { return _events.Count > 0; }
-        }
+        public IEnumerable<ComMember> SourceMembers => _events.SelectMany(i => i.Members);
+
+        public bool WithEvents => _events.Count > 0;
 
         public void AddInterface(ComInterface intrface, bool restricted = false)
         {
@@ -79,19 +56,15 @@ namespace Rubberduck.Parsing.ComReflection
         {
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
             {
-                int href;
-                info.GetRefTypeOfImplType(implIndex, out href);
+                info.GetRefTypeOfImplType(implIndex, out int href);
+                info.GetRefTypeInfo(href, out ITypeInfo implemented);
 
-                ITypeInfo implemented;
-                info.GetRefTypeInfo(href, out implemented);
-
-                IntPtr attribPtr;
-                implemented.GetTypeAttr(out attribPtr);
+                implemented.GetTypeAttr(out IntPtr attribPtr);
                 var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
 
-                ComType inherited;
-                ComProject.KnownTypes.TryGetValue(attribs.guid, out inherited);
-                var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);                
+                ComProject.KnownTypes.TryGetValue(attribs.guid,  out ComType inherited);
+                var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
+                
                 ComProject.KnownTypes.TryAdd(attribs.guid, intface);
 
                 IMPLTYPEFLAGS flags = 0;
