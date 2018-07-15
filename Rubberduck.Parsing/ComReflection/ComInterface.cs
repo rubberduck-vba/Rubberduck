@@ -8,34 +8,39 @@ using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
+using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
     [DebuggerDisplay("{Name}")]
     public class ComInterface : ComType, IComTypeWithMembers
     {
-        private readonly List<ComInterface> _inherited = new List<ComInterface>();
-        private readonly List<ComMember> _members = new List<ComMember>();
-
         public bool IsExtensible { get; private set; }
 
+        private readonly List<ComInterface> _inherited = new List<ComInterface>();
         public IEnumerable<ComInterface> InheritedInterfaces => _inherited;
 
+        private readonly List<ComMember> _members = new List<ComMember>();
         public IEnumerable<ComMember> Members => _members;
+
+        private readonly List<ComField> _properties = new List<ComField>();
+        public IEnumerable<ComField> Properties => _properties;
 
         public ComMember DefaultMember { get; private set; }
 
         public ComInterface(ITypeInfo info, TYPEATTR attrib) : base(info, attrib)
         {
             GetImplementedInterfaces(info, attrib);
-            GetComMembers(info, attrib);
+            GetComProperties(info, attrib);
+            GetComMembers(info, attrib);            
         }
 
         public ComInterface(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
         {
             Type = DeclarationType.ClassModule;
             GetImplementedInterfaces(info, attrib);
-            GetComMembers(info, attrib);
+            GetComProperties(info, attrib);
+            GetComMembers(info, attrib);            
         }
 
         private void GetImplementedInterfaces(ITypeInfo info, TYPEATTR typeAttr)
@@ -75,6 +80,21 @@ namespace Rubberduck.Parsing.ComReflection
                     DefaultMember = comMember;
                 }
                 info.ReleaseFuncDesc(memberPtr);
+            }
+        }
+
+        private void GetComProperties(ITypeInfo info, TYPEATTR attrib)
+        {
+            var names = new string[1];
+            for (var index = 0; index < attrib.cVars; index++)
+            {
+                info.GetVarDesc(index, out IntPtr varDescPtr);
+                var property = (VARDESC)Marshal.PtrToStructure(varDescPtr, typeof(VARDESC));
+                info.GetNames(property.memid, names, names.Length, out int length);
+                Debug.Assert(length == 1);
+
+                _properties.Add(new ComField(names[0], property, index, DeclarationType.Property));
+                info.ReleaseVarDesc(varDescPtr);
             }
         }
     }

@@ -26,6 +26,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<ComInterface> ImplementedInterfaces => _interfaces.Keys;
 
+        public IEnumerable<ComField> Properties => ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Properties);
+
         public IEnumerable<ComInterface> VisibleInterfaces => _interfaces.Where(i => !i.Value).Select(i => i.Key);
 
         public IEnumerable<ComMember> Members => ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Members);
