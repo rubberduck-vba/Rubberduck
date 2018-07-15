@@ -51,7 +51,7 @@ namespace Rubberduck.Parsing.ComReflection
                 info.GetNames(desc.memid, names, names.Length, out int length);
                 Debug.Assert(length == 1);
 
-                _fields.Add(new ComField(names[0], desc, index, DeclarationType.Constant));
+                _fields.Add(new ComField(info, names[0], desc, index, DeclarationType.Constant));
                 info.ReleaseVarDesc(varPtr);
             }
         }
