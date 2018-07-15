@@ -40,7 +40,7 @@ namespace Rubberduck.Parsing.ComReflection
         public IEnumerable<ComParameter> Parameters => _parameters;
 
         public ComMember(ITypeInfo info, FUNCDESC funcDesc) : base(info, funcDesc)
-        {                      
+        {
             LoadParameters(funcDesc, info);
             var flags = (FUNCFLAGS)funcDesc.wFuncFlags;
             IsHidden = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN);
@@ -77,7 +77,16 @@ namespace Rubberduck.Parsing.ComReflection
 
             if (Type == DeclarationType.Function || Type == DeclarationType.PropertyGet)
             {
-                ReturnType = new ComParameter(funcDesc.elemdescFunc, info, string.Empty);
+                var returnType = new ComParameter(funcDesc.elemdescFunc, info, string.Empty);
+                if (!_parameters.Any())
+                {
+                    ReturnType = returnType;
+                }
+                else
+                {
+                    var retval = _parameters.FirstOrDefault(x => x.IsReturnValue);
+                    ReturnType = retval ?? returnType;
+                }
             }
         }
 

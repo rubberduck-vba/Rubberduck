@@ -18,7 +18,9 @@ namespace Rubberduck.Parsing.ComReflection
                 NamespaceHandling = NamespaceHandling.OmitDuplicates,
                 Encoding = Encoding.UTF8,
 #if PRETTY_XML
-                Indent = true
+                Indent = true,
+                IndentChars = ("\t"),
+                NewLineChars = Environment.NewLine
 #endif
             };
 
@@ -27,7 +29,7 @@ namespace Rubberduck.Parsing.ComReflection
             using (var writer = XmlDictionaryWriter.CreateDictionaryWriter(xmlWriter))
             {
                 writer.WriteStartDocument();
-                var settings = new DataContractSerializerSettings {RootNamespace = XmlDictionaryString.Empty};
+                var settings = new DataContractSerializerSettings { RootNamespace = XmlDictionaryString.Empty };
                 var serializer = new DataContractSerializer(typeof(SerializableProject), settings);
                 serializer.WriteObject(writer, tree);
             }
