@@ -125,7 +125,7 @@ namespace Rubberduck.Parsing.ComReflection
                 return _declarations;
             }
 
-            var type = new ComProject(typeLibrary) { Path = _path };
+            var type = new ComProject(typeLibrary, _path);
 
             var projectName = new QualifiedModuleName(type.Name, _path, type.Name);
             var project = new ProjectDeclaration(type, projectName);

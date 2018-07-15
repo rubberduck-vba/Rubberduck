@@ -8,9 +8,9 @@ namespace Rubberduck.Parsing.ComReflection
     [DebuggerDisplay("{Name} = {Value} ({ValueType})")]
     public class ComEnumerationMember
     {
-        public string Name { get; private set; }
-        public int Value { get; private set; }
-        public VarEnum ValueType { get; private set; }
+        public string Name { get; }
+        public int Value { get; }
+        public VarEnum ValueType { get; }
 
         public ComEnumerationMember(ITypeInfo info, VARDESC varDesc)
         {
@@ -19,8 +19,7 @@ namespace Rubberduck.Parsing.ComReflection
             ValueType = value.VariantType;
 
             var names = new string[1];
-            int count;
-            info.GetNames(varDesc.memid, names, names.Length, out count);
+            info.GetNames(varDesc.memid, names, names.Length, out int count);
             Debug.Assert(count == 1);
             Name = names[0];
         }

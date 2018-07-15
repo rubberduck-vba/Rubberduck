@@ -16,24 +16,14 @@ namespace Rubberduck.Parsing.ComReflection
     {
         private readonly List<ComInterface> _inherited = new List<ComInterface>();
         private readonly List<ComMember> _members = new List<ComMember>();
-        private ComMember _defaultMember;
 
         public bool IsExtensible { get; private set; }
 
-        public IEnumerable<ComInterface> InheritedInterfaces
-        {
-            get { return _inherited; }
-        }
+        public IEnumerable<ComInterface> InheritedInterfaces => _inherited;
 
-        public IEnumerable<ComMember> Members
-        {
-            get { return _members; }
-        }
+        public IEnumerable<ComMember> Members => _members;
 
-        public ComMember DefaultMember
-        {
-            get { return _defaultMember; }
-        }
+        public ComMember DefaultMember { get; private set; }
 
         public ComInterface(ITypeInfo info, TYPEATTR attrib) : base(info, attrib)
         {
@@ -53,18 +43,13 @@ namespace Rubberduck.Parsing.ComReflection
             IsExtensible = !typeAttr.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE);
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
             {
-                int href;
-                info.GetRefTypeOfImplType(implIndex, out href);
+                info.GetRefTypeOfImplType(implIndex, out int href);
+                info.GetRefTypeInfo(href, out ITypeInfo implemented);
 
-                ITypeInfo implemented;
-                info.GetRefTypeInfo(href, out implemented);
-
-                IntPtr attribPtr;
-                implemented.GetTypeAttr(out attribPtr);
+                implemented.GetTypeAttr(out IntPtr attribPtr);
                 var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
 
-                ComType inherited;
-                ComProject.KnownTypes.TryGetValue(attribs.guid, out inherited);
+                ComProject.KnownTypes.TryGetValue(attribs.guid, out ComType inherited);
                 var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
                 _inherited.Add(intface);
                 ComProject.KnownTypes.TryAdd(attribs.guid, intface);
@@ -77,8 +62,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             for (var index = 0; index < attrib.cFuncs; index++)
             {
-                IntPtr memberPtr;
-                info.GetFuncDesc(index, out memberPtr);
+                info.GetFuncDesc(index, out IntPtr memberPtr);
                 var member = (FUNCDESC)Marshal.PtrToStructure(memberPtr, typeof(FUNCDESC));
                 if (member.callconv != CALLCONV.CC_STDCALL)
                 {
@@ -88,7 +72,7 @@ namespace Rubberduck.Parsing.ComReflection
                 _members.Add(comMember);
                 if (comMember.IsDefault)
                 {
-                    _defaultMember = comMember;
+                    DefaultMember = comMember;
                 }
                 info.ReleaseFuncDesc(memberPtr);
             }
