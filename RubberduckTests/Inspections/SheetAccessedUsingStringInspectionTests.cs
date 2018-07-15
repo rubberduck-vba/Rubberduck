@@ -171,7 +171,7 @@ End Sub";
                         CreateVBComponentPropertyMock("Name", "Sheet1").Object,
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
-                .AddReference("ReferencedProject", "")
+                .AddReference("ReferencedProject", string.Empty, 0, 0)
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
 
