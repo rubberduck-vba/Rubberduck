@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -19,6 +20,7 @@ namespace Rubberduck.Parsing.ComReflection
         public int Index { get; }
         public DeclarationType Type { get; }
         public object DefaultValue { get; }
+        public bool IsReferenceType { get; private set; }
 
         private string _valueType = "Object";
         public string ValueType => IsArray ? $"{_valueType}()" : _valueType;
@@ -64,6 +66,13 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
+        private static readonly HashSet<TYPEKIND> ReferenceTypeKinds = new HashSet<TYPEKIND>
+        {
+            TYPEKIND.TKIND_DISPATCH,
+            TYPEKIND.TKIND_COCLASS,
+            TYPEKIND.TKIND_INTERFACE
+        };
+
         private void GetFieldType(TYPEDESC desc, ITypeInfo info)
         {
             var vt = (VarEnum)desc.vt;
@@ -91,6 +100,7 @@ namespace Rubberduck.Parsing.ComReflection
                         {
                             _enumGuid = attribs.guid;
                         }
+                        IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
                         _valueType = new ComDocumentation(refTypeInfo, -1).Name;
                         refTypeInfo.ReleaseTypeAttr(attribPtr);
                     }

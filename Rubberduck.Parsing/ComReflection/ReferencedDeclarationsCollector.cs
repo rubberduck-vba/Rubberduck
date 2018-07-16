@@ -272,7 +272,7 @@ namespace Rubberduck.Parsing.ComReflection
                     continue;
                 }
 
-                if (item.ValueType.Equals("Object"))
+                if (item.IsReferenceType)
                 {
                     var setter = new PropertySetDeclaration(item, declaration, moduleName, attributes);
                     _declarations.Add(setter);

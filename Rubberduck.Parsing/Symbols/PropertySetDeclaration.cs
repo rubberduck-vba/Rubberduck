@@ -68,7 +68,7 @@ namespace Rubberduck.Parsing.Symbols
             module.QualifyMemberName(field.Name),
             parent,
             parent,
-            "Object", //TODO:  Need to get the types for these.
+            field.ValueType,
             Accessibility.Global,
             null,
             Selection.Home,
