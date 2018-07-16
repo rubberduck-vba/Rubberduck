@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,6 +10,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
+using VARFLAGS = System.Runtime.InteropServices.ComTypes.VARFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -153,6 +156,7 @@ namespace Rubberduck.Parsing.ComReflection
                 var membered = module as IComTypeWithMembers;
                 if (membered != null)
                 {
+                    CreatePropertyDeclarations(membered.Properties, moduleName, declaration, moduleTree);
                     CreateMemberDeclarations(membered.Members, moduleName, declaration, moduleTree, membered.DefaultMember);
                     var coClass = membered as ComCoClass;
                     if (coClass != null)
@@ -244,6 +248,47 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
+        private void CreatePropertyDeclarations(IEnumerable<ComField> properties, QualifiedModuleName moduleName, Declaration declaration,
+            SerializableDeclarationTree moduleTree)
+        {
+            foreach (var item in properties.Where(x => !x.Flags.HasFlag(VARFLAGS.VARFLAG_FRESTRICTED)))
+            {
+                Debug.Assert(item.Type == DeclarationType.Property);
+                var attributes = GetPropertyAttibutes(item);
+
+                var getter = new PropertyGetDeclaration(item, declaration, moduleName, attributes);
+                _declarations.Add(getter);
+                var propertyTree = new SerializableDeclarationTree(getter);
+                moduleTree.AddChildTree(propertyTree);
+
+                var coClass = getter.ParentDeclaration as ClassModuleDeclaration;
+                if (coClass != null && attributes.HasDefaultMemberAttribute())
+                {
+                    coClass.DefaultMember = getter;
+                }
+
+                if (item.Flags.HasFlag(VARFLAGS.VARFLAG_FREADONLY))
+                {
+                    continue;
+                }
+
+                if (item.IsReferenceType)
+                {
+                    var setter = new PropertySetDeclaration(item, declaration, moduleName, attributes);
+                    _declarations.Add(setter);
+                    propertyTree = new SerializableDeclarationTree(setter);
+                    moduleTree.AddChildTree(propertyTree);
+                }
+                else
+                {
+                    var letter = new PropertyLetDeclaration(item, declaration, moduleName, attributes);
+                    _declarations.Add(letter);
+                    propertyTree = new SerializableDeclarationTree(letter);
+                    moduleTree.AddChildTree(propertyTree);
+                }
+            }
+        }
+
         private Declaration CreateModuleDeclaration(IComType module, QualifiedModuleName project, Declaration parent, Attributes attributes)
         {
             var enumeration = module as ComEnumeration;
@@ -319,6 +364,20 @@ namespace Rubberduck.Parsing.ComReflection
             else if (!string.IsNullOrEmpty(member.Documentation.DocString))
             {
                 attributes.AddMemberDescriptionAttribute(member.Name, member.Documentation.DocString);
+            }
+            return attributes;
+        }
+
+        private static Attributes GetPropertyAttibutes(ComField property)
+        {
+            var attributes = new Attributes();
+            if (property.Flags.HasFlag(VARFLAGS.VARFLAG_FDEFAULTBIND))
+            {
+                attributes.AddDefaultMemberAttribute(property.Name);
+            }
+            if (property.Flags.HasFlag(VARFLAGS.VARFLAG_FHIDDEN))
+            {
+                attributes.AddHiddenMemberAttribute(property.Name);
             }
             return attributes;
         }

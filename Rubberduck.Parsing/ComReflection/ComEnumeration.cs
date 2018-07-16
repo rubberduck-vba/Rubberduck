@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
@@ -26,9 +27,11 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < count; index++)
             {
                 info.GetVarDesc(index, out IntPtr varPtr);
-                var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
-                Members.Add(new ComEnumerationMember(info, desc));
-                info.ReleaseVarDesc(varPtr);
+                using (DisposalActionContainer.Create(varPtr, info.ReleaseVarDesc))
+                {
+                    var desc = Marshal.PtrToStructure<VARDESC>(varPtr);
+                    Members.Add(new ComEnumerationMember(info, desc));
+                }
             }           
         }
     }

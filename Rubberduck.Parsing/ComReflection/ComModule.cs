@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
@@ -23,6 +24,8 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly List<ComField> _fields = new List<ComField>();
         public IEnumerable<ComField> Fields => _fields;
 
+        public IEnumerable<ComField> Properties => Enumerable.Empty<ComField>();
+
         public ComModule(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
         {
             Type = DeclarationType.ProceduralModule;
@@ -44,11 +47,12 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < attrib.cVars; index++)
             {
                 info.GetVarDesc(index, out IntPtr varPtr);
+
                 var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
                 info.GetNames(desc.memid, names, names.Length, out int length);
                 Debug.Assert(length == 1);
 
-                _fields.Add(new ComField(names[0], desc, index, DeclarationType.Constant));
+                _fields.Add(new ComField(info, names[0], desc, index, DeclarationType.Constant));
                 info.ReleaseVarDesc(varPtr);
             }
         }

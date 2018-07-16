@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using IMPLTYPEFLAGS = System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
@@ -25,6 +26,8 @@ namespace Rubberduck.Parsing.ComReflection
         public IEnumerable<ComInterface> EventInterfaces => _events;
 
         public IEnumerable<ComInterface> ImplementedInterfaces => _interfaces.Keys;
+
+        public IEnumerable<ComField> Properties => ImplementedInterfaces.Where(x => !_events.Contains(x)).SelectMany(i => i.Properties);
 
         public IEnumerable<ComInterface> VisibleInterfaces => _interfaces.Where(i => !i.Value).Select(i => i.Key);
 
@@ -61,30 +64,32 @@ namespace Rubberduck.Parsing.ComReflection
                 info.GetRefTypeInfo(href, out ITypeInfo implemented);
 
                 implemented.GetTypeAttr(out IntPtr attribPtr);
-                var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
-
-                ComProject.KnownTypes.TryGetValue(attribs.guid,  out ComType inherited);
-                var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
-                
-                ComProject.KnownTypes.TryAdd(attribs.guid, intface);
-
-                IMPLTYPEFLAGS flags = 0;
-                try
+                using (DisposalActionContainer.Create(attribPtr, info.ReleaseTypeAttr))
                 {
-                    info.GetImplTypeFlags(implIndex, out flags);
-                }
-                catch (COMException) { }
+                    var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
 
-                if (flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE))
-                {
-                    _events.Add(intface);
+                    ComProject.KnownTypes.TryGetValue(attribs.guid, out ComType inherited);
+                    var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
+
+                    ComProject.KnownTypes.TryAdd(attribs.guid, intface);
+
+                    IMPLTYPEFLAGS flags = 0;
+                    try
+                    {
+                        info.GetImplTypeFlags(implIndex, out flags);
+                    }
+                    catch (COMException) { }
+
+                    if (flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FSOURCE))
+                    {
+                        _events.Add(intface);
+                    }
+                    else
+                    {
+                        DefaultInterface = flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FDEFAULT) ? intface : DefaultInterface;
+                    }
+                    _interfaces.Add(intface, flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FRESTRICTED));
                 }
-                else
-                {
-                    DefaultInterface = flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FDEFAULT) ? intface : DefaultInterface;
-                }
-                _interfaces.Add(intface, flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FRESTRICTED));
-                info.ReleaseTypeAttr(attribPtr);
             }
         }
     }

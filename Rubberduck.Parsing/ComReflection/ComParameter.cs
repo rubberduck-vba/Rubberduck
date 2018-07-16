@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -26,15 +27,16 @@ namespace Rubberduck.Parsing.ComReflection
                     Name,
                     TypeName,
                     IsOptional && DefaultValue != null ? " = " : string.Empty,
-                    IsOptional && DefaultValue != null ? 
-                        IsEnumMember ? DefaultAsEnum : DefaultValue 
+                    IsOptional && DefaultValue != null ?
+                        IsEnumMember ? DefaultAsEnum : DefaultValue
                         : string.Empty);
             }
         }
 
         public bool IsArray { get; private set; }
         public bool IsByRef { get; private set; }
-        public bool IsOptional { get; private set; }
+        public bool IsOptional { get; }
+        public bool IsReturnValue { get; }
         public bool IsParamArray { get; set; }
 
         private Guid _enumGuid = Guid.Empty;
@@ -54,6 +56,7 @@ namespace Rubberduck.Parsing.ComReflection
             var paramDesc = elemDesc.desc.paramdesc;
             GetParameterType(elemDesc.tdesc, info);
             IsOptional = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
+            IsReturnValue = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FRETVAL);
             if (!paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FHASDEFAULT) || string.IsNullOrEmpty(name))
             {
                 DefaultAsEnum = string.Empty;
@@ -89,7 +92,7 @@ namespace Rubberduck.Parsing.ComReflection
                 case VarEnum.VT_PTR:
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
                     GetParameterType(tdesc, info);
-                    IsByRef = true;                  
+                    IsByRef = true;
                     break;
                 case VarEnum.VT_USERDEFINED:
                     int href;
@@ -100,16 +103,17 @@ namespace Rubberduck.Parsing.ComReflection
                     try
                     {
                         info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
-
                         refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
-                        var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
-                        if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                        using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
                         {
-                            _enumGuid = attribs.guid;
+                            var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
+                            if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                            {
+                                _enumGuid = attribs.guid;
+                            }
+                            _type = new ComDocumentation(refTypeInfo, -1).Name;
                         }
-                        _type = new ComDocumentation(refTypeInfo, -1).Name;
-                        refTypeInfo.ReleaseTypeAttr(attribPtr);
-                    }                    
+                    }
                     catch (COMException) { }
                     break;
                 case VarEnum.VT_SAFEARRAY:

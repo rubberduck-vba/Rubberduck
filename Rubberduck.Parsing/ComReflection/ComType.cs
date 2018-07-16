@@ -15,6 +15,7 @@ namespace Rubberduck.Parsing.ComReflection
     public interface IComTypeWithMembers : IComType
     {
         IEnumerable<ComMember> Members { get; }
+        IEnumerable<ComField> Properties { get; }
         ComMember DefaultMember { get; }
         bool IsExtensible { get; }
     }
