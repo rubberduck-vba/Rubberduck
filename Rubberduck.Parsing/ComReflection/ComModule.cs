@@ -47,6 +47,7 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < attrib.cVars; index++)
             {
                 info.GetVarDesc(index, out IntPtr varPtr);
+
                 var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
                 info.GetNames(desc.memid, names, names.Length, out int length);
                 Debug.Assert(length == 1);

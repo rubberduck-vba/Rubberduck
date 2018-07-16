@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
@@ -52,14 +53,15 @@ namespace Rubberduck.Parsing.ComReflection
                 info.GetRefTypeInfo(href, out ITypeInfo implemented);
 
                 implemented.GetTypeAttr(out IntPtr attribPtr);
-                var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
+                using (DisposalActionContainer.Create(attribPtr, info.ReleaseTypeAttr))
+                {
+                    var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
 
-                ComProject.KnownTypes.TryGetValue(attribs.guid, out ComType inherited);
-                var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
-                _inherited.Add(intface);
-                ComProject.KnownTypes.TryAdd(attribs.guid, intface);
-
-                info.ReleaseTypeAttr(attribPtr);
+                    ComProject.KnownTypes.TryGetValue(attribs.guid, out ComType inherited);
+                    var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
+                    _inherited.Add(intface);
+                    ComProject.KnownTypes.TryAdd(attribs.guid, intface);
+                }
             }
         }
 
@@ -68,18 +70,20 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < attrib.cFuncs; index++)
             {
                 info.GetFuncDesc(index, out IntPtr memberPtr);
-                var member = (FUNCDESC)Marshal.PtrToStructure(memberPtr, typeof(FUNCDESC));
-                if (member.callconv != CALLCONV.CC_STDCALL)
+                using (DisposalActionContainer.Create(memberPtr, info.ReleaseFuncDesc))
                 {
-                    continue;
+                    var member = Marshal.PtrToStructure<FUNCDESC>(memberPtr);
+                    if (member.callconv != CALLCONV.CC_STDCALL)
+                    {
+                        continue;
+                    }
+                    var comMember = new ComMember(info, member);
+                    _members.Add(comMember);
+                    if (comMember.IsDefault)
+                    {
+                        DefaultMember = comMember;
+                    }
                 }
-                var comMember = new ComMember(info, member);
-                _members.Add(comMember);
-                if (comMember.IsDefault)
-                {
-                    DefaultMember = comMember;
-                }
-                info.ReleaseFuncDesc(memberPtr);
             }
         }
 
@@ -89,12 +93,14 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < attrib.cVars; index++)
             {
                 info.GetVarDesc(index, out IntPtr varDescPtr);
-                var property = (VARDESC)Marshal.PtrToStructure(varDescPtr, typeof(VARDESC));
-                info.GetNames(property.memid, names, names.Length, out int length);
-                Debug.Assert(length == 1);
+                using (DisposalActionContainer.Create(varDescPtr, info.ReleaseVarDesc))
+                {
+                    var property = Marshal.PtrToStructure<VARDESC>(varDescPtr);
+                    info.GetNames(property.memid, names, names.Length, out int length);
+                    Debug.Assert(length == 1);
 
-                _properties.Add(new ComField(info, names[0], property, index, DeclarationType.Property));
-                info.ReleaseVarDesc(varDescPtr);
+                    _properties.Add(new ComField(info, names[0], property, index, DeclarationType.Property));
+                }
             }
         }
     }

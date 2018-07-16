@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -102,15 +103,16 @@ namespace Rubberduck.Parsing.ComReflection
                     try
                     {
                         info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
-
                         refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
-                        var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
-                        if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                        using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
                         {
-                            _enumGuid = attribs.guid;
+                            var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
+                            if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                            {
+                                _enumGuid = attribs.guid;
+                            }
+                            _type = new ComDocumentation(refTypeInfo, -1).Name;
                         }
-                        _type = new ComDocumentation(refTypeInfo, -1).Name;
-                        refTypeInfo.ReleaseTypeAttr(attribPtr);
                     }
                     catch (COMException) { }
                     break;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEDESC = System.Runtime.InteropServices.ComTypes.TYPEDESC;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
@@ -93,23 +94,24 @@ namespace Rubberduck.Parsing.ComReflection
                     try
                     {
                         info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
-
                         refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
-                        var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
-                        if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                        using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
                         {
-                            _enumGuid = attribs.guid;
+                            var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
+                            if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                            {
+                                _enumGuid = attribs.guid;
+                            }
+                            IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
+                            _valueType = new ComDocumentation(refTypeInfo, -1).Name;
                         }
-                        IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
-                        _valueType = new ComDocumentation(refTypeInfo, -1).Name;
-                        refTypeInfo.ReleaseTypeAttr(attribPtr);
                     }
                     catch (COMException) { }
                     break;
                 case VarEnum.VT_SAFEARRAY:
                 case VarEnum.VT_CARRAY:
                 case VarEnum.VT_ARRAY:
-                    tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
+                    tdesc = Marshal.PtrToStructure<TYPEDESC>(desc.lpValue);
                     GetFieldType(tdesc, info);
                     IsArray = true;
                     break;
