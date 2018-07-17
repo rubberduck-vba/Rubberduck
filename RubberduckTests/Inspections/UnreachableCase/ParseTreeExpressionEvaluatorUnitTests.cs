@@ -786,6 +786,55 @@ namespace RubberduckTests.Inspections.UnreachableCase
             TestBinaryOp(ArithmeticOperators.PLUS, operands, expected, selectExpressionTypename);
         }
 
+        [TestCase("<", ">")]
+        [TestCase(">", "<")]
+        [TestCase(">=", "<=")]
+        [TestCase("<=", ">=")]
+        [TestCase("=", "=")]
+        [TestCase("<>", "<>")]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_PredicateMatchesSelectExpression(string initialSign, string invertedSign)
+        {
+            var selectExpression = "x";
+            var variableExpression = "z";
+            var lhs = ValueFactory.Create(variableExpression);
+            var rhs = ValueFactory.Create(selectExpression);
+            var symbol = new Tuple<string, string>(initialSign, invertedSign);
+            var predicate = new BinaryExpression(lhs, rhs, symbol.Item1);
+            var expected = $"{selectExpression} {symbol.Item2} {variableExpression}";
+            Assert.AreEqual(expected, predicate.ToString());
+        }
+
+        [TestCase("45", "<", "x > 45")]
+        [TestCase("45", "And", "x And 45")]
+        [TestCase("z", "<", "x > z")]
+        [TestCase("z", "Or", "x Or z")]
+        [TestCase("z", "Xor", "x Xor z")]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_PredicateMovesVariablesLeft(string input, string symbol, string expected)
+        {
+            var variableExpression = "x";
+            var lhs = ValueFactory.Create(input);
+            var rhs = ValueFactory.Create(variableExpression);
+            var predicate = new BinaryExpression(lhs, rhs, symbol);
+            Assert.AreEqual(expected, predicate.ToString());
+        }
+
+        [TestCase("Eqv")]
+        [TestCase("Imp")]
+        [TestCase("Like")]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_PredicateNoAlgebra(string symbol)
+        {
+            var input = "45";
+            var selectExpression = "x";
+            var expected = $"{input} {symbol} {selectExpression}";
+            var lhs = ValueFactory.Create(input);
+            var rhs = ValueFactory.Create(selectExpression);
+            var predicate = new BinaryExpression(lhs, rhs, symbol);
+            Assert.AreEqual(expected, predicate.ToString());
+        }
+
         private void GetBinaryOpValues(string operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol)
         {
             var operandItems = operands.Split(new string[] { OPERAND_SEPARATOR }, StringSplitOptions.None);

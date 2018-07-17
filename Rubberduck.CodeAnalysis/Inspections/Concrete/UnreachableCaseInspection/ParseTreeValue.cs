@@ -1,6 +1,10 @@
-﻿using Rubberduck.Parsing;
+﻿using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -20,17 +24,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly string _declaredType;
         private readonly string _derivedType;
 
+        private DateValueIComparableDecorator _dateValue;
+
+
         public ParseTreeValue(string value, string declaredType = null, string conformToType = null)
         {
             if (value is null)
             {
                 throw new ArgumentNullException("null 'value' argument passed to UCIValue");
             }
+
             _inputValue = value;
             ValueText = value;
             ParsesToConstantValue = IsStringConstant(value);
             _declaredType = ParsesToConstantValue && (declaredType is null) ? Tokens.String : declaredType;
             _derivedType = DeriveTypeName(value, out bool derivedFromTypeHint);
+
+            if (_derivedType.Equals(Tokens.Date))
+            {
+                if (this.TryConvertValue(out DateValueIComparableDecorator _dateValue))
+                {
+                    ParsesToConstantValue = true;
+                    ValueText = $"#{_dateValue.AsString}#";
+                }
+            }
+
             if (derivedFromTypeHint)
             {
                 _declaredType = _derivedType;
@@ -88,6 +106,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             if (inputString.Length == 0)
             {
                 return string.Empty;
+            }
+
+            if (StringValueConverter.TryConvertString(inputString, out DateValueIComparableDecorator _))
+            {
+                return Tokens.Date;
             }
 
             if (SymbolList.TypeHintToTypeName.TryGetValue(inputString.Last().ToString(), out string hintResult))
@@ -393,6 +416,58 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
             }
         }
+
+    }
+
+    public class DateValueIComparableDecorator : IValue, IComparable<DateValueIComparableDecorator>
+    {
+        private readonly DateValue _inner;
+        private readonly int _hashCode;
+
+        public DateValueIComparableDecorator(DateValue dateValue)
+        {
+            _inner = dateValue;
+            _hashCode = dateValue.AsDecimal.GetHashCode();
+        }
+
+        public Parsing.PreProcessing.ValueType ValueType => _inner.ValueType;
+
+        public bool AsBool => _inner.AsBool;
+
+        public byte AsByte => _inner.AsByte;
+
+        public decimal AsDecimal => _inner.AsDecimal;
+
+        public DateTime AsDate => _inner.AsDate;
+
+        public string AsString => _inner.AsString;
+
+        public IEnumerable<IToken> AsTokens => _inner.AsTokens;
+
+        public int CompareTo(DateValueIComparableDecorator dateValue)
+            => _inner.AsDecimal.CompareTo(dateValue._inner.AsDecimal);
+
+        public override int GetHashCode() => _hashCode;
+
+        public override bool Equals(object obj)
+        {
+            if (obj is DateValueIComparableDecorator decorator)
+            {
+                return decorator.CompareTo(this) == 0;
+            }
+
+            if (obj is DateValue dateValue)
+            {
+                return dateValue.AsDecimal == _inner.AsDecimal;
+            }
+
+            return false;
+        }
+
+        public override string ToString()
+        {
+            return _inner.ToString();
+        }
     }
 
     public static class ParseTreeValueExtensions
@@ -410,6 +485,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out string value)
+            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
+
+        public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out DateValueIComparableDecorator value)
             => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
     }
 }

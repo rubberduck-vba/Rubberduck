@@ -199,53 +199,23 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expectedValueText, value.ValueText);
         }
 
-        [TestCase("<",">")]
-        [TestCase(">", "<")]
-        [TestCase(">=", "<=")]
-        [TestCase("<=", ">=")]
-        [TestCase("=", "=")]
-        [TestCase("<>", "<>")]
+        [TestCase("#1/4/2005#", "Date")]
+        [TestCase("#4-jan-2006#", "Date")]
+        [TestCase("#4-jan#", "Date")]
+        [TestCase(@"""#I'mNotADateType0#""", "String")]
         [Category("Inspections")]
-        public void ParseTreeValue_PredicateMatchesSelectExpression(string initialSign, string invertedSign)
+        public void ParseTreeValue_DateTypeLiteral(string literal, string expectedTypeName)
         {
-            var selectExpression = "x";
-            var variableExpression = "z";
-            var lhs = ValueFactory.Create(variableExpression);
-            var rhs = ValueFactory.Create(selectExpression);
-            var symbol = new Tuple<string, string>(initialSign, invertedSign);
-            var predicate = new BinaryExpression(lhs, rhs, symbol.Item1);
-            var expected = $"{selectExpression} {symbol.Item2} {variableExpression}";
-            Assert.AreEqual(expected, predicate.ToString());
+            var ptValue = ValueFactory.Create(literal);
+            Assert.AreEqual(expectedTypeName, ptValue.TypeName);
         }
 
-        [TestCase("45", "<", "x > 45")]
-        [TestCase("45", "And", "x And 45")]
-        [TestCase("z", "<", "x > z")]
-        [TestCase("z", "Or", "x Or z")]
-        [TestCase("z", "Xor", "x Xor z")]
+        [Test]
         [Category("Inspections")]
-        public void ParseTreeValue_PredicateMovesVariablesLeft(string input, string symbol, string expected)
+        public void ParseTreeValue_DateTypeDeclared()
         {
-            var variableExpression = "x";
-            var lhs = ValueFactory.Create(input);
-            var rhs = ValueFactory.Create(variableExpression);
-            var predicate = new BinaryExpression(lhs, rhs, symbol);
-            Assert.AreEqual(expected, predicate.ToString());
-        }
-
-        [TestCase("Eqv")]
-        [TestCase("Imp")]
-        [TestCase("Like")]
-        [Category("Inspections")]
-        public void ParseTreeValue_PredicateNoAlgebra(string symbol)
-        {
-            var input = "45";
-            var selectExpression = "x";
-            var expected = $"{input} {symbol} {selectExpression}";
-            var lhs = ValueFactory.Create(input);
-            var rhs = ValueFactory.Create(selectExpression);
-            var predicate = new BinaryExpression(lhs, rhs, symbol);
-            Assert.AreEqual(expected, predicate.ToString());
+            var ptValue = ValueFactory.Create("#1/4/2005#", Tokens.Date);
+            Assert.AreEqual(Tokens.Date, ptValue.TypeName);
         }
 
         private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)

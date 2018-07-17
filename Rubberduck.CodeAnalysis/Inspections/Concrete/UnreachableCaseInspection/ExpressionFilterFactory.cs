@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             else if (typeName.Equals(Tokens.Boolean))
             {
                 return new ExpressionFilterBoolean(StringValueConverter.TryConvertString);
+            }
+
+            else if (typeName.Equals(Tokens.Date))
+            {
+                return new ExpressionFilterDate(StringValueConverter.TryConvertString);
             }
 
             return new ExpressionFilter<string>(StringValueConverter.TryConvertString, typeName);

@@ -317,6 +317,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Tokens.Decimal,
             Tokens.Currency,
             Tokens.Boolean,
+            Tokens.Date,
             Tokens.String
         };
     }

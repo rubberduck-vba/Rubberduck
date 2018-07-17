@@ -1,6 +1,9 @@
 ﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PreProcessing;
 using System;
+using System.Data;
 using System.Globalization;
+using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -90,6 +93,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 value = Math.Abs(doubleValue) >= double.Epsilon;
                 return true;
+            }
+            return false;
+        }
+
+        public static bool TryConvertString(string valueText, out DateValueIComparableDecorator value, string typeName = null)
+        {
+            value = default;
+            if (valueText.Count(f => f == '#') == 2 
+                && valueText.StartsWith("#") 
+                && valueText.EndsWith("#"))
+            {
+                try
+                {
+                    var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueText)));
+                    value = new DateValueIComparableDecorator((DateValue)literal.Evaluate());
+                    return true;
+                }
+                catch (SyntaxErrorException)
+                {
+                }
+                catch (Exception)
+                {
+                    //even though a SyntaxErrorException is thrown, this catch block
+                    //seems to be needed(?)
+                }
             }
             return false;
         }

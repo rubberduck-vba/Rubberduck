@@ -2260,6 +2260,50 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        [TestCase("#12/1/2020#,#12/2/2020#", "#12/1/2020#")]
+        [TestCase("Is < #12/1/2020#", "Is < #12/1/2010#")]
+        [TestCase("#1/1/2020# To #8/1/2020#", "#7/1/2020#")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_DateType(string case1, string case2)
+        {
+            string inputCode =
+$@"
+Sub FirstSub(bar As Date)
+
+    Select Case bar
+        Case {case1}
+            'OK
+        Case {case2}
+            'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [TestCase("Is > #1/1/2020#", "Is < #7/1/2020#")]
+        [TestCase("Is < #1/1/2020#, Is > #1/2/2020#", "#1/1/2020#,#1/2/2020#")]
+        [TestCase("Is < #1/1/2020#, Is > #10/2/2020#", "#1/1/2019# To #9/2/2035#")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_DateTypeCoversAll(string case1, string case2)
+        {
+            string inputCode =
+$@"
+Sub FirstSub(bar As Date)
+
+    Select Case bar
+        Case {case1}
+            'OK
+        Case {case2}
+            'OK
+        Case Else
+            'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
         {
             var components = new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) };
