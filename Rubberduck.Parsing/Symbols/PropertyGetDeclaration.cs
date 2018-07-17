@@ -68,7 +68,25 @@ namespace Rubberduck.Parsing.Symbols
             _parameters =
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
                     .ToList();
-        } 
+        }
+
+        public PropertyGetDeclaration(ComField field, Declaration parent, QualifiedModuleName module,
+            Attributes attributes)
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,  //TODO - check this assumption.
+                false,
+                null,
+                attributes)
+        { }
 
         public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
 

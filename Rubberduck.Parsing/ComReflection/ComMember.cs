@@ -27,18 +27,20 @@ namespace Rubberduck.Parsing.ComReflection
     [DebuggerDisplay("{MemberDeclaration}")]
     public class ComMember : ComBase
     {
-        public bool IsHidden { get; private set; }
-        public bool IsRestricted { get; private set; }
-        public bool ReturnsWithEventsObject { get; private set; }
-        public bool IsDefault { get; private set; }
-        public bool IsEnumerator { get; private set; }
+        public bool IsHidden { get; }
+        public bool IsRestricted { get; }
+        public bool ReturnsWithEventsObject { get; }
+        public bool IsDefault { get; }
+        public bool IsEnumerator { get; }
         //This member is called on an interface when a bracketed expression is dereferenced.
-        public bool IsEvaluateFunction { get; private set; }
+        public bool IsEvaluateFunction { get; }
         public ComParameter ReturnType { get; private set; }
-        public List<ComParameter> Parameters { get; set; }
+
+        private List<ComParameter> _parameters = new List<ComParameter>();
+        public IEnumerable<ComParameter> Parameters => _parameters;
 
         public ComMember(ITypeInfo info, FUNCDESC funcDesc) : base(info, funcDesc)
-        {                      
+        {
             LoadParameters(funcDesc, info);
             var flags = (FUNCFLAGS)funcDesc.wFuncFlags;
             IsHidden = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN);
@@ -55,7 +57,6 @@ namespace Rubberduck.Parsing.ComReflection
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
             {
                 Type = DeclarationType.PropertyGet;
-
             }
             else if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUT))
             {
@@ -76,23 +77,30 @@ namespace Rubberduck.Parsing.ComReflection
 
             if (Type == DeclarationType.Function || Type == DeclarationType.PropertyGet)
             {
-                ReturnType = new ComParameter(funcDesc.elemdescFunc, info, string.Empty);
+                var returnType = new ComParameter(funcDesc.elemdescFunc, info, string.Empty);
+                if (!_parameters.Any())
+                {
+                    ReturnType = returnType;
+                }
+                else
+                {
+                    var retval = _parameters.FirstOrDefault(x => x.IsReturnValue);
+                    ReturnType = retval ?? returnType;
+                }
             }
         }
 
         private void LoadParameters(FUNCDESC funcDesc, ITypeInfo info)
         {
-            Parameters = new List<ComParameter>();
             var names = new string[255];
-            int count;
-            info.GetNames(Index, names, names.Length, out count);
+            info.GetNames(Index, names, names.Length, out int count);
 
             for (var index = 0; index < count - 1; index++)
             {
                 var paramPtr = new IntPtr(funcDesc.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * index);
-                var elemDesc = (ELEMDESC)Marshal.PtrToStructure(paramPtr, typeof(ELEMDESC));
+                var elemDesc = Marshal.PtrToStructure<ELEMDESC>(paramPtr);
                 var param = new ComParameter(elemDesc, info, names[index + 1] ?? $"{index}unnamedParameter");
-                Parameters.Add(param);
+                _parameters.Add(param);
             }
             if (Parameters.Any() && funcDesc.cParamsOpt == -1)
             {
@@ -127,12 +135,7 @@ namespace Rubberduck.Parsing.ComReflection
                         type = "Event";
                         break;
                 }
-                return string.Format("{0} {1} {2}{3}{4}",
-                    IsHidden || IsRestricted ? "Private" : "Public",
-                    type,
-                    Name,
-                    ReturnType == null ? string.Empty : " As ",
-                    ReturnType == null ? string.Empty : ReturnType.TypeName);
+                return $"{(IsHidden || IsRestricted ? "Private" : "Public")} {type} {Name}{(ReturnType == null ? string.Empty : $" As {ReturnType.TypeName}")}";
             }
         }
     }

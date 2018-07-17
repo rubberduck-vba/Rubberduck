@@ -19,7 +19,7 @@ Public Function GetLongOrStringValue2(NameValue As tyNameValue) As Variant
         Select Case VBA.VarType(VarName:=.Value)
             Case VBA.VbVarType.vbString
                 GetLongOrStringValue = .Value
-                #If Not VBA7 Then
+                #If VBA7 = 0 Then
             Case VBA.VbVarType.vbDouble
             #Else
                 Case VBA.VbVarType.vbInteger
