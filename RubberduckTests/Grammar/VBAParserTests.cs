@@ -3015,6 +3015,90 @@ End Sub
 
         [Category("Parser")]
         [Test]
+        public void ParserDoesNotFailOnLineNumberNotOnStartOfLineAfterALineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+    10
+ _ 
+Beep
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//standaloneLineNumberLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineLAbelNotOnStartOfLineAfterALineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+    foo: Beep
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLinecontinuedLabel()
+        {
+            const string code = @"
+Sub foo()
+foo _
+: Beep
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineNumberAndLineContinuedLabelNotOnStartOfLineAfterALineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+    10
+ _
+    foo _
+    : Beeb
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//standaloneLineNumberLabel", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineNumberAndLineContinuedLabelNotOnStartOfLineAfterMultipleLineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+ _
+ _
+    10
+ _
+ _
+ _
+    foo _
+    : Beeb
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//standaloneLineNumberLabel", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
         public void LeftOutOptionalArgumentsAreCountedAsMissingArguments()
         {
             const string code = @"
