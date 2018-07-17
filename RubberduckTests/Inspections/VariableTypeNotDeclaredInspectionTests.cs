@@ -180,6 +180,25 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void VariableTypeNotDeclared_Const_DoesNotReturnResult()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Const bar = 42
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new VariableTypeNotDeclaredInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "VariableTypeNotDeclaredInspection";
