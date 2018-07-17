@@ -386,17 +386,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool AreEqual(string lhs, string rhs)
         {
-            return string.Compare(lhs, rhs, !_isOptionCompareBinary, CultureInfo.InvariantCulture) == 0;
+            var compareOptions = _isOptionCompareBinary ? 
+                StringComparison.CurrentCulture | StringComparison.Ordinal 
+                : StringComparison.CurrentCulture | StringComparison.OrdinalIgnoreCase;
+            return String.Equals(lhs, rhs, compareOptions);
         }
 
         private bool IsLessThan(string lhs, string rhs)
         {
-            return string.Compare(lhs, rhs, !_isOptionCompareBinary, CultureInfo.InvariantCulture) < 0;
+            var compareOptions = _isOptionCompareBinary ? CompareOptions.None : CompareOptions.IgnoreCase;
+            return String.Compare(lhs, rhs, CultureInfo.CurrentCulture, compareOptions) < 0;
         }
 
         private bool IsGreaterThan(string lhs, string rhs)
         {
-            return string.Compare(lhs, rhs, !_isOptionCompareBinary, CultureInfo.InvariantCulture) > 0;
+            var compareOptions = _isOptionCompareBinary ? CompareOptions.None : CompareOptions.IgnoreCase;
+            return String.Compare(lhs, rhs, CultureInfo.CurrentCulture, compareOptions) > 0;
         }
 
         public static string ConvertLikePatternToRegexPattern(string likePattern)

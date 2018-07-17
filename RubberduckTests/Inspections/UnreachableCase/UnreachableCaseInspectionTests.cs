@@ -2112,6 +2112,34 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        [TestCase(@"Option Compare Binary", 1)]
+        [TestCase(@"Option Compare Text", 1)]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_StringCompares(string optionCompare, int unreachable)
+        {
+            string valueWithIgnorableChars = "Ani\u00ADmal";
+            string inputCode =
+$@"
+{optionCompare}
+
+Sub FirstSub(y As Boolean)
+
+Const s1 As String = ""animal""
+Const s2 As String = {valueWithIgnorableChars}
+
+Select Case y
+        Case s1 = s2    'Always false since we do not ignore the hyphen (""\u00AD"")
+            'OK
+        Case 10 > 2
+            'OK because first case is always false
+        Case 7 < 10
+            'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachable);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspection_Ampersand()

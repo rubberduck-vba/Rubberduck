@@ -547,11 +547,28 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("10_>_11", "False")]
         [TestCase("10_>=_10", "True")]
         [TestCase("10_=>_10", "True")]
-        [TestCase("6.5_>_5.2", "True")]
+        [TestCase("6.5_>_5.2", "True")] //exercise decimal compares
+        [TestCase("6.5_>=_5.2", "True")]
+        [TestCase("6.5_=>_5.2", "True")]
+        [TestCase("6.5_<_5.2", "False")]
+        [TestCase("6.5_<=_5.2", "False")]
+        [TestCase("6.5_=<_5.2", "False")]
+        [TestCase("5.2_=<_5.2", "True")]
+        [TestCase("6.5_<>_5.2", "True")]
+        [TestCase("6.5_=_5.2", "False")]
         [TestCase("True_<_3", "True")]
         [TestCase("False_<_-2", "False")]
+        [TestCase("4.0E30_<_4.6E30", "True")] //exercise double compares
+        [TestCase("4.0E30_<=_4.6E30", "True")]
+        [TestCase("4.0E30_=<_4.6E30", "True")]
+        [TestCase("4.0E30_<>_4.6E30", "True")]
+        [TestCase("4.0E30_>=_4.6E30", "False")]
+        [TestCase("4.0E30_=>_4.6E30", "False")]
+        [TestCase("4.6E30_=>_4.6E30", "True")]
+        [TestCase("4.0E30_=_4.6E30", "False")]
+        [TestCase("4.0E30_=_4.0E30", "True")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_RelationalOpConstants(string operands, string expected)
+        public void ParseTreeValueExpressionEvaluator_RelationalOpConstantOperands(string operands, string expected)
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
 
