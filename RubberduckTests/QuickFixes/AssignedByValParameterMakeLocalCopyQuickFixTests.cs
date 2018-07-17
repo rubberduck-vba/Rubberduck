@@ -145,7 +145,7 @@ End Property
         public void AssignedByValParameter_LocalVariableAssignment_ComplexFormat()
         {
             var inputCode =
-                @"Sub DoSomething(_
+                @"Sub DoSomething( _
     ByVal foo As Long, _
     ByRef _
         bar, _
@@ -157,7 +157,7 @@ End Property
 End Sub
 ";
             var expectedCode =
-                @"Sub DoSomething(_
+                @"Sub DoSomething( _
     ByVal foo As Long, _
     ByRef _
         bar, _

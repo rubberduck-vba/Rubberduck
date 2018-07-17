@@ -550,7 +550,7 @@ Attribute view.VB_VarHelpID = -1
         public void TestEmptyModule()
         {
             string code = @"
-_
+ _
 
    _
 
@@ -1748,7 +1748,7 @@ Sub Test()
                     a = m + n + c + d
                         For k = 0 To 100
                             t = a + k
-    Next k, d, m,_
+    Next k, d, m, _
             c, _
             n
 End Sub";
@@ -2912,7 +2912,7 @@ Sub Test()
 Dim dict As Scripting.Dictionary
 
 Debug.Print dict _
-._
+. _
 Item(""a"")
 End Sub
 ";
@@ -2928,7 +2928,7 @@ Sub Test()
 Dim dict As Scripting.Dictionary
 
 Debug.Print dict _
-    ._
+    . _
 Item(""a"")
 End Sub
 ";
@@ -3012,7 +3012,6 @@ End Sub
 ";
             var parseResult = Parse(code);
         }
-
 
         [Category("Parser")]
         [Test]
