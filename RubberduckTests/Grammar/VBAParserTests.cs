@@ -2815,6 +2815,207 @@ End Sub
 
         [Category("Parser")]
         [Test]
+        public void ParserDoesNotFailOnUnderscoreComment()
+        {
+            const string code = @"
+Sub Test()   
+    '_
+    If True Then
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnUnderscoreAfterNonBreakingSpaceInComment()
+        {
+            const string code = @"
+Sub Test()   
+    '" + "\u00A0" + @"_
+    If True Then
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnStartOfLineUnderscoreInLineContinuedComment()
+        {
+            const string code = @"
+Sub Test()   
+    ' _
+_
+    If True Then
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionInType1()
+        {
+            const string code = @"
+Sub Test()   
+Dim dic2 As _
+Scripting _
+. _
+Dictionary
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionInType2()
+        {
+            const string code = @"
+Sub Test()   
+  Dim dic3 As Scripting _
+  . _
+  Dictionary
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject1()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+  Debug.Print dict. _
+  Item(""a"")
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject2()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Debug.Print dict _
+._
+Item(""a"")
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject3()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Debug.Print dict _
+    ._
+Item(""a"")
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedBangOperator1()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict _
+! _
+a
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedBangOperator2()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict _
+  ! _
+  a
+
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedBangOperator3()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict _
+!a
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedTypeDeclaration()
+        {
+            const string code = @"
+Sub Test()   
+Dim dic1 As _
+Dictionary
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnIdentifierEndingInUnderscore()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x_
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+
+        [Category("Parser")]
+        [Test]
         public void LeftOutOptionalArgumentsAreCountedAsMissingArguments()
         {
             const string code = @"
