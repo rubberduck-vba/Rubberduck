@@ -301,5 +301,27 @@ End Sub
 
             Assert.AreEqual(inspectionName, inspection.Name);
         }
+
+        [Test]
+        [Category("Inspections")]
+        public void AnnotationIsCaseInsensitive()
+        {
+            const string inputCode =
+                @"'@folder ""Foo""
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
     }
 }
