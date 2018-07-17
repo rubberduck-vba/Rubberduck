@@ -69,12 +69,32 @@ function Restore-Environment {
   foreach-object { set-item Env:$($_.Name) $_.Value }
 }
 
+# Remove older imported registry scripts for debug builds.
+function Clean-OldImports
+{
+	param(
+		[String] $dir
+	)
+	$i = 0;
+	Get-ChildItem $dir -Filter DebugRegistryEntries.reg.imported_*.txt | 
+	Sort-Object Name -Descending |
+	Foreach-Object {
+		if($i -ge 10) {
+			$_.Delete();
+		}
+		$i++;
+	}
+}
+
 Set-StrictMode -Version latest;
 $ErrorActionPreference = "Stop";
 $DebugUnregisterRun = $false;
 
 try
 {
+	# Clean imports older than 10 builds
+	Clean-OldImports ((Get-ScriptDirectory) + "\LocalRegistryEntries");;
+
 	# Allow multiple DLL files to be registered if necessary
 	$separator = "|";
 	$option = [System.StringSplitOptions]::RemoveEmptyEntries;
@@ -137,6 +157,22 @@ try
 		$dllXml = $targetDll + ".xml";
 		$tlbXml = $targetTlb32 + ".xml";
 
+		# Write-Host "Variable printout:"
+		# Write-Host "dllFile = $dllFile";
+		# Write-Host "idlFile = $idlFile";
+		# Write-Host "tlb32File = $tlb32File";
+		# Write-Host "tlb64File = $tlb64File";
+		# Write-Host "sourceDll = $sourceDll";
+		# Write-Host "targetDll = $targetDll";
+		# Write-Host "sourceTlb32 = $sourceTlb32";
+		# Write-Host "targetTlb32 = $targetTlb32";
+		# Write-Host "sourceTlb64 = $sourceTlb64";
+		# Write-Host "targetTlb64 = $targetTlb64";
+		# Write-Host "dllXml = $dllXml";
+		# Write-Host "tlbXml = $tlbXml";
+		# Write-Host "targetDir = $targetDir";
+		# Write-Host "";
+
 		# Use for debugging issues with passing parameters to the external programs
 		# Note that it is not legal to have syntax like `& $cmdIncludingArguments` or `& $cmd $args`
 		# For simplicity, the arguments are pass in literally.
@@ -151,12 +187,21 @@ try
 			$encoding = New-Object System.Text.UTF8Encoding $true;
 			[System.IO.File]::WriteAllLines($idlFile, $idl, $encoding);
 		
-			$origEnv = Get-Environment
+			$origEnv = Get-Environment;
 			try {
 				Invoke-CmdScript "$devPath";
-		
-				& "midl.exe" ""$idlFile"" /win32 /out ""$targetDir"" /tlb ""$tlb32File"";
-				& "midl.exe" ""$idlFile"" /amd64 /out ""$targetDir"" /tlb ""$tlb64File"";
+				
+				if($targetDir.EndsWith("\"))
+				{
+					$targetDirWithoutSlash = $targetDir.Substring(0,$targetDir.Length-1);
+				}
+				else
+				{
+					$targetDirWithoutSlash = $targetDir;
+				}
+
+				& midl.exe /win32 /tlb ""$tlb32File"" ""$idlFile"" /out ""$targetDirWithoutSlash"";
+				& midl.exe /amd64 /tlb ""$tlb64File"" ""$idlFile"" /out ""$targetDirWithoutSlash"";
 			} catch {
 				throw;
 			} finally {

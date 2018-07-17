@@ -1225,7 +1225,7 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(5, 16))
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -1236,6 +1236,7 @@ End Sub";
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
         }
+
         [Category("Resolver")]
         [Test]
         [Ignore("Need to fix the default member access for function calls; see case #3937")]
@@ -1253,7 +1254,7 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 22))
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8)
                 .AddProjectToVbeBuilder()
                 .Build();
 

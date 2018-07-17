@@ -40,11 +40,19 @@ namespace Rubberduck.AutoComplete
                 var nextChar = zSelection.StartColumn == original.Length ? string.Empty : original.Substring(zSelection.StartColumn, 1);
                 if (input == InputToken && (input != OutputToken || nextChar != OutputToken))
                 {
-                    var code = original.Insert(Math.Max(0, zSelection.StartColumn), InputToken + OutputToken);
+                    string code;
+                    if (!StripExplicitCallStatement(ref original, ref pSelection))
+                    {
+                        code = original.Insert(Math.Max(0, zSelection.StartColumn), InputToken + OutputToken);
+                    }
+                    else
+                    {
+                        code = original;
+                    }
                     module.ReplaceLine(pSelection.StartLine, code);
 
                     var newCode = module.GetLines(pSelection);
-                    if (newCode == code)
+                    if (newCode.Equals(code, StringComparison.OrdinalIgnoreCase))
                     {
                         pane.Selection = new Selection(pSelection.StartLine, pSelection.StartColumn + 1);
                     }
@@ -67,6 +75,21 @@ namespace Rubberduck.AutoComplete
             }
         }
 
+        private bool StripExplicitCallStatement(ref string code, ref Selection pSelection)
+        {
+            // VBE will "helpfully" strip empty parentheses in 'Call Something()'
+            // ...and there's no way around it. since Call statement is optional and obsolete,
+            // this function strips it
+            var pattern = @"\bCall\b\s+";
+            if (Regex.IsMatch(code, pattern, RegexOptions.IgnoreCase))
+            {
+                pSelection = new Selection(pSelection.StartLine, pSelection.StartColumn - "Call ".Length);
+                code = Regex.Replace(code, pattern, string.Empty, RegexOptions.IgnoreCase);
+                return true;
+            }
+            return false;
+        }
+
         private int GetPrettifiedCaretPosition(Selection pSelection, string insertedCode, string prettifiedCode)
         {
             var zSelection = pSelection.ToZeroBased();
@@ -80,7 +103,10 @@ namespace Rubberduck.AutoComplete
                     outputTokenIndices.Add(i);
                 }
             }
-
+            if (!outputTokenIndices.Any())
+            {
+                return pSelection.EndColumn;
+            }
             var firstAfterCaret = outputTokenIndices.Where(i => i > zSelection.StartColumn).Min();
 
             var prettifiedTokenIndices = new List<int>();
@@ -93,7 +119,9 @@ namespace Rubberduck.AutoComplete
                 }
             }
 
-            return prettifiedTokenIndices[outputTokenIndices.IndexOf(firstAfterCaret)] + 1;
+            return prettifiedTokenIndices.Any()
+                ? prettifiedTokenIndices[outputTokenIndices.IndexOf(firstAfterCaret)] + 1
+                : prettifiedCode.Length + 2;
         }
 
         public virtual bool IsMatch(string input) => 

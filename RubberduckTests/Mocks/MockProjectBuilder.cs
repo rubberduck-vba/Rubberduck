@@ -106,7 +106,7 @@ namespace RubberduckTests.Mocks
         /// <param name="filePath">The path to the referenced library.</param>
         /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddReference(string name, string filePath, int major = 0, int minor = 0, bool isBuiltIn = false)
+        public MockProjectBuilder AddReference(string name, string filePath, int major, int minor, bool isBuiltIn = false)
         {
             var reference = CreateReferenceMock(name, filePath, major, minor, isBuiltIn);
             _references.Add(reference.Object);

@@ -92,7 +92,7 @@ End Sub", BindingTargetName);
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0);
             enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName));
             enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BindingTargetName));
             var enclosingProject = enclosingProjectBuilder.Build();
@@ -123,7 +123,7 @@ End Sub", BindingTargetName);
 
             var enclosingProject = builder
                 .ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected)
-                .AddReference(referencedProjectName, ReferencedProjectFilepath)
+                .AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0)
                 .AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName))
                 .Build();
             builder.AddProject(enclosingProject);
@@ -151,7 +151,7 @@ End Sub", BindingTargetName);
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0);
             enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
