@@ -9,7 +9,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class AddComponentCommand
     {
         private readonly IVBE _vbe;
-        private const string DefaultFolder = "VBAProject";
 
         public AddComponentCommand(IVBE vbe)
         {
@@ -69,16 +68,22 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             return (node as ICodeExplorerDeclarationViewModel)?.Declaration;
         }
-
+        private string GetActiveProjectName()
+        {
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                return activeProject.Name;
+            }
+        }
         private string GetFolder(CodeExplorerItemViewModel node)
         {
             switch (node)
             {
                 case null:
-                    return DefaultFolder;
+                    return GetActiveProjectName();
                 case ICodeExplorerDeclarationViewModel declarationNode:
                     return string.IsNullOrEmpty(declarationNode.Declaration.CustomFolder)
-                        ? DefaultFolder
+                        ? GetActiveProjectName()
                         : declarationNode.Declaration.CustomFolder.Replace("\"", string.Empty);
                 default:
                     return ((CodeExplorerCustomFolderViewModel)node).FullPath;
