@@ -4,18 +4,16 @@ namespace Rubberduck.UI.Refactorings
 {
     public class RefactoringDialogBase<TModel, TView, TViewModel> : RefactoringDialogBase, IRefactoringDialog<TModel, TView, TViewModel>
         where TModel : class
-        where TView : System.Windows.Controls.UserControl, IRefactoringView, new()
+        where TView : System.Windows.Controls.UserControl, IRefactoringView<TModel>
         where TViewModel : class, IRefactoringViewModel<TModel>
     {
-        public RefactoringDialogBase(TModel model, TViewModel viewModel) 
+        public RefactoringDialogBase(TModel model, TView view, TViewModel viewModel) 
         {
             Model = model;
             ViewModel = viewModel;
 
-            View = new TView
-            {
-                DataContext = ViewModel
-            };
+            View = view;
+            View.DataContext = ViewModel;
             ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;
 
             UserControl = View;

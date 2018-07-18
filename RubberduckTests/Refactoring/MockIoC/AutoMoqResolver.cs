@@ -20,6 +20,12 @@ namespace RubberduckTests.Refactoring.MockIoC
             ComponentModel model,
             DependencyModel dependency)
         {
+            if (dependency.TargetType == null)
+                return false;
+
+            if (dependency.TargetType.Namespace == null)
+                return false;
+
             return dependency.TargetType.Namespace.StartsWith("Rubberduck")
                    && !dependency.TargetType.Name.EndsWith("Factory")
                    && dependency.TargetType.IsInterface;

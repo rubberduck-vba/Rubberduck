@@ -62,15 +62,34 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .FromAssemblyContaining<IRefactoring>()
                 .IncludeNonPublicTypes()
                 .InSameNamespaceAs(typeof(IRefactoring), true)
+                //.If((type => !type.Name.EndsWith("Dialog")))
                 .WithService.DefaultInterfaces()
                 .LifestyleTransient());
 
+            container.Register(Component
+                .For(typeof(IRefactoringDialog<,,>))
+                .ImplementedBy(typeof(RefactoringDialogStub<,,>))
+                .LifestyleSingleton()
+            );
+
+            container.Register(Component
+                .For(typeof(IRefactoringView<>))
+                .ImplementedBy(typeof(RefactoringViewStub<>))
+                .LifestyleSingleton()
+            );
+                
             container.Register(Classes
                 .FromAssemblyContaining<RefactoringDialogBase>()
                 .IncludeNonPublicTypes()
                 .InSameNamespaceAs(typeof(RefactoringDialogBase), true)
+                .If(type => 
+                    !type.Name.EndsWith("Dialog") 
+                    && !type.Name.EndsWith("DialogBase")
+                    && !type.Name.EndsWith("View")
+                    && !type.Name.EndsWith("ViewBase"))
                 .WithService.DefaultInterfaces()
                 .LifestyleTransient());
+            
 
             /*
             container.Register(Component.For<IRefactoringView>().ImplementedBy(typeof(RenameView)));

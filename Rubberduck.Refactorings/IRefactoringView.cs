@@ -4,4 +4,8 @@
     {
         object DataContext { get; set; }
     }
+
+    public interface IRefactoringView<TModel> : IRefactoringView
+        where TModel : class
+    { }
 }

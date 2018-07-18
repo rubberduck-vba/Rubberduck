@@ -10,7 +10,7 @@ namespace Rubberduck.Refactorings
 
     public interface IRefactoringDialog<out TModel, out TView, out TViewModel> : IRefactoringDialog
         where TModel : class
-        where TView : class, IRefactoringView, new()
+        where TView : class, IRefactoringView<TModel>
         where TViewModel : class, IRefactoringViewModel<TModel>
     {
         TModel Model { get; }
