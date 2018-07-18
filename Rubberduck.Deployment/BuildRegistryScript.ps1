@@ -104,7 +104,7 @@ try
 	[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
 
 	# Determine if MIDL is available for building
-	$devPath = Resolve-Path -Path "C:\Program Files*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
+	$devPath = Resolve-Path -Path "%ProgramFiles%*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
 	if($devPath)
 	{
 		# Additional verifications as some versions of VsDevCmd.bat might not initialize the environment for C++ build tools
