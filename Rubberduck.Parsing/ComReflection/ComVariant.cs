@@ -8,6 +8,8 @@ namespace Rubberduck.Parsing.ComReflection
     //See https://limbioliong.wordpress.com/2011/09/04/using-variants-in-managed-code-part-1/
     public class ComVariant : IEquatable<ComVariant>
     {
+        private static readonly bool ProcessIs32Bit = IntPtr.Size == 4;
+
         internal static readonly IDictionary<VarEnum, string> TypeNames = new Dictionary<VarEnum, string>
         {
             {VarEnum.VT_DISPATCH, Tokens.Object},
@@ -27,7 +29,7 @@ namespace Rubberduck.Parsing.ComReflection
             {VarEnum.VT_UI2, Tokens.Variant}, // no unsigned integer type in VBA
             {VarEnum.VT_I4, Tokens.Long},
             {VarEnum.VT_UI4, Tokens.Variant}, // no unsigned long integer type in VBA
-            {VarEnum.VT_I8, Tokens.Variant}, // LongLong on 64-bit VBA
+            {VarEnum.VT_I8, ProcessIs32Bit ? Tokens.Variant : Tokens.LongLong}, // LongLong on 64-bit VBA
             {VarEnum.VT_UI8, Tokens.Variant}, // no unsigned LongLong integer type in VBA
             {VarEnum.VT_INT, Tokens.Long}, // same as I4
             {VarEnum.VT_UINT, Tokens.Variant}, // same as UI4
@@ -57,7 +59,7 @@ namespace Rubberduck.Parsing.ComReflection
         public ComVariant(IntPtr variant)
         {
             Value = Marshal.GetObjectForNativeVariant(variant);
-            var members = (Variant)Marshal.PtrToStructure(variant, typeof(Variant));
+            var members = Marshal.PtrToStructure<Variant>(variant);
             VariantType = (VarEnum)members.vt;
             if (Value == null && VariantType == VarEnum.VT_BSTR)
             {
