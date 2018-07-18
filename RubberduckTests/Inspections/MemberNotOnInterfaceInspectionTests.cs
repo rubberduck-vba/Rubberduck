@@ -255,8 +255,6 @@ End Sub";
             }
         }
 
-#region https://github.com/rubberduck-vba/Rubberduck/issues/3343
-
         [Test]
         [Category("Inspections")]
         public void MemberNotOnInterface_WithNewReturnsResult()
@@ -316,8 +314,6 @@ End Sub";
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
-
-#endregion
 
         [Test]
         [Category("Inspections")]
