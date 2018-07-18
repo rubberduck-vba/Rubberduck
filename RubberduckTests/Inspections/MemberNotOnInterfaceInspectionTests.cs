@@ -255,6 +255,70 @@ End Sub";
             }
         }
 
+#region https://github.com/rubberduck-vba/Rubberduck/issues/3343
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_WithNewReturnsResult()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    With New Dictionary
+        Debug.Print .FooBar
+    End With
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_WithNewBlockBangNotation()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    With New Dictionary
+        !FooBar = 42
+    End With
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_WithNewBlockOnInterface()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    With New Dictionary
+        .Add 42, 42
+    End With
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+#endregion
+
         [Test]
         [Category("Inspections")]
         public void MemberNotOnInterface_CatchesInvalidUseOfMember()
