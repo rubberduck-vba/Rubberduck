@@ -305,10 +305,10 @@ LINE_CONTINUATION : [ \t]+ UNDERSCORE [ \t]* '\r'? '\n' WS_NOT_FOLLOWED_BY_LINE_
 // The following rule is needed in order to capture hex literals without format prefixes which start with a digit. Needed for VBForm resources.
 BARE_HEX_LITERAL : [0-9] [0-9a-fA-F]*; 
 fragment WS_NOT_FOLLOWED_BY_LINE_CONTINUATION : [ \t] {(char)_input.La(1) != '_' 
-                                                        || ((char)_input.La(2) != '\r' 
-														    && (char)_input.La(2) != '\n' 
-															&& (char)_input.La(2) != '\t' 
-															&& (char)_input.La(2) != ' ')}?;
+                                                          || ((char)_input.La(2) != '\r' 
+                                                              && (char)_input.La(2) != '\n' 
+                                                              && (char)_input.La(2) != '\t' 
+                                                              && (char)_input.La(2) != ' ')}?;
 fragment LETTER : [a-zA-Z_äöüÄÖÜ];
 fragment DIGIT : [0-9];
 fragment LETTERORDIGIT : [a-zA-Z0-9_äöüÄÖÜ];
