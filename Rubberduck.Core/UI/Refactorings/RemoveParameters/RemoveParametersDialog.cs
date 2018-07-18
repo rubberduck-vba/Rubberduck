@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         protected override int MinHeight => 395;
         protected override int MinWidth => 494;
 
-        public RemoveParametersDialog(RemoveParametersModel model, RemoveParametersViewModel viewModel) : base(model, viewModel)
+        public RemoveParametersDialog(RemoveParametersModel model, RemoveParametersView view, RemoveParametersViewModel viewModel) : base(model, view, viewModel)
         {
             Text = RubberduckUI.RemoveParamsDialog_Caption;
         }

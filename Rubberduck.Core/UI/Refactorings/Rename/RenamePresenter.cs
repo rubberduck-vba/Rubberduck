@@ -4,7 +4,7 @@ using Rubberduck.Refactorings.Rename;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
-    internal class RenamePresenter : RefactoringPresenterBase<RenameModel, RenameDialog, RenameView, RenameViewModel>, IRenamePresenter
+    internal class RenamePresenter : RefactoringPresenterBase<RenameModel, IRefactoringDialog<RenameModel, IRefactoringView<RenameModel>, RenameViewModel>, IRefactoringView<RenameModel>, RenameViewModel>, IRenamePresenter
     {
         public RenamePresenter(RenameModel model,
             IRefactoringDialogFactory dialogFactory) : base(

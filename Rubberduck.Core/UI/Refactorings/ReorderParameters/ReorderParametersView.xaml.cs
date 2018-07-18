@@ -9,7 +9,7 @@ using Rubberduck.Refactorings.ReorderParameters;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    public partial class ReorderParametersView : IRefactoringView
+    public partial class ReorderParametersView : IRefactoringView<ReorderParametersModel>
     {
         // borrowed the drag/drop from https://fxmax.wordpress.com/2010/10/05/wpf/
         private Point _startPoint;

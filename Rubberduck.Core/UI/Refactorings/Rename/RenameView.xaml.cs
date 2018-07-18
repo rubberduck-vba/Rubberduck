@@ -1,8 +1,9 @@
 ﻿using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Rename;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
-    public partial class RenameView : IRefactoringView
+    public partial class RenameView : IRefactoringView<RenameModel>
     {
         public RenameView()
         {

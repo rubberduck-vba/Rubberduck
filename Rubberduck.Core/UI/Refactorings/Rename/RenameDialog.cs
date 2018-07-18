@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Refactorings.Rename
         protected override int MinHeight => 164;
         protected override int MinWidth => 684;
 
-        public RenameDialog(RenameModel model, RenameViewModel viewModel) : base(model, viewModel)
+        public RenameDialog(RenameModel model, RenameView view, RenameViewModel viewModel) : base(model, view,viewModel)
         {
             Text = RubberduckUI.RenameDialog_Caption;
         }

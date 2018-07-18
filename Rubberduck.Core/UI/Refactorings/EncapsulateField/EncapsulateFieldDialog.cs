@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         protected override int MinWidth => 667;
         protected override int MinHeight => _isExpanded ? 560 : 305;
 
-        public EncapsulateFieldDialog(EncapsulateFieldModel model, EncapsulateFieldViewModel viewModel) : base(model, viewModel)
+        public EncapsulateFieldDialog(EncapsulateFieldModel model, EncapsulateFieldView view, EncapsulateFieldViewModel viewModel) : base(model, view, viewModel)
         {
             Text = RubberduckUI.EncapsulateField_Caption;
             ViewModel.ExpansionStateChanged += Vm_ExpansionStateChanged;

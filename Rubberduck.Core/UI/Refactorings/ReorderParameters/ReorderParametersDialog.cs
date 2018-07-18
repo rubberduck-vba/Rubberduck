@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         protected override int MinHeight => 395;
         protected override int MinWidth => 494;
 
-        public ReorderParametersDialog(ReorderParametersModel model, ReorderParametersViewModel viewModel) : base(model, viewModel)
+        public ReorderParametersDialog(ReorderParametersModel model, ReorderParametersView view, ReorderParametersViewModel viewModel) : base(model, view, viewModel)
         {
             Text = RubberduckUI.ReorderParamsDialog_Caption;
         }
