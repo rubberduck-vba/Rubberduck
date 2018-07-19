@@ -22,6 +22,7 @@ namespace Rubberduck.Parsing.ComReflection
             {VarEnum.VT_BOOL, Tokens.Boolean},
             {VarEnum.VT_BSTR, Tokens.String},
             {VarEnum.VT_LPSTR, Tokens.LongPtr},
+            {VarEnum.VT_PTR, Tokens.LongPtr},
             {VarEnum.VT_LPWSTR, Tokens.LongPtr},
             {VarEnum.VT_I1, Tokens.Variant}, // no signed byte type in VBA
             {VarEnum.VT_UI1, Tokens.Byte},
@@ -41,7 +42,6 @@ namespace Rubberduck.Parsing.ComReflection
             {VarEnum.VT_R8, Tokens.Double}
         };
 
-
         [StructLayout(LayoutKind.Sequential)]
         private struct Variant
         {
@@ -55,6 +55,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         public VarEnum VariantType { get; }
         public object Value { get; }
+        public string TypeName => TypeNames.TryGetValue(VariantType, out var typeName) ? typeName : "Object";
 
         public ComVariant(IntPtr variant)
         {

@@ -12,6 +12,7 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
     {
         private readonly List<ComMember> _members = new List<ComMember>();
@@ -52,7 +53,7 @@ namespace Rubberduck.Parsing.ComReflection
                 info.GetNames(desc.memid, names, names.Length, out int length);
                 Debug.Assert(length == 1);
 
-                _fields.Add(new ComField(info, names[0], desc, index, DeclarationType.Constant));
+                _fields.Add(new ComField(info, desc, names[0], index, DeclarationType.Constant));
                 info.ReleaseVarDesc(varPtr);
             }
         }

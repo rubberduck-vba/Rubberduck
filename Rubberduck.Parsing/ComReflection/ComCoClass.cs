@@ -12,6 +12,7 @@ using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComCoClass : ComType, IComTypeWithMembers
     {
         private readonly Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();

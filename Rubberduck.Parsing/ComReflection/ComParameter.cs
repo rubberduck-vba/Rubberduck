@@ -1,65 +1,46 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using Rubberduck.VBEditor.Utility;
+using Rubberduck.Parsing.Symbols;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
-using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
-using TYPEDESC = System.Runtime.InteropServices.ComTypes.TYPEDESC;
-using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{DeclarationName}")]
-    public class ComParameter
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
+    public class ComParameter : ComTypedElement
     {
-        public string Name { get; private set; }
-
-        public string DeclarationName
-        {
-            get
-            {
-                return string.Format("{0}{1} {2} As {3}{4}{5}",
-                    IsOptional ? "Optional " : string.Empty,
-                    IsByRef ? "ByRef" : "ByVal",
-                    Name,
-                    TypeName,
-                    IsOptional && DefaultValue != null ? " = " : string.Empty,
-                    IsOptional && DefaultValue != null ?
-                        IsEnumMember ? DefaultAsEnum : DefaultValue
-                        : string.Empty);
-            }
-        }
-
-        public bool IsArray { get; private set; }
-        public bool IsByRef { get; private set; }
+        public override string Name => base.Name ?? $"{Index}unnamedParameter";
+        public override DeclarationType Type => DeclarationType.Parameter;
+        public bool IsByRef { get; }
         public bool IsOptional { get; }
         public bool IsReturnValue { get; }
         public bool IsParamArray { get; set; }
-
-        private Guid _enumGuid = Guid.Empty;
-        public bool IsEnumMember => !_enumGuid.Equals(Guid.Empty);
-
         public object DefaultValue { get; }
-        public string DefaultAsEnum { get; }
 
-        private string _type = "Object";
-        public string TypeName => IsArray ? $"{_type}()" : _type;
-
-        public ComParameter(ELEMDESC elemDesc, ITypeInfo info, string name)
+        public string DefaultAsEnumMember
         {
-            Debug.Assert(name != null, "Parameter name is null");
+            get
+            {
+                if (!IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(EnumGuid, out ComEnumeration enumType))
+                {
+                    return string.Empty;
+                }
+                var member = enumType.Members.FirstOrDefault(m => m.Value == DefaultValue);
+                return member != null ? member.Name : string.Empty;
+            }
+        }
 
-            Name = name;
+        public ComParameter(ITypeInfo info, ELEMDESC elemDesc, string name, int index) : base(info, elemDesc, name, index)
+        {
             var paramDesc = elemDesc.desc.paramdesc;
-            GetParameterType(elemDesc.tdesc, info);
             IsOptional = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
             IsReturnValue = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FRETVAL);
+            IsByRef = (VarEnum) elemDesc.tdesc.vt == VarEnum.VT_PTR;
+
             if (!paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FHASDEFAULT) || string.IsNullOrEmpty(name))
             {
-                DefaultAsEnum = string.Empty;
                 return;
             }
 
@@ -67,69 +48,6 @@ namespace Rubberduck.Parsing.ComReflection
             //Offset and dereference the VARIANTARG directly.
             var defValue = new ComVariant(paramDesc.lpVarValue + Marshal.SizeOf(typeof(ulong)));
             DefaultValue = defValue.Value;
-
-            if (!IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(_enumGuid, out ComEnumeration enumType))
-            {
-                return;
-            }
-            var member = enumType.Members.FirstOrDefault(m => m.Value == (int)DefaultValue);
-            DefaultAsEnum = member != null ? member.Name : string.Empty;
-        }
-
-        //This overload should only be used for retrieving the TypeName from a random TYPEATTR. TODO: Should be a base class of ComParameter instead.
-        public ComParameter(TYPEATTR attributes, ITypeInfo info)
-        {
-            GetParameterType(attributes.tdescAlias, info);
-        }
-
-        private void GetParameterType(TYPEDESC desc, ITypeInfo info)
-        {
-            var vt = (VarEnum)desc.vt;
-            TYPEDESC tdesc;
-
-            switch (vt)
-            {
-                case VarEnum.VT_PTR:
-                    tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
-                    GetParameterType(tdesc, info);
-                    IsByRef = true;
-                    break;
-                case VarEnum.VT_USERDEFINED:
-                    int href;
-                    unchecked
-                    {
-                        href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
-                    }
-                    try
-                    {
-                        info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
-                        refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
-                        using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
-                        {
-                            var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
-                            if (attribs.typekind == TYPEKIND.TKIND_ENUM)
-                            {
-                                _enumGuid = attribs.guid;
-                            }
-                            _type = new ComDocumentation(refTypeInfo, -1).Name;
-                        }
-                    }
-                    catch (COMException) { }
-                    break;
-                case VarEnum.VT_SAFEARRAY:
-                case VarEnum.VT_CARRAY:
-                case VarEnum.VT_ARRAY:
-                    tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
-                    GetParameterType(tdesc, info);
-                    IsArray = true;
-                    break;
-                default:
-                    if (ComVariant.TypeNames.TryGetValue(vt, out string result))
-                    {
-                        _type = result;
-                    }
-                    break;
-            }
         }
     }
 }

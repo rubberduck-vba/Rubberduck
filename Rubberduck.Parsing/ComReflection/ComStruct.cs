@@ -10,6 +10,7 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComStruct : ComType, IComTypeWithFields
     {
         private readonly List<ComField> _fields = new List<ComField>();
@@ -34,7 +35,7 @@ namespace Rubberduck.Parsing.ComReflection
                     info.GetNames(desc.memid, names, names.Length, out int length);
                     Debug.Assert(length == 1);
 
-                    _fields.Add(new ComField(info, names[0], desc, index, DeclarationType.UserDefinedTypeMember));
+                    _fields.Add(new ComField(info, desc, names[0], index, DeclarationType.UserDefinedTypeMember));
                 }
             }
         }

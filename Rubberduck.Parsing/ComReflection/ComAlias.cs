@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.ComReflection
                 return;                
             }
 
-            var aliased = new ComParameter(attributes, info);
+            var aliased = new ComField(info, attributes.tdescAlias);
             TypeName = aliased.TypeName;
         }
     }

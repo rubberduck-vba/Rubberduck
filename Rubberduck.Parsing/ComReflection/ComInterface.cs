@@ -13,7 +13,7 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComInterface : ComType, IComTypeWithMembers
     {
         public bool IsExtensible { get; private set; }
@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.ComReflection
                     info.GetNames(property.memid, names, names.Length, out int length);
                     Debug.Assert(length == 1);
 
-                    _properties.Add(new ComField(info, names[0], property, index, DeclarationType.Property));
+                    _properties.Add(new ComField(info, property, names[0], index, DeclarationType.Property));
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
@@ -9,6 +10,7 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComEnumeration : ComType
     {
         public List<ComEnumerationMember> Members { get; } 

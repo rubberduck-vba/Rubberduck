@@ -12,11 +12,12 @@ using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComProject : ComBase
     {
         public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
-        public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>(); 
+        public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>();
+        public static readonly ConcurrentDictionary<Guid, ComAlias> KnownAliases = new ConcurrentDictionary<Guid, ComAlias>();
 
         public string Path { get; }
         public long MajorVersion { get; }
@@ -138,6 +139,10 @@ namespace Rubberduck.Parsing.ComReflection
                             case TYPEKIND.TKIND_ALIAS:
                                 var alias = new ComAlias(typeLibrary, info, index, typeAttributes);
                                 _aliases.Add(alias);
+                                if (!alias.Guid.Equals(Guid.Empty))
+                                {
+                                    KnownAliases.TryAdd(alias.Guid, alias);
+                                }                               
                                 break;
                             case TYPEKIND.TKIND_UNION:
                                 //TKIND_UNION is not a supported member type in VBA.
