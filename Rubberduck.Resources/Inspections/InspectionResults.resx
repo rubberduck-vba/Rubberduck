@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmptyStringLiteralInspection" xml:space="preserve">
-    <value>Prefer 'vbNullString' to an empty string literal</value>
+    <value>'vbNullString' preferred to empty string literals</value>
   </data>
   <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
     <value>Public field '{0}' breaks encapsulation</value>
@@ -187,9 +187,6 @@
   </data>
   <data name="OptionExplicitInspection" xml:space="preserve">
     <value>Option Explicit is not specified in '{0}'</value>
-  </data>
-  <data name="EmptyStringLiteralInspection" xml:space="preserve">
-    <value>'vbNullString' preferred to empty string literals</value>
   </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>Variable '{0}' is not assigned</value>
@@ -351,5 +348,8 @@
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Statically accessible sheet can be referred to by its code name</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Unreachable: Case Statement is malformed or never True</value>
   </data>
 </root>

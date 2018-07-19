@@ -20,11 +20,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
         private readonly IParseTreeValueFactory _valueFactory;
 
-        private enum CaseInpectionResult { Unreachable, MismatchType, CaseElse };
+        private enum CaseInpectionResult { Unreachable, InherentlyUnreachable, MismatchType, CaseElse };
 
         private static readonly Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
         {
             [CaseInpectionResult.Unreachable] = InspectionResults.UnreachableCaseInspection_Unreachable,
+            [CaseInpectionResult.InherentlyUnreachable] = InspectionResults.UnreachableCaseInspection_InherentlyUnreachable,
             [CaseInpectionResult.MismatchType] = InspectionResults.UnreachableCaseInspection_TypeMismatch,
             [CaseInpectionResult.CaseElse] = InspectionResults.UnreachableCaseInspection_CaseElse
         };
@@ -62,6 +63,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
                 selectCaseInspector.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[CaseInpectionResult.Unreachable]));
                 selectCaseInspector.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.MismatchType]));
+                selectCaseInspector.InherentlyUnreachableCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.InherentlyUnreachable]));
                 selectCaseInspector.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInpectionResult.CaseElse]));
             }
             return _inspectionResults;

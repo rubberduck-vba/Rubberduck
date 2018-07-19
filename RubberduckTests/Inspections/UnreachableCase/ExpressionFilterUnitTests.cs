@@ -236,7 +236,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
         [TestCase(@"""Alpha""_To_""Omega"",""Nuts""_To_""Soup""", @"Range!""Alpha"":""Soup""")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddFiltersString(string firstCase/*, string secondCase*/, string expectedClauses)
+        public void ExpressionFilter_AddFiltersString(string firstCase, string expectedClauses)
         {
             var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, Tokens.String);
             var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.String);
@@ -374,6 +374,23 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expectedFilter, actualFilter);
             Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
             Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
+        }
+
+        [TestCase("Is_<_True", "Boolean")]
+        [TestCase("Is_>_False", "Boolean")]
+        [TestCase("5_To_3", "Long")]
+        [TestCase("False_To_True", "Boolean")]
+        [TestCase("#7/4/2018#_To_#7/4/1776#", "Date")]
+        [TestCase("44.44_To_36.2", "Double")]
+        [TestCase("44.44_To_36.2", "Single")]
+        [TestCase("44.4444_To_36.2000", "Currency")]
+        [Category("Inspections")]
+        public void ExpressionFilter_MalformedRangeOfValues(string rangeClause, string filterTypeName)
+        {
+            var filter = ExpressionFilterFactory.Create(filterTypeName);
+            var expression = RangeClauseTokensToExpressions(new string[] { rangeClause }, filterTypeName).First();
+            filter.AddExpression(expression);
+            Assert.IsTrue(expression.IsInherentlyUnreachable);
         }
 
         private List<string> RetrieveDelimitedElements(string rangeClauses, string delimiter)

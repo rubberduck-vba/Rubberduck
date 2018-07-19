@@ -12,6 +12,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string OpSymbol { get; }
         bool IsMismatch { set; get; }
         bool IsUnreachable { set; get; }
+        bool IsInherentlyUnreachable { set; get; }
     }
 
     public class RangeOfValuesExpression : RangeClauseExpression
@@ -102,6 +103,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public string OpSymbol => _data.OpSymbol;
         public bool IsMismatch { set => _data.IsMismatch = value; get => _data.IsMismatch; }
         public bool IsUnreachable { set => _data.IsUnreachable = value; get => _data.IsUnreachable; }
+        public bool IsInherentlyUnreachable { set => _data.IsInherentlyUnreachable = value; get => _data.IsInherentlyUnreachable; }
 
         public RangeClauseExpression(IParseTreeValue lhs, IParseTreeValue rhs, string opSymbol, bool sortOperands = false)
         {
@@ -169,6 +171,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             public string OpSymbol { private set; get; }
             public bool IsMismatch { set; get; }
             public bool IsUnreachable { set; get; }
+            public bool IsInherentlyUnreachable { set; get; }
 
             public ClauseExpressionData(IParseTreeValue lhs, IParseTreeValue rhs, string opSymbol)
             {
@@ -179,6 +182,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 OpSymbol = opSymbol;
                 IsMismatch = false;
                 IsUnreachable = false;
+                IsInherentlyUnreachable = false;
             }
         }
     }

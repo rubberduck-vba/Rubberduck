@@ -414,6 +414,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return rov.IsSingleValue ? AddSingleValue(rov.Start) : AddValueRange(rov);
                 }
+                rangeExpr.IsInherentlyUnreachable = true;
                 return false;
             }
             return AddToContainer(Variables[VariableClauseTypes.Range], rangeExpr.ToString());

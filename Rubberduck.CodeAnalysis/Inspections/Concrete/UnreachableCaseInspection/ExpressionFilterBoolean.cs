@@ -84,6 +84,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 else if (opSymbol.Equals(RelationalOperators.GT))
                 {
+                    expression.IsInherentlyUnreachable = !isValue;
                     return isValue ? AddComparablePredicate(Tokens.Is, expression) : false;
                 }
                 else if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
@@ -93,6 +94,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 else if (opSymbol.Equals(RelationalOperators.LT))
                 {
+                    expression.IsInherentlyUnreachable = isValue;
                     return isValue ? false : AddComparablePredicate(Tokens.Is, expression);
                 }
                 else if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
@@ -116,6 +118,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     //if Is > True and the selectExpr is False => True
                     //If Is > True and the selectExpr is True => False
+                    expression.IsInherentlyUnreachable = !isValue;
                     return isValue ? AddSingleValue(!selectExpr) : false;
                 }
                 else if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
@@ -128,6 +131,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 else if (opSymbol.Equals(RelationalOperators.LT))
                 {
+                    expression.IsInherentlyUnreachable = isValue;
                     return isValue ? false : AddSingleValue(selectExpr);
                 }
                 else if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))

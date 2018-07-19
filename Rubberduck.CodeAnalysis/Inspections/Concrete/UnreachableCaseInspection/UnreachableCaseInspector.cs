@@ -13,6 +13,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string SelectExpressionTypeName { get; }
         Func<string, ParserRuleContext, string> GetVariableDeclarationTypeName { set; get; }
         List<ParserRuleContext> UnreachableCases { get; }
+        List<ParserRuleContext> InherentlyUnreachableCases { get; }
         List<ParserRuleContext> MismatchTypeCases { get; }
         List<ParserRuleContext> UnreachableCaseElseCases { get; }
     }
@@ -42,6 +43,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public List<ParserRuleContext> UnreachableCases { set; get; } = new List<ParserRuleContext>();
 
         public List<ParserRuleContext> MismatchTypeCases { set; get; } = new List<ParserRuleContext>();
+
+        public List<ParserRuleContext> InherentlyUnreachableCases { set; get; } = new List<ParserRuleContext>();
 
         public List<ParserRuleContext> UnreachableCaseElseCases { set; get; } = new List<ParserRuleContext>();
 
@@ -73,7 +76,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     MismatchTypeCases.Add(caseClause);
                 }
-                else if (rangeClauseExpressions.All(expr => expr.IsUnreachable || expr.IsMismatch))
+                else if (rangeClauseExpressions.All(expr => expr.IsInherentlyUnreachable))
+                {
+                    InherentlyUnreachableCases.Add(caseClause);
+                }
+                else if (rangeClauseExpressions.All(expr => expr.IsUnreachable || expr.IsMismatch || expr.IsInherentlyUnreachable))
                 {
                     UnreachableCases.Add(caseClause);
                 }

@@ -855,12 +855,30 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        [TestCase("False To True", 1, 0)] //firstCase is unreachable - malformed
+        [TestCase("False To True", 0, 1)] //firstCase is inherently unreachable - malformed
+        [TestCase("Is < True", 0, 1)]   //firstCase is inherently unreachable
+        [TestCase("Is > False", 0, 1)]   //firstCase is inherently unreachable
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_BooleanExpressionInherentlyUnreachable(string firstCase, int unreachableCount, int inherentlyUnreachable)
+        {
+            string inputCode =
+$@"
+Sub Foo(x As Boolean)
+    Select Case x
+        Case {firstCase} 
+        'Reachable depends on firstCase
+        Case True
+        'OK
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: unreachableCount, inherentlyUnreachable: inherentlyUnreachable);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         [TestCase("True To False", 1, 1)] //firstCase filters all possible values
-        [TestCase("Is < True", 1, 0)]   //firstCase is inherently unreachable
         [TestCase("Is >= True", 1, 1)]   //firstCase filters all possible values
         [Category("Inspections")]
-        public void UnreachableCaseInspection_BooleanExpression(string firstCase, int unreachableCount, int caseElseCount)
+        public void UnreachableCaseInspection_BooleanExpressionAllValues(string firstCase, int unreachableCount, int caseElseCount)
         {
             string inputCode =
 $@"
@@ -2332,17 +2350,18 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
+        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0)
         {
             var components = new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) };
-            return CheckActualResultsEqualsExpected(components, unreachable, mismatch, caseElse);
+            return CheckActualResultsEqualsExpected(components, unreachable, mismatch, caseElse, inherentlyUnreachable);
         }
 
-        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(List<(string moduleName, string inputBlock)> inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0)
+        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(List<(string moduleName, string inputBlock)> inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0)
         {
             var expected = new Dictionary<string, int>
             {
                 { InspectionResults.UnreachableCaseInspection_Unreachable, unreachable },
+                { InspectionResults.UnreachableCaseInspection_InherentlyUnreachable, inherentlyUnreachable },
                 { InspectionResults.UnreachableCaseInspection_TypeMismatch, mismatch },
                 { InspectionResults.UnreachableCaseInspection_CaseElse, caseElse },
             };
@@ -2361,9 +2380,10 @@ End Sub";
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
             var actualMismatches = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_TypeMismatch));
             var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_CaseElse));
+            var actualInherentUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_InherentlyUnreachable));
 
-            var actualMsg = BuildResultString(actualUnreachable.Count(), actualMismatches.Count(), actualUnreachableCaseElses.Count());
-            var expectedMsg = BuildResultString(expected[InspectionResults.UnreachableCaseInspection_Unreachable], expected[InspectionResults.UnreachableCaseInspection_TypeMismatch], expected[InspectionResults.UnreachableCaseInspection_CaseElse]);
+            var actualMsg = BuildResultString(actualUnreachable.Count(), actualMismatches.Count(), actualUnreachableCaseElses.Count(), actualInherentUnreachable.Count());
+            var expectedMsg = BuildResultString(expected[InspectionResults.UnreachableCaseInspection_Unreachable], expected[InspectionResults.UnreachableCaseInspection_TypeMismatch], expected[InspectionResults.UnreachableCaseInspection_CaseElse], expected[InspectionResults.UnreachableCaseInspection_InherentlyUnreachable]);
 
             return (expectedMsg, actualMsg);
         }
@@ -2371,8 +2391,8 @@ End Sub";
         private static ComponentType NameToComponentType(string name)
             => name.StartsWith("Class") ? ComponentType.ClassModule : ComponentType.StandardModule;
 
-        private static string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount)
-            => $"Unreachable={unreachableCount}, Mismatch={mismatchCount}, CaseElse={caseElseCount}";
+        private static string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount, int inherentCount)
+            => $"Unreachable={unreachableCount}, Mismatch={mismatchCount}, CaseElse={caseElseCount}, Inherent={inherentCount}";
 
         private string GetSelectExpressionType(string inputCode)
         {

@@ -664,6 +664,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unreachable: Case Statement is malformed or never True.
+        /// </summary>
+        public static string UnreachableCaseInspection_InherentlyUnreachable {
+            get {
+                return ResourceManager.GetString("UnreachableCaseInspection_InherentlyUnreachable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Type: Case Statement cannot be evaluated as the Select Statement Type.
         /// </summary>
         public static string UnreachableCaseInspection_TypeMismatch {
