@@ -55,6 +55,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RegexAssistant",
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.CodeAnalysis", "Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj", "{DEF2FB9D-6E62-49D6-8E26-9983AC025768}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Main", "Rubberduck.Main\Rubberduck.Main.csproj", "{E8AB5D93-2D0F-423D-BC15-5EE118673E48}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -96,10 +99,19 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RubberduckTestsCodeAnalysis", "RubberduckTestsCodeAnalysis\RubberduckTestsCodeAnalysis.csproj", "{E9FC6518-F9E8-4E57-BD28-583A9EA69297}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Resources", "Rubberduck.Resources\Rubberduck.Resources.csproj", "{1B84B387-F7C4-4876-9BDF-C644C365359A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Refactorings", "Rubberduck.Refactorings\Rubberduck.Refactorings.csproj", "{D4B6A510-14E1-420A-A8D5-6A09890FD7D8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Interaction", "Rubberduck.Interaction\Rubberduck.Interaction.csproj", "{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
