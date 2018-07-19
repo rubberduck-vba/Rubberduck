@@ -9,7 +9,7 @@
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DesignHeight="300" d:DesignWidth="500" 
              d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -40,7 +40,6 @@
                     <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
-
 
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
 
@@ -119,40 +118,56 @@
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
                                   IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
                                   Command="{Binding FilterInspectionsByHintCommand}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionByHint, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
-                        
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                            <MenuItem.Icon>
+                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+
                         <MenuItem x:Name="FilterInspectionBySuggestion"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center"
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
                                   IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding FilterInspectionsByHintCommand}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  Command="{Binding FilterInspectionsBySuggestionCommand}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionBySuggestion, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
-                        
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                            <MenuItem.Icon>
+                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+
                         <MenuItem x:Name="FilterInspectionByWarning"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center"
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
                                   IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding FilterInspectionsByHintCommand}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  Command="{Binding FilterInspectionsByWarning}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionByWarning, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
-                        
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                            <MenuItem.Icon>
+                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+
                         <MenuItem x:Name="FilterInspectionByError"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center"
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
                                   IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding FilterInspectionsByHintCommand}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  Command="{Binding FilterInspectionsByErrorCommand}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionByError, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
-                        
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                            <MenuItem.Icon>
+                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+
                     </MenuItem>
                 </Menu>
 

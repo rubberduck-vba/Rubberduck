@@ -1637,6 +1637,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter by.
+        /// </summary>
+        public static string GroupingGrid_FilterBy {
+            get {
+                return ResourceManager.GetString("GroupingGrid_FilterBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grouping.
         /// </summary>
         public static string GroupingGrid_GroupingStyle {

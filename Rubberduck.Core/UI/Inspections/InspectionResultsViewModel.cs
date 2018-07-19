@@ -85,33 +85,18 @@ namespace Rubberduck.UI.Inspections
             FilterInspectionsByHintCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 FilterInspectionsByHint = (bool)param;
-                FilterInspectionsBySuggestion = !(bool)param;
-                FilterInspectionsByWarning = !(bool)param;
-                FilterInspectionsByError = !(bool)param;
             });
-
             FilterInspectionsBySuggestionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 FilterInspectionsBySuggestion = (bool)param;
-                FilterInspectionsByHint = !(bool)param;
-                FilterInspectionsByWarning = !(bool)param;
-                FilterInspectionsByError = !(bool)param;
             });
-
             FilterInspectionsByWarningCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 FilterInspectionsByWarning = (bool)param;
-                FilterInspectionsByHint = !(bool)param;
-                FilterInspectionsBySuggestion = !(bool)param;
-                FilterInspectionsByError = !(bool)param;
             });
-
             FilterInspectionsByErrorCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
                 FilterInspectionsByError = (bool)param;
-                FilterInspectionsByHint = !(bool)param;
-                FilterInspectionsBySuggestion = !(bool)param;
-                FilterInspectionsByWarning = !(bool)param;
             });
 
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -148,35 +133,15 @@ namespace Rubberduck.UI.Inspections
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
+        private ObservableCollection<IInspectionResult> _allResults = new ObservableCollection<IInspectionResult>();
+        private ObservableCollection<IInspectionResult> _resultSubset = new ObservableCollection<IInspectionResult>();
         public ObservableCollection<IInspectionResult> Results
         {
-            get => _results;
+            get => _resultSubset.Any() ? _resultSubset : _allResults;
+
             private set
             {
-                _results = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<IInspectionResult> _groupedResults = new ObservableCollection<IInspectionResult>();
-        private ObservableCollection<IInspectionResult> GroupedResults
-        {
-            get => _groupedResults;
-            set
-            {
-                _groupedResults = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<IInspectionResult> _filteredResults;
-        private ObservableCollection<IInspectionResult> FilteredResults
-        {
-            get => _filteredResults;
-            set
-            {
-                _filteredResults = value;
+                _resultSubset = value;
                 OnPropertyChanged();
             }
         }
@@ -249,13 +214,14 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    GroupedResults = new ObservableCollection<IInspectionResult>(
-                            _results.OrderBy(o => o.Inspection.InspectionType)
-                                .ThenBy(t => t.Inspection.Name)
-                                .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                                .ToList());
+                    _resultSubset = new ObservableCollection<IInspectionResult>(
+                            FilteredResults()
+                            .OrderBy(o => o.Inspection.InspectionType)
+                            .ThenBy(t => t.Inspection.Name)
+                            .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
+                            .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
+                            .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
+                            .ToList());
                 }
 
                 _groupByInspectionType = value;
@@ -273,16 +239,49 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    GroupedResults = new ObservableCollection<IInspectionResult>(
-                            _results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
-                                .ThenBy(t => t.Inspection.Name)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                                .ToList());
+                    _resultSubset = new ObservableCollection<IInspectionResult>(
+                            FilteredResults()
+                            .OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
+                            .ThenBy(t => t.Inspection.Name)
+                            .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
+                            .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
+                            .ToList());
                 }
 
                 _groupByLocation = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<IInspectionResult> FilteredResults()
+        {
+            if (_filterInspectionsByHint)
+            {
+                return new ObservableCollection<IInspectionResult>(
+                        _allResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Hint)
+                            .ToList());
+            }
+            else if (_filterInspectionsBySuggestion)
+            {
+                return new ObservableCollection<IInspectionResult>(
+                        _allResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Suggestion)
+                            .ToList());
+            }
+            else if (_filterInspectionsByWarning)
+            {
+                return new ObservableCollection<IInspectionResult>(
+                        _allResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Warning)
+                            .ToList());
+            }
+            else if (_filterInspectionsByError)
+            {
+                return new ObservableCollection<IInspectionResult>(
+                        _allResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Error)
+                            .ToList());
+            }
+            else
+            {
+                return _allResults;
             }
         }
 
@@ -294,18 +293,12 @@ namespace Rubberduck.UI.Inspections
             {
                 if (_filterInspectionsByHint == value) { return; }
 
+                _filterInspectionsByHint = value;
                 if (value)
                 {
-                    FilteredResults = new ObservableCollection<IInspectionResult>(
-                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Hint)
-                            .ToList());
+                    FilteredResults();
                 }
-                else
-                {
-                    FilteredResults = GroupedResults;
-                }
-
-                _filterInspectionsByHint = value;
+                
                 OnPropertyChanged();
             }
         }
@@ -318,18 +311,12 @@ namespace Rubberduck.UI.Inspections
             {
                 if (_filterInspectionsBySuggestion == value) { return; }
 
-                if(value)
+                _filterInspectionsBySuggestion = value;
+                if (value)
                 {
-                    FilteredResults = new ObservableCollection<IInspectionResult>(
-                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Suggestion)
-                            .ToList());
-                }
-                else
-                {
-                    FilteredResults = GroupedResults;
+                    FilteredResults();
                 }
 
-                _filterInspectionsBySuggestion = value;
                 OnPropertyChanged();
             }
         }
@@ -342,18 +329,12 @@ namespace Rubberduck.UI.Inspections
             {
                 if (_filterInspectionsByWarning == value) { return; }
 
-                if(value)
+                _filterInspectionsByWarning = value;
+                if (value)
                 {
-                    FilteredResults = new ObservableCollection<IInspectionResult>(
-                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Warning)
-                            .ToList());
-                }
-                else
-                {
-                    FilteredResults = GroupedResults;
+                    FilteredResults();
                 }
 
-                _filterInspectionsByWarning = value;
                 OnPropertyChanged();
             }
         }
@@ -366,18 +347,12 @@ namespace Rubberduck.UI.Inspections
             {
                 if (_filterInspectionsByError == value) { return; }
 
-                if(value)
+                _filterInspectionsByError = value;
+                if (value)
                 {
-                    FilteredResults = new ObservableCollection<IInspectionResult>(
-                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Error)
-                            .ToList());
-                }
-                else
-                {
-                    FilteredResults = GroupedResults;
+                    FilteredResults();
                 }
 
-                _filterInspectionsByError = value;
                 OnPropertyChanged();
             }
         }
@@ -487,9 +462,7 @@ namespace Rubberduck.UI.Inspections
                     .ToList();
             }
 
-            //Add filter to results
-
-            Results = new ObservableCollection<IInspectionResult>(results);
+            _allResults = new ObservableCollection<IInspectionResult>(results);
 
             _uiDispatcher.Invoke(() =>
             {
@@ -652,21 +625,21 @@ namespace Rubberduck.UI.Inspections
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_results == null)
+            if (_allResults == null)
             {
                 return;
             }
             ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = _allResults.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _results.Count == 1
+            var resource = _allResults.Count == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _allResults.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join("", _allResults.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title,columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
@@ -685,7 +658,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
-            return !IsBusy && _results != null && _results.Any();
+            return !IsBusy && _allResults != null && _allResults.Any();
         }
 
         public Visibility EmptyUIRefreshVisibility => _state.Projects.Count > 0 ? Visibility.Hidden : Visibility.Visible;

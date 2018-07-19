@@ -1303,4 +1303,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="InspectionResults_FilterByWarning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="GroupingGrid_FilterBy" xml:space="preserve">
+    <value>Filter by</value>
+  </data>
 </root>
