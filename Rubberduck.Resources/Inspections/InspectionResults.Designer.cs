@@ -682,7 +682,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement is handled by prior Case statement(s).
+        ///   Looks up a localized string similar to Unreachable: Case Statement is masked by prior Case statement(s).
         /// </summary>
         public static string UnreachableCaseInspection_Unreachable {
             get {
