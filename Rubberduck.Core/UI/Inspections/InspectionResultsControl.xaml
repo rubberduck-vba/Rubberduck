@@ -107,6 +107,55 @@
                     </MenuItem>
                 </Menu>
 
+                <Menu>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI , Key=GroupingGrid_FilterBy}" VerticalAlignment="Center">
+                        <MenuItem.Icon>
+                            <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayName.png"/>
+                        </MenuItem.Icon>
+
+                        <MenuItem x:Name="FilterInspectionByHint"
+                                  Style="{DynamicResource MenuItemStyle}"
+                                  VerticalAlignment="Center"
+                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
+                                  IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
+                                  Command="{Binding FilterInspectionsByHintCommand}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  IsCheckable="True"
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
+                        
+                        <MenuItem x:Name="FilterInspectionBySuggestion"
+                                  Style="{DynamicResource MenuItemStyle}"
+                                  VerticalAlignment="Center"
+                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
+                                  IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
+                                  Command="{Binding FilterInspectionsByHintCommand}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  IsCheckable="True"
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
+                        
+                        <MenuItem x:Name="FilterInspectionByWarning"
+                                  Style="{DynamicResource MenuItemStyle}"
+                                  VerticalAlignment="Center"
+                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
+                                  IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
+                                  Command="{Binding FilterInspectionsByHintCommand}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  IsCheckable="True"
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
+                        
+                        <MenuItem x:Name="FilterInspectionByError"
+                                  Style="{DynamicResource MenuItemStyle}"
+                                  VerticalAlignment="Center"
+                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
+                                  IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
+                                  Command="{Binding FilterInspectionsByHintCommand}"
+                                  CommandParameter="{Binding ElementName=FilterInspectionOn, Path=IsChecked}"
+                                  IsCheckable="True"
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn" />
+                        
+                    </MenuItem>
+                </Menu>
+
                 <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}">
@@ -199,7 +248,7 @@
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInAllProjectsCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_AllOpenProjects}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_All}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"

@@ -82,6 +82,38 @@ namespace Rubberduck.UI.Inspections
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             OpenInspectionSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
+            FilterInspectionsByHintCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsByHint = (bool)param;
+                FilterInspectionsBySuggestion = !(bool)param;
+                FilterInspectionsByWarning = !(bool)param;
+                FilterInspectionsByError = !(bool)param;
+            });
+
+            FilterInspectionsBySuggestionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsBySuggestion = (bool)param;
+                FilterInspectionsByHint = !(bool)param;
+                FilterInspectionsByWarning = !(bool)param;
+                FilterInspectionsByError = !(bool)param;
+            });
+
+            FilterInspectionsByWarningCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsByWarning = (bool)param;
+                FilterInspectionsByHint = !(bool)param;
+                FilterInspectionsBySuggestion = !(bool)param;
+                FilterInspectionsByError = !(bool)param;
+            });
+
+            FilterInspectionsByErrorCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsByError = (bool)param;
+                FilterInspectionsByHint = !(bool)param;
+                FilterInspectionsBySuggestion = !(bool)param;
+                FilterInspectionsByWarning = !(bool)param;
+            });
+
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             // todo: remove I/O work in constructor
@@ -123,6 +155,28 @@ namespace Rubberduck.UI.Inspections
             private set
             {
                 _results = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<IInspectionResult> _groupedResults = new ObservableCollection<IInspectionResult>();
+        private ObservableCollection<IInspectionResult> GroupedResults
+        {
+            get => _groupedResults;
+            set
+            {
+                _groupedResults = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<IInspectionResult> _filteredResults;
+        private ObservableCollection<IInspectionResult> FilteredResults
+        {
+            get => _filteredResults;
+            set
+            {
+                _filteredResults = value;
                 OnPropertyChanged();
             }
         }
@@ -195,8 +249,8 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
-                            Results.OrderBy(o => o.Inspection.InspectionType)
+                    GroupedResults = new ObservableCollection<IInspectionResult>(
+                            _results.OrderBy(o => o.Inspection.InspectionType)
                                 .ThenBy(t => t.Inspection.Name)
                                 .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
                                 .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
@@ -219,8 +273,8 @@ namespace Rubberduck.UI.Inspections
 
                 if (value)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
-                            Results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
+                    GroupedResults = new ObservableCollection<IInspectionResult>(
+                            _results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
                                 .ThenBy(t => t.Inspection.Name)
                                 .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
                                 .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
@@ -228,6 +282,102 @@ namespace Rubberduck.UI.Inspections
                 }
 
                 _groupByLocation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool _filterInspectionsByHint;
+        public bool FilterInspectionsByHint
+        {
+            get =>_filterInspectionsByHint;
+            set
+            {
+                if (_filterInspectionsByHint == value) { return; }
+
+                if (value)
+                {
+                    FilteredResults = new ObservableCollection<IInspectionResult>(
+                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Hint)
+                            .ToList());
+                }
+                else
+                {
+                    FilteredResults = GroupedResults;
+                }
+
+                _filterInspectionsByHint = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool _filterInspectionsBySuggestion;
+        public bool FilterInspectionsBySuggestion
+        {
+            get => _filterInspectionsBySuggestion;
+            set
+            {
+                if (_filterInspectionsBySuggestion == value) { return; }
+
+                if(value)
+                {
+                    FilteredResults = new ObservableCollection<IInspectionResult>(
+                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Suggestion)
+                            .ToList());
+                }
+                else
+                {
+                    FilteredResults = GroupedResults;
+                }
+
+                _filterInspectionsBySuggestion = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool _filterInspectionsByWarning;
+        public bool FilterInspectionsByWarning
+        {
+            get => _filterInspectionsByWarning;
+            set
+            {
+                if (_filterInspectionsByWarning == value) { return; }
+
+                if(value)
+                {
+                    FilteredResults = new ObservableCollection<IInspectionResult>(
+                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Warning)
+                            .ToList());
+                }
+                else
+                {
+                    FilteredResults = GroupedResults;
+                }
+
+                _filterInspectionsByWarning = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool _filterInspectionsByError;
+        public bool FilterInspectionsByError
+        {
+            get => _filterInspectionsByError;
+            set
+            {
+                if (_filterInspectionsByError == value) { return; }
+
+                if(value)
+                {
+                    FilteredResults = new ObservableCollection<IInspectionResult>(
+                        GroupedResults.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Error)
+                            .ToList());
+                }
+                else
+                {
+                    FilteredResults = GroupedResults;
+                }
+
+                _filterInspectionsByError = value;
                 OnPropertyChanged();
             }
         }
@@ -244,6 +394,10 @@ namespace Rubberduck.UI.Inspections
         public CommandBase DisableInspectionCommand { get; }
         public CommandBase CopyResultsCommand { get; }
         public CommandBase OpenInspectionSettings { get; }
+        public CommandBase FilterInspectionsByHintCommand { get; }
+        public CommandBase FilterInspectionsBySuggestionCommand { get; }
+        public CommandBase FilterInspectionsByWarningCommand { get; }
+        public CommandBase FilterInspectionsByErrorCommand { get; }
 
         private void OpenSettings(object param)
         {
@@ -332,6 +486,8 @@ namespace Rubberduck.UI.Inspections
                     .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
                     .ToList();
             }
+
+            //Add filter to results
 
             Results = new ObservableCollection<IInspectionResult>(results);
 
