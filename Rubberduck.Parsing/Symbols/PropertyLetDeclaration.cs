@@ -63,6 +63,21 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList(); 
         }
 
+        public PropertyLetDeclaration(ComField field, Declaration parent, QualifiedModuleName module,
+            Attributes attributes)
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,
+                null,
+                attributes)
+        { }
+
         public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
 
         public void AddParameter(ParameterDeclaration parameter)

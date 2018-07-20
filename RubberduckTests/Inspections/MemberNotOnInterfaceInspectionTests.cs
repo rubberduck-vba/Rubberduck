@@ -290,7 +290,7 @@ End Sub
             projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
                 //.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
-                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms);
+                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0);
 
             mockVbe.AddProject(projectBuilder.Build());
 

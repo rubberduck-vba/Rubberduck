@@ -167,7 +167,7 @@ namespace Rubberduck.Inspections.Concrete
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {
                 var name = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
-                var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
+                var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name, true);
                 var key = Tuple.Create(_currentModuleName, annotationType);
                 _annotationCounts[key]++;
 
