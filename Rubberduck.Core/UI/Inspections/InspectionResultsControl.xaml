@@ -9,7 +9,7 @@
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DesignHeight="300" d:DesignWidth="500" 
              d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -40,7 +40,6 @@
                     <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
-
 
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
 
@@ -199,7 +198,7 @@
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInAllProjectsCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_AllOpenProjects}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_All}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
