@@ -17,7 +17,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                         .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Constant))
                          .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter))
                          where (item.DeclarationType != DeclarationType.Parameter || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
                          && item.DeclarationType != DeclarationType.Control

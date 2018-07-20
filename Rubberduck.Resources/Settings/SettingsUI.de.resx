@@ -126,6 +126,9 @@
   <data name="ImportPageSettingsButton" xml:space="preserve">
     <value>Importieren</value>
   </data>
+  <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
+    <value>Einstellungen der automatischen Vervollständigung</value>
+  </data>
   <data name="PageHeader_GeneralSettings" xml:space="preserve">
     <value>Allgemeine Einstellungen</value>
   </data>
@@ -145,7 +148,7 @@
     <value>Fenstereinstellungen</value>
   </data>
   <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
-    <value>Configure which autocompletions are enabled.</value>
+    <value>Konfigurieren Sie, welche Autovervollständigungen aktiviert sind.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
     <value>[Ok] zum Schließen und Speichern oder [Abbrechen] zum Verwerfen der Änderungen.</value>
@@ -169,7 +172,7 @@
     <value>Zurücksetzen</value>
   </data>
   <data name="SelectAll" xml:space="preserve">
-    <value>All</value>
+    <value>Alle</value>
   </data>
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Einstellungen</value>

@@ -15,6 +15,7 @@ namespace Rubberduck.Parsing.ComReflection
     public interface IComTypeWithMembers : IComType
     {
         IEnumerable<ComMember> Members { get; }
+        IEnumerable<ComField> Properties { get; }
         ComMember DefaultMember { get; }
         bool IsExtensible { get; }
     }
@@ -27,31 +28,30 @@ namespace Rubberduck.Parsing.ComReflection
     [DebuggerDisplay("{Name}")]
     public abstract class ComType : ComBase, IComType
     {
-        public bool IsAppObject { get; private set; }
-        public bool IsPreDeclared { get; private set; }
-        public bool IsHidden { get; private set; }
-        public bool IsRestricted { get; private set; }
+        public bool IsAppObject { get; }
+        public bool IsPreDeclared { get; }
+        public bool IsHidden { get; }
+        public bool IsRestricted { get; }
         
         protected ComType(ITypeInfo info, TYPEATTR attrib)
             : base(info)
         {
-            SetFlagsFromTypeAttr(attrib);
+            Guid = attrib.guid;
+            IsAppObject = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT);
+            IsPreDeclared = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID);
+            IsHidden = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FHIDDEN);
+            IsRestricted = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);
         }
 
         protected ComType(ITypeLib typeLib, TYPEATTR attrib, int index)
             : base(typeLib, index)
         {
             Index = index;
-            SetFlagsFromTypeAttr(attrib);
-        }
-
-        private void SetFlagsFromTypeAttr(TYPEATTR attrib)
-        {
             Guid = attrib.guid;
             IsAppObject = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT);
             IsPreDeclared = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FPREDECLID);
             IsHidden = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FHIDDEN);
-            IsRestricted = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);           
+            IsRestricted = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);
         }
     }
 }

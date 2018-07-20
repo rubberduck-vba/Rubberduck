@@ -158,24 +158,24 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>does not expose compiler-defined arguments, such as WIN64, VBA7 etc, which must be determined via the running process</remarks>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
-        /// <returns>returns a Dictionary<string, string>, parsed from the conditional arguments string</returns>
-        Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBE ide, string projectName);
+        /// <returns>returns a Dictionary<string, short>, parsed from the conditional arguments string</returns>
+        Dictionary<string, short> GetProjectConditionalCompilationArgs(IVBE ide, string projectName);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
         /// </summary>
         /// <remarks>does not expose compiler-defined arguments, such as WIN64, VBA7 etc, which must be determined via the running process</remarks>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
-        /// <returns>returns a Dictionary<string, string>, parsed from the conditional arguments string</returns>
-        Dictionary<string, string> GetProjectConditionalCompilationArgs(IVBProject project);
+        /// <returns>returns a Dictionary<string, short>, parsed from the conditional arguments string</returns>
+        Dictionary<string, short> GetProjectConditionalCompilationArgs(IVBProject project);
 
         /// <summary>
         /// Retrieves the developer-defined conditional compilation arguments of a VBA project
         /// </summary>
         /// <remarks>does not expose compiler-defined arguments, such as WIN64, VBA7 etc, which must be determined via the running process</remarks>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
-        /// <returns>returns a Dictionary<string, string>, parsed from the conditional arguments string</returns>
-        Dictionary<string, string> GetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib);
+        /// <returns>returns a Dictionary<string, short>, parsed from the conditional arguments string</returns>
+        Dictionary<string, short> GetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
@@ -208,24 +208,24 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <remarks>don't set compiler-defined arguments, such as WIN64, VBA7 etc</remarks>
         /// <param name="ide">Safe-com wrapper representing the VBE</param>
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
-        /// <param name="newConditionalArgs">Dictionary<string, string> representing the argument name-value pairs</param>
-        void SetProjectConditionalCompilationArgs(IVBE ide, string projectName, Dictionary<string, string> newConditionalArgs);
+        /// <param name="newConditionalArgs">Dictionary<string, short> representing the argument name-value pairs</param>
+        void SetProjectConditionalCompilationArgs(IVBE ide, string projectName, Dictionary<string, short> newConditionalArgs);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
         /// </summary>
         /// <remarks>don't set compiler-defined arguments, such as WIN64, VBA7 etc</remarks>
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
-        /// <param name="newConditionalArgs">Dictionary<string, string> representing the argument name-value pairs</param>
-        void SetProjectConditionalCompilationArgs(IVBProject project, Dictionary<string, string> newConditionalArgs);
+        /// <param name="newConditionalArgs">Dictionary<string, short> representing the argument name-value pairs</param>
+        void SetProjectConditionalCompilationArgs(IVBProject project, Dictionary<string, short> newConditionalArgs);
 
         /// <summary>
         /// Sets the developer-defined conditional compilation arguments of a VBA project
         /// </summary>
         /// <remarks>don't set compiler-defined arguments, such as WIN64, VBA7 etc</remarks>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
-        /// <param name="newConditionalArgs">Dictionary<string, string> representing the argument name-value pairs</param>
-        void SetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib, Dictionary<string, string> newConditionalArgs);
+        /// <param name="newConditionalArgs">Dictionary<string, short> representing the argument name-value pairs</param>
+        void SetProjectConditionalCompilationArgs(TypeLibWrapper projectTypeLib, Dictionary<string, short> newConditionalArgs);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
