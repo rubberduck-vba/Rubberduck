@@ -60,6 +60,7 @@ namespace Rubberduck.UI.UnitTesting
             RunFailedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
             RunPassedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
             RunSelectedTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
+            RunSelectedCategoryTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedCategoryTestsCommand, CanExecuteRunSelectedCategoryTestsCommand);
 
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand);
 
@@ -67,14 +68,35 @@ namespace Rubberduck.UI.UnitTesting
 
             SetOutcomeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                GroupByOutcome = (bool)param;
-                GroupByLocation = !(bool)param;
+                GroupByOutcome = true;
+
+                if ((bool)param)
+                {
+                    GroupByLocation = false;
+                    GroupByCategory = false;
+                }
             });
 
             SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
-                GroupByLocation = (bool)param;
-                GroupByOutcome = !(bool)param;
+                GroupByLocation = true;
+
+                if ((bool) param)
+                {
+                    GroupByOutcome = false;
+                    GroupByCategory = false;
+                }
+            });
+
+            SetCategoryGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                GroupByCategory = true;
+
+                if ((bool)param)
+                {
+                    GroupByOutcome = false;
+                    GroupByLocation = false;
+                }
             });
         }
 
@@ -162,9 +184,27 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        private bool _groupByCategory;
+        public bool GroupByCategory
+        {
+            get => _groupByCategory;
+            set
+            {
+                if (_groupByCategory == value)
+                {
+                    return;
+                }
+
+                _groupByCategory = value;
+                OnPropertyChanged();
+            }
+        }
+
         public CommandBase SetOutcomeGroupingCommand { get; }
 
         public CommandBase SetLocationGroupingCommand { get; }
+
+        public CommandBase SetCategoryGroupingCommand { get; }
 
         public long TotalDuration { get; private set; }
 
@@ -194,6 +234,8 @@ namespace Rubberduck.UI.UnitTesting
         public INavigateCommand NavigateCommand => _navigateCommand;
 
         public CommandBase RunSelectedTestCommand { get; }
+
+        public CommandBase RunSelectedCategoryTestsCommand { get; }
 
         public CommandBase OpenTestSettingsCommand { get; }
 
@@ -380,6 +422,33 @@ namespace Rubberduck.UI.UnitTesting
             //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
 
             _clipboard.Flush();
+        }
+
+        private void ExecuteRunSelectedCategoryTestsCommand(object obj)
+        {
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
+
+            Model.ClearLastRun();
+
+            var stopwatch = new Stopwatch();
+            Model.IsBusy = true;
+
+            stopwatch.Start();
+            _testEngine.Run(Model.Tests.Where(test => test.Category == SelectedTest.Category));
+            stopwatch.Stop();
+
+            Model.IsBusy = false;
+            TotalDuration = stopwatch.ElapsedMilliseconds;
+        }
+
+        private bool CanExecuteRunSelectedCategoryTestsCommand(object obj)
+        {
+            if (Model.IsBusy || SelectedItem == null)
+            {
+                return false;
+            }
+
+            return ((TestMethod) SelectedItem).Category != "";
         }
 
         //KEEP THIS, AS IT MAKES FOR THE BASIS OF A USEFUL *SUMMARY* REPORT
