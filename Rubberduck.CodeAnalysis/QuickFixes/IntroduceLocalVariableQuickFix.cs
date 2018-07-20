@@ -1,6 +1,8 @@
 using System;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
@@ -22,8 +24,25 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            var instruction = $"{Environment.NewLine}Dim {result.Target.IdentifierName} As Variant{Environment.NewLine}";
-            _state.GetRewriter(result.Target).InsertBefore(result.Target.Context.Start.TokenIndex, instruction);
+            var identifierContext = result.Target.Context;
+            var enclosingStatmentContext = identifierContext.GetAncestor<VBAParser.BlockStmtContext>();
+            var instruction = IdentifierDeclarationText(result.Target.IdentifierName, EndOfStatementText(enclosingStatmentContext));
+            _state.GetRewriter(result.Target).InsertBefore(enclosingStatmentContext.Start.TokenIndex, instruction);
+        }
+
+        private string EndOfStatementText(VBAParser.BlockStmtContext context)
+        {
+            if (context.TryGetPrecedingContext<VBAParser.EndOfStatementContext>(out var endOfStmtContext))
+            {
+                return endOfStmtContext.GetText();
+            }
+
+            return Environment.NewLine;
+        }
+
+        private string IdentifierDeclarationText(string identifierName, string endOfStatementText)
+        {
+            return $"Dim {identifierName} As Variant{endOfStatementText}";
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IntroduceLocalVariableQuickFix;
