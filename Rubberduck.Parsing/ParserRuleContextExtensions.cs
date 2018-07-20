@@ -145,12 +145,50 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
+        /// Returns the context's first ancestor containing the token with the specified token index or the context itels if it already contains the token.
+        /// </summary>
+        public static ParserRuleContext GetAncestorContainingTokenIndex(this ParserRuleContext context, int tokenIndex)
+        {
+            if (context == null)
+            {
+                return default;
+            }
+
+            if (context.ContainsTokenIndex(tokenIndex))
+            {
+                return context;
+            }
+
+            var parent = context.Parent as ParserRuleContext;
+
+            if (parent == null)
+            {
+                return default;
+            }
+
+            return GetAncestorContainingTokenIndex(parent, tokenIndex);
+        }
+
+        /// <summary>
+        /// Determines whether the context contains the token with the specified token index.
+        /// </summary>
+        public static bool ContainsTokenIndex(this ParserRuleContext context, int tokenIndex)
+        {
+            if (context == null)
+            {
+                return false;
+            }
+
+            return context.Start.TokenIndex <= tokenIndex && tokenIndex <= context.Stop.TokenIndex;
+        }
+
+        /// <summary>
         /// Returns the context's first descendent of the generic Type.
         /// </summary>
         public static TContext GetDescendent<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
         {
             var descendents = GetDescendents<TContext>(context);
-            return descendents.Any() ? descendents.First() : null;
+            return descendents.FirstOrDefault();
         }
 
         /// <summary>
@@ -171,6 +209,71 @@ namespace Rubberduck.Parsing
         {
             opCtxt = ctxt.GetChild<TContext>();
             return opCtxt != null;
+        }
+
+        /// <summary>
+        /// Returns the context's first descendent of the generic type containing the token with the specified token index.
+        /// </summary>
+        public static TContext GetDescendentContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
+        {
+            var descendents = GetDescendentsContainingTokenIndex<TContext>(context, tokenIndex);
+            return descendents.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Returns all the context's descendents of the generic type containing the token with the specified token index.
+        /// </summary>
+        public static IEnumerable<TContext> GetDescendentsContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
+        {
+            var walker = new ParseTreeWalker();
+            var listener = new ChildNodeWithTokenPositionListener<TContext>(tokenIndex);
+            walker.Walk(listener, context);
+            return listener.Matches;
+        }
+
+        /// <summary>
+        /// Returns the context containing the token precedint the context provided it is of the specified generic type.
+        /// </summary>
+        public static bool TryGetPrecedingContext<TContext>(this ParserRuleContext context, out TContext precedingContext) where TContext : ParserRuleContext
+        {
+            precedingContext = null;
+            if (context == null)
+            {
+                return false;
+            }
+
+            var precedingTokenIndex = context.Start.TokenIndex - 1;
+            var ancestorContainingPrecedingIndex = context.GetAncestorContainingTokenIndex(precedingTokenIndex);
+
+            if (ancestorContainingPrecedingIndex == null)
+            {
+                return false;
+            }
+
+            precedingContext = ancestorContainingPrecedingIndex.GetDescendentContainingTokenIndex<TContext>(precedingTokenIndex);
+            return precedingContext != null;
+        }
+
+        private class ChildNodeWithTokenPositionListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
+        {
+            private readonly int _tokenIndex;
+
+            private readonly HashSet<TContext> _matches = new HashSet<TContext>();
+            public IEnumerable<TContext> Matches => _matches;
+
+            public ChildNodeWithTokenPositionListener(int tokenIndex)
+            {
+                _tokenIndex = tokenIndex;
+            }
+
+            public override void EnterEveryRule(ParserRuleContext context)
+            {
+                var match = context as TContext;
+                if (match != null && match.ContainsTokenIndex(_tokenIndex))
+                {
+                    _matches.Add(match);
+                }
+            }
         }
 
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
