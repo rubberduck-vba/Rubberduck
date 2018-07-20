@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -26,33 +27,26 @@ namespace Rubberduck.Parsing.ComReflection
                     Name,
                     TypeName,
                     IsOptional && DefaultValue != null ? " = " : string.Empty,
-                    IsOptional && DefaultValue != null ? 
-                        IsEnumMember ? DefaultAsEnum : DefaultValue 
+                    IsOptional && DefaultValue != null ?
+                        IsEnumMember ? DefaultAsEnum : DefaultValue
                         : string.Empty);
             }
         }
 
         public bool IsArray { get; private set; }
         public bool IsByRef { get; private set; }
-        public bool IsOptional { get; private set; }
+        public bool IsOptional { get; }
+        public bool IsReturnValue { get; }
         public bool IsParamArray { get; set; }
 
         private Guid _enumGuid = Guid.Empty;
-        public bool IsEnumMember
-        {
-            get { return !_enumGuid.Equals(Guid.Empty); }
-        }
-        public object DefaultValue { get; private set; }
-        public string DefaultAsEnum { get; private set; }
+        public bool IsEnumMember => !_enumGuid.Equals(Guid.Empty);
+
+        public object DefaultValue { get; }
+        public string DefaultAsEnum { get; }
 
         private string _type = "Object";
-        public string TypeName
-        {
-            get
-            {
-                return IsArray ? _type + "()" : _type;
-            }
-        }
+        public string TypeName => IsArray ? $"{_type}()" : _type;
 
         public ComParameter(ELEMDESC elemDesc, ITypeInfo info, string name)
         {
@@ -62,6 +56,7 @@ namespace Rubberduck.Parsing.ComReflection
             var paramDesc = elemDesc.desc.paramdesc;
             GetParameterType(elemDesc.tdesc, info);
             IsOptional = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
+            IsReturnValue = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FRETVAL);
             if (!paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FHASDEFAULT) || string.IsNullOrEmpty(name))
             {
                 DefaultAsEnum = string.Empty;
@@ -73,8 +68,7 @@ namespace Rubberduck.Parsing.ComReflection
             var defValue = new ComVariant(paramDesc.lpVarValue + Marshal.SizeOf(typeof(ulong)));
             DefaultValue = defValue.Value;
 
-            ComEnumeration enumType;
-            if (!IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(_enumGuid, out enumType))
+            if (!IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(_enumGuid, out ComEnumeration enumType))
             {
                 return;
             }
@@ -98,7 +92,7 @@ namespace Rubberduck.Parsing.ComReflection
                 case VarEnum.VT_PTR:
                     tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
                     GetParameterType(tdesc, info);
-                    IsByRef = true;                  
+                    IsByRef = true;
                     break;
                 case VarEnum.VT_USERDEFINED:
                     int href;
@@ -108,19 +102,18 @@ namespace Rubberduck.Parsing.ComReflection
                     }
                     try
                     {
-                        ITypeInfo refTypeInfo;
-                        info.GetRefTypeInfo(href, out refTypeInfo);
-
-                        IntPtr attribPtr;
-                        refTypeInfo.GetTypeAttr(out attribPtr);
-                        var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
-                        if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                        info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
+                        refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
+                        using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
                         {
-                            _enumGuid = attribs.guid;
+                            var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
+                            if (attribs.typekind == TYPEKIND.TKIND_ENUM)
+                            {
+                                _enumGuid = attribs.guid;
+                            }
+                            _type = new ComDocumentation(refTypeInfo, -1).Name;
                         }
-                        _type = new ComDocumentation(refTypeInfo, -1).Name;
-                        refTypeInfo.ReleaseTypeAttr(attribPtr);
-                    }                    
+                    }
                     catch (COMException) { }
                     break;
                 case VarEnum.VT_SAFEARRAY:
@@ -131,8 +124,7 @@ namespace Rubberduck.Parsing.ComReflection
                     IsArray = true;
                     break;
                 default:
-                    string result;
-                    if (ComVariant.TypeNames.TryGetValue(vt, out result))
+                    if (ComVariant.TypeNames.TryGetValue(vt, out string result))
                     {
                         _type = result;
                     }

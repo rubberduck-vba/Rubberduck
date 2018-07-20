@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                return _vbVersion < 8;
+                return _vbVersion >= 7;
             }
         }
 
@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                return _vbVersion < 7;
+                return _vbVersion >= 6;
             }
         }
 
@@ -38,7 +38,7 @@ namespace Rubberduck.Parsing.PreProcessing
         {
             get
             {
-                return Environment.Is64BitOperatingSystem;
+                return IntPtr.Size >= 8;
             }
         }
 

@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -15,6 +16,7 @@ namespace Rubberduck.Parsing.PreProcessing
         public VBAPreprocessorVisitor(
             SymbolTable<string, IValue> symbolTable, 
             VBAPredefinedCompilationConstants predefinedConstants,
+            Dictionary<string, short> userDefinedConstants,
             ICharStream stream,
             CommonTokenStream tokenStream)
         {
@@ -39,16 +41,25 @@ namespace Rubberduck.Parsing.PreProcessing
             _tokenStream = tokenStream;
             _symbolTable = symbolTable;
             AddPredefinedConstantsToSymbolTable(predefinedConstants);
+            AddUserDefinedConstantsToSymbolTable(userDefinedConstants);
         }
 
         private void AddPredefinedConstantsToSymbolTable(VBAPredefinedCompilationConstants predefinedConstants)
         {
-            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new BoolValue(predefinedConstants.VBA6));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA7_NAME, new BoolValue(predefinedConstants.VBA7));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN64_NAME, new BoolValue(predefinedConstants.Win64));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new BoolValue(predefinedConstants.Win32));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new BoolValue(predefinedConstants.Win16));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new BoolValue(predefinedConstants.Mac));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new DecimalValue(predefinedConstants.VBA6 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA7_NAME, new DecimalValue(predefinedConstants.VBA7 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN64_NAME, new DecimalValue(predefinedConstants.Win64 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new DecimalValue(predefinedConstants.Win32 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new DecimalValue(predefinedConstants.Win16 ? 1 : 0));
+            _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new DecimalValue(predefinedConstants.Mac ? 1 : 0));
+        }
+
+        private void AddUserDefinedConstantsToSymbolTable(Dictionary<string, short> userDefinedConstants)
+        {
+            foreach (var constant in userDefinedConstants)
+            {
+                _symbolTable.Add(constant.Key, new DecimalValue(constant.Value));
+            }
         }
 
         public override IExpression VisitCompilationUnit([NotNull] VBAConditionalCompilationParser.CompilationUnitContext context)

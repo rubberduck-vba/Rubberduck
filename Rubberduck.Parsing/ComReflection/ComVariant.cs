@@ -73,8 +73,14 @@ namespace Rubberduck.Parsing.ComReflection
 
         public bool Equals(ComVariant other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
             return VariantType == other.VariantType && Equals(Value, other.Value);
         }
 

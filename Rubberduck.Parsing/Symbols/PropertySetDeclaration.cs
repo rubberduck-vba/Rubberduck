@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
@@ -61,6 +62,20 @@ namespace Rubberduck.Parsing.Symbols
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
                     .ToList();
         }
+
+        public PropertySetDeclaration(ComField field, Declaration parent, QualifiedModuleName module,
+            Attributes attributes) : this(
+            module.QualifyMemberName(field.Name),
+            parent,
+            parent,
+            field.ValueType,
+            Accessibility.Global,
+            null,
+            Selection.Home,
+            false,
+            null,
+            attributes)
+        { }
 
         public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
 
