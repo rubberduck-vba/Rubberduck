@@ -258,28 +258,29 @@ namespace Rubberduck.UI.Inspections
                         _results.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Hint)
                             .ToList());
             }
-            else if (_filterInspectionsBySuggestion)
+
+            if (_filterInspectionsBySuggestion)
             {
                 return new ObservableCollection<IInspectionResult>(
-                        _results.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Suggestion)
-                            .ToList());
+                    _results.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Suggestion)
+                        .ToList());
             }
-            else if (_filterInspectionsByWarning)
+
+            if (_filterInspectionsByWarning)
             {
                 return new ObservableCollection<IInspectionResult>(
-                        _results.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Warning)
-                            .ToList());
+                    _results.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Warning)
+                        .ToList());
             }
-            else if (_filterInspectionsByError)
+
+            if (_filterInspectionsByError)
             {
                 return new ObservableCollection<IInspectionResult>(
-                        _results.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Error)
-                            .ToList());
+                    _results.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Error)
+                        .ToList());
             }
-            else
-            {
-                return _results;
-            }
+
+            return _results;
         }
 
         public bool _filterInspectionsByHint;
@@ -300,7 +301,7 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        public bool _filterInspectionsBySuggestion;
+        private bool _filterInspectionsBySuggestion;
         public bool FilterInspectionsBySuggestion
         {
             get => _filterInspectionsBySuggestion;
@@ -318,7 +319,7 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        public bool _filterInspectionsByWarning;
+        private bool _filterInspectionsByWarning;
         public bool FilterInspectionsByWarning
         {
             get => _filterInspectionsByWarning;
@@ -336,7 +337,7 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        public bool _filterInspectionsByError;
+        private bool _filterInspectionsByError;
         public bool FilterInspectionsByError
         {
             get => _filterInspectionsByError;
