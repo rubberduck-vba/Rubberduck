@@ -82,6 +82,23 @@ namespace Rubberduck.UI.Inspections
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             OpenInspectionSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
+            FilterInspectionsByHintCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsByHint = (bool)param;
+            });
+            FilterInspectionsBySuggestionCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsBySuggestion = (bool)param;
+            });
+            FilterInspectionsByWarningCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsByWarning = (bool)param;
+            });
+            FilterInspectionsByErrorCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            {
+                FilterInspectionsByError = (bool)param;
+            });
+
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             // todo: remove I/O work in constructor
@@ -116,10 +133,12 @@ namespace Rubberduck.UI.Inspections
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
+        private ObservableCollection<IInspectionResult> _allResults = new ObservableCollection<IInspectionResult>();
+        private ObservableCollection<IInspectionResult> _resultSubset = new ObservableCollection<IInspectionResult>();
         public ObservableCollection<IInspectionResult> Results
         {
-            get => _results;
+            get => _resultSubset.Any() ? _resultSubset : _allResults;
+
             private set
             {
                 _results = value;
@@ -496,21 +515,21 @@ namespace Rubberduck.UI.Inspections
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_results == null)
+            if (_allResults == null)
             {
                 return;
             }
             ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = _allResults.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _results.Count == 1
+            var resource = _allResults.Count == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _allResults.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join("", _allResults.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title,columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
@@ -529,7 +548,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
-            return !IsBusy && _results != null && _results.Any();
+            return !IsBusy && _allResults != null && _allResults.Any();
         }
 
         public Visibility EmptyUIRefreshVisibility => _state.Projects.Count > 0 ? Visibility.Hidden : Visibility.Visible;
