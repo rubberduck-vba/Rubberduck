@@ -109,6 +109,7 @@
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
+    <Compile Include="QuickFixes\IntroduceLocalVariableQuickFixTests.cs" />
     <Compile Include="Settings\AutoCompleteSettingsTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Mocks\MockExtentions.cs" />
