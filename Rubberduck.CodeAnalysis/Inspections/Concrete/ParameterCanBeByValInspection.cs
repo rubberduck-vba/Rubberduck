@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
@@ -91,6 +92,9 @@ namespace Rubberduck.Inspections.Concrete
 
                     for (var i = 0; i < parameters.Count; i++)
                     {
+                        //If you hit this assert, congratulations! you've found a test case for https://github.com/rubberduck-vba/Rubberduck/issues/3906
+                        //Please examine the code, and if possible, either fix the indexing on this or upload your failing code to the GitHub issue.
+                        Debug.Assert(parametersAreByRef.Count == parameters.Count);
                         parametersAreByRef[i] = parametersAreByRef[i] &&
                                                 !IsUsedAsByRefParam(declarations, parameters[i]) &&
                                                 ((VBAParser.ArgContext) parameters[i].Context).BYVAL() == null &&
