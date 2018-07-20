@@ -84,7 +84,7 @@
                         <MenuItem.Icon>
                             <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
                         </MenuItem.Icon>
-
+                        
                         <MenuItem x:Name="GroupByInspectionType"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
@@ -114,13 +114,10 @@
 
                         <MenuItem x:Name="FilterInspectionByHint"
                                   Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center"
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
                                   IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding FilterInspectionsByHintCommand}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionByHint, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
                                 <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png"/>
                             </MenuItem.Icon>
@@ -128,13 +125,10 @@
 
                         <MenuItem x:Name="FilterInspectionBySuggestion"
                                   Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center"
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
                                   IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding FilterInspectionsBySuggestionCommand}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionBySuggestion, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
                                 <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png"/>
                             </MenuItem.Icon>
@@ -145,10 +139,8 @@
                                   VerticalAlignment="Center"
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
                                   IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding FilterInspectionsByWarning}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionByWarning, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
                                 <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png"/>
                             </MenuItem.Icon>
@@ -156,13 +148,10 @@
 
                         <MenuItem x:Name="FilterInspectionByError"
                                   Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center"
                                   Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
                                   IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding FilterInspectionsByErrorCommand}"
-                                  CommandParameter="{Binding ElementName=FilterInspectionByError, Path=IsChecked}"
                                   IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterOn">
+                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
                                 <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png"/>
                             </MenuItem.Icon>
