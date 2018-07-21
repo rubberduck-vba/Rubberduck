@@ -39,7 +39,7 @@ namespace RubberduckTests.Grammar
         [Test]
         public void TestMethodAnnotation_TypeIsTestTest()
         {
-            var annotation = new TestMethodAnnotation(new QualifiedSelection(), null);
+            var annotation = new TestMethodAnnotation(new QualifiedSelection(), new[] { "param" });
             Assert.AreEqual(AnnotationType.TestMethod, annotation.AnnotationType);
         }
 
