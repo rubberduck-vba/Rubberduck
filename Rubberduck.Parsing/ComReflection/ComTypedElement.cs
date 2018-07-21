@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.ComReflection
                     if (member != null)
                     {
                         typeName = member.TypeName;
-                    }                    
+                    }
                 }
                 else if (IsAlias && ComProject.KnownAliases.TryGetValue(AliasGuid, out ComAlias alias))
                 {
@@ -86,7 +86,7 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
-        protected ComTypedElement(ITypeInfo info, VARDESC varDesc) 
+        protected ComTypedElement(ITypeInfo info, VARDESC varDesc)
         {
             var names = new string[1];
             info.GetNames(varDesc.memid, names, names.Length, out int count);
@@ -116,49 +116,49 @@ namespace Rubberduck.Parsing.ComReflection
 
         private void GetFieldType(TYPEDESC desc, ITypeInfo info)
         {
-            // ReSharper disable once SwitchStatementMissingSomeCases  <-- Don't care, the processed cases are the exceptions, default is the rule.
-            switch ((VarEnum)desc.vt)
+            if (Convert.ToBoolean(desc.vt & (int)VarEnum.VT_PTR))
             {
-                case VarEnum.VT_PTR:
-                    // ReSharper disable once TailRecursiveCall  <-- A stack allocation is *not* the heavy part of this call, the marshal is. Micro optimization at best.
-                    GetFieldType(Marshal.PtrToStructure<TYPEDESC>(desc.lpValue), info);
-                    break;
-                case VarEnum.VT_USERDEFINED:
-                    int href;
-                    unchecked
+                // ReSharper disable once TailRecursiveCall  <-- A stack allocation is *not* the heavy part of this call, the marshal is. Micro optimization at best.
+                GetFieldType(Marshal.PtrToStructure<TYPEDESC>(desc.lpValue), info);
+            }
+            else if (Convert.ToBoolean(desc.vt & (int)VarEnum.VT_USERDEFINED))
+            {
+                int href;
+                unchecked
+                {
+                    href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
+                }
+                try
+                {
+                    info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
+                    refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
+                    using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
                     {
-                        href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
-                    }
-                    try
-                    {
-                        info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
-                        refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
-                        using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
+                        var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
+                        if (attribs.typekind == TYPEKIND.TKIND_ENUM)
                         {
-                            var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
-                            if (attribs.typekind == TYPEKIND.TKIND_ENUM)
-                            {
-                                EnumGuid = attribs.guid;
-                            }
-                            else if (attribs.typekind == TYPEKIND.TKIND_ALIAS)
-                            {
-                                AliasGuid = attribs.guid;
-                            }
-                            IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
-                            _type = new ComDocumentation(refTypeInfo, -1).Name;
+                            EnumGuid = attribs.guid;
                         }
+                        else if (attribs.typekind == TYPEKIND.TKIND_ALIAS)
+                        {
+                            AliasGuid = attribs.guid;
+                        }
+                        IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
+                        _type = new ComDocumentation(refTypeInfo, -1).Name;
                     }
-                    catch (COMException) { }
-                    break;
-                case VarEnum.VT_SAFEARRAY:
-                case VarEnum.VT_CARRAY:
-                case VarEnum.VT_ARRAY:
-                    GetFieldType(Marshal.PtrToStructure<TYPEDESC>(desc.lpValue), info);
-                    IsArray = true;
-                    break;
-                default:
-                    _type = ComVariant.TypeNames.TryGetValue((VarEnum)desc.vt, out var typeName) ? typeName : "Object";
-                    break;
+                }
+                catch (COMException) { }
+            }
+            else if (Convert.ToBoolean(desc.vt & (int)VarEnum.VT_SAFEARRAY) ||
+                     Convert.ToBoolean(desc.vt & (int)VarEnum.VT_CARRAY) ||
+                     Convert.ToBoolean(desc.vt & (int)VarEnum.VT_ARRAY))
+            {
+                GetFieldType(Marshal.PtrToStructure<TYPEDESC>(desc.lpValue), info);
+                IsArray = true;
+            }
+            else
+            {
+                _type = ComVariant.TypeNames.TryGetValue((VarEnum)desc.vt, out var typeName) ? typeName : "Object";
             }
         }
     }

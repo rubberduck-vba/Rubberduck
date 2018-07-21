@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -37,7 +38,7 @@ namespace Rubberduck.Parsing.ComReflection
             var paramDesc = elemDesc.desc.paramdesc;
             IsOptional = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FOPT);
             IsReturnValue = paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FRETVAL);
-            IsByRef = (VarEnum) elemDesc.tdesc.vt == VarEnum.VT_PTR;
+            IsByRef = Convert.ToBoolean(elemDesc.tdesc.vt & (int)VarEnum.VT_PTR);
 
             if (!paramDesc.wParamFlags.HasFlag(PARAMFLAG.PARAMFLAG_FHASDEFAULT) || string.IsNullOrEmpty(name))
             {
