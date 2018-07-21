@@ -797,6 +797,7 @@ End Sub";
             var selection = new Selection(2, 1);
             const string expectedCode =
                 @"
+
 Public Sub Test()
     Dim foo As Long
     SomeSub someParam:=foo
@@ -837,7 +838,8 @@ End Sub";
 
             var selection = new Selection(1, 1);
             const string expectedCode =
-                @"Public Sub Test(): Dim foo As Long
+                @"
+Public Sub Test(): Dim foo As Long
 SomeSub someParam:=foo: End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
@@ -958,7 +960,9 @@ End Sub";
 
             var selection = new Selection(1, 1);
 
-            const string expected = @"Public Sub Test()
+            const string expected = @"
+
+Public Sub Test()
     Debug.Print ""Some statements between""
     Debug.Print ""Declaration and first usage!""
     Dim foo As Class1
@@ -983,7 +987,8 @@ End Sub";
                 var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
                 var rewriter = state.GetRewriter(testComponent.Object);
-                Assert.AreEqual(expected, rewriter.GetText());
+                var actual = rewriter.GetText();
+                Assert.AreEqual(expected, actual);
             }
         }
     }

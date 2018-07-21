@@ -32,12 +32,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private string EndOfStatementText(VBAParser.BlockStmtContext context)
         {
-            if (context.TryGetPrecedingContext<VBAParser.EndOfStatementContext>(out var endOfStmtContext))
+            if (!context.TryGetPrecedingContext<VBAParser.EndOfStatementContext>(out var endOfStmtContext))
             {
-                return endOfStmtContext.GetText();
+                return Environment.NewLine;
             }
 
-            return Environment.NewLine;
+            return endOfStmtContext.GetText();
         }
 
         private string IdentifierDeclarationText(string identifierName, string endOfStatementText)

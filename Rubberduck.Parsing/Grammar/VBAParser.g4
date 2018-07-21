@@ -895,10 +895,16 @@ endOfLine :
     | whiteSpace? commentOrAnnotation
 ;
 
-// we expect endOfStatement to consume all trailing whitespace
+// We expect endOfStatement to consume all trailing whitespace.
+// We have to special case the end of file since infiniftly mant EOF tokens can be consumed at the end of file.
 endOfStatement :
-    (endOfLine whiteSpace? | (whiteSpace? COLON whiteSpace?))+
-    | whiteSpace? EOF
+    individualNonEOFEndOfStatement+ | whiteSpace? EOF
+;
+
+// we expect endOfStatement to consume all trailing whitespace
+individualNonEOFEndOfStatement :
+	  endOfLine whiteSpace? 
+	| whiteSpace? COLON whiteSpace?
 ;
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.

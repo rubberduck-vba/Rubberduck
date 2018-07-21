@@ -21,36 +21,66 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             return new RewriterInfo(startIndex, stopIndex);
         }
 
-        protected static int FindStopTokenIndex<TParent>(IReadOnlyList<ParserRuleContext> items, ParserRuleContext item, TParent parent)
+        protected static int FindStopTokenIndexForRemoval(VBAParser.ModuleDeclarationsElementContext element)
         {
-            for (var i = 0; i < items.Count; i++)
+            if (!element.TryGetFollowingContext<VBAParser.IndividualNonEOFEndOfStatementContext>(out var followingIndividualEndOfLineStatement))
             {
-                if (items[i] != item)
-                {
-                    continue;
-                }
-                return FindStopTokenIndex((dynamic)parent, i);
+                return element.Stop.TokenIndex;
             }
 
-            return item.Stop.TokenIndex;
+            //If the endOfStatement starts with a statement separator, it is safe to simply remove that. 
+            if (followingIndividualEndOfLineStatement.COLON() != null)
+            {
+                return followingIndividualEndOfLineStatement.Stop.TokenIndex;
+            }
+
+            //Since there is no statement separator, the individual endOfStatement must contain an endOfLine.
+            var endOfLine = followingIndividualEndOfLineStatement.endOfLine();
+
+            //EndOfLines contain preceding comments. So, we cannot remove the line, if there is one.
+            if (endOfLine.commentOrAnnotation() != null)
+            {
+                return endOfLine.commentOrAnnotation().Start.TokenIndex - 1;
+            }
+
+            return followingIndividualEndOfLineStatement.Stop.TokenIndex;
         }
 
-        protected static int FindStopTokenIndex(IReadOnlyList<VBAParser.BlockStmtContext> blockStmts, VBAParser.MainBlockStmtContext mainBlockStmt, VBAParser.BlockContext block)
+        protected static int FindStopTokenIndexForRemoval(VBAParser.MainBlockStmtContext mainBlockStmt)
         {
-            for (var i = 0; i < blockStmts.Count; i++)
+            return FindStopTokenIndexForRemoval((VBAParser.BlockStmtContext)mainBlockStmt.Parent);
+        }
+
+        protected static int FindStopTokenIndexForRemoval(VBAParser.BlockStmtContext blockStmt)
+        {
+            if (!blockStmt.TryGetFollowingContext<VBAParser.IndividualNonEOFEndOfStatementContext>(out var followingIndividualEndOfLineStatement))
             {
-                if (blockStmts[i].mainBlockStmt() != mainBlockStmt)
-                {
-                    continue;
-                }
-                if (blockStmts[i].statementLabelDefinition() != null)
-                {
-                    return mainBlockStmt.Stop.TokenIndex;   //Removing the following endOfStatement if there is a label on the line would break the code. 
-                }
-                return FindStopTokenIndex(block, i);
+                return blockStmt.Stop.TokenIndex;
             }
 
-            return mainBlockStmt.Stop.TokenIndex;
+            //If the endOfStatement starts with a statement separator, it is safe to simply remove that. 
+            if (followingIndividualEndOfLineStatement.COLON() != null)
+            {
+                return followingIndividualEndOfLineStatement.Stop.TokenIndex;
+            }
+
+            //Since there is no statement separator, the individual endOfStatement must contain an endOfLine.
+            var endOfLine = followingIndividualEndOfLineStatement.endOfLine();
+
+            //EndOfLines contain preceding comments. So, we cannot remove the line, if there is one.
+            if (endOfLine.commentOrAnnotation() != null)
+            {
+                return endOfLine.commentOrAnnotation().Start.TokenIndex - 1;
+            }
+
+            //There could be a statement label right after the individual endOfStatement. 
+            //In that case, removing the endOfStatement would break the code.
+            if (followingIndividualEndOfLineStatement.TryGetFollowingContext<VBAParser.StatementLabelDefinitionContext>(out _))
+            {
+                return blockStmt.Stop.TokenIndex;
+            }
+            
+            return followingIndividualEndOfLineStatement.Stop.TokenIndex;
         }
 
         private static int FindStopTokenIndex(VBAParser.BlockContext context, int index)

@@ -232,7 +232,7 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
-        /// Returns the context containing the token precedint the context provided it is of the specified generic type.
+        /// Returns the context containing the token preceding the context provided it is of the specified generic type.
         /// </summary>
         public static bool TryGetPrecedingContext<TContext>(this ParserRuleContext context, out TContext precedingContext) where TContext : ParserRuleContext
         {
@@ -251,6 +251,29 @@ namespace Rubberduck.Parsing
             }
 
             precedingContext = ancestorContainingPrecedingIndex.GetDescendentContainingTokenIndex<TContext>(precedingTokenIndex);
+            return precedingContext != null;
+        }
+
+        /// <summary>
+        /// Returns the context containing the token following the context provided it is of the specified generic type.
+        /// </summary>
+        public static bool TryGetFollowingContext<TContext>(this ParserRuleContext context, out TContext precedingContext) where TContext : ParserRuleContext
+        {
+            precedingContext = null;
+            if (context == null)
+            {
+                return false;
+            }
+
+            var followingTokenIndex = context.Stop.TokenIndex + 1;
+            var ancestorContainingPrecedingIndex = context.GetAncestorContainingTokenIndex(followingTokenIndex);
+
+            if (ancestorContainingPrecedingIndex == null)
+            {
+                return false;
+            }
+
+            precedingContext = ancestorContainingPrecedingIndex.GetDescendentContainingTokenIndex<TContext>(followingTokenIndex);
             return precedingContext != null;
         }
 
