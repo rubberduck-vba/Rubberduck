@@ -64,6 +64,103 @@ End Sub";
             TestInsertLocalVariableQuickFix(expectedCode, inputCode);
         }
 
+        [Test]
+        [Category("QuickFixes")]
+        public void IntroduceLocalVariable_QuickFixWorks_MultiplePrecedingEndOfLines()
+        {
+            var inputCode =
+                @"Public Sub Foo()
+    Dim bar As Collection
+
+
+
+
+    For Each fooBar In Foo
+        fooBar.Whatever
+    Next
+End Sub";
+
+            var expectedCode =
+                @"Public Sub Foo()
+    Dim bar As Collection
+
+
+
+
+    Dim fooBar As Variant
+    For Each fooBar In Foo
+        fooBar.Whatever
+    Next
+End Sub";
+
+            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IntroduceLocalVariable_QuickFixWorks_PrecedingComment()
+        {
+            var inputCode =
+                @"Public Sub Foo()
+    Dim bar As Collection 'Comment
+    For Each fooBar In Foo
+        fooBar.Whatever
+    Next
+End Sub";
+
+            var expectedCode =
+                @"Public Sub Foo()
+    Dim bar As Collection 'Comment
+    Dim fooBar As Variant
+    For Each fooBar In Foo
+        fooBar.Whatever
+    Next
+End Sub";
+
+            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IntroduceLocalVariable_QuickFixWorks_LineLabelOnEnclosingStatement()
+        {
+            var inputCode =
+                @"Public Sub Foo()
+    Dim bar As Collection
+l:  For Each fooBar In Foo
+        fooBar.Whatever
+    Next
+End Sub";
+
+            var expectedCode =
+                @"Public Sub Foo()
+    Dim bar As Collection
+    Dim fooBar As Variant
+l:  For Each fooBar In Foo
+        fooBar.Whatever
+    Next
+End Sub";
+
+            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IntroduceLocalVariable_QuickFixWorks_StatementSeperators()
+        {
+            var inputCode =
+                @"Public Sub Foo()
+    Dim bar As Collection : For Each fooBar In Foo : fooBar.Whatever : Next
+End Sub";
+
+            var expectedCode =
+                @"Public Sub Foo()
+    Dim bar As Collection : Dim fooBar As Variant : For Each fooBar In Foo : fooBar.Whatever : Next
+End Sub";
+
+            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+        }
+
         private void TestInsertLocalVariableQuickFix(string expectedCode, string inputCode)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
