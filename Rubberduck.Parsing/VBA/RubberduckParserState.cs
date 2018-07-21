@@ -390,7 +390,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
         private int _stateChangedInvocations;
-        private void OnStateChanged(object requestor, CancellationToken token, ParserState state = ParserState.Pending)
+        private void OnStateChanged(object requestor, CancellationToken token, ParserState state = ParserState.Pending, ParserState oldStatus = ParserState.Pending)
         {
             Interlocked.Increment(ref _stateChangedInvocations);
 
@@ -398,7 +398,7 @@ namespace Rubberduck.Parsing.VBA
             var handler = StateChanged;
             if (handler != null && !token.IsCancellationRequested)
             {
-                var args = new ParserStateEventArgs(state, _status, token);
+                var args = new ParserStateEventArgs(state, oldStatus, token);
                 handler.Invoke(requestor, args);
             }
         }
@@ -600,8 +600,9 @@ namespace Rubberduck.Parsing.VBA
         {
             if (_status != value)
             {
+                var oldStatus = _status;
                 _status = value;
-                OnStateChanged(this, token, _status);
+                OnStateChanged(this, token, _status, oldStatus);
             }
         }
 
