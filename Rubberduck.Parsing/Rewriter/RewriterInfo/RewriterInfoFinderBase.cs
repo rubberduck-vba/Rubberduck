@@ -51,6 +51,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             return FindStopTokenIndexForRemoval((VBAParser.BlockStmtContext)mainBlockStmt.Parent);
         }
 
+        //This overload differs from the one for module declaration elements because we have to take care that we do not invalidate line labels or line numbers on the next line. 
         protected static int FindStopTokenIndexForRemoval(VBAParser.BlockStmtContext blockStmt)
         {
             if (!blockStmt.TryGetFollowingContext<VBAParser.IndividualNonEOFEndOfStatementContext>(out var followingIndividualEndOfLineStatement))

@@ -895,7 +895,7 @@ endOfLine :
     | whiteSpace? commentOrAnnotation
 ;
 
-// We expect endOfStatement to consume all trailing whitespace.
+// We expect endOfStatement to consume all trailing whitespace blank statements.
 // We have to special case the end of file since infiniftly mant EOF tokens can be consumed at the end of file.
 endOfStatement :
     individualNonEOFEndOfStatement+ | whiteSpace? EOF
