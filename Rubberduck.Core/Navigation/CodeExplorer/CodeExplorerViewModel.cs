@@ -78,6 +78,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
             AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
 
+            AddPredeclaredClassModuleCommand = commands.OfType<AddPredeclaredClassModuleCommand>().SingleOrDefault();
+
             OpenProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
             RenameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
             IndenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
@@ -516,6 +518,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase AddStdModuleCommand { get; }
         public CommandBase AddClassModuleCommand { get; }
         public CommandBase AddUserFormCommand { get; }
+
+        public CommandBase AddPredeclaredClassModuleCommand { get; }
 
         public CommandBase OpenDesignerCommand { get; }
         public CommandBase OpenProjectPropertiesCommand { get; }
