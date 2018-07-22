@@ -29,6 +29,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private string CreatePreclaredClassModule()
         {
+            //module text intentionally omits a VB_Name attribute so that the name is automatically assigned by the VBE.
             string moduleText = @"
 VERSION 1.0 CLASS
 BEGIN
