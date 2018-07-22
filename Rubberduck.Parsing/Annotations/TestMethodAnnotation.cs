@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor;
+﻿using System;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +22,7 @@ namespace Rubberduck.Parsing.Annotations
                 firstParameter = firstParameter.Substring(1, firstParameter.Length - 2);
             }
 
-            Category = string.IsNullOrWhiteSpace(firstParameter) ? "" : firstParameter;
+            Category = string.IsNullOrWhiteSpace(firstParameter) ? string.Empty : firstParameter;
         }
 
         public string Category { get; }
