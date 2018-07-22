@@ -105,8 +105,8 @@ try
 
 	# Determine if MIDL is available for building
 	$devPath = $Env:ProgramFiles + "*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
-	$devPathResolved = Resolve-Path -Path $devPath;
-	if($devPathResolved)
+	$devPath = Resolve-Path -Path $devPath;
+	if($devPath)
 	{
 		# Additional verifications as some versions of VsDevCmd.bat might not initialize the environment for C++ build tools
 		$result = Get-Module -ListAvailable -Name "VSSetup" -ErrorAction SilentlyContinue;
