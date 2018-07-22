@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -51,7 +53,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        public void AddComponent(CodeExplorerItemViewModel node, string fileName)
+        public void AddComponent(CodeExplorerItemViewModel node, string moduleText)
         {
             var nodeProject = GetDeclaration(node)?.Project;
             if (node != null && nodeProject == null)
@@ -59,20 +61,41 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return; //The project is not available.
             }
 
+            string optionCompare = string.Empty;
+            using (IHostApplication hostApp = _vbe.HostApplication())
+            {
+                optionCompare = hostApp.ApplicationName == "Microsoft Access" ? "Option Compare Database" :
+                    string.Empty;
+            }
+
             using (var components = node != null
                 ? nodeProject.VBComponents
                 : ComponentsCollectionFromActiveProject())
             {
                 var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
+                string fileName = createTempTextFile(moduleText);
 
                 using (var newComponent = components.Import(fileName))
                 {
                     using (var codeModule = newComponent.CodeModule)
                     {
-                        codeModule.InsertLines(1, folderAnnotation);
+                        var delarationLines = string.Concat(folderAnnotation, optionCompare);
+                        codeModule.InsertLines(1, delarationLines);
                     }
                 }
             }
+        }
+
+        private string createTempTextFile(string moduleText)
+        {
+            string tempFolder = ApplicationConstants.RUBBERDUCK_TEMP_PATH;
+            if (!Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+            string filePath = Path.Combine(tempFolder, Path.GetRandomFileName());
+            File.WriteAllText(filePath, moduleText);
+            return filePath;
         }
 
         private IVBComponents ComponentsCollectionFromActiveProject()
