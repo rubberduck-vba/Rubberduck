@@ -397,6 +397,14 @@
                                 <Image Height="16" Source="{StaticResource AddUserFormImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <Separator />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddPredeclaredClassModuleText}"
+                                  Command="{Binding AddPredeclaredClassModuleCommand}"
+                                  CommandParameter="{Binding SelectedItem}">
+                            <MenuItem.Icon>
+                                <Image Height="16" Source="{StaticResource AddClassModuleImage}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                 </Menu>
 
