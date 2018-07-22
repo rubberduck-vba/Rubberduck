@@ -100,12 +100,13 @@ try
 	$option = [System.StringSplitOptions]::RemoveEmptyEntries;
 	$files = $filesToExtract.Split($separator, $option);
 	
-	# Load the Deployment DLL 
+	# Load the Deployment DLL
 	[System.Reflection.Assembly]::LoadFrom($builderAssemblyPath);
 
 	# Determine if MIDL is available for building
-	$devPath = Resolve-Path -Path "%ProgramFiles%*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
-	if($devPath)
+	$devPath = $Env:ProgramFiles + "*\Microsoft Visual Studio\*\*\Common*\Tools\VsDevCmd.bat";
+	$devPathResolved = Resolve-Path -Path $devPath;
+	if($devPathResolved)
 	{
 		# Additional verifications as some versions of VsDevCmd.bat might not initialize the environment for C++ build tools
 		$result = Get-Module -ListAvailable -Name "VSSetup" -ErrorAction SilentlyContinue;
