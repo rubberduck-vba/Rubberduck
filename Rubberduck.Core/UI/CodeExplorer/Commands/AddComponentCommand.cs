@@ -64,7 +64,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             string optionCompare = string.Empty;
             using (IHostApplication hostApp = _vbe.HostApplication())
             {
-                optionCompare = hostApp.ApplicationName == "Microsoft Access" ? "Option Compare Database" :
+                optionCompare = hostApp.ApplicationName == "Access" ? "Option Compare Database" :
                     string.Empty;
             }
 
@@ -79,10 +79,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     using (var codeModule = newComponent.CodeModule)
                     {
-                        var delarationLines = string.Concat(folderAnnotation, optionCompare);
-                        codeModule.InsertLines(1, delarationLines);
+                        var delarationLines = string.Concat(folderAnnotation,  optionCompare);
+                        if (optionCompare.Length > 0)
+                        {
+                            codeModule.InsertLines(1, optionCompare);
+                        }
+                        if (folderAnnotation.Length > 0)
+                        {
+                            codeModule.InsertLines(1, folderAnnotation);
+                        }
+                        codeModule.CodePane.Show();
                     }
                 }
+                File.Delete(fileName);
             }
         }
 
