@@ -257,24 +257,24 @@ namespace Rubberduck.Parsing
         /// <summary>
         /// Returns the context containing the token following the context provided it is of the specified generic type.
         /// </summary>
-        public static bool TryGetFollowingContext<TContext>(this ParserRuleContext context, out TContext precedingContext) where TContext : ParserRuleContext
+        public static bool TryGetFollowingContext<TContext>(this ParserRuleContext context, out TContext followingContext) where TContext : ParserRuleContext
         {
-            precedingContext = null;
+            followingContext = null;
             if (context == null)
             {
                 return false;
             }
 
             var followingTokenIndex = context.Stop.TokenIndex + 1;
-            var ancestorContainingPrecedingIndex = context.GetAncestorContainingTokenIndex(followingTokenIndex);
+            var ancestorContainingFollowingIndex = context.GetAncestorContainingTokenIndex(followingTokenIndex);
 
-            if (ancestorContainingPrecedingIndex == null)
+            if (ancestorContainingFollowingIndex == null)
             {
                 return false;
             }
 
-            precedingContext = ancestorContainingPrecedingIndex.GetDescendentContainingTokenIndex<TContext>(followingTokenIndex);
-            return precedingContext != null;
+            followingContext = ancestorContainingFollowingIndex.GetDescendentContainingTokenIndex<TContext>(followingTokenIndex);
+            return followingContext != null;
         }
 
         private class ChildNodeWithTokenPositionListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
