@@ -51,6 +51,30 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
+        public void AddComponent(CodeExplorerItemViewModel node, string fileName)
+        {
+            var nodeProject = GetDeclaration(node)?.Project;
+            if (node != null && nodeProject == null)
+            {
+                return; //The project is not available.
+            }
+
+            using (var components = node != null
+                ? nodeProject.VBComponents
+                : ComponentsCollectionFromActiveProject())
+            {
+                var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
+
+                using (var newComponent = components.Import(fileName))
+                {
+                    using (var codeModule = newComponent.CodeModule)
+                    {
+                        codeModule.InsertLines(1, folderAnnotation);
+                    }
+                }
+            }
+        }
+
         private IVBComponents ComponentsCollectionFromActiveProject()
         {
             using (var activeProject = _vbe.ActiveVBProject)
