@@ -41,8 +41,20 @@
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
 
+            <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
 
+            <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+
+            <BitmapImage x:Key="FixImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
+
+            <BitmapImage x:Key="GroupByImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
+
+            <BitmapImage x:Key="FilterByImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayName.png" />
+            <BitmapImage x:Key="FilterByHintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png" />
+            <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
+            <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
+            <BitmapImage x:Key="FilterByErrorImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -58,7 +70,7 @@
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+                    <Image Height="16" Source="{StaticResource RefreshImage}" />
                 </Button>
 
                 <Separator />
@@ -67,7 +79,7 @@
                           Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}"
                           ItemsSource="{Binding QuickFixes}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
+                            <Image Height="16" Source="{StaticResource FixImage}" />
                         </MenuItem.Icon>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="{x:Type MenuItem}">
@@ -82,7 +94,7 @@
                 <Menu>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalAlignment="Center">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
+                            <Image Height="16" Source="{StaticResource GroupByImage}" />
                         </MenuItem.Icon>
                         
                         <MenuItem x:Name="GroupByInspectionType"
@@ -109,7 +121,7 @@
                 <Menu>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI , Key=GroupingGrid_FilterBy}" VerticalAlignment="Center">
                         <MenuItem.Icon>
-                            <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayName.png"/>
+                            <Image Source="{StaticResource FilterByImage}"/>
                         </MenuItem.Icon>
 
                         <MenuItem x:Name="FilterInspectionByHint"
@@ -119,7 +131,7 @@
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
-                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png"/>
+                                <Image Source="{StaticResource FilterByHintImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
 
@@ -130,7 +142,7 @@
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
-                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png"/>
+                                <Image Source="{StaticResource FilterBySuggestionImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
 
@@ -142,7 +154,7 @@
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
-                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png"/>
+                                <Image Source="{StaticResource FilterByWarningImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
 
@@ -153,7 +165,7 @@
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                             <MenuItem.Icon>
-                                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png"/>
+                                <Image Source="{StaticResource FilterByErrorImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
 
@@ -163,7 +175,7 @@
                 <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
+                    <Image Height="16" Source="{StaticResource CopyResultsImage}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
