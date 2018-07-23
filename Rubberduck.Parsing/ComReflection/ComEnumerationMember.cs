@@ -1,27 +1,20 @@
 ﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.Parsing.Symbols;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name} = {Value} ({ValueType})")]
-    public class ComEnumerationMember
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
+    public class ComEnumerationMember : ComTypedElement
     {
-        public string Name { get; }
-        public int Value { get; }
-        public VarEnum ValueType { get; }
+        public override DeclarationType Type => DeclarationType.EnumerationMember;
+        public override string TypeName => "Integer";
+        public override bool IsEnumMember => false;
+        public override bool IsAlias => false;
+        public override bool IsReferenceType => false;
+        public override bool IsArray => false;
 
-        public ComEnumerationMember(ITypeInfo info, VARDESC varDesc)
-        {
-            var value = new ComVariant(varDesc.desc.lpvarValue);
-            Value = (int)value.Value;
-            ValueType = value.VariantType;
-
-            var names = new string[1];
-            info.GetNames(varDesc.memid, names, names.Length, out int count);
-            Debug.Assert(count == 1);
-            Name = names[0];
-        }
+        public ComEnumerationMember(ITypeInfo info, VARDESC varDesc) : base(info, varDesc) { }
     }
 }

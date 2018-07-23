@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.Symbols
                 module.QualifyMemberName(field.Name),
                 parent,
                 parent,
-                field.ValueType,
+                field.TypeName,
                 Accessibility.Global,
                 null,
                 Selection.Home,

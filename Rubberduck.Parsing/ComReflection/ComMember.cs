@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.ComReflection
         Value = 0               //The default member for the object.
     }
 
-    [DebuggerDisplay("{MemberDeclaration}")]
+    [DebuggerDisplay("{" + nameof(MemberDeclaration) + "}")]
     public class ComMember : ComBase
     {
         public bool IsHidden { get; }
@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsEvaluateFunction { get; }
         public ComParameter ReturnType { get; private set; }
 
-        private List<ComParameter> _parameters = new List<ComParameter>();
+        private readonly List<ComParameter> _parameters = new List<ComParameter>();
         public IEnumerable<ComParameter> Parameters => _parameters;
 
         public ComMember(ITypeInfo info, FUNCDESC funcDesc) : base(info, funcDesc)
@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.ComReflection
 
             if (Type == DeclarationType.Function || Type == DeclarationType.PropertyGet)
             {
-                var returnType = new ComParameter(funcDesc.elemdescFunc, info, string.Empty);
+                var returnType = new ComParameter(info, funcDesc.elemdescFunc, string.Empty, 0);
                 if (!_parameters.Any())
                 {
                     ReturnType = returnType;
@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 var paramPtr = new IntPtr(funcDesc.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * index);
                 var elemDesc = Marshal.PtrToStructure<ELEMDESC>(paramPtr);
-                var param = new ComParameter(elemDesc, info, names[index + 1] ?? $"{index}unnamedParameter");
+                var param = new ComParameter(info, elemDesc, names[index + 1], index);
                 _parameters.Add(param);
             }
             if (Parameters.Any() && funcDesc.cParamsOpt == -1)
@@ -108,12 +108,14 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
-        // ReSharper disable once UnusedMember.Local
+#if DEBUG
         private string MemberDeclaration
         {
+            // ReSharper disable once UnusedMember.Local  <-- Used for DebuggerDisplay.
             get
             {
                 var type = string.Empty;
+                // ReSharper disable once SwitchStatementMissingSomeCases  <-- See the assert case...
                 switch (Type)
                 {
                     case DeclarationType.Function:
@@ -134,9 +136,13 @@ namespace Rubberduck.Parsing.ComReflection
                     case DeclarationType.Event:
                         type = "Event";
                         break;
+                    default:
+                        Debug.Assert(false, "Unexpected DeclarationType for ComMember.");
+                        break;
                 }
                 return $"{(IsHidden || IsRestricted ? "Private" : "Public")} {type} {Name}{(ReturnType == null ? string.Empty : $" As {ReturnType.TypeName}")}";
             }
         }
+#endif
     }
 }

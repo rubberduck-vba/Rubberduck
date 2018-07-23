@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
@@ -12,6 +13,7 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
     {
         private readonly List<ComMember> _members = new List<ComMember>();
@@ -47,13 +49,14 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < attrib.cVars; index++)
             {
                 info.GetVarDesc(index, out IntPtr varPtr);
+                using (DisposalActionContainer.Create(varPtr, info.ReleaseVarDesc))
+                {
+                    var desc = Marshal.PtrToStructure<VARDESC>(varPtr);
+                    info.GetNames(desc.memid, names, names.Length, out int length);
+                    Debug.Assert(length == 1);
 
-                var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
-                info.GetNames(desc.memid, names, names.Length, out int length);
-                Debug.Assert(length == 1);
-
-                _fields.Add(new ComField(info, names[0], desc, index, DeclarationType.Constant));
-                info.ReleaseVarDesc(varPtr);
+                    _fields.Add(new ComField(info, desc, names[0], index, DeclarationType.Constant));
+                }
             }
         }
 
