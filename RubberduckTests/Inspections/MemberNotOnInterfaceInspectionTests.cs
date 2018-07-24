@@ -257,6 +257,66 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void MemberNotOnInterface_WithNewReturnsResult()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    With New Dictionary
+        Debug.Print .FooBar
+    End With
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_WithNewBlockBangNotation()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    With New Dictionary
+        !FooBar = 42
+    End With
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_DoesNotReturnResult_WithNewBlockOnInterface()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    With New Dictionary
+        .Add 42, 42
+    End With
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void MemberNotOnInterface_CatchesInvalidUseOfMember()
         {
             const string userForm1Code = @"
@@ -290,7 +350,7 @@ End Sub
             projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
                 //.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
-                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms);
+                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0);
 
             mockVbe.AddProject(projectBuilder.Build());
 

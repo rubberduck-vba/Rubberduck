@@ -628,7 +628,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Icons\Fugue\application-resize.png" />
   </ItemGroup>
@@ -878,6 +877,9 @@
     <Resource Include="Icons\Fugue\blue-folder-horizontal-open.png" />
     <Resource Include="Icons\Fugue\arrow1.png" />
     <Content Include="Icons\Fugue\arrow_circle_double_mask.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -336,7 +336,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// Exposes the conditional compilation arguments defined in the BA project represented by this ITypeLib
         /// as a dictionary of key/value pairs
         /// </summary>
-        public Dictionary<string, string> ConditionalCompilationArguments
+        public Dictionary<string, short> ConditionalCompilationArguments
         {
             get
             {
@@ -350,11 +350,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (args.Length > 0)
                 {
                     string[] argsArray = args.Split(new[] { ':' });
-                    return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0], s => s[1]);
+                    return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0].Trim(), s => short.Parse(s[1]));
                 }
                 else
                 {
-                    return new Dictionary<string, string>();
+                    return new Dictionary<string, short>();
                 }
             }
 

@@ -10,6 +10,10 @@ namespace Rubberduck.VBEditor.VBA
     {
         public string Export(IVBComponent component)
         {
+            if (!Directory.Exists(ApplicationConstants.RUBBERDUCK_TEMP_PATH))
+            {
+                Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
+            }
             var fileName = component.ExportAsSourceFile(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
 
             return File.Exists(fileName) 

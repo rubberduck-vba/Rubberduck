@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
@@ -17,49 +18,31 @@ namespace Rubberduck.Parsing.ComReflection
         public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
         public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>(); 
 
-        public string Path { get; set; }
-        public long MajorVersion { get; private set; }
-        public long MinorVersion { get; private set; }
+        public string Path { get; }
+        public long MajorVersion { get; }
+        public long MinorVersion { get; }
 
         // YGNI...
         // ReSharper disable once NotAccessedField.Local
         private TypeLibTypeFlags _flags;
 
         private readonly List<ComAlias> _aliases = new List<ComAlias>();
-        public IEnumerable<ComAlias> Aliases
-        {
-            get { return _aliases; }
-        }
+        public IEnumerable<ComAlias> Aliases => _aliases;
 
         private readonly List<ComInterface> _interfaces = new List<ComInterface>();
-        public IEnumerable<ComInterface> Interfaces
-        {
-            get { return _interfaces; }
-        }
+        public IEnumerable<ComInterface> Interfaces => _interfaces;
 
         private readonly List<ComEnumeration> _enumerations = new List<ComEnumeration>();
-        public IEnumerable<ComEnumeration> Enumerations
-        {
-            get { return _enumerations; }
-        }
+        public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
         private readonly List<ComCoClass> _classes = new List<ComCoClass>();
-        public IEnumerable<ComCoClass> CoClasses
-        {
-            get { return _classes; }
-        }
+        public IEnumerable<ComCoClass> CoClasses => _classes;
 
         private readonly List<ComModule> _modules = new List<ComModule>();
-        public IEnumerable<ComModule> Modules
-        {
-            get { return _modules; }
-        }
+        public IEnumerable<ComModule> Modules => _modules;
 
         private readonly List<ComStruct> _structs = new List<ComStruct>();
-        public IEnumerable<ComStruct> Structs
-        {
-            get { return _structs; }
-        }
+        public IEnumerable<ComStruct> Structs => _structs;
 
         public IEnumerable<IComType> Members
         {
@@ -75,28 +58,24 @@ namespace Rubberduck.Parsing.ComReflection
             }
         } 
 
-        public ComProject(ITypeLib typeLibrary) : base(typeLibrary, -1)
-        {   
-            ProcessLibraryAttributes(typeLibrary);
-            LoadModules(typeLibrary);
-        }
-
-        private void ProcessLibraryAttributes(ITypeLib typeLibrary)
+        public ComProject(ITypeLib typeLibrary, string path) : base(typeLibrary, -1)
         {
+            Path = path;
             try
             {
-                IntPtr attribPtr;
-                typeLibrary.GetLibAttr(out attribPtr);
-                var typeAttr = (TYPELIBATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPELIBATTR));
+                typeLibrary.GetLibAttr(out IntPtr attribPtr);
+                using (DisposalActionContainer.Create(attribPtr, typeLibrary.ReleaseTLibAttr))
+                {
+                    var typeAttr = Marshal.PtrToStructure<TYPELIBATTR>(attribPtr);
 
-                MajorVersion = typeAttr.wMajorVerNum;
-                MinorVersion = typeAttr.wMinorVerNum;
-                _flags = (TypeLibTypeFlags)typeAttr.wLibFlags;
-                Guid = typeAttr.guid;
-
-                typeLibrary.ReleaseTLibAttr(attribPtr);
+                    MajorVersion = typeAttr.wMajorVerNum;
+                    MinorVersion = typeAttr.wMinorVerNum;
+                    _flags = (TypeLibTypeFlags)typeAttr.wLibFlags;
+                    Guid = typeAttr.guid;
+                }
             }
             catch (COMException) { }
+            LoadModules(typeLibrary);
         }
 
         private void LoadModules(ITypeLib typeLibrary)
@@ -106,63 +85,67 @@ namespace Rubberduck.Parsing.ComReflection
             {                
                 try
                 {
-                    ITypeInfo info;
-                    typeLibrary.GetTypeInfo(index, out info);
+                    typeLibrary.GetTypeInfo(index, out ITypeInfo info);
                     info.GetTypeAttr(out var typeAttributesPointer);
-                    var typeAttributes = (TYPEATTR)Marshal.PtrToStructure(typeAttributesPointer, typeof(TYPEATTR));
-
-                    KnownTypes.TryGetValue(typeAttributes.guid, out var type);
-
-                    switch (typeAttributes.typekind)
+                    using (DisposalActionContainer.Create(typeAttributesPointer, info.ReleaseTypeAttr))
                     {
-                        case TYPEKIND.TKIND_ENUM:
-                            var enumeration = type ?? new ComEnumeration(typeLibrary, info, typeAttributes, index);
-                            _enumerations.Add(enumeration as ComEnumeration);
-                            if (type == null)
-                            {
-                                KnownTypes.TryAdd(typeAttributes.guid, enumeration);
-                            }
-                            break;
-                        case TYPEKIND.TKIND_COCLASS:
-                            var coclass = type ?? new ComCoClass(typeLibrary, info, typeAttributes, index);
-                            _classes.Add(coclass as ComCoClass);
-                            if (type == null)
-                            {
-                                KnownTypes.TryAdd(typeAttributes.guid, coclass);
-                            }
-                            break;
-                        case TYPEKIND.TKIND_DISPATCH:
-                        case TYPEKIND.TKIND_INTERFACE:
-                            var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
-                            _interfaces.Add(intface as ComInterface);
-                            if (type == null)
-                            {
-                                KnownTypes.TryAdd(typeAttributes.guid, intface);
-                            }
-                            break;
-                        case TYPEKIND.TKIND_RECORD:
-                            var structure = new ComStruct(typeLibrary, info, typeAttributes, index);
-                            _structs.Add(structure);
-                            break;
-                        case TYPEKIND.TKIND_MODULE:
-                            var module = type ?? new ComModule(typeLibrary, info, typeAttributes, index);
-                            _modules.Add(module as ComModule);
-                            if (type == null)
-                            {
-                                KnownTypes.TryAdd(typeAttributes.guid, module);
-                            }
-                            break;
-                        case TYPEKIND.TKIND_ALIAS:
-                            var alias = new ComAlias(typeLibrary, info, index, typeAttributes);
-                            _aliases.Add(alias);
-                            break;
-                        case TYPEKIND.TKIND_UNION:
-                            //TKIND_UNION is not a supported member type in VBA.
-                            break;
-                        default:
-                            throw new NotImplementedException(string.Format("Didn't expect a TYPEATTR with multiple typekind flags set in {0}.", Path));
+                        var typeAttributes = Marshal.PtrToStructure<TYPEATTR>(typeAttributesPointer);
+                        KnownTypes.TryGetValue(typeAttributes.guid, out var type);
+
+                        switch (typeAttributes.typekind)
+                        {
+                            case TYPEKIND.TKIND_ENUM:
+                                var enumeration = type ?? new ComEnumeration(typeLibrary, info, typeAttributes, index);
+                                Debug.Assert(enumeration is ComEnumeration);
+                                _enumerations.Add(enumeration as ComEnumeration);
+                                if (type == null && !enumeration.Guid.Equals(Guid.Empty))
+                                {
+                                    KnownTypes.TryAdd(typeAttributes.guid, enumeration);
+                                }
+                                break;
+                            case TYPEKIND.TKIND_COCLASS:
+                                var coclass = type ?? new ComCoClass(typeLibrary, info, typeAttributes, index);
+                                Debug.Assert(coclass is ComCoClass && !coclass.Guid.Equals(Guid.Empty));
+                                _classes.Add(coclass as ComCoClass);
+                                if (type == null)
+                                {
+                                    KnownTypes.TryAdd(typeAttributes.guid, coclass);
+                                }
+                                break;
+                            case TYPEKIND.TKIND_DISPATCH:
+                            case TYPEKIND.TKIND_INTERFACE:
+                                var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
+                                Debug.Assert(intface is ComInterface && !intface.Guid.Equals(Guid.Empty));
+                                _interfaces.Add(intface as ComInterface);
+                                if (type == null)
+                                {
+                                    KnownTypes.TryAdd(typeAttributes.guid, intface);
+                                }
+                                break;
+                            case TYPEKIND.TKIND_RECORD:
+                                var structure = new ComStruct(typeLibrary, info, typeAttributes, index);
+                                _structs.Add(structure);
+                                break;
+                            case TYPEKIND.TKIND_MODULE:
+                                var module = type ?? new ComModule(typeLibrary, info, typeAttributes, index);
+                                Debug.Assert(module is ComModule);
+                                _modules.Add(module as ComModule);
+                                if (type == null && !module.Guid.Equals(Guid.Empty))
+                                {
+                                    KnownTypes.TryAdd(typeAttributes.guid, module);
+                                }
+                                break;
+                            case TYPEKIND.TKIND_ALIAS:
+                                var alias = new ComAlias(typeLibrary, info, index, typeAttributes);
+                                _aliases.Add(alias);
+                                break;
+                            case TYPEKIND.TKIND_UNION:
+                                //TKIND_UNION is not a supported member type in VBA.
+                                break;
+                            default:
+                                throw new NotImplementedException(string.Format("Didn't expect a TYPEATTR with multiple typekind flags set in {0}.", Path));
+                        }
                     }
-                    info.ReleaseTypeAttr(typeAttributesPointer);
                 }
                 catch (COMException) { }
             }
