@@ -48,7 +48,7 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
-        public ComCoClass(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base (typeLib, attrib, index)
+        public ComCoClass(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base (parent, typeLib, attrib, index)
         {
             Type = DeclarationType.ClassModule;
             GetImplementedInterfaces(info, attrib);
@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.ComReflection
                     var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
 
                     ComProject.KnownTypes.TryGetValue(attribs.guid, out ComType inherited);
-                    var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
+                    var intface = inherited as ComInterface ?? new ComInterface(Project, implemented, attribs);
 
                     ComProject.KnownTypes.TryAdd(attribs.guid, intface);
 

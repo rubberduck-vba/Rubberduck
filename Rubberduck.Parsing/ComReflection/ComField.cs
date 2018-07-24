@@ -14,7 +14,7 @@ using VARFLAGS = System.Runtime.InteropServices.ComTypes.VARFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComField
     {
         public string Name { get; }
@@ -32,8 +32,12 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsArray { get; private set; }
         public VARFLAGS Flags { get; }
 
-        public ComField(ITypeInfo info, string name, VARDESC varDesc, int index, DeclarationType type)
+        IComBase Parent { get; }
+        public ComProject Project => Parent?.Project;
+
+        public ComField(IComBase parent, ITypeInfo info, string name, VARDESC varDesc, int index, DeclarationType type)
         {
+            Parent = parent;
             Name = name;
             Index = index;
             Type = type;
@@ -79,48 +83,47 @@ namespace Rubberduck.Parsing.ComReflection
             var vt = (VarEnum)desc.vt;
             TYPEDESC tdesc;
 
-            switch (vt)
+            if (vt == VarEnum.VT_PTR)
             {
-                case VarEnum.VT_PTR:
-                    tdesc = (TYPEDESC)Marshal.PtrToStructure(desc.lpValue, typeof(TYPEDESC));
-                    GetFieldType(tdesc, info);
-                    break;
-                case VarEnum.VT_USERDEFINED:
-                    int href;
-                    unchecked
+                tdesc = Marshal.PtrToStructure<TYPEDESC>(desc.lpValue);
+                GetFieldType(tdesc, info);
+            }
+            else if (vt == VarEnum.VT_USERDEFINED)
+            {
+                int href;
+                unchecked
+                {
+                    href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
+                }
+                try
+                {
+                    info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
+                    refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
+                    using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
                     {
-                        href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
-                    }
-                    try
-                    {
-                        info.GetRefTypeInfo(href, out ITypeInfo refTypeInfo);
-                        refTypeInfo.GetTypeAttr(out IntPtr attribPtr);
-                        using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
+                        var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
+                        if (attribs.typekind == TYPEKIND.TKIND_ENUM)
                         {
-                            var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
-                            if (attribs.typekind == TYPEKIND.TKIND_ENUM)
-                            {
-                                _enumGuid = attribs.guid;
-                            }
-                            IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
-                            _valueType = new ComDocumentation(refTypeInfo, -1).Name;
+                            _enumGuid = attribs.guid;
                         }
+                        IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
+                        _valueType = new ComDocumentation(refTypeInfo, -1).Name;
                     }
-                    catch (COMException) { }
-                    break;
-                case VarEnum.VT_SAFEARRAY:
-                case VarEnum.VT_CARRAY:
-                case VarEnum.VT_ARRAY:
-                    tdesc = Marshal.PtrToStructure<TYPEDESC>(desc.lpValue);
-                    GetFieldType(tdesc, info);
-                    IsArray = true;
-                    break;
-                default:
-                    if (ComVariant.TypeNames.TryGetValue(vt, out string result))
-                    {
-                        _valueType = result;
-                    }
-                    break;
+                }
+                catch (COMException) { }
+            }
+            else if (vt == VarEnum.VT_SAFEARRAY || vt == VarEnum.VT_CARRAY || vt.HasFlag(VarEnum.VT_ARRAY))
+            {
+                tdesc = Marshal.PtrToStructure<TYPEDESC>(desc.lpValue);
+                GetFieldType(tdesc, info);
+                IsArray = true;
+            }
+            else
+            {
+                if (ComVariant.TypeNames.TryGetValue(vt, out string result))
+                {
+                    _valueType = result;
+                }
             }
         }
     }

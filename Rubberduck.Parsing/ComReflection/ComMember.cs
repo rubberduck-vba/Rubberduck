@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.ComReflection
         Value = 0               //The default member for the object.
     }
 
-    [DebuggerDisplay("{MemberDeclaration}")]
+    [DebuggerDisplay("{" + nameof(MemberDeclaration) + "}")]
     public class ComMember : ComBase
     {
         public bool IsHidden { get; }
@@ -34,12 +34,12 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsEnumerator { get; }
         //This member is called on an interface when a bracketed expression is dereferenced.
         public bool IsEvaluateFunction { get; }
-        public ComParameter ReturnType { get; private set; }
+        public ComParameter ReturnType { get; private set; } = ComParameter.Void;
 
-        private List<ComParameter> _parameters = new List<ComParameter>();
+        private readonly List<ComParameter> _parameters = new List<ComParameter>();
         public IEnumerable<ComParameter> Parameters => _parameters;
 
-        public ComMember(ITypeInfo info, FUNCDESC funcDesc) : base(info, funcDesc)
+        public ComMember(IComBase parent, ITypeInfo info, FUNCDESC funcDesc) : base(parent, info, funcDesc)
         {
             LoadParameters(funcDesc, info);
             var flags = (FUNCFLAGS)funcDesc.wFuncFlags;
@@ -54,6 +54,9 @@ namespace Rubberduck.Parsing.ComReflection
 
         private void SetDeclarationType(FUNCDESC funcDesc, ITypeInfo info)
         {
+            var returnsHResult = (VarEnum)funcDesc.elemdescFunc.tdesc.vt == VarEnum.VT_HRESULT;
+            var returnsVoid = (VarEnum)funcDesc.elemdescFunc.tdesc.vt == VarEnum.VT_VOID;
+
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
             {
                 Type = DeclarationType.PropertyGet;
@@ -66,7 +69,7 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 Type = DeclarationType.PropertySet;
             }
-            else if ((VarEnum)funcDesc.elemdescFunc.tdesc.vt == VarEnum.VT_VOID)
+            else if (returnsVoid || !_parameters.Any(param => param.IsReturnValue) && returnsHResult)
             {
                 Type = DeclarationType.Procedure;
             }
@@ -77,7 +80,7 @@ namespace Rubberduck.Parsing.ComReflection
 
             if (Type == DeclarationType.Function || Type == DeclarationType.PropertyGet)
             {
-                var returnType = new ComParameter(funcDesc.elemdescFunc, info, string.Empty);
+                var returnType = new ComParameter(this, funcDesc.elemdescFunc, info, string.Empty);
                 if (!_parameters.Any())
                 {
                     ReturnType = returnType;
@@ -99,8 +102,8 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 var paramPtr = new IntPtr(funcDesc.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * index);
                 var elemDesc = Marshal.PtrToStructure<ELEMDESC>(paramPtr);
-                var param = new ComParameter(elemDesc, info, names[index + 1] ?? $"{index}unnamedParameter");
-                _parameters.Add(param);
+                var param = new ComParameter(this, elemDesc, info, names[index + 1] ?? $"{index}unnamedParameter");
+                _parameters.Add(param);               
             }
             if (Parameters.Any() && funcDesc.cParamsOpt == -1)
             {
@@ -108,6 +111,7 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
+#if DEBUG
         // ReSharper disable once UnusedMember.Local
         private string MemberDeclaration
         {
@@ -138,5 +142,6 @@ namespace Rubberduck.Parsing.ComReflection
                 return $"{(IsHidden || IsRestricted ? "Private" : "Public")} {type} {Name}{(ReturnType == null ? string.Empty : $" As {ReturnType.TypeName}")}";
             }
         }
+#endif
     }
 }
