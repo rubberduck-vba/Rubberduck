@@ -24,7 +24,9 @@ namespace Rubberduck.Parsing.ComReflection
         Value = 0               //The default member for the object.
     }
 
+#if DEBUG
     [DebuggerDisplay("{" + nameof(MemberDeclaration) + "}")]
+#endif
     public class ComMember : ComBase
     {
         public bool IsHidden { get; }
@@ -110,7 +112,6 @@ namespace Rubberduck.Parsing.ComReflection
                 Parameters.Last().IsParamArray = true;
             }
         }
-
 #if DEBUG
         // ReSharper disable once UnusedMember.Local
         private string MemberDeclaration

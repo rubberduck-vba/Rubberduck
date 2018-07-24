@@ -12,7 +12,9 @@ using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+#if DEBUG
     [DebuggerDisplay("{" + nameof(DeclarationName) + "}")]
+#endif
     public class ComParameter
     {
         public static ComParameter Void = new ComParameter { _typeName = new ComTypeName(null, string.Empty) };
