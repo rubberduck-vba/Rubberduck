@@ -87,10 +87,10 @@ namespace Rubberduck.API.VBA
             _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
 
-            var exporter = new ModuleExporter();
+            var sourceCodeHandler = _vbe.SourceCodeHandler;
 
             IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
-            _attributeParser = new AttributeParser(exporter, preprocessorFactory, _state.ProjectsProvider);
+            _attributeParser = new AttributeParser(sourceCodeHandler, preprocessorFactory, _state.ProjectsProvider);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
@@ -113,7 +113,7 @@ namespace Rubberduck.API.VBA
                 parserStateManager,
                 preprocessorFactory,
                 _attributeParser, 
-                exporter);
+                sourceCodeHandler);
             var declarationResolveRunner = new DeclarationResolveRunner(
                 _state, 
                 parserStateManager, 

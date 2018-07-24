@@ -17,12 +17,12 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager, 
             Func<IVBAPreprocessor> preprocessorFactory, 
             IAttributeParser attributeParser,
-            IModuleExporter exporter) 
+            ISourceCodeHandler sourceCodeHandler) 
         :base(state, 
             parserStateManager, 
             preprocessorFactory, 
             attributeParser, 
-            exporter)
+            sourceCodeHandler)
         { }
 
         public override void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
@@ -42,13 +42,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 Parallel.ForEach(modules,
                     options,
-                    module =>
-                    {
-                        if (module.IsParsable)
-                        {
-                            ParseModule(module, token);
-                        }
-                    }
+                    module => ParseModule(module, token)
                 );
             }
             catch (AggregateException exception)

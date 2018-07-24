@@ -214,6 +214,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable smart concatenation.
+        /// </summary>
+        public static string EnableSmartConcat {
+            get {
+                return ResourceManager.GetString("EnableSmartConcat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autocomplete blocks on ENTER.
         /// </summary>
         public static string HandleEnterKey {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
@@ -16,6 +16,7 @@ namespace Rubberduck.AutoComplete
         private readonly List<IAutoComplete> _autoCompletes;
 
         private AutoCompleteSettings _settings;
+        private bool _popupShown;
 
         public AutoCompleteService(IGeneralConfigService configService, IAutoCompleteProvider provider)
         {
@@ -24,6 +25,12 @@ namespace Rubberduck.AutoComplete
 
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
             VBENativeServices.KeyDown += HandleKeyDown;
+            VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+        }
+
+        private void HandleIntelliSenseChanged(object sender, IntelliSenseEventArgs e)
+        {
+            _popupShown = e.Visible;
         }
 
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
@@ -50,19 +57,30 @@ namespace Rubberduck.AutoComplete
         {
             var module = e.CodeModule;
             var qualifiedSelection = module.GetQualifiedSelection();
-            var selection = qualifiedSelection.Value.Selection;
+            var pSelection = qualifiedSelection.Value.Selection;
 
-            if (e.Keys != Keys.None && selection.LineCount > 1)
+            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1) || e.Keys == Keys.Delete)
             {
                 return;
             }
 
-            var currentContent = module.GetLines(selection);
+            var currentContent = module.GetLines(pSelection);
+            if (e.Keys == Keys.Enter && _settings.EnableSmartConcat && IsInsideStringLiteral(pSelection, ref currentContent))
+            {
+                var indent = currentContent.NthIndexOf('"', 1);
+                var whitespace = new string(' ', indent);
+                var newCode = $"{currentContent} & _\r\n{whitespace}\"";
+                module.ReplaceLine(pSelection.StartLine, newCode);
+                using (var pane = module.CodePane)
+                {
+                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + 2);
+                    e.Handled = true;
+                }
+            }
 
-            var handleDelete = e.Keys == Keys.Delete && selection.EndColumn <= currentContent.Length;
-            var handleBackspace = e.Keys == Keys.Back && selection.StartColumn > 1;
-            var handleTab = e.Keys == Keys.Tab && !selection.IsSingleCharacter;
-            var handleEnter = e.Keys == Keys.Enter && !selection.IsSingleCharacter;
+            var handleBackspace = e.Keys == Keys.Back && pSelection.StartColumn > 1;
+            var handleTab = e.Keys == Keys.Tab && !pSelection.IsSingleCharacter;
+            var handleEnter = e.Keys == Keys.Enter && !pSelection.IsSingleCharacter;
 
             foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled))
             {
@@ -70,20 +88,20 @@ namespace Rubberduck.AutoComplete
                 {
                     using (var pane = module.CodePane)
                     {
-                        if (!string.IsNullOrWhiteSpace(module.GetLines(selection.StartLine + 1, 1)))
+                        if (!string.IsNullOrWhiteSpace(module.GetLines(pSelection.StartLine + 1, 1)))
                         {
-                            module.InsertLines(selection.StartLine + 1, string.Empty);
+                            module.InsertLines(pSelection.StartLine + 1, string.Empty);
                             e.Handled = e.Keys != Keys.Tab; // swallow ENTER, let TAB through
                         }
                         else
                         {
-                            pane.Selection = new Selection(selection.StartLine + 1, selection.EndColumn);
+                            pane.Selection = new Selection(pSelection.StartLine + 1, pSelection.EndColumn);
                             e.Handled = true; // base.Execute added the indentation as applicable already.
                         }
                         break;
                     }
                 }
-                else if (handleDelete || handleBackspace)
+                else if (handleBackspace)
                 {
                     if (DeleteAroundCaret(e, autoComplete))
                     {
@@ -98,6 +116,28 @@ namespace Rubberduck.AutoComplete
                     }
                 }
             }
+        }
+
+        private bool IsInsideStringLiteral(Selection pSelection, ref string currentContent)
+        {
+            if (!currentContent.Contains("\"") || currentContent.StripStringLiterals().HasComment(out _))
+            {
+                return false;
+            }
+
+            var zSelection = pSelection.ToZeroBased();
+            var leftOfCaret = currentContent.Substring(0, zSelection.StartColumn);
+            var rightOfCaret = currentContent.Substring(Math.Min(zSelection.StartColumn + 1, currentContent.Length - 1));
+            if (!rightOfCaret.Contains("\""))
+            {
+                // the string isn't terminated, but VBE would terminate it here.
+                currentContent += "\"";
+                rightOfCaret += "\"";
+            }
+
+            // odd number of double quotes on either side of the caret means we're inside a string literal, right?
+            return (leftOfCaret.Count(c => c.Equals('"')) % 2) != 0 &&
+                   (rightOfCaret.Count(c => c.Equals('"')) % 2) != 0;
         }
 
         private bool DeleteAroundCaret(AutoCompleteEventArgs e, IAutoComplete autoComplete)

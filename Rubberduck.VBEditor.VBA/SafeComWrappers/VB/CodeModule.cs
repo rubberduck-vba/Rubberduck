@@ -153,7 +153,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
             else
             {
-                Target.ReplaceLine(line, content);
+                try
+                {
+                    Target.ReplaceLine(line, content);
+                }
+                catch { /* "too many line continuations" is one possible cause */ }
             }
         }
 

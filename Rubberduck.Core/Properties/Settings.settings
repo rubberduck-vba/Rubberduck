@@ -259,7 +259,7 @@
     </Setting>
     <Setting Name="AutoCompleteSettings" Type="Rubberduck.Settings.AutoCompleteSettings" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;AutoCompleteSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CompleteBlockOnTab="true" CompleteBlockOnEnter="true"&gt;
+&lt;AutoCompleteSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CompleteBlockOnTab="true" CompleteBlockOnEnter="true" EnableSmartConcat="true"&gt;
   &lt;AutoCompletes&gt;
     &lt;AutoComplete Key="AutoCompleteClosingBrace" IsEnabled="true" /&gt;
     &lt;AutoComplete Key="AutoCompleteClosingBracket" IsEnabled="true" /&gt;
