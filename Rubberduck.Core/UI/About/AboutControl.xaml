@@ -167,6 +167,7 @@
                                    xml:space="preserve">JetBrains ReSharper Community Team
 Code Review Stack Exchange
 Stack Overflow
+Digital Ocean Hacktoberfest
                         </TextBlock>
 
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ContributorsHeader}"
@@ -177,6 +178,7 @@ Stack Overflow
 Andrew Jackson
 Andrew Zschetzsche
 Andrin Meier
+Anna Velcheva
 Brandon Barney
 Brian Zenger
 Bruno Costa
@@ -189,12 +191,15 @@ Francis Veilleux-Gaboury
 Frank Van Heeswijk
 Gareth Leachman
 @Heslacher
+Imh0t3b
 INOPIAE
+Ipshita Chatterjee
 @IvenBach
 Jeroen Vannevel
 Max Dörner
 Michal Krzych
 @mjolka
+Nelson Vides
 Philip Wales
 Radosław Kapka
 Rob Bovey (Smart Indenter)
@@ -202,6 +207,7 @@ Ross McLean
 Ross Knudsen
 Simon Forsberg
 Stephen Bullen (Smart Indenter)
+@tommy9
 Wayne Phillips (vbWatchdog)
                         </TextBlock>
 
