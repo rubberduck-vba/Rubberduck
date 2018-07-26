@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -23,7 +24,7 @@ namespace Rubberduck.Parsing.ComReflection
         public object DefaultValue { get; }
         public bool IsReferenceType { get; private set; }
 
-        private string _valueType = "Object";
+        private string _valueType = Tokens.Object;
         public string ValueType => IsArray ? $"{_valueType}()" : _valueType;
 
         private Guid _enumGuid = Guid.Empty;
@@ -93,6 +94,7 @@ namespace Rubberduck.Parsing.ComReflection
                 int href;
                 unchecked
                 {
+                    //The href is a long, but the size of lpValue depends on the platform, so truncate it after the lword.
                     href = (int)(desc.lpValue.ToInt64() & 0xFFFFFFFF);
                 }
                 try

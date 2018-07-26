@@ -123,5 +123,55 @@ namespace Rubberduck.Parsing.VBA
 
             throw new ArgumentException(string.Format(ParsingText.StringExtensionsArgumentException, index, chr, line), "index");
         }
+
+        private static readonly Dictionary<char, string> VbCharacterConstants = new Dictionary<char, string>()
+        {
+            { '\x00', "vbNullChar" },
+            { '\b', "vbBack" },
+            { '\t', "vbTab" },
+            { '\n', "vbLf" },
+            { '\v', "vbVerticalTab" },
+            { '\f', "vbFormFeed" },
+            { '\r', "vbCr" },
+            { '"', "Chr$(34)" },
+            { '\xA0', "Chr$(160)" }
+        };
+
+        public static string ToVbExpression(this string managed, bool useConsts = true)
+        {
+            if (string.IsNullOrEmpty(managed))
+            {
+                return useConsts ? "vbNullString" : "\"\"";
+            }
+                
+            var tokens = new List<string>();
+            var literal = string.Empty;
+            var flush = false;
+            foreach (var character in managed.ToCharArray())
+            {
+                var unicode = Convert.ToInt16(character) > byte.MaxValue;
+                if (VbCharacterConstants.ContainsKey(character) || char.IsControl(character) && !unicode)
+                {
+                    flush = true;
+                    tokens.Add(useConsts ? VbCharacterConstants[character] : $"Chr$({Convert.ToByte(character)})");
+                }
+                else if (!unicode)
+                {
+                    literal += character;
+                }
+                else
+                {
+                    flush = true;
+                    tokens.Add($"ChrW$(&H{Convert.ToInt16(character):X})");
+                }
+                if (flush && !string.IsNullOrEmpty(literal))
+                {
+                    tokens.Add($"\"{literal}\"");
+                    literal = string.Empty;
+                    flush = false;
+                }
+            }
+            return string.Join(" & ", tokens).Replace("vbCr & vbLf", "vbCrLf");
+        }
     }
 }

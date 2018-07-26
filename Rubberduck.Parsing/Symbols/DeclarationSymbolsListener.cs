@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Symbols
             RubberduckParserState state,
             QualifiedModuleName qualifiedModuleName,
             IEnumerable<IAnnotation> annotations,
-            IDictionary<Tuple<string, DeclarationType>, 
+            IDictionary<Tuple<string, DeclarationType>,
             Attributes> attributes,
             Declaration projectDeclaration)
         {
@@ -149,7 +149,7 @@ namespace Rubberduck.Parsing.Symbols
                     libraryQualifier = "MSForms.";
                 }
             }
-            
+
             foreach (var control in form.Controls)
             {
                 var typeName = $"{libraryQualifier}{control.TypeName()}";
@@ -209,7 +209,7 @@ namespace Rubberduck.Parsing.Symbols
                     isParamArray);
                 if (_parentDeclaration is IParameterizedDeclaration)
                 {
-                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter((ParameterDeclaration) result);
+                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter((ParameterDeclaration)result);
                 }
             }
             else
@@ -288,6 +288,22 @@ namespace Rubberduck.Parsing.Symbols
                 else if (declarationType == DeclarationType.PropertyLet)
                 {
                     result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
+                }
+                else if (declarationType == DeclarationType.EnumerationMember)
+                {
+                    result = new ValuedDeclaration(
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                        _parentDeclaration, 
+                        _currentScope, 
+                        asTypeName, 
+                        asTypeContext, 
+                        typeHint, 
+                        annotations,
+                        accessibility, 
+                        declarationType,
+                        context.GetDescendent<VBAParser.ExpressionContext>()?.GetText() ?? string.Empty,
+                        context,
+                        selection);
                 }
                 else
                 {
@@ -734,7 +750,7 @@ namespace Rubberduck.Parsing.Symbols
             var value = context.expression().GetText();
             var constStmt = (VBAParser.ConstStmtContext)context.Parent;
 
-            var declaration = new ConstantDeclaration(
+            var declaration = new ValuedDeclaration(
                 new QualifiedMemberName(_qualifiedModuleName, name),
                 _parentDeclaration,
                 _currentScope,
@@ -765,7 +781,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var identifier = Identifier.GetName(context.untypedIdentifier());
             var identifierSelection = Identifier.GetNameSelection(context.untypedIdentifier());
-            var accessibility = context.visibility()?.PRIVATE() != null ? Accessibility.Private : Accessibility.Public; 
+            var accessibility = context.visibility()?.PRIVATE() != null ? Accessibility.Private : Accessibility.Public;
             var declaration = CreateDeclaration(
                 identifier,
                 null,
@@ -862,7 +878,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
         {
-            ((ProceduralModuleDeclaration) _moduleDeclaration).IsPrivateModule = true;
+            ((ProceduralModuleDeclaration)_moduleDeclaration).IsPrivateModule = true;
         }
 
         private void AddDeclaration(Declaration declaration)
