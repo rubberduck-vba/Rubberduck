@@ -151,8 +151,9 @@ $@"
         [TestCase("45.6", "55", "Double")]
         [TestCase(@"""Test""", @"""55""", "String")]
         [TestCase("True", "y < 6", "Boolean")]
+        [TestCase("#12/25/2018#", "#07/04/1776#", "Date")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_CaseClauseTypeUnrecognizedSelectExpressionType(string rangeExpr1, string rangeExpr2, string expected)
+        public void UnreachableCaseInspection_CaseClauseTypeUnrecognizedSelectExpressionTypes(string rangeExpr1, string rangeExpr2, string expected)
         {
             string inputCode =
 $@"
@@ -271,7 +272,7 @@ $@"Sub Foo(x As {type})
         End Select
 
         End Sub";
-            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, inherentlyUnreachable: 2);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
@@ -2347,6 +2348,38 @@ Sub FirstSub(bar As Date)
     End Select
 End Sub";
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, caseElse: 1);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
+        [TestCase("AVALUE + ANOTHERVALUE")]
+        [TestCase("AVALUE * ANOTHERVALUE")]
+        [TestCase("AVALUE + ANOTHERVALUE To 700")]
+        [TestCase("Is < AVALUE + ANOTHERVALUE")]
+        [TestCase("x < AVALUE + ANOTHERVALUE")]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_Overflows(string firstCase)
+        {
+            string inputCode =
+$@"
+private Const AVALUE As Byte = 250
+private Const ANOTHERVALUE As Byte = 250
+
+Sub FirstSub(x As Long)
+
+    Dim bar As Long
+    bar = 22
+    Select Case bar
+        Case {firstCase}
+            'Overflow
+        Case 20 + 2
+            'OK
+        Case ""2"" + ""2""
+            'Unreachable
+        Case AVALUE + ""7""
+            'OK
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1, inherentlyUnreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 

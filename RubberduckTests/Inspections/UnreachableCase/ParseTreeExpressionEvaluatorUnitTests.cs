@@ -82,8 +82,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticIntegerType(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Arithmetic);
-            Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
+            var result = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeArithmeticDefault();
+            Assert.AreEqual(expectedResultType, result);
         }
 
         [TestCase("Long", "Byte", "Long")]
@@ -96,8 +96,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticLong(string lhsType, string rhsType, string expectedResultType)
         {
-            var opType = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Arithmetic);
-            Assert.AreEqual(opType.OperatorDeclaredType, expectedResultType);
+            var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeArithmeticDefault();
+            Assert.AreEqual(expectedResultType, opType);
         }
 
         [TestCase("LongLong", "Byte", "LongLong")]
@@ -111,8 +111,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticLongLong(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Arithmetic);
-            Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
+            var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeArithmeticDefault();
+            Assert.AreEqual(expectedResultType, opType);
         }
 
         [TestCase("Single", "Byte", "Single")]
@@ -125,8 +125,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticSingle(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Arithmetic);
-            Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
+            var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeArithmeticDefault();
+            Assert.AreEqual(expectedResultType, opType);
         }
 
 
@@ -151,8 +151,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticDouble(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Arithmetic);
-            Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
+            var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeArithmeticDefault();
+            Assert.AreEqual(expectedResultType, opType);
         }
 
         [TestCase("Currency", "Byte", "Currency")]
@@ -173,8 +173,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticCurrency(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Arithmetic);
-            Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
+            var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeArithmeticDefault();
+            Assert.AreEqual(expectedResultType, opType);
         }
 
         [TestCase("Date", "Byte", "Date")]
@@ -199,8 +199,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticDate(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Arithmetic);
-            Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
+            var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeArithmeticDefault();
+            Assert.AreEqual(expectedResultType, opType);
         }
 
         [TestCase("Currency", "Double", "Double")]
@@ -212,7 +212,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticMult(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), ArithmeticOperators.MULTIPLY);
+            var opProvider = new OperatorTypesProvider((lhsType, rhsType), ArithmeticOperators.MULTIPLY);
             Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
         }
 
@@ -281,7 +281,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticDiv(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), ArithmeticOperators.DIVIDE);
+            var opProvider = new OperatorTypesProvider((lhsType, rhsType), ArithmeticOperators.DIVIDE);
             Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
         }
 
@@ -333,7 +333,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeArithmeticMod(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), ArithmeticOperators.MODULO);
+            var opProvider = new OperatorTypesProvider((lhsType, rhsType), ArithmeticOperators.MODULO);
             Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType );
         }
 
@@ -398,8 +398,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_OperatorResultTypeLogical(string lhsType, string rhsType, string expectedResultType)
         {
-            var opProvider = new OperatorDeclaredTypeProvider((lhsType, rhsType), OperatorDeclaredTypeProviderTypes.Logical);
-            Assert.AreEqual(expectedResultType, opProvider.OperatorDeclaredType);
+            var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeLogicalDefault();
+            Assert.AreEqual(expectedResultType, opType);
         }
         [TestCase("x?Byte_-_2?Long", "x - 2", "Long")]
         [TestCase("2_-_x?Byte", "2 - x", "Integer")]
@@ -421,6 +421,15 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.IsFalse(result.ParsesToConstantValue);
         }
 
+        [TestCase(@"True_=_""4""", "True", "Boolean")]
+        [TestCase(@"True_<>_""4""", "False", "Boolean")]
+        [TestCase(@"False_>_""4""", "True", "Boolean")]
+        [TestCase(@"False_>=_""4""", "True", "Boolean")]
+        [TestCase(@"""4""_=_""4""", "True", "Boolean")]
+        [TestCase(@"""4""_<=_False", "True", "Boolean")]
+        [TestCase(@"""4""_<_False", "True", "Boolean")]
+        [TestCase(@"True_<_""0""", "True", "Boolean")]
+        [TestCase("#1/1/2018#_<_#12/1/2018#", "True", "Boolean")]
         [TestCase("-1_>_0", "False", "Boolean")]
         [TestCase("-1.0_>_0.0?Currency", "False", "Boolean")]
         [TestCase("-1_<_0", "True", "Boolean")]
@@ -439,8 +448,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_MathOpCurrency(string operands, string expected, string selectExpressionTypename)
         {
-            var result = TestBinaryOp(ArithmeticOperators.MULTIPLY, operands, expected, selectExpressionTypename);
-            Assert.AreEqual(selectExpressionTypename, result.TypeName);
+            (IParseTreeValue expected, IParseTreeValue actual) result = TestBinaryOp(ArithmeticOperators.MULTIPLY, operands, expected, selectExpressionTypename);
+            Assert.AreEqual(selectExpressionTypename, result.actual.TypeName);
         }
 
         [TestCase("10.51?Long_*_11.2", "123.2", "Double")]
@@ -448,78 +457,94 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("10.51?Byte_*_11.2", "123.2", "Double")]
         [TestCase("10.51?Double_*_11.2", "117.712", "Double")]
         [TestCase("10_*_11.2", "112", "Double")]
-        [TestCase("11.2_*_10", "112", "Long")]
+        [TestCase("11.2_*_10", "112", "Double")]
         [TestCase("10.51_*_11.2", "117.712", "Double")]
         [TestCase("10.51?Single_*_11.2?Single", "117.712", "Single")]
-        [TestCase("10.51?Currency_*_11.2?Currency", "117.712", "Single")]
-        [TestCase("10_*_11", "110", "Long")]
-        [TestCase("True_*_10", "-10", "Long")]
-        [TestCase("10_*_True", "-10", "Long")]
+        [TestCase("10.51?Currency_*_11.2?Currency", "117.712", "Currency")]
+        [TestCase("10_*_11", "110", "Integer")]
+        [TestCase("True_*_10", "-10", "Integer")]
+        [TestCase("10_*_True", "-10", "Integer")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_Multiplication(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_Multiplication(string operands, string expected, string resultTypeName)
         {
-            TestBinaryOp(ArithmeticOperators.MULTIPLY, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.MULTIPLY, operands, expected, resultTypeName);
         }
 
-        [TestCase("10_/_2", "5", "Long")]
-        [TestCase("2_/_10", "0", "Long")]
+        [TestCase("2000000000?Long_+_2000000000?Long")]
+        [TestCase("30000?Integer_*_100?Byte")]
+        [TestCase("55?Byte_*_100?Byte")]
+        [TestCase("250?Byte_+_100?Byte")]
+        [Category("Inspections")]
+        public void ParseTreeValueExpressionEvaluator_MultiplicationOverflow(string operands)
+        {
+            GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
+            var result = Calculator.Evaluate(LHS, RHS, opSymbol);
+            Assert.IsTrue(result.IsOverflowException);
+        }
+
+        [TestCase("10_/_2", "5", "Double")]
+        [TestCase("2_/_10", "0.2", "Double")]
         [TestCase("10_/_11.2", "0.89285", "Double")]
         [TestCase("11.2_/_10", "1.12", "Double")]
         [TestCase("10.51_/_11.2", "0.93839286", "Double")]
-        [TestCase("10_/_11", "1", "Long")]
+        [TestCase("10_/_11", ".909090909", "Double")]
         [TestCase(@"""10.51""_/_11.2", "0.93839286", "Double")]
         [TestCase("True_/_10.5", "-0.0952", "Double")]
         [TestCase("10.5_/_True", "-10.5", "Double")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_Division(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_Divisions(string operands, string expected, string resultType)
         {
-            TestBinaryOp(ArithmeticOperators.DIVIDE, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.DIVIDE, operands, expected, resultType);
         }
 
         [TestCase(@"9.5_\_2.4", "5", "Long")]
-        [TestCase(@"10_\_4", "2", "Long")]
+        [TestCase(@"10_\_4", "2", "Integer")]
         [TestCase(@"5.423_\_1", "5", "Long")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_IntegerDivision(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_IntegerDivision(string operands, string expected, string resultType)
         {
-            TestBinaryOp(ArithmeticOperators.INTEGER_DIVIDE, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.INTEGER_DIVIDE, operands, expected, resultType);
         }
 
         [TestCase("10.51_+_11.2", "21.71", "Double")]
         [TestCase("10_+_11.2", "21.2", "Double")]
         [TestCase("11.2_+_10", "21.2", "Double")]
-        [TestCase("10_+_11", "21", "Long")]
+        [TestCase("10_+_11", "21", "Integer")]
         [TestCase("True_+_10.5", "9.5", "Double")]
         [TestCase("10.5_+_True", "9.5", "Double")]
+        [TestCase("#12/1/2018#_+_6", "12/07/2018 00:00:00", "Date")]
+        [TestCase("6_+_#12/1/2018#", "12/07/2018 00:00:00", "Date")]
+        [TestCase("#12/7/2018#_+_#12/7/2018#", "11/14/2137 00:00:00", "Date")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_Addition(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_Addition(string operands, string expected, string resultType)
         {
-            TestBinaryOp(ArithmeticOperators.PLUS, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.PLUS, operands, expected, resultType);
         }
 
         [TestCase("10.51_-_11.2", "-0.69", "Double")]
-        [TestCase("10_-_11", "-1", "Long")]
-        [TestCase("True_-_10", "-11", "Long")]
-        [TestCase("11_-_True", "12", "Long")]
+        [TestCase("10_-_11", "-1", "Integer")]
+        [TestCase("True_-_10", "-11", "Integer")]
+        [TestCase("11_-_True", "12", "Integer")]
+        [TestCase("#08/10/2000#_-_#08/01/2000#", "01/08/1900 00:00:00", "Date")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_Subtraction(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_Subtraction(string operands, string expected, string resultType)
         {
-            TestBinaryOp(ArithmeticOperators.MINUS, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.MINUS, operands, expected, resultType);
         }
 
         [TestCase("10_^_2", "100", "Double")]
-        [TestCase("10.5?Currency_^_2.2?Currency", "176.44789", "Currency")]
+        [TestCase("10.5?Currency_^_2.2?Currency", "176.44789", "Double")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_Powers(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_Exponents(string operands, string expected, string resultType)
         {
-            TestBinaryOp(ArithmeticOperators.EXPONENT, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.EXPONENT, operands, expected, resultType);
         }
 
-        [TestCase("10_Mod_3", "1", "Currency")]
+        [TestCase("10_Mod_3", "1", "Integer")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_Modulo(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_Modulo(string operands, string expected, string resultType)
         {
-            TestBinaryOp(ArithmeticOperators.MODULO, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.MODULO, operands, expected, resultType);
         }
 
         [TestCase("5_And_1", "1")]
@@ -671,6 +696,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("-_0", "0?Integer")]
         [TestCase("-_1?Double", "-1?Double")]
         [TestCase("-_-1?Double", "1?Double")]
+        [TestCase("-_#12/1/2010#", "01/27/1789 00:00:00?Date")]
+        [TestCase("-_#12/1/0400#", "01/27/3399 00:00:00?Date")]
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_MinusUnaryOp(string operands, string expected)
         {
@@ -679,7 +706,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var result = Calculator.Evaluate(LHS, opSymbol);
 
             Assert.AreEqual(expectedVal.ValueText, result.ValueText);
-            Assert.IsTrue(result.ParsesToConstantValue);
+            Assert.IsTrue(result.ParsesToConstantValue, $"{expectedVal.ValueText} does not parse to a constant value");
             Assert.AreEqual(expectedVal.TypeName, result.TypeName);
         }
 
@@ -734,10 +761,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expectedPattern, result);
         }
 
-
-
-        [TestCase(@"""Foo""_&_""Bar""", "FooBar")]
-        [TestCase(@"1_&_""Bar""", "1Bar")]
+        [TestCase(@"""Foo""_&_""Bar""", @"""FooBar""")]
+        [TestCase(@"1_&_""Bar""", @"""1Bar""")]
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_AmpersandOperator(string operands, string expected)
         {
@@ -776,6 +801,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
+        //TODO: Should this be an 'Inherently Unreachable' result
         //Valid logic operators, but invalid with strings.
         //VBA compiles, but a runtime error would occur - inspection does not flag runtime typemismatch
         [TestCase(@"""A""_And_""a""", "A And a", false)]
@@ -789,18 +815,25 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var RHS = ValueFactory.Create(ops[2]);
 
             var calculator = new ParseTreeExpressionEvaluator(ValueFactory, optionCompareBinary);
-            var result = calculator.Evaluate(LHS, RHS, ops[1]);
+            try
+            {
+                var result = calculator.Evaluate(LHS, RHS, ops[1]);
+            }
+            catch (ArgumentException e)
+            {
+                return;
+            }
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.Fail("Logical comparison of two strings did not throw an ArguementException");
         }
 
-        [TestCase(@"""2""_+_""2""", "22", "String")]
-        [TestCase(@"""2""_+_2", "4", "Long")]
-        [TestCase(@"""256""_+_""2""", "2562", "Long")]
+        [TestCase(@"""2""_+_""2""", @"""22""", "String")]
+        [TestCase(@"""2""_+_2", "4", "Double")]
+        [TestCase(@"""256""_+_""2""", @"""2562""", "String")]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_AdditionString(string operands, string expected, string selectExpressionTypename)
+        public void ParseTreeValueExpressionEvaluator_AdditionString(string operands, string expected, string operatorResultType)
         {
-            TestBinaryOp(ArithmeticOperators.PLUS, operands, expected, selectExpressionTypename);
+            TestBinaryOp(ArithmeticOperators.PLUS, operands, expected, operatorResultType);
         }
 
         [TestCase("<", ">")]
@@ -906,35 +939,26 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 : ValueFactory.Create(valAndType, conformTo);
         }
 
-        private IParseTreeValue TestBinaryOp(string opSymbol, string operands, string expected, string selectExpressionTypeName)
+        private (IParseTreeValue, IParseTreeValue) TestBinaryOp(string opSymbol, string operands, string expected, string expectedResultTypeName)
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out _);
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
-            if (selectExpressionTypeName.Equals(Tokens.Double) || selectExpressionTypeName.Equals(Tokens.Single) || selectExpressionTypeName.Equals(Tokens.Currency))
+            Assert.AreEqual(expectedResultTypeName, result.TypeName);
+
+            if (expectedResultTypeName.Equals(Tokens.Double) || expectedResultTypeName.Equals(Tokens.Single) || expectedResultTypeName.Equals(Tokens.Currency))
             {
                 var compareLength = expected.Length > 5 ? 5 : expected.Length;
-                Assert.IsTrue(Math.Abs(double.Parse(result.ValueText.Substring(0, compareLength)) - double.Parse(expected.Substring(0, compareLength))) <= double.Epsilon, $"Actual={result.ValueText} Expected={expected}");
+                var accuracy = Math.Pow(10, -1.0 * compareLength);
+                var lhs = double.Parse(result.ValueText.Substring(0, compareLength));
+                var rhs = double.Parse(expected.Substring(0, compareLength));
+                Assert.IsTrue(Math.Abs(lhs - rhs) <= accuracy, $"Actual={result.ValueText} Expected={expected}");
+                return (result,result);
             }
-            else if (selectExpressionTypeName.Equals(Tokens.String))
-            {
-                var compareLength = expected.Length > 5 ? 5 : expected.Length;
-                Assert.AreEqual(expected.Substring(0, compareLength), result.ValueText.Substring(0, compareLength));
-            }
-            else
-            {
-                if (result.TryConvertValue(out long selectExpressionResult))
-                {
-                    Assert.AreEqual(expected, selectExpressionResult.ToString());
-                }
-                else
-                {
-                    Assert.Fail("Unable to convert result to Select Expression Type");
-                }
-            }
-            Assert.IsTrue(result.ParsesToConstantValue, "Expected 'IsConstantValue' property to be true");
-            return result;
+            var expectedResult = ValueFactory.Create(expected, expectedResultTypeName);
+            Assert.AreEqual(expectedResult, result);
+            return (expectedResult,result);
         }
     }
 }

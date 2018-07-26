@@ -80,13 +80,13 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("x?String", "String", "x")]
         [TestCase("x?Double", "Double", "x")]
         [TestCase("x456", "", "x456")]
-        [TestCase(@"""x456""", "String", "x456")]
+        [TestCase(@"""x456""", "String", @"""x456""")]
         [TestCase("x456?String", "String", "x456")]
         [TestCase("45E2", "Double", "4500")]
-        [TestCase(@"""10.51""", "String", "10.51")]
-        [TestCase(@"""What@""", "String", "What@")]
-        [TestCase(@"""What!""", "String", "What!")]
-        [TestCase(@"""What#""", "String", "What#")]
+        [TestCase(@"""10.51""", "String", @"""10.51""")]
+        [TestCase(@"""What@""", "String", @"""What@""")]
+        [TestCase(@"""What!""", "String", @"""What!""")]
+        [TestCase(@"""What#""", "String", @"""What#""")]
         [TestCase("What%", "Integer", "What")]
         [TestCase("What&", "Long", "What")]
         [TestCase("What@", "Currency", "What")]
@@ -119,7 +119,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("&HFFFFFFFFFFFFFFFF^", "LongLong", "-1")]
         [TestCase("&o1777777777777777777777^", "LongLong", "-1")]
         [Category("Inspections")]
-        public void ParseTreeValue_VariableTypes(string operands, string expectedTypeName, string expectedValueText)
+        public void ParseTreeValue_VariableType(string operands, string expectedTypeName, string expectedValueText)
         {
             var value = CreateInspValueFrom(operands);
             Assert.AreEqual(expectedTypeName, value.TypeName);
@@ -190,7 +190,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual("NaN", result.ValueText);
         }
 
-        [TestCase(@"""W#hat#""", "String", "W#hat#")]
+        [TestCase(@"""W#hat#""", "String", @"""W#hat#""")]
         [Category("Inspections")]
         public void ParseTreeValue_LikeATypeHint(string operands, string expectedTypeName, string expectedValueText)
         {

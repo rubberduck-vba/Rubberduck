@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class ExpressionFilterDate : ExpressionFilter<DateValueIComparableDecorator>
+    public class ExpressionFilterDate : ExpressionFilter<ComparableDateValue>
     {
-        public ExpressionFilterDate(StringToValueConversion<DateValueIComparableDecorator> converter) : base(converter, Tokens.Date) { }
+        public ExpressionFilterDate(StringToValueConversion<ComparableDateValue> converter) : base(converter, Tokens.Date) { }
 
         public override bool FiltersAllValues => base.FiltersAllValues
             || Limits.HasMinAndMaxLimits && (Limits.Maximum.AsDecimal - Limits.Minimum.AsDecimal + 1 <= RangesValuesCount + SingleValues.Count());

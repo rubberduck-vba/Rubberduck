@@ -180,6 +180,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (expression is null || expression.ToString().Equals(string.Empty)) { return; }
 
+            if (IsOverflow(expression))
+            {
+                expression.IsUnreachable = true;
+                return;
+            }
+
             try
             {
                 switch (expression)
@@ -404,6 +410,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private HashSet<string> this[VariableClauseTypes eType] => Variables[eType];
 
+        private bool IsOverflow(IRangeClauseExpression expression)
+        {
+            if (expression.LHSValue != null && expression.LHSValue.IsOverflowException)
+            {
+                expression.IsInherentlyUnreachable = true;
+            }
+            if (expression.RHSValue != null && expression.RHSValue.IsOverflowException)
+            {
+                expression.IsInherentlyUnreachable = true;
+            }
+            return expression.IsInherentlyUnreachable;
+        }
+
         private bool AddRangeOfValuesExpression(RangeOfValuesExpression rangeExpr)
         {
             if (rangeExpr.LHSValue.ParsesToConstantValue && rangeExpr.RHSValue.ParsesToConstantValue)
@@ -452,10 +471,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (FiltersTrueFalse) { return false; }
 
-            var addsSingleValue = false;
-            if (like.Pattern.Equals("*"))
+            if (like.Pattern.Equals($"\"*\""))
             {
-                addsSingleValue = AddSingleValue(_trueValue);
+                return AddSingleValue(_trueValue);
             }
             if (LikePredicates.Any(pred => pred.Filters(like)))
             {

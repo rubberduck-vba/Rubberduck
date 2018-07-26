@@ -2,14 +2,14 @@
 {
     public interface IParseTreeValueFactory
     {
-        IParseTreeValue Create(string valueToken, string declaredTypeName = null, string conformToTypeName = null);
+        IParseTreeValue Create(string valueToken, string declaredTypeName = null);
     }
 
     public class ParseTreeValueFactory : IParseTreeValueFactory
     {
-        public IParseTreeValue Create(string valueToken, string declaredTypeName = null, string conformToTypeName = null)
+        public IParseTreeValue Create(string valueToken, string declaredTypeName = null)
         {
-            return new ParseTreeValue(valueToken, declaredTypeName, conformToTypeName);
+            return new ParseTreeValue(valueToken, declaredTypeName);
         }
     }
 }

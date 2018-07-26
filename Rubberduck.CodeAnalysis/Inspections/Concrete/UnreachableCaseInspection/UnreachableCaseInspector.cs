@@ -170,32 +170,29 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             typeName = string.Empty;
             if (!typeNames.Any()) { return false; }
 
-            var typeList = typeNames.ToList();
-
-            //If everything is declared as a Variant or a Date (or combination), we do not attempt to inspect the selectStatement
-            //TODO: Enhancement - handle the Date type
-            if (typeList.All(tn => new List<string>() { Tokens.Variant, Tokens.Date }.Contains(tn)))
+            //If everything is declared as a Variant , we do not attempt to inspect the selectStatement
+            if (typeNames.All(tn => tn.Equals(Tokens.Variant)))
             {
                 return false;
             }
 
-            //If all match, the typeName is easy...This is the only way to return "String".
-            if (typeList.All(tn => new List<string>() { typeList.First() }.Contains(tn)))
+            //If all match, the typeName is easy...This is the only way to return "String" or "Date".
+            if (typeNames.All(tn => new List<string>() { typeNames.First() }.Contains(tn)))
             {
-                typeName = typeList.First();
+                typeName = typeNames.First();
                 return true;
             }
             //Integral numbers will be evaluated using Long
-            if (typeList.All(tn => new List<string>() { Tokens.Long, Tokens.Integer, Tokens.Byte }.Contains(tn)))
+            if (typeNames.All(tn => new List<string>() { Tokens.Long, Tokens.Integer, Tokens.Byte }.Contains(tn)))
             {
                 typeName = Tokens.Long;
                 return true;
             }
 
             //Mix of Integertypes and rational number types will be evaluated using Double or Currency
-            if (typeList.All(tn => new List<string>() { Tokens.Long, Tokens.Integer, Tokens.Byte, Tokens.Single, Tokens.Double, Tokens.Currency }.Contains(tn)))
+            if (typeNames.All(tn => new List<string>() { Tokens.Long, Tokens.Integer, Tokens.Byte, Tokens.Single, Tokens.Double, Tokens.Currency }.Contains(tn)))
             {
-                typeName = typeList.Any(tk => tk.Equals(Tokens.Currency)) ? Tokens.Currency : Tokens.Double;
+                typeName = typeNames.Any(tk => tk.Equals(Tokens.Currency)) ? Tokens.Currency : Tokens.Double;
                 return true;
             }
             return false;
@@ -204,6 +201,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryDetectTypeHint(string content, out string typeName)
         {
             typeName = string.Empty;
+            if (StringValueConverter.TryConvertString(content, out ComparableDateValue _))
+            {
+                return false;
+            }
+
             if (SymbolList.TypeHintToTypeName.Keys.Any(th => content.EndsWith(th)))
             {
                 var lastChar = content.Substring(content.Length - 1);
@@ -253,7 +255,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         || resultContext is VBAParser.LogicalEqvOpContext
                         || resultContext is VBAParser.LogicalImpOpContext)
                 {
-                    (IParseTreeValue lhs, IParseTreeValue rhs) = CreateOperandPair(clauseValue, symbol, _valueFactory);
+                    (IParseTreeValue lhs, IParseTreeValue rhs) = CreateLogicPair(clauseValue, symbol, _valueFactory);
                     if (symbol.Equals(Tokens.Like))
                     {
                         return new LikeExpression(lhs, rhs);
@@ -279,13 +281,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         private static (IParseTreeValue lhs, IParseTreeValue rhs)
-            CreateOperandPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
+            CreateLogicPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
         {
             var operands = value.ValueText.Split(new string[] { opSymbol }, StringSplitOptions.None);
             if (operands.Count() == 2)
             {
                 var lhs = factory.Create(operands[0].Trim());
                 var rhs = factory.Create(operands[1].Trim());
+                if (opSymbol.Equals(Tokens.Like))
+                {
+                    rhs = factory.Create($"\"{operands[1].Trim()}\"", Tokens.String);
+                }
+                if (value.IsOverflowException)
+                {
+                    lhs.IsOverflowException = true;
+                    rhs.IsOverflowException = true;
+                }
                 return (lhs, rhs);
             }
 

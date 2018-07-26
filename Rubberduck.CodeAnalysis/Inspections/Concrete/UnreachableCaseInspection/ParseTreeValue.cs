@@ -16,18 +16,23 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string TypeName { get; }
         bool ParsesToConstantValue { get; set; }
         decimal AsCurrency { get; }
+        bool IsOverflowException { get; set; }
     }
 
     public class ParseTreeValue : IParseTreeValue
     {
+        private static decimal CURRENCYMIN = -922337203685477.5808M;
+        private static decimal CURRENCYMAX = 922337203685477.5807M;
+
         private readonly string _inputValue;
         private readonly string _declaredType;
         private readonly string _derivedType;
+        private readonly int _hashCode;
 
-        private DateValueIComparableDecorator _dateValue;
+        private string _valueText;
+        private ComparableDateValue _dateValue;
 
-
-        public ParseTreeValue(string value, string declaredType = null, string conformToType = null)
+        public ParseTreeValue(string value, string declaredType = null)
         {
             if (value is null)
             {
@@ -35,17 +40,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             _inputValue = value;
+            _hashCode = value.GetHashCode();
             ValueText = value;
             ParsesToConstantValue = IsStringConstant(value);
             _declaredType = ParsesToConstantValue && (declaredType is null) ? Tokens.String : declaredType;
             _derivedType = DeriveTypeName(value, out bool derivedFromTypeHint);
 
-            if (_derivedType.Equals(Tokens.Date))
+            if ( _declaredType != null &&  _declaredType.Equals(Tokens.Date))
             {
-                if (this.TryConvertValue(out DateValueIComparableDecorator _dateValue))
+                if (StringValueConverter.TryConvertString(AnnotateAsDateLiteral(ValueText), out _dateValue))
                 {
                     ParsesToConstantValue = true;
-                    ValueText = $"#{_dateValue.AsString}#";
+                    ValueText = AnnotateAsDateLiteral(_dateValue.AsString);
+                }
+            }
+
+            if (_derivedType.Equals(Tokens.Date))
+            {
+                if (StringValueConverter.TryConvertString(ValueText, out _dateValue))
+                {
+                    ValueText = AnnotateAsDateLiteral(_dateValue.AsString);
+                    ParsesToConstantValue = true;
                 }
             }
 
@@ -59,7 +74,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 ValueText = value.Replace("\"", "");
             }
 
-            var conformToTypeName = conformToType ?? _declaredType ?? _derivedType;
+            var conformToTypeName = _declaredType ?? _derivedType;
             ConformValueTextToType(conformToTypeName);
             TypeName = conformToTypeName;
         }
@@ -80,11 +95,42 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public string TypeName { get; set; }
 
-        public string ValueText { private set; get; }
+        public string ValueText
+        {
+            private set
+            {
+                _valueText = value;
+            }
+            get
+            {
+                if (ParsesToConstantValue && TypeName != null && TypeName.Equals(Tokens.String))
+                {
+                    return AnnotateAsStringConstant(_valueText);
+                }
+                return _valueText;
+            }
+        }
 
         public bool ParsesToConstantValue { set; get; }
 
+        public bool IsOverflowException { get; set; }
+
         public override string ToString() => ValueText;
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ParseTreeValue ptValue)
+            {
+                return ptValue.ValueText == ValueText && ptValue.TypeName == TypeName;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return _hashCode;
+        }
 
         private static string RemoveTypeHintChar(string inputValue)
         {
@@ -99,6 +145,34 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 : inputValue;
         }
 
+        private static string AnnotateAsDateLiteral(string input)
+        {
+            var result = input;
+            if (!input.StartsWith("#"))
+            {
+                result = $"#{result}";
+            }
+            if (!input.EndsWith("#"))
+            {
+                result = $"{result}#";
+            }
+            return result;
+        }
+
+        private static string AnnotateAsStringConstant(string input)
+        {
+            var result = input;
+            if (!input.StartsWith("\""))
+            {
+                result = $"\"{result}";
+            }
+            if (!input.EndsWith("\""))
+            {
+                result = $"{result}\"";
+            }
+            return result;
+        }
+
         private static string DeriveTypeName(string inputString, out bool derivedFromTypeHint)
         {
             derivedFromTypeHint = false;
@@ -108,15 +182,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return string.Empty;
             }
 
-            if (StringValueConverter.TryConvertString(inputString, out DateValueIComparableDecorator _))
+            if (TryParseAsDateLiteral(inputString, out ComparableDateValue _))
             {
                 return Tokens.Date;
-            }
-
-            if (SymbolList.TypeHintToTypeName.TryGetValue(inputString.Last().ToString(), out string hintResult))
-            {
-                derivedFromTypeHint = true;
-                return hintResult;
             }
 
             if (IsStringConstant(inputString))
@@ -124,15 +192,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return Tokens.String;
             }
 
-            if (inputString.Contains("."))
+
+            if (SymbolList.TypeHintToTypeName.TryGetValue(inputString.Last().ToString(), out string hintResult))
             {
-                if (double.TryParse(inputString, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
-                {
-                    return Tokens.Double;
-                }
+                derivedFromTypeHint = true;
+                return hintResult;
             }
 
-            if (inputString.Count(ch => ch.Equals('E')) == 1)
+            if (inputString.Contains(".") || inputString.Count(ch => ch.Equals('E')) == 1)
             {
                 if (double.TryParse(inputString, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
                 {
@@ -181,6 +248,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             return string.Empty;
+        }
+
+        private static bool TryParseAsDateLiteral(string valueString, out ComparableDateValue value)
+        {
+            return StringValueConverter.TryConvertString(valueString, out value);
         }
 
         private static bool TryParseAsHexLiteral(string valueString, out short value)
@@ -324,6 +396,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     ValueText = newVal.ToString();
                     ParsesToConstantValue = true;
+                    CheckForOverflow(conformTypeName);
                     return;
                 }
 
@@ -385,6 +458,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     ValueText = newVal.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
+                    CheckForOverflow(conformTypeName);
                     return;
                 }
             }
@@ -412,19 +486,58 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     var currencyValue = Math.Round(newVal, 4, MidpointRounding.ToEven);
                     ValueText = currencyValue.ToString(CultureInfo.InvariantCulture);
                     ParsesToConstantValue = true;
+                    CheckForOverflow(conformTypeName);
                     return;
+                }
+            }
+
+            if (conformTypeName.Equals(Tokens.Date))
+            {
+                if (this.TryConvertValue(out double newVal))
+                {
+                    if (!_derivedType.Equals(Tokens.Date))
+                    {
+                        var dv = new DateValue(DateTime.FromOADate(newVal));
+                        _dateValue = new ComparableDateValue(dv);
+                        ValueText = _dateValue.AsDate.ToString(CultureInfo.InvariantCulture);
+                        ParsesToConstantValue = true;
+                    }
                 }
             }
         }
 
+        private static Dictionary<string, Action<string>> OverflowChecks = new Dictionary<string, Action<string>>()
+        {
+            [Tokens.Byte] = (a) => { byte.Parse(a); },
+            [Tokens.Integer] = (a) => { Int16.Parse(a); },
+            [Tokens.Long] = (a) => { Int32.Parse(a); },
+            [Tokens.LongLong] = (a) => { Int64.Parse(a); },
+            [Tokens.Single] = (a) => { float.Parse(a); },
+            [Tokens.Currency] = (a) => { var value = decimal.Parse(a); if (value < CURRENCYMIN || value > CURRENCYMAX) { throw new OverflowException(); } },
+        };
+
+        private void CheckForOverflow(string typeName)
+        {
+            if (OverflowChecks.ContainsKey(typeName))
+            {
+                try
+                {
+                    OverflowChecks[typeName](ValueText);
+                }
+                catch (OverflowException)
+                {
+                    IsOverflowException = true;
+                }
+            }
+        }
     }
 
-    public class DateValueIComparableDecorator : IValue, IComparable<DateValueIComparableDecorator>
+    public class ComparableDateValue : IValue, IComparable<ComparableDateValue>
     {
         private readonly DateValue _inner;
         private readonly int _hashCode;
 
-        public DateValueIComparableDecorator(DateValue dateValue)
+        public ComparableDateValue(DateValue dateValue)
         {
             _inner = dateValue;
             _hashCode = dateValue.AsDecimal.GetHashCode();
@@ -444,14 +557,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IEnumerable<IToken> AsTokens => _inner.AsTokens;
 
-        public int CompareTo(DateValueIComparableDecorator dateValue)
+        public int CompareTo(ComparableDateValue dateValue)
             => _inner.AsDecimal.CompareTo(dateValue._inner.AsDecimal);
 
         public override int GetHashCode() => _hashCode;
 
         public override bool Equals(object obj)
         {
-            if (obj is DateValueIComparableDecorator decorator)
+            if (obj is ComparableDateValue decorator)
             {
                 return decorator.CompareTo(this) == 0;
             }
@@ -473,13 +586,48 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public static class ParseTreeValueExtensions
     {
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out long value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value, parseTreeValue.TypeName);
+        {
+            value = default;
+            if (parseTreeValue.TypeName != null && parseTreeValue.TypeName.Equals(Tokens.Date))
+            {
+                if (parseTreeValue.TryConvertValue(out decimal decValue))
+                {
+                    return StringValueConverter.TryConvertString(decValue.ToString(), out value, Tokens.Currency);
+                }
+                return false;
+            }
+            return StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
+        }
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out double value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
+        {
+            value = default;
+            if (parseTreeValue.TypeName != null && parseTreeValue.TypeName.Equals(Tokens.Date))
+            {
+                if (parseTreeValue.TryConvertValue(out decimal decValue))
+                {
+                    return StringValueConverter.TryConvertString(decValue.ToString(), out value);
+                }
+                return false;
+            }
+            return StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value, Tokens.Double);
+        }
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out decimal value)
-            => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
+        {
+            value = default;
+            if (parseTreeValue.TypeName != null && parseTreeValue.TypeName.Equals(Tokens.Date))
+            {
+                if (TryConvertValue(parseTreeValue, out ComparableDateValue dvComparable))
+                {
+                    value = dvComparable.AsDecimal;
+                    return true;
+                }
+                return false;
+            }
+
+            return StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
+        }
 
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out bool value)
             => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
@@ -487,7 +635,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out string value)
             => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
 
-        public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out DateValueIComparableDecorator value)
+        private static bool TryConvertValue(this IParseTreeValue parseTreeValue, out ComparableDateValue value)
             => StringValueConverter.TryConvertString(parseTreeValue.ValueText, out value);
     }
 }

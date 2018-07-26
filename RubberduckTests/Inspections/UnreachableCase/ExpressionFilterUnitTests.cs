@@ -20,9 +20,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Or, RelOp!True is interpreted as "Case True" <- simulates a resolved expression like x < 7, where 'x' is a constant == 6
 
         RangeClauseToken encoding:
-            <operand>?<declaredType>_<opSymbol> _<operand>?<declaredType>, <expression>,<selectExpressionType>
+            <operand>?<declaredType>_<opSymbol> _<operand>?<declaredType>, <expression>,<filterTypeName>
             If there is no "?<declaredType>", then<operand>'s type is derived by the ParseTreeValue instance.
-            The<selectExpressionType> is the type that the calculation must yield in order to
+            The<filterTypeName> is the type that the calculation must yield in order to
             make comparisons.
 
         When comparing filters for test pass/fail:
@@ -122,17 +122,17 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("50?Long_To_x?Long", "Long", "Range!50:x")]
         [TestCase("50?Long_To_100?Long", "Long", "Range!50:100")]
         [TestCase(@"""Nuts""?String_To_""Soup""?String", "String", @"Range!""Nuts"":""Soup""")]
-        [TestCase(@"""Soup""?String_To_""Nuts""?String", "String", "")] //Invalid Order - nothing added to Filter
+        [TestCase(@"""Soup""?String_To_""Nuts""?String", "String", "")]
         [TestCase("50.3?Double_To_100.2?Double", "Long", "Range!50:100")]
         [TestCase("50.3?Double_To_100.2?Double", "Double", "Range!50.3:100.2")]
         [TestCase("50_To_100,75_To_125", "Long", "Range!50:100,Range!75:125")]
         [TestCase("50_To_100,175_To_225", "Long", "Range!50:100,Range!175:225")]
         [TestCase("500?Long_To_100?Long", "Long", "")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddRangeClauses(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
+        public void ExpressionFilter_AddRangeClauses(string firstCase, string filterTypeName, string expectedRangeClauses)
         {
-            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, selectExpressionTypename);
-            var expected = FilterContentTokensToFilter(new string[] { expectedRangeClauses }, selectExpressionTypename);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, filterTypeName);
+            var expected = FilterContentTokensToFilter(new string[] { expectedRangeClauses }, filterTypeName);
             Assert.AreEqual(expected, actualFilter);
         }
 
@@ -162,10 +162,10 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase(@"Is_<>_""100""", "Long", "Min!100,Max!100")]
         [TestCase("Is_>_x", "Long", "RelOp!Is > x")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddIsClause(string firstCase, string selectExpressionTypename, string expectedRangeClauses)
+        public void ExpressionFilter_AddIsClause(string firstCase, string filterTypeName, string expectedRangeClauses)
         {
-            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, selectExpressionTypename);
-            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedRangeClauses }, selectExpressionTypename);
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, filterTypeName);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedRangeClauses }, filterTypeName);
             Assert.AreEqual(expectedFilter, actualFilter);
             Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
             Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
@@ -350,24 +350,24 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
         }
 
-        [TestCase("x_Like_*,y_Like_aa?*", "RelOp!x Like *,RelOp!y Like aa?*")]
-        [TestCase("x_Like_*,x_Like_aa?*", "RelOp!x Like *")]
-        [TestCase("x_Like_*Bar", "RelOp!x Like *Bar")]
-        [TestCase("x_Like_[A-Z]*", "RelOp!x Like [A-Z]*")]
-        [TestCase("x_Like_[A-Z]*, x_Like_Fo*oBar", "RelOp!x Like [A-Z]*,RelOp!x Like Fo*oBar")]
+        [TestCase(@"x_Like_""*"",y_Like_""aa?*""", @"Value!True, RelOp!y Like ""aa?*""")]
+        [TestCase(@"x_Like_""*"",x_Like_""aa?*""", @"Value!True,RelOp!x Like ""aa?*""")]
+        [TestCase(@"x_Like_""*Bar""", @"RelOp!x Like ""*Bar""")]
+        [TestCase(@"x_Like_""[A-Z]*""", @"RelOp!x Like ""[A-Z]*""")]
+        [TestCase(@"x_Like_""[A-Z]*"", x_Like_""Fo*oBar""", @"RelOp!x Like ""[A-Z]*"",RelOp!x Like ""Fo*oBar""")]
         [Category("Inspections")]
-        public void ExpressionFilter_LikeAddToFilter(string rangeClause, string expectedClause)
+        public void ExpressionFilter_LikeAddToFilters(string rangeClause, string expectedClause)
         {
             var actualFilter = RangeClauseTokensToFilter(new string[] { rangeClause }, Tokens.String);
             var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClause}, Tokens.String);
             Assert.AreEqual(expectedFilter, actualFilter);
         }
 
-        [TestCase("x_Like_*Bar", "x_Like_*Bar", "RelOp!x Like *Bar")]
-        [TestCase("x_Like_*Bar", "True", "RelOp!x Like *Bar,Value!True")]
-        [TestCase("x_Like_*", "True", "RelOp!x Like *")]
+        [TestCase(@"x_Like_""*Bar""",@"x_Like_""*Bar""", @"RelOp!x Like ""*Bar""")]
+        [TestCase(@"x_Like_""*Bar""","True", @"RelOp!x Like ""*Bar"",Value!True")]
+        [TestCase(@"x_Like_""*""", "True", "Value!True")]
         [Category("Inspections")]
-        public void ExpressionFilter_LikeFiltersDuplicate(string firstCase, string secondCase, string expectedClauses)
+        public void ExpressionFilter_LikeFiltersDuplicates(string firstCase, string secondCase, string expectedClauses)
         {
             var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase, secondCase }, Tokens.Boolean);
             var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.Boolean);
@@ -421,7 +421,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             return result;
         }
 
-        private (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) GetBinaryOpValues(string delimitedElements, string selectExpressionType)
+        private (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) GetBinaryOpValues(string delimitedElements)
         {
 
             var elements = RetrieveDelimitedElements(delimitedElements, OPERAND_DELIMITER);
@@ -430,12 +430,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 Assert.Inconclusive("Invalid number of operands passed to 'GetBinaryOpValues(...)'");
             }
 
-            var LHS = CreateInspValueFrom(elements[0], conformTo: selectExpressionType);
-            var RHS = CreateInspValueFrom(elements[2], conformTo: selectExpressionType);
+            var LHS = CreateInspValueFrom(elements[0]);
+            var RHS = CreateInspValueFrom(elements[2]);
             return (LHS, RHS, elements[1]);
         }
 
-        private (IParseTreeValue Operand, string Symbol) GetUnaryOpValues(string delimitedElements, string selectExpressionType)
+        private (IParseTreeValue Operand, string Symbol) GetUnaryOpValues(string delimitedElements)
         {
             const int MAX_ELEMENTS = 2;
             var elements = RetrieveDelimitedElements(delimitedElements, OPERAND_DELIMITER);
@@ -445,8 +445,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
 
             var operand = elements.Count() == 2 ?
-                CreateInspValueFrom(elements[1], conformTo: selectExpressionType)
-                : CreateInspValueFrom(elements[0], conformTo: selectExpressionType);
+                CreateInspValueFrom(elements[1])
+                : CreateInspValueFrom(elements[0]);
             return elements.Count() == MAX_ELEMENTS ? (operand, elements[0]) : (operand, string.Empty);
         }
 
@@ -470,35 +470,21 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
         }
 
-        private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)
+        private IParseTreeValue CreateInspValueFrom(string valAndType)
         {
             if (InspectableDelimited.Any(id => valAndType.Contains(id)))
             {
                 var args = RetrieveDelimitedElements(valAndType, VALUE_TYPE_DELIMITER);
                 var value = args[0];
                 string declaredType = args[1].Equals(string.Empty) ? null : args[1];
-                if (conformTo is null)
+                if (declaredType is null)
                 {
-                    if (declaredType is null)
-                    {
-                        return ValueFactory.Create(value);
-                    }
-                    var ptValue = ValueFactory.Create(value, declaredType);
-                    ptValue.ParsesToConstantValue = true;
-                    return ptValue;
+                    return ValueFactory.Create(value);
                 }
-                else
-                {
-                    if (declaredType is null)
-                    {
-                        return ValueFactory.Create(value, conformToTypeName: conformTo);
-                    }
-                    var ptValue = ValueFactory.Create(value, declaredType, conformTo);
-                    return ptValue;
-                }
+                var ptValue = ValueFactory.Create(value, declaredType);
+                return ptValue;
             }
-            return conformTo is null ? ValueFactory.Create(valAndType)
-                : ValueFactory.Create(valAndType, conformToTypeName: conformTo);
+            return ValueFactory.Create(valAndType);
         }
 
         private IExpressionFilter RangeClauseTokensToFilter(IEnumerable<string> rangeClauseTokens, string filterTypeName, IExpressionFilter filter = null)
@@ -531,12 +517,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 var operandDelimiters = clause.Where(ch => ch.Equals('_'));
                 if (operandDelimiters.Count() == 2)
                 {
-                    (IParseTreeValue lhs, IParseTreeValue rhs, string symbol) = GetBinaryOpValues(clause, filterTypeName);
+                    (IParseTreeValue lhs, IParseTreeValue rhs, string symbol) = GetBinaryOpValues(clause);
                     expressionClause = CreateRangeClauseExpression((lhs, rhs, symbol));
                 }
                 else if (operandDelimiters.Count() <= 1)
                 {
-                    (IParseTreeValue operand, string symbol) = GetUnaryOpValues(clause, filterTypeName);
+                    (IParseTreeValue operand, string symbol) = GetUnaryOpValues(clause);
                     if (symbol.Equals(LogicalOperators.NOT))
                     {
                         expressionClause = new UnaryExpression(operand, symbol);
@@ -566,7 +552,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             foreach(var caseClause in caseClauses)
             {
                 var rangeClauses = RetrieveDelimitedElements(caseClause, RANGECLAUSE_DELIMITER);
-                expressions.AddRange(CreateTestExpressions(rangeClauses, typeName));
+                expressions.AddRange(CreateTestExpressions(rangeClauses));
             }
 
             foreach (var expr in expressions)
@@ -576,7 +562,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             return filter;
         }
 
-        private List<IRangeClauseExpression> CreateTestExpressions(IEnumerable<string> annotations, string conformToType = null)
+        private List<IRangeClauseExpression> CreateTestExpressions(IEnumerable<string> annotations)
         {
             var results = new List<IRangeClauseExpression>();
             var clauseItem = string.Empty;
@@ -596,24 +582,24 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 {
                     if (clauseType.Equals("Min"))
                     {
-                        var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
+                        var uciVal = ValueFactory.Create(clauseExpression);
                         results.Add(new IsClauseExpression(uciVal, RelationalOperators.LT));
                     }
                     else if (clauseType.Equals("Max"))
                     {
-                        var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
+                        var uciVal = ValueFactory.Create(clauseExpression);
                         results.Add(new IsClauseExpression(uciVal, RelationalOperators.GT));
                     }
                     else if (clauseType.Equals("Range"))
                     {
                         var startEnd = clauseExpression.Split(new string[] { RANGE_STARTEND_DELIMITER }, StringSplitOptions.None);
-                        var rangeStart = ValueFactory.Create(startEnd[0], conformToTypeName: conformToType);
-                        var rangeEnd = ValueFactory.Create(startEnd[1], conformToTypeName: conformToType);
+                        var rangeStart = ValueFactory.Create(startEnd[0]);
+                        var rangeEnd = ValueFactory.Create(startEnd[1]);
                         results.Add(new RangeOfValuesExpression((rangeStart, rangeEnd)));
                     }
                     else if (clauseType.Equals("Value"))
                     {
-                        var testVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
+                        var testVal = ValueFactory.Create(clauseExpression);
                         results.Add(new ValueExpression(testVal));
                     }
                     else if (clauseType.Equals("RelOp"))
@@ -624,8 +610,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
                         if (sides.Count() == 2 && sides.All(sd => !sd.Equals(string.Empty)))
                         {
-                            var lhs = ValueFactory.Create(sides[0].Trim(), conformToTypeName: conformToType);
-                            var rhs = ValueFactory.Create(sides[1].Trim(), conformToTypeName: conformToType);
+                            var lhs = ValueFactory.Create(sides[0].Trim());
+                            var rhs = ValueFactory.Create(sides[1].Trim());
                             if (lhs.ValueText.Equals(Tokens.Is))
                             {
                                 results.Add(new IsClauseExpression(rhs, symbol));
@@ -643,12 +629,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         else if (sides.Count() == 2 && sides.Any(sd => sd.Equals(string.Empty)))
                         {
                             var validValue = sides.First(sd => !sd.Equals(string.Empty));
-                            var lhs = ValueFactory.Create(validValue.Trim(), conformToTypeName: conformToType);
+                            var lhs = ValueFactory.Create(validValue.Trim());
                             results.Add(new UnaryExpression(lhs, symbol));
                         }
                         else
                         {
-                            var uciVal = ValueFactory.Create(clauseExpression, conformToTypeName: conformToType);
+                            var uciVal = ValueFactory.Create(clauseExpression);
                             results.Add(new UnaryExpression(uciVal, symbol));
                         }
                     }
@@ -660,8 +646,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
                         if (sides.Count() == 2)
                         {
-                            var lhs = ValueFactory.Create(sides[0].Trim(), conformToTypeName: conformToType);
-                            var rhs = ValueFactory.Create(sides[1].Trim(), conformToTypeName: conformToType);
+                            var lhs = ValueFactory.Create(sides[0].Trim());
+                            var rhs = ValueFactory.Create(sides[1].Trim());
                             results.Add(new IsClauseExpression(rhs, symbol));
                         }
                     }

@@ -38,17 +38,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _hashCode = OpSymbol.GetHashCode();
         }
         public string Operand => LHS;
-        public string Pattern => RHS;
+        public string Pattern => AnnotateAsStringConstant(RHS);
         public bool Filters(LikeExpression like)
         {
             //TODO: Enhancement - evaluate Like Pattern for superset/subset conditions.
             //e.g., "*" would filter "?*", or "?*" would filter "a*" 
             //They go here...
-            if ( like.Operand.Equals(Operand) && Pattern.Equals("*"))//The easiest one
+            if ( like.Operand.Equals(Operand) && Pattern.Equals($"\"*\""))//The easiest one
             {
                 return true;
             }
             return false;
+        }
+
+        private static string AnnotateAsStringConstant(string input)
+        {
+            var result = input;
+            if (!input.StartsWith("\""))
+            {
+                result = $"\"{result}";
+            }
+            if (!input.EndsWith("\""))
+            {
+                result = $"{result}\"";
+            }
+            return result;
         }
     }
 

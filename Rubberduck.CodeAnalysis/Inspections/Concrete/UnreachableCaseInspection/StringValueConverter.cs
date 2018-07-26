@@ -14,6 +14,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryConvertString(string valueText, out long value, string typeName = null)
         {
             value = default;
+            valueText = StripDoubleQuotes(valueText);
             typeName = typeName ?? Tokens.Long;
 
             if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
@@ -50,6 +51,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryConvertString(string valueText, out double value, string typeName = null)
         {
             value = default;
+            valueText = StripDoubleQuotes(valueText);
             if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
             {
                 value = valueText.Equals(Tokens.True) ? -1 : 0;
@@ -66,6 +68,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryConvertString(string valueText, out decimal value, string typeName = null)
         {
             value = default;
+            valueText = StripDoubleQuotes(valueText);
             if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
             {
                 value = valueText.Equals(Tokens.True) ? -1 : 0;
@@ -84,6 +87,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryConvertString(string valueText, out bool value, string typeName = null)
         {
             value = default;
+            valueText = StripDoubleQuotes(valueText);
             if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
             {
                 value = valueText.Equals(Tokens.True);
@@ -97,35 +101,49 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertString(string valueText, out DateValueIComparableDecorator value, string typeName = null)
+        public static bool TryConvertString(string valueString, out ComparableDateValue value, string typeName = null)
         {
             value = default;
-            if (valueText.Count(f => f == '#') == 2 
-                && valueText.StartsWith("#") 
-                && valueText.EndsWith("#"))
+            if (!(valueString.StartsWith("#") && valueString.EndsWith("#")))
             {
-                try
-                {
-                    var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueText)));
-                    value = new DateValueIComparableDecorator((DateValue)literal.Evaluate());
-                    return true;
-                }
-                catch (SyntaxErrorException)
-                {
-                }
-                catch (Exception)
-                {
-                    //even though a SyntaxErrorException is thrown, this catch block
-                    //seems to be needed(?)
-                }
+                return false;
             }
-            return false;
+
+            try
+            {
+                var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueString)));
+                value = new ComparableDateValue((DateValue)literal.Evaluate());
+                return true;
+            }
+            catch (SyntaxErrorException)
+            {
+                return false;
+            }
+            catch (Exception)
+            {
+                //even though a SyntaxErrorException is thrown, this catch block
+                //seems to be needed(?)
+                return false;
+            }
         }
 
         public static bool TryConvertString(string valueText, out string value, string typeName = null)
         {
             value = valueText;
             return true;
+        }
+
+        private static string StripDoubleQuotes(string input)
+        {
+            if (input.StartsWith("\""))
+            {
+                input = input.Substring(1);
+            }
+            if (input.EndsWith("\""))
+            {
+                input = input.Substring(0,input.Length - 1);
+            }
+            return input;
         }
     }
 }
