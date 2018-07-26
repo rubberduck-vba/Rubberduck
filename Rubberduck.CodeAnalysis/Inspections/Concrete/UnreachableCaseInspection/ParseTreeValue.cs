@@ -46,18 +46,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _declaredType = ParsesToConstantValue && (declaredType is null) ? Tokens.String : declaredType;
             _derivedType = DeriveTypeName(value, out bool derivedFromTypeHint);
 
-            if ( _declaredType != null &&  _declaredType.Equals(Tokens.Date))
+            //if ( _declaredType != null &&  _declaredType.Equals(Tokens.Date))
+            //{
+            //    if (StringValueConverter.TryConvertString(AnnotateAsDateLiteral(ValueText), out _dateValue))
+            //    {
+            //        ParsesToConstantValue = true;
+            //        ValueText = AnnotateAsDateLiteral(_dateValue.AsString);
+            //    }
+            //}
+
+            if ((_declaredType != null && _declaredType.Equals(Tokens.Date)) || _derivedType.Equals(Tokens.Date))
             {
                 if (StringValueConverter.TryConvertString(AnnotateAsDateLiteral(ValueText), out _dateValue))
-                {
-                    ParsesToConstantValue = true;
-                    ValueText = AnnotateAsDateLiteral(_dateValue.AsString);
-                }
-            }
-
-            if (_derivedType.Equals(Tokens.Date))
-            {
-                if (StringValueConverter.TryConvertString(ValueText, out _dateValue))
                 {
                     ValueText = AnnotateAsDateLiteral(_dateValue.AsString);
                     ParsesToConstantValue = true;
