@@ -25,7 +25,7 @@ namespace Rubberduck.Parsing.ComReflection
         IEnumerable<ComField> Fields { get; }
     }
 
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public abstract class ComType : ComBase, IComType
     {
         public bool IsAppObject { get; }
@@ -33,8 +33,8 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsHidden { get; }
         public bool IsRestricted { get; }
         
-        protected ComType(ITypeInfo info, TYPEATTR attrib)
-            : base(info)
+        protected ComType(IComBase parent, ITypeInfo info, TYPEATTR attrib)
+            : base(parent, info)
         {
             Guid = attrib.guid;
             IsAppObject = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FAPPOBJECT);
@@ -43,8 +43,8 @@ namespace Rubberduck.Parsing.ComReflection
             IsRestricted = attrib.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FRESTRICTED);
         }
 
-        protected ComType(ITypeLib typeLib, TYPEATTR attrib, int index)
-            : base(typeLib, index)
+        protected ComType(IComBase parent, ITypeLib typeLib, TYPEATTR attrib, int index)
+            : base(parent, typeLib, index)
         {
             Index = index;
             Guid = attrib.guid;
