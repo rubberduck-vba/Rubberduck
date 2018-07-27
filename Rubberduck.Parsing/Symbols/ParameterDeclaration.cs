@@ -85,7 +85,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return;
             }
-            DefaultValue = argContext.GetDescendent<VBAParser.LiteralExprContext>()?.GetText() ?? string.Empty;
+
+            DefaultValue = argContext.argDefaultValue().expression()?.GetText() ?? string.Empty;
         }
 
         public ParameterDeclaration(ComParameter parameter, Declaration parent, QualifiedModuleName module)

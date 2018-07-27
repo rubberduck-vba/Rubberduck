@@ -301,7 +301,7 @@ namespace Rubberduck.Parsing.Symbols
                         annotations,
                         accessibility, 
                         declarationType,
-                        context.GetDescendent<VBAParser.ExpressionContext>()?.GetText() ?? string.Empty,
+                        (context as VBAParser.EnumerationStmt_ConstantContext)?.expression()?.GetText() ?? string.Empty,
                         context,
                         selection);
                 }
