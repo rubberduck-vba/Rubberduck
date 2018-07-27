@@ -146,13 +146,16 @@ namespace Rubberduck.Parsing.VBA
                 
             var tokens = new List<string>();
             var literal = string.Empty;
-            var flush = false;
             foreach (var character in managed.ToCharArray())
             {
                 var unicode = Convert.ToInt16(character) > byte.MaxValue;
                 if (VbCharacterConstants.ContainsKey(character) || char.IsControl(character) && !unicode)
                 {
-                    flush = true;
+                    if (!string.IsNullOrEmpty(literal))
+                    {
+                        tokens.Add($"\"{literal}\"");
+                        literal = string.Empty;
+                    }
                     tokens.Add(useConsts ? VbCharacterConstants[character] : $"Chr$({Convert.ToByte(character)})");
                 }
                 else if (!unicode)
@@ -161,15 +164,18 @@ namespace Rubberduck.Parsing.VBA
                 }
                 else
                 {
-                    flush = true;
+                    if (!string.IsNullOrEmpty(literal))
+                    {
+                        tokens.Add($"\"{literal}\"");
+                        literal = string.Empty;
+                    }
                     tokens.Add($"ChrW$(&H{Convert.ToInt16(character):X})");
                 }
-                if (flush && !string.IsNullOrEmpty(literal))
-                {
-                    tokens.Add($"\"{literal}\"");
-                    literal = string.Empty;
-                    flush = false;
-                }
+
+            }
+            if (!string.IsNullOrEmpty(literal))
+            {
+                tokens.Add($"\"{literal}\"");
             }
             return string.Join(" & ", tokens).Replace("vbCr & vbLf", "vbCrLf");
         }
