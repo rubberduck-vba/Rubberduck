@@ -114,6 +114,7 @@
     <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="Inspections\InspectionProviderTests.cs" />
+    <Compile Include="Symbols\ToVbExpressionTests.cs" />
     <Compile Include="VBEditor\Utility\DisposalActionContainerTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
@@ -210,7 +211,7 @@
     <Compile Include="Symbols\CommandBarControlCaptionGuardTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
-    <Compile Include="Symbols\ConstantDeclarationTests.cs" />
+    <Compile Include="Symbols\ValuedDeclarationTests.cs" />
     <Compile Include="Symbols\ProceduralModuleDeclarationTests.cs" />
     <Compile Include="Symbols\ParameterDeclarationTests.cs" />
     <Compile Include="Symbols\ExternalProcedureDeclarationTests.cs" />
