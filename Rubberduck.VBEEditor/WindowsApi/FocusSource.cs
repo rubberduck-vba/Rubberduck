@@ -22,12 +22,7 @@ namespace Rubberduck.VBEditor.WindowsApi
 
         protected virtual void DispatchFocusEvent(FocusType type)
         {
-            var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
-            if (!window.HasValue)
-            {
-                return;
-            }
-            OnFocusChange(new WindowChangedEventArgs(Hwnd, window.Value.Window, null, type));
+            OnFocusChange(new WindowChangedEventArgs(Hwnd, type));
         }
 
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)

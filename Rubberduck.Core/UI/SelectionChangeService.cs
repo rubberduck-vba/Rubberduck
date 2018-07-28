@@ -33,16 +33,17 @@ namespace Rubberduck.UI
             VBENativeServices.WindowFocusChange += OnVbeFocusChanged;
         }
         
-        private void OnVbeSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnVbeSelectionChanged(object sender, EventArgs e)
         {
-            if (e.CodePane == null || e.CodePane.IsWrappingNullReference)
-            {
-                return;
-            }
+            //if (e.CodePane == null || e.CodePane.IsWrappingNullReference)
+            //{
+            //    return;
+            //}
 
             new Task(() =>
             {
-                var eventArgs = new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane));
+                //TODO
+                var eventArgs = new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane));
                 DispatchSelectedDeclaration(eventArgs);
             }).Start();
         }
@@ -51,22 +52,26 @@ namespace Rubberduck.UI
         {
             if (e.EventType == FocusType.GotFocus)
             {
-                switch (e.Window.Type)
+                switch (e.Hwnd.ToWindowType())
                 {
-                    case WindowKind.Designer:
+                    case VBENativeServices.WindowType.DesignerWindow:
                         //Designer or control on designer form selected.
-                        if (e.Window == null || e.Window.IsWrappingNullReference || e.Window.Type != WindowKind.Designer)
-                        {
-                            return;
-                        }
+                        //if (e.Window == null || e.Window.IsWrappingNullReference || e.Window.Type != WindowKind.Designer)
+                        //{
+                        //    return;
+                        //}
                         new Task(() => DispatchSelectedDesignerDeclaration(_vbe.SelectedVBComponent)).Start();                  
                         break;
-                    case WindowKind.CodeWindow:
+                    case VBENativeServices.WindowType.CodePane:
                         //Caret changed in a code pane.
-                        if (e.CodePane != null && !e.CodePane.IsWrappingNullReference)
+                        new Task(() =>
                         {
-                            new Task(() => DispatchSelectedDeclaration(new DeclarationChangedEventArgs(e.CodePane, _parser.State.FindSelectedDeclaration(e.CodePane)))).Start(); 
-                        }
+                            using (var pane = VBENativeServices.GetCodePaneFromHwnd(e.Hwnd))
+                            {
+                                DispatchSelectedDeclaration(
+                                    new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(pane)));
+                            }
+                        }).Start();
                         break;
                 }
             }
@@ -113,7 +118,8 @@ namespace Rubberduck.UI
                                               && d.ProjectId == component.ParentProject.ProjectId
                                               && d.ParentDeclaration.IdentifierName == component.Name);
 
-                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, control, component));            
+                //DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, control, component));
+                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(control));
                 return;
             }
             var form =
@@ -121,7 +127,8 @@ namespace Rubberduck.UI
                     .SingleOrDefault(d => d.DeclarationType.HasFlag(DeclarationType.ClassModule)
                                           && d.ProjectId == component.ParentProject.ProjectId);
 
-            DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, form, component, selectedCount > 1));
+            //DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, form, component, selectedCount > 1));
+            DispatchSelectedDeclaration(new DeclarationChangedEventArgs(form, selectedCount > 1));
         }
 
         private void DispatchSelectedProjectNodeDeclaration(IVBComponent component)
@@ -138,7 +145,7 @@ namespace Rubberduck.UI
                     _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
                         .SingleOrDefault(decl => decl.ProjectId.Equals(_vbe.ActiveVBProject.ProjectId));
 
-                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, project, component));
+                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(project));
             }
             else if (component != null && component.Type == ComponentType.UserForm && component.HasOpenDesigner)
             {
@@ -153,7 +160,7 @@ namespace Rubberduck.UI
                                 decl.IdentifierName.Equals(component.Name) &&
                                 decl.ProjectId.Equals(_vbe.ActiveVBProject.ProjectId));
 
-                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, module, component));
+                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(module));
             }
         }
 
@@ -176,17 +183,23 @@ namespace Rubberduck.UI
 
     public class DeclarationChangedEventArgs : EventArgs
     {
-        public ICodePane ActivePane { get; private set; }
+        //public ICodePane ActivePane { get; private set; }
         public Declaration Declaration { get; private set; }
         // ReSharper disable once InconsistentNaming
-        public IVBComponent VBComponent { get; private set; }
+        //public IVBComponent VBComponent { get; private set; }
         public bool MultipleControlsSelected { get; private set; }
 
-        public DeclarationChangedEventArgs(ICodePane pane, Declaration declaration, IVBComponent component = null, bool multipleControls = false)
+        //public DeclarationChangedEventArgs(ICodePane pane, Declaration declaration, IVBComponent component = null, bool multipleControls = false)
+        //{
+        //    ActivePane = pane;
+        //    Declaration = declaration;
+        //    VBComponent = component;
+        //    MultipleControlsSelected = multipleControls;
+        //}
+
+        public DeclarationChangedEventArgs(Declaration declaration, bool multipleControls = false)
         {
-            ActivePane = pane;
             Declaration = declaration;
-            VBComponent = component;
             MultipleControlsSelected = multipleControls;
         }
     }

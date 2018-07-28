@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -49,11 +50,54 @@ namespace Rubberduck.VBEditor.WindowsApi
     //Stub for code pane replacement.  :-)
     internal class CodePaneSubclass : FocusSource
     {
-        public ICodePane CodePane { get; }
+        private ICodePane _codePane;
+
+        public ICodePane CodePane
+        {
+            get => _codePane;
+            set
+            {
+                if (HasValidCodePane)
+                {
+                    _codePane.Dispose();          
+                }
+
+                _codePane = value;
+            }
+        }
+
+        public bool HasValidCodePane
+        {
+            get
+            {
+                if (_codePane == null)
+                {
+                    return false;
+                }
+
+                try
+                {
+                    if (Marshal.GetIUnknownForObject(_codePane.Target) != IntPtr.Zero)
+                    {
+                        return true;
+                    }
+
+                    _codePane.Dispose();
+                    _codePane = null;
+                }
+                catch
+                {
+                    // All paths leading to here mean that we need to ditch the held reference, and there
+                    // isn't jack all that we can do about it.
+                    _codePane = null;
+                }
+                return false;
+            }
+        }
 
         internal CodePaneSubclass(IntPtr hwnd, ICodePane pane) : base(hwnd)
         {
-            CodePane = pane;
+            _codePane = pane;
         }
         
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
@@ -75,14 +119,25 @@ namespace Rubberduck.VBEditor.WindowsApi
             return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
         }
 
+        private bool _disposed;
+        protected override void Dispose(bool disposing)
+        {
+            if (!_disposed && disposing)
+            {
+                if (HasValidCodePane)
+                {
+                    _codePane.Dispose();
+                    _codePane = null;
+                }
+            }
+
+            base.Dispose(disposing);
+            _disposed = true;
+        }
+
         protected override void DispatchFocusEvent(FocusType type)
         {
-            var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
-            if (!window.HasValue)
-            {
-                return;
-            }
-            OnFocusChange(new WindowChangedEventArgs(window.Value.Hwnd, window.Value.Window, CodePane, type));
+            OnFocusChange(new WindowChangedEventArgs(Hwnd, type));
         }
     }
 }

@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
+using NLog;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
 {
+    // ReSharper disable once InconsistentNaming
     public static class VBENativeServices
     {
+        private static readonly Logger NativeServicesLogger = LogManager.GetCurrentClassLogger();
         private static User32.WinEventProc _eventProc;
         private static IntPtr _eventHandle;
         private static IVBE _vbe;
@@ -18,14 +22,14 @@ namespace Rubberduck.VBEditor.Events
         {
             public IntPtr Hwnd { get; }
 
-            public IWindow Window { get; }
+            public IntPtr WindowPointer { get; }
 
             internal IWindowEventProvider Subclass { get; }
 
-            internal WindowInfo(IntPtr handle, IWindow window, IWindowEventProvider source)
+            internal WindowInfo(IntPtr handle, IntPtr windowPointer, IWindowEventProvider source)
             {
                 Hwnd = handle;
-                Window = window;
+                WindowPointer = windowPointer;
                 Subclass = source;
             }
         }
@@ -71,28 +75,25 @@ namespace Rubberduck.VBEditor.Events
             uint dwEventThread, uint dwmsEventTime)
         {
             if (hwnd == IntPtr.Zero) { return; }
-            //This is an output window firehose, leave this here, but comment it out when done.
-            //if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
 
+#if THIRSTY_DUCK
+            //This is an output window firehose, viewer discretion is advised.
+            if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
+#endif
             var windowType = hwnd.ToWindowType();
-            var nameBuilder = new StringBuilder(255);
-            User32.GetClassName(hwnd, nameBuilder, 255);
-            var className = nameBuilder.ToString();
 
-            if (className == "NameListWndClass")
+            if (windowType == WindowType.IntelliSense)
             {
-                /* intellisense */
-                if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectShow /*&& idObject == 0*/)
+                if (eventType == (uint)WinEvent.ObjectShow /*&& idObject == 0*/)
                 {
                     OnIntelliSenseChanged(true);
                 }
-                else if (windowType == WindowType.Indeterminate && eventType == (uint)WinEvent.ObjectHide /*&& idObject == 0*/)
+                else if (eventType == (uint)WinEvent.ObjectHide /*&& idObject == 0*/)
                 {
                     OnIntelliSenseChanged(false);
                 }
             }
-
-            if (windowType == WindowType.CodePane && idObject == (int)ObjId.Caret && 
+            else if (windowType == WindowType.CodePane && idObject == (int)ObjId.Caret && 
                 (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate))
             {
                 OnSelectionChanged(hwnd);             
@@ -119,29 +120,30 @@ namespace Rubberduck.VBEditor.Events
                 var parent = User32.GetParent(hwnd);
                 if (parent != IntPtr.Zero && parent.ToWindowType() == WindowType.Project && hwnd == User32.GetFocus())
                 {
-                    FocusDispatcher(_vbe, new WindowChangedEventArgs(parent, null, null, FocusType.ChildFocus));
+                    FocusDispatcher(_vbe, new WindowChangedEventArgs(parent, FocusType.ChildFocus));
                 }                
             }
         }
 
-        private static void AttachWindow(IntPtr hwnd)
+        private static void AttachWindow(IntPtr hwnd, IWindow vbeWindow = null, ICodePane codePane = null)
         {
             lock (ThreadLock)
             {
                 Debug.Assert(!TrackedWindows.ContainsKey(hwnd));
-                var window = GetWindowFromHwnd(hwnd);
+
+                var window = vbeWindow ?? GetWindowFromHwnd(hwnd, true);
                 if (window == null)
                 {
                     return;
                 }
                 var source = window.Type == WindowKind.CodeWindow
-                    ? new CodePaneSubclass(hwnd, GetCodePaneFromHwnd(hwnd)) as IWindowEventProvider
+                    ? new CodePaneSubclass(hwnd, codePane ?? GetCodePaneFromHwnd(hwnd, true)) as IWindowEventProvider
                     : new DesignerWindowSubclass(hwnd);
-                var info = new WindowInfo(hwnd, window, source);
+                var info = new WindowInfo(hwnd, window.IUnknown, source);
                 source.FocusChange += FocusDispatcher;
                 source.KeyDown += KeyDownDispatcher;
                 TrackedWindows.Add(hwnd, info);
-            }           
+            }
         }
 
         private static void KeyDownDispatcher(object sender, KeyPressEventArgs e)
@@ -179,14 +181,14 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
-        public static event EventHandler<SelectionChangedEventArgs> SelectionChanged;
+        public static event EventHandler<EventArgs> SelectionChanged;
         private static void OnSelectionChanged(IntPtr hwnd)
         {
             using (var pane = GetCodePaneFromHwnd(hwnd))
             {
                 if (pane != null)
                 {
-                    SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs(pane));
+                    SelectionChanged?.Invoke(_vbe, new EventArgs());
                 }
             }
         }
@@ -221,11 +223,25 @@ namespace Rubberduck.VBEditor.Events
             WindowFocusChange?.Invoke(sender, eventArgs);
         } 
 
-        private static ICodePane GetCodePaneFromHwnd(IntPtr hwnd)
+        public static ICodePane GetCodePaneFromHwnd(IntPtr hwnd, bool attaching = false)
         {
             if (_vbe == null)
             {
                 return null;
+            }
+
+            var cached = GetWindowInfoFromHwnd(hwnd);
+            if (cached.HasValue)
+            {
+                var pane = _vbe.CodePanes.FirstOrDefault(w => w.Window.IUnknown == cached.Value.WindowPointer);
+                if (pane != null)
+                {
+                    return pane;
+                }
+
+                NativeServicesLogger.Trace(
+                    $"Requested ICodePane {cached.Value.WindowPointer} was not found in the VBE CodePanes collection. Disassociating hWnd {cached.Value.Hwnd}.");
+                DetachWindow(hwnd);
             }
 
             try
@@ -243,13 +259,18 @@ namespace Rubberduck.VBEditor.Events
                                 if (window.Caption.Equals(caption))
                                 {
                                     foundIt = true;
+                                    if (!attaching)
+                                    {
+                                        AttachWindow(hwnd, pane.Window, pane);
+                                    }
+                                   
                                     return pane;
                                 }
                             }
                         }
                         finally
                         {
-                            if(!foundIt)
+                            if (!foundIt)
                             {
                                 pane.Dispose();
                             }
@@ -268,11 +289,25 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
-        private static IWindow GetWindowFromHwnd(IntPtr hwnd)
+        public static IWindow GetWindowFromHwnd(IntPtr hwnd, bool attaching = false)
         {
             if (!User32.IsWindow(hwnd) || _vbe == null)
             {
                 return null;
+            }
+
+            var cached = GetWindowInfoFromHwnd(hwnd);
+            if (cached.HasValue)
+            {
+                var window = _vbe.Windows.FirstOrDefault(w => w.IUnknown == cached.Value.WindowPointer);
+                if (window != null)
+                {
+                    return window;
+                }
+
+                NativeServicesLogger.Trace(
+                    $"Requested IWindow {cached.Value.WindowPointer} was not found in the VBE Windows collection. Disassociating hWnd {cached.Value.Hwnd}.");
+                DetachWindow(hwnd);
             }
 
             var caption = hwnd.GetWindowText();
@@ -286,9 +321,12 @@ namespace Rubberduck.VBEditor.Events
                         if (window.Caption.Equals(caption))
                         {
                             foundIt = true;
+                            if (!attaching)
+                            {
+                                AttachWindow(hwnd, window);
+                            }
                             return window;
                         }
-
                     }
                     finally
                     {
@@ -312,19 +350,30 @@ namespace Rubberduck.VBEditor.Events
             return (IntPtr)hThread == (IntPtr)_threadId;
         }
 
-        public enum WindowType
+        [Flags]
+        public enum WindowType : uint
         {
-            Indeterminate,
-            VbaWindow,
-            CodePane,
-            DesignerWindow,
-            Project
+            Indeterminate = 0u,
+            Project = 1u,
+            CodePane = 1u << 2 | VbaWindow,
+            DesignerWindow = 1u << 3 | VbaWindow,
+            Immediate = 1u << 4 | VbaWindow,
+            ObjectBrowser = 1u << 5 | VbaWindow,
+            Locals = 1u << 6 | VbaWindow,
+            Watches = 1u << 7 | VbaWindow,
+            IntelliSense = 1u << 8,
+            VbaWindow = 1u << 31
         }
 
         public static WindowType ToWindowType(this IntPtr hwnd)
         {
-            WindowType id;
-            var type = Enum.TryParse(hwnd.ToClassName(), true, out id) ? id : WindowType.Indeterminate;
+            var className = hwnd.ToClassName();
+            if (className.Equals("NameListWndClass"))
+            {
+                return WindowType.IntelliSense;
+            }
+
+            var type = Enum.TryParse(className, true, out WindowType id) ? id : WindowType.Indeterminate;
             if (type != WindowType.VbaWindow)
             {
                 return type;
@@ -337,7 +386,7 @@ namespace Rubberduck.VBEditor.Events
 
         public static string ToClassName(this IntPtr hwnd)
         {
-            var name = new StringBuilder(128);
+            var name = new StringBuilder(255);
             User32.GetClassName(hwnd, name, name.Capacity);
             return name.ToString();
         }
