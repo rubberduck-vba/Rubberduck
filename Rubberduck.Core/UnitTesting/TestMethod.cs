@@ -78,14 +78,14 @@ namespace Rubberduck.UnitTesting
             set { _result = value; OnPropertyChanged(); }
         }
 
-        public string Category
+        public TestCategory Category
         {
             get
             {
                 var testMethodAnnotation = (TestMethodAnnotation) Declaration.Annotations
                     .First(annotation => annotation.AnnotationType == AnnotationType.TestMethod);
 
-                return testMethodAnnotation.Category;
+                return new TestCategory(testMethodAnnotation.Category);
             }
         }
 

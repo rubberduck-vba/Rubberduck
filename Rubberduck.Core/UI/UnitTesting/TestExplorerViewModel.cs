@@ -434,7 +434,7 @@ namespace Rubberduck.UI.UnitTesting
             Model.IsBusy = true;
 
             stopwatch.Start();
-            _testEngine.Run(Model.Tests.Where(test => test.Category == SelectedTest.Category));
+            _testEngine.Run(Model.Tests.Where(test => test.Category.Equals(SelectedTest.Category)));
             stopwatch.Stop();
 
             Model.IsBusy = false;
@@ -448,7 +448,7 @@ namespace Rubberduck.UI.UnitTesting
                 return false;
             }
 
-            return ((TestMethod) SelectedItem).Category != "";
+            return ((TestMethod) SelectedItem).Category.Name != string.Empty;
         }
 
         //KEEP THIS, AS IT MAKES FOR THE BASIS OF A USEFUL *SUMMARY* REPORT
