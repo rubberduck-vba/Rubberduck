@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
@@ -26,7 +27,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<ComField> Properties => Enumerable.Empty<ComField>();
 
-        public ComModule(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
+        public ComModule(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
         {
             Type = DeclarationType.ProceduralModule;
             if (attrib.cFuncs > 0)
@@ -47,13 +48,14 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < attrib.cVars; index++)
             {
                 info.GetVarDesc(index, out IntPtr varPtr);
+                using (DisposalActionContainer.Create(varPtr, info.ReleaseVarDesc))
+                {
+                    var desc = Marshal.PtrToStructure<VARDESC>(varPtr);
+                    info.GetNames(desc.memid, names, names.Length, out int length);
+                    Debug.Assert(length == 1);
 
-                var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
-                info.GetNames(desc.memid, names, names.Length, out int length);
-                Debug.Assert(length == 1);
-
-                _fields.Add(new ComField(info, names[0], desc, index, DeclarationType.Constant));
-                info.ReleaseVarDesc(varPtr);
+                    _fields.Add(new ComField(this, info, names[0], desc, index, DeclarationType.Constant));
+                }
             }
         }
 
@@ -62,13 +64,15 @@ namespace Rubberduck.Parsing.ComReflection
             for (var index = 0; index < attrib.cFuncs; index++)
             {
                 info.GetFuncDesc(index, out IntPtr memberPtr);
-                var member = (FUNCDESC)Marshal.PtrToStructure(memberPtr, typeof(FUNCDESC));
-                if (member.callconv != CALLCONV.CC_STDCALL)
+                using (DisposalActionContainer.Create(memberPtr, info.ReleaseFuncDesc))
                 {
-                    continue;
+                    var member = Marshal.PtrToStructure<FUNCDESC>(memberPtr);
+                    if (member.callconv != CALLCONV.CC_STDCALL)
+                    {
+                        continue;
+                    }
+                    _members.Add(new ComMember(this, info, member));
                 }
-                _members.Add(new ComMember(info, member));
-                info.ReleaseFuncDesc(memberPtr);
             }
         }
     }

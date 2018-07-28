@@ -15,8 +15,8 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly List<ComField> _fields = new List<ComField>();
         public IEnumerable<ComField> Fields => _fields;
 
-        public ComStruct(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index)
-            : base(typeLib, attrib, index)
+        public ComStruct(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index)
+            : base(parent, typeLib, attrib, index)
         {
             Type = DeclarationType.UserDefinedType;          
             GetFields(info, attrib);
@@ -30,11 +30,11 @@ namespace Rubberduck.Parsing.ComReflection
                 info.GetVarDesc(index, out IntPtr varPtr);
                 using (DisposalActionContainer.Create(varPtr, info.ReleaseVarDesc))
                 {
-                    var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
+                    var desc = Marshal.PtrToStructure<VARDESC>(varPtr);
                     info.GetNames(desc.memid, names, names.Length, out int length);
                     Debug.Assert(length == 1);
 
-                    _fields.Add(new ComField(info, names[0], desc, index, DeclarationType.UserDefinedTypeMember));
+                    _fields.Add(new ComField(this, info, names[0], desc, index, DeclarationType.UserDefinedTypeMember));
                 }
             }
         }

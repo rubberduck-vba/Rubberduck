@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.Parsing.Grammar;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 
@@ -12,7 +13,7 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsHidden { get; }
         public bool IsRestricted { get; }
 
-        public ComAlias(ITypeLib typeLib, ITypeInfo info, int index, TYPEATTR attributes) : base(typeLib, index)
+        public ComAlias(IComBase parent, ITypeLib typeLib, ITypeInfo info, int index, TYPEATTR attributes) : base(parent, typeLib, index)
         {
             Index = index;
             Documentation = new ComDocumentation(typeLib, index);
@@ -22,7 +23,7 @@ namespace Rubberduck.Parsing.ComReflection
             
             if (Name.Equals("LONG_PTR"))
             {
-                TypeName = "LongPtr";
+                TypeName = Tokens.LongPtr;
                 return;                
             }
 
