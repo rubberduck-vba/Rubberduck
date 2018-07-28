@@ -5,6 +5,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     public interface IWindow : ISafeComWrapper, IEquatable<IWindow>
     {
         int HWnd { get; }
+        IntPtr IUnknown { get; }
         string Caption { get; }
         bool IsVisible { get; set; }
         int Left { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -17,6 +18,33 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IntPtr Handle()
         {
             return (IntPtr)HWnd;
+        }
+
+        private IntPtr _unknown;
+        public IntPtr IUnknown
+        {
+            get
+            {
+                if (IsWrappingNullReference)
+                {
+                    return IntPtr.Zero;
+                }
+
+                if (_unknown == IntPtr.Zero)
+                {
+                    try
+                    {
+                        _unknown = Marshal.GetIUnknownForObject(Target);
+                        Marshal.Release(_unknown);
+                    }
+                    catch
+                    {
+                        // If GetIUnknownForObject threw us here, we're fine. If Marshal.Release threw us here, we're probably screwed
+                        // anyway, so we might as well just wait for the zombie process when the VBE tries to close.
+                    }
+                }
+                return _unknown;
+            }
         }
 
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
