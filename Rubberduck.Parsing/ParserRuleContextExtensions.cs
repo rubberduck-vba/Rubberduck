@@ -222,13 +222,31 @@ namespace Rubberduck.Parsing
 
         /// <summary>
         /// Returns all the context's descendents of the generic type containing the token with the specified token index.
+        /// If there are multiple matches, they are ordered from outermost to innermost context.
         /// </summary>
         public static IEnumerable<TContext> GetDescendentsContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
         {
-            var walker = new ParseTreeWalker();
-            var listener = new ChildNodeWithTokenPositionListener<TContext>(tokenIndex);
-            walker.Walk(listener, context);
-            return listener.Matches;
+            if (!context.ContainsTokenIndex(tokenIndex))
+            {
+                return new List<TContext>();
+            }
+
+            var matches = new List<TContext>();
+            if (context is TContext match)
+            {
+                matches.Add(match);
+            }
+
+            foreach (var child in context.children)
+            {
+                if (child is ParserRuleContext childContext && childContext.ContainsTokenIndex(tokenIndex))
+                {
+                    matches.AddRange(childContext.GetDescendentsContainingTokenIndex<TContext>(tokenIndex));
+                    break;  //Only one child can contain the token index.
+                }
+            }
+
+            return matches;
         }
 
         /// <summary>
@@ -277,27 +295,6 @@ namespace Rubberduck.Parsing
             return followingContext != null;
         }
 
-        private class ChildNodeWithTokenPositionListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
-        {
-            private readonly int _tokenIndex;
-
-            private readonly HashSet<TContext> _matches = new HashSet<TContext>();
-            public IEnumerable<TContext> Matches => _matches;
-
-            public ChildNodeWithTokenPositionListener(int tokenIndex)
-            {
-                _tokenIndex = tokenIndex;
-            }
-
-            public override void EnterEveryRule(ParserRuleContext context)
-            {
-                var match = context as TContext;
-                if (match != null && match.ContainsTokenIndex(_tokenIndex))
-                {
-                    _matches.Add(match);
-                }
-            }
-        }
 
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
         {
@@ -306,8 +303,7 @@ namespace Rubberduck.Parsing
 
             public override void EnterEveryRule(ParserRuleContext context)
             {
-                var match = context as TContext;
-                if (match != null)
+                if (context is TContext match)
                 {
                     _matches.Add(match);
                 }
