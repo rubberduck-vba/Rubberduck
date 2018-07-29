@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Office.Interop.MSProject;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
@@ -218,6 +220,37 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
+        }
+
+        public int ContentHash()
+        {
+            if (IsWrappingNullReference || !HasCodeModule && !HasDesigner)
+            {
+                return 0;
+            }
+
+            var hash = 5381;
+            var hashes = new List<int>();
+
+            using (var code = CodeModule)
+            {
+                hashes.Add(code?.ContentHash() ?? 0);
+            }
+
+            if (HasDesigner)
+            {
+                using (var controls = Controls)
+                {
+                    hashes.AddRange(controls.Select(control => control.Name.GetHashCode()));
+                }
+            }
+
+            foreach (var hashCode in hashes)
+            {
+                hash = ((hash << 5) + hash) ^ hashCode;
+            }
+               
+            return hash;
         }
     }
 }

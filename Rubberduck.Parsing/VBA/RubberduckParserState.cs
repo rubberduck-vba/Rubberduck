@@ -939,7 +939,7 @@ namespace Rubberduck.Parsing.VBA
         private int GetModuleContentHash(QualifiedModuleName module)
         {
             var component = ProjectsProvider.Component(module);
-            return QualifiedModuleName.GetModuleContentHash(component);
+            return QualifiedModuleName.GetContentHash(component);
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)

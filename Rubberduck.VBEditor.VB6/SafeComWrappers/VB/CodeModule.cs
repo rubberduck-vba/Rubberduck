@@ -100,25 +100,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
-        private string _previousContentHash;
-        public string ContentHash()
-        {
-            using (var hash = new SHA256Managed())
-            using (var stream = Content().ToStream())
-            {
-                return _previousContentHash = new string(Encoding.Unicode.GetChars(hash.ComputeHash(stream)));
-            }
-        }
-
-        public int SimpleContentHash()
+        public int ContentHash()
         {
             var code = Content();
             return string.IsNullOrEmpty(code)
                 ? 0
                 : code.GetHashCode();
         }
-
-        public bool IsDirty => _previousContentHash.Equals(ContentHash());
 
         public void AddFromString(string content)
         {
