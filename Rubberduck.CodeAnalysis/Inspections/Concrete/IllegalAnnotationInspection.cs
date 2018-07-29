@@ -85,7 +85,8 @@ namespace Rubberduck.Inspections.Concrete
             private void SetCurrentScope(string memberName = null)
             {
                 _hasMembers = !string.IsNullOrEmpty(memberName);
-                _isFirstMemberProcessed = _hasMembers;
+                // this is a one-time toggle until contexts are reset
+                _isFirstMemberProcessed |= _hasMembers; 
                 _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
             }
 
@@ -108,6 +109,9 @@ namespace Rubberduck.Inspections.Concrete
                     .Members(CurrentModuleName)
                     .GroupBy(m => m.IdentifierName)
                     .ToDictionary(m => m.Key, m => m.First()));
+
+                // we did not process the first member of the module we just entered, so reset here
+                _isFirstMemberProcessed = false; 
             }
 
             public override void ExitModule(VBAParser.ModuleContext context)
@@ -163,7 +167,7 @@ namespace Rubberduck.Inspections.Concrete
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {
                 var name = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
-                var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name);
+                var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name, true);
                 var key = Tuple.Create(_currentModuleName, annotationType);
                 _annotationCounts[key]++;
 
