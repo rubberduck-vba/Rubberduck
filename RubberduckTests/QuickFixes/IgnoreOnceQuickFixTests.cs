@@ -40,17 +40,8 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
             var component = vbe.Object.SelectedVBComponent;
 
-            var parser = MockParser.Create(vbe.Object);
-            using (var state = parser.State)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                //state.AddTestLibrary("Excel.1.8.xml");
-
-                parser.Parse(new CancellationTokenSource());
-                if (state.Status >= ParserState.Error)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
-
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -257,17 +248,8 @@ End Sub";
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
-            using (var state = parser.State)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                //state.AddTestLibrary("Excel.1.8.xml");
-
-                parser.Parse(new CancellationTokenSource());
-                if (state.Status >= ParserState.Error)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
-
                 var inspection = new ImplicitActiveSheetReferenceInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 

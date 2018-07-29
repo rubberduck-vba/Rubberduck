@@ -26,17 +26,7 @@ namespace RubberduckTests.Inspections
 
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
-
-            //parser.State.AddTestLibrary(library.Equals("Scripting") ? "Scripting.1.0.xml" : "Excel.1.8.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            return parser.State;
+            return MockParser.CreateAndParse(vbe.Object);
         }
 
         [Test]
@@ -349,7 +339,6 @@ End Sub
             var projectBuilder = vbeBuilder.ProjectBuilder("testproject", ProjectProtection.Unprotected);
             projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
-                //.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
                 .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0);
 
             vbeBuilder.AddProject(projectBuilder.Build());
