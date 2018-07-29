@@ -24,5 +24,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         void SetKind(WindowKind eKind);
         void Detach();
         void Attach(int lWindowHandle);
+        bool ScreenUpdating { get; set; }
     }
 }

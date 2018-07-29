@@ -365,7 +365,7 @@ namespace Rubberduck.VBEditor.Events
             VbaWindow = 1u << 31
         }
 
-        public static WindowType ToWindowType(this IntPtr hwnd)
+        private static WindowType ToWindowType(this IntPtr hwnd)
         {
             var className = hwnd.ToClassName();
             if (className.Equals("NameListWndClass"))
@@ -384,7 +384,7 @@ namespace Rubberduck.VBEditor.Events
             return toolbar == IntPtr.Zero ? WindowType.VbaWindow : WindowType.CodePane;
         }
 
-        public static string ToClassName(this IntPtr hwnd)
+        private static string ToClassName(this IntPtr hwnd)
         {
             var name = new StringBuilder(255);
             User32.GetClassName(hwnd, name, name.Capacity);

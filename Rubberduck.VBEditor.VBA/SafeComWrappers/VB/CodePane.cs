@@ -95,17 +95,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void ForceFocus()
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Show();
 
             var window = VBE.MainWindow;
             var mainWindowHandle = window.Handle();
-            var caption = Window.Caption;
-            var childWindowFinder = new ChildWindowFinder(caption);
-
-            NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
-            var handle = childWindowFinder.ResultHandle;
-
+            var handle = window.Handle().FindChildWindow(Window.Caption);
+            
             if (handle != IntPtr.Zero)
             {
                 NativeMethods.ActivateWindow(handle, mainWindowHandle);

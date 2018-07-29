@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -59,6 +60,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             set { if (!IsWrappingNullReference) Target.Visible = value; }
         }
 
+        private bool _screenUpdating = true;
+        public bool ScreenUpdating
+        {
+            get => _screenUpdating;
+            set
+            {
+                if (value == _screenUpdating || IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                var window = VBE.MainWindow;
+                var handle = window.Handle().FindChildWindow(Caption);
+
+                if (NativeMethods.SendMessage(handle, (int) WM.SETREDRAW, new IntPtr(value ? -1 : 0), IntPtr.Zero) == IntPtr.Zero)
+                {
+                    _screenUpdating = value;
+                }
+            }
+        }
+
         public int Left
         {
             get => IsWrappingNullReference ? 0 : Target.Left;
@@ -115,15 +137,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             if (!IsWrappingNullReference) Target.Attach(lWindowHandle);
         }
-        
-        //public override void Release(bool final = false)
-        //{
-        //    if (!IsWrappingNullReference)
-        //    {
-        //        LinkedWindowFrame.Release();
-        //        base.Release(final);
-        //    } 
-        //}
 
         public override bool Equals(ISafeComWrapper<VB.Window> other)
         {
