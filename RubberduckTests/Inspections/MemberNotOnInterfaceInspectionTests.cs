@@ -28,7 +28,7 @@ namespace RubberduckTests.Inspections
 
             var parser = MockParser.Create(vbe.Object);
 
-            parser.State.AddTestLibrary(library.Equals("Scripting") ? "Scripting.1.0.xml" : "Excel.1.8.xml");
+            //parser.State.AddTestLibrary(library.Equals("Scripting") ? "Scripting.1.0.xml" : "Excel.1.8.xml");
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)
@@ -345,28 +345,17 @@ Sub FizzBuzz()
 
 End Sub
 ";
-            var mockVbe = new MockVbeBuilder();
-            var projectBuilder = mockVbe.ProjectBuilder("testproject", ProjectProtection.Unprotected);
+            var vbeBuilder = new MockVbeBuilder();
+            var projectBuilder = vbeBuilder.ProjectBuilder("testproject", ProjectProtection.Unprotected);
             projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
                 //.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel)
                 .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0);
 
-            mockVbe.AddProject(projectBuilder.Build());
+            vbeBuilder.AddProject(projectBuilder.Build());
+            var vbe = vbeBuilder.Build();
 
-
-            var parser = MockParser.Create(mockVbe.Build().Object);
-
-            //parser.State.AddTestLibrary("Excel.1.8.xml");
-            parser.State.AddTestLibrary("MSForms.2.0.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            using (var state = parser.State)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new MemberNotOnInterfaceInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
