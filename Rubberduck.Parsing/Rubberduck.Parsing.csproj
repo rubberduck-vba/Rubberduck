@@ -145,6 +145,7 @@
     <Compile Include="Binding\ExpressionClassification.cs" />
     <Compile Include="TokenStreamExtensions.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />
+    <Compile Include="ComReflection\ComTypeName.cs" />
     <Compile Include="Inspections\RequiredHostAttribute.cs" />
     <Compile Include="ProjectsProviderExtensions.cs" />
     <Compile Include="Common\ExperimentalAttribute.cs" />

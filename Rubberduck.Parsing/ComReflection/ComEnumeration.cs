@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.ComReflection
     {
         public List<ComEnumerationMember> Members { get; } 
 
-        public ComEnumeration(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
+        public ComEnumeration(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
         {            
             Members = new List<ComEnumerationMember>();
             Type = DeclarationType.Enumeration;          
@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.ComReflection
                 using (DisposalActionContainer.Create(varPtr, info.ReleaseVarDesc))
                 {
                     var desc = Marshal.PtrToStructure<VARDESC>(varPtr);
-                    Members.Add(new ComEnumerationMember(info, desc));
+                    Members.Add(new ComEnumerationMember(this, info, desc));
                 }
             }           
         }
