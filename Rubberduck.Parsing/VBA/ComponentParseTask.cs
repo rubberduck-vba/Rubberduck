@@ -155,7 +155,7 @@ namespace Rubberduck.Parsing.VBA
             });
         }
 
-        private (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) RunAttributesPass(CancellationToken cancellationToken)
+        private (IParseTree tree, ITokenStream tokenStream, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes) RunAttributesPass(CancellationToken cancellationToken)
         {
             Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
             var attributesParseResults = _attributeParser.Parse(_module, cancellationToken);
@@ -219,7 +219,7 @@ namespace Rubberduck.Parsing.VBA
             public IModuleRewriter AttributesRewriter { get; internal set; }
             public IParseTree ParseTree { get; internal set; }
             public IParseTree AttributesTree { get; internal set; }
-            public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes { get; internal set; }
+            public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes { get; internal set; }
             public IEnumerable<CommentNode> Comments { get; internal set; }
             public IEnumerable<IAnnotation> Annotations { get; internal set; }
         }

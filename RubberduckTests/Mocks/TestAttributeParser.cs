@@ -24,7 +24,7 @@ namespace RubberduckTests.Mocks
             _projectsProvider = projectsProvider;
         }
 
-        public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
+        public (IParseTree tree, ITokenStream tokenStream, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
             var component = _projectsProvider.Component(module);
             var code = component.CodeModule.Content();
@@ -36,7 +36,7 @@ namespace RubberduckTests.Mocks
             var preprocessor = _preprocessorFactory();
             var preprocessingErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
             preprocessor.PreprocessTokenStream(null, module.ComponentName, tokens, preprocessingErrorListener, cancellationToken);
-            var listener = new AttributeListener(Tuple.Create(module.ComponentName, type));
+            var listener = new AttributeListener((module.ComponentName, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)

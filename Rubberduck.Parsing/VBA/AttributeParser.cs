@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         /// <param name="module"></param>
         /// <param name="cancellationToken"></param>
-        public (IParseTree tree, ITokenStream tokenStream, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
+        public (IParseTree tree, ITokenStream tokenStream, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var component = _projectsProvider.Component(module);
@@ -41,7 +41,7 @@ namespace Rubberduck.Parsing.VBA
             var code = _sourceCodeHandler.Read(component);
             if (code == null)
             {
-                return (null, null, new Dictionary<Tuple<string, DeclarationType>, Attributes>());
+                return (null, null, new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>());
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 preprocessor.PreprocessTokenStream(project, module.ComponentName, tokens, preprocessorErrorListener, cancellationToken);
             }
-            var listener = new AttributeListener(Tuple.Create(module.ComponentName, type));
+            var listener = new AttributeListener((module.ComponentName, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)

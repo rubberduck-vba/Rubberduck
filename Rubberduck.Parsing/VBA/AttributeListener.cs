@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 
@@ -10,20 +9,20 @@ namespace Rubberduck.Parsing.VBA
 {
     public class AttributeListener : VBAParserBaseListener
     {
-        private readonly Dictionary<Tuple<string, DeclarationType>, Attributes> _attributes =
-            new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+        private readonly Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes 
+            = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
 
-        public AttributeListener(Tuple<string, DeclarationType> scope)
+        private IAnnotatedContext _currentAnnotatedContext;
+        private (string scopeIdentifier, DeclarationType scopeType) _currentScope;
+        private Attributes _currentScopeAttributes;
+
+        public AttributeListener((string scopeIdentifier, DeclarationType scopeType) initialScope)
         {
-            _currentScope = scope;
+            _currentScope = initialScope;
             _currentScopeAttributes = new Attributes();
         }
 
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> Attributes => _attributes;
-
-        private IAnnotatedContext _currentAnnotatedContext;
-        private Tuple<string, DeclarationType> _currentScope;
-        private Attributes _currentScopeAttributes;
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes => _attributes;
 
         public override void ExitAnnotation(VBAParser.AnnotationContext context)
         {
@@ -42,7 +41,7 @@ namespace Rubberduck.Parsing.VBA
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             _currentScopeAttributes = new Attributes();
-            _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);
+            _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);
             _currentAnnotatedContext = context;
         }
 
@@ -58,7 +57,7 @@ namespace Rubberduck.Parsing.VBA
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             _currentScopeAttributes = new Attributes();
-            _currentScope = Tuple.Create(Identifier.GetName(context.functionName()), DeclarationType.Function);
+            _currentScope = (Identifier.GetName(context.functionName()), DeclarationType.Function);
             _currentAnnotatedContext = context;
         }
 
@@ -74,7 +73,7 @@ namespace Rubberduck.Parsing.VBA
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
             _currentScopeAttributes = new Attributes();
-            _currentScope = Tuple.Create(Identifier.GetName(context.functionName()), DeclarationType.PropertyGet);
+            _currentScope = (Identifier.GetName(context.functionName()), DeclarationType.PropertyGet);
             _currentAnnotatedContext = context;
         }
 
@@ -90,7 +89,7 @@ namespace Rubberduck.Parsing.VBA
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
             _currentScopeAttributes = new Attributes();
-            _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.PropertyLet);
+            _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertyLet);
             _currentAnnotatedContext = context;
         }
 
@@ -106,7 +105,7 @@ namespace Rubberduck.Parsing.VBA
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
             _currentScopeAttributes = new Attributes();
-            _currentScope = Tuple.Create(Identifier.GetName(context.subroutineName()), DeclarationType.PropertySet);
+            _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertySet);
             _currentAnnotatedContext = context;
         }
 
