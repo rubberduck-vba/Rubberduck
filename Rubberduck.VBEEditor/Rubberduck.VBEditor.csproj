@@ -61,7 +61,9 @@
     <Compile Include="ComManagement\ComMessagePumper.cs" />
     <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
-    <Compile Include="Events\AutoCompleteEventArgs.cs" />
+    <Compile Include="Events\EventArgs\AutoCompleteEventArgs.cs" />
+    <Compile Include="Events\EventArgs\IntelliSenseEventArgs.cs" />
+    <Compile Include="Events\EventArgs\KeyPressEventArgs.cs" />
     <Compile Include="Factories\AddInFactory.cs" />
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />
@@ -93,14 +95,14 @@
     <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
     <Compile Include="ComManagement\StrongComSafe.cs" />
-    <Compile Include="Events\ComponentEventArgs.cs" />
-    <Compile Include="Events\ComponentRenamedEventArgs.cs" />
-    <Compile Include="Events\ProjectEventArgs.cs" />
-    <Compile Include="Events\ProjectRenamedEventArgs.cs" />
-    <Compile Include="Events\SelectionChangedEventArgs.cs" />
+    <Compile Include="Events\EventArgs\ComponentEventArgs.cs" />
+    <Compile Include="Events\EventArgs\ComponentRenamedEventArgs.cs" />
+    <Compile Include="Events\EventArgs\ProjectEventArgs.cs" />
+    <Compile Include="Events\EventArgs\ProjectRenamedEventArgs.cs" />
+    <Compile Include="Events\EventArgs\SelectionChangedEventArgs.cs" />
     <Compile Include="Events\VBEEvents.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
-    <Compile Include="Events\WindowChangedEventArgs.cs" />
+    <Compile Include="Events\EventArgs\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\VBComponentExtensions.cs" />
     <Compile Include="Extensions\KeyValuePairExtensions.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
@@ -159,6 +161,8 @@
     <Compile Include="SafeComWrappers\SafeEventedComWrapper.cs" />
     <Compile Include="Utility\DisposalActionContainer.cs" />
     <Compile Include="Utility\RegistryWrapper.cs" />
+    <Compile Include="WindowsApi\IFocusProvider.cs" />
+    <Compile Include="WindowsApi\SubclassManager.cs" />
     <Compile Include="WindowsApi\WindowLocator.cs" />
     <Compile Include="WindowsApi\CodePaneSubclass.cs" />
     <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
@@ -170,7 +174,7 @@
     <Compile Include="QualifiedSelection.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="SubClassingWindowEventArgs.cs" />
+    <Compile Include="Events\EventArgs\SubClassingWindowEventArgs.cs" />
     <Compile Include="Extensions\ComponentTypeExtensions.cs" />
     <Compile Include="VBEEditorText.Designer.cs">
       <AutoGen>True</AutoGen>

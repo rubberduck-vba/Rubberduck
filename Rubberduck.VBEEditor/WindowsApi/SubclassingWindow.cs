@@ -6,6 +6,7 @@ namespace Rubberduck.VBEditor.WindowsApi
 {
     public abstract class SubclassingWindow : IDisposable
     {
+        public event EventHandler<EventArgs> ReleasingHandle;
         private readonly IntPtr _subclassId;
         private readonly SubClassCallback _wndProc;
         private bool _listening;
@@ -68,6 +69,8 @@ namespace Rubberduck.VBEditor.WindowsApi
                 {
                     throw new Exception("RemoveWindowSubclass Failed");
                 }
+                ReleasingHandle?.Invoke(this, null);
+                ReleasingHandle = delegate { };
                 _listening = false;
             }
         }

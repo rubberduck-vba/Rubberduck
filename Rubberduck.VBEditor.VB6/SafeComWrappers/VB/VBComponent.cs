@@ -168,7 +168,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 return 0;
             }
 
-            var hash = 5381;
             var hashes = new List<int>();
 
             using (var code = CodeModule)
@@ -184,12 +183,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 }
             }
 
-            foreach (var hashCode in hashes)
-            {
-                hash = ((hash << 5) + hash) ^ hashCode;
-            }
-
-            return hash;
+            return HashCode.Compute(hashes);
         }
     }
 }

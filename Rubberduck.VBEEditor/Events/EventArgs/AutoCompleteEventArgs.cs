@@ -6,7 +6,7 @@ namespace Rubberduck.VBEditor.Events
 {
     public class AutoCompleteEventArgs : EventArgs
     {
-        public AutoCompleteEventArgs(ICodeModule module, WindowsApi.KeyPressEventArgs e)
+        public AutoCompleteEventArgs(ICodeModule module, KeyPressEventArgs e)
         {
             if (e.Key == Keys.Delete ||
                 e.Key == Keys.Back ||

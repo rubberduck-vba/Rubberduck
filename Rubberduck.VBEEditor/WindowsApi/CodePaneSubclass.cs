@@ -1,55 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
-    public class IntelliSenseEventArgs : EventArgs
-    {
-        public static IntelliSenseEventArgs Shown => new IntelliSenseEventArgs(true);
-        public static IntelliSenseEventArgs Hidden => new IntelliSenseEventArgs(false);
-        internal IntelliSenseEventArgs(bool visible)
-        {
-            Visible = visible;
-        }
-
-        public bool Visible { get; }
-    }
-
-    public class KeyPressEventArgs
-    {
-        public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, char character = default)
-        {
-            Hwnd = hwnd;
-            WParam = wParam;
-            LParam = lParam;
-            Character = character;
-            if (character == default(char))
-            {
-                Key = (Keys)wParam;
-            }
-            else
-            {
-                IsCharacter = true;
-            }
-        }
-
-        public bool IsCharacter { get; }
-        public IntPtr Hwnd { get; }
-        public IntPtr WParam { get; }
-        public IntPtr LParam { get; }
-
-        public bool Handled { get; set; }
-
-        public char Character { get; }
-        public Keys Key { get; }
-    }
-
     //Stub for code pane replacement.  :-)
-    internal class CodePaneSubclass : FocusSource
+    internal class CodePaneSubclass : FocusSource, IWindowEventProvider
     {
+        public event EventHandler<EventArgs> CaptionChanged;
+        public event EventHandler<KeyPressEventArgs> KeyDown;
         private ICodePane _codePane;
 
         public ICodePane CodePane
@@ -99,7 +59,12 @@ namespace Rubberduck.VBEditor.WindowsApi
         {
             _codePane = pane;
         }
-        
+
+        protected void OnKeyDown(KeyPressEventArgs eventArgs)
+        {
+            KeyDown?.Invoke(this, eventArgs);
+        }
+
         public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
         {
             KeyPressEventArgs args;
@@ -115,6 +80,12 @@ namespace Rubberduck.VBEditor.WindowsApi
                     OnKeyDown(args);
                     if (args.Handled) { return 0; }
                     break;
+                case WM.SETTEXT:
+                    if (!HasValidCodePane)
+                    {
+                        CaptionChanged?.Invoke(this, null);
+                    }
+                    break;
             }
             return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
         }
@@ -129,6 +100,8 @@ namespace Rubberduck.VBEditor.WindowsApi
                     _codePane.Dispose();
                     _codePane = null;
                 }
+                CaptionChanged = delegate { };
+                KeyDown = delegate { };
             }
 
             base.Dispose(disposing);
