@@ -60,20 +60,18 @@ namespace Rubberduck.Parsing.VBA
                 var tokenStream = RewriteAndPreprocess(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();  
 
-                // temporal coupling... comments must be acquired before we walk the parse tree for declarations
-                // otherwise none of the annotations get associated to their respective Declaration
-                var commentListener = new CommentListener();
-                var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory(), _module);
-
-                var codePaneParseResults = ParseInternal(_module.ComponentName, tokenStream, new IParseTreeListener[]{ commentListener, annotationListener });
+                var codePaneParseResults = ParseInternal(_module.ComponentName, tokenStream);
                 var codePaneRewriter = _moduleRewriterFactory.CodePaneRewriter(_module, codePaneParseResults.tokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var comments = QualifyAndUnionComments(_module, commentListener.Comments, commentListener.RemComments);
+                // temporal coupling... comments must be acquired before we walk the parse tree for declarations
+                // otherwise none of the annotations get associated to their respective Declaration
+                var commentsAndAnnotation = CommentsAndAnnotations(_module, codePaneParseResults.tree);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
                 var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream);
+                cancellationToken.ThrowIfCancellationRequested();
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
@@ -84,8 +82,8 @@ namespace Rubberduck.Parsing.VBA
                         CodePaneRewriter = codePaneRewriter,
                         AttributesRewriter = attributesRewriter,
                         Attributes = attributesPassParseResults.attributes,
-                        Comments = comments,
-                        Annotations = annotationListener.Annotations
+                        Comments = commentsAndAnnotation.Comments,
+                        Annotations = commentsAndAnnotation.Annotations
                     });
             }
             catch (COMException exception)
@@ -135,6 +133,17 @@ namespace Rubberduck.Parsing.VBA
 
                 ReportException(exception);
             }
+        }
+
+        private (IEnumerable<CommentNode> Comments, IEnumerable<IAnnotation> Annotations) CommentsAndAnnotations(QualifiedModuleName module, IParseTree tree)
+        {
+            var commentListener = new CommentListener();
+            var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory(), _module);
+            var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[] {commentListener, annotationListener});
+            ParseTreeWalker.Default.Walk(combinedListener, tree);
+            var comments = QualifyAndUnionComments(module, commentListener.Comments, commentListener.RemComments);
+            var annotations = annotationListener.Annotations;
+            return (comments, annotations);
         }
 
         private void ReportException(Exception exception)
@@ -189,11 +198,11 @@ namespace Rubberduck.Parsing.VBA
             return tokens;
         }
 
-        private (IParseTree tree, ITokenStream tokenStream) ParseInternal(string moduleName, CommonTokenStream tokenStream, IParseTreeListener[] listeners)
+        private (IParseTree tree, ITokenStream tokenStream) ParseInternal(string moduleName, CommonTokenStream tokenStream)
         {
             //var errorNotifier = new SyntaxErrorNotificationListener();
             //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, tokenStream, listeners, new MainParseExceptionErrorListener(moduleName, ParsePass.CodePanePass));
+            return _parser.Parse(moduleName, tokenStream, new MainParseExceptionErrorListener(moduleName, ParsePass.CodePanePass));
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

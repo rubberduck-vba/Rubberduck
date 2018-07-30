@@ -63,7 +63,9 @@ namespace Rubberduck.Parsing.VBA
             // (these don't show up in the VBE, that's why we're parsing an exported file)
 
             var mainParseErrorListener = new MainParseExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
-            var parseResults = new VBAModuleParser().Parse(module.ComponentName, tokens, new IParseTreeListener[] { listener }, mainParseErrorListener);
+            var parseResults = new VBAModuleParser().Parse(module.ComponentName, tokens, mainParseErrorListener);
+
+            ParseTreeWalker.Default.Walk(listener, parseResults.tree);
 
             cancellationToken.ThrowIfCancellationRequested();
             return (parseResults.tree, parseResults.tokenStream, listener.Attributes);
