@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.PreProcessing;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Mocks
 {
@@ -24,19 +21,15 @@ namespace RubberduckTests.Mocks
             _projectsProvider = projectsProvider;
         }
 
-        public (IParseTree tree, ITokenStream tokenStream, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
+        public (IParseTree tree, ITokenStream tokenStream) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
             var component = _projectsProvider.Component(module);
             var code = component.CodeModule.Content();
-            var type = module.ComponentType == ComponentType.StandardModule
-                ? DeclarationType.ProceduralModule
-                : DeclarationType.ClassModule;
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
             var preprocessingErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
             preprocessor.PreprocessTokenStream(null, module.ComponentName, tokens, preprocessingErrorListener, cancellationToken);
-            var listener = new AttributeListener((module.ComponentName, type));
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
@@ -44,10 +37,8 @@ namespace RubberduckTests.Mocks
             var mainParseErrorListener = new MainParseExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
             var parseResults = new VBAModuleParser().Parse(module.Name, tokens, mainParseErrorListener);
 
-            ParseTreeWalker.Default.Walk(listener, parseResults.tree);
-
             cancellationToken.ThrowIfCancellationRequested();
-            return (parseResults.tree, parseResults.tokenStream, listener.Attributes);
+            return (parseResults.tree, parseResults.tokenStream);
         }
     }
 }

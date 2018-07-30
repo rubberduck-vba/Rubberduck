@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -16,6 +15,7 @@ using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
@@ -73,6 +73,9 @@ namespace Rubberduck.Parsing.VBA
                 var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
+                var attributes = Attributes(_module, attributesPassParseResults.tree);
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
                     completedHandler.Invoke(this, new ParseCompletionArgs
@@ -81,7 +84,7 @@ namespace Rubberduck.Parsing.VBA
                         AttributesTree = attributesPassParseResults.tree,
                         CodePaneRewriter = codePaneRewriter,
                         AttributesRewriter = attributesRewriter,
-                        Attributes = attributesPassParseResults.attributes,
+                        Attributes = attributes,
                         Comments = commentsAndAnnotation.Comments,
                         Annotations = commentsAndAnnotation.Annotations
                     });
@@ -146,6 +149,16 @@ namespace Rubberduck.Parsing.VBA
             return (comments, annotations);
         }
 
+        private IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes(QualifiedModuleName module, IParseTree tree)
+        {
+            var type = module.ComponentType == ComponentType.StandardModule
+                ? DeclarationType.ProceduralModule
+                : DeclarationType.ClassModule;
+            var attributesListener = new AttributeListener((module.ComponentName, type));
+            ParseTreeWalker.Default.Walk(attributesListener, tree);
+            return attributesListener.Attributes;
+        }
+
         private void ReportException(Exception exception)
         {
             var failedHandler = ParseFailure;
@@ -155,7 +168,7 @@ namespace Rubberduck.Parsing.VBA
             });
         }
 
-        private (IParseTree tree, ITokenStream tokenStream, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes) RunAttributesPass(CancellationToken cancellationToken)
+        private (IParseTree tree, ITokenStream tokenStream) RunAttributesPass(CancellationToken cancellationToken)
         {
             Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
             var attributesParseResults = _attributeParser.Parse(_module, cancellationToken);
