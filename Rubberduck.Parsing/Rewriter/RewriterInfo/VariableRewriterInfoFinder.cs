@@ -41,69 +41,40 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             VBAParser.ModuleDeclarationsElementContext element,
             int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
         {
-            var startIndex = element.Start.TokenIndex;
-            var parent = (VBAParser.ModuleDeclarationsContext)element.Parent;
-            var elements = parent.moduleDeclarationsElement();
-
             if (count == 1)
             {
-                var stopIndex = FindStopTokenIndex(elements, element, parent);
-                return new RewriterInfo(startIndex, stopIndex);
+                return GetSeparateModuleVariableRemovalInfo(element);
             }
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
+        }
+
+        private static RewriterInfo GetSeparateModuleVariableRemovalInfo(VBAParser.ModuleDeclarationsElementContext element)
+        {
+            var startIndex = element.Start.TokenIndex;
+            var stopIndex = FindStopTokenIndexForRemoval(element);
+            return new RewriterInfo(startIndex, stopIndex);
         }
 
         private static RewriterInfo GetLocalVariableRemovalInfo(VBAParser.VariableSubStmtContext target,
             VBAParser.VariableListStmtContext variables,
             int count, int itemIndex, IReadOnlyList<VBAParser.VariableSubStmtContext> items)
         {
-            var mainBlockStmt = (VBAParser.MainBlockStmtContext)variables.Parent.Parent;
-            var blockStmt = (VBAParser.BlockStmtContext)mainBlockStmt.Parent;
-            var startIndex = mainBlockStmt.Start.TokenIndex;
             if (count == 1)
             {
-                int stopIndex = variables.Stop.TokenIndex + 1; // also remove trailing newlines?
-                
-                var containingBlock = (VBAParser.BlockContext)mainBlockStmt.Parent.Parent;
-                var blockStmtIndex = containingBlock.children.IndexOf(blockStmt);
-                // a few things can happen here
-                if (blockStmtIndex == containingBlock.ChildCount)
-                {
-                    // well we're lucky?
-                    stopIndex = containingBlock.Stop.TokenIndex;
-                }
-                else if (containingBlock.GetChild(blockStmtIndex + 1) is VBAParser.EndOfStatementContext eos)
-                {
-                    // since EOS includes the following comment, we need to do weird shit
-                    // eos cannot be EOF, since we're on a local var, but it can be a statment separator
-                    var eol = eos.endOfLine(0);
-                    if (eol?.commentOrAnnotation() != null)
-                    {
-                        stopIndex = eol.commentOrAnnotation().Start.TokenIndex - 1;
-                    }
-                    else if (blockStmtIndex + 2 >= containingBlock.ChildCount)
-                    {
-                        // remove until the end of the EOS
-                        stopIndex = eol.Stop.TokenIndex;
-                    }
-                    else if (blockStmt.statementLabelDefinition() != null)
-                    {
-                        // special case where line has statement label or line number
-                        // don't want to remove trailing newline or can have label/number apply to next line where it isn't necessarily valid
-                        stopIndex = eol.Stop.TokenIndex - 1;
-                    }
-                    else
-                    {
-                        // remove up to the start of the following blockStmt (offset index by 2 because blockStmts alternate with endOfStatements)
-                        stopIndex = containingBlock.GetChild<ParserRuleContext>(blockStmtIndex + 2).Start.TokenIndex - 1;
-                    }
-
-                }
-
-                return new RewriterInfo(startIndex, stopIndex);
+                return GetSeparateLocalVariableRemovalInfo(variables);
             }
 
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
+        }
+
+        private static RewriterInfo GetSeparateLocalVariableRemovalInfo(VBAParser.VariableListStmtContext variables)
+        {
+            var mainBlockStmt = variables.GetAncestor<VBAParser.MainBlockStmtContext>();
+            var startIndex = mainBlockStmt.Start.TokenIndex;
+
+            int stopIndex = FindStopTokenIndexForRemoval(mainBlockStmt);
+
+            return new RewriterInfo(startIndex, stopIndex);
         }
     }
 }

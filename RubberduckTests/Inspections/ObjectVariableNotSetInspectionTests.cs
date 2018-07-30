@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
@@ -8,7 +9,6 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    //[DeploymentItem(@"TestFiles\")]
     public class ObjectVariableNotSetInspectionTests
     {
         [Test]
@@ -468,22 +468,25 @@ End Sub";
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected, params string[] testLibraries)
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
+            var projectBuilder = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, inputCode);
+
+            foreach (var testLibrary in testLibraries)
+            {
+                var libraryDescriptionComponents = testLibrary.Split('.');
+                var libraryName = libraryDescriptionComponents[0];
+                var libraryPath = MockVbeBuilder.LibraryPaths[libraryName];
+                int majorVersion = Int32.Parse(libraryDescriptionComponents[1]);
+                int minorVersion = Int32.Parse(libraryDescriptionComponents[2]);
+                projectBuilder.AddReference(libraryName, libraryPath, majorVersion, minorVersion, true);
+            }
+
+            var project = projectBuilder.Build();
             var vbe = builder.AddProject(project).Build();
 
-            using(var coordinator = MockParser.Create(vbe.Object))
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                foreach (var testLibrary in testLibraries)
-                {
-                    coordinator.State.AddTestLibrary(testLibrary);
-                }
-                coordinator.Parse(new CancellationTokenSource());
-
-                var inspection = new ObjectVariableNotSetInspection(coordinator.State);
+                var inspection = new ObjectVariableNotSetInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(expected, inspectionResults.Count());
