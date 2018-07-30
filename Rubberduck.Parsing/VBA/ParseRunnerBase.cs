@@ -5,6 +5,7 @@ using Rubberduck.VBEditor;
 using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
 namespace Rubberduck.Parsing.VBA
@@ -17,13 +18,15 @@ namespace Rubberduck.Parsing.VBA
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
         private readonly IAttributeParser _attributeParser;
         private readonly ISourceCodeHandler _sourceCodeHandler;
+        private readonly IModuleRewriterFactory _moduleRewriterFactory;
 
         protected ParseRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             Func<IVBAPreprocessor> preprocessorFactory,
             IAttributeParser attributeParser, 
-            ISourceCodeHandler sourceCodeHandler)
+            ISourceCodeHandler sourceCodeHandler,
+            IModuleRewriterFactory moduleRewriterFactory)
         {
             if (state == null)
             {
@@ -41,12 +44,17 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(attributeParser));
             }
+            if (moduleRewriterFactory == null)
+            {
+                throw new ArgumentNullException(nameof(moduleRewriterFactory));
+            }
 
             _state = state;
             StateManager = parserStateManager;
             _preprocessorFactory = preprocessorFactory;
             _attributeParser = attributeParser;
             _sourceCodeHandler = sourceCodeHandler;
+            _moduleRewriterFactory = moduleRewriterFactory;
         }
 
 
@@ -65,7 +73,7 @@ namespace Rubberduck.Parsing.VBA
             var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
 
             var preprocessor = _preprocessorFactory();
-            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, _sourceCodeHandler, _state.ProjectsProvider, rewriter);
+            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, _sourceCodeHandler, _state.ProjectsProvider, _moduleRewriterFactory, rewriter);
 
             parser.ParseFailure += (sender, e) =>
             {

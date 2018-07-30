@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -74,12 +75,16 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state),
                     new AliasDeclarations(state),
                 });
+            var moduleRewriterFactory = new ModuleRewriterFactory(
+                projectRepository,
+                sourceCodeHandler);
             var parseRunner = new SynchronousParseRunner(
                 state,
                 parserStateManager,
                 preprocessorFactory,
                 attributeParser,
-                sourceCodeHandler);
+                sourceCodeHandler,
+                moduleRewriterFactory);
             var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
                 state, 
                 parserStateManager, 

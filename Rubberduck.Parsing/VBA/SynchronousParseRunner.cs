@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -14,12 +15,14 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             Func<IVBAPreprocessor> preprocessorFactory,
             IAttributeParser attributeParser,
-            ISourceCodeHandler sourceCodeHandler) 
+            ISourceCodeHandler sourceCodeHandler,
+            IModuleRewriterFactory moduleRewriterFactory) 
         :base(state, 
             parserStateManager, 
             preprocessorFactory, 
             attributeParser,
-            sourceCodeHandler)
+            sourceCodeHandler,
+            moduleRewriterFactory)
         { }
 
 

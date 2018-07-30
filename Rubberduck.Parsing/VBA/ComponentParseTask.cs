@@ -29,6 +29,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
         private readonly IProjectsProvider _projectsProvider;
+        private readonly IModuleRewriterFactory _moduleRewriterFactory;
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
         public event EventHandler<ParseFailureArgs> ParseFailure;
@@ -36,10 +37,11 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsProvider projectsProvider, TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsProvider projectsProvider, IModuleRewriterFactory moduleRewriterFactory,TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
+            _moduleRewriterFactory = moduleRewriterFactory;
             _attributeParser = attributeParser;
             _sourceCodeHandler = sourceCodeHandler;
             _preprocessor = preprocessor;
@@ -64,14 +66,14 @@ namespace Rubberduck.Parsing.VBA
                 var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory(), _module);
 
                 var codePaneParseResults = ParseInternal(_module.ComponentName, tokenStream, new IParseTreeListener[]{ commentListener, annotationListener });
-                var codePaneRewriter = new CodePaneRewriter(_module, codePaneParseResults.tokenStream, _projectsProvider);
+                var codePaneRewriter = _moduleRewriterFactory.CodePaneRewriter(_module, codePaneParseResults.tokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var comments = QualifyAndUnionComments(_module, commentListener.Comments, commentListener.RemComments);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var attributesRewriter = new AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream, _projectsProvider, _sourceCodeHandler);
+                var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream);
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)

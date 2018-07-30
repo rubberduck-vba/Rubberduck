@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
@@ -17,12 +18,14 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager, 
             Func<IVBAPreprocessor> preprocessorFactory, 
             IAttributeParser attributeParser,
-            ISourceCodeHandler sourceCodeHandler) 
+            ISourceCodeHandler sourceCodeHandler,
+            IModuleRewriterFactory moduleRewriterFactory) 
         :base(state, 
             parserStateManager, 
             preprocessorFactory, 
             attributeParser, 
-            sourceCodeHandler)
+            sourceCodeHandler,
+            moduleRewriterFactory)
         { }
 
         public override void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)

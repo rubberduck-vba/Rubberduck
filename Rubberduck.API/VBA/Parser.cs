@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
@@ -108,12 +109,16 @@ namespace Rubberduck.API.VBA
                         //new RubberduckApiDeclarations(_state)
                     }
                 );
+            var moduleRewriterFactory = new ModuleRewriterFactory(
+                projectRepository,
+                sourceCodeHandler);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,
                 preprocessorFactory,
                 _attributeParser, 
-                sourceCodeHandler);
+                sourceCodeHandler,
+                moduleRewriterFactory);
             var declarationResolveRunner = new DeclarationResolveRunner(
                 _state, 
                 parserStateManager, 
