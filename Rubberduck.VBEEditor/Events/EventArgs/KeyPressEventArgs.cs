@@ -5,6 +5,7 @@ namespace Rubberduck.VBEditor.Events
 {
     public class KeyPressEventArgs
     {
+        // Note: This offers additional functionality over WindowsApi.KeyPressEventArgs by passing the WndProc arguments.
         public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, char character = default)
         {
             Hwnd = hwnd;

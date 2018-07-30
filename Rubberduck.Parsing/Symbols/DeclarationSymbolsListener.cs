@@ -144,7 +144,6 @@ namespace Rubberduck.Parsing.Symbols
                 if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
                 {
                     var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
-                    //Debug.Assert(msFormsLib != null);
                     if (msFormsLib != null)
                     {
                         // given a UserForm component, MSForms reference is in use and cannot be removed.

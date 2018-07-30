@@ -5,7 +5,7 @@ namespace Rubberduck.VBEditor.WindowsApi
 {
     public interface IWindowEventProvider : IDisposable
     {
-        event EventHandler<EventArgs> CaptionChanged;
+        event EventHandler CaptionChanged;
         event EventHandler<KeyPressEventArgs> KeyDown;
     }
 }

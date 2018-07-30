@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using NLog;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
     public abstract class SubclassingWindow : IDisposable
     {
-        public event EventHandler<EventArgs> ReleasingHandle;
+        protected static readonly Logger SubclassLogger = LogManager.GetCurrentClassLogger();
+        public event EventHandler ReleasingHandle;
         private readonly IntPtr _subclassId;
         private readonly SubClassCallback _wndProc;
         private bool _listening;

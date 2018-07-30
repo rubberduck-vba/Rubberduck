@@ -36,7 +36,7 @@ namespace Rubberduck.UI
         
         private void OnVbeSelectionChanged(object sender, EventArgs e)
         {
-            new Task(() =>
+            Task.Run(() =>
             {
                 using (var active = _vbe.ActiveCodePane)
                 {
@@ -47,7 +47,7 @@ namespace Rubberduck.UI
                     var eventArgs = new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(active));
                     DispatchSelectedDeclaration(eventArgs);
                 }
-            }).Start();
+            });
         }
 
         private void OnVbeFocusChanged(object sender, WindowChangedEventArgs e)
@@ -57,37 +57,37 @@ namespace Rubberduck.UI
                 switch (e.Hwnd.ToWindowType())
                 {
                     case WindowType.DesignerWindow:
-                        new Task(() =>
+                        Task.Run(() =>
                         {
                             using (var component = _vbe.SelectedVBComponent)
                             {
                                 DispatchSelectedDesignerDeclaration(component);
                             }                           
-                        }).Start();                  
+                        });                  
                         break;
                     case WindowType.CodePane:
                         //Caret changed in a code pane.
-                        new Task(() =>
+                        Task.Run(() =>
                         {
                             using (var pane = VBENativeServices.GetCodePaneFromHwnd(e.Hwnd))
                             {
                                 DispatchSelectedDeclaration(
                                     new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(pane)));
                             }
-                        }).Start();
+                        });
                         break;
                 }
             }
             else if (e.EventType == FocusType.ChildFocus)
             {
                 //Treeview selection changed in project window.
-                new Task(() =>
+                Task.Run(() =>
                 {
                     using (var component = _vbe.SelectedVBComponent)
                     {
                         DispatchSelectedProjectNodeDeclaration(component);
                     }
-                }).Start();
+                });
             }
         }
 

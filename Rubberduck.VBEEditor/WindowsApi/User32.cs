@@ -62,6 +62,8 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("user32.dll")]
         public static extern IntPtr GetFocus();
 
+        public const int MaxGetClassNameBufferSize = 255;
+
         /// <summary>
         /// Gets the underlying class name for a window handle.
         /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633582(v=vs.85).aspx

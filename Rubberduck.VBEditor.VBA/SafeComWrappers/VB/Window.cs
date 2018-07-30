@@ -35,13 +35,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     try
                     {
-                        _unknown = Marshal.GetIUnknownForObject(Target);
+                        try
+                        {
+                            _unknown = Marshal.GetIUnknownForObject(Target);
+                        }
+                        catch
+                        {
+                            // If GetIUnknownForObject throws us here, we're fine - it just means that the wrapper itself is invalid.
+                        }
                         Marshal.Release(_unknown);
                     }
                     catch
                     {
-                        // If GetIUnknownForObject threw us here, we're fine. If Marshal.Release threw us here, we're probably screwed
-                        // anyway, so we might as well just wait for the zombie process when the VBE tries to close.
+                        // If Marshal.Release threw us here, we're probably screwed anyway, so we might as well just wait for the
+                        // zombie process when the VBE tries to close.
+                        _logger.Warn("Marshal.Release failed for IWindow after a successful call to Marshal.GetIUnknownForObject. Process may hang on close.");
                     }
                 }
                 return _unknown;

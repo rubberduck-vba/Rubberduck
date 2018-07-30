@@ -30,13 +30,8 @@ namespace Rubberduck.VBEditor.Events
                 _threadId = User32.GetWindowThreadProcessId(mainWindowHwnd, IntPtr.Zero);
                 _eventHandle = User32.SetWinEventHook((uint)WinEvent.Min, (uint)WinEvent.Max, IntPtr.Zero, _eventProc, 0, _threadId, WinEventFlags.OutOfContext);
 
-                var subclasses = mainWindowHwnd.ChildWindows()
-                    .Where(hwnd => SubclassManager.IsSubclassable(hwnd.ToWindowType()));
-
-                foreach (var window in subclasses)
-                {
-                    Attach(window);
-                }
+                Subclasses.Subclass(mainWindowHwnd.ChildWindows()
+                    .Where(hwnd => SubclassManager.IsSubclassable(hwnd.ToWindowType())));
             }
         }
 
@@ -77,7 +72,7 @@ namespace Rubberduck.VBEditor.Events
         {
             if (hwnd == IntPtr.Zero) { return; }
 
-#if THIRSTY_DUCK
+#if THIRSTY_DUCK && DEBUG
             //This is an output window firehose, viewer discretion is advised.
             if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
 #endif
@@ -125,14 +120,14 @@ namespace Rubberduck.VBEditor.Events
             OnWindowFocusChange(sender, eventArgs);
         }
 
-        public static event EventHandler<EventArgs> SelectionChanged;
+        public static event EventHandler<SelectionChangedEventArgs> SelectionChanged;
         private static void OnSelectionChanged(IntPtr hwnd)
         {
             using (var pane = GetCodePaneFromHwnd(hwnd))
             {
                 if (pane != null)
                 {
-                    SelectionChanged?.Invoke(_vbe, new EventArgs());
+                    SelectionChanged?.Invoke(_vbe, new SelectionChangedEventArgs());
                 }
             }
         }
@@ -278,7 +273,7 @@ namespace Rubberduck.VBEditor.Events
 
         private static string ToClassName(this IntPtr hwnd)
         {
-            var name = new StringBuilder(255);
+            var name = new StringBuilder(User32.MaxGetClassNameBufferSize);
             User32.GetClassName(hwnd, name, name.Capacity);
             return name.ToString();
         }

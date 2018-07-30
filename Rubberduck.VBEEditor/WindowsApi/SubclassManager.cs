@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using Rubberduck.VBEditor.Events;
 
@@ -20,6 +21,12 @@ namespace Rubberduck.VBEditor.WindowsApi
         public bool IsSubclassed(IntPtr hwnd) => _subclasses.TryGetValue(hwnd, out _);
 
         public IEnumerable<SubclassingWindow> Subclasses => _subclasses.Values;
+
+        public void Subclass(IEnumerable<IntPtr> hwnds)
+        {
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed (lazy coder's for-each).
+            hwnds.Select(Subclass);
+        }
 
         public SubclassingWindow Subclass(IntPtr hwnd)
         {

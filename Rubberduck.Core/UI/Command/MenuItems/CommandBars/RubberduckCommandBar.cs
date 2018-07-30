@@ -57,10 +57,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
         {
-            //var caption = e.ActivePane != null
-            //    ? _formatter.Format(e.ActivePane, e.Declaration)
-            //    : _formatter.Format(e.Declaration, e.MultipleControlsSelected);
-           
             var caption = _formatter.Format(e.Declaration, e.MultipleControlsSelected);
             //if (string.IsNullOrEmpty(caption) && e.VBComponent != null)
             //{

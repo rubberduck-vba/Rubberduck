@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -7,11 +8,16 @@ namespace Rubberduck.VBEditor.WindowsApi
 {
     //Stub for code pane replacement.  :-)
     internal class CodePaneSubclass : FocusSource, IWindowEventProvider
-    {
-        public event EventHandler<EventArgs> CaptionChanged;
+    {       
+        public event EventHandler CaptionChanged;
         public event EventHandler<KeyPressEventArgs> KeyDown;
         private ICodePane _codePane;
 
+        /// <summary>
+        /// The ICodePane associated with the message pump (if it has successfully been found).
+        /// WARNING: Internal callers should NOT call *anything* on this object. Remember, you're in it's message pump here.
+        /// External callers should NOT call .Dispose() on this object. That's the CodePaneSubclass's responsibility.
+        /// </summary>
         public ICodePane CodePane
         {
             get => _codePane;
@@ -26,6 +32,11 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
         }
 
+        /// <summary>
+        /// Returns true if the Subclass is:
+        /// 1.) Holding an ICodePane reference
+        /// 2.) The held reference is pointed to a valid object (i.e. it has not been recycled). 
+        /// </summary>
         public bool HasValidCodePane
         {
             get
@@ -50,6 +61,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                     // All paths leading to here mean that we need to ditch the held reference, and there
                     // isn't jack all that we can do about it.
                     _codePane = null;
+                    SubclassLogger.Warn($"{nameof(CodePaneSubclass)} failed to dispose of a held {nameof(ICodePane)} reference.");
                 }
                 return false;
             }
