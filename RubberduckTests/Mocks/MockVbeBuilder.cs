@@ -35,6 +35,22 @@ namespace RubberduckTests.Mocks
         public static readonly string LibraryPathAdoDb = @"C:\Program Files\Common Files\System\ado\msado15.dll";
         public static readonly string LibraryPathAdoRecordset = @"C:\Program Files\Common Files\System\ado\msador15.dll";
 
+        public static readonly Dictionary<string, string> LibraryPaths = new Dictionary<string, string>
+        {
+            ["VBA"] = LibraryPathVBA,
+            ["Excel"] = LibraryPathMsExcel,
+            ["Office"] = LibraryPathMsOffice,
+            ["stdole"] = LibraryPathStdOle,
+            ["MSForms"] = LibraryPathMsForms,
+            ["VBIDE"] = LibraryPathVBIDE,
+            ["Scripting"] = LibraryPathScripting,
+            ["VBScript_RegExp_55"] = LibraryPathRegex,
+            ["MSXML2"] = LibraryPathMsXml,
+            ["SHDocVw"] = LibraryPathShDoc,
+            ["ADODB"] = LibraryPathAdoDb,
+            ["ADOR"] = LibraryPathAdoRecordset
+        };
+
         //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
 

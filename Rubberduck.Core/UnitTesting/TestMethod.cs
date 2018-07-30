@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI;
@@ -75,6 +76,17 @@ namespace Rubberduck.UnitTesting
         {
             get =>_result;
             set { _result = value; OnPropertyChanged(); }
+        }
+
+        public TestCategory Category
+        {
+            get
+            {
+                var testMethodAnnotation = (TestMethodAnnotation) Declaration.Annotations
+                    .First(annotation => annotation.AnnotationType == AnnotationType.TestMethod);
+
+                return new TestCategory(testMethodAnnotation.Category);
+            }
         }
 
         private void HandleAssertCompleted(object sender, AssertCompletedEventArgs e)
