@@ -121,19 +121,6 @@ namespace RubberduckTests.Mocks
             return parser.State;
         }
 
-        private static SynchronousParseCoordinator CreateWithLibraries(IVBE vbe, string serializedDeclarationsPath = null, IEnumerable<string> testLibraries = null)
-        {
-            var parser = Create(vbe, serializedDeclarationsPath);
-            if (testLibraries != null)
-            {
-                foreach (var lib in testLibraries)
-                {
-                    parser.State.AddTestLibrary(lib);
-                }
-            }
-            return parser;
-        }
-
         private static readonly HashSet<DeclarationType> ProceduralTypes =
             new HashSet<DeclarationType>(new[]
             {
