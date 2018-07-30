@@ -1291,4 +1291,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>By category</value>
+  </data>
 </root>
