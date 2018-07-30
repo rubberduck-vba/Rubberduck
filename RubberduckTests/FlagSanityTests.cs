@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace RubberduckTests
 {
@@ -22,7 +22,7 @@ namespace RubberduckTests
         [Category("Flag Enumerations")]
         public void VBENativeServices_WindowType_HasNoOverlap()
         {
-            var values = TypedEnumValues<VBENativeServices.WindowType>();
+            var values = TypedEnumValues<WindowType>();
             var distinct = values.Distinct().ToList();
 
             Assert.AreEqual(values.Count, distinct.Count);
