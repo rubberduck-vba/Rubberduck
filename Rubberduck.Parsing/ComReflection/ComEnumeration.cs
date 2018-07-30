@@ -11,12 +11,12 @@ namespace Rubberduck.Parsing.ComReflection
 {
     public class ComEnumeration : ComType
     {
-        public List<ComEnumerationMember> Members { get; } 
+        public List<ComEnumerationMember> Members { get; }
 
         public ComEnumeration(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
-        {            
+        {
             Members = new List<ComEnumerationMember>();
-            Type = DeclarationType.Enumeration;          
+            Type = DeclarationType.Enumeration;
             GetEnumerationMembers(info, attrib);
             ComProject.KnownEnumerations.TryAdd(Guid, this);
         }
@@ -32,7 +32,7 @@ namespace Rubberduck.Parsing.ComReflection
                     var desc = Marshal.PtrToStructure<VARDESC>(varPtr);
                     Members.Add(new ComEnumerationMember(this, info, desc));
                 }
-            }           
+            }
         }
     }
 }

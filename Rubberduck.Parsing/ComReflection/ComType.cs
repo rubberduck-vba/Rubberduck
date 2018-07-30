@@ -32,7 +32,7 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsPreDeclared { get; }
         public bool IsHidden { get; }
         public bool IsRestricted { get; }
-        
+
         protected ComType(IComBase parent, ITypeInfo info, TYPEATTR attrib)
             : base(parent, info)
         {
