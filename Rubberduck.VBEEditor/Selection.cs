@@ -27,11 +27,11 @@ namespace Rubberduck.VBEditor
         public Selection ToOneBased() =>
             new Selection(StartLine + 1, StartColumn + 1, EndLine + 1, EndColumn + 1);
 
-        public Selection ShiftRight() =>
-            new Selection(StartLine, StartColumn + 1, EndLine, EndColumn + 1);
+        public Selection ShiftRight(int positions = 1) =>
+            new Selection(StartLine, StartColumn + positions, EndLine, EndColumn + positions);
 
-        public Selection ShiftLeft() =>
-            new Selection(StartLine, Math.Max(1, StartColumn - 1), EndLine, Math.Max(1, StartColumn - 1));
+        public Selection ShiftLeft(int positions = 1) =>
+            new Selection(StartLine, Math.Max(1, StartColumn - positions), EndLine, Math.Max(1, StartColumn - positions));
 
         public bool IsEmpty()
         {

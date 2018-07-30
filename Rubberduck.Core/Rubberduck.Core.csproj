@@ -309,6 +309,8 @@
     <Compile Include="AutoComplete\AutoCompleteWithBlock.cs" />
     <Compile Include="AutoComplete\BlockCompletion\BlockCompletion.cs" />
     <Compile Include="AutoComplete\BlockCompletion\BlockCompletionService.cs" />
+    <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPair.cs" />
+    <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPairCompletionService.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\AggregationLevel.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetric.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />
@@ -923,7 +925,6 @@
     <EmbeddedResource Include="UI\Controls\vba.xshd" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AutoComplete\SelfClosingPairCompletion\" />
     <Folder Include="Properties\DataSources\" />
   </ItemGroup>
   <ItemGroup>
