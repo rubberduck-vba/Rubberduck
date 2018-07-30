@@ -101,8 +101,9 @@ namespace Rubberduck.Parsing.ComReflection
 
         public List<Declaration> LoadDeclarationsFromXml()
         {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
-            var file = Path.Combine(path, string.Format("{0}.{1}.{2}", _referenceName, _referenceMajor, _referenceMinor) + ".xml");
+            var path = _serializedDeclarationsPath;
+            var filename = $"{_referenceName}.{_referenceMajor}.{_referenceMinor}.xml";
+            var file = Path.Combine(path, filename);
             var reader = new XmlPersistableDeclarations();
             var deserialized = reader.Load(file);
 

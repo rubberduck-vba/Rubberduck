@@ -515,6 +515,7 @@
     <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
+    <Compile Include="UnitTesting\TestCategory.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
