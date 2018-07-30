@@ -113,37 +113,14 @@ namespace RubberduckTests.Mocks
                 parserStateManager,
                 true);
         }
-        
-        public static RubberduckParserState CreateAndParse(IVBE vbe, IInspectionListener listener, IEnumerable<string> testLibraries = null)
-        {
-            var parser = CreateWithLibraries(vbe, testLibraries: testLibraries);
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            { Assert.Inconclusive("Parser Error"); }
 
-            return parser.State;
-        }
-
-        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null, IEnumerable<string> testLibraries = null)
+        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
         {
-            var parser = CreateWithLibraries(vbe, serializedDeclarationsPath, testLibraries);
+            var parser = Create(vbe, serializedDeclarationsPath);
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
 
             return parser.State;
-        }
-
-        private static ParseCoordinator CreateWithLibraries(IVBE vbe, string serializedDeclarationsPath = null, IEnumerable<string> testLibraries = null)
-        {
-            var parser = Create(vbe, serializedDeclarationsPath);
-            if (testLibraries != null)
-            {
-                foreach (var lib in testLibraries)
-                {
-                    parser.State.AddTestLibrary(lib);
-                }
-            }
-            return parser;
         }
 
         private static readonly HashSet<DeclarationType> ProceduralTypes =
@@ -152,16 +129,6 @@ namespace RubberduckTests.Mocks
                 DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet,
                 DeclarationType.PropertyLet, DeclarationType.PropertySet
             });
-
-        public static void AddTestLibrary(this RubberduckParserState state, string serialized)
-        {
-            var reader = new XmlPersistableDeclarations();
-            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            basePath = Directory.GetParent(basePath).Parent.FullName;
-            var path = Path.Combine(basePath, "Testfiles\\Resolver", serialized);
-            var deserialized = reader.Load(path);
-            AddTestLibrary(state, deserialized);
-        }
 
         // ReSharper disable once UnusedMember.Global; used by RubberduckWeb to load serialized declarations.
         public static void AddTestLibrary(this RubberduckParserState state, Stream stream)

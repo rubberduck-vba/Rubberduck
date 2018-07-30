@@ -601,7 +601,7 @@ complexType :
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
 //Statement labels can only appear at the start of a line.
-statementLabelDefinition : {_input.La(-1) == NEWLINE}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
+statementLabelDefinition : {_input.La(-1) == NEWLINE || _input.La(-1) == LINE_CONTINUATION}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
 identifierStatementLabel : legalLabelIdentifier whiteSpace? COLON;
 standaloneLineNumberLabel : 
     lineNumberLabel whiteSpace? COLON
@@ -895,10 +895,16 @@ endOfLine :
     | whiteSpace? commentOrAnnotation
 ;
 
-// we expect endOfStatement to consume all trailing whitespace
+// We expect endOfStatement to consume all trailing whitespace blank statements.
+// We have to special case the end of file since infiniftly mant EOF tokens can be consumed at the end of file.
 endOfStatement :
-    (endOfLine whiteSpace? | (whiteSpace? COLON whiteSpace?))+
-    | whiteSpace? EOF
+    individualNonEOFEndOfStatement+ | whiteSpace? EOF
+;
+
+// we expect endOfStatement to consume all trailing whitespace
+individualNonEOFEndOfStatement :
+	  endOfLine whiteSpace? 
+	| whiteSpace? COLON whiteSpace?
 ;
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.

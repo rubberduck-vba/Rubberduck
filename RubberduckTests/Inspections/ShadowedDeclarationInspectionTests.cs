@@ -134,10 +134,10 @@ End Property";
             foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
                 var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, ProjectProtection.Unprotected)
-                    .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, "")
+                    .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, string.Empty)
                     .Build();
                 builder.AddProject(referencedProject);
-                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, "");
+                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, string.Empty, 0, 0);
             }
 
             var userProject = userProjectBuilder.Build();
@@ -5046,7 +5046,7 @@ End Function");
             builder.AddProject(referencedProject);
             var userProject = builder.ProjectBuilder("Baz", ProjectProtection.Unprotected)
                 .AddComponent("Qux", ComponentType.ClassModule, $"Public Event E ({sameName} As String)")
-                .AddReference("Foo", "")
+                .AddReference("Foo", string.Empty, 0, 0)
                 .Build();
             builder.AddProject(userProject);
 
@@ -5125,7 +5125,7 @@ End Sub";
             builder.AddProject(referencedProject);
             var userProject = builder.ProjectBuilder("Baz", ProjectProtection.Unprotected)
                 .AddComponent("Qux", ComponentType.StandardModule, ignoredDeclarationCode)
-                .AddReference("Foo", string.Empty)
+                .AddReference("Foo", string.Empty, 0, 0)
                 .Build();
             builder.AddProject(userProject);
 
@@ -5198,7 +5198,7 @@ End Sub";
             }
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty).Build();
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;
@@ -5233,7 +5233,7 @@ End Sub";
             referencedProjectBuilder.AddComponent(referencedComponentName, referencedComponentComponentType, referencedComponentCode);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty).Build();
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;

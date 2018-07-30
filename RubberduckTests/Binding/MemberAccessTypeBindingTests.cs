@@ -106,7 +106,7 @@ namespace RubberduckTests.Binding
 
             var enclosingProject = builder
                 .ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected)
-                .AddReference(referencedProjectName, ReferencedProjectFilepath)
+                .AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0)
                 .AddComponent(TestClassName, ComponentType.ClassModule, code)
                 .Build();
             builder.AddProject(enclosingProject);

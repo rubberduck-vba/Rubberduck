@@ -121,7 +121,7 @@ namespace Rubberduck.Resources.About {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan.
+        ///   Looks up a localized string similar to © Copyright 2014-2018 Rubberduck project contributors.
         /// </summary>
         public static string AboutWindow_Copyright {
             get {
