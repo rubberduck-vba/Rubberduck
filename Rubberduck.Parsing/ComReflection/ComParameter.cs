@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using PARAMFLAG = System.Runtime.InteropServices.ComTypes.PARAMFLAG;
@@ -39,12 +40,13 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsReturnValue { get; }
         public bool IsParamArray { get; set; }
         public object DefaultValue { get; }
+        public bool HasDefaultValue => DefaultValue != null;
 
         public string DefaultAsEnum
         {
             get
             {
-                if (!_typeName.IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(_typeName.EnumGuid, out ComEnumeration enumType))
+                if (!_typeName.IsEnumMember || !HasDefaultValue || !ComProject.KnownEnumerations.TryGetValue(_typeName.EnumGuid, out ComEnumeration enumType))
                 {
                     return string.Empty;
                 }
@@ -114,7 +116,7 @@ namespace Rubberduck.Parsing.ComReflection
                     using (DisposalActionContainer.Create(attribPtr, refTypeInfo.ReleaseTypeAttr))
                     {
                         var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
-                        var type = new ComDocumentation(refTypeInfo, -1).Name;
+                        var type = new ComDocumentation(refTypeInfo, ComDocumentation.LibraryIndex).Name;
                         if (attribs.typekind == TYPEKIND.TKIND_ENUM)
                         {
                             _typeName = new ComTypeName(Project, type, attribs.guid, Guid.Empty);
@@ -131,7 +133,7 @@ namespace Rubberduck.Parsing.ComReflection
                 }
                 catch (COMException)
                 {
-                    _typeName = new ComTypeName(Project, "Object");
+                    _typeName = new ComTypeName(Project, Tokens.Object);
                 }
             }
             else if (vt == VarEnum.VT_SAFEARRAY || vt == VarEnum.VT_CARRAY || vt.HasFlag(VarEnum.VT_ARRAY))
@@ -142,11 +144,11 @@ namespace Rubberduck.Parsing.ComReflection
             }
             else if (vt == VarEnum.VT_HRESULT)
             {
-                _typeName = new ComTypeName(Project, "Long");
+                _typeName = new ComTypeName(Project, Tokens.Long);
             }
             else
             {
-                _typeName = new ComTypeName(Project, (ComVariant.TypeNames.TryGetValue(vt, out string result)) ? result : "Object");
+                _typeName = new ComTypeName(Project, (ComVariant.TypeNames.TryGetValue(vt, out string result)) ? result : Tokens.Object);
             }
         }
     }

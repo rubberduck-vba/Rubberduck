@@ -69,7 +69,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             var refCount = e.Declaration?.References.Count() ?? 0;
             var description = e.Declaration?.DescriptionString ?? string.Empty;
-            SetContextSelectionCaption(caption, refCount, description);
+            //& renders the next character as if it was an accelerator.
+            SetContextSelectionCaption(caption?.Replace("&", "&&"), refCount, description);
             EvaluateCanExecute(_parser.State, e.Declaration);
         }
 

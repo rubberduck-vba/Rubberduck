@@ -344,7 +344,7 @@
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\ConstantDeclaration.cs" />
+    <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="TokenExtensions.cs" />

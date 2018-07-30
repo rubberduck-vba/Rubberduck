@@ -4,6 +4,8 @@ namespace Rubberduck.Parsing.ComReflection
 {
     public class ComDocumentation
     {
+        public const int LibraryIndex = -1;
+
         public string Name { get; }
         public string DocString { get; }
         public string HelpFile { get; }
