@@ -12,6 +12,11 @@ namespace Rubberduck.VBEditor.WindowsApi
         private static readonly object ThreadLock = new object();
         private readonly ConcurrentDictionary<IntPtr, SubclassingWindow> _subclasses = new ConcurrentDictionary<IntPtr, SubclassingWindow>();
 
+        public static bool IsSubclassable(WindowType type)
+        {
+            return type == WindowType.CodePane || type == WindowType.DesignerWindow;
+        }
+
         public bool IsSubclassed(IntPtr hwnd) => _subclasses.TryGetValue(hwnd, out _);
 
         public IEnumerable<SubclassingWindow> Subclasses => _subclasses.Values;
@@ -19,7 +24,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         public SubclassingWindow Subclass(IntPtr hwnd)
         {
             var windowType = hwnd.ToWindowType();
-            if (windowType == VBENativeServices.WindowType.Indeterminate)
+            if (windowType == WindowType.Indeterminate)
             {
                 // Not the droids we're looking for.
                 return null;
@@ -30,9 +35,10 @@ namespace Rubberduck.VBEditor.WindowsApi
                 return existing;
             }
 
+            // Any additional cases also need to be added to IsSubclassable above.
             switch (windowType)
             {
-                case VBENativeServices.WindowType.CodePane:
+                case WindowType.CodePane:
                     lock (ThreadLock)
                     {
                         var codePane = new CodePaneSubclass(hwnd, null);
@@ -42,7 +48,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                         SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as CodePane.");
                         return codePane;
                     }
-                case VBENativeServices.WindowType.DesignerWindow:
+                case WindowType.DesignerWindow:
                     lock (ThreadLock)
                     {
                         var designer = new DesignerWindowSubclass(hwnd);

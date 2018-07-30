@@ -31,7 +31,7 @@ namespace Rubberduck.VBEditor.Events
                 _eventHandle = User32.SetWinEventHook((uint)WinEvent.Min, (uint)WinEvent.Max, IntPtr.Zero, _eventProc, 0, _threadId, WinEventFlags.OutOfContext);
 
                 var subclasses = mainWindowHwnd.ChildWindows()
-                    .Where(hwnd => hwnd.ToWindowType() != WindowType.Indeterminate);
+                    .Where(hwnd => SubclassManager.IsSubclassable(hwnd.ToWindowType()));
 
                 foreach (var window in subclasses)
                 {
@@ -99,7 +99,8 @@ namespace Rubberduck.VBEditor.Events
             {
                 OnSelectionChanged(hwnd);             
             }
-            else if (idObject == (int)ObjId.Window && eventType == (uint)WinEvent.ObjectCreate)
+            else if (SubclassManager.IsSubclassable(windowType) && (idObject == (int)ObjId.Window && eventType == (uint)WinEvent.ObjectCreate) ||
+                     !Subclasses.IsSubclassed(hwnd))
             {
                 Attach(hwnd);
             }
@@ -254,21 +255,6 @@ namespace Rubberduck.VBEditor.Events
         {
             User32.GetWindowThreadProcessId(User32.GetForegroundWindow(), out var hThread);
             return (IntPtr)hThread == (IntPtr)_threadId;
-        }
-
-        [Flags]
-        public enum WindowType : uint
-        {
-            Indeterminate = 0u,
-            Project = 1u,
-            CodePane = 1u << 2 | VbaWindow,
-            DesignerWindow = 1u << 3 | VbaWindow,
-            Immediate = 1u << 4 | VbaWindow,
-            ObjectBrowser = 1u << 5 | VbaWindow,
-            Locals = 1u << 6 | VbaWindow,
-            Watches = 1u << 7 | VbaWindow,
-            IntelliSense = 1u << 8,
-            VbaWindow = 1u << 31
         }
 
         public static WindowType ToWindowType(this IntPtr hwnd)

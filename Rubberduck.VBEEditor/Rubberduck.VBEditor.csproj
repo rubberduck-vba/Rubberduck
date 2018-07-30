@@ -185,6 +185,7 @@
     <Compile Include="WindowsApi\SubclassingWindow.cs" />
     <Compile Include="WindowsApi\User32.cs" />
     <Compile Include="WindowsApi\WindowsHook.cs" />
+    <Compile Include="WindowsApi\WindowType.cs" />
     <Compile Include="WindowsApi\WinEvent.cs" />
     <Compile Include="WindowsApi\WinEventFlags.cs" />
     <Compile Include="WindowsApi\WM.cs" />

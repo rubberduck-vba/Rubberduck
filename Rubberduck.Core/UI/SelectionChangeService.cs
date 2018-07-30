@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.UI
 {
@@ -35,11 +36,6 @@ namespace Rubberduck.UI
         
         private void OnVbeSelectionChanged(object sender, EventArgs e)
         {
-            //if (e.CodePane == null || e.CodePane.IsWrappingNullReference)
-            //{
-            //    return;
-            //}
-
             new Task(() =>
             {
                 //TODO
@@ -54,15 +50,10 @@ namespace Rubberduck.UI
             {
                 switch (e.Hwnd.ToWindowType())
                 {
-                    case VBENativeServices.WindowType.DesignerWindow:
-                        //Designer or control on designer form selected.
-                        //if (e.Window == null || e.Window.IsWrappingNullReference || e.Window.Type != WindowKind.Designer)
-                        //{
-                        //    return;
-                        //}
+                    case WindowType.DesignerWindow:
                         new Task(() => DispatchSelectedDesignerDeclaration(_vbe.SelectedVBComponent)).Start();                  
                         break;
-                    case VBENativeServices.WindowType.CodePane:
+                    case WindowType.CodePane:
                         //Caret changed in a code pane.
                         new Task(() =>
                         {
@@ -118,7 +109,6 @@ namespace Rubberduck.UI
                                               && d.ProjectId == component.ParentProject.ProjectId
                                               && d.ParentDeclaration.IdentifierName == component.Name);
 
-                //DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, control, component));
                 DispatchSelectedDeclaration(new DeclarationChangedEventArgs(control));
                 return;
             }
@@ -127,7 +117,6 @@ namespace Rubberduck.UI
                     .SingleOrDefault(d => d.DeclarationType.HasFlag(DeclarationType.ClassModule)
                                           && d.ProjectId == component.ParentProject.ProjectId);
 
-            //DispatchSelectedDeclaration(new DeclarationChangedEventArgs(null, form, component, selectedCount > 1));
             DispatchSelectedDeclaration(new DeclarationChangedEventArgs(form, selectedCount > 1));
         }
 
@@ -183,19 +172,8 @@ namespace Rubberduck.UI
 
     public class DeclarationChangedEventArgs : EventArgs
     {
-        //public ICodePane ActivePane { get; private set; }
-        public Declaration Declaration { get; private set; }
-        // ReSharper disable once InconsistentNaming
-        //public IVBComponent VBComponent { get; private set; }
-        public bool MultipleControlsSelected { get; private set; }
-
-        //public DeclarationChangedEventArgs(ICodePane pane, Declaration declaration, IVBComponent component = null, bool multipleControls = false)
-        //{
-        //    ActivePane = pane;
-        //    Declaration = declaration;
-        //    VBComponent = component;
-        //    MultipleControlsSelected = multipleControls;
-        //}
+        public Declaration Declaration { get; }
+        public bool MultipleControlsSelected { get; }
 
         public DeclarationChangedEventArgs(Declaration declaration, bool multipleControls = false)
         {
