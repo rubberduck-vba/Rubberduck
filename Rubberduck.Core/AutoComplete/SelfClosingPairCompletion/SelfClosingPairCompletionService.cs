@@ -9,7 +9,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 {
     public class SelfClosingPairCompletionService
     {
-        public (string, Selection) Execute(SelfClosingPair pair, (string, Selection) original, char input)
+        public (string Code, Selection CaretPosition) Execute(SelfClosingPair pair, (string, Selection) original, char input)
         {
             if (input == pair.OpeningChar)
             {
@@ -28,8 +28,8 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         private (string, Selection) HandleOpeningChar(SelfClosingPair pair, (string Code, Selection Position) original)
         {
             var nextPosition = original.Position.ShiftRight();
-
-            return (original.Code.Insert(original.Position.StartColumn, pair.OpeningChar.ToString()), nextPosition);
+            var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
+            return (original.Code.Insert(original.Position.StartColumn, autoCode), nextPosition);
         }
 
         private (string, Selection) HandleClosingChar(SelfClosingPair pair, (string Code, Selection Position) original)
