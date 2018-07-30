@@ -6,31 +6,64 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter.RewriterInfo;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Rewriter
 {
     public class ModuleRewriter : IModuleRewriter
     {
-        protected ICodeModule Module { get; }
+        protected QualifiedModuleName Module { get; }
+        protected IProjectsProvider ProjectsProvider { get; }
         protected TokenStreamRewriter Rewriter { get; }
 
-        public ModuleRewriter(ICodeModule module, TokenStreamRewriter rewriter)
+        public ModuleRewriter(QualifiedModuleName module, ITokenStream tokenStream, IProjectsProvider projectsProvider)
         {
             Module = module;
-            Rewriter = rewriter;
+            Rewriter = new TokenStreamRewriter(tokenStream);
+            ProjectsProvider = projectsProvider;
         }
 
-        public virtual bool IsDirty => Rewriter.GetText() != Module.Content();
+        /// <summary>
+        /// Returns the code module of the module identified by Module.
+        /// </summary>
+        /// <remarks>
+        /// The result must be disposed by the caller.
+        /// </remarks>
+        protected ICodeModule CodeModule()
+        {
+            var component = ProjectsProvider.Component(Module);
+            return component?.CodeModule;
+        }
+
+
+        public virtual bool IsDirty
+        {
+            get
+            {
+                using (var codeModule = CodeModule())
+                {
+                    return codeModule == null || codeModule.Content() != Rewriter.GetText();
+                }
+            }
+        }
+
         public ITokenStream TokenStream => Rewriter.TokenStream;
 
         public virtual void Rewrite()
         {
-            if (!IsDirty) { return; }
+            if (!IsDirty)
+            {
+                return;
+            }
 
-            Module.Clear();
-            var content = Rewriter.GetText();
-            Module.InsertLines(1, content);
+            using (var codeModule = CodeModule())
+            {
+                codeModule.Clear();
+                var newContent = Rewriter.GetText();
+                codeModule.InsertLines(1, newContent);
+            }
         }
 
         private static readonly IDictionary<Type, IRewriterInfoFinder> Finders =

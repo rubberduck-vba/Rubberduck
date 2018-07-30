@@ -12,10 +12,8 @@ using Rubberduck.VBEditor;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks

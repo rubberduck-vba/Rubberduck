@@ -182,13 +182,14 @@
     <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="UIContext\UiDispatcher.cs" />
+    <Compile Include="Rewriter\IModuleRewriterFactory.cs" />
     <Compile Include="VBA\RepositoryProjectManager.cs" />
     <Compile Include="VBA\ParsePass.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
-    <Compile Include="Rewriter\MemberAttributesRewriter.cs" />
+    <Compile Include="Rewriter\AttributesRewriter.cs" />
     <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\IRewriterInfoFinder.cs" />
@@ -442,6 +443,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="VBA\Parsing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

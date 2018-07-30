@@ -8,6 +8,8 @@ using Moq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -21,11 +23,14 @@ namespace RubberduckTests.PostProcessing
         [Category("TokenStreamRewriter")]
         public void RewriteClearsEntireModule()
         {
-            var module = new Mock<ICodeModule>();
-            module.Setup(m => m.Clear());
+            var codeModule = new Mock<ICodeModule>();
+            codeModule.Setup(m => m.Clear());
 
-            var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
-            var sut = new ModuleRewriter(module.Object, rewriter);
+            var module = new QualifiedModuleName("TestProject", string.Empty,"TestModule");
+            var projectsProvider = TestProvider(module, codeModule.Object);
+            var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
+
+            var sut = new ModuleRewriter(module, tokenStream, projectsProvider);
             sut.InsertAfter(0, "test");
 
             if (!sut.IsDirty)
@@ -34,22 +39,25 @@ namespace RubberduckTests.PostProcessing
             }
             sut.Rewrite();
 
-            module.Verify(m => m.Clear());
+            codeModule.Verify(m => m.Clear());
         }
 
         [Test]
         [Category("TokenStreamRewriter")]
         public void RewriteDoesNotRewriteIfNotDirty()
         {
-            var module = new Mock<ICodeModule>();
-            module.Setup(m => m.Content()).Returns(string.Empty);
-            module.Setup(m => m.Clear());
+            var codeModule = new Mock<ICodeModule>();
+            codeModule.Setup(m => m.Content()).Returns(string.Empty);
+            codeModule.Setup(m => m.Clear());
 
-            var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
-            var sut = new ModuleRewriter(module.Object, rewriter);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            var projectsProvider = TestProvider(module, codeModule.Object);
+            var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
+
+            var sut = new ModuleRewriter(module, tokenStream, projectsProvider);
 
             sut.Rewrite();
-            module.Verify(m => m.Clear(), Times.Never);
+            codeModule.Verify(m => m.Clear(), Times.Never);
         }
 
         [Test]
@@ -869,6 +877,16 @@ Private Const foo _
 
                 Assert.AreEqual(expected, rewriter.GetText());
             }
+        }
+
+        private IProjectsProvider TestProvider(QualifiedModuleName module, ICodeModule testModule)
+        {
+            var component = new Mock<IVBComponent>();
+            component.Setup(c => c.CodeModule).Returns(testModule);
+            var provider = new Mock<IProjectsProvider>();
+            provider.Setup(p => p.Component(It.IsAny<QualifiedModuleName>()))
+                .Returns<QualifiedModuleName>(qmn => qmn.Equals(module) ? component.Object : null);
+            return provider.Object;
         }
     }
 }

@@ -10,6 +10,8 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
@@ -18,7 +20,6 @@ namespace Rubberduck.Parsing.VBA
     {
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
-        public ITokenStream TokenStream { get; private set; }
         public IModuleRewriter ModuleRewriter { get; private set; }
         public IModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
@@ -36,7 +37,6 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = declarations;
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
 
             ModuleContentHashCode = 0;
@@ -53,7 +53,6 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = state;
             ModuleContentHashCode = 0;
@@ -69,7 +68,6 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = ParserState.Error;
             ModuleContentHashCode = 0;
@@ -85,7 +83,6 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = ParserState.None;
             ModuleContentHashCode = 0;
@@ -97,11 +94,9 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetTokenStream(ICodeModule module, ITokenStream tokenStream)
+        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, ITokenStream tokenStream, IProjectsProvider projectsProvider)
         {
-            TokenStream = tokenStream;
-            var tokenStreamRewriter = new TokenStreamRewriter(tokenStream);
-            ModuleRewriter = new ModuleRewriter(module, tokenStreamRewriter);
+            ModuleRewriter = new ModuleRewriter(module, tokenStream, projectsProvider);
             return this;
         }
 

@@ -778,7 +778,7 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
         {
-            _moduleStates[module].SetTokenStream(ProjectsProvider.Component(module).CodeModule, stream);
+            _moduleStates[module].SetCodePaneRewriter(module, stream, _projectRepository);
             _moduleStates[module].SetModuleContentHashCode(GetModuleContentHash(module));
         }
 

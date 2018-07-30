@@ -2,6 +2,7 @@ using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -18,27 +19,30 @@ namespace Rubberduck.Parsing.Rewriter
     /// <li>DO use this rewriter to add/remove hidden <c>Attribute</c> instructions to/from a module.</li>
     /// </ul>
     /// </remarks>
-    public class MemberAttributesRewriter : ModuleRewriter
+    public class AttributesRewriter : ModuleRewriter
     {
         private readonly ISourceCodeHandler _sourceCodeHandler;
 
-        public MemberAttributesRewriter(ISourceCodeHandler sourceCodeHandler, ICodeModule module, TokenStreamRewriter rewriter)
-            : base(module, rewriter)
+        public AttributesRewriter(QualifiedModuleName module, ITokenStream tokenStream, IProjectsProvider projectsProvider, ISourceCodeHandler sourceCodeHandler)
+            : base(module, tokenStream, projectsProvider)
         {
             _sourceCodeHandler = sourceCodeHandler;
         }
 
         public override void Rewrite()
         {
-            if(!IsDirty) { return; }
-
-            var component = Module.Parent;
-            if (component.Type == ComponentType.Document)
+            if (!IsDirty)
+            {
+                return;
+            }
+            
+            if (Module.ComponentType == ComponentType.Document)
             {
                 // can't re-import a document module
                 return;
             }
 
+            var component = ProjectsProvider.Component(Module);
             var file = _sourceCodeHandler.Export(component);
 
             var content = Rewriter.GetText();

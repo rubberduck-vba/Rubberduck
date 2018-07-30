@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.VBA
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var rewriter = new MemberAttributesRewriter(_sourceCodeHandler, _projectsProvider.Component(_module).CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
+                var rewriter = new AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream, _projectsProvider, _sourceCodeHandler);
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
