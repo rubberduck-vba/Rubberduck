@@ -38,9 +38,15 @@ namespace Rubberduck.UI
         {
             new Task(() =>
             {
-                //TODO
-                var eventArgs = new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(_vbe.ActiveCodePane));
-                DispatchSelectedDeclaration(eventArgs);
+                using (var active = _vbe.ActiveCodePane)
+                {
+                    if (active == null)
+                    {
+                        return;
+                    }
+                    var eventArgs = new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(active));
+                    DispatchSelectedDeclaration(eventArgs);
+                }
             }).Start();
         }
 
@@ -51,7 +57,13 @@ namespace Rubberduck.UI
                 switch (e.Hwnd.ToWindowType())
                 {
                     case WindowType.DesignerWindow:
-                        new Task(() => DispatchSelectedDesignerDeclaration(_vbe.SelectedVBComponent)).Start();                  
+                        new Task(() =>
+                        {
+                            using (var component = _vbe.SelectedVBComponent)
+                            {
+                                DispatchSelectedDesignerDeclaration(component);
+                            }                           
+                        }).Start();                  
                         break;
                     case WindowType.CodePane:
                         //Caret changed in a code pane.
@@ -69,7 +81,13 @@ namespace Rubberduck.UI
             else if (e.EventType == FocusType.ChildFocus)
             {
                 //Treeview selection changed in project window.
-                new Task(() => DispatchSelectedProjectNodeDeclaration(_vbe.SelectedVBComponent)).Start();
+                new Task(() =>
+                {
+                    using (var component = _vbe.SelectedVBComponent)
+                    {
+                        DispatchSelectedProjectNodeDeclaration(component);
+                    }
+                }).Start();
             }
         }
 
@@ -99,25 +117,29 @@ namespace Rubberduck.UI
                 return;
             }
 
-            var selectedCount = component.SelectedControls.Count;
-            if (selectedCount == 1)
+            using (var selected = component.SelectedControls)
+            using (var parent = component.ParentProject)
             {
-                var name = component.SelectedControls.Single().Name;
-                var control =
-                    _parser.State.DeclarationFinder.MatchName(name)
-                        .SingleOrDefault(d => d.DeclarationType == DeclarationType.Control
-                                              && d.ProjectId == component.ParentProject.ProjectId
-                                              && d.ParentDeclaration.IdentifierName == component.Name);
+                var selectedCount = selected.Count;
+                if (selectedCount == 1)
+                {
+                    var name = selected.Single().Name;
+                    var control =
+                        _parser.State.DeclarationFinder.MatchName(name)
+                            .SingleOrDefault(d => d.DeclarationType == DeclarationType.Control
+                                                  && d.ProjectId == parent.ProjectId
+                                                  && d.ParentDeclaration.IdentifierName == component.Name);
 
-                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(control));
-                return;
+                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(control));
+                    return;
+                }
+                var form =
+                    _parser.State.DeclarationFinder.MatchName(component.Name)
+                        .SingleOrDefault(d => d.DeclarationType.HasFlag(DeclarationType.ClassModule)
+                                              && d.ProjectId == parent.ProjectId);
+
+                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(form, selectedCount > 1));
             }
-            var form =
-                _parser.State.DeclarationFinder.MatchName(component.Name)
-                    .SingleOrDefault(d => d.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                                          && d.ProjectId == component.ParentProject.ProjectId);
-
-            DispatchSelectedDeclaration(new DeclarationChangedEventArgs(form, selectedCount > 1));
         }
 
         private void DispatchSelectedProjectNodeDeclaration(IVBComponent component)
@@ -127,40 +149,39 @@ namespace Rubberduck.UI
                 return;
             }
 
-            if ((component == null || component.IsWrappingNullReference) && !_vbe.ActiveVBProject.IsWrappingNullReference)
+            using (var active = _vbe.ActiveVBProject)
             {
-                //The user might have selected the project node in Project Explorer. If they've chosen a folder, we'll return the project anyway.
-                var project =
-                    _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
-                        .SingleOrDefault(decl => decl.ProjectId.Equals(_vbe.ActiveVBProject.ProjectId));
+                if ((component == null || component.IsWrappingNullReference) && !active.IsWrappingNullReference)
+                {
+                    //The user might have selected the project node in Project Explorer. If they've chosen a folder, we'll return the project anyway.
+                    var project =
+                        _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                            .SingleOrDefault(decl => decl.ProjectId.Equals(active.ProjectId));
 
-                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(project));
-            }
-            else if (component != null && component.Type == ComponentType.UserForm && component.HasOpenDesigner)
-            {
-                DispatchSelectedDesignerDeclaration(component);
-            }
-            else if (component != null)
-            {
-                
-                var module =
-                    _parser.State.AllUserDeclarations.SingleOrDefault(
-                        decl => decl.DeclarationType.HasFlag(DeclarationType.Module) &&
-                                decl.IdentifierName.Equals(component.Name) &&
-                                decl.ProjectId.Equals(_vbe.ActiveVBProject.ProjectId));
+                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(project));
+                }
+                else if (component != null && component.Type == ComponentType.UserForm && component.HasOpenDesigner)
+                {
+                    DispatchSelectedDesignerDeclaration(component);
+                }
+                else if (component != null)
+                {
 
-                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(module));
+                    var module =
+                        _parser.State.AllUserDeclarations.SingleOrDefault(
+                            decl => decl.DeclarationType.HasFlag(DeclarationType.Module) &&
+                                    decl.IdentifierName.Equals(component.Name) &&
+                                    decl.ProjectId.Equals(active.ProjectId));
+
+                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(module));
+                }
             }
         }
 
         private bool DeclarationChanged(Declaration current)
         {
-            if ((_lastSelectedDeclaration == null && current == null) ||
-                ((_lastSelectedDeclaration != null && current != null) && _lastSelectedDeclaration.Equals(current)))
-            {
-                return false;
-            }
-            return true;
+            return (_lastSelectedDeclaration != null || current != null) &&
+                   (_lastSelectedDeclaration == null || current == null || !_lastSelectedDeclaration.Equals(current));
         }
 
         public void Dispose()

@@ -136,41 +136,44 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         private void DeclareControlsAsMembers(IVBComponent form)
         {
-            if (form.Controls == null) { return; }
-
-            var libraryQualifier = string.Empty;
-            if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
+            using (var controls = form.Controls)
             {
-                var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
-                //Debug.Assert(msFormsLib != null);
-                if (msFormsLib != null)
+                if (controls == null) { return; }
+
+                var libraryQualifier = string.Empty;
+                if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
                 {
-                    // given a UserForm component, MSForms reference is in use and cannot be removed.
-                    libraryQualifier = "MSForms.";
+                    var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
+                    //Debug.Assert(msFormsLib != null);
+                    if (msFormsLib != null)
+                    {
+                        // given a UserForm component, MSForms reference is in use and cannot be removed.
+                        libraryQualifier = "MSForms.";
+                    }
                 }
-            }
 
-            foreach (var control in form.Controls)
-            {
-                var typeName = $"{libraryQualifier}{control.TypeName()}";
-                // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
-                var declaration = new Declaration(
-                    _qualifiedModuleName.QualifyMemberName(control.Name),
-                    _parentDeclaration,
-                    _currentScopeDeclaration,
-                    string.IsNullOrEmpty(typeName) ? "Control" : typeName,
-                    null,
-                    true,
-                    true,
-                    Accessibility.Public,
-                    DeclarationType.Control,
-                    null,
-                    Selection.Home,
-                    false,
-                    null,
-                    true);
+                foreach (var control in controls)
+                {
+                    var typeName = $"{libraryQualifier}{control.TypeName()}";
+                    // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
+                    var declaration = new Declaration(
+                        _qualifiedModuleName.QualifyMemberName(control.Name),
+                        _parentDeclaration,
+                        _currentScopeDeclaration,
+                        string.IsNullOrEmpty(typeName) ? "Control" : typeName,
+                        null,
+                        true,
+                        true,
+                        Accessibility.Public,
+                        DeclarationType.Control,
+                        null,
+                        Selection.Home,
+                        false,
+                        null,
+                        true);
 
-                AddDeclaration(declaration);
+                    AddDeclaration(declaration);
+                }
             }
         }
 

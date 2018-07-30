@@ -286,12 +286,6 @@ namespace Rubberduck.Parsing.Symbols
             return handlersByWithEventsField;
         }
 
-        public Declaration FindSelectedDeclaration(IVBE vbe)
-        {
-            var pane = vbe.ActiveCodePane;
-            return FindSelectedDeclaration(pane);
-        }
-
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
         {
             if (activeCodePane == null || activeCodePane.IsWrappingNullReference)
