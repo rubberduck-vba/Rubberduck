@@ -776,9 +776,13 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
+        public void SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
         {
-            _moduleStates[module].SetCodePaneRewriter(module, stream, _projectRepository);
+            _moduleStates[module].SetCodePaneRewriter(module, codePaneRewriter);
+        }
+
+        public void SaveContentHash(QualifiedModuleName module)
+        {
             _moduleStates[module].SetModuleContentHashCode(GetModuleContentHash(module));
         }
 

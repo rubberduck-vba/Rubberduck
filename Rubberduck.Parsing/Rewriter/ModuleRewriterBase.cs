@@ -12,18 +12,21 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public class ModuleRewriter : IModuleRewriter
+    public abstract class ModuleRewriterBase : IModuleRewriter
     {
         protected QualifiedModuleName Module { get; }
         protected IProjectsProvider ProjectsProvider { get; }
         protected TokenStreamRewriter Rewriter { get; }
 
-        public ModuleRewriter(QualifiedModuleName module, ITokenStream tokenStream, IProjectsProvider projectsProvider)
+        public ModuleRewriterBase(QualifiedModuleName module, ITokenStream tokenStream, IProjectsProvider projectsProvider)
         {
             Module = module;
             Rewriter = new TokenStreamRewriter(tokenStream);
             ProjectsProvider = projectsProvider;
         }
+
+        public abstract bool IsDirty { get; }
+        public abstract void Rewrite();
 
         /// <summary>
         /// Returns the code module of the module identified by Module.
@@ -37,34 +40,7 @@ namespace Rubberduck.Parsing.Rewriter
             return component?.CodeModule;
         }
 
-
-        public virtual bool IsDirty
-        {
-            get
-            {
-                using (var codeModule = CodeModule())
-                {
-                    return codeModule == null || codeModule.Content() != Rewriter.GetText();
-                }
-            }
-        }
-
         public ITokenStream TokenStream => Rewriter.TokenStream;
-
-        public virtual void Rewrite()
-        {
-            if (!IsDirty)
-            {
-                return;
-            }
-
-            using (var codeModule = CodeModule())
-            {
-                codeModule.Clear();
-                var newContent = Rewriter.GetText();
-                codeModule.InsertLines(1, newContent);
-            }
-        }
 
         private static readonly IDictionary<Type, IRewriterInfoFinder> Finders =
             new Dictionary<Type, IRewriterInfoFinder>

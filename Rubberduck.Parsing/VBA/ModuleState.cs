@@ -94,9 +94,9 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, ITokenStream tokenStream, IProjectsProvider projectsProvider)
+        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
         {
-            ModuleRewriter = new ModuleRewriter(module, tokenStream, projectsProvider);
+            ModuleRewriter = codePaneRewriter;
             return this;
         }
 

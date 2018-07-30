@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Rewriter
     /// <li>DO use this rewriter to add/remove hidden <c>Attribute</c> instructions to/from a module.</li>
     /// </ul>
     /// </remarks>
-    public class AttributesRewriter : ModuleRewriter
+    public class AttributesRewriter : ModuleRewriterBase
     {
         private readonly ISourceCodeHandler _sourceCodeHandler;
 
@@ -27,6 +27,19 @@ namespace Rubberduck.Parsing.Rewriter
             : base(module, tokenStream, projectsProvider)
         {
             _sourceCodeHandler = sourceCodeHandler;
+        }
+
+        //TODO Make this actually work in the presence of attributes.
+        //Currently, this will always return true since there are always module level attributes.
+        public override bool IsDirty
+        {
+            get
+            {
+                using (var codeModule = CodeModule())
+                {
+                    return codeModule == null || codeModule.Content() != Rewriter.GetText();
+                }
+            }
         }
 
         public override void Rewrite()

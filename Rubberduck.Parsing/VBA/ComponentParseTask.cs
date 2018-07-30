@@ -63,16 +63,15 @@ namespace Rubberduck.Parsing.VBA
                 var commentListener = new CommentListener();
                 var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory(), _module);
 
-                var stopwatch = Stopwatch.StartNew();
                 var codePaneParseResults = ParseInternal(_module.ComponentName, tokenStream, new IParseTreeListener[]{ commentListener, annotationListener });
-                stopwatch.Stop();
+                var codePaneRewriter = new CodePaneRewriter(_module, codePaneParseResults.tokenStream, _projectsProvider);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var comments = QualifyAndUnionComments(_module, commentListener.Comments, commentListener.RemComments);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var rewriter = new AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream, _projectsProvider, _sourceCodeHandler);
+                var attributesRewriter = new AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream, _projectsProvider, _sourceCodeHandler);
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
@@ -80,8 +79,8 @@ namespace Rubberduck.Parsing.VBA
                     {
                         ParseTree = codePaneParseResults.tree,
                         AttributesTree = attributesPassParseResults.tree,
-                        Tokens = codePaneParseResults.tokenStream,
-                        AttributesRewriter = rewriter,
+                        CodePaneRewriter = codePaneRewriter,
+                        AttributesRewriter = attributesRewriter,
                         Attributes = attributesPassParseResults.attributes,
                         Comments = comments,
                         Annotations = annotationListener.Annotations
@@ -205,7 +204,7 @@ namespace Rubberduck.Parsing.VBA
         
         public class ParseCompletionArgs
         {
-            public ITokenStream Tokens { get; internal set; }
+            public IModuleRewriter CodePaneRewriter { get; internal set; }
             public IModuleRewriter AttributesRewriter { get; internal set; }
             public IParseTree ParseTree { get; internal set; }
             public IParseTree AttributesTree { get; internal set; }

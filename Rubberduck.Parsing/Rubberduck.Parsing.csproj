@@ -143,6 +143,8 @@
     <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="Rewriter\CodePaneRewriter.cs" />
+    <Compile Include="Rewriter\ModuleRewriterFactory.cs" />
     <Compile Include="TokenStreamExtensions.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />
     <Compile Include="ComReflection\ComTypeName.cs" />
@@ -193,7 +195,7 @@
     <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\IRewriterInfoFinder.cs" />
-    <Compile Include="Rewriter\ModuleRewriter.cs" />
+    <Compile Include="Rewriter\ModuleRewriterBase.cs" />
     <Compile Include="Rewriter\RewriterInfo\ArgumentRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\ParameterRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\RewriterInfo.cs" />

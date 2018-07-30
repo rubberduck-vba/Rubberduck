@@ -50,6 +50,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
+using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Root
 {
@@ -262,6 +263,9 @@ namespace Rubberduck.Root
         {
             container.Register(Component.For<IFolderBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IModuleRewriterFactory>()
+                .ImplementedBy<ModuleRewriterFactory>()
                 .LifestyleSingleton());
         }
 

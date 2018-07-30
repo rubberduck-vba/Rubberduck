@@ -106,11 +106,12 @@ namespace Rubberduck.Parsing.VBA
                     //This has to come first because it creates the module state if not present.
                     _state.SetModuleAttributes(module, result.Attributes);
 
-                    _state.AddTokenStream(module, result.Tokens);
+                    _state.SaveContentHash(module);
                     _state.AddParseTree(module, result.ParseTree);
                     _state.AddParseTree(module, result.AttributesTree, ParsePass.AttributesPass);
                     _state.SetModuleComments(module, result.Comments);
                     _state.SetModuleAnnotations(module, result.Annotations);
+                    _state.SetCodePaneRewriter(module, result.CodePaneRewriter);
                     _state.AddAttributesRewriter(module, result.AttributesRewriter);
 
                     // This really needs to go last
