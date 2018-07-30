@@ -3,6 +3,9 @@ using Rubberduck.VBEditor;
 
 namespace RubberduckTests
 {
+    /// <summary>
+    /// Represents a code string that includes caret position.
+    /// </summary>
     public struct CodeString
     {
         /// <summary>

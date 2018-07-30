@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 {
@@ -21,7 +22,19 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             }
             else
             {
-                return original;
+                return default;
+            }
+        }
+
+        public (string Code, Selection CaretPosition) Execute(SelfClosingPair pair, (string, Selection) original, Keys input)
+        {
+            if (input == Keys.Back)
+            {
+                return HandleBackspace(pair, original);
+            }
+            else
+            {
+                return default;
             }
         }
 
@@ -38,6 +51,25 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             var newCode = original.Code;
 
             return (newCode, nextPosition);
+        }
+
+        private (string, Selection) HandleBackspace(SelfClosingPair pair, (string Code, Selection Position) original)
+        {
+            var lines = original.Code.Split('\n');
+            var line = lines[original.Position.StartLine];
+
+            var previousChar = line[Math.Max(0, original.Position.StartColumn - 1)];
+            var nextChar = line[Math.Min(line.Length, original.Position.StartColumn)];
+
+            if (previousChar == pair.OpeningChar && nextChar == pair.ClosingChar)
+            {
+                lines[original.Position.StartLine] = line.Remove(Math.Max(0, original.Position.StartColumn - 1), 2);
+                return (string.Join("\n", lines), original.Position.ShiftLeft());
+            }
+            else
+            {
+                return default;
+            }
         }
     }
 }
