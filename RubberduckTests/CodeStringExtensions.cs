@@ -1,72 +1,20 @@
 ﻿using System;
+using Rubberduck.Common;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests
 {
-    /// <summary>
-    /// Represents a code string that includes caret position.
-    /// </summary>
-    public struct CodeString
-    {
-        /// <summary>
-        /// Creates a new <c>CodeString</c>
-        /// </summary>
-        /// <param name="code">Code string</param>
-        /// <param name="zPosition">Zero-based caret position</param>
-        public CodeString(string code, Selection zPosition)
-        {
-            Code = code;
-            CaretPosition = zPosition;
-        }
-
-        /// <summary>
-        /// The code string.
-        /// </summary>
-        public string Code { get; }
-        /// <summary>
-        /// Zero-based caret position in the code string.
-        /// </summary>
-        public Selection CaretPosition { get; }
-
-        public static implicit operator string(CodeString codeString)
-        {
-            return codeString.Code;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var other = (CodeString)obj;
-            return Code.Equals(other.Code) && CaretPosition.Equals(other.CaretPosition);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Compute(Code, CaretPosition);
-        }
-
-        public override string ToString()
-        {
-            var hasCaret = Code.ToCodeString().CaretPosition != default;
-            if (hasCaret)
-            {
-                return Code;
-            }
-
-            return Code.InsertPseudoCaret(CaretPosition);
-        }
-    }
-
     public static class CodeStringExtensions
     {
+        /// <summary>
+        /// Creates a code string that encapsulates the caret position, indicated by a single pipe ("<c>|</c>") character.
+        /// </summary>
+        /// <param name="code">The code snippet string. Use a single pipe ("<c>|</c>") to indicate caret position.</param>
+        /// <returns>Returns a <c>struct</c> that encapsulates a snippet of code and a cursor/caret position relative to that snippet.</returns>
         public static CodeString ToCodeString(this string code)
         {
             var zPosition = new Selection();
-            var lines = code.Split('\n');
+            var lines = (code ?? string.Empty).Split('\n');
             for (int i = 0; i < lines.Length; i++)
             {
                 var line = lines[i];
@@ -85,7 +33,7 @@ namespace RubberduckTests
 
         public static CodeString InsertPseudoCaret(this string code, Selection zPosition)
         {
-            var lines = code.Split('\n');
+            var lines = (code ?? string.Empty).Split('\n');
             var line = lines[zPosition.StartLine];
             lines[zPosition.StartLine] = line.Insert(zPosition.StartColumn, "|");
             return new CodeString(string.Join("\n", lines), zPosition);

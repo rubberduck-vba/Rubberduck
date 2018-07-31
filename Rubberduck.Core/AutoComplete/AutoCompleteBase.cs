@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Rubberduck.AutoComplete
 {
+
     public abstract class AutoCompleteBase : IAutoComplete
     {
         protected AutoCompleteBase(string inputToken, string outputToken)

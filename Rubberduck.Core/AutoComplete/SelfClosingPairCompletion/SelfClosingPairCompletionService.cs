@@ -61,6 +61,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             var previousChar = line[Math.Max(0, original.Position.StartColumn - 1)];
             var nextChar = line[Math.Min(line.Length, original.Position.StartColumn)];
 
+            return DeleteMatchingTokens(pair, original, lines, line, previousChar, nextChar);
+        }
+
+        private static (string, Selection) DeleteMatchingTokens(SelfClosingPair pair, (string Code, Selection Position) original, string[] lines, string line, char previousChar, char nextChar)
+        {
             if (previousChar == pair.OpeningChar && nextChar == pair.ClosingChar)
             {
                 lines[original.Position.StartLine] = line.Remove(Math.Max(0, original.Position.StartColumn - 1), 2);
@@ -71,5 +76,6 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 return default;
             }
         }
+
     }
 }
