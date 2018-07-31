@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
@@ -42,7 +43,6 @@ namespace Rubberduck.VBEditor.Events
                 User32.UnhookWinEvent(_eventHandle);
                 Subclasses.Dispose();
                 VBEEvents.Terminate();
-                _vbe.Dispose();
                 _vbe = null;
             }
         }
