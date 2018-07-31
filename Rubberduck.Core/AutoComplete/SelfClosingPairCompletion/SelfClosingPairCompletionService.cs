@@ -132,6 +132,62 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 return base.VisitLiteralExpr(context);
             }
 
+            public override Selection VisitIndexExpr([NotNull] VBAParser.IndexExprContext context)
+            {
+                if (context.LPAREN()?.Symbol.Text[0] == _pair.OpeningChar
+                    && context.RPAREN()?.Symbol.Text[0] == _pair.ClosingChar)
+                {
+                    if (_code.CaretPosition.StartLine == context.LPAREN().Symbol.Line - 1
+                        && _code.CaretPosition.StartColumn == context.RPAREN().Symbol.Column)
+                    {
+                        var token = context.RPAREN().Symbol;
+                        return new Selection(token.Line - 1, token.Column);
+                    }
+                }
+                var inner = context.GetDescendents<VBAParser.IndexExprContext>();
+                foreach (var item in inner)
+                {
+                    if (context != item)
+                    {
+                        var result = Visit(item);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+
+                return base.VisitIndexExpr(context);
+            }
+
+            public override Selection VisitArgList([NotNull] VBAParser.ArgListContext context)
+            {
+                if (context.Start.Text[0] == _pair.OpeningChar
+                    && context.Stop.Text[0] == _pair.ClosingChar)
+                {
+                    if (_code.CaretPosition.StartLine == context.Start.Line - 1
+                        && _code.CaretPosition.StartColumn == context.Start.Column + 1)
+                    {
+                        var token = context.Stop;
+                        return new Selection(token.Line - 1, token.Column);
+                    }
+                }
+                var inner = context.GetDescendents<VBAParser.ArgListContext>();
+                foreach (var item in inner)
+                {
+                    if (context != item)
+                    {
+                        var result = Visit(item);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+
+                return base.VisitArgList(context);
+            }
+
             public override Selection VisitParenthesizedExpr([NotNull] VBAParser.ParenthesizedExprContext context)
             {
                 if (context.Start.Text[0] == _pair.OpeningChar
