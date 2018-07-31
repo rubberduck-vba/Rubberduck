@@ -16,6 +16,7 @@ using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace RubberduckTests.Mocks
 {
@@ -47,16 +48,16 @@ namespace RubberduckTests.Mocks
 
         public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state.ProjectsProvider);
-            var sourceCodeHandler = new Mock<ISourceCodeHandler>().Object;
-            return Create(vbe, state, attributeParser, sourceCodeHandler, projectRepository, serializedDeclarationsPath);
-        }
-
-        public static ParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
-        {
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            var compilationArgumentsroviderMock = new Mock<ICompilationArgumentsProvider>();
+            compilationArgumentsroviderMock.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
+                .Returns(new Dictionary<string, short>());
+            var compilationArgumentsProvider = compilationArgumentsroviderMock.Object;
+            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider), codePaneSourceCodeHandler);
+            var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
-            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture));
+            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
@@ -75,15 +76,17 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state),
                     new AliasDeclarations(state),
                 });
+            var attributesSourceCodeHanler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var moduleRewriterFactory = new ModuleRewriterFactory(
-                projectRepository,
-                sourceCodeHandler);
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHanler);
             var parseRunner = new SynchronousParseRunner(
                 state,
                 parserStateManager,
                 preprocessorFactory,
                 attributeParser,
-                sourceCodeHandler,
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHanler,
                 moduleRewriterFactory);
             var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
                 state, 

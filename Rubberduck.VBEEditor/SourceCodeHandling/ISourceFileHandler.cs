@@ -1,8 +1,8 @@
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor
+namespace Rubberduck.VBEditor.SourceCodeHandling
 {
-    public interface ISourceCodeHandler
+    public interface ISourceFileHandler
     {
         string Export(IVBComponent component);
         void Import(IVBComponent component, string fileName);

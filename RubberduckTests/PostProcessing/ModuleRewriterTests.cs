@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using RubberduckTests.Mocks;
 
 // ReSharper disable InvokeAsExtensionMethod
@@ -28,9 +29,10 @@ namespace RubberduckTests.PostProcessing
 
             var module = new QualifiedModuleName("TestProject", string.Empty,"TestModule");
             var projectsProvider = TestProvider(module, codeModule.Object);
+            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
             var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
 
-            var sut = new CodePaneRewriter(module, tokenStream, projectsProvider);
+            var sut = new ModuleRewriter(module, tokenStream, codePaneSourceHandler);
             sut.InsertAfter(0, "test");
 
             if (!sut.IsDirty)
@@ -52,9 +54,10 @@ namespace RubberduckTests.PostProcessing
 
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
             var projectsProvider = TestProvider(module, codeModule.Object);
+            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
             var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
 
-            var sut = new CodePaneRewriter(module, tokenStream, projectsProvider);
+            var sut = new ModuleRewriter(module, tokenStream, codePaneSourceHandler);
 
             sut.Rewrite();
             codeModule.Verify(m => m.Clear(), Times.Never);

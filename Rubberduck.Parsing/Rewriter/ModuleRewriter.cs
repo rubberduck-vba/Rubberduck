@@ -7,40 +7,37 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter.RewriterInfo;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public abstract class ModuleRewriterBase : IModuleRewriter
+    public class ModuleRewriter : IModuleRewriter
     {
-        protected QualifiedModuleName Module { get; }
-        protected IProjectsProvider ProjectsProvider { get; }
-        protected TokenStreamRewriter Rewriter { get; }
+        private readonly QualifiedModuleName _module;
+        private readonly ISourceCodeHandler _sourceCodeHandler;
+        private readonly TokenStreamRewriter _rewriter;
 
-        public ModuleRewriterBase(QualifiedModuleName module, ITokenStream tokenStream, IProjectsProvider projectsProvider)
+        public ModuleRewriter(QualifiedModuleName module, ITokenStream tokenStream, ISourceCodeHandler sourceCodeHandler)
         {
-            Module = module;
-            Rewriter = new TokenStreamRewriter(tokenStream);
-            ProjectsProvider = projectsProvider;
+            _module = module;
+            _rewriter = new TokenStreamRewriter(tokenStream);
+            _sourceCodeHandler = sourceCodeHandler;
         }
 
-        public abstract bool IsDirty { get; }
-        public abstract void Rewrite();
+        public bool IsDirty => _rewriter.GetText() != _sourceCodeHandler.SourceCode(_module);
 
-        /// <summary>
-        /// Returns the code module of the module identified by Module.
-        /// </summary>
-        /// <remarks>
-        /// The result must be disposed by the caller.
-        /// </remarks>
-        protected ICodeModule CodeModule()
+        public void Rewrite()
         {
-            var component = ProjectsProvider.Component(Module);
-            return component?.CodeModule;
+            if (!IsDirty)
+            {
+                return;
+            }
+
+            var newCode = _rewriter.GetText();
+            _sourceCodeHandler.SubstituteCode(_module, newCode);
         }
 
-        public ITokenStream TokenStream => Rewriter.TokenStream;
+        public ITokenStream TokenStream => _rewriter.TokenStream;
 
         private static readonly IDictionary<Type, IRewriterInfoFinder> Finders =
             new Dictionary<Type, IRewriterInfoFinder>
@@ -58,73 +55,72 @@ namespace Rubberduck.Parsing.Rewriter
 
         public void Remove(ParserRuleContext target)
         {
-            IRewriterInfoFinder finder;
-            var info = Finders.TryGetValue(target.GetType(), out finder)
+            var info = Finders.TryGetValue(target.GetType(), out var finder)
                 ? finder.GetRewriterInfo(target)
                 : new DefaultRewriterInfoFinder().GetRewriterInfo(target);
 
             if (info.Equals(RewriterInfo.RewriterInfo.None)) { return; }
-            Rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
+            _rewriter.Delete(info.StartTokenIndex, info.StopTokenIndex);
         }
 
         public void Remove(ITerminalNode target)
         {
-            Rewriter.Delete(target.Symbol.TokenIndex);
+            _rewriter.Delete(target.Symbol.TokenIndex);
         }
 
         public void Remove(IToken target)
         {
-            Rewriter.Delete(target);
+            _rewriter.Delete(target);
         }
 
         public void RemoveRange(int start, int stop)
         {
-            Rewriter.Delete(start, stop);
+            _rewriter.Delete(start, stop);
         }
 
         public void Replace(Declaration target, string content)
         {
-            Rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
+            _rewriter.Replace(target.Context.Start.TokenIndex, target.Context.Stop.TokenIndex, content);
         }
 
         public void Replace(ParserRuleContext target, string content)
         {
-            Rewriter.Replace(target.Start.TokenIndex, target.Stop.TokenIndex, content);
+            _rewriter.Replace(target.Start.TokenIndex, target.Stop.TokenIndex, content);
         }
 
         public void Replace(IToken token, string content)
         {
-            Rewriter.Replace(token, content);
+            _rewriter.Replace(token, content);
         }
 
         public void Replace(ITerminalNode target, string content)
         {
-            Rewriter.Replace(target.Symbol.TokenIndex, content);
+            _rewriter.Replace(target.Symbol.TokenIndex, content);
         }
 
         public void Replace(Interval tokenInterval, string content)
         {
-            Rewriter.Replace(tokenInterval.a, tokenInterval.b, content);
+            _rewriter.Replace(tokenInterval.a, tokenInterval.b, content);
         }
 
         public void InsertBefore(int tokenIndex, string content)
         {
-            Rewriter.InsertBefore(tokenIndex, content);
+            _rewriter.InsertBefore(tokenIndex, content);
         }
 
         public void InsertAfter(int tokenIndex, string content)
         {
-            Rewriter.InsertAfter(tokenIndex, content);
+            _rewriter.InsertAfter(tokenIndex, content);
         }
 
         public string GetText(int startTokenIndex, int stopTokenIndex)
         {
-            return Rewriter.GetText(Interval.Of(startTokenIndex, stopTokenIndex));
+            return _rewriter.GetText(Interval.Of(startTokenIndex, stopTokenIndex));
         }
 
         public string GetText()
         {
-            return Rewriter.GetText();
+            return _rewriter.GetText();
         }
     }
 }

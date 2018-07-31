@@ -17,6 +17,7 @@ using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -25,10 +26,10 @@ namespace Rubberduck.Parsing.VBA
         private readonly QualifiedModuleName _module;
         private readonly TokenStreamRewriter _rewriter;
         private readonly IAttributeParser _attributeParser;
-        private readonly ISourceCodeHandler _sourceCodeHandler;
+        private readonly ISourceCodeProvider _codePaneSourceCodeProvider;
+        private readonly ISourceCodeProvider _attributesSourceCodeProvider;
         private readonly IVBAPreprocessor _preprocessor;
         private readonly VBAModuleParser _parser;
-        private readonly IProjectsProvider _projectsProvider;
         private readonly IModuleRewriterFactory _moduleRewriterFactory;
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
@@ -37,17 +38,17 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsProvider projectsProvider, IModuleRewriterFactory moduleRewriterFactory,TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, ISourceCodeProvider codePaneSourceCodeProvider, ISourceCodeProvider attributesSourceCodeProvider, IModuleRewriterFactory moduleRewriterFactory,TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _moduleRewriterFactory = moduleRewriterFactory;
             _attributeParser = attributeParser;
-            _sourceCodeHandler = sourceCodeHandler;
+            _codePaneSourceCodeProvider = codePaneSourceCodeProvider;
+            _attributesSourceCodeProvider = attributesSourceCodeProvider;
             _preprocessor = preprocessor;
             _module = module;
             _rewriter = rewriter;
-            _projectsProvider = projectsProvider;
             _parser = new VBAModuleParser();
         }
         
@@ -192,22 +193,10 @@ namespace Rubberduck.Parsing.VBA
 
         private CommonTokenStream RewriteAndPreprocess(CancellationToken cancellationToken)
         {
-            var code = _rewriter?.GetText();
-            var component = _projectsProvider.Component(_module);
-            if (code == null)
-            {
-                using (var codeModule = component.CodeModule)
-                {
-                    code = string.Join(Environment.NewLine, GetCode(codeModule));
-                }
-            }
- 
+            var code = _rewriter?.GetText() ?? _codePaneSourceCodeProvider.SourceCode(_module);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            using (var project = component.ParentProject)
-            {
-                _preprocessor.PreprocessTokenStream(project, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
-            }
+            _preprocessor.PreprocessTokenStream(_module.ProjectId, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
             return tokens;
         }
 

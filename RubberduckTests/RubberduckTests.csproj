@@ -121,6 +121,7 @@
     <Compile Include="Inspections\InspectionProviderTests.cs" />
     <Compile Include="Symbols\ToVbExpressionTests.cs" />
     <Compile Include="UnitTesting\TestMethodTests.cs" />
+    <Compile Include="VBEditor\CodePaneSourceHandlerTests.cs" />
     <Compile Include="VBEditor\Utility\DisposalActionContainerTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />

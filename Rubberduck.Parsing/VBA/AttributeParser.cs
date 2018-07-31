@@ -1,27 +1,23 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Symbols;
 using System;
 using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class AttributeParser : IAttributeParser
     {
-        private readonly ISourceCodeHandler _sourceCodeHandler;
+        private readonly ISourceCodeProvider _attributesSourceCodeProvider;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-        private readonly IProjectsProvider _projectsProvider;
 
-        public AttributeParser(ISourceCodeHandler sourceCodeHandler, Func<IVBAPreprocessor> preprocessorFactory, IProjectsProvider projectsProvider)
+        public AttributeParser(ISourceCodeProvider attributesSourceCodeProvider, Func<IVBAPreprocessor> preprocessorFactory)
         {
-            _sourceCodeHandler = sourceCodeHandler;
+            _attributesSourceCodeProvider = attributesSourceCodeProvider;
             _preprocessorFactory = preprocessorFactory;
-            _projectsProvider = projectsProvider;
         }
 
         /// <summary>
@@ -32,24 +28,15 @@ namespace Rubberduck.Parsing.VBA
         public (IParseTree tree, ITokenStream tokenStream) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var component = _projectsProvider.Component(module);
 
-            var code = _sourceCodeHandler.Read(component);
-            if (code == null)
-            {
-                return (null, null);
-            }
-
+            var code = _attributesSourceCodeProvider.SourceCode(module);
             cancellationToken.ThrowIfCancellationRequested();
 
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
             var preprocessorErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
-            using (var project = component.ParentProject)
-            {
-                preprocessor.PreprocessTokenStream(project, module.ComponentName, tokens, preprocessorErrorListener, cancellationToken);
-            }
+            preprocessor.PreprocessTokenStream(module.ProjectId, module.ComponentName, tokens, preprocessorErrorListener, cancellationToken);
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)

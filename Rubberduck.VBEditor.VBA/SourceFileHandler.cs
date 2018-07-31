@@ -3,10 +3,11 @@ using System.Text;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.VBEditor.VBA
 {
-    public class SourceCodeHandler : ISourceCodeHandler
+    public class SourceFileHandler : ISourceFileHandler
     {
         public string Export(IVBComponent component)
         {

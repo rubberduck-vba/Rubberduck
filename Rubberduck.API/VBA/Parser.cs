@@ -17,6 +17,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Root;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.API.VBA
 {
@@ -88,10 +89,11 @@ namespace Rubberduck.API.VBA
             _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
 
-            var sourceCodeHandler = _vbe.SourceCodeHandler;
-
-            IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
-            _attributeParser = new AttributeParser(sourceCodeHandler, preprocessorFactory, _state.ProjectsProvider);
+            var sourceFileHandler = _vbe.SourceFileHandler;
+            var compilationArgumentsProvider = new CompilationArgumentsProvider(projectRepository);
+            IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider);
+            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
+            _attributeParser = new AttributeParser(attributesSourceCodeHandler, preprocessorFactory);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
@@ -109,15 +111,18 @@ namespace Rubberduck.API.VBA
                         //new RubberduckApiDeclarations(_state)
                     }
                 );
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            var attributesSourceCodeHanler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var moduleRewriterFactory = new ModuleRewriterFactory(
-                projectRepository,
-                sourceCodeHandler);
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHanler);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,
                 preprocessorFactory,
-                _attributeParser, 
-                sourceCodeHandler,
+                _attributeParser,
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHanler,
                 moduleRewriterFactory);
             var declarationResolveRunner = new DeclarationResolveRunner(
                 _state, 

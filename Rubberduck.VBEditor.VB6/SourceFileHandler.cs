@@ -2,10 +2,11 @@
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.VBEditor.VB6
 {
-    public class SourceCodeHandler : ISourceCodeHandler
+    public class SourceFileHandler : ISourceFileHandler
     {
         public string Export(IVBComponent component)
         {

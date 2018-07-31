@@ -51,6 +51,7 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Root
 {
@@ -266,6 +267,8 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleRewriterFactory>()
                 .ImplementedBy<ModuleRewriterFactory>()
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeHandler", typeof(CodePaneSourceCodeHandler)),
+                    Dependency.OnComponent("attributesSourceCodeHandler", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
         }
 
@@ -780,7 +783,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
 
             container.Register(Component.For<Func<IVBAPreprocessor>>()
-                .Instance(() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture))));
+                .Instance(() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), container.Resolve<ICompilationArgumentsProvider>())));
         }
 
         private void RegisterTypeLibApi(IWindsorContainer container)

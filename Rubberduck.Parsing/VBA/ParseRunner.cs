@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -18,13 +19,15 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager, 
             Func<IVBAPreprocessor> preprocessorFactory, 
             IAttributeParser attributeParser,
-            ISourceCodeHandler sourceCodeHandler,
+            ISourceCodeProvider codePaneSourceCodeProvider,
+            ISourceCodeProvider attributesSourceCodeProvider,
             IModuleRewriterFactory moduleRewriterFactory) 
         :base(state, 
             parserStateManager, 
             preprocessorFactory, 
-            attributeParser, 
-            sourceCodeHandler,
+            attributeParser,
+            codePaneSourceCodeProvider,
+            attributesSourceCodeProvider,
             moduleRewriterFactory)
         { }
 

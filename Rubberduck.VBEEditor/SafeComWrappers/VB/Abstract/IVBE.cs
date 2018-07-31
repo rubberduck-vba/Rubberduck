@@ -1,4 +1,5 @@
 using System;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -25,6 +26,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
         bool IsInDesignMode { get; }
         int ProjectsCount { get; }
-        ISourceCodeHandler SourceCodeHandler { get; }
+        ISourceFileHandler SourceFileHandler { get; }
     }
 }

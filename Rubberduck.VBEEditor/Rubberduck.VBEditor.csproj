@@ -66,7 +66,11 @@
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />
     <Compile Include="HashCode.cs" />
-    <Compile Include="ISourceCodeHandler.cs" />
+    <Compile Include="SourceCodeHandling\SourceFileHandlerSourceCodeHandlerAdapter.cs" />
+    <Compile Include="SourceCodeHandling\CodePaneSourceCodeHandler.cs" />
+    <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />
+    <Compile Include="SourceCodeHandling\ISourceCodeProvider.cs" />
+    <Compile Include="SourceCodeHandling\ISourceFileHandler.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />

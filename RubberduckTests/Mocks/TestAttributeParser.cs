@@ -6,25 +6,24 @@ using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace RubberduckTests.Mocks
 {
     public class TestAttributeParser : IAttributeParser
     {
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-        private readonly IProjectsProvider _projectsProvider;
+        private readonly ISourceCodeProvider _codePaneSourceCodeProvider;
 
-        public TestAttributeParser(Func<IVBAPreprocessor> preprocessorFactory, IProjectsProvider projectsProvider)
+        public TestAttributeParser(Func<IVBAPreprocessor> preprocessorFactory, ISourceCodeProvider codePaneSourceCodeProvider)
         {
             _preprocessorFactory = preprocessorFactory;
-            _projectsProvider = projectsProvider;
+            _codePaneSourceCodeProvider = codePaneSourceCodeProvider;
         }
 
         public (IParseTree tree, ITokenStream tokenStream) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
         {
-            var component = _projectsProvider.Component(module);
-            var code = component.CodeModule.Content();
+            var code = _codePaneSourceCodeProvider.SourceCode(module);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
