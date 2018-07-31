@@ -58,11 +58,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
         {
             var caption = _formatter.Format(e.Declaration, e.MultipleControlsSelected);
-            //if (string.IsNullOrEmpty(caption) && e.VBComponent != null)
-            //{
-            //    //Fallback caption for selections in the Project window.
-            //    caption = $"{e.VBComponent.ParentProject.Name}.{e.VBComponent.Name} ({e.VBComponent.Type})";
-            //}
+            if (string.IsNullOrEmpty(caption))
+            {
+                //Fallback caption for selections in the Project window.                               
+                caption = e.FallbackCaption;
+            }
 
             var refCount = e.Declaration?.References.Count() ?? 0;
             var description = e.Declaration?.DescriptionString ?? string.Empty;

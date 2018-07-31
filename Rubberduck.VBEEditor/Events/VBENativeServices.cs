@@ -70,7 +70,7 @@ namespace Rubberduck.VBEditor.Events
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime)
         {
-            if (hwnd == IntPtr.Zero) { return; }
+            if (hwnd == IntPtr.Zero || _vbe.IsWrappingNullReference) { return; }
 
 #if THIRSTY_DUCK && DEBUG
             //This is an output window firehose, viewer discretion is advised.
@@ -164,7 +164,7 @@ namespace Rubberduck.VBEditor.Events
 
         public static ICodePane GetCodePaneFromHwnd(IntPtr hwnd)
         {
-            if (_vbe == null)
+            if (_vbe == null || _vbe.IsWrappingNullReference)
             {
                 return null;
             }
@@ -174,6 +174,11 @@ namespace Rubberduck.VBEditor.Events
                 var caption = hwnd.GetWindowText();
                 using (var panes = _vbe.CodePanes)
                 {
+                    if (panes == null || panes.IsWrappingNullReference)
+                    {
+                        return null;
+                    }
+
                     var foundIt = false;
                     foreach (var pane in panes)
                     {
@@ -211,7 +216,7 @@ namespace Rubberduck.VBEditor.Events
 
         public static IWindow GetWindowFromHwnd(IntPtr hwnd)
         {
-            if (!User32.IsWindow(hwnd) || _vbe == null)
+            if (!User32.IsWindow(hwnd) || _vbe == null || _vbe.IsWrappingNullReference)
             {
                 return null;
             }
@@ -219,6 +224,11 @@ namespace Rubberduck.VBEditor.Events
             var caption = hwnd.GetWindowText();
             using (var windows = _vbe.Windows)
             {
+                if (windows == null || windows.IsWrappingNullReference)
+                {
+                    return null;
+                }
+
                 var foundIt = false;
                 foreach (var window in windows)
                 {

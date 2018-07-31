@@ -44,7 +44,7 @@ namespace Rubberduck.UI
                     {
                         return;
                     }
-                    var eventArgs = new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(active));
+                    var eventArgs = new DeclarationChangedEventArgs(_vbe, _parser.State.FindSelectedDeclaration(active));
                     DispatchSelectedDeclaration(eventArgs);
                 }
             });
@@ -72,7 +72,7 @@ namespace Rubberduck.UI
                             using (var pane = VBENativeServices.GetCodePaneFromHwnd(e.Hwnd))
                             {
                                 DispatchSelectedDeclaration(
-                                    new DeclarationChangedEventArgs(_parser.State.FindSelectedDeclaration(pane)));
+                                    new DeclarationChangedEventArgs(_vbe, _parser.State.FindSelectedDeclaration(pane)));
                             }
                         });
                         break;
@@ -130,7 +130,7 @@ namespace Rubberduck.UI
                                                   && d.ProjectId == parent.ProjectId
                                                   && d.ParentDeclaration.IdentifierName == component.Name);
 
-                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(control));
+                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(_vbe, control));
                     return;
                 }
                 var form =
@@ -138,7 +138,7 @@ namespace Rubberduck.UI
                         .SingleOrDefault(d => d.DeclarationType.HasFlag(DeclarationType.ClassModule)
                                               && d.ProjectId == parent.ProjectId);
 
-                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(form, selectedCount > 1));
+                DispatchSelectedDeclaration(new DeclarationChangedEventArgs(_vbe, form, selectedCount > 1));
             }
         }
 
@@ -158,7 +158,7 @@ namespace Rubberduck.UI
                         _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
                             .SingleOrDefault(decl => decl.ProjectId.Equals(active.ProjectId));
 
-                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(project));
+                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(_vbe, project));
                 }
                 else if (component != null && component.Type == ComponentType.UserForm && component.HasOpenDesigner)
                 {
@@ -173,7 +173,7 @@ namespace Rubberduck.UI
                                     decl.IdentifierName.Equals(component.Name) &&
                                     decl.ProjectId.Equals(active.ProjectId));
 
-                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(module));
+                    DispatchSelectedDeclaration(new DeclarationChangedEventArgs(_vbe, module));
                 }
             }
         }
@@ -194,12 +194,25 @@ namespace Rubberduck.UI
     public class DeclarationChangedEventArgs : EventArgs
     {
         public Declaration Declaration { get; }
+        public string FallbackCaption { get; }
         public bool MultipleControlsSelected { get; }
 
-        public DeclarationChangedEventArgs(Declaration declaration, bool multipleControls = false)
+        public DeclarationChangedEventArgs(IVBE vbe, Declaration declaration, bool multipleControls = false)
         {
             Declaration = declaration;
             MultipleControlsSelected = multipleControls;
+            if (Declaration != null && !string.IsNullOrEmpty(Declaration.QualifiedName.MemberName))
+            {
+                return;
+            }
+
+            using (var active = vbe.SelectedVBComponent)
+            using (var parent = active?.ParentProject)
+            {
+                FallbackCaption =
+                    $"{parent?.Name ?? string.Empty}.{active?.Name ?? string.Empty} ({active?.Type.ToString() ?? string.Empty})"
+                        .Trim('.');
+            }
         }
     }
 }

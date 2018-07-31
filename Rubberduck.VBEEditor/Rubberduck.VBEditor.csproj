@@ -163,6 +163,7 @@
     <Compile Include="Utility\RegistryWrapper.cs" />
     <Compile Include="WindowsApi\IFocusProvider.cs" />
     <Compile Include="WindowsApi\SubclassManager.cs" />
+    <Compile Include="WindowsApi\VbeAttachableSubclass.cs" />
     <Compile Include="WindowsApi\WindowLocator.cs" />
     <Compile Include="WindowsApi\CodePaneSubclass.cs" />
     <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
