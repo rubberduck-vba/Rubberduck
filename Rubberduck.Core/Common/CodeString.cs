@@ -32,6 +32,15 @@ namespace Rubberduck.Common
             return codeString.Code;
         }
 
+        public string[] Lines
+        {
+            get
+            {
+                return Code?.Split('\n') 
+                    ?? new string[] { };
+            }
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -50,13 +59,20 @@ namespace Rubberduck.Common
 
         public override string ToString()
         {
-            var hasCaret = Code.ToCodeString().CaretPosition != default;
-            if (hasCaret)
+            if (Code?.ToCodeString().CaretPosition != default)
             {
                 return Code;
             }
 
-            return Code.InsertPseudoCaret(CaretPosition);
+            return InsertPseudoCaret();
+        }
+
+        private string InsertPseudoCaret()
+        {
+            var lines = (Code ?? string.Empty).Split('\n');
+            var line = lines[CaretPosition.StartLine];
+            lines[CaretPosition.StartLine] = line.Insert(CaretPosition.StartColumn, "|");
+            return new CodeString(string.Join("\n", lines), CaretPosition);
         }
     }
 }

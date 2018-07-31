@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
 using Rubberduck.Common;
-using Rubberduck.VBEditor;
 using System.Windows.Forms;
 
 namespace RubberduckTests.AutoComplete
@@ -12,15 +11,13 @@ namespace RubberduckTests.AutoComplete
         private CodeString Run(SelfClosingPair pair, CodeString original, char input)
         {
             var sut = new SelfClosingPairCompletionService();
-            var (Code, CaretPosition) = sut.Execute(pair, (original.Code, original.CaretPosition), input);
-            return new CodeString(Code, CaretPosition);
+            return sut.Execute(pair, original, input);
         }
 
         private CodeString Run(SelfClosingPair pair, CodeString original, Keys input)
         {
             var sut = new SelfClosingPairCompletionService();
-            var (Code, CaretPosition) = sut.Execute(pair, (original.Code, original.CaretPosition), input);
-            return new CodeString(Code, CaretPosition);
+            return sut.Execute(pair, original, input);
         }
 
         [Test]
@@ -37,12 +34,51 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
-        public void DeletingOpeningCharRemovesPairedClosingChar()
+        public void DeletingOpeningCharRemovesPairedClosingChar_Parens()
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
             var original = @"foo = (|2 + 2)".ToCodeString();
             var expected = @"foo = |2 + 2".ToCodeString();
+
+            var result = Run(pair, original, input);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DeletingOpeningCharRemovesPairedClosingChar_StringDelimiter()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = @"foo = ""|2 + 2""".ToCodeString();
+            var expected = @"foo = |2 + 2".ToCodeString();
+
+            var result = Run(pair, original, input);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DeletingOpeningCharLeavesClosingCharInPlace_InCommentStringDelimiter()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = @"'foo = ""|2 + 2""".ToCodeString();
+            var expected = @"'foo = |2 + 2""".ToCodeString();
+
+            var result = Run(pair, original, input);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DeletingOpeningCharRemovesPairedClosingChar_NestedParens()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = Keys.Back;
+            var original = @"foo = ((|2 + 2) + 42)".ToCodeString();
+            var expected = @"foo = (|2 + 2 + 42)".ToCodeString();
 
             var result = Run(pair, original, input);
 

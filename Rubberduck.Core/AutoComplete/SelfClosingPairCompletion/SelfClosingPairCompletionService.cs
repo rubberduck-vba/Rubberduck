@@ -1,16 +1,18 @@
-﻿using Rubberduck.VBEditor;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+using Rubberduck.Common;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 {
     public class SelfClosingPairCompletionService
     {
-        public (string Code, Selection CaretPosition) Execute(SelfClosingPair pair, (string, Selection) original, char input)
+        public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
         {
             if (input == pair.OpeningChar)
             {
@@ -26,7 +28,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             }
         }
 
-        public (string Code, Selection CaretPosition) Execute(SelfClosingPair pair, (string, Selection) original, Keys input)
+        public CodeString Execute(SelfClosingPair pair, CodeString original, Keys input)
         {
             if (input == Keys.Back)
             {
@@ -38,38 +40,46 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             }
         }
 
-        private (string, Selection) HandleOpeningChar(SelfClosingPair pair, (string Code, Selection Position) original)
+        private CodeString HandleOpeningChar(SelfClosingPair pair, CodeString original)
         {
-            var nextPosition = original.Position.ShiftRight();
+            var nextPosition = original.CaretPosition.ShiftRight();
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
-            return (original.Code.Insert(original.Position.StartColumn, autoCode), nextPosition);
+            return new CodeString(original.Code.Insert(original.CaretPosition.StartColumn, autoCode), nextPosition);
         }
 
-        private (string, Selection) HandleClosingChar(SelfClosingPair pair, (string Code, Selection Position) original)
+        private CodeString HandleClosingChar(SelfClosingPair pair, CodeString original)
         {
-            var nextPosition = original.Position.ShiftRight();
+            var nextPosition = original.CaretPosition.ShiftRight();
             var newCode = original.Code;
 
-            return (newCode, nextPosition);
+            return new CodeString(newCode, nextPosition);
         }
 
-        private (string, Selection) HandleBackspace(SelfClosingPair pair, (string Code, Selection Position) original)
+        private CodeString HandleBackspace(SelfClosingPair pair, CodeString original)
         {
-            var lines = original.Code.Split('\n');
-            var line = lines[original.Position.StartLine];
+            var lines = original.Lines;
+            var line = lines[original.CaretPosition.StartLine];
 
-            var previousChar = line[Math.Max(0, original.Position.StartColumn - 1)];
-            var nextChar = line[Math.Min(line.Length, original.Position.StartColumn)];
-
-            return DeleteMatchingTokens(pair, original, lines, line, previousChar, nextChar);
+            return DeleteMatchingTokens(pair, original);
         }
 
-        private static (string, Selection) DeleteMatchingTokens(SelfClosingPair pair, (string Code, Selection Position) original, string[] lines, string line, char previousChar, char nextChar)
+        private CodeString DeleteMatchingTokens(SelfClosingPair pair, CodeString original)
         {
-            if (previousChar == pair.OpeningChar && nextChar == pair.ClosingChar)
+            var position = original.CaretPosition;
+            var lines = original.Lines;
+            var line = lines[position.StartLine];
+
+            if (line[Math.Max(0, original.CaretPosition.StartColumn - 1)] == pair.OpeningChar)
             {
-                lines[original.Position.StartLine] = line.Remove(Math.Max(0, original.Position.StartColumn - 1), 2);
-                return (string.Join("\n", lines), original.Position.ShiftLeft());
+                var matchPosition = FindMatchingTokenPosition(pair, original);
+                if (matchPosition != default)
+                {
+                    var newCode = line
+                        .Remove(matchPosition.StartColumn, 1)
+                        .Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
+                    lines[original.CaretPosition.StartLine] = newCode;
+                }
+                return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft());
             }
             else
             {
@@ -77,5 +87,78 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             }
         }
 
+        private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
+        {
+            var result = VBACodeStringParser.Parse(original, p => p.blockStmt());
+            var visitor = new MatchingTokenVisitor(pair, original);
+            return visitor.Visit(result.parseTree);
+        }
+
+        private class MatchingTokenVisitor : VBAParserBaseVisitor<Selection>
+        {
+            private readonly SelfClosingPair _pair;
+            private readonly CodeString _code;
+
+            public MatchingTokenVisitor(SelfClosingPair pair, CodeString code)
+            {
+                _pair = pair;
+                _code = code;
+            }
+
+            public override Selection VisitLiteralExpr([NotNull] VBAParser.LiteralExprContext context)
+            {
+                if (context.Start.Text.StartsWith(_pair.OpeningChar.ToString())
+                    && context.Start.Text.EndsWith(_pair.ClosingChar.ToString()))
+                {
+                    if (_code.CaretPosition.StartLine == context.Start.Line - 1
+                        && _code.CaretPosition.StartColumn == context.Start.Column + 1)
+                    {
+                        return new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
+                    }
+                }
+                var inner = context.GetDescendents<VBAParser.LiteralExprContext>();
+                foreach (var item in inner)
+                {
+                    if (context != item)
+                    {
+                        var result = Visit(item);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+
+                return base.VisitLiteralExpr(context);
+            }
+
+            public override Selection VisitParenthesizedExpr([NotNull] VBAParser.ParenthesizedExprContext context)
+            {
+                if (context.Start.Text[0] == _pair.OpeningChar
+                    && context.Stop.Text[0] == _pair.ClosingChar)
+                {
+                    if (_code.CaretPosition.StartLine == context.Start.Line - 1
+                        && _code.CaretPosition.StartColumn == context.Start.Column + 1)
+                    {
+                        var token = context.Stop;
+                        return new Selection(token.Line - 1, token.Column);
+                    }
+                }
+                var inner = context.GetDescendents<VBAParser.ParenthesizedExprContext>();
+                foreach (var item in inner)
+                {
+                    if (context != item)
+                    {
+                        var result = Visit(item);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+
+                return base.VisitParenthesizedExpr(context);
+            }
+        }
     }
 }
