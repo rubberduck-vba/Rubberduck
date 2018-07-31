@@ -2136,7 +2136,7 @@ End Sub";
         [Category("Inspections")]
         public void UnreachableCaseInspection_StringCompares(string optionCompare, int unreachable)
         {
-            string valueWithIgnorableChars = "Ani\u00ADmal";
+            string valueWithIgnorableChars = "\"Ani\u00ADmal\"";
             string inputCode =
 $@"
 {optionCompare}

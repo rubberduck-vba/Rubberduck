@@ -401,6 +401,38 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var opType = new OperatorTypesProvider((lhsType, rhsType), null).OperatorDeclaredTypeLogicalDefault();
             Assert.AreEqual(expectedResultType, opType);
         }
+
+        [TestCase("Byte", "250?Byte", "250")]
+        [TestCase("Integer", "250?Byte", "250")]
+        [TestCase("Long", "250?Byte", "250")]
+        [TestCase("LongLong", "250?Byte", "250")]
+        [TestCase("Single", "250?Byte", "250")]
+        [TestCase("Double", "250?Byte", "250")]
+        [TestCase("Currency", "250?Byte", "250")]
+        [TestCase("Boolean", "250?Byte", "True")]
+        [TestCase("Boolean", "0?Byte", "False")]
+        [Category("Inspections")]
+        public void ParseTreeValue_TryCoerces(string destinationType, string sourceOperands, string expectedValue)
+        {
+            var ptValue = CreateInspValueFrom(sourceOperands);
+            if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
+            {
+                Assert.AreEqual(destinationType, result.TypeName);
+                Assert.AreEqual(expectedValue, result.ValueText);
+            }
+        }
+
+        [TestCase("Byte", "300?Integer", "300")]
+        [Category("Inspections")]
+        public void ParseTreeValue_TryCoerceFailures(string destinationType, string sourceOperands, string expectedValue)
+        {
+            var ptValue = CreateInspValueFrom(sourceOperands);
+            if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
+            {
+                Assert.Fail($"Invalid LetCoerce - Coerced {ptValue.TypeName}:{ptValue.ValueText} to {destinationType}");
+            }
+        }
+
         [TestCase("x?Byte_-_2?Long", "x - 2", "Long")]
         [TestCase("2_-_x?Byte", "2 - x", "Integer")]
         [TestCase("x?Byte_+_2?Long", "x + 2", "Long")]
@@ -479,7 +511,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-            Assert.IsTrue(result.IsOverflowException);
+            Assert.IsTrue(result.ExceedsTypeRange);
         }
 
         [TestCase("10_/_2", "5", "Double")]
@@ -512,9 +544,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("10_+_11", "21", "Integer")]
         [TestCase("True_+_10.5", "9.5", "Double")]
         [TestCase("10.5_+_True", "9.5", "Double")]
-        [TestCase("#12/1/2018#_+_6", "12/07/2018 00:00:00", "Date")]
-        [TestCase("6_+_#12/1/2018#", "12/07/2018 00:00:00", "Date")]
-        [TestCase("#12/7/2018#_+_#12/7/2018#", "11/14/2137 00:00:00", "Date")]
+        [TestCase("#12/1/2018#_+_6", "#12/07/2018#", "Date")]
+        [TestCase("6_+_#12/1/2018#", "#12/07/2018#", "Date")]
+        [TestCase("#12/7/2018#_+_#12/7/2018#", "#11/14/2137#", "Date")]
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_Addition(string operands, string expected, string resultType)
         {
@@ -525,7 +557,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("10_-_11", "-1", "Integer")]
         [TestCase("True_-_10", "-11", "Integer")]
         [TestCase("11_-_True", "12", "Integer")]
-        [TestCase("#08/10/2000#_-_#08/01/2000#", "01/08/1900 00:00:00", "Date")]
+        [TestCase("#08/10/2000#_-_#08/01/2000#", "#01/08/1900#", "Date")]
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_Subtraction(string operands, string expected, string resultType)
         {
@@ -696,8 +728,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("-_0", "0?Integer")]
         [TestCase("-_1?Double", "-1?Double")]
         [TestCase("-_-1?Double", "1?Double")]
-        [TestCase("-_#12/1/2010#", "01/27/1789 00:00:00?Date")]
-        [TestCase("-_#12/1/0400#", "01/27/3399 00:00:00?Date")]
+        [TestCase("-_#12/1/2010#", "#01/27/1789#?Date")]
+        [TestCase("-_#12/1/0400#", "#01/27/3399#?Date")]
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_MinusUnaryOp(string operands, string expected)
         {
@@ -735,8 +767,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void ParseTreeValueExpressionEvaluator_LikeOperator(string operands, string expected)
         {
             var ops = operands.Split(new string[] { "_" }, StringSplitOptions.None);
-            var LHS = ValueFactory.Create(ops[0], Tokens.String);
-            var RHS = ValueFactory.Create(ops[2], Tokens.String);
+            var LHS = ValueFactory.CreateDeclaredType(ops[0], Tokens.String);
+            var RHS = ValueFactory.CreateDeclaredType(ops[2], Tokens.String);
             var result = Calculator.Evaluate(LHS, RHS, ops[1]);
 
             Assert.AreEqual(expected, result.ValueText, $"{LHS} Like {RHS}");
@@ -924,19 +956,19 @@ namespace RubberduckTests.Inspections.UnreachableCase
                     {
                         return ValueFactory.Create(value);
                     }
-                    return ValueFactory.Create(value, declaredType);
+                    return ValueFactory.CreateDeclaredType(value, declaredType);
                 }
                 else
                 {
                     if (declaredType is null)
                     {
-                        return ValueFactory.Create(value, conformTo);
+                        return ValueFactory.CreateDeclaredType(value, conformTo);
                     }
-                    return ValueFactory.Create(value, declaredType);
+                    return ValueFactory.CreateDeclaredType(value, declaredType);
                 }
             }
             return conformTo is null ? ValueFactory.Create(valAndType)
-                : ValueFactory.Create(valAndType, conformTo);
+                : ValueFactory.CreateDeclaredType(valAndType, conformTo);
         }
 
         private (IParseTreeValue, IParseTreeValue) TestBinaryOp(string opSymbol, string operands, string expected, string expectedResultTypeName)
@@ -956,7 +988,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 Assert.IsTrue(Math.Abs(lhs - rhs) <= accuracy, $"Actual={result.ValueText} Expected={expected}");
                 return (result,result);
             }
-            var expectedResult = ValueFactory.Create(expected, expectedResultTypeName);
+            var expectedResult = ValueFactory.CreateDeclaredType(expected, expectedResultTypeName);
             Assert.AreEqual(expectedResult, result);
             return (expectedResult,result);
         }

@@ -83,6 +83,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase(@"""x456""", "String", @"""x456""")]
         [TestCase("x456?String", "String", "x456")]
         [TestCase("45E2", "Double", "4500")]
+        [TestCase("45E+2", "Double", "4500")]
+        [TestCase("45E-2", "Double", "0.45")]
         [TestCase(@"""10.51""", "String", @"""10.51""")]
         [TestCase(@"""What@""", "String", @"""What@""")]
         [TestCase(@"""What!""", "String", @"""What!""")]
@@ -165,9 +167,18 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValue_ConvertToBoolText(string input, string expected)
         {
-            var result = ValueFactory.Create(input, Tokens.Boolean);
-            Assert.IsNotNull(result, $"Type conversion to {Tokens.Boolean} return null interface");
-            Assert.AreEqual(expected, result.ValueText);
+            var result = ValueFactory.Create(input);
+            IParseTreeValue coerced = null;
+            if (result.ParsesToConstantValue)
+            {
+                result.TryLetCoerce(Tokens.Boolean, out coerced);
+            }
+            else
+            {
+                coerced = result;
+            }
+            Assert.IsNotNull(coerced, $"Type conversion to {Tokens.Boolean} return null interface");
+            Assert.AreEqual(expected, coerced.ValueText);
         }
 
         [TestCase("Yahoo", "Long")]
@@ -176,7 +187,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValue_ConvertToType(string input, string convertToTypeName)
         {
-            var result = ValueFactory.Create(input, convertToTypeName);
+            var result = ValueFactory.CreateDeclaredType(input, convertToTypeName);
             Assert.IsNotNull(result, $"Type conversion to {convertToTypeName} return null interface");
             Assert.AreEqual("Yahoo", result.ValueText);
         }
@@ -185,12 +196,13 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValue_ConvertToNanType(string input, string convertToTypeName)
         {
-            var result = ValueFactory.Create(input, convertToTypeName);
+            var result = ValueFactory.CreateDeclaredType(input, convertToTypeName);
             Assert.IsNotNull(result, $"Type conversion to {convertToTypeName} return null interface");
             Assert.AreEqual("NaN", result.ValueText);
         }
 
         [TestCase(@"""W#hat#""", "String", @"""W#hat#""")]
+        [TestCase(@"""#W#hat#""", "String", @"""#W#hat#""")]    //Like Date
         [Category("Inspections")]
         public void ParseTreeValue_LikeATypeHint(string operands, string expectedTypeName, string expectedValueText)
         {
@@ -214,36 +226,31 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [Category("Inspections")]
         public void ParseTreeValue_DateTypeDeclared()
         {
-            var ptValue = ValueFactory.Create("#1/4/2005#", Tokens.Date);
+            var ptValue = ValueFactory.CreateDate("#1/4/2005#");
             Assert.AreEqual(Tokens.Date, ptValue.TypeName);
         }
 
         private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)
         {
+            var value = valAndType;
             if (valAndType.Contains(VALUE_TYPE_SEPARATOR))
             {
                 var args = valAndType.Split(new string[] { VALUE_TYPE_SEPARATOR }, StringSplitOptions.None);
-                var value = args[0];
+                value = args[0];
                 string declaredType = args[1].Equals(string.Empty) ? null : args[1];
                 if (conformTo is null)
                 {
-                    if (declaredType is null)
-                    {
-                        return ValueFactory.Create(value);
-                    }
-                    return ValueFactory.Create(value, declaredType);
+                    return declaredType is null ? ValueFactory.Create(value) 
+                        : ValueFactory.CreateDeclaredType(value, declaredType);
                 }
                 else
                 {
-                    if (declaredType is null)
-                    {
-                        return ValueFactory.Create(value, conformTo);
-                    }
-                    return ValueFactory.Create(value, declaredType);
+                    return declaredType is null ? ValueFactory.CreateDeclaredType(value, conformTo)
+                        : ValueFactory.CreateDeclaredType(value, declaredType);
                 }
             }
-            return conformTo is null ? ValueFactory.Create(valAndType)
-                : ValueFactory.Create(valAndType, conformTo);
+            return conformTo is null ? ValueFactory.Create(value)
+                : ValueFactory.CreateDeclaredType(value, conformTo);
         }
     }
 }

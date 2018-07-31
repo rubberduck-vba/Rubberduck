@@ -2,10 +2,8 @@
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
@@ -15,8 +13,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string ValueText { get; }
         string TypeName { get; }
         bool ParsesToConstantValue { get; set; }
-        decimal AsCurrency { get; }
-        bool IsOverflowException { get; set; }
+        bool ExceedsTypeRange { get; set; }
     }
 
     public class ParseTreeValue : IParseTreeValue
@@ -24,76 +21,76 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static decimal CURRENCYMIN = -922337203685477.5808M;
         private static decimal CURRENCYMAX = 922337203685477.5807M;
 
+#if DEBUG  //useful when debugging
         private readonly string _inputValue;
         private readonly string _declaredType;
-        private readonly string _derivedType;
+#endif
+
         private readonly int _hashCode;
 
         private string _valueText;
-        private ComparableDateValue _dateValue;
 
-        public ParseTreeValue(string value, string declaredType = null)
+        public static IParseTreeValue CreateConstant(string value, string declaredType)
         {
-            if (value is null)
+            var ptValue = new ParseTreeValue()
             {
-                throw new ArgumentNullException("null 'value' argument passed to UCIValue");
-            }
+                TypeName = declaredType,
+                ValueText = value,
+                ParsesToConstantValue = true,
+            };
+            return ptValue;
+        }
 
+        public static IParseTreeValue CreateExpression(string value, string declaredType)
+        {
+            var ptValue = new ParseTreeValue()
+            {
+                TypeName = declaredType,
+                ValueText = value,
+                ParsesToConstantValue = false,
+            };
+            return ptValue;
+        }
+
+        private ParseTreeValue()
+        {
+
+        }
+
+        public ParseTreeValue(string value, string declaredType)
+        {
+#if DEBUG
             _inputValue = value;
+            _declaredType = declaredType;
+#endif
+            _valueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor");
+            TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor");
+
             _hashCode = value.GetHashCode();
-            ValueText = value;
-            ParsesToConstantValue = IsStringConstant(value);
-            _declaredType = ParsesToConstantValue && (declaredType is null) ? Tokens.String : declaredType;
-            _derivedType = DeriveTypeName(value, out bool derivedFromTypeHint);
-
-            //if ( _declaredType != null &&  _declaredType.Equals(Tokens.Date))
-            //{
-            //    if (StringValueConverter.TryConvertString(AnnotateAsDateLiteral(ValueText), out _dateValue))
-            //    {
-            //        ParsesToConstantValue = true;
-            //        ValueText = AnnotateAsDateLiteral(_dateValue.AsString);
-            //    }
-            //}
-
-            if ((_declaredType != null && _declaredType.Equals(Tokens.Date)) || _derivedType.Equals(Tokens.Date))
-            {
-                if (StringValueConverter.TryConvertString(AnnotateAsDateLiteral(ValueText), out _dateValue))
-                {
-                    ValueText = AnnotateAsDateLiteral(_dateValue.AsString);
-                    ParsesToConstantValue = true;
-                }
-            }
-
-            if (derivedFromTypeHint)
-            {
-                _declaredType = _derivedType;
-                ValueText = RemoveTypeHintChar(value);
-            }
-            else
-            {
-                ValueText = value.Replace("\"", "");
-            }
-
-            var conformToTypeName = _declaredType ?? _derivedType;
-            ConformValueTextToType(conformToTypeName);
-            TypeName = conformToTypeName;
+            _valueText = TokenTypeResolver.ConformTokenToType(_valueText, TypeName, out bool parsesToConstant);
+            ParsesToConstantValue = parsesToConstant;
+            ExceedsTypeRange = ParsesToConstantValue ? ExceedsTypeExtents(_valueText, TypeName) : false;
         }
 
-        private static bool IsStringConstant(string input) => input.StartsWith("\"") && input.EndsWith("\"");
+//        public ParseTreeValue(string value)
+//        {
+//#if DEBUG
+//            _inputValue = value;
+//            _declaredType = null;
+//#endif
+//            _valueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor");
+//            _hashCode = value.GetHashCode();
 
-        public decimal AsCurrency
-        {
-            get
-            {
-                if (this.TryConvertValue(out decimal result))
-                {
-                    return Math.Round(result, 4, MidpointRounding.ToEven);
-                }
-                throw new OverflowException();
-            }
-        }
+//            if (TokenTypeResolver.TryDeriveTypeName(value, out string derivedType, out bool derivedFromTypeHint))
+//            {
+//                TypeName = derivedType;
+//                _valueText = derivedFromTypeHint ? RemoveTypeHintChar(value) : value;
+//                _valueText = TokenTypeResolver.ConformTokenToType(_valueText, TypeName, out bool parsesToConstant);
+//                ParsesToConstantValue = parsesToConstant;
+//            }
+//        }
 
-        public string TypeName { get; set; }
+        public string TypeName { get; set; } = string.Empty;
 
         public string ValueText
         {
@@ -107,13 +104,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return AnnotateAsStringConstant(_valueText);
                 }
+                if (ParsesToConstantValue && TypeName != null && TypeName.Equals(Tokens.Date))
+                {
+                    return AnnotateAsDateLiteral(_valueText);
+                }
                 return _valueText;
             }
         }
 
         public bool ParsesToConstantValue { set; get; }
 
-        public bool IsOverflowException { get; set; }
+        public bool ExceedsTypeRange { get; set; }
 
         public override string ToString() => ValueText;
 
@@ -139,8 +140,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return inputValue;
             }
 
-            var endingCharacter = inputValue.Last().ToString();
-            return SymbolList.TypeHintToTypeName.ContainsKey(endingCharacter)
+            return SymbolList.TypeHintToTypeName.ContainsKey(inputValue.Last().ToString())
                 ? inputValue.Substring(0, inputValue.Length - 1)
                 : inputValue;
         }
@@ -156,6 +156,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 result = $"{result}#";
             }
+            result.Replace(" 00:00:00", "");
             return result;
         }
 
@@ -173,362 +174,32 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return result;
         }
 
-        private static string DeriveTypeName(string inputString, out bool derivedFromTypeHint)
-        {
-            derivedFromTypeHint = false;
-
-            if (inputString.Length == 0)
-            {
-                return string.Empty;
-            }
-
-            if (TryParseAsDateLiteral(inputString, out ComparableDateValue _))
-            {
-                return Tokens.Date;
-            }
-
-            if (IsStringConstant(inputString))
-            {
-                return Tokens.String;
-            }
-
-
-            if (SymbolList.TypeHintToTypeName.TryGetValue(inputString.Last().ToString(), out string hintResult))
-            {
-                derivedFromTypeHint = true;
-                return hintResult;
-            }
-
-            if (inputString.Contains(".") || inputString.Count(ch => ch.Equals('E')) == 1)
-            {
-                if (double.TryParse(inputString, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
-                {
-                    return Tokens.Double;
-                }
-            }
-
-            if (inputString.Equals(Tokens.True) || inputString.Equals(Tokens.False))
-            {
-                return Tokens.Boolean;
-            }
-
-            if (short.TryParse(inputString, out _))
-            {
-                return Tokens.Integer;
-            }
-
-            if (int.TryParse(inputString, out _))
-            {
-                return Tokens.Long;
-            }
-
-            if (TryParseAsHexLiteral(inputString, out short _))
-            {
-                return Tokens.Integer;
-            }
-
-            if (TryParseAsHexLiteral(inputString, out int _))
-            {
-                return Tokens.Long;
-            }
-
-            if (TryParseAsOctalLiteral(inputString, out short _))
-            {
-                return Tokens.Integer;
-            }
-
-            if (TryParseAsOctalLiteral(inputString, out int _))
-            {
-                return Tokens.Long;
-            }
-
-            if (long.TryParse(inputString, out _))
-            {
-                return Tokens.Double; //See 3.3.2 of the VBA specification.
-            }
-
-            return string.Empty;
-        }
-
-        private static bool TryParseAsDateLiteral(string valueString, out ComparableDateValue value)
-        {
-            return StringValueConverter.TryConvertString(valueString, out value);
-        }
-
-        private static bool TryParseAsHexLiteral(string valueString, out short value)
-        {
-            value = default;
-
-            if (!valueString.StartsWith("&H") && !valueString.StartsWith("&h"))
-            {
-                return false;
-            }
-
-            var hexString = valueString.Substring(2).ToUpperInvariant();
-            try
-            {
-                value = Convert.ToInt16(hexString, fromBase: 16);
-                return true;
-            }
-            catch (OverflowException)
-            {
-                return false;
-            }
-        }
-
-        private static bool TryParseAsHexLiteral(string valueString, out int value)
-        {
-            value = default;
-
-            if (!valueString.StartsWith("&H") && !valueString.StartsWith("&h"))
-            {
-                return false;
-            }
-
-            var hexString = valueString.Substring(2).ToUpperInvariant();
-            try
-            {
-                value = Convert.ToInt32(hexString, fromBase: 16);
-                return true;
-            }
-            catch (OverflowException)
-            {
-                return false;
-            }
-        }
-
-        private static bool TryParseAsHexLiteral(string valueString, out long value)
-        {
-            value = default;
-
-            if (!valueString.StartsWith("&H") && !valueString.StartsWith("&h"))
-            {
-                return false;
-            }
-
-            var hexString = valueString.Substring(2).ToUpperInvariant();
-            try
-            {
-                value = Convert.ToInt64(hexString, fromBase: 16);
-                return true;
-            }
-            catch (OverflowException)
-            {
-                return false;
-            }
-        }
-
-        private static bool TryParseAsOctalLiteral(string valueString, out short value)
-        {
-            value = default;
-
-            if (!valueString.StartsWith("&o") && !valueString.StartsWith("&O"))
-            {
-                return false;
-            }
-
-            var octalString = valueString.Substring(2);
-            try
-            {
-                value = Convert.ToInt16(octalString, fromBase: 8);
-                return true;
-            }
-            catch (OverflowException)
-            {
-                return false;
-            }
-        }
-
-        private static bool TryParseAsOctalLiteral(string valueString, out int value)
-        {
-            value = default;
-
-            if (!valueString.StartsWith("&o") && !valueString.StartsWith("&O"))
-            {
-                return false;
-            }
-
-            var octalString = valueString.Substring(2);
-            try
-            {
-                value = Convert.ToInt32(octalString, fromBase: 8);
-                return true;
-            }
-            catch (OverflowException)
-            {
-                return false;
-            }
-        }
-
-        private static bool TryParseAsOctalLiteral(string valueString, out long value)
-        {
-            value = default;
-
-            if (!valueString.StartsWith("&o") && !valueString.StartsWith("&O"))
-            {
-                return false;
-            }
-
-            var octalString = valueString.Substring(2);
-            try
-            {
-                value = Convert.ToInt64(octalString, fromBase: 8);
-                return true;
-            }
-            catch (OverflowException)
-            {
-                return false;
-            }
-        }
-
-        private void ConformValueTextToType(string conformTypeName)
-        {
-            if (ValueText.Equals(double.NaN.ToString(CultureInfo.InvariantCulture)) &&
-                !conformTypeName.Equals(Tokens.String))
-            {
-                return;
-            }
-
-            if (conformTypeName.Equals(Tokens.LongLong) || conformTypeName.Equals(Tokens.Long) ||
-                conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
-            {
-                if (this.TryConvertValue(out long newVal))
-                {
-                    ValueText = newVal.ToString();
-                    ParsesToConstantValue = true;
-                    CheckForOverflow(conformTypeName);
-                    return;
-                }
-
-                if (conformTypeName.Equals(Tokens.Integer))
-                {
-                    if (TryParseAsHexLiteral(ValueText, out short outputHex))
-                    {
-                        ValueText = outputHex.ToString();
-                        ParsesToConstantValue = true;
-                        return;
-                    }
-
-                    if (TryParseAsOctalLiteral(ValueText, out short outputOctal))
-                    {
-                        ValueText = outputOctal.ToString();
-                        ParsesToConstantValue = true;
-                        return;
-                    }
-                }
-
-                if (conformTypeName.Equals(Tokens.Long))
-                {
-                    if (TryParseAsHexLiteral(ValueText, out int outputHex))
-                    {
-                        ValueText = outputHex.ToString();
-                        ParsesToConstantValue = true;
-                        return;
-                    }
-
-                    if (TryParseAsOctalLiteral(ValueText, out int outputOctal))
-                    {
-                        ValueText = outputOctal.ToString();
-                        ParsesToConstantValue = true;
-                        return;
-                    }
-                }
-
-                if (conformTypeName.Equals(Tokens.LongLong))
-                {
-                    if (TryParseAsHexLiteral(ValueText, out long outputHex))
-                    {
-                        ValueText = outputHex.ToString();
-                        ParsesToConstantValue = true;
-                        return;
-                    }
-
-                    if (TryParseAsOctalLiteral(ValueText, out long outputOctal))
-                    {
-                        ValueText = outputOctal.ToString();
-                        ParsesToConstantValue = true;
-                        return;
-                    }
-                }
-            }
-
-            if (conformTypeName.Equals(Tokens.Double) || conformTypeName.Equals(Tokens.Single))
-            {
-                if (this.TryConvertValue(out double newVal))
-                {
-                    ValueText = newVal.ToString(CultureInfo.InvariantCulture);
-                    ParsesToConstantValue = true;
-                    CheckForOverflow(conformTypeName);
-                    return;
-                }
-            }
-
-            if (conformTypeName.Equals(Tokens.Boolean))
-            {
-                if (this.TryConvertValue(out bool newVal))
-                {
-                    ValueText = newVal.ToString();
-                    ParsesToConstantValue = true;
-                    return;
-                }
-            }
-
-            if (conformTypeName.Equals(Tokens.String))
-            {
-                ParsesToConstantValue = IsStringConstant(_inputValue);
-                return;
-            }
-
-            if (conformTypeName.Equals(Tokens.Currency))
-            {
-                if (this.TryConvertValue(out decimal newVal))
-                {
-                    var currencyValue = Math.Round(newVal, 4, MidpointRounding.ToEven);
-                    ValueText = currencyValue.ToString(CultureInfo.InvariantCulture);
-                    ParsesToConstantValue = true;
-                    CheckForOverflow(conformTypeName);
-                    return;
-                }
-            }
-
-            if (conformTypeName.Equals(Tokens.Date))
-            {
-                if (this.TryConvertValue(out double newVal))
-                {
-                    if (!_derivedType.Equals(Tokens.Date))
-                    {
-                        var dv = new DateValue(DateTime.FromOADate(newVal));
-                        _dateValue = new ComparableDateValue(dv);
-                        ValueText = _dateValue.AsDate.ToString(CultureInfo.InvariantCulture);
-                        ParsesToConstantValue = true;
-                    }
-                }
-            }
-        }
-
         private static Dictionary<string, Action<string>> OverflowChecks = new Dictionary<string, Action<string>>()
         {
             [Tokens.Byte] = (a) => { byte.Parse(a); },
             [Tokens.Integer] = (a) => { Int16.Parse(a); },
             [Tokens.Long] = (a) => { Int32.Parse(a); },
             [Tokens.LongLong] = (a) => { Int64.Parse(a); },
+            [Tokens.Double] = (a) => { double.Parse(a); },
             [Tokens.Single] = (a) => { float.Parse(a); },
             [Tokens.Currency] = (a) => { var value = decimal.Parse(a); if (value < CURRENCYMIN || value > CURRENCYMAX) { throw new OverflowException(); } },
+            [Tokens.Boolean] = (a) => { if (!(a.Equals(Tokens.True) || a.Equals(Tokens.False))) { long.Parse(a); } },
         };
 
-        private void CheckForOverflow(string typeName)
+        private static bool ExceedsTypeExtents(string valueText, string typeName)
         {
             if (OverflowChecks.ContainsKey(typeName))
             {
                 try
                 {
-                    OverflowChecks[typeName](ValueText);
+                    OverflowChecks[typeName](valueText);
                 }
                 catch (OverflowException)
                 {
-                    IsOverflowException = true;
+                    return true;
                 }
             }
+            return false;
         }
     }
 
@@ -585,6 +256,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public static class ParseTreeValueExtensions
     {
+        public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, string destinationType, out IParseTreeValue newValue)
+        {
+            newValue = null;
+            var coerce = new LetCoercer(parseTreeValue.TypeName, destinationType);
+            if( coerce.TryLetCoerce(parseTreeValue.ValueText, out string valueText))
+            {
+                newValue = ParseTreeValue.CreateConstant(valueText, destinationType);
+                return true;
+            }
+            return false;
+        }
+
         public static bool TryConvertValue(this IParseTreeValue parseTreeValue, out long value)
         {
             value = default;

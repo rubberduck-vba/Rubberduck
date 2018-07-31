@@ -96,6 +96,7 @@
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeValueFactory.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\RangeClauseExpression.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\StringValueConverter.cs" />
+    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\TokenTypeResolver.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\UnreachableCaseInspectionFactoryProvider.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeExpressionEvaluator.cs" />
     <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeVisitorResults.cs" />

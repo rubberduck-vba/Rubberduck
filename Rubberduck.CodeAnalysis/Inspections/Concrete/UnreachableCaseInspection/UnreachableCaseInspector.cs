@@ -290,19 +290,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var rhs = factory.Create(operands[1].Trim());
                 if (opSymbol.Equals(Tokens.Like))
                 {
-                    rhs = factory.Create($"\"{operands[1].Trim()}\"", Tokens.String);
+                    rhs = factory.CreateDeclaredType($"\"{operands[1].Trim()}\"", Tokens.String);
                 }
-                if (value.IsOverflowException)
+                if (value.ExceedsTypeRange)
                 {
-                    lhs.IsOverflowException = true;
-                    rhs.IsOverflowException = true;
+                    lhs.ExceedsTypeRange = true;
+                    rhs.ExceedsTypeRange = true;
                 }
                 return (lhs, rhs);
             }
 
             if (operands.Count() == 1)
             {
-                var lhs = new ParseTreeValue(operands[0].Trim());
+                var lhs = factory.Create(operands[0].Trim());
                 return (lhs, null);
             }
             return (null, null);

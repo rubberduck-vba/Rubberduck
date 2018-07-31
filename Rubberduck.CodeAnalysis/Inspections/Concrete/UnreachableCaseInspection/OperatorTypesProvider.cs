@@ -185,6 +185,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             typeProvider.AddOperatorException(ArithmeticOperators.MINUS, new string[] { Tokens.Date }, new string[] { Tokens.Date }, Tokens.Double);
 
             typeProvider.AddOperatorException(ArithmeticOperators.EXPONENT, AllTypesExceptArraysAndUDTs(), AllTypesExceptArraysAndUDTs(), Tokens.Double);
+
+            typeProvider.AddOperatorException(ArithmeticOperators.AMPERSAND, AllNumericTypesAndStringAndDate(), AllNumericTypesAndStringAndDate(), Tokens.String);
+
+            typeProvider.AddOperatorException(ArithmeticOperators.AMPERSAND, AllTypesExceptArraysAndUDTs(), new string[] { Tokens.Variant }, Tokens.Variant);
+            typeProvider.AddOperatorException(ArithmeticOperators.AMPERSAND, new string[] { Tokens.Variant }, AllTypesExceptArraysAndUDTs(), Tokens.Variant);
         }
 
         private static void InitializeLogicalDeclaredTypes(ref OperatorTypesLookup typeProvider)
@@ -231,7 +236,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             typeProvider.Add(new List<string>() { Tokens.Byte }, new List<string>() { Tokens.Byte, Tokens.String }, Tokens.Byte);
-            typeProvider.Add(new List<string>() { Tokens.Byte, Tokens.String }, new List<string>() { Tokens.Byte, Tokens.String }, Tokens.Byte);
+            typeProvider.Add(new List<string>() { Tokens.Byte, Tokens.String }, new List<string>() { Tokens.Byte }, Tokens.Byte);
 
             typeProvider.Add(new List<string>() { Tokens.Boolean }, new List<string>() { Tokens.Boolean, Tokens.String }, Tokens.Boolean);
             typeProvider.Add(new List<string>() { Tokens.Boolean, Tokens.String }, new List<string>() { Tokens.Boolean }, Tokens.Boolean);

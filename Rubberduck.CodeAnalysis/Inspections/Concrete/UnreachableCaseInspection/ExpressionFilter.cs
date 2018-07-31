@@ -412,11 +412,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool IsOverflow(IRangeClauseExpression expression)
         {
-            if (expression.LHSValue != null && expression.LHSValue.IsOverflowException)
+            if (expression.LHSValue != null && expression.LHSValue.ExceedsTypeRange)
             {
                 expression.IsInherentlyUnreachable = true;
             }
-            if (expression.RHSValue != null && expression.RHSValue.IsOverflowException)
+            if (expression.RHSValue != null && expression.RHSValue.ExceedsTypeRange)
             {
                 expression.IsInherentlyUnreachable = true;
             }

@@ -129,7 +129,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("50_To_100,175_To_225", "Long", "Range!50:100,Range!175:225")]
         [TestCase("500?Long_To_100?Long", "Long", "")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddRangeClauses(string firstCase, string filterTypeName, string expectedRangeClauses)
+        public void ExpressionFilter_AddRangeOfValuesClauses(string firstCase, string filterTypeName, string expectedRangeClauses)
         {
             var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, filterTypeName);
             var expected = FilterContentTokensToFilter(new string[] { expectedRangeClauses }, filterTypeName);
@@ -235,8 +235,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
         }
 
         [TestCase(@"""Alpha""_To_""Omega"",""Nuts""_To_""Soup""", @"Range!""Alpha"":""Soup""")]
+        [TestCase(@"""Alpha"",""Nuts"",""Alpha""", @"Value!""Alpha"", Value!""Nuts""")]
         [Category("Inspections")]
-        public void ExpressionFilter_AddFiltersString(string firstCase, string expectedClauses)
+        public void ExpressionFilter_AddFiltersStrings(string firstCase, string expectedClauses)
         {
             var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, Tokens.String);
             var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.String);
@@ -338,7 +339,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void ExpressionFilter_BooleanIsClauseTruthTableConstSelectExpression(string selectExpressionValue, string rangeClause, string expectedFilterContent)
         {
             var actualFilter = ExpressionFilterFactory.Create(Tokens.Boolean);
-            actualFilter.SelectExpressionValue = ValueFactory.Create(selectExpressionValue, Tokens.Boolean);
+            //actualFilter.SelectExpressionValue = ValueFactory.Create(selectExpressionValue, Tokens.Boolean);
+            actualFilter.SelectExpressionValue = ValueFactory.Create(selectExpressionValue.Equals(Tokens.True)); //, Tokens.Boolean);
 
             actualFilter = RangeClauseTokensToFilter(new string[] { rangeClause }, Tokens.Boolean, actualFilter);
             var expectedFilter = FilterContentTokensToFilter(new string[] { expectedFilterContent }, Tokens.Boolean);
@@ -481,7 +483,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 {
                     return ValueFactory.Create(value);
                 }
-                var ptValue = ValueFactory.Create(value, declaredType);
+                //var ptValue = ValueFactory.Create(value, declaredType);
+                var ptValue = ValueFactory.CreateDeclaredType(value, declaredType);
                 return ptValue;
             }
             return ValueFactory.Create(valAndType);
@@ -529,7 +532,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
                     }
                     else
                     {
-                        expressionClause = new ValueExpression(ValueFactory.Create($"{symbol}{operand}",filterTypeName));
+                        //expressionClause = new ValueExpression(ValueFactory.Create($"{symbol}{operand}", filterTypeName));
+                        expressionClause = new ValueExpression(ValueFactory.CreateDeclaredType($"{symbol}{operand}", filterTypeName));
                     }
                 }
                 else
