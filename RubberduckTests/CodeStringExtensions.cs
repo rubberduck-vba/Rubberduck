@@ -51,7 +51,7 @@ namespace RubberduckTests
 
         public override string ToString()
         {
-            var hasCaret = Code.RemovePseudoCaret().CaretPosition != default;
+            var hasCaret = Code.ToCodeString().CaretPosition != default;
             if (hasCaret)
             {
                 return Code;
@@ -63,7 +63,7 @@ namespace RubberduckTests
 
     public static class CodeStringExtensions
     {
-        public static CodeString RemovePseudoCaret(this string code)
+        public static CodeString ToCodeString(this string code)
         {
             var zPosition = new Selection();
             var lines = code.Split('\n');

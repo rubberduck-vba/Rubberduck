@@ -27,8 +27,8 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('(', ')');
             var input = pair.ClosingChar;
-            var original = @"foo = MsgBox(|)".RemovePseudoCaret();
-            var expected = @"foo = MsgBox()|".RemovePseudoCaret();
+            var original = @"foo = MsgBox(|)".ToCodeString();
+            var expected = @"foo = MsgBox()|".ToCodeString();
 
             var result = Run(pair, original, input);
 
@@ -40,8 +40,8 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('(', ')');
             var input = pair.OpeningChar;
-            var original = @"foo = MsgBox(|)".RemovePseudoCaret();
-            var expected = @"foo = MsgBox((|))".RemovePseudoCaret();
+            var original = @"foo = MsgBox(|)".ToCodeString();
+            var expected = @"foo = MsgBox((|))".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -52,8 +52,8 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
-            var original = @"foo = MsgBox(|)".RemovePseudoCaret();
-            var expected = @"foo = MsgBox|".RemovePseudoCaret();
+            var original = @"foo = MsgBox(|)".ToCodeString();
+            var expected = @"foo = MsgBox|".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
