@@ -106,6 +106,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Category Name.
+        /// </summary>
+        public static string TestExplorer_CategoryName {
+            get {
+                return ResourceManager.GetString("TestExplorer_CategoryName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duration.
         /// </summary>
         public static string TestExplorer_Duration {
@@ -219,6 +228,15 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string TestExplorer_RunPassedTests {
             get {
                 return ResourceManager.GetString("TestExplorer_RunPassedTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected Category.
+        /// </summary>
+        public static string TestExplorer_RunSelectedCategoryTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_RunSelectedCategoryTests", resourceCulture);
             }
         }
         

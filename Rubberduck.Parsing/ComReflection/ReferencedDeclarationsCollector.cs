@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly RubberduckParserState _state;
         private readonly string _serializedDeclarationsPath;
         private SerializableProject _serialized;
-        private readonly List<Declaration> _declarations = new List<Declaration>(); 
+        private readonly List<Declaration> _declarations = new List<Declaration>();
 
         private static readonly HashSet<string> IgnoredInterfaceMembers = new HashSet<string>
         {
@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.ComReflection
             _referenceMajor = reference.Major;
             _referenceMinor = reference.Minor;
         }
-        
+
         public bool SerializedVersionExists
         {
             get
@@ -101,18 +101,19 @@ namespace Rubberduck.Parsing.ComReflection
 
         public List<Declaration> LoadDeclarationsFromXml()
         {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
-            var file = Path.Combine(path, string.Format("{0}.{1}.{2}", _referenceName, _referenceMajor, _referenceMinor) + ".xml");
+            var path = _serializedDeclarationsPath;
+            var filename = $"{_referenceName}.{_referenceMajor}.{_referenceMinor}.xml";
+            var file = Path.Combine(path, filename);
             var reader = new XmlPersistableDeclarations();
             var deserialized = reader.Load(file);
 
             var declarations = deserialized.Unwrap();
 
-            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project && 
+            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project &&
                                                             d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
                                                             ProceduralTypes.Contains(d.DeclarationType))
                                                 .GroupBy(d => d.ParentDeclaration))
-            { 
+            {
                 _state.CoClasses.TryAdd(members.Select(m => m.IdentifierName).ToList(), members.First().ParentDeclaration);
             }
             return declarations;
@@ -170,7 +171,7 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     var enumDeclaration = new Declaration(enumeration, declaration, moduleName);
                     _declarations.Add(enumDeclaration);
-                    var members = enumeration.Members.Select(e => new Declaration(e, enumDeclaration, moduleName)).ToList();
+                    var members = enumeration.Members.Select(e => new ValuedDeclaration(e, enumDeclaration, moduleName)).ToList();
                     _declarations.AddRange(members);
 
                     var enumTree = new SerializableDeclarationTree(enumDeclaration);
@@ -196,7 +197,8 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     continue;
                 }
-                var declarations = fields.Fields.Select(f => new Declaration(f, declaration, projectName)).ToList();
+                var declarations = fields.Fields.Where(x => x.Type != DeclarationType.Constant).Select(f => new Declaration(f, declaration, projectName)).ToList();
+                declarations.AddRange(fields.Fields.Where(x => x.Type == DeclarationType.Constant).Select(f => new ValuedDeclaration(f, declaration, projectName)));
                 _declarations.AddRange(declarations);
                 moduleTree.AddChildren(declarations);
             }
@@ -305,7 +307,7 @@ namespace Rubberduck.Parsing.ComReflection
             var intrface = module as ComInterface;
             if (coClass != null || intrface != null)
             {
-                var output = coClass != null ? 
+                var output = coClass != null ?
                     new ClassModuleDeclaration(coClass, parent, project, attributes) :
                     new ClassModuleDeclaration(intrface, parent, project, attributes);
                 if (coClass != null)

@@ -109,11 +109,18 @@
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
+    <Compile Include="QuickFixes\IntroduceLocalVariableQuickFixTests.cs" />
+    <Compile Include="Rewriter\ArgumentRewriterInfoFinderTests.cs" />
+    <Compile Include="Rewriter\ParameterRewriterInfoFinderTests.cs" />
+    <Compile Include="Rewriter\ConstantRewriterInfoFinderTests.cs" />
+    <Compile Include="Rewriter\VariableRewriterInfoFinderTests.cs" />
     <Compile Include="Settings\AutoCompleteSettingsTests.cs" />
     <Compile Include="Settings\CodeInspectionConfigProviderTests.cs" />
     <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="Inspections\InspectionProviderTests.cs" />
+    <Compile Include="Symbols\ToVbExpressionTests.cs" />
+    <Compile Include="UnitTesting\TestMethodTests.cs" />
     <Compile Include="VBEditor\Utility\DisposalActionContainerTests.cs" />
     <Compile Include="VBEditor\ComSafeManagerTests.cs" />
     <Compile Include="VBEditor\ProjectsRepositoryTests.cs" />
@@ -210,7 +217,7 @@
     <Compile Include="Symbols\CommandBarControlCaptionGuardTests.cs" />
     <Compile Include="Symbols\DeclarationFinderTests.cs" />
     <Compile Include="Symbols\ProjectDeclarationTests.cs" />
-    <Compile Include="Symbols\ConstantDeclarationTests.cs" />
+    <Compile Include="Symbols\ValuedDeclarationTests.cs" />
     <Compile Include="Symbols\ProceduralModuleDeclarationTests.cs" />
     <Compile Include="Symbols\ParameterDeclarationTests.cs" />
     <Compile Include="Symbols\ExternalProcedureDeclarationTests.cs" />

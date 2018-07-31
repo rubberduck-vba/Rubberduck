@@ -11,9 +11,13 @@ namespace Rubberduck.Parsing.ComReflection
         public string Name { get; }
         public int Value { get; }
         public VarEnum ValueType { get; }
+        ComEnumeration Parent { get; }
+        public ComProject Project => Parent?.Project;
 
-        public ComEnumerationMember(ITypeInfo info, VARDESC varDesc)
+        public ComEnumerationMember(ComEnumeration parent, ITypeInfo info, VARDESC varDesc)
         {
+            Parent = parent;
+
             var value = new ComVariant(varDesc.desc.lpvarValue);
             Value = (int)value.Value;
             ValueType = value.VariantType;
