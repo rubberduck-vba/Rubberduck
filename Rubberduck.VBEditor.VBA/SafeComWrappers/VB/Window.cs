@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
@@ -19,41 +18,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IntPtr Handle()
         {
             return (IntPtr)HWnd;
-        }
-
-        private IntPtr _unknown;
-        public IntPtr IUnknown
-        {
-            get
-            {
-                if (IsWrappingNullReference)
-                {
-                    return IntPtr.Zero;
-                }
-
-                if (_unknown == IntPtr.Zero)
-                {
-                    try
-                    {
-                        try
-                        {
-                            _unknown = Marshal.GetIUnknownForObject(Target);
-                        }
-                        catch
-                        {
-                            // If GetIUnknownForObject throws us here, we're fine - it just means that the wrapper itself is invalid.
-                        }
-                        Marshal.Release(_unknown);
-                    }
-                    catch
-                    {
-                        // If Marshal.Release threw us here, we're probably screwed anyway, so we might as well just wait for the
-                        // zombie process when the VBE tries to close.
-                        _logger.Warn("Marshal.Release failed for IWindow after a successful call to Marshal.GetIUnknownForObject. Process may hang on close.");
-                    }
-                }
-                return _unknown;
-            }
         }
 
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
@@ -79,14 +43,36 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     return;
                 }
 
-                var window = VBE.MainWindow;
-                var handle = window.Handle().FindChildWindow(Caption);
-
-                if (NativeMethods.SendMessage(handle, (int) WM.SETREDRAW, new IntPtr(value ? -1 : 0), IntPtr.Zero) == IntPtr.Zero)
+                using (var window = VBE.MainWindow)
                 {
-                    _screenUpdating = value;
+                    var handle = window.Handle().FindChildWindow(Caption);
+                    if (handle.Equals(IntPtr.Zero))
+                    {
+                        return;
+                    }
+                    if (NativeMethods.SendMessage(handle, (int)WM.SETREDRAW, new IntPtr(value ? -1 : 0), IntPtr.Zero) == IntPtr.Zero)
+                    {
+                        _screenUpdating = value;
+                    }
                 }
             }
+        }
+
+        public void Refresh()
+        {
+            if (!_screenUpdating)
+            {
+                return;
+            }
+            using (var window = VBE.MainWindow)
+            {
+                var handle = window.Handle().FindChildWindow(Caption);
+                if (handle.Equals(IntPtr.Zero))
+                {
+                    return;
+                }
+                NativeMethods.RedrawWindow(handle, IntPtr.Zero, IntPtr.Zero, RedrawWindowFlags.AllChildren | RedrawWindowFlags.UpdateNow);
+            }           
         }
 
         public int Left
