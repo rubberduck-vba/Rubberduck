@@ -126,7 +126,7 @@
 
                         <MenuItem x:Name="FilterInspectionByHint"
                                   Style="{DynamicResource MenuItemStyle}"
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Hint}"
                                   IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
@@ -137,7 +137,7 @@
 
                         <MenuItem x:Name="FilterInspectionBySuggestion"
                                   Style="{DynamicResource MenuItemStyle}"
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Suggestion}"
                                   IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
@@ -149,7 +149,7 @@
                         <MenuItem x:Name="FilterInspectionByWarning"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center"
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Warning}"
                                   IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
@@ -160,7 +160,7 @@
 
                         <MenuItem x:Name="FilterInspectionByError"
                                   Style="{DynamicResource MenuItemStyle}"
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Error}"
                                   IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
                                   IsCheckable="True"
                                   controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">

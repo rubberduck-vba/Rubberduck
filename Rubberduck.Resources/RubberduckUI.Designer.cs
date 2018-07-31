@@ -2001,42 +2001,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        public static string InspectionResults_FilterByError {
-            get {
-                return ResourceManager.GetString("InspectionResults_FilterByError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hint.
-        /// </summary>
-        public static string InspectionResults_FilterByHint {
-            get {
-                return ResourceManager.GetString("InspectionResults_FilterByHint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Suggestion.
-        /// </summary>
-        public static string InspectionResults_FilterBySuggestion {
-            get {
-                return ResourceManager.GetString("InspectionResults_FilterBySuggestion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning.
-        /// </summary>
-        public static string InspectionResults_FilterByWarning {
-            get {
-                return ResourceManager.GetString("InspectionResults_FilterByWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Filter by Description:.
         /// </summary>
         public static string InspectionSettings_FilterDescription {
