@@ -60,19 +60,6 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
-        public void DeletingOpeningCharLeavesClosingCharInPlace_InCommentStringDelimiter()
-        {
-            var pair = new SelfClosingPair('"', '"');
-            var input = Keys.Back;
-            var original = @"'foo = ""|2 + 2""".ToCodeString();
-            var expected = @"'foo = |2 + 2""".ToCodeString();
-
-            var result = Run(pair, original, input);
-
-            Assert.AreEqual(expected, result);
-        }
-
-        [Test]
         public void DeletingOpeningCharRemovesPairedClosingChar_NestedParens()
         {
             var pair = new SelfClosingPair('(', ')');
