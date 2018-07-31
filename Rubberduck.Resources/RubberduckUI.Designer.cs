@@ -2318,6 +2318,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Busy.
+        /// </summary>
+        public static string ParserState_Busy {
+            get {
+                return ResourceManager.GetString("ParserState_Busy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parse Error.
         /// </summary>
         public static string ParserState_Error {
