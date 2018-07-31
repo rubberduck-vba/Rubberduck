@@ -48,7 +48,6 @@ namespace RubberduckTests.Mocks
 
         public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
-<<<<<<< HEAD
             var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
             var compilationArgumentsroviderMock = new Mock<ICompilationArgumentsProvider>();
             compilationArgumentsroviderMock.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
@@ -56,15 +55,7 @@ namespace RubberduckTests.Mocks
             var compilationArgumentsProvider = compilationArgumentsroviderMock.Object;
             var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider), codePaneSourceCodeHandler);
             var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
-=======
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture)), state.ProjectsProvider);
-            var sourceCodeHandler = new Mock<ISourceCodeHandler>().Object;
-            return Create(vbe, state, attributeParser, sourceCodeHandler, projectRepository, serializedDeclarationsPath);
-        }
 
-        public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IAttributeParser attributeParser, ISourceCodeHandler sourceCodeHandler, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
-        {
->>>>>>> next
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
             Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider);
