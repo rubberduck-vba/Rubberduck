@@ -161,7 +161,7 @@
     <Compile Include="SafeComWrappers\SafeEventedComWrapper.cs" />
     <Compile Include="Utility\DisposalActionContainer.cs" />
     <Compile Include="Utility\RegistryWrapper.cs" />
-    <Compile Include="WindowsApi\ChildWindowFinder.cs" />
+    <Compile Include="WindowsApi\WindowLocator.cs" />
     <Compile Include="WindowsApi\CodePaneSubclass.cs" />
     <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
     <Compile Include="WindowsApi\FocusSource.cs" />

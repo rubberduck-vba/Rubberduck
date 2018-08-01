@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class ConstantDeclaration : Declaration
+    public class ValuedDeclaration : Declaration
     {
-        public ConstantDeclaration(
+        public ValuedDeclaration(
             QualifiedMemberName qualifiedName, 
             Declaration parentDeclaration,
             string parentScope,
@@ -40,6 +42,18 @@ namespace Rubberduck.Parsing.Symbols
                  annotations)
         {
             Expression = value;
+        }
+
+        public ValuedDeclaration(ComField field, Declaration parent, QualifiedModuleName module)
+            : base(field, parent, module)
+        {
+            Expression = field.DefaultValue is string ? ((string)field.DefaultValue).ToVbExpression(false) : field.DefaultValue.ToString();
+        }
+
+        public ValuedDeclaration(ComEnumerationMember member, Declaration parent, QualifiedModuleName module)
+            : base(member, parent, module)
+        {
+            Expression = member.Value.ToString();
         }
 
         public string Expression { get; }

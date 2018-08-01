@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(context => new QualifiedContextInspectionResult(this,
                                                   string.Format(context.Context.GetSelection().LineCount > 3
                                                         ? RubberduckUI.EasterEgg_Continuator
-                                                        : Resources.Inspections.InspectionResults.MultilineParameterInspection, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().ToString()),
+                                                        : Resources.Inspections.InspectionResults.MultilineParameterInspection, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().GetText()),
                                                   context));
         }
 

@@ -1,6 +1,9 @@
 using System;
+using System.Text.RegularExpressions;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
@@ -22,8 +25,60 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            var instruction = $"{Environment.NewLine}Dim {result.Target.IdentifierName} As Variant{Environment.NewLine}";
-            _state.GetRewriter(result.Target).InsertBefore(result.Target.Context.Start.TokenIndex, instruction);
+            var identifierContext = result.Target.Context;
+            var enclosingStatmentContext = identifierContext.GetAncestor<VBAParser.BlockStmtContext>();
+            var instruction = IdentifierDeclarationText(result.Target.IdentifierName, EndOfStatementText(enclosingStatmentContext), FrontPadding(enclosingStatmentContext));
+            _state.GetRewriter(result.Target).InsertBefore(enclosingStatmentContext.Start.TokenIndex, instruction);
+        }
+
+        private string EndOfStatementText(VBAParser.BlockStmtContext context)
+        {
+            if (!context.TryGetPrecedingContext<VBAParser.IndividualNonEOFEndOfStatementContext>(out var individualEndOfStmtContext))
+            {
+                return Environment.NewLine;
+            }
+
+            var endOfLine = individualEndOfStmtContext.endOfLine();
+
+            if (endOfLine?.commentOrAnnotation() == null)
+            {
+                return individualEndOfStmtContext.GetText();
+            }
+
+            //There is a comment inside the preceding endOfLine, which we do not want to duplicate.
+            var whitespaceContext = individualEndOfStmtContext.whiteSpace(0);
+            return Environment.NewLine + (whitespaceContext?.GetText() ?? string.Empty);
+        }
+
+        private string FrontPadding(VBAParser.BlockStmtContext context)
+        {
+            var statementLabelContext = context.statementLabelDefinition();
+            if (statementLabelContext == null)
+            {
+                return string.Empty;
+            }
+
+            var statementLabelTextAsWhitespace = ReplaceNonWhitespaceWithSpace(statementLabelContext.GetText());
+            var whitespaceContext = context.whiteSpace();
+            return statementLabelTextAsWhitespace + (whitespaceContext?.GetText() ?? string.Empty);
+        }
+
+        private string ReplaceNonWhitespaceWithSpace(string input)
+        {
+            if (input == null || input.Equals(string.Empty))
+            {
+                return string.Empty;
+            }
+
+            var pattern = @"[^\r\n\t ]";
+            var replacement = " ";
+            var regex = new Regex(pattern);
+            return regex.Replace(input, replacement);
+        }
+
+        private string IdentifierDeclarationText(string identifierName, string endOfStatementText, string prefix)
+        {
+            return $"{prefix}Dim {identifierName} As Variant{endOfStatementText}";
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IntroduceLocalVariableQuickFix;

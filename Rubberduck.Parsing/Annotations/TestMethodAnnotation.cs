@@ -1,5 +1,7 @@
-﻿using Rubberduck.VBEditor;
+﻿using System;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -13,6 +15,16 @@ namespace Rubberduck.Parsing.Annotations
             IEnumerable<string> parameters)
             : base(AnnotationType.TestMethod, qualifiedSelection)
         {
+            var firstParameter = parameters.FirstOrDefault();
+            if ((firstParameter?.StartsWith("\"") ?? false) && firstParameter.EndsWith("\""))
+            {
+                // Strip surrounding double quotes
+                firstParameter = firstParameter.Substring(1, firstParameter.Length - 2);
+            }
+
+            Category = string.IsNullOrWhiteSpace(firstParameter) ? string.Empty : firstParameter;
         }
+
+        public string Category { get; }
     }
 }
