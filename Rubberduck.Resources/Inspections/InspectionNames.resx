@@ -327,4 +327,7 @@
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Statically accessible sheet accessed using string</value>
   </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Member marked as '@Obsolete' is used</value>
+  </data>
 </root>

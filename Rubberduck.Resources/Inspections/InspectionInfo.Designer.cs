@@ -457,6 +457,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is a high probability that a member marked as &apos;@Obsolete&apos; should no longer be used and there is a better alternative..
+        /// </summary>
+        public static string ObsoleteMemberUsageInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteMemberUsageInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type hint characters only exist in the language to support legacy code that required it; they can be safely replaced in declarations with an &quot;As&quot; type clause that specifies the type explicitly, and they can be omitted in other identifier references..
         /// </summary>
         public static string ObsoleteTypeHintInspection {

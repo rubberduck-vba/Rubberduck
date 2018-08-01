@@ -159,5 +159,14 @@ namespace RubberduckTests.Grammar
             var annotation = new PredeclaredIdAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.PredeclaredId, annotation.AnnotationType);
         }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void ObsoleteAnnotation_TypeIsObsolete()
+        {
+            var annotation = new ObsoleteAnnotation(new QualifiedSelection(), null);
+            Assert.AreEqual(AnnotationType.Obsolete, annotation.AnnotationType);
+        }
     }
 }

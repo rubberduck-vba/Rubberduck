@@ -352,4 +352,7 @@
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Statically accessible sheet can be referred to by its code name</value>
   </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Consider replacing the call to '{0}'</value>
+  </data>
 </root>

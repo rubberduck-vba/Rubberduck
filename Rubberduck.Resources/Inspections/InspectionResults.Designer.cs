@@ -475,6 +475,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consider replacing the call to &apos;{0}&apos;.
+        /// </summary>
+        public static string ObsoleteMemberUsageInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteMemberUsageInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} of {1} &apos;{2}&apos; uses an obsolete type hint.
         /// </summary>
         public static string ObsoleteTypeHintInspection {
