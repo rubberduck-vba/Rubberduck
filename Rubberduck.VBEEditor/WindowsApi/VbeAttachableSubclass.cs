@@ -57,7 +57,7 @@ namespace Rubberduck.VBEditor.WindowsApi
                         catch (COMException)
                         {
                             // this should be "safe" to hold the reference - it's not like it should go anywhere now... :-/
-                            SubclassLogger.Warn($"{ GetType().Name } failed to dispose of a held { typeof(T).Name } reference.");
+                            SubclassLogger.Warn($"{ GetType().Name } failed to decrement reference count of a held { typeof(T).Name } reference.");
                         }
                         return true;
                     }
