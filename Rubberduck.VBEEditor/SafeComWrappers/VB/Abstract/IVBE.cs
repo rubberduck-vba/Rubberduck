@@ -1,4 +1,6 @@
+using Rubberduck.VBEditor.Host;
 using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -20,7 +22,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IWindows Windows { get; }
         IHostApplication HostApplication();
         IWindow ActiveMDIChild();
-
+        IReadOnlyDictionary<CommandBarSite, CommandBarLocation> CommandBarLocations { get; }
         QualifiedSelection? GetActiveSelection();
 
         bool IsInDesignMode { get; }

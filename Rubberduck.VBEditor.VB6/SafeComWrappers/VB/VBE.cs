@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Rubberduck.VBEditor.Host;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office8;
 using Rubberduck.VBEditor.VB6;
@@ -17,11 +20,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             : base(target, rewrapping)
         {
             SourceCodeHandler = new SourceCodeHandler();
+            CommandBarLocations = new ReadOnlyDictionary<CommandBarSite, CommandBarLocation>(new Dictionary<CommandBarSite, CommandBarLocation>
+            { 
+                {CommandBarSite.MenuBar, new CommandBarLocation(1, 30009)},
+                {CommandBarSite.CodeWindow, new CommandBarLocation(15, 2529)},
+                {CommandBarSite.ProjectExplorer, new CommandBarLocation(22, 2578)},
+                {CommandBarSite.MsForms, new CommandBarLocation(20, 746)},
+                {CommandBarSite.MsFormsControl, new CommandBarLocation(21, 2558)}
+            });
         }
 
         public VBEKind Kind => VBEKind.Standalone;
         public object HardReference => Target;
         public ISourceCodeHandler SourceCodeHandler { get; }
+        public IReadOnlyDictionary<CommandBarSite, CommandBarLocation> CommandBarLocations { get; }
 
         public string Version => IsWrappingNullReference ? string.Empty : Target.Version;
 
