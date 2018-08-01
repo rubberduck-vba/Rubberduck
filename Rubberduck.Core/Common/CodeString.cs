@@ -1,4 +1,5 @@
 ﻿using Rubberduck.VBEditor;
+using System;
 
 namespace Rubberduck.Common
 {
@@ -14,7 +15,16 @@ namespace Rubberduck.Common
         /// <param name="zPosition">Zero-based caret position</param>
         public CodeString(string code, Selection zPosition)
         {
-            Code = code;
+            var lines = code.Split('\n');
+            var line = lines[zPosition.StartLine];
+            if (line[Math.Min(line.Length - 1, zPosition.StartColumn)] == '|')
+            {
+                Code = line.Remove(zPosition.StartColumn, 1);
+            }
+            else
+            {
+                Code = code;
+            }
             CaretPosition = zPosition;
         }
 
@@ -59,11 +69,6 @@ namespace Rubberduck.Common
 
         public override string ToString()
         {
-            if (Code?.ToCodeString().CaretPosition != default)
-            {
-                return Code;
-            }
-
             return InsertPseudoCaret();
         }
 
@@ -72,7 +77,7 @@ namespace Rubberduck.Common
             var lines = (Code ?? string.Empty).Split('\n');
             var line = lines[CaretPosition.StartLine];
             lines[CaretPosition.StartLine] = line.Insert(CaretPosition.StartColumn, "|");
-            return new CodeString(string.Join("\n", lines), CaretPosition);
+            return string.Join("\n", lines);
         }
     }
 }

@@ -67,19 +67,23 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         {
             var position = original.CaretPosition;
             var lines = original.Lines;
-            var line = lines[position.StartLine];
 
-            if (line[Math.Max(0, original.CaretPosition.StartColumn - 1)] == pair.OpeningChar)
+            var previous = Math.Max(0, position.StartColumn - 1);
+            if (lines[original.CaretPosition.StartLine][previous] == pair.OpeningChar)
             {
-                var matchPosition = FindMatchingTokenPosition(pair, original);
-                if (matchPosition != default)
+                var closingTokenPosition = FindMatchingTokenPosition(pair, original);
+                if (closingTokenPosition != default)
                 {
-                    var newCode = line
-                        .Remove(matchPosition.StartColumn, 1)
-                        .Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
-                    lines[original.CaretPosition.StartLine] = newCode;
+                    var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
+                    lines[closingTokenPosition.EndLine] = closingLine;
+
+                    var openingLine = lines[position.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
+                    lines[original.CaretPosition.StartLine] = openingLine;
+
+                    return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft());
                 }
-                return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft());
+
+                return default;
             }
             else
             {
