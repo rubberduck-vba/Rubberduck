@@ -96,6 +96,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AutoComplete\BlockCompletionTests.cs" />
+    <Compile Include="AutoComplete\CodeStringTests.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletionTests.cs" />
     <Compile Include="Binding\IndexDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
