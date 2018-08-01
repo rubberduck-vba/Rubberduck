@@ -42,19 +42,71 @@ namespace Rubberduck.Parsing.VBA
 
     public class ParserStateEventArgs : EventArgs
     {
-        public ParserStateEventArgs(ParserState state, CancellationToken token)
+        public ParserStateEventArgs(ParserState state, ParserState oldState, CancellationToken token)
         {
             State = state;
+            OldState = oldState;
             Token = token;
         }
 
         public ParserState State { get; }
+        public ParserState OldState { get; }
         public CancellationToken Token { get; }
 
         public bool IsError => (State == ParserState.ResolverError ||
                                 State == ParserState.Error ||
                                 State == ParserState.UnexpectedError);
+    }
 
+    public enum SuspensionResult
+    {
+        /// <summary>
+        /// The busy action has been queued but has not run yet.
+        /// </summary>
+        Pending,
+        /// <summary>
+        /// The busy action was completed successfully.
+        /// </summary>
+        Completed,
+        /// <summary>
+        /// The busy action could not executed because it timed out when
+        /// attempting to obtain a suspension lock. The timeout is 
+        /// governed by the MillisecondsTimeout argument.
+        /// </summary>
+        TimedOut,
+        /// <summary>
+        /// The parser arrived to one of states that wasn't listed in the 
+        /// AllowedRunStates specified by the requestor (e.g. an error state)
+        /// and thus the busy action was not executed.
+        /// </summary>
+        IncompatibleState,
+        /// <summary>
+        /// Indicates that the suspension request cannot be made because there 
+        /// is no handler for it. This points to a bug in the code.
+        /// </summary>
+        NotEnabled,
+        /// <summary>
+        /// An unexpected error; usually indicates a bug in code.
+        /// </summary>
+        UnexpectedError
+    }
+
+    public class RubberduckStatusSuspendParserEventArgs : EventArgs
+    {
+        public RubberduckStatusSuspendParserEventArgs(object requestor, IEnumerable<ParserState> allowedRunStates, Action busyAction, int millisecondsTimeout)
+        {
+            Requestor = requestor;
+            AllowedRunStates = allowedRunStates;
+            BusyAction = busyAction;
+            MillisecondsTimeout = millisecondsTimeout;
+            Result = SuspensionResult.Pending;
+        }
+
+        public object Requestor { get; }
+        public IEnumerable<ParserState> AllowedRunStates { get; }
+        public Action BusyAction { get; }
+        public int MillisecondsTimeout { get; }
+        public SuspensionResult Result { get; set; }
     }
 
     public class RubberduckStatusMessageEventArgs : EventArgs
@@ -69,10 +121,13 @@ namespace Rubberduck.Parsing.VBA
 
     public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider
     {
+        public const int NoTimeout = -1;
+
         private readonly ConcurrentDictionary<QualifiedModuleName, ModuleState> _moduleStates =
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
         public event EventHandler<EventArgs> ParseRequest;
+        public event EventHandler<RubberduckStatusSuspendParserEventArgs> SuspendRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
         private static readonly List<ParserState> States = new List<ParserState>();
@@ -119,7 +174,7 @@ namespace Rubberduck.Parsing.VBA
             _projectRepository = projectRepository;
             _declarationFinderFactory = declarationFinderFactory;
             _vbeEvents = vbeEvents;
-
+            
             var values = Enum.GetValues(typeof(ParserState));
             foreach (var value in values)
             {
@@ -335,7 +390,7 @@ namespace Rubberduck.Parsing.VBA
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
         private int _stateChangedInvocations;
-        private void OnStateChanged(object requestor, CancellationToken token, ParserState state = ParserState.Pending)
+        private void OnStateChanged(object requestor, CancellationToken token, ParserState state, ParserState oldStatus)
         {
             Interlocked.Increment(ref _stateChangedInvocations);
 
@@ -343,7 +398,7 @@ namespace Rubberduck.Parsing.VBA
             var handler = StateChanged;
             if (handler != null && !token.IsCancellationRequested)
             {
-                var args = new ParserStateEventArgs(state, token);
+                var args = new ParserStateEventArgs(state, oldStatus, token);
                 handler.Invoke(requestor, args);
             }
         }
@@ -545,8 +600,9 @@ namespace Rubberduck.Parsing.VBA
         {
             if (_status != value)
             {
+                var oldStatus = _status;
                 _status = value;
-                OnStateChanged(this, token, _status);
+                OnStateChanged(this, token, _status, oldStatus);
             }
         }
 
@@ -554,7 +610,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (Status == status)
             {
-                OnStateChanged(requestor, token, status);
+                OnStateChanged(requestor, token, status, _status);
             }
             else
             {
@@ -916,6 +972,24 @@ namespace Rubberduck.Parsing.VBA
                 var args = EventArgs.Empty;
                 handler.Invoke(requestor, args);
             }
+        }
+
+        public SuspensionResult OnSuspendParser(object requestor, IEnumerable<ParserState> allowedRunStates, Action busyAction, int millisecondsTimeout = NoTimeout)
+        {
+            if (millisecondsTimeout < NoTimeout)
+            {
+                throw new ArgumentOutOfRangeException(nameof(millisecondsTimeout));
+            }
+
+            var handler = SuspendRequest;
+            if (handler != null && IsEnabled)
+            {
+                var args = new RubberduckStatusSuspendParserEventArgs(requestor, allowedRunStates, busyAction, millisecondsTimeout);
+                handler.Invoke(requestor, args);
+                return args.Result;
+            }
+
+            return SuspensionResult.NotEnabled;
         }
 
         public bool IsNewOrModified(IVBComponent component)

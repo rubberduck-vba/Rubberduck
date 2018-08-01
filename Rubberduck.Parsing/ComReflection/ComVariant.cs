@@ -67,8 +67,8 @@ namespace Rubberduck.Parsing.ComReflection
             Debug.Assert(!Convert.ToBoolean(~VT_TYPEMASK & members.vt), "Non value-type will potentially leak a pointer.");
 
             VariantType = (VarEnum)members.vt;
-            Value = Marshal.GetObjectForNativeVariant(variant);           
-            
+            Value = Marshal.GetObjectForNativeVariant(variant);
+
             if (Value == null && VariantType == VarEnum.VT_BSTR)
             {
                 Value = string.Empty;

@@ -246,6 +246,7 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 
+
 Sub Foo()
 End Sub
 
@@ -311,6 +312,7 @@ End Property
 Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
+
 
 Property Get Foo() As Variant
     Foo = True
@@ -651,6 +653,7 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 
+
 Sub Foo()
     Name = 0
     Bar Name
@@ -721,6 +724,7 @@ End Property
 Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
+
 
 Sub Foo()
     Name = 1

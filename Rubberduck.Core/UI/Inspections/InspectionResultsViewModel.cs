@@ -292,6 +292,11 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
+            if (_state.Status == ParserState.Ready && e.OldState == ParserState.Busy)
+            {
+                return;
+            }
+
             if (_runInspectionsOnReparse || IsRefreshing)
             {
                 RefreshInspections(e.Token);

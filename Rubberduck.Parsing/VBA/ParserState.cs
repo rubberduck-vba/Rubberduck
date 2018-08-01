@@ -40,6 +40,10 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         Ready,
         /// <summary>
+        /// The parser cannot run during that time (e.g. unit tests are running); any parse requests will be queued.
+        /// </summary>
+        Busy,
+        /// <summary>
         /// Parsing could not be completed for one or more modules.
         /// </summary>
         Error,
