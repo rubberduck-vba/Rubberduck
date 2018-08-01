@@ -720,7 +720,7 @@ namespace Foo
     }
 
     [TestFixture]
-    public class ChainedWrapperUnitTests : ChanedWrapperAnalyzer
+    public class ChainedWrapperUnitTests : ChainedWrapperAnalyzer
     {
         [Test]
         [Category("ChainedWrappers")]
@@ -771,7 +771,7 @@ namespace Foo
         }
     }
 
-    public class ChanedWrapperAnalyzer : CodeFixVerifier
+    public class ChainedWrapperAnalyzer : CodeFixVerifier
     {
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
@@ -780,7 +780,7 @@ namespace Foo
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new ChainedWrapperAnalyzer();
+            return new RubberduckCodeAnalysis.ChainedWrapperAnalyzer();
 
         }
     }
