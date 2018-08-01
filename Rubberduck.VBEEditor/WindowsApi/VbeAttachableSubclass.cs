@@ -47,20 +47,24 @@ namespace Rubberduck.VBEditor.WindowsApi
 
                 try
                 {
-                    if (Marshal.GetIUnknownForObject(_target.Target) != IntPtr.Zero)
+                    var unmanaged = Marshal.GetIUnknownForObject(_target.Target);
+                    if (unmanaged != IntPtr.Zero)
                     {
+                        try
+                        {
+                            Marshal.Release(unmanaged);
+                        }
+                        catch (COMException)
+                        {
+                            // this should be "safe" to hold the reference - it's not like it should go anywhere now... :-/
+                            SubclassLogger.Warn($"{ GetType().Name } failed to dispose of a held { typeof(T).Name } reference.");
+                        }
                         return true;
                     }
-
-                    _target.Dispose();
-                    _target = default;
                 }
-                catch
+                catch (COMException)
                 {
-                    // All paths leading to here mean that we need to ditch the held reference, and there
-                    // isn't jack all that we can do about it.
                     _target = default;
-                    SubclassLogger.Warn($"{ GetType().Name } failed to dispose of a held { typeof(T).Name } reference.");
                 }
                 return false;
             }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
@@ -40,6 +39,10 @@ namespace Rubberduck.VBEditor.Events
         {
             lock (ThreadLock)
             {
+                SelectionChanged = delegate { };
+                IntelliSenseChanged = delegate { };
+                KeyDown = delegate { };
+                WindowFocusChange = delegate { };
                 User32.UnhookWinEvent(_eventHandle);
                 Subclasses.Dispose();
                 VBEEvents.Terminate();
@@ -92,7 +95,7 @@ namespace Rubberduck.VBEditor.Events
             else if (windowType == WindowType.CodePane && idObject == (int)ObjId.Caret && 
                 (eventType == (uint)WinEvent.ObjectLocationChange || eventType == (uint)WinEvent.ObjectCreate))
             {
-                OnSelectionChanged(hwnd);             
+                OnSelectionChanged(hwnd);
             }
             else if (SubclassManager.IsSubclassable(windowType) && (idObject == (int)ObjId.Window && eventType == (uint)WinEvent.ObjectCreate) ||
                      !Subclasses.IsSubclassed(hwnd))
