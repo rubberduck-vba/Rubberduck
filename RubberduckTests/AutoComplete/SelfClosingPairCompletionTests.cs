@@ -117,6 +117,17 @@ foo = | _
         }
 
         [Test]
+        public void DeleteKey_ReturnsDefault()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = Keys.A;
+            var original = @"MsgBox (|)".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.IsTrue(result == default);
+        }
+
+        [Test]
         public void UnhandledKey_ReturnsDefault()
         {
             var pair = new SelfClosingPair('(', ')');
