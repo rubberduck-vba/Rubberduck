@@ -61,33 +61,33 @@ namespace Rubberduck.Parsing.VBA
                 var tokenStream = RewriteAndPreprocess(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();  
 
-                var codePaneParseResults = ParseInternal(_module.ComponentName, tokenStream);
-                var codePaneRewriter = _moduleRewriterFactory.CodePaneRewriter(_module, codePaneParseResults.tokenStream);
+                var (codePaneParseTree, codePaneTokenStream) = ParseInternal(_module.ComponentName, tokenStream);
+                var codePaneRewriter = _moduleRewriterFactory.CodePaneRewriter(_module, codePaneTokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // temporal coupling... comments must be acquired before we walk the parse tree for declarations
                 // otherwise none of the annotations get associated to their respective Declaration
-                var commentsAndAnnotation = CommentsAndAnnotations(_module, codePaneParseResults.tree);
+                var (comments, annotations) = CommentsAndAnnotations(_module, codePaneParseTree);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(_module, attributesPassParseResults.tokenStream ?? tokenStream);
+                var (attributesParseTree, attributesTokenStream) = RunAttributesPass(cancellationToken);
+                var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(_module, attributesTokenStream ?? codePaneTokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var attributes = Attributes(_module, attributesPassParseResults.tree);
+                var attributes = Attributes(_module, attributesParseTree);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var completedHandler = ParseCompleted;
                 if (completedHandler != null && !cancellationToken.IsCancellationRequested)
                     completedHandler.Invoke(this, new ParseCompletionArgs
                     {
-                        ParseTree = codePaneParseResults.tree,
-                        AttributesTree = attributesPassParseResults.tree,
+                        ParseTree = codePaneParseTree,
+                        AttributesTree = attributesParseTree,
                         CodePaneRewriter = codePaneRewriter,
                         AttributesRewriter = attributesRewriter,
                         Attributes = attributes,
-                        Comments = commentsAndAnnotation.Comments,
-                        Annotations = commentsAndAnnotation.Annotations
+                        Comments = comments,
+                        Annotations = annotations
                     });
             }
             catch (COMException exception)
