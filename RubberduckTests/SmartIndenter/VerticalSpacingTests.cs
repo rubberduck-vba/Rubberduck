@@ -536,15 +536,8 @@ namespace RubberduckTests.SmartIndenter
         [Category("Indenter")]
         public void VerticalSpacing_IgnoredWithIndentProcedureNoSpacing()
         {
-            var input =
-@"Private Sub TestOne()
-End Sub
-Private Sub TestTwo()
-End Sub
-Private Sub TestThree()
-End Sub";
-
-            var expected =
+            string expected;
+            var input = expected =
 @"Private Sub TestOne()
 End Sub
 Private Sub TestTwo()
@@ -573,19 +566,8 @@ End Sub";
         [Category("Indenter")]
         public void VerticalSpacing_IgnoredWithIndentProcedureExtraSpacing()
         {
-            var input =
-@"Private Sub TestOne()
-End Sub
-
-
-Private Sub TestTwo()
-End Sub
-
-
-Private Sub TestThree()
-End Sub";
-
-            var expected =
+            string expected;
+            var input = expected = 
 @"Private Sub TestOne()
 End Sub
 
