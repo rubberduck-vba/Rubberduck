@@ -154,10 +154,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                         return declaration.IdentifierName + "()";
                     }
                     return declaration.IdentifierName;
+                case DeclarationType.EnumerationMember:
                 case DeclarationType.Constant:
-                    var valuedDeclaration = (ConstantDeclaration)declaration;
-                    return valuedDeclaration.IdentifierName + " = " + valuedDeclaration.Expression;
-
+                    var valuedDeclaration = (ValuedDeclaration)declaration;
+                    return (!string.IsNullOrEmpty(valuedDeclaration.Expression))
+                        ? valuedDeclaration.IdentifierName + " = " + valuedDeclaration.Expression
+                        : valuedDeclaration.IdentifierName;
                 default:
                     return declaration.IdentifierName;
             }

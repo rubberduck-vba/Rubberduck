@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -16,13 +18,13 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<SerializableDeclarationTree> Children
         {
-            get { return _children; } 
-            set { _children = new List<SerializableDeclarationTree>(value); }
+            get => _children;
+            set => _children = new List<SerializableDeclarationTree>(value);
         }
 
-        public SerializableDeclarationTree() { } 
+        public SerializableDeclarationTree() { }
 
-        public SerializableDeclarationTree(Declaration declaration)   
+        public SerializableDeclarationTree(Declaration declaration)
             : this(new SerializableDeclaration(declaration)) { }
 
         public SerializableDeclarationTree(Declaration declaration, IEnumerable<SerializableDeclarationTree> children)
@@ -68,7 +70,7 @@ namespace Rubberduck.Parsing.ComReflection
     }
 
     [DataContract]
-    public class SerializableProject 
+    public class SerializableProject
     {
         public SerializableProject() { }
 
@@ -88,8 +90,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<SerializableDeclarationTree> Declarations
         {
-            get { return _declarations; }
-            set { _declarations = new List<SerializableDeclarationTree>(value); }
+            get => _declarations;
+            set => _declarations = new List<SerializableDeclarationTree>(value);
         }
 
         [DataMember(IsRequired = true)]
@@ -102,23 +104,12 @@ namespace Rubberduck.Parsing.ComReflection
             _declarations.Add(tree);
         }
 
-        private readonly Dictionary<string, SerializableDeclarationTree> _pseudoLookup = new Dictionary<string, SerializableDeclarationTree>(); 
-        public SerializableDeclarationTree GetPseudoDeclaration(Declaration declaration)
-        {
-            if (!_pseudoLookup.ContainsKey(declaration.IdentifierName))
-            {
-                _declarations.Add(new SerializableDeclarationTree(declaration));
-            }
-
-            return _pseudoLookup[declaration.IdentifierName];
-        }
-
         public List<Declaration> Unwrap()
         {
             var project = (ProjectDeclaration)Node.Unwrap(null);
             project.MajorVersion = MajorVersion;
             project.MinorVersion = MinorVersion;
-            var output = new List<Declaration> {project};
+            var output = new List<Declaration> { project };
             foreach (var declaration in Declarations)
             {
                 output.AddRange(UnwrapTree(declaration, project));
@@ -176,7 +167,15 @@ namespace Rubberduck.Parsing.ComReflection
                 IsOptionalParam = param.IsOptional;
                 IsByRefParam = param.IsByRef;
                 IsParamArray = param.IsParamArray;
+                DefaultValue = param.DefaultValue;
             }
+
+            var constant = declaration as ValuedDeclaration;
+            if (constant != null)
+            {
+                Expression = constant.Expression;
+            }
+
             var coclass = declaration as ClassModuleDeclaration;
             if (coclass != null)
             {
@@ -211,6 +210,9 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsOptionalParam { get; set; }
         public bool IsByRefParam { get; set; }
         public bool IsParamArray { get; set; }
+        public string DefaultValue { get; set; }
+
+        public string Expression { get; set; }
 
         public Declaration Unwrap(Declaration parent)
         {
@@ -224,7 +226,7 @@ namespace Rubberduck.Parsing.ComReflection
             switch (DeclarationType)
             {
                 case DeclarationType.Project:
-                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, false, null);                    
+                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, false, null);
                 case DeclarationType.ClassModule:
                     return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, false, annotations, attributes, false, IsControl);
                 case DeclarationType.ProceduralModule:
@@ -242,8 +244,11 @@ namespace Rubberduck.Parsing.ComReflection
                 case DeclarationType.PropertySet:
                     return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Parameter:
-                    return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray);
-
+                    return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray, DefaultValue);
+                case DeclarationType.EnumerationMember:
+                    return new ValuedDeclaration(QualifiedMemberName, parent, ParentScope, AsTypeName, null, TypeHint, annotations, Accessibility, DeclarationType.EnumerationMember, Expression, null, Selection.Home, false);
+                case DeclarationType.Constant:
+                    return new ValuedDeclaration(QualifiedMemberName, parent, ParentScope, AsTypeName, null, TypeHint, annotations, Accessibility, DeclarationType.Constant, Expression, null, Selection.Home, false);
                 default:
                     return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsUserDefined, null, attributes);
             }

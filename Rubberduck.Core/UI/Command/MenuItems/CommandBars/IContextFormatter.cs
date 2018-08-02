@@ -53,9 +53,27 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 : declaration.AsTypeName;
             var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
 
-            typeName = multipleControls
-                ? RubberduckUI.ContextMultipleControlsSelection
-                : "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) + ")";
+            if (multipleControls)
+            {
+                typeName = RubberduckUI.ContextMultipleControlsSelection;
+            }
+            else if (declaration is ValuedDeclaration)
+            {
+                var valued = (ValuedDeclaration)declaration;
+                typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) +
+                           (string.IsNullOrEmpty(valued.Expression) ? string.Empty : $" = {valued.Expression}") + ")";
+
+            }
+            else if (declaration is ParameterDeclaration)
+            {
+                var parameter = (ParameterDeclaration)declaration;
+                typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) +
+                           (string.IsNullOrEmpty(parameter.DefaultValue) ? string.Empty : $" = {parameter.DefaultValue}") + ")";
+            }
+            else
+            {
+                typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) + ")";
+            }
 
             if (declaration.DeclarationType.HasFlag(DeclarationType.Project) || declaration.DeclarationType == DeclarationType.BracketedExpression)
             {

@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var index = 0; index < typeCount; index++)
-            {                
+            {
                 try
                 {
                     typeLibrary.GetTypeInfo(index, out ITypeInfo info);

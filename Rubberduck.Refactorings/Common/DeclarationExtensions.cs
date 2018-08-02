@@ -417,7 +417,8 @@ namespace Rubberduck.Common
         public static IEnumerable<Declaration> FindInterfaceImplementationMembers(this IEnumerable<Declaration> declarations, Declaration interfaceDeclaration)
         {
             return FindInterfaceImplementationMembers(declarations)
-                .Where(m => m.IdentifierName == interfaceDeclaration.ComponentName + "_" + interfaceDeclaration.IdentifierName);
+                .Where(m => m.DeclarationType == interfaceDeclaration.DeclarationType && m.IdentifierName ==
+                            interfaceDeclaration.ComponentName + "_" + interfaceDeclaration.IdentifierName);
         }
 
         public static Declaration FindInterfaceMember(this IEnumerable<Declaration> declarations, Declaration implementation)

@@ -49,10 +49,10 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 Parent = null;
             }
-            
+
             GetImplementedInterfaces(info, attrib);
             GetComProperties(info, attrib);
-            GetComMembers(info, attrib);            
+            GetComMembers(info, attrib);
         }
 
         public ComInterface(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
@@ -60,7 +60,7 @@ namespace Rubberduck.Parsing.ComReflection
             Type = DeclarationType.ClassModule;
             GetImplementedInterfaces(info, attrib);
             GetComProperties(info, attrib);
-            GetComMembers(info, attrib);            
+            GetComMembers(info, attrib);
         }
 
         private void GetImplementedInterfaces(ITypeInfo info, TYPEATTR typeAttr)
