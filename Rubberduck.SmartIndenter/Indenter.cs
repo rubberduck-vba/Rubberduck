@@ -48,7 +48,7 @@ namespace Rubberduck.SmartIndenter
                     selection = new Selection(startLine, 1, endLine, 1);
                     using (var component = module.Parent)
                     {
-                        Indent(component, selection);
+                        Indent(component, selection, true);
                     }
                 }
             }
@@ -119,6 +119,11 @@ namespace Rubberduck.SmartIndenter
         /// <param name="selection">The selection to indent</param>
         public void Indent(IVBComponent component, Selection selection)
         {
+            Indent(component, selection, false);
+        }
+
+        private void Indent(IVBComponent component, Selection selection, bool procedure)
+        {
             using (var module = component.CodeModule)
             {
                 var lineCount = module.CountOfLines;
@@ -130,7 +135,7 @@ namespace Rubberduck.SmartIndenter
                 var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty)
                     .Split('\n');
 
-                var indented = Indent(codeLines);
+                var indented = Indent(codeLines, false);
 
                 var start = selection.StartLine;
                 var lines = selection.LineCount;
@@ -189,6 +194,11 @@ namespace Rubberduck.SmartIndenter
         /// <returns>Indented code lines</returns>
         public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines)
         {
+            return Indent(codeLines, forceTrailingNewLines, false);
+        }
+
+        private IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, bool procedure)
+        {
             var logical = BuildLogicalCodeLines(codeLines).ToList();
             var indents = 0;
             var start = false;
@@ -228,16 +238,16 @@ namespace Rubberduck.SmartIndenter
                 enumStart = inEnumType;
             }
 
-            return GenerateCodeLineStrings(logical, forceTrailingNewLines);
+            return GenerateCodeLineStrings(logical, forceTrailingNewLines, procedure);
         }
 
-        private IEnumerable<string> GenerateCodeLineStrings(IEnumerable<LogicalCodeLine> logical, bool forceTrailingNewLines)
+        private IEnumerable<string> GenerateCodeLineStrings(IEnumerable<LogicalCodeLine> logical, bool forceTrailingNewLines, bool procedure = false)
         {
             var output = new List<string>();
             var settings = _settings.Invoke();
 
             List<LogicalCodeLine> indent;
-            if (settings.VerticallySpaceProcedures)
+            if (!procedure && settings.VerticallySpaceProcedures)
             {
                 indent = new List<LogicalCodeLine>();
                 var lines = logical.ToArray();

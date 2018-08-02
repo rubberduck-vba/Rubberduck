@@ -1,6 +1,10 @@
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Command;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
@@ -526,6 +530,88 @@ namespace RubberduckTests.SmartIndenter
             });
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void VerticalSpacing_IgnoredWithIndentProcedureNoSpacing()
+        {
+            var input =
+@"Private Sub TestOne()
+End Sub
+Private Sub TestTwo()
+End Sub
+Private Sub TestThree()
+End Sub";
+
+            var expected =
+@"Private Sub TestOne()
+End Sub
+Private Sub TestTwo()
+End Sub
+Private Sub TestThree()
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component, new Selection(3, 5, 3, 5));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var indenter = new Indenter(vbe.Object, () =>
+                {
+                    var s = IndenterSettingsTests.GetMockIndenterSettings();
+                    s.VerticallySpaceProcedures = true;
+                    s.LinesBetweenProcedures = 1;
+                    return s;
+                });
+                var indentCommand = new IndentCurrentProcedureCommand(vbe.Object, indenter, state);
+                indentCommand.Execute(null);
+
+                Assert.AreEqual(expected, component.CodeModule.Content());
+            }
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void VerticalSpacing_IgnoredWithIndentProcedureExtraSpacing()
+        {
+            var input =
+@"Private Sub TestOne()
+End Sub
+
+
+Private Sub TestTwo()
+End Sub
+
+
+Private Sub TestThree()
+End Sub";
+
+            var expected =
+@"Private Sub TestOne()
+End Sub
+
+
+Private Sub TestTwo()
+End Sub
+
+
+Private Sub TestThree()
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component, new Selection(3, 5, 3, 5));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var indenter = new Indenter(vbe.Object, () =>
+                {
+                    var s = IndenterSettingsTests.GetMockIndenterSettings();
+                    s.VerticallySpaceProcedures = true;
+                    s.LinesBetweenProcedures = 1;
+                    return s;
+                });
+                var indentCommand = new IndentCurrentProcedureCommand(vbe.Object, indenter, state);
+                indentCommand.Execute(null);
+
+                Assert.AreEqual(expected, component.CodeModule.Content());
+            }
         }
     }
 }
