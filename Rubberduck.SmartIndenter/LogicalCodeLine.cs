@@ -146,7 +146,6 @@ namespace Rubberduck.SmartIndenter
             output.Add(current);
             var alignment = FunctionAlign(current, _lines[1].Escaped.Trim().StartsWith(":="));
 
-            //foreach (var line in _lines.Skip(1))
             for (var i = 1; i < _lines.Count; i++)
             {
                 var line = _lines[i];
@@ -182,6 +181,7 @@ namespace Rubberduck.SmartIndenter
 
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)", RegexOptions.IgnoreCase);
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
+        private int _nestingDepth = 0;
 
         //The splitNamed parameter is a straight up hack for fixing https://github.com/rubberduck-vba/Rubberduck/issues/2402
         private int FunctionAlign(string line, bool splitNamed)
@@ -201,13 +201,14 @@ namespace Rubberduck.SmartIndenter
                     case "(":
                         //Start of another function => remember this position
                         _alignment.Push(new AlignmentToken(AlignmentTokenType.Function, index));
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1, _nestingDepth++));
                         break;
                     case ")":
                         //Function finished => Remove back to the previous open bracket
                         while (_alignment.Any())
                         {
-                            var finished = _alignment.Count == stackPos + 1 || _alignment.Peek().Type == AlignmentTokenType.Function;
+                            var finished = _alignment.Count == stackPos + 1 || 
+                                           _alignment.Peek().Type == AlignmentTokenType.Function && _alignment.Peek().NestingDepth == _nestingDepth - 1;
                             _alignment.Pop();
                             if (finished)
                             {
