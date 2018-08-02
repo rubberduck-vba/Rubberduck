@@ -143,6 +143,7 @@
     <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="TokenStreamExtensions.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />
     <Compile Include="ComReflection\ComTypeName.cs" />
     <Compile Include="Inspections\RequiredHostAttribute.cs" />
@@ -343,7 +344,7 @@
     <Compile Include="Symbols\DeclarationType.cs" />
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
-    <Compile Include="Symbols\ConstantDeclaration.cs" />
+    <Compile Include="Symbols\ValuedDeclaration.cs" />
     <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="TokenExtensions.cs" />
@@ -353,6 +354,7 @@
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
     <Compile Include="PreProcessing\TokensValue.cs" />
     <Compile Include="VBA\SupertypeClearer.cs" />
+    <Compile Include="VBA\SynchronousParseCoordinator.cs" />
     <Compile Include="VBA\SynchronousSupertypeClearer.cs" />
     <Compile Include="VBA\SupertypeClearerBase.cs" />
     <Compile Include="VBA\ISupertypeClearer.cs" />

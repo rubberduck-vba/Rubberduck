@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.VBEditor;
 
@@ -12,6 +13,7 @@ namespace Rubberduck.UnitTesting
         void Run(IEnumerable<TestMethod> tests);
         void Refresh();
         event EventHandler TestCompleted;
+        ParserState[] AllowedRunStates { get; }
     }
 
     public class TestModuleEventArgs : EventArgs

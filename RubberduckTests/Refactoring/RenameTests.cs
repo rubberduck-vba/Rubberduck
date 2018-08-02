@@ -2076,7 +2076,7 @@ End Sub
                 SelectionModuleName = "MyClass",
                 ProjectName = projectName
             };
-            PerformExpectedVersusActualRenameTests(tdo, classInputOutput, usageInputOutput, testLibraries: new[] { "VBA.4.2.xml" });
+            PerformExpectedVersusActualRenameTests(tdo, classInputOutput, usageInputOutput);
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
         #endregion
@@ -2265,12 +2265,11 @@ End Property";
             , RenameTestModuleDefinition? inputOutput1
             , RenameTestModuleDefinition? inputOutput2 = null
             , RenameTestModuleDefinition? inputOutput3 = null
-            , RenameTestModuleDefinition? inputOutput4 = null
-            , IEnumerable<string> testLibraries = null)
+            , RenameTestModuleDefinition? inputOutput4 = null)
         {
             try
             {
-                InitializeTestDataObject(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4, testLibraries);
+                InitializeTestDataObject(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4);
                 RunRenameRefactorScenario(tdo);
                 CheckRenameRefactorTestResults(tdo);
             }
@@ -2284,8 +2283,7 @@ End Property";
             , RenameTestModuleDefinition? inputOutput1
             , RenameTestModuleDefinition? inputOutput2 = null
             , RenameTestModuleDefinition? inputOutput3 = null
-            , RenameTestModuleDefinition? inputOutput4 = null
-            , IEnumerable<string> testLibraries = null)
+            , RenameTestModuleDefinition? inputOutput4 = null)
         {
             var renameTMDs = new List<RenameTestModuleDefinition>();
             bool cursorFound = false;
@@ -2326,7 +2324,7 @@ End Property";
             tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == DialogResult.Yes);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
-            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE, testLibraries: testLibraries);
+            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
             tdo.RenameModel = new RenameModel(tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };

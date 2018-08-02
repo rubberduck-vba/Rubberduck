@@ -105,7 +105,7 @@ namespace Rubberduck.Parsing.ComReflection
                 var paramPtr = new IntPtr(funcDesc.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * index);
                 var elemDesc = Marshal.PtrToStructure<ELEMDESC>(paramPtr);
                 var param = new ComParameter(this, elemDesc, info, names[index + 1] ?? $"{index}unnamedParameter");
-                _parameters.Add(param);               
+                _parameters.Add(param);
             }
             if (Parameters.Any() && funcDesc.cParamsOpt == -1)
             {

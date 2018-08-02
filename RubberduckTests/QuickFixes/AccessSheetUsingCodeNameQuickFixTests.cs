@@ -300,16 +300,7 @@ End Sub";
 
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Excel.1.8.xml");
-            parser.Parse(new CancellationTokenSource());
-
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            return parser.State;
+            return MockParser.CreateAndParse(vbe.Object);
         }
 
         private static Mock<IProperty> CreateVBComponentPropertyMock(string propertyName, string propertyValue)

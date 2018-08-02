@@ -321,7 +321,7 @@ namespace Rubberduck.VBEditor.Events
             Project
         }
 
-        public static WindowType ToWindowType(this IntPtr hwnd)
+        private static WindowType ToWindowType(this IntPtr hwnd)
         {
             WindowType id;
             var type = Enum.TryParse(hwnd.ToClassName(), true, out id) ? id : WindowType.Indeterminate;
@@ -335,7 +335,7 @@ namespace Rubberduck.VBEditor.Events
             return toolbar == IntPtr.Zero ? WindowType.VbaWindow : WindowType.CodePane;
         }
 
-        public static string ToClassName(this IntPtr hwnd)
+        private static string ToClassName(this IntPtr hwnd)
         {
             var name = new StringBuilder(128);
             User32.GetClassName(hwnd, name, name.Capacity);
