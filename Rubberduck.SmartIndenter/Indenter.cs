@@ -48,7 +48,7 @@ namespace Rubberduck.SmartIndenter
                     selection = new Selection(startLine, 1, endLine, 1);
                     using (var component = module.Parent)
                     {
-                        Indent(component, selection, true);
+                        Indent(component, selection);
                     }
                 }
             }
@@ -113,16 +113,13 @@ namespace Rubberduck.SmartIndenter
         }
 
         /// <summary>
-        /// DO NOT USE - Not fully implemented. Use the Indent(IVBComponent component) instead and ping @Comintern if you need this functionality...
+        /// Not fully implemented for selections (it does not track the current indentation level before the call). Use at your own
+        /// risk on anything smaller than a procedure - the caller is responsible for determining the base indent and restoring it
+        /// *after* the call.
         /// </summary>
         /// <param name="component">The VBComponent to indent</param>
         /// <param name="selection">The selection to indent</param>
-        public void Indent(IVBComponent component, Selection selection)
-        {
-            Indent(component, selection, false);
-        }
-
-        private void Indent(IVBComponent component, Selection selection, bool procedure)
+        private void Indent(IVBComponent component, Selection selection)
         {
             using (var module = component.CodeModule)
             {
