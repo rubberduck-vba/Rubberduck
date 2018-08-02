@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.VBA
             _projectsRepository = projectsRepository;
         }
 
-        public IReadOnlyCollection<IVBProject> Projects => _projectsRepository.Projects().Select(tpl => tpl.Project).ToList().AsReadOnly();
+        public IReadOnlyCollection<(string ProjectId, IVBProject Project)> Projects => _projectsRepository.Projects().ToList().AsReadOnly();
 
         public void RefreshProjects()
         {

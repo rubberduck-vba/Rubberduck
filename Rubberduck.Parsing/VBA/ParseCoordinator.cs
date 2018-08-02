@@ -216,6 +216,9 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetModuleStates(toParse, ParserState.Started, token);
             token.ThrowIfCancellationRequested();
 
+            _parsingCacheService.ClearProjectWhoseCompilationArgumentsChanged();
+            token.ThrowIfCancellationRequested();
+
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
             token.ThrowIfCancellationRequested();
 
@@ -408,10 +411,22 @@ namespace Rubberduck.Parsing.VBA
             var modules = _projectManager.AllModules();
             token.ThrowIfCancellationRequested();
 
+            var projects = _projectManager.Projects;
+            token.ThrowIfCancellationRequested();
+
             var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
             token.ThrowIfCancellationRequested();
 
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
+            token.ThrowIfCancellationRequested();
+
+            _parsingCacheService.ReloadCompilationArguments(projects.Select(tpl => tpl.ProjectId));
+            token.ThrowIfCancellationRequested();
+
+            var projectsWithChangedCompilationArguments = _parsingCacheService.ProjectWhoseCompilationArgumentsChanged();
+            token.ThrowIfCancellationRequested();
+
+            toParse.UnionWith(ModulesInProjects(projectsWithChangedCompilationArguments));
             token.ThrowIfCancellationRequested();
 
             toParse = toParse.Where(module => module.IsParsable).ToHashSet();
@@ -420,7 +435,7 @@ namespace Rubberduck.Parsing.VBA
             var removedModules = RemovedModules(modules);
             token.ThrowIfCancellationRequested();
 
-            var removedProjects = RemovedProjects(_projectManager.Projects);
+            var removedProjects = RemovedProjects(projects.Select(tpl => tpl.Project).ToList().AsReadOnly());
             token.ThrowIfCancellationRequested();
 
             removedModules.UnionWith(ModulesInProjects(removedProjects));
@@ -483,6 +498,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void CleanUpProjects(IReadOnlyCollection<string> removedProjectIds)
         {
+            _parsingCacheService.RemoveCompilationArgumentsFromCache(removedProjectIds);
             ClearStateCache(removedProjectIds);
         }
 

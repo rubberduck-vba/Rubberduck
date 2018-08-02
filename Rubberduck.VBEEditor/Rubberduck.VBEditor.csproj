@@ -62,6 +62,7 @@
     <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
     <Compile Include="Events\AutoCompleteEventArgs.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Factories\AddInFactory.cs" />
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />

@@ -741,6 +741,10 @@ namespace Rubberduck.Root
         {
             RegisterCustomDeclarationLoadersToParser(container);
 
+            container.Register(Component.For<ICompilationArgumentsProvider, ICompilationArgumentsCache>()
+                .ImplementedBy<CompilationArgumentsCache>()
+                .DependsOn(Dependency.OnComponent<ICompilationArgumentsProvider,CompilationArgumentsProvider>())
+                .LifestyleSingleton());
             container.Register(Component.For<ICOMReferenceSynchronizer, IProjectReferencesProvider>()
                 .ImplementedBy<COMReferenceSynchronizer>()
                 .DependsOn(Dependency.OnValue<string>(null))

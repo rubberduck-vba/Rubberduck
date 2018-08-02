@@ -93,8 +93,9 @@ namespace Rubberduck.API.VBA
             _state.StateChanged += _state_StateChanged;
 
             var sourceFileHandler = _vbe.SourceFileHandler;
-            var compilationArgumentsProvider = new CompilationArgumentsProvider(projectRepository);
-            IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider);
+            var compilationArgumentsProvider = new CompilationArgumentsProvider(projectRepository, _dispatcher);
+            var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
+            IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), compilationsArgumentsCache);
             var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             _attributeParser = new AttributeParser(attributesSourceCodeHandler, preprocessorFactory);
             var projectManager = new RepositoryProjectManager(projectRepository);
@@ -147,7 +148,8 @@ namespace Rubberduck.API.VBA
                 _state,
                 moduleToModuleReferenceManager,
                 referenceRemover,
-                supertypeClearer
+                supertypeClearer,
+                compilationsArgumentsCache
                 );
 
             _parser = new SynchronousParseCoordinator(

@@ -143,8 +143,10 @@
     <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="PreProcessing\CompilationArgumentsCache.cs" />
     <Compile Include="PreProcessing\CompilationArgumentsProvider.cs" />
     <Compile Include="PreProcessing\ICompilationArgumentsProvider.cs" />
+    <Compile Include="PreProcessing\ICompilationArgumentsCache.cs" />
     <Compile Include="Rewriter\ModuleRewriterFactory.cs" />
     <Compile Include="TokenStreamExtensions.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />

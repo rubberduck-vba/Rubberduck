@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -31,11 +32,11 @@ namespace Rubberduck.Parsing.VBA
         public abstract IReadOnlyCollection<QualifiedModuleName> AllModules();
 
 
-        public IReadOnlyCollection<IVBProject> Projects
+        public IReadOnlyCollection<(string ProjectId, IVBProject Project)> Projects
         {
             get
             {
-                return _state.Projects.AsReadOnly();
+                return _state.Projects.Select(project => (project.ProjectId, project)).ToList().AsReadOnly();
             }
         }
 
