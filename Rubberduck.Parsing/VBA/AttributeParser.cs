@@ -5,18 +5,15 @@ using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class AttributeParser : IAttributeParser
     {
-        private readonly ISourceCodeProvider _attributesSourceCodeProvider;
         private readonly Func<IVBAPreprocessor> _preprocessorFactory;
 
-        public AttributeParser(ISourceCodeProvider attributesSourceCodeProvider, Func<IVBAPreprocessor> preprocessorFactory)
+        public AttributeParser(Func<IVBAPreprocessor> preprocessorFactory)
         {
-            _attributesSourceCodeProvider = attributesSourceCodeProvider;
             _preprocessorFactory = preprocessorFactory;
         }
 
@@ -24,12 +21,10 @@ namespace Rubberduck.Parsing.VBA
         /// Exports the specified component to a temporary file, loads, and then parses the exported file.
         /// </summary>
         /// <param name="module"></param>
+        /// <param name="code1"></param>
         /// <param name="cancellationToken"></param>
-        public (IParseTree tree, ITokenStream tokenStream) Parse(QualifiedModuleName module, CancellationToken cancellationToken)
+        public (IParseTree tree, ITokenStream tokenStream) Parse(QualifiedModuleName module, string code, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var code = _attributesSourceCodeProvider.SourceCode(module);
             cancellationToken.ThrowIfCancellationRequested();
 
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();

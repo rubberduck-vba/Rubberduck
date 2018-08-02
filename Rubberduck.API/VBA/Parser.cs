@@ -97,7 +97,7 @@ namespace Rubberduck.API.VBA
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
             IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), compilationsArgumentsCache);
             var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
-            _attributeParser = new AttributeParser(attributesSourceCodeHandler, preprocessorFactory);
+            _attributeParser = new AttributeParser(preprocessorFactory);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);

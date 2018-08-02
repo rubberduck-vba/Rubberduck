@@ -7,6 +7,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public interface IAttributeParser
     {
-        (IParseTree tree, ITokenStream tokenStream) Parse(QualifiedModuleName module, CancellationToken cancellationToken);
+        (IParseTree tree, ITokenStream tokenStream) Parse(QualifiedModuleName module, string code,
+            CancellationToken cancellationToken);
     }
 }

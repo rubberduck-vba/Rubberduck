@@ -48,13 +48,12 @@ namespace RubberduckTests.Mocks
 
         public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
-            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
             var compilationArgumentsProviderMock = new Mock<ICompilationArgumentsProvider>();
             compilationArgumentsProviderMock.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
                 .Returns(new Dictionary<string, short>());
             var compilationArgumentsProvider = compilationArgumentsProviderMock.Object;
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider), codePaneSourceCodeHandler);
+            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider));
             var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
 
             var path = serializedDeclarationsPath ??
@@ -78,7 +77,8 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state),
                     new AliasDeclarations(state),
                 });
-            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            var attributesSourceCodeHandler = codePaneSourceCodeHandler;
             var moduleRewriterFactory = new ModuleRewriterFactory(
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler);

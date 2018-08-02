@@ -766,6 +766,8 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IParseRunner>()
                 .ImplementedBy<ParseRunner>()
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider",typeof(CodePaneSourceCodeHandler)),
+                    Dependency.OnComponent("attributesSourceCodeProvider",typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
             container.Register(Component.For<IParsingStageService>()
                 .ImplementedBy<ParsingStageService>()
@@ -852,6 +854,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
+            container.Register(Component.For<ISourceFileHandler>().Instance(_vbe.SourceFileHandler));
         }
 
         private void RegisterHotkeyFactory(IWindsorContainer container)
