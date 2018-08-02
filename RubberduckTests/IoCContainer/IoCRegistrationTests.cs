@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Castle.Windsor;
 using NUnit.Framework;
 using Moq;
@@ -6,6 +7,7 @@ using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Root;
 using Rubberduck.UI;
+using Rubberduck.VBEditor.Host;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.IoCContainer
@@ -18,8 +20,9 @@ namespace RubberduckTests.IoCContainer
         public void RegistrationOfRubberduckIoCContainerWithSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var ide = vbeBuilder.Build().Object;
-            var addin = new Mock<IAddIn>().Object;
+            var addInBuilder = new MockAddInBuilder();
+            var ide = vbeBuilder.Build().Object;            
+            var addin = addInBuilder.Build().Object;
             var initialSettings = new GeneralSettings
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
@@ -41,8 +44,9 @@ namespace RubberduckTests.IoCContainer
         public void RegistrationOfRubberduckIoCContainerWithoutSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
+            var addInBuilder = new MockAddInBuilder();
             var ide = vbeBuilder.Build().Object;
-            var addin = new Mock<IAddIn>().Object;
+            var addin = addInBuilder.Build().Object;
             var initialSettings = new GeneralSettings {EnableExperimentalFeatures = new List<ExperimentalFeatures>()};
 
             using (var container =

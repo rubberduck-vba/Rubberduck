@@ -1,4 +1,7 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Rubberduck.VBEditor.Host;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -9,7 +12,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public AddIn(VB.AddIn target, bool rewrapping = false) 
             : base(target, rewrapping)
         {
+            CommandBarLocations = new ReadOnlyDictionary<CommandBarSite, CommandBarLocation>(new Dictionary<CommandBarSite, CommandBarLocation>
+            {
+                {CommandBarSite.MenuBar, new CommandBarLocation(1, 30009)},
+                {CommandBarSite.CodeWindow, new CommandBarLocation(15, 2529)},
+                {CommandBarSite.ProjectExplorer, new CommandBarLocation(22, 2578)},
+                {CommandBarSite.MsForms, new CommandBarLocation(20, 746)},
+                {CommandBarSite.MsFormsControl, new CommandBarLocation(21, 2558)}
+            });
         }
+
+        public IReadOnlyDictionary<CommandBarSite, CommandBarLocation> CommandBarLocations { get; }
 
         public string ProgId => IsWrappingNullReference ? string.Empty : Target.ProgId;
 

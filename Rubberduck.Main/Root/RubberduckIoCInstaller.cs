@@ -314,7 +314,7 @@ namespace Rubberduck.Root
 
         private void RegisterRubberduckMenu(IWindsorContainer container)
         {
-            var location = _vbe.CommandBarLocations[CommandBarSite.MenuBar];
+            var location = _addin.CommandBarLocations[CommandBarSite.MenuBar];
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = RubberduckMenuItems();
@@ -380,7 +380,7 @@ namespace Rubberduck.Root
 
         private void RegisterCodePaneContextMenu(IWindsorContainer container)
         {
-            var location = _vbe.CommandBarLocations[CommandBarSite.CodeWindow];
+            var location = _addin.CommandBarLocations[CommandBarSite.CodeWindow];
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = CodePaneContextMenuItems();
@@ -401,7 +401,7 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerContextMenu(IWindsorContainer container)
         {
-            var location = _vbe.CommandBarLocations[CommandBarSite.MsForms];
+            var location = _addin.CommandBarLocations[CommandBarSite.MsForms];
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
@@ -419,7 +419,7 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerControlContextMenu(IWindsorContainer container)
         {
-            var location = _vbe.CommandBarLocations[CommandBarSite.MsFormsControl];
+            var location = _addin.CommandBarLocations[CommandBarSite.MsFormsControl];
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
@@ -428,7 +428,7 @@ namespace Rubberduck.Root
 
         private void RegisterProjectExplorerContextMenu(IWindsorContainer container)
         {
-            var location = _vbe.CommandBarLocations[CommandBarSite.ProjectExplorer];
+            var location = _addin.CommandBarLocations[CommandBarSite.ProjectExplorer];
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = ProjectWindowContextMenuItems();

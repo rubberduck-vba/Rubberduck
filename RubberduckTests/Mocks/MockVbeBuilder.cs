@@ -60,12 +60,6 @@ namespace RubberduckTests.Mocks
         private Mock<ICodePanes> _vbCodePanes;
         private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
 
-        private const int MenuBar = 1;
-        private const int CodeWindow = 9;
-        private const int ProjectWindow = 14;
-        private const int MsForms = 17;
-        private const int MsFormsControl = 18;
-
         public MockVbeBuilder()
         {
             _vbe = CreateVbeMock();
@@ -232,11 +226,7 @@ namespace RubberduckTests.Mocks
  
             var dummyCommandBar = DummyCommandBar();
 
-            commandBars.SetupGet(m => m[MenuBar]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[CodeWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[ProjectWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsForms]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsFormsControl]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[It.IsAny<int>()]).Returns(dummyCommandBar);
 
             return commandBars.Object;
         }

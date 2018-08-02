@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Rubberduck.VBEditor.Host;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -12,5 +14,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
         IVBE VBE { get; }
         IAddIns Collection { get; }
+        IReadOnlyDictionary<CommandBarSite, CommandBarLocation> CommandBarLocations { get; }
     }
 }
