@@ -35,4 +35,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.0")]
 
+// Allow Moq mocks to inherit from stub classes and thus enable partial mocks
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

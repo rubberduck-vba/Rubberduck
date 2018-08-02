@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using Castle.MicroKernel.Registration;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;

@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿using System.Diagnostics.CodeAnalysis;
 using Rubberduck.Refactorings;
 
 namespace RubberduckTests.Refactoring.MockIoC
@@ -8,6 +8,7 @@ namespace RubberduckTests.Refactoring.MockIoC
         where TView : class, IRefactoringView<TModel>
         where TViewModel : class, IRefactoringViewModel<TModel>
     {
+        [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         public RefactoringDialogStub(TModel model, TView view, TViewModel viewModel)
         {
             Model = model;
@@ -16,6 +17,8 @@ namespace RubberduckTests.Refactoring.MockIoC
             View = view;
             View.DataContext = viewModel;
             ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;
+
+            DialogResult = RefactoringDialogResult.Execute;
         }
 
         public virtual void Dispose()
