@@ -16,7 +16,7 @@ namespace RubberduckTests.AutoComplete
         }
 
         private CodeString Run(SelfClosingPair pair, CodeString original, Keys input)
-        {
+        { 
             var sut = new SelfClosingPairCompletionService();
             return sut.Execute(pair, original, input);
         }
@@ -30,7 +30,6 @@ namespace RubberduckTests.AutoComplete
             var expected = @"foo = MsgBox()|".ToCodeString();
 
             var result = Run(pair, original, input);
-
             Assert.AreEqual(expected, result);
         }
 
@@ -43,7 +42,6 @@ namespace RubberduckTests.AutoComplete
             var expected = @"foo = |2 + 2".ToCodeString();
 
             var result = Run(pair, original, input);
-
             Assert.AreEqual(expected, result);
         }
 
@@ -56,7 +54,6 @@ namespace RubberduckTests.AutoComplete
             var expected = @"foo = |2 + 2".ToCodeString();
 
             var result = Run(pair, original, input);
-
             Assert.AreEqual(expected, result);
         }
 
@@ -69,7 +66,6 @@ namespace RubberduckTests.AutoComplete
             var expected = @"foo = (|2 + 2 + 42)".ToCodeString();
 
             var result = Run(pair, original, input);
-
             Assert.AreEqual(expected, result);
         }
 
@@ -88,7 +84,6 @@ foo = | _
 ".ToCodeString();
 
             var result = Run(pair, original, input);
-
             Assert.AreEqual(expected, result);
         }
 

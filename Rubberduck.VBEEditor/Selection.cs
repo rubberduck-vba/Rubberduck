@@ -79,6 +79,14 @@ namespace Rubberduck.VBEditor
         public Selection PreviousLine => StartLine == 1 ? Home : new Selection(StartLine - 1, 1);
         public Selection NextLine => new Selection(StartLine + 1, 1);
 
+        /// <summary>
+        /// Adds each corresponding element of the specified <c>Selection</c> value. Useful for offsetting with a zero-based <c>Selection</c>.
+        /// </summary>
+        public Selection Offset(Selection offset)
+        {
+            return new Selection(StartLine + offset.StartLine, StartColumn + offset.StartColumn, EndLine + offset.EndLine, EndColumn + offset.EndColumn);
+        }
+
         public int StartLine { get; }
 
         public int EndLine { get; }

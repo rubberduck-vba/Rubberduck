@@ -6,15 +6,18 @@ namespace Rubberduck.Common
     /// <summary>
     /// Represents a code string that includes caret position.
     /// </summary>
-    public struct CodeString
+    public struct CodeString : IEquatable<CodeString>
     {
         /// <summary>
         /// Creates a new <c>CodeString</c>
         /// </summary>
         /// <param name="code">Code string</param>
-        /// <param name="zPosition">Zero-based caret position</param>
-        public CodeString(string code, Selection zPosition)
+        /// <param name="zPosition">Zero-based caret position in the code string.</param>
+        /// <param name="pPosition">One-based selection span of the code string in the containing module.</param>
+        public CodeString(string code, Selection zPosition, Selection pPosition = default)
         {
+            if (code == null) throw new ArgumentNullException(nameof(code));
+
             var lines = code.Split('\n');
             var line = lines[zPosition.StartLine];
             if (line[Math.Min(line.Length - 1, zPosition.StartColumn)] == '|')
@@ -25,8 +28,34 @@ namespace Rubberduck.Common
             {
                 Code = code;
             }
+
+            SnippetPosition = pPosition == default
+                ? new Selection(1, 1, lines.Length, lines[lines.Length-1].Length)
+                : pPosition;
+
             CaretPosition = zPosition;
         }
+
+        public static CodeString FromString(string code)
+        {
+            var zPosition = new Selection();
+            var lines = (code ?? string.Empty).Split('\n');
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i];
+                var index = line.IndexOf('|');
+                if (index >= 0)
+                {
+                    lines[i] = line.Remove(index, 1);
+                    zPosition = new Selection(i, index);
+                    break;
+                }
+            }
+
+            var newCode = string.Join("\n", lines);
+            return new CodeString(code, zPosition);
+        }
+
 
         /// <summary>
         /// The code string.
@@ -36,11 +65,10 @@ namespace Rubberduck.Common
         /// Zero-based caret position in the code string.
         /// </summary>
         public Selection CaretPosition { get; }
-
-        public static implicit operator string(CodeString codeString)
-        {
-            return codeString.Code;
-        }
+        /// <summary>
+        /// One-based position of the code string in the containing module.
+        /// </summary>
+        public Selection SnippetPosition { get; }
 
         public string[] Lines
         {
@@ -51,6 +79,9 @@ namespace Rubberduck.Common
             }
         }
 
+        public static bool operator ==(CodeString codeString1, CodeString codeString2) => (codeString1.Code == codeString2.Code && codeString1.CaretPosition == codeString2.CaretPosition);
+        public static bool operator !=(CodeString codeString1, CodeString codeString2) => !(codeString1 == codeString2);
+
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -59,7 +90,7 @@ namespace Rubberduck.Common
             }
 
             var other = (CodeString)obj;
-            return Code.Equals(other.Code) && CaretPosition.Equals(other.CaretPosition);
+            return Equals(other);
         }
 
         public override int GetHashCode()
@@ -78,6 +109,16 @@ namespace Rubberduck.Common
             var line = lines[CaretPosition.StartLine];
             lines[CaretPosition.StartLine] = line.Insert(CaretPosition.StartColumn, "|");
             return string.Join("\n", lines);
+        }
+
+        public bool Equals(CodeString other)
+        {
+            if (other == default)
+            {
+                return false;
+            }
+            return (Code == null && other.Code == null) 
+                || (Code != null && Code.Equals(other.Code) && CaretPosition.Equals(other.CaretPosition));
         }
     }
 }
