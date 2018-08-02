@@ -2088,6 +2088,9 @@ End Sub
         [Category("Rename")]
         public void RenameRefactoring_CheckAllRefactorCallPaths()
         {
+            var container = RefactoringContainerInstaller.GetContainer();
+            
+
             RefactorParams[] refactorParams = { RefactorParams.None, RefactorParams.QualifiedSelection, RefactorParams.Declaration };
             foreach (var param in refactorParams)
             {
@@ -2141,52 +2144,23 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void Presenter_TargetIsNull()
+        public void Model_TargetIsNull()
         {
             const string inputCode =
                 @"
 Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var codePaneMock = new Mock<ICodePane>();
                 codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
                 codePaneMock.Setup(c => c.Selection);
                 vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
-                var selection = new QualifiedSelection(component.QualifiedModuleName, Selection.Home);
-                var model = new RenameModel(state, selection);
-                var presenter = GetFactory().Create<IRenamePresenter, RenameModel>(model);
-
-                Assert.AreEqual(null, presenter.Show());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Rename")]
-        public void Factory_SelectionIsNull()
-        {
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var codePaneMock = new Mock<ICodePane>();
-                codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
-                codePaneMock.Setup(c => c.Selection);
-                vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
-
                 var model = GetEmptyModel(state, component);
-                var presenter = GetFactory().Create<IRenamePresenter, RenameModel>(model);
-                Assert.AreEqual(null, presenter.Show());
+                
+                Assert.AreEqual(null, model.Target);
             }
         }
 
@@ -2384,6 +2358,8 @@ End Property";
                     {
                         Assert.Inconclusive($"Unable to set RawSelection field for test module {inputOutput.ModuleName}");
                     }
+
+                    inputOutput.RenameSelection = tdo.RawSelection;
                 }
             }
             tdo.ModuleTestSetupDefs.Add(inputOutput);
@@ -2495,7 +2471,8 @@ End Property";
                 }
                 else
                 {
-                    enclosingProjectBuilder.AddComponent(comp.ModuleName, comp.ModuleType, comp.Input);
+                    var selection = comp.RenameSelection.HasValue ? comp.RenameSelection.Value : default;
+                    enclosingProjectBuilder.AddComponent(comp.ModuleName, comp.ModuleType, comp.Input, selection);
                 }
             }
 

@@ -7,8 +7,8 @@ namespace Rubberduck.UI.Refactorings.Rename
     internal class RenamePresenter : RefactoringPresenterBase<RenameModel, IRefactoringDialog<RenameModel, IRefactoringView<RenameModel>, RenameViewModel>, IRefactoringView<RenameModel>, RenameViewModel>, IRenamePresenter
     {
         public RenamePresenter(RenameModel model,
-            IRefactoringDialogFactory dialogFactory) : base(
-            model, dialogFactory)
+            IRefactoringDialogFactory dialogFactory, IRefactoringView<RenameModel> view) : base(
+            model, dialogFactory, view)
         { }
         
         public override RenameModel Show()

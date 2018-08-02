@@ -5,9 +5,9 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public class RefactoringViewModelBase<TModel> : ViewModelBase, IRefactoringViewModel<TModel>
+    public abstract class RefactoringViewModelBase<TModel> : ViewModelBase, IRefactoringViewModel<TModel>
     {
-        public RefactoringViewModelBase(TModel model)
+        protected RefactoringViewModelBase(TModel model)
         {
             Model = model;
 

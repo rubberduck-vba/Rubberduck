@@ -3,7 +3,7 @@ using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public class RefactoringPresenterBase<TModel, TDialog, TView, TViewModel> : IDisposable, IRefactoringPresenter<TModel, TDialog, TView, TViewModel> 
+    public abstract class RefactoringPresenterBase<TModel, TDialog, TView, TViewModel> : IDisposable, IRefactoringPresenter<TModel, TDialog, TView, TViewModel> 
         where TModel : class
         where TView : class, IRefactoringView<TModel>
         where TViewModel : RefactoringViewModelBase<TModel>
@@ -12,11 +12,11 @@ namespace Rubberduck.UI.Refactorings
         private readonly TDialog _dialog;
         private readonly IRefactoringDialogFactory _factory;
 
-        public RefactoringPresenterBase(TModel model, IRefactoringDialogFactory factory)
+        protected RefactoringPresenterBase(TModel model, IRefactoringDialogFactory factory, TView view)
         {
             _factory = factory;
             var viewModel = _factory.CreateViewModel<TModel, TViewModel>(model);
-            _dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(model, viewModel);
+            _dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(model, view, viewModel);
         }
 
         public TModel Model => _dialog.ViewModel.Model;

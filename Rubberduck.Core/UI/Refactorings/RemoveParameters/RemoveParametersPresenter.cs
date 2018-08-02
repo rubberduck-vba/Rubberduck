@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         private readonly IMessageBox _messageBox;
 
         public RemoveParametersPresenter(RemoveParametersModel model,
-            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : base(model, dialogFactory)
+            IRefactoringDialogFactory dialogFactory, RemoveParametersView view, IMessageBox messageBox) : base(model, dialogFactory, view)
         {
             _messageBox = messageBox;
         }

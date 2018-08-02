@@ -1,4 +1,5 @@
-﻿using Rubberduck.Refactorings;
+﻿using Moq;
+using Rubberduck.Refactorings;
 
 namespace RubberduckTests.Refactoring.MockIoC
 {
@@ -17,24 +18,24 @@ namespace RubberduckTests.Refactoring.MockIoC
             ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;
         }
 
-public void Dispose()
+        public virtual void Dispose()
         {
-            //no-op
+            
         }
 
-        public RefactoringDialogResult DialogResult { get; protected set; }
-        public RefactoringDialogResult ShowDialog()
+        public virtual RefactoringDialogResult DialogResult { get; }
+        public virtual RefactoringDialogResult ShowDialog()
         {
             return DialogResult;
         }
 
-        public TModel Model { get; }
-        public TView View { get; }
-        public TViewModel ViewModel { get; }
+        public virtual TModel Model { get; }
+        public virtual TView View { get; }
+        public virtual TViewModel ViewModel { get; }
 
         protected virtual void ViewModel_OnWindowClosed(object sender, RefactoringDialogResult result)
         {
-            DialogResult = result;
+
         }
     }
 }

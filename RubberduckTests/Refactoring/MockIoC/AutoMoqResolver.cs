@@ -28,6 +28,7 @@ namespace RubberduckTests.Refactoring.MockIoC
 
             return dependency.TargetType.Namespace.StartsWith("Rubberduck")
                    && !dependency.TargetType.Name.EndsWith("Factory")
+                   && !dependency.TargetType.Name.StartsWith("IRefactoringDialog")
                    && dependency.TargetType.IsInterface;
         }
 

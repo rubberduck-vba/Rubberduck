@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
+using System.Reflection;
+using Castle.Core;
 using Castle.Facilities.TypedFactory;
+using Castle.MicroKernel;
+using Castle.MicroKernel.ComponentActivator;
+using Castle.MicroKernel.Context;
 using Castle.MicroKernel.ModelBuilder.Inspectors;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
@@ -13,6 +19,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
 
@@ -45,13 +52,15 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .LifestyleTransient());
             RegisterParsingEngine(container);
 
-            container.Register(Component.For<IRefactoringPresenterFactory>().AsFactory().LifestyleTransient());
+            container.Register(Component.For<IRefactoringPresenterFactory>()
+                .AsFactory()
+                .LifestyleTransient()
+                );
+
             container.Register(Component.For<IRefactoringDialogFactory>()
                 .AsFactory()
                 .LifestyleTransient()
-                .DependsOn(Property.ForKey(typeof(IRefactoringDialog<,,>))
-                    .Is(typeof(RenameDialog))
-                ));
+                );
 
             container.Register(Classes
                 .FromAssemblyContaining(typeof(IParseCoordinator))
@@ -62,7 +71,6 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .FromAssemblyContaining<IRefactoring>()
                 .IncludeNonPublicTypes()
                 .InSameNamespaceAs(typeof(IRefactoring), true)
-                //.If((type => !type.Name.EndsWith("Dialog")))
                 .WithService.DefaultInterfaces()
                 .LifestyleTransient());
 
@@ -77,7 +85,7 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .ImplementedBy(typeof(RefactoringViewStub<>))
                 .LifestyleSingleton()
             );
-                
+
             container.Register(Classes
                 .FromAssemblyContaining<RefactoringDialogBase>()
                 .IncludeNonPublicTypes()
@@ -87,19 +95,9 @@ namespace RubberduckTests.Refactoring.MockIoC
                     && !type.Name.EndsWith("DialogBase")
                     && !type.Name.EndsWith("View")
                     && !type.Name.EndsWith("ViewBase"))
+                .Unless(t => t.IsAbstract)
                 .WithService.DefaultInterfaces()
                 .LifestyleTransient());
-            
-
-            /*
-            container.Register(Component.For<IRefactoringView>().ImplementedBy(typeof(RenameView)));
-            container.Register(Component.For(typeof(IRefactoringViewModel<>))
-                .ImplementedBy(typeof(RenameViewModel)).LifestyleTransient());
-            container.Register(Component.For(typeof(IRefactoringDialog<,,>)).ImplementedBy(typeof(RenameDialog))
-                .LifestyleTransient());
-            container.Register(Component.For(typeof(IRefactoringPresenter<,,,>)).ImplementedBy(typeof(RenamePresenter))
-                .LifestyleTransient());
-            */
         }
 
         private void SetUpCollectionResolver(IWindsorContainer container)
@@ -167,7 +165,7 @@ namespace RubberduckTests.Refactoring.MockIoC
             container.Register(Component.For<IParseCoordinator>()
                 .ImplementedBy<ParseCoordinator>()
                 .LifestyleSingleton());
-
+            
             container.Register(Component.For<Func<IVBAPreprocessor>>()
                 .Instance(() => new VBAPreprocessor(7.0)));
         }
@@ -179,4 +177,75 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .LifestyleSingleton());
         }
     }
+
+    /*
+    public class MockActivator : DefaultComponentActivator
+    {
+        public MockActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation,
+            ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction) { }
+
+        public override object Create(CreationContext context, Burden burden)
+        {
+            if (context.RequestedType.IsGenericType && context.RequestedType.GetGenericTypeDefinition() == typeof(IRefactoringView<>))
+            {
+                var refactoringModel = context.AdditionalArguments["model"];
+                var modelType = refactoringModel.GetType();
+
+                var viewType = typeof(IRefactoringView<>).MakeGenericType(modelType);
+                var mockViewType = typeof(Mock<>).MakeGenericType(viewType);
+                var mockView = (Mock)Kernel.Resolve(mockViewType);
+
+                return mockView.Object;
+            }
+            else if (context.RequestedType.IsGenericType && context.RequestedType.GetGenericTypeDefinition() == typeof(IRefactoringDialog<,,>))
+            {
+                var refactoringModel = context.AdditionalArguments["model"];
+                var modelType = refactoringModel.GetType();
+
+                var viewModelType = context.RequestedType.GenericTypeArguments[2];
+                var viewModel = Kernel.Resolve(viewModelType, new Arguments {{"model", refactoringModel}});
+
+                var viewType = typeof(IRefactoringView<>).MakeGenericType(modelType);
+                var mockViewType = typeof(Mock<>).MakeGenericType(viewType);
+                var mockView = (Mock)Kernel.Resolve(mockViewType);
+
+                var dialogType = typeof(IRefactoringDialog<,,>).MakeGenericType(modelType, viewType, viewModelType);
+                var mockDialogType = typeof(Mock<>).MakeGenericType(dialogType);
+
+                var args = new Arguments(new
+                {
+                    model = refactoringModel,
+                    view = mockView,
+                    viewModel = viewModel
+                });
+                var mockDialog = (Mock<IRefactoringDialog<RenameModel, IRefactoringView<RenameModel>, RenameViewModel>>)Kernel.Resolve(mockDialogType);
+
+                mockDialog.SetupAllProperties();
+                return mockDialog.Object;
+                
+                //Kernel.Resolve(typeof(IRefactoringDialog<,,>).MakeGenericType(modelType, viewType, viewModelType),
+                //    new Arguments {{"model", refactoringModel}, {"view", mockView.Object}, {"viewModel", viewModel}});
+                /*
+                var modelType = context.RequestedType.GenericTypeArguments[0];
+                var viewModelType = context.RequestedType.GenericTypeArguments[2];
+
+                var viewType = typeof(IRefactoringView<>).MakeGenericType(modelType);
+                var mockViewType = typeof(Mock<>).MakeGenericType(viewType);
+                var mockView = Kernel.Resolve(mockViewType);
+
+                var requestedGeneric = context.RequestedType.GetGenericTypeDefinition();
+                var returnType = requestedGeneric.MakeGenericType(modelType, mockViewType, viewModelType);
+
+                Activator.CreateInstance(returnType);
+
+                //var viewModelType = typeof(IRefactoringViewModel<>).MakeGenericType(modelType);
+                //var mockViewModelType = typeof(Mock<>).MakeGenericType(viewModelType);
+                //var mock = Kernel.Resolve(mockViewModelType);
+                * /
+            }
+
+            return base.Create(context, burden);
+        }
+    }
+    */
 }

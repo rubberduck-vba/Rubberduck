@@ -3,7 +3,6 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
-using Rubberduck.UI;
 using Rubberduck.Interaction;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -20,15 +19,15 @@ namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : IRefactoring
     {
-        private const string _appendUnderscoreFormat = "{0}_";
-        private const string _prependUnderscoreFormat = "_{0}";
+        private const string AppendUnderscoreFormat = "{0}_";
+        private const string PrependUnderscoreFormat = "_{0}";
 
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory _factory;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
-        private Tuple<ICodePane, Selection> _initialSelection;
+        private QualifiedSelection? _initialSelection;
         private readonly List<QualifiedModuleName> _modulesToRewrite;
         private readonly Dictionary<DeclarationType, Action> _renameActions;
         private readonly List<string> _neverRenameIdentifiers;
@@ -44,8 +43,7 @@ namespace Rubberduck.Refactorings.Rename
             _factory = factory;
             _messageBox = messageBox;
             _state = state;
-            var activeCodePane = _vbe.ActiveCodePane;
-            _initialSelection = new Tuple<ICodePane, Selection>(activeCodePane, activeCodePane.IsWrappingNullReference ? Selection.Empty : activeCodePane.Selection);
+            _initialSelection = _vbe.ActiveCodePane.GetQualifiedSelection();
             _modulesToRewrite = new List<QualifiedModuleName>();
             _renameActions = new Dictionary<DeclarationType, Action>
             {
@@ -61,11 +59,11 @@ namespace Rubberduck.Refactorings.Rename
             _neverRenameIdentifiers = NeverRenameList();
         }
 
-        private RenameModel InitializeModel()
+        private RenameModel InitializeModel(Declaration target)
         {
-            var activeSelection = _vbe.GetActiveSelection();
-            var qualifiedSelection = activeSelection ?? new QualifiedSelection();
-            return new RenameModel(_state, qualifiedSelection);
+            var targetSelection = target?.QualifiedSelection ?? _vbe.GetActiveSelection();
+
+            return targetSelection == null ? null : new RenameModel(_state, targetSelection.Value);
         }
 
         public void Refactor(QualifiedSelection qualifiedSelection)
@@ -76,7 +74,7 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor()
         {
-            _model = InitializeModel();
+            _model = InitializeModel(null);
             if (_model == null)
             {
                 return;
@@ -95,12 +93,11 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(Declaration target)
         {
-            _model = InitializeModel();
+            _model = InitializeModel(target);
             if (_model == null)
             {
                 return;
             }
-            _model.Target = target;
 
             using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter, RenameModel>(_model), p => _factory.Release(p)))
             {
@@ -140,22 +137,7 @@ namespace Rubberduck.Refactorings.Rename
                 PresentRenameErrorMessage($"{BuildDefaultErrorMessage(_model.Target)}: {unhandledEx.Message}");
             }
         }
-
-        private IRenamePresenter CreateRenamePresenter()
-        {
-            var presenter = _factory.Create<IRenamePresenter, RenameModel>(_model);
-            if (presenter != null)
-            {
-                _model = presenter.Model;
-            }
-            if (presenter == null || _model == null)
-            {
-                PresentRenameErrorMessage(RubberduckUI.RefactorRename_TargetNotDefinedError);
-                return null;
-            }
-            return presenter;
-        }
-
+        
         private bool TrySetRenameTargetFromInputTarget(Declaration inputTarget)
         {
             if (!IsValidTarget(inputTarget)) { return false; }
@@ -374,7 +356,7 @@ namespace Rubberduck.Refactorings.Rename
                     .Where(member => member.ProjectId == _model.Target.ProjectId
                         && member.IdentifierName.Equals($"{_model.Target.ComponentName}_{_model.Target.IdentifierName}"));
 
-                RenameDefinedFormatMembers(implementations, _prependUnderscoreFormat);
+                RenameDefinedFormatMembers(implementations, PrependUnderscoreFormat);
             }
         }
 
@@ -405,7 +387,7 @@ namespace Rubberduck.Refactorings.Rename
                 .Where(varDec => varDec.IsWithEvents && varDec.AsTypeName.Equals(_model.Target.ParentDeclaration.IdentifierName));
 
             var eventHandlers = withEventsDeclarations.SelectMany(we => _state.DeclarationFinder.FindHandlersForWithEventsField(we));
-            RenameDefinedFormatMembers(eventHandlers, _prependUnderscoreFormat);
+            RenameDefinedFormatMembers(eventHandlers, PrependUnderscoreFormat);
         }
 
         private void RenameVariable()
@@ -425,7 +407,7 @@ namespace Rubberduck.Refactorings.Rename
                 }
                 RenameReferences(_model.Target, _model.NewName);
                 var controlEventHandlers = FindEventHandlersForControl(_model.Target);
-                RenameDefinedFormatMembers(controlEventHandlers, _appendUnderscoreFormat);
+                RenameDefinedFormatMembers(controlEventHandlers, AppendUnderscoreFormat);
             }
             else
             {
@@ -433,7 +415,7 @@ namespace Rubberduck.Refactorings.Rename
                 if (_model.Target.IsWithEvents)
                 {
                     var eventHandlers = _state.DeclarationFinder.FindHandlersForWithEventsField(_model.Target);
-                    RenameDefinedFormatMembers(eventHandlers, _appendUnderscoreFormat);
+                    RenameDefinedFormatMembers(eventHandlers, AppendUnderscoreFormat);
                 }
             }
         }
@@ -451,7 +433,7 @@ namespace Rubberduck.Refactorings.Rename
                     var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
-                        RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), _appendUnderscoreFormat);
+                        RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), AppendUnderscoreFormat);
                     }
                 }
             }
@@ -590,22 +572,28 @@ namespace Rubberduck.Refactorings.Rename
         private void CacheInitialSelection(QualifiedSelection qSelection)
         {
             using (var codeModule = _state.ProjectsProvider.Component(qSelection.QualifiedName).CodeModule)
+            using (var codePane = codeModule.CodePane)
             {
-                using (var codePane = codeModule.CodePane)
+                if (!codePane.IsWrappingNullReference)
                 {
-                    if (!codePane.IsWrappingNullReference)
-                    {
-                        _initialSelection = new Tuple<ICodePane, Selection>(codePane, codePane.Selection);
-                    }
+                    _initialSelection = codePane.GetQualifiedSelection();
                 }
             }
         }
 
         private void RestoreInitialSelection()
         {
-            if (!_initialSelection.Item1.IsWrappingNullReference)
+            if (!_initialSelection.HasValue)
             {
-                _initialSelection.Item1.Selection = _initialSelection.Item2;
+                return;
+            }
+
+            var selection = _initialSelection.Value;
+            using (var component = _state.ProjectsProvider.Component(selection.QualifiedName))
+            using (var codeModule = component.CodeModule)
+            using (var codePane = codeModule.CodePane)
+            {
+                codePane.Selection = selection.Selection;
             }
         }
 

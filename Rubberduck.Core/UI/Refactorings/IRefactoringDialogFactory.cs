@@ -4,7 +4,7 @@ namespace Rubberduck.UI.Refactorings
 {
     public interface IRefactoringDialogFactory
     {
-        TDialog CreateDialog<TModel, TView, TViewModel, TDialog>(TModel model, TViewModel viewmodel)
+        TDialog CreateDialog<TModel, TView, TViewModel, TDialog>(TModel model, TView view, TViewModel viewmodel)
             where TModel : class
             where TView : class, IRefactoringView<TModel>
             where TViewModel : class, IRefactoringViewModel<TModel>
