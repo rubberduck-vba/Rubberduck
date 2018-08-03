@@ -335,7 +335,7 @@ namespace RubberduckTests.SmartIndenter
             {
                 "Private Function Foo()",
                 "    Foo = Bar(A, B, C + 1) = D * Baz(E, F, G) / (4 * X * Y) * Bar(A + 1, B + 1, C) _",
-                "          + (D * (Bar(E, F, G) / D ^ 2 + Baz(X, Y, Z) / (2 * X)))",
+                "        + (D * (Bar(E, F, G) / D ^ 2 + Baz(X, Y, Z) / (2 * X)))",
                 "End Function"
             };
 
@@ -386,7 +386,7 @@ namespace RubberduckTests.SmartIndenter
             {
                 "Sub Foo()",
                 "Dim bar As Long",
-                "bar = Baz(Param:=AnotherFunction(Title:=Title:=FOO_BAR), _",
+                "bar = Baz(Param:=AnotherFunction(Title:=FOO_BAR), _",
                 "Behavior:=\"expected\", _",
                 "Works:=True)",
                 "End Sub"

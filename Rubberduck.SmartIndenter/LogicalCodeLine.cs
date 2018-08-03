@@ -196,22 +196,26 @@ namespace Rubberduck.SmartIndenter
                 {
                     case "\a":
                     case "\x2":
-                        index++;
                         break;
                     case "(":
                         //Start of another function => remember this position
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Function, index));
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1, _nestingDepth++));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Function, index, ++_nestingDepth));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1, _nestingDepth));
                         break;
                     case ")":
                         //Function finished => Remove back to the previous open bracket
                         while (_alignment.Any())
                         {
-                            var finished = _alignment.Count == stackPos + 1 || 
-                                           _alignment.Peek().Type == AlignmentTokenType.Function && _alignment.Peek().NestingDepth == _nestingDepth - 1;
-                            _alignment.Pop();
+                            var finished = _alignment.Count == stackPos + 1;                            
+                            var token =_alignment.Pop();
+                            if (token.Type == AlignmentTokenType.Function && token.NestingDepth == _nestingDepth - 1)
+                            {
+                                _alignment.Push(token);
+                                finished = true;
+                            }
                             if (finished)
                             {
+                                _nestingDepth--;
                                 break;
                             }
                         }
@@ -222,13 +226,13 @@ namespace Rubberduck.SmartIndenter
                             //Space before an = sign => remember it to align to later
                             if (!_alignment.Any(a => a.Type == AlignmentTokenType.Equals || a.Type == AlignmentTokenType.Variable))
                             {
-                                _alignment.Push(new AlignmentToken(AlignmentTokenType.Equals, index + 2));
+                                _alignment.Push(new AlignmentToken(AlignmentTokenType.Equals, index + 2, _nestingDepth));
                             }
                         }
                         else if (!_alignment.Any() && index < line.Length - 2)
                         {
                             //Space after a name before the end of the line => remember it for later
-                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Variable, index));
+                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Variable, index, _nestingDepth));
                         }
                         else if (index > 5 && line.Substring(index - 6, 6).Equals(" Then "))
                         {
@@ -242,13 +246,13 @@ namespace Rubberduck.SmartIndenter
                         break;
                     case ",":
                         //Start of a new parameter => remember it to align to
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1, _nestingDepth));
                         break;
                     case ":":
                         if (line.Substring(index - 1, 2).Equals(":="))
                         {
                             //A named paremeter => remember to align to after the name
-                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 3));
+                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 3, _nestingDepth));
                         }
                         else if (line.Substring(index, 2).Equals(": "))
                         {
