@@ -868,5 +868,66 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        [Test]
+        [Category("Indenter")]
+        public void ElseWithEndingColonWorks()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                "If True Then",
+                "Debug.Print \"True\"",
+                "Else:",
+                "Debug.Print \"False\"",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "    If True Then",
+                "        Debug.Print \"True\"",
+                "    Else:",
+                "        Debug.Print \"False\"",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+
+        [Test]
+        [Category("Indenter")]
+        public void ElseWithTrailingSegmentWorks()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                "If True Then",
+                "Debug.Print \"True\"",
+                "Else: Debug.Print \"False\"",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "    If True Then",
+                "        Debug.Print \"True\"",
+                "    Else: Debug.Print \"False\"",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }
