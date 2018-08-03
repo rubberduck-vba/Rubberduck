@@ -51,6 +51,7 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Root
@@ -269,6 +270,12 @@ namespace Rubberduck.Root
                 .ImplementedBy<ModuleRewriterFactory>()
                 .DependsOn(Dependency.OnComponent("codePaneSourceCodeHandler", typeof(CodePaneSourceCodeHandler)),
                     Dependency.OnComponent("attributesSourceCodeHandler", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .LifestyleSingleton());
+            container.Register(Component.For<IRubberduckParserErrorListenerFactory>()
+                .ImplementedBy<ExceptionErrorListenerFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IParsePassErrorListenerFactory>()
+                .ImplementedBy<MainParseErrorListenerFactory>()
                 .LifestyleSingleton());
         }
 

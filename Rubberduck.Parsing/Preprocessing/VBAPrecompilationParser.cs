@@ -2,7 +2,6 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using NLog;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
 
@@ -25,7 +24,7 @@ namespace Rubberduck.Parsing.PreProcessing
             }
             catch (ParsePassSyntaxErrorException syntaxErrorException)
             {
-                var parsePassText = syntaxErrorException.ParsePass == ParsePass.CodePanePass
+                var parsePassText = syntaxErrorException.CodeKind == CodeKind.CodePaneCode
                     ? "code pane"
                     : "exported";
                 Logger.Warn($"SLL mode failed while preprocessing the {parsePassText} version of module {moduleName} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.");

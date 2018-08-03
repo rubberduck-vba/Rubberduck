@@ -14,7 +14,6 @@ using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -61,7 +60,7 @@ namespace Rubberduck.Parsing.VBA
                 var tokenStream = RewriteAndPreprocess(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();  
 
-                var (codePaneParseTree, codePaneTokenStream) = ParseInternal(_module.ComponentName, tokenStream);
+                var (codePaneParseTree, codePaneTokenStream) = ParseInternal(_module, tokenStream);
                 var codePaneRewriter = _moduleRewriterFactory.CodePaneRewriter(_module, codePaneTokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -101,7 +100,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (PreprocessorSyntaxErrorException syntaxErrorException)
             {
-                var parsePassText = syntaxErrorException.ParsePass == ParsePass.CodePanePass
+                var parsePassText = syntaxErrorException.CodeKind == CodeKind.CodePaneCode
                     ? "code pane"
                     : "exported";
                 Logger.Error($"Syntax error while preprocessing; offending token '{syntaxErrorException.OffendingSymbol.Text}' at line {syntaxErrorException.LineNumber}, column {syntaxErrorException.Position} in the {parsePassText} version of module {_module.ComponentName}.");
@@ -111,7 +110,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (ParsePassSyntaxErrorException syntaxErrorException)
             {
-                var parsePassText = syntaxErrorException.ParsePass == ParsePass.CodePanePass
+                var parsePassText = syntaxErrorException.CodeKind == CodeKind.CodePaneCode
                     ? "code pane"
                     : "exported";
                 Logger.Error($"Syntax error; offending token '{syntaxErrorException.OffendingSymbol.Text}' at line {syntaxErrorException.LineNumber}, column {syntaxErrorException.Position} in the {parsePassText} version of module {_module.ComponentName}.");
@@ -198,15 +197,15 @@ namespace Rubberduck.Parsing.VBA
             var code = _rewriter?.GetText() ?? _codePaneSourceCodeProvider.SourceCode(_module);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
-            _preprocessor.PreprocessTokenStream(_module.ProjectId, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, ParsePass.CodePanePass), cancellationToken);
+            _preprocessor.PreprocessTokenStream(_module.ProjectId, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, CodeKind.CodePaneCode), cancellationToken);
             return tokens;
         }
 
-        private (IParseTree tree, ITokenStream tokenStream) ParseInternal(string moduleName, CommonTokenStream tokenStream)
+        private (IParseTree tree, ITokenStream tokenStream) ParseInternal(QualifiedModuleName module, CommonTokenStream tokenStream)
         {
             //var errorNotifier = new SyntaxErrorNotificationListener();
             //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(moduleName, tokenStream, new MainParseExceptionErrorListener(moduleName, ParsePass.CodePanePass));
+            return _parser.Parse(module, tokenStream, new MainParseExceptionErrorListener(module.ComponentName, CodeKind.CodePaneCode));
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

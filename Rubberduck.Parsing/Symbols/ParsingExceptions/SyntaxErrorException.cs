@@ -1,5 +1,6 @@
 using System;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Parsing.Symbols.ParsingExceptions
 {
@@ -11,25 +12,28 @@ namespace Rubberduck.Parsing.Symbols.ParsingExceptions
     public class SyntaxErrorException : Exception
     {
         public SyntaxErrorException(SyntaxErrorInfo info)
-            : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position) { }
+            : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.CodeKind) { }
 
-        public SyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position)
+        public SyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, CodeKind codeKind)
             : base(message, innerException)
         {
             OffendingSymbol = offendingSymbol;
             LineNumber = line;
             Position = position;
+            CodeKind = codeKind;
         }
 
         public IToken OffendingSymbol { get; }
         public int LineNumber { get; }
         public int Position { get; }
+        public CodeKind CodeKind { get; }
 
         public override string ToString()
         {
             var exceptionText = 
 $@"{base.ToString()}
-Token: {OffendingSymbol.Text} at L{LineNumber}C{Position}";
+Token: {OffendingSymbol.Text} at L{LineNumber}C{Position}
+Kind of parsed code: {CodeKind}";
             return exceptionText;
         }
     }

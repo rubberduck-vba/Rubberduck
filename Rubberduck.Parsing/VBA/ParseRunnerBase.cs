@@ -128,7 +128,7 @@ namespace Rubberduck.Parsing.VBA
 
                     _state.SaveContentHash(module);
                     _state.AddParseTree(module, result.ParseTree);
-                    _state.AddParseTree(module, result.AttributesTree, ParsePass.AttributesPass);
+                    _state.AddParseTree(module, result.AttributesTree, CodeKind.AttributesCode);
                     _state.SetModuleComments(module, result.Comments);
                     _state.SetModuleAnnotations(module, result.Annotations);
                     _state.SetCodePaneRewriter(module, result.CodePaneRewriter);

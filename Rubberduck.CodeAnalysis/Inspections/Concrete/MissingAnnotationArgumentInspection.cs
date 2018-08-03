@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete
         public MissingAnnotationArgumentInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override ParsePass Pass => ParsePass.AttributesPass;
+        public override CodeKind TargetKindOfCode => CodeKind.AttributesCode;
 
         public override IInspectionListener Listener { get; } =
             new InvalidAnnotationStatementListener();

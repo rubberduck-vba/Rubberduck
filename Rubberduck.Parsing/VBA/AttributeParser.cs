@@ -30,14 +30,14 @@ namespace Rubberduck.Parsing.VBA
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var tokens = tokenStreamProvider.Tokens(code);
             var preprocessor = _preprocessorFactory();
-            var preprocessorErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
+            var preprocessorErrorListener = new PreprocessorExceptionErrorListener(module.ComponentName, CodeKind.AttributesCode);
             preprocessor.PreprocessTokenStream(module.ProjectId, module.ComponentName, tokens, preprocessorErrorListener, cancellationToken);
             // parse tree isn't usable for declarations because
             // line numbers are offset due to module header and attributes
             // (these don't show up in the VBE, that's why we're parsing an exported file)
 
-            var mainParseErrorListener = new MainParseExceptionErrorListener(module.ComponentName, ParsePass.AttributesPass);
-            var parseResults = new VBAModuleParser().Parse(module.ComponentName, tokens, mainParseErrorListener);
+            var mainParseErrorListener = new MainParseExceptionErrorListener(module.ComponentName, CodeKind.AttributesCode);
+            var parseResults = new VBAModuleParser().Parse(module, tokens, mainParseErrorListener);
 
             cancellationToken.ThrowIfCancellationRequested();
             return (parseResults.tree, parseResults.tokenStream);

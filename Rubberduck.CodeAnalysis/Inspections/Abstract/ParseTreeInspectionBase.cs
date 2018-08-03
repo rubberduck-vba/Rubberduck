@@ -9,6 +9,6 @@ namespace Rubberduck.Inspections.Abstract
             : base(state) { }
 
         public abstract IInspectionListener Listener { get; }
-        public virtual ParsePass Pass => ParsePass.CodePanePass;
+        public virtual CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
     }
 }

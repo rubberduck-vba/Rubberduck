@@ -148,6 +148,14 @@
     <Compile Include="PreProcessing\ICompilationArgumentsProvider.cs" />
     <Compile Include="PreProcessing\ICompilationArgumentsCache.cs" />
     <Compile Include="Rewriter\ModuleRewriterFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ExceptionErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\PreprocessingParseErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\IRubberduckParserErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\MainParseErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\IParsePassErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ParsePassErrorListenerBase.cs" />
+    <Compile Include="Symbols\ParsingExceptions\IRubberduckParseErrorListener.cs" />
+    <Compile Include="Symbols\ParsingExceptions\RubberduckParseErrorListenerBase.cs" />
     <Compile Include="TokenStreamExtensions.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />
     <Compile Include="ComReflection\ComTypeName.cs" />
@@ -189,7 +197,7 @@
     <Compile Include="UIContext\UiDispatcher.cs" />
     <Compile Include="Rewriter\IModuleRewriterFactory.cs" />
     <Compile Include="VBA\RepositoryProjectManager.cs" />
-    <Compile Include="VBA\ParsePass.cs" />
+    <Compile Include="VBA\CodeKind.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />

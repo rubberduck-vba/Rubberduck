@@ -94,18 +94,18 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetParseTree(IParseTree parseTree, ParsePass pass)
+        public ModuleState SetParseTree(IParseTree parseTree, CodeKind codeKind)
         {
-            switch (pass)
+            switch (codeKind)
             {
-                case ParsePass.AttributesPass:
+                case CodeKind.AttributesCode:
                     AttributesPassParseTree = parseTree;
                     break;
-                case ParsePass.CodePanePass:
+                case CodeKind.CodePaneCode:
                     ParseTree = parseTree;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
             }
             return this;
         }

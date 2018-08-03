@@ -72,7 +72,7 @@ Public Sub Foo
     MsgBox ""hi""
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode);
-            
+
             Assert.IsInstanceOf<TokenStreamRewriter>(parser.Parse().rewriter);
         }
 

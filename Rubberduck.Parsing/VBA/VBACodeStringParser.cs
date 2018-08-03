@@ -5,6 +5,7 @@ using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -42,7 +43,7 @@ namespace Rubberduck.Parsing.VBA
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             _tokenStream = tokenStreamProvider.Tokens(moduleCodeString);
             _parser = new VBAParser(_tokenStream);
-            _parser.AddErrorListener(new MainParseExceptionErrorListener(moduleName, ParsePass.CodePanePass));
+            _parser.AddErrorListener(new MainParseExceptionErrorListener(moduleName, CodeKind.SnippetCode));
             _moduleName = moduleName;
             _mode = mode;
         }
@@ -63,7 +64,7 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (ParsePassSyntaxErrorException syntaxErrorException)
             {
-                var parsePassText = syntaxErrorException.ParsePass == ParsePass.CodePanePass
+                var parsePassText = syntaxErrorException.CodeKind == CodeKind.CodePaneCode
                     ? "code pane"
                     : "exported";
                 var message = $"SLL mode failed while parsing the {parsePassText} version of module {moduleName} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.";

@@ -842,22 +842,22 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[module].SetModuleContentHashCode(GetModuleContentHash(module));
         }
 
-        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
+        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, CodeKind codeKind = CodeKind.CodePaneCode)
         {
             var key = module;
-            _moduleStates[key].SetParseTree(parseTree, pass);
+            _moduleStates[key].SetParseTree(parseTree, codeKind);
         }
 
-        public IParseTree GetParseTree(QualifiedModuleName module, ParsePass pass = ParsePass.CodePanePass)
+        public IParseTree GetParseTree(QualifiedModuleName module, CodeKind codeKind = CodeKind.CodePaneCode)
         {
-            switch (pass)
+            switch (codeKind)
             {
-                case ParsePass.AttributesPass:
+                case CodeKind.AttributesCode:
                     return _moduleStates[module].AttributesPassParseTree;
-                case ParsePass.CodePanePass:
+                case CodeKind.CodePaneCode:
                     return _moduleStates[module].ParseTree;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
             }
         }
 
