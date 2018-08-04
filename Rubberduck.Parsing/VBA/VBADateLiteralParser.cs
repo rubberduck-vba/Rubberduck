@@ -4,6 +4,7 @@ using NLog;
 using System;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.VBA
 {

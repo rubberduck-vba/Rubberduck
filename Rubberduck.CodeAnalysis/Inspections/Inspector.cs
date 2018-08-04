@@ -14,6 +14,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;

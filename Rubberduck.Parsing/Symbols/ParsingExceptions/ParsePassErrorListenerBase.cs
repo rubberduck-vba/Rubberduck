@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols.ParsingExceptions

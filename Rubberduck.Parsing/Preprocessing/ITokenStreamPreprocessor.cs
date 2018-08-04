@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using System.Threading;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.PreProcessing
 {

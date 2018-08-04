@@ -1,24 +1,23 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
-using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
-namespace Rubberduck.Parsing.VBA
+namespace Rubberduck.Parsing.VBA.Parsing
 {
     class ComponentParseTask
     {
@@ -198,7 +197,7 @@ namespace Rubberduck.Parsing.VBA
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)
         {
-            var commentNodes = comments.Select(comment => new CommentNode(comment.GetComment(), Tokens.CommentMarker, new QualifiedSelection(qualifiedName, comment.GetSelection())));
+            var commentNodes = comments.Select(comment => new CommentNode(CommentExtensions.GetComment((VBAParser.CommentContext) comment), Tokens.CommentMarker, new QualifiedSelection(qualifiedName, ParserRuleContextExtensions.GetSelection(comment))));
             var remCommentNodes = remComments.Select(comment => new CommentNode(comment.GetComment(), Tokens.Rem, new QualifiedSelection(qualifiedName, comment.GetSelection())));
             var allCommentNodes = commentNodes.Union(remCommentNodes);
             return allCommentNodes;

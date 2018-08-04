@@ -1,8 +1,8 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.VBA
+namespace Rubberduck.Parsing.VBA.Parsing
 {
     public interface IParseRunner
     {

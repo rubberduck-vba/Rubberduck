@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.VBA
+﻿namespace Rubberduck.Parsing.VBA.Parsing
 {
     public enum  CodeKind
     {

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Rubberduck.VBEditor;
 using System.Threading;
+using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
-using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
-namespace Rubberduck.Parsing.VBA
+namespace Rubberduck.Parsing.VBA.Parsing
 {
     public abstract class ParseRunnerBase : IParseRunner
     {
