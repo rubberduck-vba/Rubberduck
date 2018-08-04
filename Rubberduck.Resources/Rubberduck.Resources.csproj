@@ -684,6 +684,7 @@
     <Resource Include="Icons\Fugue\ui-tab-content.png" />
     <Content Include="Icons\Custom\PNG\MdiForm.png" />
     <Resource Include="Icons\Fugue\document-import.png" />
+    <Content Include="Icons\Fugue\funnel.png" />
     <Content Include="Splash.png" />
     <Resource Include="Icons\Fugue\lock--exclamation.png" />
     <Resource Include="Rubberduck.png" />
