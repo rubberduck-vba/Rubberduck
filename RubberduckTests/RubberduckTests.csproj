@@ -108,6 +108,7 @@
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />
+    <Compile Include="PreProcessing\CompilationArgumentsCahceTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
     <Compile Include="QuickFixes\IntroduceLocalVariableQuickFixTests.cs" />
     <Compile Include="Rewriter\ArgumentRewriterInfoFinderTests.cs" />
