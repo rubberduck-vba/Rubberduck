@@ -11,11 +11,14 @@ namespace Rubberduck.Parsing.PreProcessing
         private readonly IProjectsProvider _projectsProvider;
         private readonly IUiDispatcher _uiDispatcher;
 
-        public CompilationArgumentsProvider(IProjectsProvider projectsProvider, IUiDispatcher uiDispatcher)
+        public CompilationArgumentsProvider(IProjectsProvider projectsProvider, IUiDispatcher uiDispatcher, VBAPredefinedCompilationConstants predefinedConstants)
         {
             _projectsProvider = projectsProvider;
             _uiDispatcher = uiDispatcher;
+            PredefinedCompilationConstants = predefinedConstants;
         }
+
+        public VBAPredefinedCompilationConstants PredefinedCompilationConstants { get; }
 
         public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
         {

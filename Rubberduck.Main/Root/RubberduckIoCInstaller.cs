@@ -800,8 +800,11 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<ITokenStreamPreprocessor>()
                 .ImplementedBy<VBAPreprocessor>()
-                .DependsOn(Dependency.OnComponent<ITokenStreamParser, VBAPreprocessorParser>(),
-                    Dependency.OnValue<double>(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)))
+                .DependsOn(Dependency.OnComponent<ITokenStreamParser, VBAPreprocessorParser>())
+                .LifestyleSingleton());
+            container.Register(Component.For<VBAPredefinedCompilationConstants>()
+                .ImplementedBy<VBAPredefinedCompilationConstants>()
+                .DependsOn(Dependency.OnValue<double>(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)))
                 .LifestyleSingleton());
             container.Register(Component.For<VBAPreprocessorParser>()
                 .ImplementedBy<VBAPreprocessorParser>()

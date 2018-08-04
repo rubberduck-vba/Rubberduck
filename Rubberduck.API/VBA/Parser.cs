@@ -94,11 +94,13 @@ namespace Rubberduck.API.VBA
             _state.StateChanged += _state_StateChanged;
 
             var sourceFileHandler = _vbe.SourceFileHandler;
-            var compilationArgumentsProvider = new CompilationArgumentsProvider(projectRepository, _dispatcher);
+            var vbeVersion = double.Parse(_vbe.Version, CultureInfo.InvariantCulture);
+            var predefinedCompilationConstants = new VBAPredefinedCompilationConstants(vbeVersion);
+            var compilationArgumentsProvider = new CompilationArgumentsProvider(projectRepository, _dispatcher, predefinedCompilationConstants);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
-            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), preprocessorParser, compilationsArgumentsCache);
+            var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
             var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();

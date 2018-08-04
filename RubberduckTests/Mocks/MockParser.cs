@@ -50,18 +50,15 @@ namespace RubberduckTests.Mocks
 
         public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
-            var compilationArgumentsProviderMock = new Mock<ICompilationArgumentsProvider>();
-            compilationArgumentsProviderMock.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
-                .Returns(new Dictionary<string, short>());
-            var compilationArgumentsProvider = compilationArgumentsProviderMock.Object;
+            var vbeVersion = double.Parse(vbe.Version, CultureInfo.InvariantCulture);
+            var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
-            var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
 
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
-            var preprocessor = new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), preprocessorParser, compilationsArgumentsCache);
+            var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
             var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
@@ -85,6 +82,7 @@ namespace RubberduckTests.Mocks
                     new AliasDeclarations(state),
                 });
             var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            //We use the same handler because to achieve consistency between the return values.
             var attributesSourceCodeHandler = codePaneSourceCodeHandler;
             var moduleRewriterFactory = new ModuleRewriterFactory(
                 codePaneSourceCodeHandler,
@@ -127,7 +125,19 @@ namespace RubberduckTests.Mocks
                 projectManager,
                 parserStateManager);
         }
-        
+
+        private static ICompilationArgumentsProvider MockCompilationArgumentsProvider(double vbeVersion)
+        {
+            var compilationArgumentsProviderMock = new Mock<ICompilationArgumentsProvider>();
+            var predefinedCompilationConstants = new VBAPredefinedCompilationConstants(vbeVersion);
+            compilationArgumentsProviderMock.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
+                .Returns(new Dictionary<string, short>());
+            compilationArgumentsProviderMock.Setup(m => m.PredefinedCompilationConstants)
+                .Returns(() => predefinedCompilationConstants);
+            var compilationArgumentsProvider = compilationArgumentsProviderMock.Object;
+            return compilationArgumentsProvider;
+        }
+
         public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
         {
             var parser = Create(vbe, serializedDeclarationsPath);

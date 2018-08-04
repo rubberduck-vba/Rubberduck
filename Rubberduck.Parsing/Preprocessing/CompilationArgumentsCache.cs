@@ -14,6 +14,9 @@ namespace Rubberduck.Parsing.PreProcessing
             _provider = compilationArgumentsProvider;
         }
 
+        public VBAPredefinedCompilationConstants PredefinedCompilationConstants =>
+            _provider.PredefinedCompilationConstants;
+
         public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
         {
             return _compilationArguments.TryGetValue(projectId, out var compilatioarguments)

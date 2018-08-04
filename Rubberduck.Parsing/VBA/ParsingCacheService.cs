@@ -136,6 +136,9 @@ namespace Rubberduck.Parsing.VBA
             _referenceRemover.RemoveReferencesTo(module, token);
         }
 
+        public VBAPredefinedCompilationConstants PredefinedCompilationConstants =>
+            _compilationArgumentsCache.PredefinedCompilationConstants;
+
         public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
         {
             return _compilationArgumentsCache.UserDefinedCompilationArguments(projectId);
