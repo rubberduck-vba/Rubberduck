@@ -353,6 +353,7 @@
     <value>Statically accessible sheet can be referred to by its code name</value>
   </data>
   <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
-    <value>Consider replacing the call to '{0}'</value>
+    <value>Consider replacing the call to '{0}' {1}</value>
+    <comment>{1} Replacement documentation</comment>
   </data>
 </root>

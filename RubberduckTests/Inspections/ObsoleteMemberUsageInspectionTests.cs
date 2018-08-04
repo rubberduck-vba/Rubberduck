@@ -55,5 +55,23 @@ End Sub";
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObsoleteMemberUsedOnNonMemberDeclaration_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+'@Obsolete
+Public s As String";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ObsoleteMemberUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
     }
 }

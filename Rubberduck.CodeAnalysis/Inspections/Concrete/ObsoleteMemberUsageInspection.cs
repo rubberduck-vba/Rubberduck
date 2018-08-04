@@ -18,14 +18,26 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return State.AllUserDeclarations
+            var declarations = State.AllUserDeclarations
                 .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Member) &&
-                                      declaration.Annotations.Any(annotation =>
-                                          annotation.AnnotationType == AnnotationType.Obsolete))
-                .SelectMany(declaration => declaration.References).Select(reference =>
+                                      declaration.Annotations.Any(annotation =>annotation.AnnotationType == AnnotationType.Obsolete));
+
+            var issues = new List<IdentifierReferenceInspectionResult>();
+
+            foreach (var declaration in declarations)
+            {
+                var replacementDocumentation =
+                ((ObsoleteAnnotation) declaration.Annotations.First(annotation =>
+                    annotation.AnnotationType == AnnotationType.Obsolete)).ReplacementDocumentation;
+
+                issues.AddRange(declaration.References.Select(reference =>
                     new IdentifierReferenceInspectionResult(this,
-                        string.Format(InspectionResults.ObsoleteMemberUsageInspection, reference.IdentifierName), State,
-                        reference));
+                        string.Format(InspectionResults.ObsoleteMemberUsageInspection, reference.IdentifierName,
+                            replacementDocumentation == "" ? "" : $" (Documentation: {replacementDocumentation})"),
+                        State, reference)));
+            }
+
+            return issues;
         }
     }
 }

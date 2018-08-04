@@ -475,7 +475,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Consider replacing the call to &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Consider replacing the call to &apos;{0}&apos; {1}.
         /// </summary>
         public static string ObsoleteMemberUsageInspection {
             get {

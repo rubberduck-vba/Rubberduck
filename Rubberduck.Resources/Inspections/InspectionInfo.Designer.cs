@@ -457,7 +457,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is a high probability that a member marked as &apos;@Obsolete&apos; should no longer be used and there is a better alternative..
+        ///   Looks up a localized string similar to This member is marked &apos;@Obsolete&apos;. It should no longer be used, there should be a better alternative..
         /// </summary>
         public static string ObsoleteMemberUsageInspection {
             get {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
@@ -8,9 +9,14 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class ObsoleteAnnotation : AnnotationBase
     {
+        public string ReplacementDocumentation { get; }
+
         public ObsoleteAnnotation(QualifiedSelection qualifiedSelection, IEnumerable<string> parameters)
             : base(AnnotationType.Obsolete, qualifiedSelection)
         {
+            var firstParameter = parameters.FirstOrDefault();
+
+            ReplacementDocumentation = string.IsNullOrWhiteSpace(firstParameter) ? "" : firstParameter;
         }
     }
 }

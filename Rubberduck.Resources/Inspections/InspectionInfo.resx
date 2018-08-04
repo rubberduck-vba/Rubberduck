@@ -329,6 +329,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Excel already defines a globally scoped object variable with this reference. Consider using the sheet's 'CodeName' property.</value>
   </data>
   <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
-    <value>There is a high probability that a member marked as '@Obsolete' should no longer be used and there is a better alternative.</value>
+    <value>This member is marked '@Obsolete'. It should no longer be used, there should be a better alternative.</value>
   </data>
 </root>
