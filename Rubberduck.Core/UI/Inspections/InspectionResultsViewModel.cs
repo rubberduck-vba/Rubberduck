@@ -234,23 +234,14 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private List<CodeInspectionSeverity> _filterCriteria = new List<CodeInspectionSeverity>();
+        private readonly List<CodeInspectionSeverity> _filterCriteria = new List<CodeInspectionSeverity>();
 
         public bool FilterInspectionsByHint
         {
             get => _filterCriteria.Contains(CodeInspectionSeverity.Hint);
             set
             {
-                if (FilterInspectionsByHint == value) { return; }
-
-                if (value)
-                {
-                    _filterCriteria.Add(CodeInspectionSeverity.Hint);
-                }
-                else
-                {
-                    _filterCriteria.Remove(CodeInspectionSeverity.Hint);
-                }
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Hint);
 
                 FilterResults(_filterCriteria);
                 OnPropertyChanged();
@@ -262,16 +253,7 @@ namespace Rubberduck.UI.Inspections
             get => _filterCriteria.Contains(CodeInspectionSeverity.Suggestion);
             set
             {
-                if (FilterInspectionsBySuggestion == value) { return; }
-
-                if (value)
-                {
-                    _filterCriteria.Add(CodeInspectionSeverity.Suggestion);
-                }
-                else
-                {
-                    _filterCriteria.Remove(CodeInspectionSeverity.Suggestion);
-                }
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Suggestion);
 
                 FilterResults(_filterCriteria);
                 OnPropertyChanged();
@@ -283,16 +265,7 @@ namespace Rubberduck.UI.Inspections
             get => _filterCriteria.Contains(CodeInspectionSeverity.Warning);
             set
             {
-                if (FilterInspectionsByWarning == value) { return; }
-
-                if (value)
-                {
-                    _filterCriteria.Add(CodeInspectionSeverity.Warning);
-                }
-                else
-                {
-                    _filterCriteria.Remove(CodeInspectionSeverity.Warning);
-                }
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Warning);
 
                 FilterResults(_filterCriteria);
                 OnPropertyChanged();
@@ -304,19 +277,24 @@ namespace Rubberduck.UI.Inspections
             get => _filterCriteria.Contains(CodeInspectionSeverity.Error);
             set
             {
-                if (FilterInspectionsByError == value) { return; }
-
-                if (value)
-                {
-                    _filterCriteria.Add(CodeInspectionSeverity.Error);
-                }
-                else
-                {
-                    _filterCriteria.Remove(CodeInspectionSeverity.Error);
-                }
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Error);
 
                 FilterResults(_filterCriteria);
                 OnPropertyChanged();
+            }
+        }
+
+        private void UpdateFilterCriteria(bool isCriteria ,CodeInspectionSeverity criteria)
+        {
+            if (_filterCriteria.Contains(criteria) == isCriteria) { return; }
+
+            if (isCriteria)
+            {
+                _filterCriteria.Add(criteria);
+            }
+            else
+            {
+                _filterCriteria.Remove(criteria);
             }
         }
 
@@ -324,9 +302,10 @@ namespace Rubberduck.UI.Inspections
         {
             if (_filterCriteria.Any())
             {
-                Results = new ObservableCollection<IInspectionResult>(
-                        _resultsAll.Where(o => _filterCriteria.Contains(o.Inspection.Severity))
-                        .ToList());
+                Results = new ObservableCollection<IInspectionResult>(_resultsAll
+                    .GroupBy(result => result.Inspection.Severity)
+                    .Where(group => _filterCriteria.Contains(group.Key))
+                    .SelectMany(x => x));
             }
             else
             {
