@@ -18,9 +18,9 @@ namespace Rubberduck.Parsing.PreProcessing
         public const string WIN16_NAME = "Win16";
         public const string MAC_NAME = "Mac";
 
-        //For some reason, the predefined compilation arguments in VBA are of type Single
+        //For some reason, the predefined compilation arguments in VBA are of type Integer
         //with the value 0 for False and 1 for True, which does not correspond to the value
-        //a conversion of True from Boolean to Single would yield. (-1)
+        //a conversion of True from Boolean to Integer would yield. (-1)
         public short VBA7 => (short)(_vbVersion >= 7 ? 1 : 0);
         public short VBA6 => (short)(_vbVersion >= 6 ? 1 : 0);
         public short Win64 = (short)(IntPtr.Size >= 8 ? 1 : 0);
