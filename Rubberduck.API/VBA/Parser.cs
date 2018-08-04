@@ -104,7 +104,7 @@ namespace Rubberduck.API.VBA
             var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
-            var parser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
+            var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
             var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
@@ -127,13 +127,15 @@ namespace Rubberduck.API.VBA
             var moduleRewriterFactory = new ModuleRewriterFactory(
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler);
+            var moduleParser = new ModuleParser(
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHandler,
+                stringParser,
+                moduleRewriterFactory);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,
-                parser,
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler,
-                moduleRewriterFactory);
+                moduleParser);
             var declarationResolveRunner = new DeclarationResolveRunner(
                 _state, 
                 parserStateManager, 

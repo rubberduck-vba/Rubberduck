@@ -777,8 +777,6 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IParseRunner>()
                 .ImplementedBy<ParseRunner>()
-                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider",typeof(CodePaneSourceCodeHandler)),
-                    Dependency.OnComponent("attributesSourceCodeProvider",typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
             container.Register(Component.For<IParsingStageService>()
                 .ImplementedBy<ParsingStageService>()
@@ -815,6 +813,11 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IStringParser>()
                 .ImplementedBy<TokenStreamParserStringParserAdapterWithPreprocessing>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IModuleParser>()
+                .ImplementedBy<ModuleParser>()
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneSourceCodeHandler)),
+                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
         }
 

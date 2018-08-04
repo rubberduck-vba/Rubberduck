@@ -15,18 +15,12 @@ namespace Rubberduck.Parsing.VBA.Parsing
         protected IParserStateManager StateManager { get; }
 
         private readonly RubberduckParserState _state;
-        private readonly IStringParser _parser;
-        private readonly ISourceCodeProvider _codePaneSourceCodeProvider;
-        private readonly ISourceCodeProvider _attributesSourceCodeProvider;
-        private readonly IModuleRewriterFactory _moduleRewriterFactory;
+        private readonly IModuleParser _parser;
 
         protected ParseRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            IStringParser parser, 
-            ISourceCodeProvider codePaneSourceCodeProvider,
-            ISourceCodeProvider attributesSourceCodeProvider,
-            IModuleRewriterFactory moduleRewriterFactory)
+            IModuleParser parser)
         {
             if (state == null)
             {
@@ -40,25 +34,10 @@ namespace Rubberduck.Parsing.VBA.Parsing
             {
                 throw new ArgumentNullException(nameof(parser));
             }
-            if (moduleRewriterFactory == null)
-            {
-                throw new ArgumentNullException(nameof(moduleRewriterFactory));
-            }
-            if (codePaneSourceCodeProvider == null)
-            {
-                throw new ArgumentNullException(nameof(codePaneSourceCodeProvider));
-            }
-            if (attributesSourceCodeProvider == null)
-            {
-                throw new ArgumentNullException(nameof(attributesSourceCodeProvider));
-            }
 
             _state = state;
             StateManager = parserStateManager;
             _parser = parser;
-            _codePaneSourceCodeProvider = codePaneSourceCodeProvider;
-            _attributesSourceCodeProvider = attributesSourceCodeProvider;
-            _moduleRewriterFactory = moduleRewriterFactory;
         }
 
 
@@ -68,68 +47,46 @@ namespace Rubberduck.Parsing.VBA.Parsing
         protected void ParseModule(QualifiedModuleName module, CancellationToken token)
         {
             _state.ClearStateCache(module);
-            var finishedParseTask = FinishedParseComponentTask(module, token);
-            ProcessComponentParseResults(module, finishedParseTask, token);
-        }
-
-        private Task<ComponentParseTask.ParseCompletionArgs> FinishedParseComponentTask(QualifiedModuleName module, CancellationToken token, TokenStreamRewriter rewriter = null)
-        {
-            var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
-
-            var parser = new ComponentParseTask(module, _codePaneSourceCodeProvider, _attributesSourceCodeProvider, _parser, _moduleRewriterFactory, rewriter);
-
-            parser.ParseFailure += (sender, e) =>
+            try
             {
-                if (e.Cause is OperationCanceledException)
-                {
-                    tcs.SetCanceled();
-                }
-                else
-                {
-                    tcs.SetException(e.Cause);
-                }
-            };
-            parser.ParseCompleted += (sender, e) =>
-            {
-                tcs.SetResult(e);
-            };
-
-            parser.Start(token);
-
-            return tcs.Task;
-        }
-
-        private void ProcessComponentParseResults(QualifiedModuleName module, Task<ComponentParseTask.ParseCompletionArgs> finishedParseTask, CancellationToken token)
-        {
-            if (finishedParseTask.IsFaulted)
+                var parseResults = _parser.Parse(module, token);
+                SaveModuleParseResultsOnState(module, parseResults, token);
+            }
+            catch (SyntaxErrorException syntaxErrorException)
             {
                 //In contrast to the situation in the success scenario, the overall parser state is reevaluated immediately.
-                //This sets the state directly on the state because it is the sole instance where we have to pass the potential SyntaxErorException.
-                _state.SetModuleState(module, ParserState.Error, token, finishedParseTask.Exception?.InnerException as SyntaxErrorException);
+                //This sets the state directly on the state because it is the sole instance where we have to pass the SyntaxErorException.
+                _state.SetModuleState(module, ParserState.Error, token, syntaxErrorException);
             }
-            else
+            catch (Exception exception)
             {
-                var result = finishedParseTask.Result;
-                lock (_state)
-                {
-                    token.ThrowIfCancellationRequested();
+                StateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
+                throw;
+            }
+        }
 
-                    //This has to come first because it creates the module state if not present.
-                    _state.SetModuleAttributes(module, result.Attributes);
+        private void SaveModuleParseResultsOnState(QualifiedModuleName module, ModuleParseResults results, CancellationToken token)
+        {
+            lock (_state)
+            {
+                token.ThrowIfCancellationRequested();
 
-                    _state.SaveContentHash(module);
-                    _state.AddParseTree(module, result.ParseTree);
-                    _state.AddParseTree(module, result.AttributesTree, CodeKind.AttributesCode);
-                    _state.SetModuleComments(module, result.Comments);
-                    _state.SetModuleAnnotations(module, result.Annotations);
-                    _state.SetCodePaneRewriter(module, result.CodePaneRewriter);
-                    _state.AddAttributesRewriter(module, result.AttributesRewriter);
+                //This has to come first because it creates the module state if not present.
+                _state.AddModuleStateIfNotPresent(module);
 
-                    // This really needs to go last
-                    //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
-                    //The evaluation has to be triggered manually in the calling procedure.
-                    StateManager.SetModuleState(module, ParserState.Parsed, token, false); //Note that this is ok because locks allow re-entrancy.
-                }
+                _state.SaveContentHash(module);
+                _state.AddParseTree(module, results.CodePaneParseTree);
+                _state.AddParseTree(module, results.AttributesParseTree, CodeKind.AttributesCode);
+                _state.SetModuleComments(module, results.Comments);
+                _state.SetModuleAnnotations(module, results.Annotations);
+                _state.SetModuleAttributes(module, results.Attributes);
+                _state.SetCodePaneRewriter(module, results.CodePaneRewriter);
+                _state.AddAttributesRewriter(module, results.AttributesRewriter);
+
+                // This really needs to go last
+                //It does not reevaluate the overall parer state to avoid concurrent evaluation of all module states and for performance reasons.
+                //The evaluation has to be triggered manually in the calling procedure.
+                StateManager.SetModuleState(module, ParserState.Parsed, token, false); //Note that this is ok because locks allow re-entrancy.
             }
         }
     }

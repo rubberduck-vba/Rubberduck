@@ -196,6 +196,7 @@
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="UIContext\UiDispatcher.cs" />
     <Compile Include="Rewriter\IModuleRewriterFactory.cs" />
+    <Compile Include="VBA\Parsing\IModuleParser.cs" />
     <Compile Include="VBA\Parsing\TokenStreamParserStringParserAdapterWithPreprocessing.cs" />
     <Compile Include="VBA\Parsing\TokenStreamParserStringParserAdapter.cs" />
     <Compile Include="VBA\Parsing\IStringParser.cs" />
@@ -413,7 +414,7 @@
     <Compile Include="VBA\ParserStateManager.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManagerBase.cs" />
     <Compile Include="VBA\CombinedParseTreeListener.cs" />
-    <Compile Include="VBA\Parsing\ComponentParseTask.cs" />
+    <Compile Include="VBA\Parsing\ModuleParser.cs" />
     <Compile Include="VBA\EnumerableExtensions.cs" />
     <Compile Include="VBA\IModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationResolveRunner.cs" />

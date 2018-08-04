@@ -619,9 +619,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        internal void AddModuleStateIfNotPresent(QualifiedModuleName module)
+        {
+            _moduleStates.AddOrUpdate(module, new ModuleState(ParserState.Pending), (c, s) => s);
+        }
+
         internal void SetModuleAttributes(QualifiedModuleName module, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes)
         {
-            _moduleStates.AddOrUpdate(module, new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
+            _moduleStates[module].SetModuleAttributes(attributes);
         }
 
         public List<CommentNode> AllComments

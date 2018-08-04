@@ -62,7 +62,7 @@ namespace RubberduckTests.Mocks
             var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
-            var parser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
+            var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
@@ -80,20 +80,21 @@ namespace RubberduckTests.Mocks
                     new SpecialFormDeclarations(state),
                     new FormEventDeclarations(state),
                     new AliasDeclarations(state),
-                });
-            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+                }); var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
             //We use the same handler because to achieve consistency between the return values.
             var attributesSourceCodeHandler = codePaneSourceCodeHandler;
             var moduleRewriterFactory = new ModuleRewriterFactory(
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler);
+            var moduleParser = new ModuleParser(
+                codePaneSourceCodeHandler, 
+                attributesSourceCodeHandler, 
+                stringParser, 
+                moduleRewriterFactory);
             var parseRunner = new SynchronousParseRunner(
                 state,
                 parserStateManager,
-                parser,
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler,
-                moduleRewriterFactory);
+                moduleParser);
             var declarationResolveRunner = new SynchronousDeclarationResolveRunner(
                 state, 
                 parserStateManager, 
