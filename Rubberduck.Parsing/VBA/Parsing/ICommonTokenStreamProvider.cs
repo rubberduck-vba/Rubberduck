@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 
-namespace Rubberduck.Parsing.VBA
+namespace Rubberduck.Parsing.VBA.Parsing
 {
     public interface ICommonTokenStreamProvider
     {

@@ -1,34 +1,38 @@
 ﻿using Antlr4.Runtime;
 using System.Threading;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
-    public sealed class VBAPreprocessor : IVBAPreprocessor
+    public sealed class VBAPreprocessor : ITokenStreamPreprocessor
     {
         private readonly double _vbaVersion;
-        private readonly VBAPrecompilationParser _parser;
+        private readonly ITokenStreamParser _parser;
         private readonly ICompilationArgumentsProvider _compilationArgumentsProvider;
 
-        public VBAPreprocessor(double vbaVersion, ICompilationArgumentsProvider compilationArgumentsProvider)
+        public VBAPreprocessor(double vbaVersion, ITokenStreamParser preprocessorParser, ICompilationArgumentsProvider compilationArgumentsProvider)
         {
             _vbaVersion = vbaVersion;
             _compilationArgumentsProvider = compilationArgumentsProvider;
-            _parser = new VBAPrecompilationParser();
+            _parser = preprocessorParser;
         }
 
-        public void PreprocessTokenStream(string projectId, string moduleName, CommonTokenStream tokenStream, BaseErrorListener errorListener, CancellationToken token)
+        public CommonTokenStream PreprocessTokenStream(string projectId, string moduleName, CommonTokenStream tokenStream, CancellationToken token, CodeKind codeKind = CodeKind.SnippetCode)
         {
             token.ThrowIfCancellationRequested();
-            var symbolTable = new SymbolTable<string, IValue>();
-            var tree = _parser.Parse(moduleName, tokenStream, errorListener);
+
+            var tree = _parser.Parse(moduleName, tokenStream, codeKind);
             token.ThrowIfCancellationRequested();
-            var stream = tokenStream.TokenSource.InputStream;
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), _compilationArgumentsProvider.UserDefinedCompilationArguments(projectId), stream, tokenStream);
+
+            var charStream = tokenStream.TokenSource.InputStream;
+            var symbolTable = new SymbolTable<string, IValue>();
+            var userCompilationArguments = _compilationArgumentsProvider.UserDefinedCompilationArguments(projectId);
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(_vbaVersion), userCompilationArguments, charStream, tokenStream);
             var expr = evaluator.Visit(tree);
             var processedTokens = expr.Evaluate(); //This does the actual preprocessing of the token stream as a side effect.
             tokenStream.Reset();
+            return tokenStream;
         }
-
-
     }
 }

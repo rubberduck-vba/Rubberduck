@@ -52,6 +52,7 @@ using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Root
@@ -276,6 +277,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IParsePassErrorListenerFactory>()
                 .ImplementedBy<MainParseErrorListenerFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<PreprocessingParseErrorListenerFactory>()
+                .ImplementedBy<PreprocessingParseErrorListenerFactory>()
                 .LifestyleSingleton());
         }
 
@@ -794,9 +798,21 @@ namespace Rubberduck.Root
             container.Register(Component.For<IParseCoordinator>()
                 .ImplementedBy<ParseCoordinator>()
                 .LifestyleSingleton());
-
-            container.Register(Component.For<Func<IVBAPreprocessor>>()
-                .Instance(() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), container.Resolve<ICompilationArgumentsProvider>())));
+            container.Register(Component.For<ITokenStreamPreprocessor>()
+                .ImplementedBy<VBAPreprocessor>()
+                .DependsOn(Dependency.OnComponent<ITokenStreamParser, VBAPreprocessorParser>(),
+                    Dependency.OnValue<double>(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)))
+                .LifestyleSingleton());
+            container.Register(Component.For<VBAPreprocessorParser>()
+                .ImplementedBy<VBAPreprocessorParser>()
+                .DependsOn(Dependency.OnComponent<IParsePassErrorListenerFactory, PreprocessingParseErrorListenerFactory>())
+                .LifestyleSingleton());
+            container.Register(Component.For<ICommonTokenStreamProvider>()
+                .ImplementedBy<SimpleVBAModuleTokenStreamProvider>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IStringParser>()
+                .ImplementedBy<TokenStreamParserStringParserAdapterWithPreprocessing>()
+                .LifestyleSingleton());
         }
 
         private void RegisterTypeLibApi(IWindsorContainer container)

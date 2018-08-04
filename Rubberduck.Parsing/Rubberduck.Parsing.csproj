@@ -196,6 +196,14 @@
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="UIContext\UiDispatcher.cs" />
     <Compile Include="Rewriter\IModuleRewriterFactory.cs" />
+    <Compile Include="VBA\Parsing\TokenStreamParserStringParserAdapterWithPreprocessing.cs" />
+    <Compile Include="VBA\Parsing\TokenStreamParserStringParserAdapter.cs" />
+    <Compile Include="VBA\Parsing\IStringParser.cs" />
+    <Compile Include="VBA\Parsing\VBAPreprocessorParser.cs" />
+    <Compile Include="VBA\Parsing\VBATokenStreamParser.cs" />
+    <Compile Include="VBA\Parsing\TokenStreamParserBase.cs" />
+    <Compile Include="VBA\Parsing\ParserMode.cs" />
+    <Compile Include="VBA\Parsing\ITokenStreamParser.cs" />
     <Compile Include="VBA\RepositoryProjectManager.cs" />
     <Compile Include="VBA\CodeKind.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
@@ -213,7 +221,7 @@
     <Compile Include="Rewriter\RewriterInfo\VariableRewriterInfoFinder.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationIfExpression.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationConstantExpression.cs" />
-    <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
+    <Compile Include="PreProcessing\ITokenStreamPreprocessor.cs" />
     <Compile Include="PreProcessing\LivelinessExpression.cs" />
     <Compile Include="ComReflection\ComField.cs" />
     <Compile Include="ComReflection\ComMember.cs" />
@@ -362,7 +370,6 @@
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="TokenExtensions.cs" />
     <Compile Include="VBA\AttributeListener.cs" />
-    <Compile Include="VBA\AttributeParser.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
     <Compile Include="PreProcessing\TokensValue.cs" />
@@ -374,7 +381,7 @@
     <Compile Include="VBA\ParsingCacheService.cs" />
     <Compile Include="VBA\IParsingCacheService.cs" />
     <Compile Include="VBA\SimpleVBAModuleTokenStreamProvider.cs" />
-    <Compile Include="VBA\ICommonTokenStreamProvider.cs" />
+    <Compile Include="VBA\Parsing\ICommonTokenStreamProvider.cs" />
     <Compile Include="VBA\ModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationFinderProvider.cs" />
     <Compile Include="VBA\IParseTreeProvider.cs" />
@@ -409,7 +416,6 @@
     <Compile Include="VBA\CombinedParseTreeListener.cs" />
     <Compile Include="VBA\ComponentParseTask.cs" />
     <Compile Include="VBA\EnumerableExtensions.cs" />
-    <Compile Include="VBA\IAttributeParser.cs" />
     <Compile Include="VBA\IModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationResolveRunner.cs" />
     <Compile Include="VBA\ICOMReferenceSynchronizer.cs" />
@@ -457,9 +463,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="VBA\Parsing\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

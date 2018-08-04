@@ -14,6 +14,8 @@ using System.Reflection;
 using System.Threading;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -53,12 +55,17 @@ namespace RubberduckTests.Mocks
                 .Returns(new Dictionary<string, short>());
             var compilationArgumentsProvider = compilationArgumentsProviderMock.Object;
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
-            var attributeParser = new TestAttributeParser(() => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationArgumentsProvider));
             var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
 
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
-            Func<IVBAPreprocessor> preprocessorFactory = () => new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), compilationsArgumentsCache);
+            var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
+            var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
+            var preprocessor = new VBAPreprocessor(double.Parse(vbe.Version, CultureInfo.InvariantCulture), preprocessorParser, compilationsArgumentsCache);
+            var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
+            var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+            var parser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
@@ -85,8 +92,7 @@ namespace RubberduckTests.Mocks
             var parseRunner = new SynchronousParseRunner(
                 state,
                 parserStateManager,
-                preprocessorFactory,
-                attributeParser,
+                parser,
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler,
                 moduleRewriterFactory);

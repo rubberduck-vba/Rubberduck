@@ -11,7 +11,9 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
@@ -62,7 +64,6 @@ namespace Rubberduck.API.VBA
     public sealed class Parser : IParser, IDisposable
     {
         private RubberduckParserState _state;
-        private AttributeParser _attributeParser;
         private SynchronousParseCoordinator _parser;
         private IVBE _vbe;
         private IVBEEvents _vbeEvents;
@@ -95,9 +96,14 @@ namespace Rubberduck.API.VBA
             var sourceFileHandler = _vbe.SourceFileHandler;
             var compilationArgumentsProvider = new CompilationArgumentsProvider(projectRepository, _dispatcher);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
-            IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), compilationsArgumentsCache);
+            var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
+            var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
+            var preprocessor = new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture), preprocessorParser, compilationsArgumentsCache);
+            var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
+            var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+            var parser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
             var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
-            _attributeParser = new AttributeParser(preprocessorFactory);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
@@ -116,17 +122,15 @@ namespace Rubberduck.API.VBA
                     }
                 );
             var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
-            var attributesSourceCodeHanler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var moduleRewriterFactory = new ModuleRewriterFactory(
                 codePaneSourceCodeHandler,
-                attributesSourceCodeHanler);
+                attributesSourceCodeHandler);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,
-                preprocessorFactory,
-                _attributeParser,
+                parser,
                 codePaneSourceCodeHandler,
-                attributesSourceCodeHanler,
+                attributesSourceCodeHandler,
                 moduleRewriterFactory);
             var declarationResolveRunner = new DeclarationResolveRunner(
                 _state, 

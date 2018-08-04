@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rubberduck.VBEditor;
 using System.Threading;
-using Rubberduck.Parsing.PreProcessing;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.VBA
@@ -16,8 +16,7 @@ namespace Rubberduck.Parsing.VBA
         protected IParserStateManager StateManager { get; }
 
         private readonly RubberduckParserState _state;
-        private readonly Func<IVBAPreprocessor> _preprocessorFactory;
-        private readonly IAttributeParser _attributeParser;
+        private readonly IStringParser _parser;
         private readonly ISourceCodeProvider _codePaneSourceCodeProvider;
         private readonly ISourceCodeProvider _attributesSourceCodeProvider;
         private readonly IModuleRewriterFactory _moduleRewriterFactory;
@@ -25,8 +24,7 @@ namespace Rubberduck.Parsing.VBA
         protected ParseRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            Func<IVBAPreprocessor> preprocessorFactory,
-            IAttributeParser attributeParser, 
+            IStringParser parser, 
             ISourceCodeProvider codePaneSourceCodeProvider,
             ISourceCodeProvider attributesSourceCodeProvider,
             IModuleRewriterFactory moduleRewriterFactory)
@@ -39,13 +37,9 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
-            if (preprocessorFactory == null)
+            if (parser == null)
             {
-                throw new ArgumentNullException(nameof(preprocessorFactory));
-            }
-            if (attributeParser == null)
-            {
-                throw new ArgumentNullException(nameof(attributeParser));
+                throw new ArgumentNullException(nameof(parser));
             }
             if (moduleRewriterFactory == null)
             {
@@ -62,8 +56,7 @@ namespace Rubberduck.Parsing.VBA
 
             _state = state;
             StateManager = parserStateManager;
-            _preprocessorFactory = preprocessorFactory;
-            _attributeParser = attributeParser;
+            _parser = parser;
             _codePaneSourceCodeProvider = codePaneSourceCodeProvider;
             _attributesSourceCodeProvider = attributesSourceCodeProvider;
             _moduleRewriterFactory = moduleRewriterFactory;
@@ -84,8 +77,7 @@ namespace Rubberduck.Parsing.VBA
         {
             var tcs = new TaskCompletionSource<ComponentParseTask.ParseCompletionArgs>();
 
-            var preprocessor = _preprocessorFactory();
-            var parser = new ComponentParseTask(module, preprocessor, _attributeParser, _codePaneSourceCodeProvider, _attributesSourceCodeProvider, _moduleRewriterFactory, rewriter);
+            var parser = new ComponentParseTask(module, _codePaneSourceCodeProvider, _attributesSourceCodeProvider, _parser, _moduleRewriterFactory, rewriter);
 
             parser.ParseFailure += (sender, e) =>
             {

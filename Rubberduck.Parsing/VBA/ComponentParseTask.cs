@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -24,11 +24,9 @@ namespace Rubberduck.Parsing.VBA
     {
         private readonly QualifiedModuleName _module;
         private readonly TokenStreamRewriter _rewriter;
-        private readonly IAttributeParser _attributeParser;
         private readonly ISourceCodeProvider _codePaneSourceCodeProvider;
         private readonly ISourceCodeProvider _attributesSourceCodeProvider;
-        private readonly IVBAPreprocessor _preprocessor;
-        private readonly VBAModuleParser _parser;
+        private readonly IStringParser _parser;
         private readonly IModuleRewriterFactory _moduleRewriterFactory;
 
         public event EventHandler<ParseCompletionArgs> ParseCompleted;
@@ -37,18 +35,16 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly Guid _taskId;
 
-        public ComponentParseTask(QualifiedModuleName module, IVBAPreprocessor preprocessor, IAttributeParser attributeParser, ISourceCodeProvider codePaneSourceCodeProvider, ISourceCodeProvider attributesSourceCodeProvider, IModuleRewriterFactory moduleRewriterFactory,TokenStreamRewriter rewriter = null)
+        public ComponentParseTask(QualifiedModuleName module, ISourceCodeProvider codePaneSourceCodeProvider, ISourceCodeProvider attributesSourceCodeProvider, IStringParser parser, IModuleRewriterFactory moduleRewriterFactory, TokenStreamRewriter rewriter = null)
         {
             _taskId = Guid.NewGuid();
 
             _moduleRewriterFactory = moduleRewriterFactory;
-            _attributeParser = attributeParser;
             _codePaneSourceCodeProvider = codePaneSourceCodeProvider;
             _attributesSourceCodeProvider = attributesSourceCodeProvider;
-            _preprocessor = preprocessor;
             _module = module;
             _rewriter = rewriter;
-            _parser = new VBAModuleParser();
+            _parser = parser;
         }
         
         public void Start(CancellationToken cancellationToken)
@@ -57,10 +53,9 @@ namespace Rubberduck.Parsing.VBA
             {
                 Logger.Trace($"Starting ParseTaskID {_taskId} on thread {Thread.CurrentThread.ManagedThreadId}.");
 
-                var tokenStream = RewriteAndPreprocess(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();  
 
-                var (codePaneParseTree, codePaneTokenStream) = ParseInternal(_module, tokenStream);
+                var (codePaneParseTree, codePaneTokenStream) = CodePanePassResults(_module, cancellationToken, _rewriter);
                 var codePaneRewriter = _moduleRewriterFactory.CodePaneRewriter(_module, codePaneTokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -69,7 +64,7 @@ namespace Rubberduck.Parsing.VBA
                 var (comments, annotations) = CommentsAndAnnotations(_module, codePaneParseTree);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var (attributesParseTree, attributesTokenStream) = RunAttributesPass(_module, cancellationToken);
+                var (attributesParseTree, attributesTokenStream) = AttributesPassResults(_module, cancellationToken);
                 var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(_module, attributesTokenStream ?? codePaneTokenStream);
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -168,12 +163,13 @@ namespace Rubberduck.Parsing.VBA
             });
         }
 
-        private (IParseTree tree, ITokenStream tokenStream) RunAttributesPass(QualifiedModuleName module, CancellationToken cancellationToken)
+        private (IParseTree tree, ITokenStream tokenStream) AttributesPassResults(QualifiedModuleName module, CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             Logger.Trace($"ParseTaskID {_taskId} begins attributes pass.");
             var code = _attributesSourceCodeProvider.SourceCode(module);
-            cancellationToken.ThrowIfCancellationRequested();
-            var attributesParseResults = _attributeParser.Parse(_module, code, cancellationToken);
+            token.ThrowIfCancellationRequested();
+            var attributesParseResults = _parser.Parse(module.ComponentName, module.ProjectId, code, token, CodeKind.AttributesCode);
             Logger.Trace($"ParseTaskID {_taskId} finished attributes pass.");
             return attributesParseResults;
         }
@@ -192,20 +188,12 @@ namespace Rubberduck.Parsing.VBA
             return code;
         }
 
-        private CommonTokenStream RewriteAndPreprocess(CancellationToken cancellationToken)
+        private (IParseTree tree, ITokenStream tokenStream) CodePanePassResults(QualifiedModuleName module, CancellationToken token, TokenStreamRewriter rewriter = null)
         {
-            var code = _rewriter?.GetText() ?? _codePaneSourceCodeProvider.SourceCode(_module);
-            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
-            var tokens = tokenStreamProvider.Tokens(code);
-            _preprocessor.PreprocessTokenStream(_module.ProjectId, _module.Name, tokens, new PreprocessorExceptionErrorListener(_module.ComponentName, CodeKind.CodePaneCode), cancellationToken);
-            return tokens;
-        }
-
-        private (IParseTree tree, ITokenStream tokenStream) ParseInternal(QualifiedModuleName module, CommonTokenStream tokenStream)
-        {
-            //var errorNotifier = new SyntaxErrorNotificationListener();
-            //errorNotifier.OnSyntaxError += ParserSyntaxError;
-            return _parser.Parse(module, tokenStream, new MainParseExceptionErrorListener(module.ComponentName, CodeKind.CodePaneCode));
+            token.ThrowIfCancellationRequested();
+            var code = rewriter?.GetText() ?? _codePaneSourceCodeProvider.SourceCode(module);
+            token.ThrowIfCancellationRequested();
+            return _parser.Parse(module.ComponentName, module.ProjectId, code, token, CodeKind.CodePaneCode);
         }
 
         private IEnumerable<CommentNode> QualifyAndUnionComments(QualifiedModuleName qualifiedName, IEnumerable<VBAParser.CommentContext> comments, IEnumerable<VBAParser.RemCommentContext> remComments)

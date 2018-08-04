@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
@@ -17,15 +17,13 @@ namespace Rubberduck.Parsing.VBA
         public ParseRunner(
             RubberduckParserState state, 
             IParserStateManager parserStateManager, 
-            Func<IVBAPreprocessor> preprocessorFactory, 
-            IAttributeParser attributeParser,
+            IStringParser parser,
             ISourceCodeProvider codePaneSourceCodeProvider,
             ISourceCodeProvider attributesSourceCodeProvider,
             IModuleRewriterFactory moduleRewriterFactory) 
         :base(state, 
             parserStateManager, 
-            preprocessorFactory, 
-            attributeParser,
+            parser,
             codePaneSourceCodeProvider,
             attributesSourceCodeProvider,
             moduleRewriterFactory)

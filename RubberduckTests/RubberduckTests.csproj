@@ -174,7 +174,6 @@
     <Compile Include="Inspections\LineLabelNotUsedInspectionTests.cs" />
     <Compile Include="IoCContainer\IoCRegistrationTests.cs" />
     <Compile Include="IoCContainer\IoCResolvingTests.cs" />
-    <Compile Include="Mocks\TestAttributeParser.cs" />
     <Compile Include="Parsing\Coordination\IModuleToModuleReferenceManagerTestBase.cs" />
     <Compile Include="Parsing\Coordination\StandAloneModuleToModuleReferenceManagerTests.cs" />
     <Compile Include="PostProcessing\ModuleRewriterTests.cs" />
