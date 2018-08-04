@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
@@ -71,13 +70,23 @@ namespace Rubberduck.Parsing.VBA.Parsing
         private IParseTree ParseLl(string moduleName, ITokenStream tokenStream, CodeKind codeKind)
         {
             var errorListener = _llErrorListenerFactory.Create(moduleName, codeKind);
-            return Parse(tokenStream, PredictionMode.Ll, errorListener);
+            var tree = Parse(tokenStream, PredictionMode.Ll, errorListener);
+            if (errorListener.HasPostponedException(out var exception))
+            {
+                throw exception;
+            }
+            return tree;
         }
 
         private IParseTree ParseSll(string moduleName, ITokenStream tokenStream, CodeKind codeKind)
         {
             var errorListener = _sllErrorListenerFactory.Create(moduleName, codeKind);
-            return Parse(tokenStream, PredictionMode.Sll, errorListener);
+            var tree = Parse(tokenStream, PredictionMode.Sll, errorListener);
+            if (errorListener.HasPostponedException(out var exception))
+            {
+                throw exception;
+            }
+            return tree;
         }
     }
 }
