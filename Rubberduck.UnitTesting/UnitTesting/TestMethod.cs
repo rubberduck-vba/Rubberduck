@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Interaction.Navigation;
 using System.Diagnostics;
 
@@ -18,7 +17,6 @@ namespace Rubberduck.UnitTesting
     public class TestMethod : IEquatable<TestMethod>, INavigateSource
     {
         private readonly ICollection<AssertCompletedEventArgs> _assertResults = new List<AssertCompletedEventArgs>();
-        private readonly IVBE _vbe;
         private readonly IVBETypeLibsAPI _typeLibApi;
         private readonly RubberduckParserState _state;
 
