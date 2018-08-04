@@ -181,7 +181,7 @@ namespace Rubberduck.SmartIndenter
 
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)", RegexOptions.IgnoreCase);
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
-        private int _nestingDepth = 0;
+        private int _nestingDepth;
 
         //The splitNamed parameter is a straight up hack for fixing https://github.com/rubberduck-vba/Rubberduck/issues/2402
         private int FunctionAlign(string line, bool splitNamed)

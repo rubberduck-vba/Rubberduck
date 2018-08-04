@@ -65,7 +65,14 @@ namespace Rubberduck.SmartIndenter
                 {
                     return;
                 }
-                Indent(pane.CodeModule.Parent);
+
+                using (var module = pane.CodeModule)
+                {
+                    using (var component = module.Parent)
+                    {
+                        Indent(component);
+                    }
+                }                
             }
         }
 
@@ -245,12 +252,30 @@ namespace Rubberduck.SmartIndenter
 
             List<LogicalCodeLine> indent;
             if (!procedure && settings.VerticallySpaceProcedures)
-            {
+            {               
                 indent = new List<LogicalCodeLine>();
                 var lines = logical.ToArray();
+                var header = true;
+                var inEnumType = false;
                 for (var i = 0; i < lines.Length; i++)
                 {
                     indent.Add(lines[i]);
+
+                    if (header && lines[i].IsEnumOrTypeStart)
+                    {
+                        inEnumType = true;
+                    }
+                    if (header && lines[i].IsEnumOrTypeEnd)
+                    {
+                        inEnumType = false;
+                    }
+
+                    if (header && !inEnumType && lines[i].IsProcedureStart)
+                    {
+                        header = false;
+                        SpaceHeader(indent, settings);
+                        continue;
+                    }
                     if (!lines[i].IsEnumOrTypeEnd && !lines[i].IsProcudureEnd)
                     {
                         continue;
@@ -264,7 +289,7 @@ namespace Rubberduck.SmartIndenter
                         }
                         indent.Add(lines[i]);
                     }
-                    else if (i == lines.Length && forceTrailingNewLines)
+                    else if (forceTrailingNewLines && i == lines.Length)
                     {
                         indent.Add(new LogicalCodeLine(Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings), Math.Max(settings.LinesBetweenProcedures, 1)), settings));
                     }
@@ -280,6 +305,34 @@ namespace Rubberduck.SmartIndenter
                 output.AddRange(line.Indented().Split(new[] { Environment.NewLine }, StringSplitOptions.None));
             }
             return output;
+        }
+
+        private static void SpaceHeader(IList<LogicalCodeLine> header, IIndenterSettings settings)
+        {
+            var commentSkipped = false;
+            var commentLines = 0;
+            for (var i = header.Count - 2; i >= 0; i--)
+            {
+                if (!commentSkipped && header[i].IsCommentBlock)
+                {
+                    commentLines++;
+                    continue;
+                }
+
+                commentSkipped = true;
+                if (header[i].IsEmpty)
+                {
+                    header.RemoveAt(i);
+                }
+                else
+                {
+                    header.Insert(header.Count - 1 - commentLines,
+                        new LogicalCodeLine(
+                            Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings),
+                                settings.LinesBetweenProcedures), settings));
+                    return;
+                }
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
 
@@ -594,6 +593,117 @@ End Sub";
 
                 Assert.AreEqual(expected, component.CodeModule.Content());
             }
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void VerticalSpacing_MaintainsSpacingAboveFirstProcedure()
+        {
+            var code = new[]
+            {
+                @"Option Explicit",
+                "Function TestFunction() As Long",
+                "End Function",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                @"Option Explicit",
+                "",
+                "Function TestFunction() As Long",
+                "End Function",
+                "",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void VerticalSpacing_MaintainsIgnoresCommentAboveFirstProcedure()
+        {
+            var code = new[]
+            {
+                @"Option Explicit",
+                "'Comment",
+                "Function TestFunction() As Long",
+                "End Function",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                @"Option Explicit",
+                "",
+                "'Comment",
+                "Function TestFunction() As Long",
+                "End Function",
+                "",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void VerticalSpacing_RemovesExtraSpacingAboveFirstProcedure()
+        {
+            var code = new[]
+            {
+                @"Option Explicit",
+                "",
+                "",
+                "",
+                "",
+                "Function TestFunction() As Long",
+                "End Function",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                @"Option Explicit",
+                "",
+                "Function TestFunction() As Long",
+                "End Function",
+                "",
+                "Sub TestSub()",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.VerticallySpaceProcedures = true;
+                s.LinesBetweenProcedures = 1;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
         }
     }
 }

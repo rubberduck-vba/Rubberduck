@@ -1,6 +1,7 @@
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Command;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
@@ -899,8 +900,7 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
-
-
+        
         [Test]
         [Category("Indenter")]
         public void ElseWithTrailingSegmentWorks()
@@ -922,6 +922,43 @@ namespace RubberduckTests.SmartIndenter
                 "        Debug.Print \"True\"",
                 "    Else: Debug.Print \"False\"",
                 "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //failing test for https://github.com/rubberduck-vba/Rubberduck/issues/3210
+        [Test]
+        [Ignore("Most likely requires the parse tree.")]
+        [Category("Indenter")]
+        public void LineNumbersInsideContinuationsWork()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                " _",
+                "10",
+                " _",
+                "foo _",
+                ": Beep",
+                "",
+                "20 bar: Beep",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "   _",
+                "10",
+                "   _",
+                "foo _",
+                ":  Beep",
+                "",
+                "20 bar: Beep",
                 "End Sub"
             };
 
