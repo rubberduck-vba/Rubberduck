@@ -234,87 +234,98 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        public bool _filterInspectionsByHint;
+        private List<CodeInspectionSeverity> _filterCriteria = new List<CodeInspectionSeverity>();
+
         public bool FilterInspectionsByHint
         {
-            get =>_filterInspectionsByHint;
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Hint);
             set
             {
-                if (_filterInspectionsByHint == value) { return; }
+                if (FilterInspectionsByHint == value) { return; }
 
-                FilterResults(filterByHint: value);                
+                if (value)
+                {
+                    _filterCriteria.Add(CodeInspectionSeverity.Hint);
+                }
+                else
+                {
+                    _filterCriteria.Remove(CodeInspectionSeverity.Hint);
+                }
+
+                FilterResults(_filterCriteria);
                 OnPropertyChanged();
             }
         }
 
-        private bool _filterInspectionsBySuggestion;
         public bool FilterInspectionsBySuggestion
         {
-            get => _filterInspectionsBySuggestion;
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Suggestion);
             set
             {
-                if (_filterInspectionsBySuggestion == value) { return; }
+                if (FilterInspectionsBySuggestion == value) { return; }
 
-                FilterResults(filterBySuggestion: value);
+                if (value)
+                {
+                    _filterCriteria.Add(CodeInspectionSeverity.Suggestion);
+                }
+                else
+                {
+                    _filterCriteria.Remove(CodeInspectionSeverity.Suggestion);
+                }
+
+                FilterResults(_filterCriteria);
                 OnPropertyChanged();
             }
         }
 
-        private bool _filterInspectionsByWarning;
         public bool FilterInspectionsByWarning
         {
-            get => _filterInspectionsByWarning;
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Warning);
             set
             {
-                if (_filterInspectionsByWarning == value) { return; }
+                if (FilterInspectionsByWarning == value) { return; }
 
-                FilterResults(filterByWarning: value);
+                if (value)
+                {
+                    _filterCriteria.Add(CodeInspectionSeverity.Warning);
+                }
+                else
+                {
+                    _filterCriteria.Remove(CodeInspectionSeverity.Warning);
+                }
+
+                FilterResults(_filterCriteria);
                 OnPropertyChanged();
             }
         }
 
-        private bool _filterInspectionsByError;
         public bool FilterInspectionsByError
         {
-            get => _filterInspectionsByError;
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Error);
             set
             {
-                if (_filterInspectionsByError == value) { return; }
+                if (FilterInspectionsByError == value) { return; }
 
-                FilterResults(filterByError: value);
+                if (value)
+                {
+                    _filterCriteria.Add(CodeInspectionSeverity.Error);
+                }
+                else
+                {
+                    _filterCriteria.Remove(CodeInspectionSeverity.Error);
+                }
+
+                FilterResults(_filterCriteria);
                 OnPropertyChanged();
             }
         }
 
-        public void FilterResults(bool filterByHint = false, bool filterBySuggestion = false, bool filterByWarning = false, bool filterByError = false)
+        public void FilterResults(IEnumerable<CodeInspectionSeverity> inspections)
         {
-            _filterInspectionsByHint = filterByHint;
-            _filterInspectionsBySuggestion = filterBySuggestion;
-            _filterInspectionsByWarning = filterByWarning;
-            _filterInspectionsByError = filterByError;
-
-            if (_filterInspectionsByHint)
+            if (_filterCriteria.Any())
             {
                 Results = new ObservableCollection<IInspectionResult>(
-                        _resultsAll.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Hint)
-                            .ToList());
-            }
-            else if (_filterInspectionsBySuggestion)
-            {
-                Results = new ObservableCollection<IInspectionResult>(
-                    _resultsAll.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Suggestion)
-                        .ToList());
-            }
-            else if (_filterInspectionsByWarning)
-            {
-                Results = new ObservableCollection<IInspectionResult>(
-                    _resultsAll.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Warning)
-                        .ToList());
-            }
-            else if (_filterInspectionsByError)
-            {
-                Results = new ObservableCollection<IInspectionResult>(
-                    _resultsAll.Where(o => o.Inspection.Severity == CodeInspectionSeverity.Error)
+                        _resultsAll.Where(o => _filterCriteria.Contains(o.Inspection.Severity))
                         .ToList());
             }
             else
