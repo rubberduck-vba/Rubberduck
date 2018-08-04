@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.VBEditor.Host
+﻿namespace Rubberduck.VBEditor
 {
     public class CommandBarLocation
     {

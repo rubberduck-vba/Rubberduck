@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Moq;
-using Rubberduck.VBEditor.Host;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
@@ -24,8 +24,8 @@ namespace RubberduckTests.Mocks
                 {CommandBarSite.MenuBar, new CommandBarLocation(1, 1)},
                 {CommandBarSite.CodeWindow, new CommandBarLocation(2, 2)},
                 {CommandBarSite.ProjectExplorer, new CommandBarLocation(3, 3)},
-                {CommandBarSite.MsForms, new CommandBarLocation(4, 4)},
-                {CommandBarSite.MsFormsControl, new CommandBarLocation(5, 5)}
+                {CommandBarSite.MsForm, new CommandBarLocation(4, 4)},
+                {CommandBarSite.MsFormControl, new CommandBarLocation(5, 5)}
             }));
 
             return addIn;

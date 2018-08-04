@@ -1,13 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Castle.Windsor;
 using NUnit.Framework;
-using Moq;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Root;
-using Rubberduck.UI;
-using Rubberduck.VBEditor.Host;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.IoCContainer

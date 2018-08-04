@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Rubberduck.VBEditor.Host;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
@@ -9,16 +8,30 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
     public class AddIn : SafeComWrapper<VB.AddIn>, IAddIn
     {
+
+        private const int MenuBar = 1;
+        private const int CodeWindow = 15;
+        private const int ProjectExplorer = 22;
+        private const int MsForm = 20;
+        private const int MsFormControl = 21;
+
+        private const int WindowMenu = 30009;
+        private const int ListProperties = 2529;
+        private const int ProjectProperties = 2578;
+        private const int UpdateUserControls = 746;
+        private const int ViewCode = 2558;
+
+
         public AddIn(VB.AddIn target, bool rewrapping = false) 
             : base(target, rewrapping)
-        {
+        {     
             CommandBarLocations = new ReadOnlyDictionary<CommandBarSite, CommandBarLocation>(new Dictionary<CommandBarSite, CommandBarLocation>
             {
-                {CommandBarSite.MenuBar, new CommandBarLocation(1, 30009)},
-                {CommandBarSite.CodeWindow, new CommandBarLocation(15, 2529)},
-                {CommandBarSite.ProjectExplorer, new CommandBarLocation(22, 2578)},
-                {CommandBarSite.MsForms, new CommandBarLocation(20, 746)},
-                {CommandBarSite.MsFormsControl, new CommandBarLocation(21, 2558)}
+                {CommandBarSite.MenuBar, new CommandBarLocation(MenuBar, WindowMenu)},
+                {CommandBarSite.CodeWindow, new CommandBarLocation(CodeWindow, ListProperties)},
+                {CommandBarSite.ProjectExplorer, new CommandBarLocation(ProjectExplorer, ProjectProperties)},
+                {CommandBarSite.MsForm, new CommandBarLocation(MsForm, UpdateUserControls)},
+                {CommandBarSite.MsFormControl, new CommandBarLocation(MsFormControl, ViewCode)}
             });
         }
 

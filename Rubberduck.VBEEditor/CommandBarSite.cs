@@ -1,11 +1,11 @@
-﻿namespace Rubberduck.VBEditor.Host
+﻿namespace Rubberduck.VBEditor
 {
     public enum CommandBarSite
     {
         MenuBar,
         CodeWindow,
         ProjectExplorer,
-        MsForms,
-        MsFormsControl
+        MsForm,
+        MsFormControl
     }
 }

@@ -50,7 +50,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
-using Rubberduck.VBEditor.Host;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Root
 {
@@ -401,7 +401,7 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerContextMenu(IWindsorContainer container)
         {
-            var location = _addin.CommandBarLocations[CommandBarSite.MsForms];
+            var location = _addin.CommandBarLocations[CommandBarSite.MsForm];
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
@@ -419,7 +419,7 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerControlContextMenu(IWindsorContainer container)
         {
-            var location = _addin.CommandBarLocations[CommandBarSite.MsFormsControl];
+            var location = _addin.CommandBarLocations[CommandBarSite.MsFormControl];
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
