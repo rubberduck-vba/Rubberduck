@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace RubberduckTests.Parsing
 {
