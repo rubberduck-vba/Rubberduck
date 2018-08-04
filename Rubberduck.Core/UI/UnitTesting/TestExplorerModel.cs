@@ -35,6 +35,7 @@ namespace Rubberduck.UI.UnitTesting
                 Tests.Clear();
                 foreach (var test in UnitTestUtils.GetAllTests(_state))
                 {
+                    // FIXME this shouldn't be necessary
                     if (!Tests.Any(t =>
                         t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
                         t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&

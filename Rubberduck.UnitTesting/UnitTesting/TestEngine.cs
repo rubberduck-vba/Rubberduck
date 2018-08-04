@@ -31,7 +31,27 @@ namespace Rubberduck.UnitTesting
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private bool _testRequested;
+        private readonly Dictionary<TestMethod, TestOutcome> testResults;
         public IEnumerable<TestMethod> Tests { get; }
+
+        public TestOutcome RunAggregateOutcome {  get
+            {
+                if (testResults.Values.Any(o => o == TestOutcome.Failed))
+                {
+                    return TestOutcome.Failed;
+                }
+                if (testResults.Values.Any(o => o == TestOutcome.Inconclusive || o == TestOutcome.Ignored))
+                {
+                    return TestOutcome.Inconclusive;
+                }
+                if (testResults.Values.Any(o => o == TestOutcome.Succeeded))
+                {
+                    return TestOutcome.Succeeded;
+                }
+                // no test values recorded -> no tests run -> unknown
+                return TestOutcome.Unknown;
+            }
+        }
 
         public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
         {
@@ -61,12 +81,13 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public event EventHandler TestCompleted;
+        public event EventHandler<TestCompletedEventArgs> TestCompleted;
+        public event EventHandler TestsRefreshed;
 
         private void OnTestCompleted(TestMethod test, TestResult result)
         {
             var handler = TestCompleted;
-            handler?.Invoke(this, EventArgs.Empty);
+            handler?.Invoke(this, new TestCompletedEventArgs(test, result));
         }
 
         public void Run()

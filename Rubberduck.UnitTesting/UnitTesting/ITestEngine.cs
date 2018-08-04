@@ -10,8 +10,10 @@ namespace Rubberduck.UnitTesting
         IEnumerable<TestMethod> Tests { get; }
         void Run();
         void Run(IEnumerable<TestMethod> tests);
-        event EventHandler TestCompleted;
         ParserState[] AllowedRunStates { get; }
+        event EventHandler<TestCompletedEventArgs> TestCompleted;
+        event EventHandler TestsRefreshed;
+        TestOutcome RunAggregateOutcome { get; }
     }
 
     public class TestModuleEventArgs : EventArgs
