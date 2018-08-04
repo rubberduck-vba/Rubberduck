@@ -165,7 +165,7 @@ namespace RubberduckTests.Grammar
         [Test]
         public void ObsoleteAnnotation_TypeIsObsolete()
         {
-            var annotation = new ObsoleteAnnotation(new QualifiedSelection(), null);
+            var annotation = new ObsoleteAnnotation(new QualifiedSelection(), new[] { "param" });
             Assert.AreEqual(AnnotationType.Obsolete, annotation.AnnotationType);
         }
     }
