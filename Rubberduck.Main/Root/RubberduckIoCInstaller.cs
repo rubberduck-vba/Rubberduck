@@ -57,6 +57,7 @@ using Rubberduck.Parsing.VBA.DeclarationResolving;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Root
@@ -822,6 +823,9 @@ namespace Rubberduck.Root
                 .ImplementedBy<ModuleParser>()
                 .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneSourceCodeHandler)),
                     Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .LifestyleSingleton());
+            container.Register(Component.For<ITypeLibWrapperProvider>()
+                .ImplementedBy<TypeLibWrapperProvider>()
                 .LifestyleSingleton());
         }
 

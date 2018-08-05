@@ -23,6 +23,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Root;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.API.VBA
@@ -99,7 +100,8 @@ namespace Rubberduck.API.VBA
             var sourceFileHandler = _vbe.SourceFileHandler;
             var vbeVersion = double.Parse(_vbe.Version, CultureInfo.InvariantCulture);
             var predefinedCompilationConstants = new VBAPredefinedCompilationConstants(vbeVersion);
-            var compilationArgumentsProvider = new CompilationArgumentsProvider(projectRepository, _dispatcher, predefinedCompilationConstants);
+            var typeLibProvider = new TypeLibWrapperProvider(projectRepository);
+            var compilationArgumentsProvider = new CompilationArgumentsProvider(typeLibProvider, _dispatcher, predefinedCompilationConstants);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);

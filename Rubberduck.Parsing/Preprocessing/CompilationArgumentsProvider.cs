@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
     public class CompilationArgumentsProvider : ICompilationArgumentsProvider
     {
-        private readonly IProjectsProvider _projectsProvider;
         private readonly IUiDispatcher _uiDispatcher;
+        private readonly ITypeLibWrapperProvider _typeLibWrapperProvider;
 
-        public CompilationArgumentsProvider(IProjectsProvider projectsProvider, IUiDispatcher uiDispatcher, VBAPredefinedCompilationConstants predefinedConstants)
+        public CompilationArgumentsProvider(ITypeLibWrapperProvider typeLibWrapperProvider, IUiDispatcher uiDispatcher, VBAPredefinedCompilationConstants predefinedConstants)
         {
-            _projectsProvider = projectsProvider;
+            _typeLibWrapperProvider = typeLibWrapperProvider;
             _uiDispatcher = uiDispatcher;
             PredefinedCompilationConstants = predefinedConstants;
         }
@@ -22,23 +20,16 @@ namespace Rubberduck.Parsing.PreProcessing
 
         public Dictionary<string, short> UserDefinedCompilationArguments(string projectId)
         {
-            var project = _projectsProvider.Project(projectId);
-            return GetUserDefinedCompilationArguments(project);
+            return GetUserDefinedCompilationArguments(projectId);
         }
 
-        private Dictionary<string, short> GetUserDefinedCompilationArguments(IVBProject project)
+        private Dictionary<string, short> GetUserDefinedCompilationArguments(string projectId)
         {
-            if (project == null)
-            {
-                return new Dictionary<string, short>();
-            }
-
             // use the TypeLib API to grab the user defined compilation arguments; must be obtained on the main thread.
             var task = _uiDispatcher.StartTask(() => {
-                //TODO Push the typelib generation from the project to an ITypeLibProvider taking a projectId and returning the corresponding typeLib.
-                using (var typeLib = TypeLibWrapper.FromVBProject(project))
+                using (var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId))
                 {
-                    return typeLib.ConditionalCompilationArguments;
+                    return typeLib?.ConditionalCompilationArguments ?? new Dictionary<string, short>();
                 }
             });
             return task.Result;
