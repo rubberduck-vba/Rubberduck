@@ -170,27 +170,24 @@ namespace Rubberduck.UnitTesting
                             continue;
                         }
 
-                        var stopwatch = new Stopwatch();
-                        stopwatch.Start();
-
                         try
                         {
                             fakes.StartTest();
                             RunInternal(testInitialize);
-                            test.Run();
+                            var result = test.Run();
+                            // we can trigger this event, because cleanup can fail without affecting the result
+                            OnTestCompleted(test, result);
                             RunInternal(testCleanup);
                         }
                         catch (COMException ex)
                         {
                             Logger.Error(ex, "Unexpected COM exception while running tests.");
+                            OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException));
                         }
                         finally
                         {
                             fakes.StopTest();
                         }
-
-                        stopwatch.Stop();
-                        OnTestCompleted(test, new TestResult(TestOutcome.Succeeded, duration: stopwatch.ElapsedMilliseconds));
                     }
                     var cleanupMethods = TestDiscovery.FindModuleCleanupMethods(module.Key, _state);
                     try
