@@ -308,7 +308,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         public static bool HRESULT_FAILED(int hr) => hr < 0;
     }
 
-    public static class DispatchHelper
+    public static class IDispatchHelper
     {
         static Guid GUID_NULL = new Guid();
 

@@ -654,7 +654,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             try
             {
-                return DispatchHelper.Invoke(staticModule, func.FuncDesc.memid, DispatchHelper.InvokeKind.DISPATCH_METHOD, args);
+                return IDispatchHelper.Invoke(staticModule, func.FuncDesc.memid, IDispatchHelper.InvokeKind.DISPATCH_METHOD, args);
             }
             finally
             {
