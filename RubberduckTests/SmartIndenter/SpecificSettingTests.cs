@@ -254,6 +254,47 @@ namespace RubberduckTests.SmartIndenter
 
         [Test]
         [Category("Indenter")]
+        public void IndentFirstCommentBlockOffIgnoreEmptyOnlyOnFirst()
+        {
+            var code = new[]
+            {
+                "Public Function Test() As String",
+                "'Comment block",
+                "",
+                "'Comment block",
+                "Dim Foo As Long",
+                "Dim Bar As Long",
+                @"Test = ""Passed!""",
+                "'Not in comment block",
+                "End Function"
+            };
+
+            var expected = new[]
+            {
+                "Public Function Test() As String",
+                "'Comment block",
+                "",
+                "'Comment block",
+                "    Dim Foo As Long",
+                "    Dim Bar As Long",
+                @"    Test = ""Passed!""",
+                "    'Not in comment block",
+                "End Function"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentFirstCommentBlock = false;
+                s.IgnoreEmptyLinesInFirstBlocks = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
         public void IndentFirstDeclarationBlockOffWorks()
         {
             var code = new[]
@@ -282,6 +323,122 @@ namespace RubberduckTests.SmartIndenter
             {
                 var s = IndenterSettingsTests.GetMockIndenterSettings();
                 s.IndentFirstDeclarationBlock = false;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void IndentFirstDeclarationBlockOffIgnoreEmptyWorks()
+        {
+            var code = new[]
+            {
+                "Public Function Test() As String",
+                "'Comment block",
+                "'Comment block",
+                "Dim Foo As Long",
+                "",
+                "Dim Bar As Long",
+                @"Test = ""Passed!""",
+                "End Function"
+            };
+
+            var expected = new[]
+            {
+                "Public Function Test() As String",
+                "    'Comment block",
+                "    'Comment block",
+                "Dim Foo As Long",
+                "",
+                "Dim Bar As Long",
+                @"    Test = ""Passed!""",
+                "End Function"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentFirstDeclarationBlock = false;
+                s.IgnoreEmptyLinesInFirstBlocks = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void IndentFirstDeclarationCommentBlockOffWorksIntermingled()
+        {
+            var code = new[]
+            {
+                "Public Function Test() As String",
+                "'Foo comment",
+                "Dim Foo As Long",
+                "'Bar comment",
+                "Dim Bar As Long",
+                @"Test = ""Passed!""",
+                "End Function"
+            };
+
+            var expected = new[]
+            {
+                "Public Function Test() As String",
+                "'Foo comment",
+                "Dim Foo As Long",
+                "'Bar comment",
+                "Dim Bar As Long",
+                @"    Test = ""Passed!""",
+                "End Function"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentFirstDeclarationBlock = false;
+                s.IndentFirstCommentBlock = false;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void IndentFirstDeclarationCommentBlockOffIgnoreEmptyWorksIntermingled()
+        {
+            var code = new[]
+            {
+                "Public Function Test() As String",
+                "'Foo comment",
+                "Dim Foo As Long",
+                "",
+                "'Bar comment",
+                "Dim Bar As Long",
+                @"Test = ""Passed!""",
+                "End Function"
+            };
+
+            var expected = new[]
+            {
+                "Public Function Test() As String",
+                "'Foo comment",
+                "Dim Foo As Long",
+                "",
+                "'Bar comment",
+                "Dim Bar As Long",
+                @"    Test = ""Passed!""",
+                "End Function"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentFirstDeclarationBlock = false;
+                s.IndentFirstCommentBlock = false;
+                s.IgnoreEmptyLinesInFirstBlocks = true;
                 return s;
             });
             var actual = indenter.Indent(code);

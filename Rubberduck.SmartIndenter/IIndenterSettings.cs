@@ -3,9 +3,10 @@
     public interface IIndenterSettings
     {
         bool IndentEntireProcedureBody { get; set; }
-        bool IndentFirstCommentBlock { get; set; }
         bool IndentEnumTypeAsProcedure { get; set; }
+        bool IndentFirstCommentBlock { get; set; }       
         bool IndentFirstDeclarationBlock { get; set; }
+        bool IgnoreEmptyLinesInFirstBlocks { get; set; }
         bool AlignCommentsWithCode { get; set; }
         bool AlignContinuations { get; set; }
         bool IgnoreOperatorsInContinuations { get; set; }

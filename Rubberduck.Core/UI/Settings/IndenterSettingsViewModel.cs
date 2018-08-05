@@ -31,6 +31,7 @@ namespace Rubberduck.UI.Settings
             _indentEntireProcedureBody = config.UserSettings.IndenterSettings.IndentEntireProcedureBody;
             _indentFirstCommentBlock = config.UserSettings.IndenterSettings.IndentFirstCommentBlock;
             _indentFirstDeclarationBlock = config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock;
+            _ignoreEmptyLinesInFirstBlocks = config.UserSettings.IndenterSettings.IgnoreEmptyLinesInFirstBlocks;
             _indentSpaces = config.UserSettings.IndenterSettings.IndentSpaces;
             _spaceProcedures = config.UserSettings.IndenterSettings.VerticallySpaceProcedures;
             _procedureSpacing = config.UserSettings.IndenterSettings.LinesBetweenProcedures;
@@ -319,6 +320,20 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _ignoreEmptyLinesInFirstBlocks;
+        public bool IgnoreEmptyLinesInFirstBlocks
+        {
+            get => _ignoreEmptyLinesInFirstBlocks;
+            set
+            {
+                if (_ignoreEmptyLinesInFirstBlocks != value)
+                {
+                    _ignoreEmptyLinesInFirstBlocks = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private int _indentSpaces;
         public int IndentSpaces
         {
@@ -361,6 +376,18 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        public string PreviewSampleCode
+        {
+            get
+            {
+                var indenter = new Indenter(null, GetCurrentSettings);
+
+                var lines = RubberduckUI.IndenterSettings_PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                lines = indenter.Indent(lines).ToArray();
+                return string.Join(Environment.NewLine, lines);
+            }
+        }
+
         private IIndenterSettings GetCurrentSettings()
         {
             return new SmartIndenter.IndenterSettings(false)
@@ -383,6 +410,7 @@ namespace Rubberduck.UI.Settings
                 IndentEntireProcedureBody = IndentEntireProcedureBody,
                 IndentFirstCommentBlock = IndentFirstCommentBlock,
                 IndentFirstDeclarationBlock = IndentFirstDeclarationBlock,
+                IgnoreEmptyLinesInFirstBlocks = IgnoreEmptyLinesInFirstBlocks,
                 IndentSpaces = IndentSpaces,
                 VerticallySpaceProcedures = VerticallySpaceProcedures,
                 LinesBetweenProcedures = LinesBetweenProcedures
@@ -409,8 +437,9 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure = IndentEnumTypeAsProcedure;
             config.UserSettings.IndenterSettings.IndentCompilerDirectives = IndentCompilerDirectives;
             config.UserSettings.IndenterSettings.IndentEntireProcedureBody = IndentEntireProcedureBody;
-            config.UserSettings.IndenterSettings.IndentFirstCommentBlock = IndentFirstCommentBlock;
+            config.UserSettings.IndenterSettings.IndentFirstCommentBlock = IndentFirstCommentBlock;            
             config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock = IndentFirstDeclarationBlock;
+            config.UserSettings.IndenterSettings.IgnoreEmptyLinesInFirstBlocks = IgnoreEmptyLinesInFirstBlocks;
             config.UserSettings.IndenterSettings.IndentSpaces = IndentSpaces;
             config.UserSettings.IndenterSettings.VerticallySpaceProcedures = VerticallySpaceProcedures;
             config.UserSettings.IndenterSettings.LinesBetweenProcedures = LinesBetweenProcedures;
@@ -441,6 +470,7 @@ namespace Rubberduck.UI.Settings
             IndentEntireProcedureBody = toLoad.IndentEntireProcedureBody;
             IndentFirstCommentBlock = toLoad.IndentFirstCommentBlock;
             IndentFirstDeclarationBlock = toLoad.IndentFirstDeclarationBlock;
+            IgnoreEmptyLinesInFirstBlocks = toLoad.IgnoreEmptyLinesInFirstBlocks;
             IndentSpaces = toLoad.IndentSpaces;
             VerticallySpaceProcedures = toLoad.VerticallySpaceProcedures;
             LinesBetweenProcedures = toLoad.LinesBetweenProcedures;

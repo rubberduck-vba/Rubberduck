@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SmartIndenter

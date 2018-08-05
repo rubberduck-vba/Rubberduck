@@ -1,9 +1,12 @@
 ﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
- xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
- xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
- xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
- xmlns:core="clr-namespace:System;assembly=mscorlib"
- xmlns:smartIndenter="clr-namespace:Rubberduck.SmartIndenter;assembly=Rubberduck.SmartIndenter"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+  xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+  xmlns:core="clr-namespace:System;assembly=mscorlib"
+  xmlns:smartIndenter="clr-namespace:Rubberduck.SmartIndenter;assembly=Rubberduck.SmartIndenter"
+  xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              x:Class="Rubberduck.UI.Settings.IndenterSettings">
     <UserControl.Resources>
         <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility"/>
@@ -109,6 +112,16 @@
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
                                     <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IndentFirstDeclarationBlock"/>
+                                </AccessText.Text>
+                            </AccessText>
+                        </CheckBox>
+                        <CheckBox Margin="25,0,0,5"
+                                  HorizontalAlignment="Left"
+                                  IsEnabled="{Binding ElementName=IndentProcedureCheckBox,Path=IsChecked}"
+                                  IsChecked="{Binding IgnoreEmptyLinesInFirstBlocks,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                            <AccessText TextWrapping="WrapWithOverflow">
+                                <AccessText.Text>
+                                    <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_IgnoreEmptyLinesInFirstBlocks"/>
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>

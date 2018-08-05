@@ -14,9 +14,10 @@ namespace Rubberduck.SmartIndenter
         public const int MaximumVerticalSpacing = 2;     
 
         public virtual bool IndentEntireProcedureBody { get; set; }
-        public virtual bool IndentFirstCommentBlock { get; set; }
         public virtual bool IndentEnumTypeAsProcedure { get; set; }
+        public virtual bool IndentFirstCommentBlock { get; set; }       
         public virtual bool IndentFirstDeclarationBlock { get; set; }
+        public virtual bool IgnoreEmptyLinesInFirstBlocks { get; set; }
         public virtual bool AlignCommentsWithCode { get; set; }
         public virtual bool AlignContinuations { get; set; }
         public virtual bool IgnoreOperatorsInContinuations { get; set; }
@@ -146,9 +147,10 @@ namespace Rubberduck.SmartIndenter
             // Mocking requires these to be virtual.
             // ReSharper disable DoNotCallOverridableMethodsInConstructor
             IndentEntireProcedureBody = true;
-            IndentFirstCommentBlock = true;
             IndentEnumTypeAsProcedure = false;
+            IndentFirstCommentBlock = true;            
             IndentFirstDeclarationBlock = true;
+            IgnoreEmptyLinesInFirstBlocks = false;
             AlignCommentsWithCode = true;
             AlignContinuations = true;
             IgnoreOperatorsInContinuations = true;
@@ -176,6 +178,7 @@ namespace Rubberduck.SmartIndenter
                    IndentFirstCommentBlock == other.IndentFirstCommentBlock &&
                    IndentEnumTypeAsProcedure == other.IndentEnumTypeAsProcedure &&
                    IndentFirstDeclarationBlock == other.IndentFirstDeclarationBlock &&
+                   IgnoreEmptyLinesInFirstBlocks == other.IgnoreEmptyLinesInFirstBlocks &&
                    AlignCommentsWithCode == other.AlignCommentsWithCode &&
                    AlignContinuations == other.AlignContinuations &&
                    IgnoreOperatorsInContinuations == other.IgnoreOperatorsInContinuations &&
@@ -216,7 +219,7 @@ namespace Rubberduck.SmartIndenter
                 if (reg == null) return;
                 IndentEntireProcedureBody = GetSmartIndenterBoolean(reg, "IndentProc", IndentEntireProcedureBody);
                 IndentFirstCommentBlock = GetSmartIndenterBoolean(reg, "IndentFirst", IndentFirstCommentBlock);
-                IndentFirstDeclarationBlock = GetSmartIndenterBoolean(reg, "IndentDim", IndentFirstDeclarationBlock);
+                IndentFirstDeclarationBlock = GetSmartIndenterBoolean(reg, "IndentDim", IndentFirstDeclarationBlock);                
                 AlignCommentsWithCode = GetSmartIndenterBoolean(reg, "IndentCmt", AlignCommentsWithCode);
                 AlignContinuations = GetSmartIndenterBoolean(reg, "AlignContinued", AlignContinuations);
                 IgnoreOperatorsInContinuations = GetSmartIndenterBoolean(reg, "AlignIgnoreOps", IgnoreOperatorsInContinuations);

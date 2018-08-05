@@ -150,9 +150,9 @@ namespace Rubberduck.SmartIndenter
             }
         }
 
-        private IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines)
+        private IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines, out IIndenterSettings settings)
         {
-            var settings = _settings.Invoke();
+            settings = _settings.Invoke();
             var logical = new List<LogicalCodeLine>();
             LogicalCodeLine current = null;
             AbsoluteCodeLine previous = null;
@@ -203,7 +203,7 @@ namespace Rubberduck.SmartIndenter
 
         private IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, bool procedure)
         {
-            var logical = BuildLogicalCodeLines(codeLines).ToList();
+            var logical = BuildLogicalCodeLines(codeLines, out var settings).ToList();
             var indents = 0;
             var start = false;
             var enumStart = false;
@@ -237,7 +237,10 @@ namespace Rubberduck.SmartIndenter
                 line.AtProcedureStart = start;
                 line.IndentationLevel = indents - line.Outdents;
                 indents += line.NextLineIndents;
-                start = line.IsProcedureStart || (line.AtProcedureStart && line.IsDeclaration) || (line.AtProcedureStart && line.IsCommentBlock);
+                start = line.IsProcedureStart || 
+                        line.AtProcedureStart && line.IsDeclaration ||
+                        line.AtProcedureStart && line.IsCommentBlock ||
+                        settings.IgnoreEmptyLinesInFirstBlocks && line.AtProcedureStart && line.IsEmpty;
                 inEnumType = line.IsEnumOrTypeStart;
                 enumStart = inEnumType;
             }

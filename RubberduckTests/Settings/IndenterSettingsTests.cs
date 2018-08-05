@@ -30,6 +30,7 @@ namespace RubberduckTests.Settings
             output.SetupProperty(s => s.IndentEntireProcedureBody);
             output.SetupProperty(s => s.IndentFirstCommentBlock);
             output.SetupProperty(s => s.IndentFirstDeclarationBlock);
+            output.SetupProperty(s => s.IgnoreEmptyLinesInFirstBlocks);
             output.SetupProperty(s => s.AlignCommentsWithCode);
             output.SetupProperty(s => s.AlignContinuations);
             output.SetupProperty(s => s.IgnoreOperatorsInContinuations);
@@ -51,6 +52,7 @@ namespace RubberduckTests.Settings
             output.Object.IndentEntireProcedureBody = !nondefault;
             output.Object.IndentFirstCommentBlock = !nondefault;
             output.Object.IndentFirstDeclarationBlock = !nondefault;
+            output.Object.IgnoreEmptyLinesInFirstBlocks = nondefault;
             output.Object.AlignCommentsWithCode = !nondefault;
             output.Object.AlignContinuations = !nondefault;
             output.Object.IgnoreOperatorsInContinuations = !nondefault;
@@ -104,6 +106,9 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(config.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1, viewModel.ForceDebugStatementsInColumn1);
+                Assert.AreEqual(config.UserSettings.IndenterSettings.ForceDebugPrintInColumn1, viewModel.ForceDebugPrintInColumn1);
+                Assert.AreEqual(config.UserSettings.IndenterSettings.ForceDebugAssertInColumn1, viewModel.ForceDebugAssertInColumn1);
+                Assert.AreEqual(config.UserSettings.IndenterSettings.ForceStopInColumn1, viewModel.ForceStopInColumn1);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations, viewModel.IgnoreOperatorsInContinuations);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IndentCase, viewModel.IndentCase);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure, viewModel.IndentEnumTypeAsProcedure);
@@ -111,6 +116,7 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IndentEntireProcedureBody, viewModel.IndentEntireProcedureBody);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IndentFirstCommentBlock, viewModel.IndentFirstCommentBlock);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IndentFirstDeclarationBlock, viewModel.IndentFirstDeclarationBlock);
+                Assert.AreEqual(config.UserSettings.IndenterSettings.IgnoreEmptyLinesInFirstBlocks, viewModel.IgnoreEmptyLinesInFirstBlocks);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
@@ -135,6 +141,9 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment, viewModel.EndOfLineCommentColumnSpaceAlignment);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1);
+                Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceDebugPrintInColumn1, viewModel.ForceDebugPrintInColumn1);
+                Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceDebugAssertInColumn1, viewModel.ForceDebugAssertInColumn1);
+                Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceStopInColumn1, viewModel.ForceStopInColumn1);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1, viewModel.ForceDebugStatementsInColumn1);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations, viewModel.IgnoreOperatorsInContinuations);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentCase, viewModel.IndentCase);
@@ -143,6 +152,7 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentEntireProcedureBody, viewModel.IndentEntireProcedureBody);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstCommentBlock, viewModel.IndentFirstCommentBlock);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstDeclarationBlock, viewModel.IndentFirstDeclarationBlock);
+                Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IgnoreEmptyLinesInFirstBlocks, viewModel.IgnoreEmptyLinesInFirstBlocks);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentSpaces, viewModel.IndentSpaces);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
