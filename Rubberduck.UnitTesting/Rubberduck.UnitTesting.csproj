@@ -57,9 +57,9 @@
     <Compile Include="UnitTesting\AssertHandler.cs" />
     <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
-    <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
-    <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
-    <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
+    <Compile Include="ComClientHelpers\PermissiveObjectComparer.cs" />
+    <Compile Include="ProjectTestExtensions.cs" />
+    <Compile Include="ComClientHelpers\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\TestCategory.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />

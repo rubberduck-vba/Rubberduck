@@ -14,25 +14,23 @@ using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 
 namespace Rubberduck.UnitTesting
 {
-    public class TestEngine : ITestEngine
+    internal class TestEngine : ITestEngine
     {
-        private readonly RubberduckParserState _state;
-        private readonly IFakesFactory _fakesFactory;
-        private readonly IVBETypeLibsAPI _typeLibApi;
-        private readonly IUiDispatcher _uiDispatcher;
-
-        public ParserState[] AllowedRunStates => new[]
+        private static readonly ParserState[] AllowedRunStates = new ParserState[]
         {
             ParserState.ResolvedDeclarations,
             ParserState.ResolvingReferences, 
             ParserState.Ready
         };
-
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        private readonly RubberduckParserState _state;
+        private readonly IFakesFactory _fakesFactory;
+        private readonly IVBETypeLibsAPI _typeLibApi;
+        private readonly IUiDispatcher _uiDispatcher;
         private bool _testRequested;
-        private readonly Dictionary<TestMethod, TestOutcome> testResults;
-        public IEnumerable<TestMethod> Tests { get; }
+        private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
+        public IEnumerable<TestMethod> Tests { get; private set; }
 
         public TestOutcome RunAggregateOutcome {  get
             {
@@ -66,16 +64,24 @@ namespace Rubberduck.UnitTesting
 
         private void StateChangedHandler(object sender, ParserStateEventArgs e)
         {
-            if (_testRequested && (e.State == ParserState.Ready))
+            // if we could run with the parser state change, tests should be updated
+            if (CanRun())
             {
-                _testRequested = false;
-                _uiDispatcher.InvokeAsync(() =>
+                Tests = UnitTestUtils.GetAllTests(_state);
+                TestsRefreshed?.Invoke(this, EventArgs.Empty);
+
+                if (_testRequested)
                 {
-                    RunInternal(Tests);
-                });
+                    _testRequested = false;
+                    _uiDispatcher.InvokeAsync(() =>
+                    {
+                        RunInternal(Tests);
+                    });
+                }
             }
 
-            if (_testRequested && !e.IsError)
+            // any error cancels outstanding test runs
+            if (e.IsError)
             {
                 _testRequested = false;
             }
@@ -86,11 +92,11 @@ namespace Rubberduck.UnitTesting
 
         private void OnTestCompleted(TestMethod test, TestResult result)
         {
-            var handler = TestCompleted;
-            handler?.Invoke(this, new TestCompletedEventArgs(test, result));
+            testResults.Add(test, result.Outcome);
+            TestCompleted?.Invoke(this, new TestCompletedEventArgs(test, result));
         }
 
-        public void Run()
+        public void RunAll()
         {
             _testRequested = true;
             Run(Tests);
@@ -103,11 +109,12 @@ namespace Rubberduck.UnitTesting
 
         private void RunInternal(IEnumerable<TestMethod> tests)
         {
-            if (!AllowedRunStates.Contains(_state.Status))
+            if (!CanRun())
             {
                 return;
             }
-
+            // FIXME we shouldn't need to handle awaiting a certain parser state ourselves anymore, right?
+            // that would drop the _testsRequested member completely
             _state.OnSuspendParser(this, AllowedRunStates, () => RunWhileSuspended(tests));
         }
 
@@ -118,7 +125,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-
+            testResults.Clear();
             try
             {
                 var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
@@ -150,8 +157,7 @@ namespace Rubberduck.UnitTesting
                             module.Key.Name);
                         foreach (var method in moduleTestMethods)
                         {
-                            method.UpdateResult(TestOutcome.Unknown, AssertMessages.Assert_ComException);
-                            OnTestCompleted(method, new TestResult(TestOutcome.Unknown));
+                            OnTestCompleted(method, new TestResult(TestOutcome.Unknown, AssertMessages.Assert_ComException));
                         }
                         continue;
                     }
@@ -160,7 +166,6 @@ namespace Rubberduck.UnitTesting
                         // no need to run setup/teardown for ignored tests
                         if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
                         {
-                            test.UpdateResult(TestOutcome.Ignored);
                             OnTestCompleted(test, new TestResult(TestOutcome.Ignored));
                             continue;
                         }
@@ -178,7 +183,6 @@ namespace Rubberduck.UnitTesting
                         catch (COMException ex)
                         {
                             Logger.Error(ex, "Unexpected COM exception while running tests.");
-                            test.UpdateResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException);
                         }
                         finally
                         {
@@ -186,7 +190,6 @@ namespace Rubberduck.UnitTesting
                         }
 
                         stopwatch.Stop();
-                        test.Result.SetDuration(stopwatch.ElapsedMilliseconds);
                         OnTestCompleted(test, new TestResult(TestOutcome.Succeeded, duration: stopwatch.ElapsedMilliseconds));
                     }
                     var cleanupMethods = module.Key.FindModuleCleanupMethods(_state);
@@ -224,6 +227,11 @@ namespace Rubberduck.UnitTesting
                     }
                 }
             }
+        }
+
+        public bool CanRun()
+        {
+            return AllowedRunStates.Contains(_state.Status);
         }
     }
 }

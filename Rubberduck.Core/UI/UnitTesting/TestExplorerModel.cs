@@ -11,6 +11,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
+    // FIXME this needs to know about the engine!
     public class TestExplorerModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;

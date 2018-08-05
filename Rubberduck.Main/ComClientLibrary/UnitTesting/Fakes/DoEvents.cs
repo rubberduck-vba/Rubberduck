@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.UnitTesting.ComClientHelpers;
+using System;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting.Fakes

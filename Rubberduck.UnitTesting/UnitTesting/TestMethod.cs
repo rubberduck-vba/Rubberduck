@@ -54,19 +54,6 @@ namespace Rubberduck.UnitTesting
             }
             return new TestResult(result.Outcome, result.Message, duration.ElapsedMilliseconds);
         }
-        
-        public void UpdateResult(TestOutcome outcome, string message = "", long duration = 0, DateTime? startTime = null, DateTime? endTime = null)
-        {
-            Result.SetValues(outcome, message, duration, startTime, endTime);
-            //OnPropertyChanged("Result");
-        }
-
-        private TestResult _result = new TestResult(TestOutcome.Unknown);
-        public TestResult Result
-        {
-            get =>_result;
-            set { _result = value; /*OnPropertyChanged();*/ }
-        }
 
         public TestCategory Category
         {

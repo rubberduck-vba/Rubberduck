@@ -10,6 +10,8 @@ namespace Rubberduck.UnitTesting
     [ComVisible(false)]
     public static class ProjectTestExtensions
     {
+        // FIXME: this needs to be encapsulated into the actual TestEngine. 
+        // Don't require clients of the "library" to know the right magic incantations!
         public static void EnsureReferenceToAddInLibrary(this IVBProject project)
         {
             var libFolder = IntPtr.Size == 8 ? "win64" : "win32";

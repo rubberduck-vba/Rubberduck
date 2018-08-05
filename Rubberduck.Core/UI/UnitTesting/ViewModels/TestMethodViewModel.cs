@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Interaction.Navigation;
 using Rubberduck.UnitTesting;
-using System.Globalization;
 
 namespace Rubberduck.UI.UnitTesting.ViewModels
 {
@@ -9,7 +8,7 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
         public TestMethod Method { get; private set; }
 
         // Delegate Navigability to encapsulated TestMethod
-        public NavigateCodeEventArgs GetNavigationArgs() => ((INavigateSource)Method).GetNavigationArgs();
+        public NavigateCodeEventArgs GetNavigationArgs() => Method.GetNavigationArgs();
 
         private TestResult _result = new TestResult(TestOutcome.Unknown);
 
@@ -38,8 +37,6 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
                 declaration.IdentifierName, 
                 _result.Outcome.ToString(),
                 _result.Output,
-                _result.StartTime.ToString(CultureInfo.InvariantCulture),
-                _result.EndTime.ToString(CultureInfo.InvariantCulture),
                 _result.Duration
             };
         }

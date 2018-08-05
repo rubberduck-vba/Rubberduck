@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Resources.UnitTesting;
+using Rubberduck.UnitTesting.ComClientHelpers;
 
 namespace Rubberduck.UnitTesting.Fakes
 {

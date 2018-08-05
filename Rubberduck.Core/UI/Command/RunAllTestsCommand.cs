@@ -34,7 +34,8 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _vbe.IsInDesignMode && _engine.AllowedRunStates.Contains(_state.Status);
+            // the vbe design mode requirement could also be encapsulated into the engine
+            return _vbe.IsInDesignMode && _engine.CanRun();
         }
 
         protected override void OnExecute(object parameter)

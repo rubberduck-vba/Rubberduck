@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.UnitTesting.ComClientHelpers
 {
     public class ValueTypeConverter<T> where T : struct
     {
