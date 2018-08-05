@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using Rubberduck.Parsing.ComReflection;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -10,11 +11,11 @@ namespace Rubberduck.Parsing.VBA
         public SynchronousCOMReferenceSynchronizer(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
-            string serializedDeclarationsPath = null)
+            IReferencedDeclarationsCollector referencedDeclarationsCollector)
         :base(
             state,
             parserStateManager,
-            serializedDeclarationsPath)
+            referencedDeclarationsCollector)
         { }
 
 

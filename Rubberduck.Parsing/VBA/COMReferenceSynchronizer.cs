@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Collections.Concurrent;
+using Rubberduck.Parsing.ComReflection;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -15,11 +16,11 @@ namespace Rubberduck.Parsing.VBA
         public COMReferenceSynchronizer(
             RubberduckParserState state, 
             IParserStateManager parserStateManager, 
-            string serializedDeclarationsPath = null)
+            IReferencedDeclarationsCollector referencedDeclarationsCollector)
         :base(
             state, 
-            parserStateManager, 
-            serializedDeclarationsPath)
+            parserStateManager,
+            referencedDeclarationsCollector)
         { }
 
 

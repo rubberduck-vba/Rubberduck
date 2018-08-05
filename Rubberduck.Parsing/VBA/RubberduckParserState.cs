@@ -134,7 +134,7 @@ namespace Rubberduck.Parsing.VBA
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
+        public readonly ConcurrentDictionary<IList<string>, Declaration> CoClasses = new ConcurrentDictionary<IList<string>, Declaration>();
 
         public bool IsEnabled { get; internal set; }
 

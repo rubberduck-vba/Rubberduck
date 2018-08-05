@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -50,6 +48,11 @@ namespace Rubberduck.Parsing.ComReflection
         public void AddChildTree(SerializableDeclarationTree tree)
         {
             _children.Add(tree);
+        }
+
+        public void AddChildTrees(IEnumerable<SerializableDeclarationTree> trees)
+        {
+            _children.AddRange(trees);
         }
     }
 

@@ -14,17 +14,16 @@ namespace Rubberduck.Parsing.VBA
             _referencedProjectId = referencedProjectId;
         }
 
-        public string ReferencedProjectId
-        {
-            get { return _referencedProjectId; }
-        }
+        public string ReferencedProjectId => _referencedProjectId;
 
         public bool IsLoaded { get; set; }
 
         public override bool Equals(object obj)
         {
-            var other = obj as ReferencePriorityMap;
-            if (other == null) return false;
+            if (!(obj is ReferencePriorityMap other))
+            {
+                return false;
+            }
 
             return other.ReferencedProjectId == ReferencedProjectId;
         }

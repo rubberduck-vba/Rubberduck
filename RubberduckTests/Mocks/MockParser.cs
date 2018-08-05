@@ -62,10 +62,11 @@ namespace RubberduckTests.Mocks
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
+            var referencedDeclarationsCollector = new SerializedReferencedDeclarationsCollector(path);
             var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
                 state, 
-                parserStateManager, 
-                path);
+                parserStateManager,
+                referencedDeclarationsCollector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 state,
                 new List<ICustomDeclarationLoader>

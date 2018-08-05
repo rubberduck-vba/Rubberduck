@@ -18,13 +18,14 @@ namespace Rubberduck.Parsing.VBA
 
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
-        private readonly string _serializedDeclarationsPath;
+        private readonly IReferencedDeclarationsCollector _referencedDeclarationsCollector;
+
         private readonly List<QualifiedModuleName> _unloadedCOMReferences;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 
-        public COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, string serializedDeclarationsPath = null)
+        public COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, IReferencedDeclarationsCollector referencedDeclarationsCollector)
         {
             if (state == null)
             {
@@ -34,11 +35,14 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
+            if (referencedDeclarationsCollector == null)
+            {
+                throw new ArgumentNullException(nameof(referencedDeclarationsCollector));
+            }
 
             _state = state;
             _parserStateManager = parserStateManager;
-            _serializedDeclarationsPath = serializedDeclarationsPath
-                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
+            _referencedDeclarationsCollector = referencedDeclarationsCollector;
             _unloadedCOMReferences = new List<QualifiedModuleName>();
         }
 
@@ -47,13 +51,7 @@ namespace Rubberduck.Parsing.VBA
         public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync => _unloadedCOMReferences;
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
-        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences
-        {
-            get
-            {
-                return _projectReferences.ToHashSet().AsReadOnly();
-            }
-        }
+        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences => _projectReferences.ToHashSet().AsReadOnly();
 
 
         protected abstract void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token);
@@ -180,44 +178,30 @@ namespace Rubberduck.Parsing.VBA
                 Thread.CurrentThread.Name = $"LoadReference '{localReference.Name}'";
             }
 
-            Logger.Trace(string.Format("Loading referenced type '{0}'.", localReference.Name));            
-            var comReflector = new ReferencedDeclarationsCollector(_state, localReference, _serializedDeclarationsPath);
+            Logger.Trace($"Loading referenced type '{localReference.Name}'.");            
             try
             {
-                if (comReflector.SerializedVersionExists)
+                var (declarations, coClasses, serializedProject) = _referencedDeclarationsCollector.CollectDeclarations(localReference);
+                foreach (var declaration in declarations)
                 {
-                    LoadReferenceByDeserialization(localReference, comReflector);
+                    _state.AddDeclaration(declaration);
                 }
-                else
+
+                foreach (var key in coClasses.Keys)
                 {
-                    LoadReferenceFromTypeLibrary(localReference, comReflector);
+                    _state.CoClasses.AddOrUpdate(key, coClasses[key], (oldKey, value) => coClasses[oldKey]);
+                }
+
+                if (serializedProject != null)
+                {
+                    _state.BuiltInDeclarationTrees.TryAdd(serializedProject);
                 }
             }
             catch (Exception exception)
             {
                 unmapped.Add(localReference);
-                Logger.Warn(string.Format("Types were not loaded from referenced type library '{0}'.", localReference.Name));
+                Logger.Warn($"Types were not loaded from referenced type library '{localReference.Name}'.");
                 Logger.Error(exception);
-            }
-        }
-
-        private void LoadReferenceByDeserialization(IReference localReference, ReferencedDeclarationsCollector comReflector)
-        {
-            Logger.Trace(string.Format("Deserializing reference '{0}'.", localReference.Name));
-            var declarations = comReflector.LoadDeclarationsFromXml();
-            foreach (var declaration in declarations)
-            {
-                _state.AddDeclaration(declaration);
-            }
-        }
-
-        private void LoadReferenceFromTypeLibrary(IReference localReference, ReferencedDeclarationsCollector comReflector)
-        {
-            Logger.Trace(string.Format("COM reflecting reference '{0}'.", localReference.Name));
-            var declarations = comReflector.LoadDeclarationsFromLibrary();
-            foreach (var declaration in declarations)
-            {
-                _state.AddDeclaration(declaration);
             }
         }
 
