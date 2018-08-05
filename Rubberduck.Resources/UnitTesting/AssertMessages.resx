@@ -172,6 +172,10 @@
   <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
     <value>[expected] is a reference type and [actual] is a value type.</value>
   </data>
+  <data name="Assert_TestInitializeFailure" xml:space="preserve">
+    <value>Something went wrong when trying to run @TestInitialize. Test skipped.</value>
+    <comment>Reported when running TestInitialize failed with an exception</comment>
+  </data>
   <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}</value>
     <comment>{0} = dimension number, {1} and {2} = UBound numbers, {3} = message parameter.  This should always be at the end.</comment>

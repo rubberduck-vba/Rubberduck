@@ -196,6 +196,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Something went wrong when trying to run @TestInitialize. Test skipped..
+        /// </summary>
+        public static string Assert_TestInitializeFailure {
+            get {
+                return ResourceManager.GetString("Assert_TestInitializeFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}.
         /// </summary>
         public static string Assert_UBoundMismatchFormat {

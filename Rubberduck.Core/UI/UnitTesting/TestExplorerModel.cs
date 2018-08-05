@@ -34,7 +34,7 @@ namespace Rubberduck.UI.UnitTesting
             _dispatcher.Invoke(() =>
             {
                 Tests.Clear();
-                foreach (var test in UnitTestUtils.GetAllTests(_state))
+                foreach (var test in TestDiscovery.GetAllTests(_state))
                 {
                     // FIXME this shouldn't be necessary
                     if (!Tests.Any(t =>

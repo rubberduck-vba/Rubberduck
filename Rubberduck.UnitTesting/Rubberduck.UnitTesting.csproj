@@ -65,7 +65,7 @@
     <Compile Include="UnitTesting\TestMethod.cs" />
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
-    <Compile Include="UnitTesting\UnitTestUtils.cs" />
+    <Compile Include="UnitTesting\TestDiscovery.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">

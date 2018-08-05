@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -11,7 +12,8 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
-    public static class UnitTestUtils // todo: reimplement using state.DeclarationFinder
+    // FIXME make internal. Nobody outside of RD.UnitTesting needs this!
+    public static class TestDiscovery // todo: reimplement using state.DeclarationFinder
     {
         public static IEnumerable<TestMethod> GetAllTests(RubberduckParserState state)
         {
@@ -20,7 +22,7 @@ namespace Rubberduck.UnitTesting
                     .Select(item => new TestMethod(state, item, new VBETypeLibsAPI()));
         }
 
-        public static IEnumerable<TestMethod> GetTests(this IVBComponent component, IVBE vbe, RubberduckParserState state)
+        public static IEnumerable<TestMethod> GetTests(IVBE vbe, IVBComponent component, RubberduckParserState state)
         {
             if (component == null || component.IsWrappingNullReference)
             {
@@ -41,15 +43,15 @@ namespace Rubberduck.UnitTesting
                 item.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod);
         }
 
-        public static IEnumerable<Declaration> FindModuleInitializeMethods(this QualifiedModuleName module, RubberduckParserState state)
+        public static IEnumerable<Declaration> FindModuleInitializeMethods(QualifiedModuleName module, RubberduckParserState state)
         {
             return GetTestModuleProcedures(state)
                     .Where(m =>
                             m.QualifiedName.QualifiedModuleName == module &&
                             m.Annotations.Any(a => a.AnnotationType == AnnotationType.ModuleInitialize));
         }
-
-        public static IEnumerable<Declaration> FindModuleCleanupMethods(this QualifiedModuleName module, RubberduckParserState state)
+        
+        public static IEnumerable<Declaration> FindModuleCleanupMethods(QualifiedModuleName module, RubberduckParserState state)
         {
             return GetTestModuleProcedures(state)
                     .Where(m =>
@@ -57,7 +59,7 @@ namespace Rubberduck.UnitTesting
                             m.Annotations.Any(a => a.AnnotationType == AnnotationType.ModuleCleanup));
         }
 
-        public static IEnumerable<Declaration> FindTestInitializeMethods(this QualifiedModuleName module, RubberduckParserState state)
+        public static IEnumerable<Declaration> FindTestInitializeMethods(QualifiedModuleName module, RubberduckParserState state)
         {
             return GetTestModuleProcedures(state)
                     .Where(m =>
@@ -65,7 +67,7 @@ namespace Rubberduck.UnitTesting
                             m.Annotations.Any(a => a.AnnotationType == AnnotationType.TestInitialize));
         }
 
-        public static IEnumerable<Declaration> FindTestCleanupMethods(this QualifiedModuleName module, RubberduckParserState state)
+        public static IEnumerable<Declaration> FindTestCleanupMethods(QualifiedModuleName module, RubberduckParserState state)
         {
             return GetTestModuleProcedures(state)
                     .Where(m =>

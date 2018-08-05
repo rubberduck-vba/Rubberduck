@@ -67,7 +67,7 @@ namespace Rubberduck.UnitTesting
             // if we could run with the parser state change, tests should be updated
             if (CanRun())
             {
-                Tests = UnitTestUtils.GetAllTests(_state);
+                Tests = TestDiscovery.GetAllTests(_state);
                 TestsRefreshed?.Invoke(this, EventArgs.Empty);
 
                 if (_testRequested)
@@ -131,8 +131,8 @@ namespace Rubberduck.UnitTesting
                 var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
                 foreach (var module in modules)
                 {
-                    var testInitialize = module.Key.FindTestInitializeMethods(_state).ToList();
-                    var testCleanup = module.Key.FindTestCleanupMethods(_state).ToList();
+                    var testInitialize = TestDiscovery.FindTestInitializeMethods(module.Key, _state).ToList();
+                    var testCleanup = TestDiscovery.FindTestCleanupMethods(module.Key, _state).ToList();
 
                     var capturedModule = module;
                     var moduleTestMethods = testMethods
@@ -145,7 +145,7 @@ namespace Rubberduck.UnitTesting
                         });
 
                     var fakes = _fakesFactory.Create();
-                    var initializeMethods = module.Key.FindModuleInitializeMethods(_state);
+                    var initializeMethods = TestDiscovery.FindModuleInitializeMethods(module.Key, _state);
                     try
                     {
                         RunInternal(initializeMethods);
@@ -192,7 +192,7 @@ namespace Rubberduck.UnitTesting
                         stopwatch.Stop();
                         OnTestCompleted(test, new TestResult(TestOutcome.Succeeded, duration: stopwatch.ElapsedMilliseconds));
                     }
-                    var cleanupMethods = module.Key.FindModuleCleanupMethods(_state);
+                    var cleanupMethods = TestDiscovery.FindModuleCleanupMethods(module.Key, _state);
                     try
                     {
                         RunInternal(cleanupMethods);
