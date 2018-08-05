@@ -177,6 +177,7 @@ namespace Rubberduck.Parsing.ComReflection
                     var enumTree = new SerializableDeclarationTree(enumDeclaration);
                     moduleTree.AddChildTree(enumTree);
                     enumTree.AddChildren(members);
+                    continue;
                 }
 
                 var structure = module as ComStruct;
@@ -190,6 +191,7 @@ namespace Rubberduck.Parsing.ComReflection
                     var typeTree = new SerializableDeclarationTree(typeDeclaration);
                     moduleTree.AddChildTree(typeTree);
                     typeTree.AddChildren(members);
+                    continue;
                 }
 
                 var fields = module as IComTypeWithFields;
