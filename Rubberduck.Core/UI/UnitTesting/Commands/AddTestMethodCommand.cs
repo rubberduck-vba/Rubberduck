@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
@@ -114,6 +115,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
             _state.OnParseRequested(this);
         }
 
+        [Obsolete] // Duplicates AddTestMethodExpectedErrorCommand#GetNextTestMethodName
         private string GetNextTestMethodName(IVBComponent component)
         {
             var names = new HashSet<string>(_state.DeclarationFinder.Members(component.QualifiedModuleName)
