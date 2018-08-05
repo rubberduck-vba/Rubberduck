@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Windows.Media;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;

@@ -32,6 +32,18 @@ namespace Rubberduck.UnitTesting
         private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
         public IEnumerable<TestMethod> Tests { get; private set; }
 
+        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
+        {
+            Debug.WriteLine("TestEngine created.");
+            _state = state;
+            _fakesFactory = fakesFactory;
+            _typeLibApi = typeLibApi;
+            _uiDispatcher = uiDispatcher;
+
+            _state.StateChanged += StateChangedHandler;
+        }
+
+
         public TestOutcome CurrentAggregateOutcome {  get
             {
                 if (testResults.Values.Any(o => o == TestOutcome.Failed))
@@ -49,17 +61,6 @@ namespace Rubberduck.UnitTesting
                 // no test values recorded -> no tests run -> unknown
                 return TestOutcome.Unknown;
             }
-        }
-
-        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
-        {
-            Debug.WriteLine("TestEngine created.");
-            _state = state;
-            _fakesFactory = fakesFactory;
-            _typeLibApi = typeLibApi;
-            _uiDispatcher = uiDispatcher;
-            
-            _state.StateChanged += StateChangedHandler;
         }
 
         private void StateChangedHandler(object sender, ParserStateEventArgs e)

@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -15,14 +14,12 @@ namespace Rubberduck.UI.UnitTesting
     public class TestExplorerModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
         private readonly Dispatcher _dispatcher;
         private readonly ITestEngine testEngine;
 
-        public TestExplorerModel(IVBE vbe, RubberduckParserState state, ITestEngine testEngine)
+        public TestExplorerModel(IVBE vbe, ITestEngine testEngine)
         {
             _vbe = vbe;
-            _state = state;
             this.testEngine = testEngine;
 
             testEngine.TestsRefreshed += RefreshTests;
@@ -114,12 +111,7 @@ namespace Rubberduck.UI.UnitTesting
                     : Colors.LimeGreen;
             }
         }
-
-        public void Refresh()
-        {
-            _state.OnParseRequested(this);
-        }
-
+        
         private int _executedCount;
         public int ExecutedCount
         {
