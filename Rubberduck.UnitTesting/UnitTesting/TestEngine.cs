@@ -28,7 +28,10 @@ namespace Rubberduck.UnitTesting
         private readonly IFakesFactory _fakesFactory;
         private readonly IVBETypeLibsAPI _typeLibApi;
         private readonly IUiDispatcher _uiDispatcher;
+
         private bool _testRequested;
+        private bool refreshBackoff;
+
         private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
         public IEnumerable<TestMethod> Tests { get; private set; }
 
@@ -65,9 +68,14 @@ namespace Rubberduck.UnitTesting
 
         private void StateChangedHandler(object sender, ParserStateEventArgs e)
         {
-            // if we could run with the parser state change, tests should be updated
-            if (CanRun())
+            if (!CanRun())
             {
+                refreshBackoff = false;
+            }
+            // CanRun returned true already, only refresh tests if we're not backed off
+            else if (!refreshBackoff)
+            {
+                refreshBackoff = true;
                 Tests = TestDiscovery.GetAllTests(_state);
                 TestsRefreshed?.Invoke(this, EventArgs.Empty);
 
