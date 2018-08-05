@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// VBEReferences collection, and CompileProject method.
     /// Can also be cast to ComTypes.ITypeLib for raw access to the underlying type library
     /// </remarks>
-    public class TypeLibWrapper : ComTypes.ITypeLib, IDisposable
+    public class TypeLibWrapper : ITypeLibWrapper
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly bool _wrappedObjectIsWeakReference;

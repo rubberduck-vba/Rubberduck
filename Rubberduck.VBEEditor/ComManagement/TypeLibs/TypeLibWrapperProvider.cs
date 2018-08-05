@@ -9,7 +9,7 @@
             _projectsProvider = projectsProvider;
         }
 
-        public TypeLibWrapper TypeLibWrapperFromProject(string projectId)
+        public ITypeLibWrapper TypeLibWrapperFromProject(string projectId)
         {
             var project = _projectsProvider.Project(projectId);
             return project != null ? TypeLibWrapper.FromVBProject(project) : null;

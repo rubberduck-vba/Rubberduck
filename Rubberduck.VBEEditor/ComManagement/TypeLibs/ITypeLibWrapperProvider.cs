@@ -2,6 +2,6 @@
 {
     public interface ITypeLibWrapperProvider
     {
-        TypeLibWrapper TypeLibWrapperFromProject(string projectId);
+        ITypeLibWrapper TypeLibWrapperFromProject(string projectId);
     }
 }
