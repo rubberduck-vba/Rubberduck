@@ -173,7 +173,16 @@ namespace Rubberduck.UnitTesting
                         try
                         {
                             fakes.StartTest();
-                            RunInternal(testInitialize);
+                            try
+                            {
+                                RunInternal(testInitialize);
+                            }
+                            catch (Exception trace)
+                            {
+                                OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_TestInitializeFailure));
+                                Logger.Trace(trace, "Unexpected Exception when running TestInitialize");
+                                continue;
+                            }
                             var result = test.Run();
                             // we can trigger this event, because cleanup can fail without affecting the result
                             OnTestCompleted(test, result);
