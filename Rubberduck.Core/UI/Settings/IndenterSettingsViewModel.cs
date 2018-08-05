@@ -21,6 +21,9 @@ namespace Rubberduck.UI.Settings
             _endOfLineCommentStyle = config.UserSettings.IndenterSettings.EndOfLineCommentStyle;
             _forceCompilerDirectivesInColumn1 = config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1;
             _forceDebugStatementsInColumn1 = config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1;
+            _forceDebugPrintInColumn1 = config.UserSettings.IndenterSettings.ForceDebugPrintInColumn1;
+            _forceDebugAssertInColumn1 = config.UserSettings.IndenterSettings.ForceDebugAssertInColumn1;
+            _forceStopInColumn1 = config.UserSettings.IndenterSettings.ForceStopInColumn1;
             _ignoreOperatorsInContinuations = config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations;
             _indentCase = config.UserSettings.IndenterSettings.IndentCase;
             _indentCompilerDirectives = config.UserSettings.IndenterSettings.IndentCompilerDirectives;
@@ -169,10 +172,68 @@ namespace Rubberduck.UI.Settings
             {
                 if (_forceDebugStatementsInColumn1 != value)
                 {
-                    _forceDebugStatementsInColumn1 = value;OnPropertyChanged(); 
+                    _forceDebugStatementsInColumn1 = value;
+                    ForceDebugPrintInColumn1 = _forceDebugStatementsInColumn1;
+                    ForceDebugAssertInColumn1 = _forceDebugStatementsInColumn1;
+                    ForceStopInColumn1 = _forceDebugStatementsInColumn1;
+                    OnPropertyChanged(); 
                 }
             }
         }
+
+        private bool _forceDebugPrintInColumn1;
+        public bool ForceDebugPrintInColumn1
+        {
+            get => _forceDebugPrintInColumn1;
+            set
+            {
+                if (_forceDebugPrintInColumn1 != value)
+                {
+                    _forceDebugPrintInColumn1 = value;
+                    if (!_forceDebugPrintInColumn1 && !_forceDebugAssertInColumn1 && !_forceStopInColumn1)
+                    {
+                        ForceDebugStatementsInColumn1 = false;
+                    }
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _forceDebugAssertInColumn1;
+        public bool ForceDebugAssertInColumn1
+        {
+            get => _forceDebugAssertInColumn1;
+            set
+            {
+                if (_forceDebugAssertInColumn1 != value)
+                {
+                    _forceDebugAssertInColumn1 = value;
+                    if (!_forceDebugPrintInColumn1 && !_forceDebugAssertInColumn1 && !_forceStopInColumn1)
+                    {
+                        ForceDebugStatementsInColumn1 = false;
+                    }
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _forceStopInColumn1;
+        public bool ForceStopInColumn1
+        {
+            get => _forceStopInColumn1;
+            set
+            {
+                if (_forceStopInColumn1 != value)
+                {
+                    _forceStopInColumn1 = value;
+                    if (!_forceDebugPrintInColumn1 && !_forceDebugAssertInColumn1 && !_forceStopInColumn1)
+                    {
+                        ForceDebugStatementsInColumn1 = false;
+                    }
+                    OnPropertyChanged();
+                }
+            }
+        }    
 
         private bool _ignoreOperatorsInContinuations;
         public bool IgnoreOperatorsInContinuations
@@ -300,21 +361,9 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        public string PreviewSampleCode 
-        {
-            get
-            {
-                var indenter = new Indenter(null, GetCurrentSettings);
-
-                var lines = RubberduckUI.IndenterSettings_PreviewCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                lines = indenter.Indent(lines).ToArray();
-                return string.Join(Environment.NewLine, lines);
-            }
-        }
-
         private IIndenterSettings GetCurrentSettings()
         {
-            return new SmartIndenter.IndenterSettings
+            return new SmartIndenter.IndenterSettings(false)
             {
                 AlignCommentsWithCode = AlignCommentsWithCode,
                 AlignContinuations = AlignContinuations,
@@ -324,6 +373,9 @@ namespace Rubberduck.UI.Settings
                 EndOfLineCommentStyle = EndOfLineCommentStyle,
                 ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1,
                 ForceDebugStatementsInColumn1 = ForceDebugStatementsInColumn1,
+                ForceDebugPrintInColumn1 = ForceDebugPrintInColumn1,
+                ForceDebugAssertInColumn1 = ForceDebugAssertInColumn1,
+                ForceStopInColumn1 = ForceStopInColumn1,
                 IgnoreOperatorsInContinuations = IgnoreOperatorsInContinuations,
                 IndentCase = IndentCase,
                 IndentCompilerDirectives = IndentCompilerDirectives,
@@ -349,6 +401,9 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.EndOfLineCommentStyle = EndOfLineCommentStyle;
             config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1;
             config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1 = ForceDebugStatementsInColumn1;
+            config.UserSettings.IndenterSettings.ForceDebugPrintInColumn1 = ForceDebugPrintInColumn1;
+            config.UserSettings.IndenterSettings.ForceDebugAssertInColumn1 = ForceDebugAssertInColumn1;
+            config.UserSettings.IndenterSettings.ForceStopInColumn1 = ForceStopInColumn1;
             config.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations = IgnoreOperatorsInContinuations;
             config.UserSettings.IndenterSettings.IndentCase = IndentCase;
             config.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure = IndentEnumTypeAsProcedure;
@@ -376,6 +431,9 @@ namespace Rubberduck.UI.Settings
             EndOfLineCommentStyle = toLoad.EndOfLineCommentStyle;
             ForceCompilerDirectivesInColumn1 = toLoad.ForceCompilerDirectivesInColumn1;
             ForceDebugStatementsInColumn1 = toLoad.ForceDebugStatementsInColumn1;
+            ForceDebugPrintInColumn1 = toLoad.ForceDebugPrintInColumn1;
+            ForceDebugAssertInColumn1 = toLoad.ForceDebugAssertInColumn1;
+            ForceStopInColumn1 = toLoad.ForceStopInColumn1;
             IgnoreOperatorsInContinuations = toLoad.IgnoreOperatorsInContinuations;
             IndentCase = toLoad.IndentCase;
             IndentEnumTypeAsProcedure = toLoad.IndentEnumTypeAsProcedure;
@@ -399,7 +457,7 @@ namespace Rubberduck.UI.Settings
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
                 var service = new XmlPersistanceService<SmartIndenter.IndenterSettings> { FilePath = dialog.FileName };
-                var loaded = service.Load(new SmartIndenter.IndenterSettings());
+                var loaded = service.Load(new SmartIndenter.IndenterSettings(false));
                 TransferSettingsToView(loaded);
             }
         }

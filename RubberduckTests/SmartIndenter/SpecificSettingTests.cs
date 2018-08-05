@@ -364,7 +364,7 @@ namespace RubberduckTests.SmartIndenter
 
         [Test]
         [Category("Indenter")]
-        public void ForceDebugStatementsInColumn1OnWorks()
+        public void ForceDebugPrintInColumn1OnWorks()
         {
             var code = new[]
             {
@@ -387,11 +387,215 @@ namespace RubberduckTests.SmartIndenter
             var indenter = new Indenter(null, () =>
             {
                 var s = IndenterSettingsTests.GetMockIndenterSettings();
-                s.ForceDebugStatementsInColumn1 = true;
+                s.ForceDebugPrintInColumn1 = true;
                 return s;
             });
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void ForceDebugAssertInColumn1OnWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Debug.Assert False",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "Debug.Assert False",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.ForceDebugAssertInColumn1 = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void ForceStopInColumn1OnWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Stop",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "Stop",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.ForceStopInColumn1 = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void ForceOnlyDebugPrintInColumn1OnWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Debug.Print \"Foo\"",
+                "Debug.Assert False",
+                "Stop",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "Debug.Print \"Foo\"",
+                "        Debug.Assert False",
+                "        Stop",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.ForceDebugPrintInColumn1 = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void ForceOnlyDebugAssertInColumn1OnWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Debug.Print \"Foo\"",
+                "Debug.Assert False",
+                "Stop",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "        Debug.Print \"Foo\"",
+                "Debug.Assert False",
+                "        Stop",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.ForceDebugAssertInColumn1 = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void ForceOnlyStopInColumn1OnWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Debug.Print \"Foo\"",
+                "Debug.Assert False",
+                "Stop",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "        Debug.Print \"Foo\"",
+                "        Debug.Assert False",
+                "Stop",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.ForceStopInColumn1 = true;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void EnablingForceDebugStatementsEnablesAllSubOptions()
+        {
+            var options = new IndenterSettings
+            {
+                ForceDebugStatementsInColumn1 = true
+            };
+            
+            Assert.IsTrue(options.ForceDebugPrintInColumn1);
+            Assert.IsTrue(options.ForceDebugAssertInColumn1);
+            Assert.IsTrue(options.ForceStopInColumn1);
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void DisablingForceDebugStatementsDisablesAllSubOptions()
+        {
+            var options = new IndenterSettings
+            {
+                ForceDebugPrintInColumn1 = true,
+                ForceDebugAssertInColumn1 = true,
+                ForceStopInColumn1 = true,               
+            };
+
+            options.ForceDebugStatementsInColumn1 = false;
+
+            Assert.IsFalse(options.ForceDebugPrintInColumn1);
+            Assert.IsFalse(options.ForceDebugAssertInColumn1);
+            Assert.IsFalse(options.ForceStopInColumn1);
         }
 
         [Test]

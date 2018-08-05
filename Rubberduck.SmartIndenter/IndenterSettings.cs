@@ -21,7 +21,62 @@ namespace Rubberduck.SmartIndenter
         public virtual bool AlignContinuations { get; set; }
         public virtual bool IgnoreOperatorsInContinuations { get; set; }
         public virtual bool IndentCase { get; set; }
-        public virtual bool ForceDebugStatementsInColumn1 { get; set; }
+
+        private bool _forceDebugs;
+        public virtual bool ForceDebugStatementsInColumn1
+        {
+            get => _forceDebugs;
+            set
+            {
+                _forceDebugs = value;
+                _forceDebugPrint = _forceDebugs;
+                _forceDebugAssert = _forceDebugs;
+                _forceStop = _forceDebugs;
+            }
+        }
+
+        private bool _forceDebugPrint;
+        public virtual bool ForceDebugPrintInColumn1
+        {
+            get => _forceDebugPrint;
+            set
+            {
+                _forceDebugPrint = value;
+                if (!_forceDebugPrint && !_forceDebugAssert && !_forceStop)
+                {
+                    _forceDebugs = false;
+                }
+            }
+        }
+
+        private bool _forceDebugAssert;
+        public virtual bool ForceDebugAssertInColumn1
+        {
+            get => _forceDebugAssert;
+            set
+            {
+                _forceDebugAssert = value;
+                if (!_forceDebugPrint && !_forceDebugAssert && !_forceStop)
+                {
+                    _forceDebugs = false;
+                }
+            }
+        }
+
+        private bool _forceStop;
+        public virtual bool ForceStopInColumn1
+    {
+            get => _forceStop;
+            set
+            {
+                _forceStop = value;
+                if (!_forceDebugPrint && !_forceDebugAssert && !_forceStop)
+                {
+                    _forceDebugs = false;
+                }
+            }
+        }
+
         public virtual bool ForceCompilerDirectivesInColumn1 { get; set; }
         public virtual bool IndentCompilerDirectives { get; set; }
         public virtual bool AlignDims { get; set; }
@@ -60,20 +115,33 @@ namespace Rubberduck.SmartIndenter
             set => _procedureSpacing = value > MaximumVerticalSpacing ? MaximumVerticalSpacing : Math.Max(value, 0);
         }
 
-        public IndenterSettings()
+        /// <summary>
+        /// Use this ctor for unit testing.
+        /// </summary>
+        public IndenterSettings() :this(true) { }
+
+        /// <summary>
+        /// Creates an IndenterSettings. 
+        /// </summary>
+        /// <param name="skipRegistry">If false, the ctor will attempt to load the current tab width from the registry.</param>
+        public IndenterSettings(bool skipRegistry)
         {
             var tabWidth = 4;
-            try
+            if (!skipRegistry)
             {
-                var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
-                          Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
-                if (reg != null)
+                try
                 {
-                    tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+                    var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
+                              Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
+                    if (reg != null)
+                    {
+                        tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+                    }
                 }
+                // ReSharper disable once EmptyGeneralCatchClause
+                catch
+                { }
             }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch { }
 
             // Mocking requires these to be virtual.
             // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -86,6 +154,9 @@ namespace Rubberduck.SmartIndenter
             IgnoreOperatorsInContinuations = true;
             IndentCase = false;
             ForceDebugStatementsInColumn1 = false;
+            ForceDebugPrintInColumn1 = false;
+            ForceDebugAssertInColumn1 = false;
+            ForceStopInColumn1 = false;
             ForceCompilerDirectivesInColumn1 = false;
             IndentCompilerDirectives = true;
             AlignDims = false;
@@ -110,6 +181,9 @@ namespace Rubberduck.SmartIndenter
                    IgnoreOperatorsInContinuations == other.IgnoreOperatorsInContinuations &&
                    IndentCase == other.IndentCase &&
                    ForceDebugStatementsInColumn1 == other.ForceDebugStatementsInColumn1 &&
+                   ForceDebugPrintInColumn1 == other.ForceDebugPrintInColumn1 &&
+                   ForceDebugAssertInColumn1 == other.ForceDebugAssertInColumn1 &&
+                   ForceStopInColumn1 == other.ForceStopInColumn1 &&
                    ForceCompilerDirectivesInColumn1 == other.ForceCompilerDirectivesInColumn1 &&
                    IndentCompilerDirectives == other.IndentCompilerDirectives &&
                    AlignDims == other.AlignDims &&
@@ -148,6 +222,9 @@ namespace Rubberduck.SmartIndenter
                 IgnoreOperatorsInContinuations = GetSmartIndenterBoolean(reg, "AlignIgnoreOps", IgnoreOperatorsInContinuations);
                 IndentCase = GetSmartIndenterBoolean(reg, "IndentCase", IndentCase);
                 ForceDebugStatementsInColumn1 = GetSmartIndenterBoolean(reg, "DebugCol1", ForceDebugStatementsInColumn1);
+                ForceDebugPrintInColumn1 = ForceDebugStatementsInColumn1;
+                ForceDebugAssertInColumn1 = ForceDebugStatementsInColumn1;
+                ForceStopInColumn1 = ForceDebugStatementsInColumn1;
                 ForceCompilerDirectivesInColumn1 = GetSmartIndenterBoolean(reg, "CompilerCol1", ForceCompilerDirectivesInColumn1);
                 IndentCompilerDirectives = GetSmartIndenterBoolean(reg, "IndentCompiler", IndentCompilerDirectives);
                 AlignDims = GetSmartIndenterBoolean(reg, "AlignDim", AlignDims);

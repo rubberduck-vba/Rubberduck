@@ -159,7 +159,9 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsPrecompilerDirective => _code.TrimStart().StartsWith("#");
 
-        public bool IsBareDebugStatement => _code.StartsWith("Debug.") || _code.Equals("Stop");
+        public bool IsBareDebugPrintStatement => _code.StartsWith("Debug.Print");
+        public bool IsBareDebugAssertStatement => _code.StartsWith("Debug.Assert");
+        public bool IsBareStopStatement => _code.Equals("Stop");
 
         public int EnumOrTypeStarts
         {
@@ -232,7 +234,9 @@ namespace Rubberduck.SmartIndenter
             }
 
             if ((IsPrecompilerDirective && _settings.ForceCompilerDirectivesInColumn1) ||
-                (IsBareDebugStatement && _settings.ForceDebugStatementsInColumn1) ||
+                (IsBareDebugPrintStatement && _settings.ForceDebugPrintInColumn1) ||
+                (IsBareDebugAssertStatement && _settings.ForceDebugAssertInColumn1) ||
+                (IsBareStopStatement && _settings.ForceStopInColumn1) ||
                 (atProcStart && !_settings.IndentFirstCommentBlock && ContainsOnlyComment) ||
                 (atProcStart && !_settings.IndentFirstDeclarationBlock && (IsDeclaration || IsDeclarationContinuation)))
             {

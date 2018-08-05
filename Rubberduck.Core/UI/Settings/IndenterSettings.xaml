@@ -1,14 +1,10 @@
 ﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
- xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
- xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
- xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
  xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
  xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
  xmlns:core="clr-namespace:System;assembly=mscorlib"
  xmlns:smartIndenter="clr-namespace:Rubberduck.SmartIndenter;assembly=Rubberduck.SmartIndenter"
- xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
- x:Class="Rubberduck.UI.Settings.IndenterSettings">
+             x:Class="Rubberduck.UI.Settings.IndenterSettings">
     <UserControl.Resources>
         <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility"/>
         <converters:EndOfLineCommentStyleToTextConverter x:Key="LocalizedEndOfLineCommentStyles"/>
@@ -30,7 +26,7 @@
                     <Style>
                         <Style.Resources>
                             <Style TargetType="{x:Type Border}">
-                                <Setter Property="Border.CornerRadius" Value="5"/>
+                                <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Style.Resources>
                     </Style>
@@ -248,12 +244,37 @@
                     </Expander.Header>
                     <StackPanel Margin="75,5,0,5">
                         <CheckBox Margin="5,0,0,5"
+                                     Name="ForceDebugStatementsInColumn1"
                                      HorizontalAlignment="Left"
                                      IsChecked="{Binding ForceDebugStatementsInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <AccessText TextWrapping="WrapWithOverflow">
                                 <AccessText.Text>
                                     <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_ForceDebugDirectivesToColumn1"/>
                                 </AccessText.Text>
+                            </AccessText>
+                        </CheckBox>
+                        <CheckBox Margin="25,0,0,5"
+                                  HorizontalAlignment="Left"
+                                  IsChecked="{Binding ForceDebugPrintInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                  IsEnabled="{Binding ElementName=ForceDebugStatementsInColumn1,Path=IsChecked}">
+                            <AccessText TextWrapping="WrapWithOverflow">
+                                <AccessText.Text>Debug.Print</AccessText.Text>
+                            </AccessText>
+                        </CheckBox>
+                        <CheckBox Margin="25,0,0,5"
+                                  HorizontalAlignment="Left"
+                                  IsChecked="{Binding ForceDebugAssertInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                  IsEnabled="{Binding ElementName=ForceDebugStatementsInColumn1,Path=IsChecked}">
+                            <AccessText TextWrapping="WrapWithOverflow">
+                                <AccessText.Text>Debug.Assert</AccessText.Text>
+                            </AccessText>
+                        </CheckBox>
+                        <CheckBox Margin="25,0,0,5"
+                                  HorizontalAlignment="Left"
+                                  IsChecked="{Binding ForceStopInColumn1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                  IsEnabled="{Binding ElementName=ForceDebugStatementsInColumn1,Path=IsChecked}">
+                            <AccessText TextWrapping="WrapWithOverflow">
+                                <AccessText.Text>Stop</AccessText.Text>
                             </AccessText>
                         </CheckBox>
                         <CheckBox Margin="5,0,0,5"
