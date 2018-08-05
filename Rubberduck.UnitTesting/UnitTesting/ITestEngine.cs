@@ -11,7 +11,7 @@ namespace Rubberduck.UnitTesting
         void Run(IEnumerable<TestMethod> tests);
         event EventHandler<TestCompletedEventArgs> TestCompleted;
         event EventHandler TestsRefreshed;
-        TestOutcome RunAggregateOutcome { get; }
+        TestOutcome CurrentAggregateOutcome { get; }
         bool CanRun();
     }
 

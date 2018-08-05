@@ -11,43 +11,74 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    // FIXME this needs to know about the engine!
+
     public class TestExplorerModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly Dispatcher _dispatcher;
+        private readonly ITestEngine testEngine;
 
-        public TestExplorerModel(IVBE vbe, RubberduckParserState state)
+        public TestExplorerModel(IVBE vbe, RubberduckParserState state, ITestEngine testEngine)
         {
             _vbe = vbe;
             _state = state;
-            _state.StateChanged += HandleStateChanged;
+            this.testEngine = testEngine;
 
+            testEngine.TestsRefreshed += RefreshTests;
+            testEngine.TestCompleted += HandleTestCompletion;
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
-        private void HandleStateChanged(object sender, ParserStateEventArgs e)
+        private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
         {
-            if (e.State != ParserState.ResolvedDeclarations) { return; }
+            var test = e.Test;
+            var vmTest = new TestMethodViewModel(test);
 
-            _dispatcher.Invoke(() =>
+            if (!Tests.Contains(vmTest))
             {
-                Tests.Clear();
-                foreach (var test in TestDiscovery.GetAllTests(_state))
-                {
-                    // FIXME this shouldn't be necessary
-                    if (!Tests.Any(t =>
-                        t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
-                    {
-                        Tests.Add(new TestMethodViewModel(test));
-                    }
-                }
-            });
+                Tests.Add(vmTest);
+            }
+            else
+            {
+                vmTest = Tests.First(vm => vm.Method == test);
+            }
+            LastRun.Add(vmTest);
+            vmTest.Result = e.Result;
 
-            OnTestsRefreshed();
+            ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
+
+            RefreshProgressBarColor();
+        }
+
+        private void RefreshTests(object sender, EventArgs args)
+        {
+            Tests.Clear();
+            foreach (var test in testEngine.Tests.Select(test => new TestMethodViewModel(test)))
+            {
+                Tests.Add(test);
+            }
+            RefreshProgressBarColor();
+        }
+
+        private void RefreshProgressBarColor()
+        {
+            var overallOutcome = testEngine.CurrentAggregateOutcome;
+            switch (overallOutcome)
+            {
+                case TestOutcome.Failed:
+                    ProgressBarColor = Colors.Red;
+                    break;
+                case TestOutcome.Inconclusive:
+                    ProgressBarColor = Colors.Gold;
+                    break;
+                case TestOutcome.Succeeded:
+                    ProgressBarColor = Colors.LimeGreen;
+                    break;
+                default:
+                    ProgressBarColor = Colors.DimGray;
+                    break;
+            }
         }
 
         internal ObservableCollection<TestMethodViewModel> Tests { get; } = new ObservableCollection<TestMethodViewModel>();
@@ -135,17 +166,12 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        public event EventHandler<EventArgs> TestsRefreshed;
-        private void OnTestsRefreshed()
-        {
-            TestsRefreshed?.Invoke(this, EventArgs.Empty);
-        }
-
         public void Dispose()
         {
-            if (_state != null)
+            if (testEngine != null)
             {
-                _state.StateChanged -= HandleStateChanged;
+                testEngine.TestCompleted -= HandleTestCompletion;
+                testEngine.TestsRefreshed -= RefreshTests;
             }
         }
     }

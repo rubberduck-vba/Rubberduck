@@ -135,8 +135,7 @@ namespace Rubberduck.UI.UnitTesting
             {
                 Model.Tests.First(vm => vm.Method == args.Test).Result = args.Result;
                 // get the UI to update
-                var handler = TestCompleted;
-                handler?.Invoke(sender, e);
+                TestCompleted?.Invoke(sender, e);
             }
         }
 

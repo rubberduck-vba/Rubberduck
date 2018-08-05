@@ -32,7 +32,7 @@ namespace Rubberduck.UnitTesting
         private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
         public IEnumerable<TestMethod> Tests { get; private set; }
 
-        public TestOutcome RunAggregateOutcome {  get
+        public TestOutcome CurrentAggregateOutcome {  get
             {
                 if (testResults.Values.Any(o => o == TestOutcome.Failed))
                 {

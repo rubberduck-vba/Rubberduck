@@ -46,11 +46,6 @@ namespace Rubberduck.UI.Command
             {
                 RunTests();
             }
-            else
-            {
-                _model.TestsRefreshed += TestsRefreshed;
-                _model.Refresh();
-            }
         }
 
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()
@@ -78,8 +73,6 @@ namespace Rubberduck.UI.Command
 
         private void RunTests()
         {
-            _model.TestsRefreshed -= TestsRefreshed;
-
             var stopwatch = new Stopwatch();
 
             _model.ClearLastRun();
@@ -105,8 +98,7 @@ namespace Rubberduck.UI.Command
         public event EventHandler<TestRunEventArgs> RunCompleted;
         protected virtual void OnRunCompleted(TestRunEventArgs e)
         {
-            var handler = RunCompleted;
-            handler?.Invoke(this, e);
+            RunCompleted?.Invoke(this, e);
         }
     }
     
