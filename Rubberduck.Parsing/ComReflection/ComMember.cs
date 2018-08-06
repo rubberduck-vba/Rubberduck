@@ -39,7 +39,10 @@ namespace Rubberduck.Parsing.ComReflection
         public ComParameter ReturnType { get; private set; } = ComParameter.Void;
 
         private readonly List<ComParameter> _parameters = new List<ComParameter>();
-        public IEnumerable<ComParameter> Parameters => _parameters;
+
+        //See https://docs.microsoft.com/en-us/windows/desktop/midl/retval
+        //"Parameters with the [retval] attribute are not displayed in user-oriented browsers."
+        public IEnumerable<ComParameter> Parameters => _parameters.Where(param => !param.IsReturnValue);
 
         public ComMember(IComBase parent, ITypeInfo info, FUNCDESC funcDesc) : base(parent, info, funcDesc)
         {
@@ -99,6 +102,14 @@ namespace Rubberduck.Parsing.ComReflection
         {
             var names = new string[255];
             info.GetNames(Index, names, names.Length, out int count);
+
+            // See https://docs.microsoft.com/en-us/windows/desktop/midl/propput
+            // "A function that has the [propput] attribute must also have, as its last parameter, a parameter that has the [in] attribute."
+            if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUTREF) ||
+                funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUT))
+            {
+                count--;
+            }
 
             for (var index = 0; index < count - 1; index++)
             {
