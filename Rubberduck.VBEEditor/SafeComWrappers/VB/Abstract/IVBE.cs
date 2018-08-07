@@ -20,7 +20,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IWindows Windows { get; }
         IHostApplication HostApplication();
         IWindow ActiveMDIChild();
-
         QualifiedSelection? GetActiveSelection();
 
         bool IsInDesignMode { get; }
