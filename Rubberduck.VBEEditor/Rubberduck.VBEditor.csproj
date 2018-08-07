@@ -65,6 +65,14 @@
     <Compile Include="ComManagement\IComSafe.cs" />
     <Compile Include="ComManagement\TypeLibs\TypeLibWrapperProvider.cs" />
     <Compile Include="Events\AutoCompleteEventArgs.cs" />
+    <Compile Include="Events\ComponentEventArgs.cs" />
+    <Compile Include="Events\ComponentRenamedEventArgs.cs" />
+    <Compile Include="Events\IntelliSenseEventArgs.cs" />
+    <Compile Include="Events\KeyPressEventArgs.cs" />
+    <Compile Include="Events\ProjectEventArgs.cs" />
+    <Compile Include="Events\ProjectRenamedEventArgs.cs" />
+    <Compile Include="Events\SelectionChangedEventArgs.cs" />
+    <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Factories\AddInFactory.cs" />
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
@@ -103,14 +111,8 @@
     <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
     <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
     <Compile Include="ComManagement\StrongComSafe.cs" />
-    <Compile Include="Events\ComponentEventArgs.cs" />
-    <Compile Include="Events\ComponentRenamedEventArgs.cs" />
-    <Compile Include="Events\ProjectEventArgs.cs" />
-    <Compile Include="Events\ProjectRenamedEventArgs.cs" />
-    <Compile Include="Events\SelectionChangedEventArgs.cs" />
     <Compile Include="Events\VBEEvents.cs" />
     <Compile Include="Events\VBENativeServices.cs" />
-    <Compile Include="Events\WindowChangedEventArgs.cs" />
     <Compile Include="Extensions\VBComponentExtensions.cs" />
     <Compile Include="Extensions\KeyValuePairExtensions.cs" />
     <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
@@ -169,6 +171,9 @@
     <Compile Include="SafeComWrappers\SafeEventedComWrapper.cs" />
     <Compile Include="Utility\DisposalActionContainer.cs" />
     <Compile Include="Utility\RegistryWrapper.cs" />
+    <Compile Include="WindowsApi\IFocusProvider.cs" />
+    <Compile Include="WindowsApi\SubclassManager.cs" />
+    <Compile Include="WindowsApi\VbeAttachableSubclass.cs" />
     <Compile Include="WindowsApi\WindowLocator.cs" />
     <Compile Include="WindowsApi\CodePaneSubclass.cs" />
     <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
@@ -191,6 +196,7 @@
     <Compile Include="WindowsApi\SubclassingWindow.cs" />
     <Compile Include="WindowsApi\User32.cs" />
     <Compile Include="WindowsApi\WindowsHook.cs" />
+    <Compile Include="WindowsApi\WindowType.cs" />
     <Compile Include="WindowsApi\WinEvent.cs" />
     <Compile Include="WindowsApi\WinEventFlags.cs" />
     <Compile Include="WindowsApi\WM.cs" />

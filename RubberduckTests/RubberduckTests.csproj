@@ -105,6 +105,7 @@
     <Compile Include="CodeAnalysis\CodeMetrics\CyclomaticComplexityTests.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\LineCountTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="FlagSanityTests.cs" />
     <Compile Include="Mocks\MockAddInBuilder.cs" />
     <Compile Include="Inspections\ObsoleteMemberUsageInspectionTests.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
