@@ -75,8 +75,10 @@
     <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\ISourceCodeProvider.cs" />
     <Compile Include="SourceCodeHandling\ISourceFileHandler.cs" />
+    <Compile Include="CommandBarLocation.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
+    <Compile Include="CommandBarSite.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />

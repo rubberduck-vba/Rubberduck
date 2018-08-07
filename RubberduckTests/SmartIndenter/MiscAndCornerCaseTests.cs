@@ -1,6 +1,7 @@
 using System.Linq;
 using NUnit.Framework;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Command;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.SmartIndenter
@@ -861,6 +862,103 @@ namespace RubberduckTests.SmartIndenter
                @"               & ""lacinia elementum elit dictum in. Nam in imperdiet tortor. Curabitur efficitur libero"" & vbCrLf _",
                @"               & ""lacus, et placerat metus sodales sit amet.""",
                 "    Debug.Print LoremIpsum",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void ElseWithEndingColonWorks()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                "If True Then",
+                "Debug.Print \"True\"",
+                "Else:",
+                "Debug.Print \"False\"",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "    If True Then",
+                "        Debug.Print \"True\"",
+                "    Else:",
+                "        Debug.Print \"False\"",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+        
+        [Test]
+        [Category("Indenter")]
+        public void ElseWithTrailingSegmentWorks()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                "If True Then",
+                "Debug.Print \"True\"",
+                "Else: Debug.Print \"False\"",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "    If True Then",
+                "        Debug.Print \"True\"",
+                "    Else: Debug.Print \"False\"",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //failing test for https://github.com/rubberduck-vba/Rubberduck/issues/3210
+        [Test]
+        [Ignore("Most likely requires the parse tree.")]
+        [Category("Indenter")]
+        public void LineNumbersInsideContinuationsWork()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                " _",
+                "10",
+                " _",
+                "foo _",
+                ": Beep",
+                "",
+                "20 bar: Beep",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "   _",
+                "10",
+                "   _",
+                "foo _",
+                ":  Beep",
+                "",
+                "20 bar: Beep",
                 "End Sub"
             };
 
