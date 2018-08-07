@@ -24,6 +24,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         int FileCount { get; }
         string GetFileName(short index);
         IVBProject ParentProject { get; }
+        int ContentHash();
 
         QualifiedModuleName QualifiedModuleName { get; }
     }

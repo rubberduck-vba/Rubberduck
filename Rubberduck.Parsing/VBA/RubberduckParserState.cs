@@ -1023,12 +1023,20 @@ namespace Rubberduck.Parsing.VBA
         private int GetModuleContentHash(QualifiedModuleName module)
         {
             var component = ProjectsProvider.Component(module);
-            return QualifiedModuleName.GetModuleContentHash(component);
+            return QualifiedModuleName.GetContentHash(component);
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
         {
-            return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
+            if (activeCodePane != null)
+            {
+                return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
+            }
+
+            using (var active = _vbe.ActiveCodePane)
+            {
+                return DeclarationFinder?.FindSelectedDeclaration(active);
+            }
         }
 
         public void RemoveBuiltInDeclarations(IReference reference)
