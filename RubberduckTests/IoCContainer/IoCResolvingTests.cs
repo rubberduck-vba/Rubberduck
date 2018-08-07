@@ -25,7 +25,8 @@ namespace RubberduckTests.IoCContainer
             var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
             ideMock.Setup(m => m.SourceFileHandler).Returns(() => sourceFileHandler);
             var ide = ideMock.Object;
-            var addin = new Mock<IAddIn>().Object;
+            var addInBuilder = new MockAddInBuilder();
+            var addin = addInBuilder.Build().Object;
             var initialSettings = new GeneralSettings
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
@@ -65,7 +66,8 @@ namespace RubberduckTests.IoCContainer
             var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
             ideMock.Setup(m => m.SourceFileHandler).Returns(() => sourceFileHandler);
             var ide = ideMock.Object;
-            var addin = new Mock<IAddIn>().Object;
+            var addInBuilder = new MockAddInBuilder();
+            var addin = addInBuilder.Build().Object;
             var initialSettings = new GeneralSettings
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
